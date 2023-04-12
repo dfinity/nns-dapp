@@ -2,8 +2,8 @@ import type { Principal } from "@dfinity/principal";
 import type { CanisterDetails } from "./ic-management.canister.types";
 import { CanisterStatus } from "./ic-management.canister.types";
 import type {
-  CanisterStatus as RawCanisterStatus,
   CanisterStatusResponse,
+  CanisterStatus as RawCanisterStatus,
 } from "./ic-management.types";
 
 const getCanisterStatus = (status: RawCanisterStatus): CanisterStatus => {

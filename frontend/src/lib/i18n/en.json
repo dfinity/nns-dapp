@@ -258,7 +258,6 @@
     "current_balance": "Current Balance",
     "may_take_while": "This may take more than a minute",
     "create": "Create",
-    "change_source": "Change Source Account",
     "community_fund": "Community fund",
     "hotkey_control": "Hotkey control",
     "stake": "Stake",
@@ -712,7 +711,8 @@
     "create_subaccount_limit_exceeded": "Sorry, you reached the limit of linked accounts in this account.",
     "create_subaccount": "Sorry, there was an unexpected error when creating your linked account, please try again.",
     "subaccount_not_found": "Error renaming subAccount, subAccount ($account_identifier) not found",
-    "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found"
+    "rename_account_not_found": "Error renaming subAccount, account ($account_identifier) not found",
+    "not_selected": "An account should be selected. Please choose one."
   },
   "error__canister": {
     "already_attached": "Canister ($canisterId) is already linked",

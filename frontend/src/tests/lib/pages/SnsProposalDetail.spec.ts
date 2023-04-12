@@ -12,6 +12,7 @@ import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -20,9 +21,22 @@ jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
   fakeSnsGovernanceApi.install();
+  const proposalId = { id: BigInt(3) };
+  const rootCanisterId = mockCanisterId;
+
+  const renderComponent = async () => {
+    const { container } = render(SnsProposalDetail, {
+      props: {
+        proposalIdText: proposalId.id.toString(),
+      },
+    });
+
+    await runResolvedPromises();
+
+    return SnsProposalDetailPo.under(new JestPageObjectElement(container));
+  };
 
   describe("not logged in", () => {
-    const rootCanisterId = mockCanisterId;
     beforeEach(() => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
@@ -40,12 +54,12 @@ describe("SnsProposalDetail", () => {
         id: [proposalId],
       });
 
+      fakeSnsGovernanceApi.pause();
       const { container } = render(SnsProposalDetail, {
         props: {
           proposalIdText: proposalId.id.toString(),
         },
       });
-
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
       );
@@ -53,7 +67,6 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should render content once proposal is loaded", async () => {
-      const proposalId = { id: BigInt(3) };
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -66,7 +79,6 @@ describe("SnsProposalDetail", () => {
           proposalIdText: proposalId.id.toString(),
         },
       });
-
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
       );
@@ -75,37 +87,12 @@ describe("SnsProposalDetail", () => {
 
       fakeSnsGovernanceApi.resume();
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      expect(await po.hasSummarySection()).toBe(true);
+      expect(await po.hasSystemInfoSection()).toBe(true);
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
 
-    it("should render system info content", async () => {
-      fakeSnsGovernanceApi.pause();
-      const proposalId = { id: BigInt(3) };
-      fakeSnsGovernanceApi.addProposalWith({
-        identity: new AnonymousIdentity(),
-        rootCanisterId,
-        id: [proposalId],
-      });
-
-      const { container } = render(SnsProposalDetail, {
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
-      const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
-      );
-      expect(await po.hasSystemInfoSection()).toBe(false);
-      fakeSnsGovernanceApi.resume();
-
-      await waitFor(async () =>
-        expect(await po.hasSystemInfoSection()).toBe(true)
-      );
-    });
-
-    it("should render the name of the nervous function", async () => {
-      const proposalId = { id: BigInt(3) };
+    it("should render the name of the nervous function as title", async () => {
       const functionId = BigInt(12);
       const functionName = "test function";
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
@@ -120,18 +107,26 @@ describe("SnsProposalDetail", () => {
         action: functionId,
       });
 
-      const { container } = render(SnsProposalDetail, {
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
-      const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderComponent();
 
       await waitFor(async () =>
         expect(await po.getSystemInfoSectionTitle()).toBe(functionName)
+      );
+    });
+
+    it("should render the payload", async () => {
+      const payload = "# Test payload";
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+        payload_text_rendering: [payload],
+      });
+
+      const po = await renderComponent();
+
+      await waitFor(async () =>
+        expect(await (await po.getPayloadText()).trim()).toBe(payload)
       );
     });
 

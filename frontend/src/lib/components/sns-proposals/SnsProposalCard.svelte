@@ -30,7 +30,7 @@
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
 
-  let topic: string | undefined;
+  let type: string | undefined;
   let proposer: SnsNeuronId | undefined;
   let proposerString: string | undefined;
   $: proposerString =
@@ -44,7 +44,7 @@
     id,
     title,
     color,
-    topic,
+    type,
     proposer,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
     status,
@@ -83,7 +83,7 @@
   id={id?.id}
   {title}
   {color}
-  {topic}
+  {type}
   proposer={proposerString}
   {deadlineTimestampSeconds}
   >{#if demoVoteEnable}

@@ -3,9 +3,9 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import {
+  MockLedgerIdentity,
   derEncodedPublicKeyHex,
   fromHexString,
-  MockLedgerIdentity,
   rawPublicKeyHex,
 } from "$tests/mocks/ledger.identity.mock";
 import {

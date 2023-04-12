@@ -24,7 +24,7 @@ export class GetTokensPo extends BasePageObject {
     return this.root.byTestId("get-icp-form").waitForAbsent();
   }
 
-  async getIcp(amount: number): Promise<void> {
+  async getTokens(amount: number): Promise<void> {
     await this.clickGetTokens();
     await this.enterAmount(amount);
     await this.clickSubmit();

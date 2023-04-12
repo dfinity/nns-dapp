@@ -23,8 +23,8 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
-  mockCanisters,
   mockCanisterSettings,
+  mockCanisters,
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
