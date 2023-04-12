@@ -93,7 +93,7 @@
     >
       {$i18n.sns_neuron_detail.community_fund_section}
     </h2>
-    <p class="bottom-margin">
+    <p data-tid="community-fund-description" class="bottom-margin">
       <Html text={$i18n.sns_neuron_detail.community_fund_section_description} />
     </p>
     <div class="card-grid">

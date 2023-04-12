@@ -155,12 +155,15 @@ describe("SnsNeurons", () => {
     });
 
     it("should render Community Fund neurons text", async () => {
-      const { getByText } = render(SnsNeurons);
+      const { queryByTestId } = render(SnsNeurons);
+
+      const div = document.createElement("div");
+      div.innerHTML = en.sns_neuron_detail.community_fund_section_description;
 
       await waitFor(() =>
         expect(
-          getByText(en.sns_neuron_detail.community_fund_section_description)
-        ).toBeInTheDocument()
+          queryByTestId("community-fund-description").textContent.trim()
+        ).toBe(div.textContent.trim())
       );
     });
 
