@@ -17,11 +17,23 @@ thread_local! {
 }
 
 impl CanisterArguments {
-    /// HTML to be appended onto _every_ index.html
+    /// HTML meta tag to be included in every index.html
     ///
     /// ```
     /// use nns_dapp::arguments::CanisterArguments;
-    /// let args: Vec<(String, String)> = CanisterArguments::args_from_str(&[("ROBOTS", r#"<meta name="robots" content="noindex, nofollow" />"#)]);
+    /// // Args typically include ROBOTS and similar values:
+    /// let mut args: Vec<(String, String)> = CanisterArguments::args_from_str(&[("ROBOTS", r#"<meta name="robots" content="noindex, nofollow" />"#)]);
+    ///
+    /// // The OWN_CANISTER_ID is normally populated from the environment; we will set it directly:
+    /// args.push(("OWN_CANISTER_ID".to_string(), "aeiouy".to_string()));
+    ///
+    /// let args = CanisterArguments{args};
+    ///
+    /// // The arguments are encoded as a meta tag like this:
+    /// assert_eq!(args.to_html(), r#"<meta name="nns-dapp-vars"
+    ///         data-robots="&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;"
+    ///         data-own-canister-id="aeiouy">
+    /// "#);
     /// ```
     pub fn to_html(&self) -> String {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
