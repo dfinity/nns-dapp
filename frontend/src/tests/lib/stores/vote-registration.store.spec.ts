@@ -79,16 +79,16 @@ describe("voting-store", () => {
     expect(get(voteRegistrationStore)).toEqual({ registrations: {} });
   });
 
-  it("should update successfullyVotedNeuronIds", () => {
-    const successfullyVotedNeuronIds = [BigInt(0), BigInt(2)];
+  it("should update successfullyVotedNeuronIdStrings", () => {
+    const successfullyVotedNeuronIdStrings = ["0", "2"];
 
     voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
     voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
 
-    for (const neuronId of successfullyVotedNeuronIds) {
+    for (const neuronIdString of successfullyVotedNeuronIdStrings) {
       voteRegistrationStore.addSuccessfullyVotedNeuronId({
         proposalIdString: voteA.proposalIdString,
-        neuronId,
+        neuronIdString,
         canisterId: OWN_CANISTER_ID,
       });
     }
@@ -96,7 +96,7 @@ describe("voting-store", () => {
     expect(
       get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()].find(
         ({ proposalIdString }) => proposalIdString === voteA.proposalIdString
-      )?.successfullyVotedNeuronIds
-    ).toEqual(successfullyVotedNeuronIds);
+      )?.successfullyVotedNeuronIdStrings
+    ).toEqual(successfullyVotedNeuronIdStrings);
   });
 });

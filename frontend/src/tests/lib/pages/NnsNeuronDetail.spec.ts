@@ -109,7 +109,7 @@ describe("NeuronDetail", () => {
 
     voteRegistrationStore.add({
       ...mockVoteRegistration,
-      neuronIds: [neuronId],
+      neuronIdStrings: [`${neuronId}`],
       canisterId: OWN_CANISTER_ID,
     });
 

@@ -165,8 +165,8 @@ describe("vote-registration-services", () => {
 
         expect(
           get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
-            .neuronIds
-        ).toEqual(neuronIds);
+            .neuronIdStrings
+        ).toEqual(neuronIds.map(String));
         expect(
           get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
             .proposalIdString
@@ -196,7 +196,7 @@ describe("vote-registration-services", () => {
         );
       });
 
-      it("should update successfullyVotedNeuronIds in the store", async () => {
+      it("should update successfullyVotedNeuronIdStrings in the store", async () => {
         voteRegistrationStore.reset();
 
         const spyOnAddSuccessfullyVotedNeuronId = jest.spyOn(
@@ -220,7 +220,7 @@ describe("vote-registration-services", () => {
         for (const neuronId of neuronIds) {
           expect(spyOnAddSuccessfullyVotedNeuronId).toHaveBeenCalledWith({
             proposalIdString: `${proposal.id}`,
-            neuronId,
+            neuronIdString: `${neuronId}`,
             canisterId: OWN_CANISTER_ID,
           });
         }

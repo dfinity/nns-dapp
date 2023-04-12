@@ -73,8 +73,8 @@ export const mockProposalInfo: ProposalInfo = {
 
 export const mockVoteRegistration = {
   proposalIdString: "10000",
-  neuronIds: [BigInt(0)],
-  successfullyVotedNeuronIds: [],
+  neuronIdStrings: ["0"],
+  successfullyVotedNeuronIdStrings: [],
   vote: Vote.No,
   status: "vote-registration",
 } as VoteRegistrationStoreEntry;
