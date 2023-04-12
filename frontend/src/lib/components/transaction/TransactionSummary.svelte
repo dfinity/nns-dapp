@@ -62,6 +62,8 @@
 </article>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .container {
     display: flex;
     flex-direction: column;
@@ -86,8 +88,13 @@
   }
 
   .icon {
-    color: var(--primary);
     margin: var(--padding) 0;
+  }
+
+  @include media.light-theme {
+    .icon {
+      color: var(--primary);
+    }
   }
 
   p {
