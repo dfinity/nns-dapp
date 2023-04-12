@@ -18,7 +18,7 @@
 
 {#if nonNullish(selectedNetwork)}
   <p class="label network">{$i18n.accounts.network}</p>
-  <p class="value no-margin">
+  <p class="value no-margin" data-tid="transaction-description-network">
     {$i18n.accounts[selectedNetwork]}
   </p>
 {/if}
