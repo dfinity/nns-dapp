@@ -192,8 +192,17 @@ jobs:
           scripts/nns-dapp/release-template
           echo Check the proposal
           ./scripts/nns-dapp/release-check
+  config-check:
+    name: Config check
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check config script
+        run: ./config.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
