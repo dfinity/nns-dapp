@@ -116,12 +116,20 @@ pub struct TemplateEngine {
 }
 impl TemplateEngine {
     /// Creates a templating engine from canister arguments
+    ///
+    /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
     pub fn new(key_val_pairs: &[(String, String)]) -> Self {
         let args = key_val_pairs.iter().cloned().collect();
+        // Please see .populate() to learn what this regex does.
         let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}|<!-- *([_0-9A-Z]+) *-->").expect("Invalid regex");
         TemplateEngine { args, regex }
     }
+
     /// Replaces substrings of the form `${{ARG_KEY}}` and `<!-- ARG_KEY -->` with the corresponding argument value.
+    ///
+    /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
+    /// * Values are taken from the engine `args` map.
+    ///
     /// ```
     /// use nns_dapp::arguments::{TemplateEngine, CanisterArguments};
     /// let values: Vec<(String, String)> = CanisterArguments::args_from_str(&[("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER-MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")]);
