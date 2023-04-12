@@ -63,7 +63,10 @@ export class JestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
-  private getRootAndFullSelector(): { rootElement: Element; fullSelector: string } {
+  private getRootAndFullSelector(): {
+    rootElement: Element;
+    fullSelector: string;
+  } {
     if (isNullish(this.parent)) {
       return { rootElement: this.element, fullSelector: ":scope" };
     }
@@ -75,7 +78,7 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async isPresent(): Promise<boolean> {
-    const {rootElement, fullSelector} = this.getRootAndFullSelector();
+    const { rootElement, fullSelector } = this.getRootAndFullSelector();
     this.element = rootElement.querySelector(fullSelector);
     return nonNullish(this.element);
   }
