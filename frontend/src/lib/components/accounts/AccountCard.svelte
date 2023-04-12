@@ -35,7 +35,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .title {
     @include card.title;
@@ -49,15 +48,5 @@
   .title {
     min-height: 36px;
     justify-content: flex-start;
-  }
-
-  .main {
-    color: var(--secondary);
-  }
-
-  @include media.light-theme {
-    .main {
-      color: var(--primary-tint);
-    }
   }
 </style>
