@@ -17,7 +17,7 @@
 <slot name="description" />
 
 {#if nonNullish(selectedNetwork)}
-  <p class="label network no-margin">{$i18n.accounts.network}</p>
+  <p class="label network">{$i18n.accounts.network}</p>
   <p class="value no-margin">
     {$i18n.accounts[selectedNetwork]}
   </p>
