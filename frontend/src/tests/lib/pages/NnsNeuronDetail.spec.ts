@@ -3,6 +3,7 @@
  */
 
 import * as api from "$lib/api/governance.api";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -109,6 +110,7 @@ describe("NeuronDetail", () => {
     voteRegistrationStore.add({
       ...mockVoteRegistration,
       neuronIds: [neuronId],
+      canisterId: OWN_CANISTER_ID,
     });
 
     await waitFor(() => expect(querySkeleton(container)).not.toBeNull());

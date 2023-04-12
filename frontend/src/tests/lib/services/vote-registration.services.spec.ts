@@ -4,6 +4,7 @@
 
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerVotes } from "$lib/services/vote-registration.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -150,17 +151,22 @@ describe("vote-registration-services", () => {
           },
         });
 
-        expect(get(voteRegistrationStore).registrations[0]).toBeDefined();
-
-        expect(get(voteRegistrationStore).registrations[0].neuronIds).toEqual(
-          neuronIds
-        );
         expect(
-          get(voteRegistrationStore).registrations[0].proposalInfo.id
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+        ).toBeDefined();
+
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .neuronIds
+        ).toEqual(neuronIds);
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .proposalInfo.id
         ).toEqual(proposal.id);
-        expect(get(voteRegistrationStore).registrations[0].vote).toEqual(
-          Vote.Yes
-        );
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .vote
+        ).toEqual(Vote.Yes);
       });
 
       it("should clear the store after registration", async () => {
@@ -174,7 +180,11 @@ describe("vote-registration-services", () => {
         });
 
         await waitFor(() =>
-          expect(get(voteRegistrationStore).registrations[0]).not.toBeDefined()
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0]
+          ).not.toBeDefined()
         );
       });
 
@@ -204,6 +214,7 @@ describe("vote-registration-services", () => {
           expect(spyOnAddSuccessfullyVotedNeuronId).toHaveBeenCalledWith({
             proposalId: proposal.id,
             neuronId,
+            canisterId: OWN_CANISTER_ID,
           });
         }
       });
