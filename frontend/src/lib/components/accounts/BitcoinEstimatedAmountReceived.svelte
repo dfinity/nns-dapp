@@ -43,10 +43,7 @@
 <TransactionReceivedTokenAmount
   amount={tokenEstimatedAmount}
   testId="bitcoin-estimated-amount"
->
-  <svelte:fragment slot="label"
-    >{$i18n.accounts.estimated_amount_received}</svelte:fragment
-  >
-</TransactionReceivedTokenAmount>
+  estimation
+/>
 
 <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />

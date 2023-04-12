@@ -4,18 +4,21 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   export let amount: TokenAmount;
+  export let estimation = false;
   export let testId: string | undefined = undefined;
 </script>
 
 <div data-tid={testId}>
   <p class="label">
-    <slot name="label">
+    {#if estimation}
+      {$i18n.accounts.estimated_amount_received}
+    {:else}
       {$i18n.accounts.received_amount}
-    </slot>
+    {/if}
   </p>
 
   <p class="no-margin">
-    <AmountDisplay inline detailed {amount} />
+    {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay inline detailed {amount} />
   </p>
 </div>
 
