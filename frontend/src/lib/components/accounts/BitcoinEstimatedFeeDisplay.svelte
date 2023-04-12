@@ -2,7 +2,6 @@
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { KeyValuePair } from "../../../../../../gix-components";
 
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;

@@ -29,7 +29,8 @@
     margin: 0 0 var(--padding);
   }
 
-  .network, .desc {
+  .network,
+  .desc {
     margin: var(--padding) 0 0;
   }
 </style>

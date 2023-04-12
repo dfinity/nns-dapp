@@ -25,6 +25,7 @@
   import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import BitcoinEstimatedTransactionTime from "$lib/components/accounts/BitcoinEstimatedTransactionTime.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -178,7 +179,7 @@
         {universeId}
         amount={userAmount}
       />
-    {:else}
+    {:else if nonNullish(userAmount)}
       <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>

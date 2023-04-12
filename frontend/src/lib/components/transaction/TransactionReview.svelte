@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, type Token } from "@dfinity/nns";
+  import type { TokenAmount, Token } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";

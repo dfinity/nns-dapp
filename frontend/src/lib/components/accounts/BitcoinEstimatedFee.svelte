@@ -8,7 +8,6 @@
   import type { CanisterId } from "$lib/types/canister";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { EstimateWithdrawalFee } from "@dfinity/ckbtc";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;

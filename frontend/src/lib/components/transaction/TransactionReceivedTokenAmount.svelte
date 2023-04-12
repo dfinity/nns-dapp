@@ -18,7 +18,11 @@
   </p>
 
   <p class="no-margin">
-    {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay inline detailed {amount} />
+    {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay
+      inline
+      detailed
+      {amount}
+    />
   </p>
 </div>
 

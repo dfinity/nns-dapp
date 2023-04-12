@@ -33,5 +33,5 @@
   <svelte:fragment slot="destination-info">
     {$i18n.sns_neurons.sns_neuron_destination}
   </svelte:fragment>
-  <slot name="description no-margin" slot="description" />
+  <slot name="description" slot="description" />
 </TransactionModal>
