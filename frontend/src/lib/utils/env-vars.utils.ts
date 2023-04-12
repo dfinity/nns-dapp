@@ -58,9 +58,12 @@ const getHtmlEnvVars = (): EnvironmentVars => {
       `Missing environment variables element with selector ${ENV_VARS_ELEMENT_SELECTOR} in HTML page.`
     );
   }
-  const envVars: Record<string, unknown> = dataElement.dataset ?? {};
-  assertEnvVars(envVars);
-  return envVars;
+  if (dataElement.hasAttribute("enabled")) {
+    const envVars: Record<string, unknown> = dataElement.dataset ?? {};
+    assertEnvVars(envVars);
+    return envVars;
+  }
+  throw new Error("Environment variables element is disabled.");
 };
 
 const convertEmtpyStringToUndefined = (str: string): string | undefined =>
@@ -111,7 +114,12 @@ const getBuildEnvVars = (): EnvironmentVars => {
 
 export const getEnvVars = (): EnvironmentVars => {
   if (isBrowser && !localDev) {
-    return getHtmlEnvVars();
+    try {
+      return getHtmlEnvVars();
+    } catch (_) {
+      // Fallback to build env vars
+      return getBuildEnvVars();
+    }
   }
   return getBuildEnvVars();
 };
