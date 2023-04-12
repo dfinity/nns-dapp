@@ -113,8 +113,8 @@ const initProposalsStore = () => {
       this.setProposals({
         proposals: [],
         certified: true,
-      })
-    }
+      });
+    },
   };
 };
 

@@ -72,7 +72,7 @@ export const mockProposalInfo: ProposalInfo = {
 } as unknown as ProposalInfo;
 
 export const mockVoteRegistration = {
-  proposalInfo: { ...mockProposalInfo },
+  proposalIdString: "10000",
   neuronIds: [BigInt(0)],
   successfullyVotedNeuronIds: [],
   vote: Vote.No,

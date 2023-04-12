@@ -3,27 +3,17 @@ import {
   voteRegistrationStore,
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
-import {
-  mockProposalInfo,
-  mockVoteRegistration,
-} from "$tests/mocks/proposal.mock";
-import type { ProposalId } from "@dfinity/nns";
+import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { get } from "svelte/store";
 
 describe("voting-store", () => {
   const voteA: VoteRegistrationStoreEntry = {
     ...mockVoteRegistration,
-    proposalInfo: {
-      ...mockProposalInfo,
-      id: BigInt(1),
-    },
+    proposalIdString: "1",
   };
   const voteB: VoteRegistrationStoreEntry = {
     ...mockVoteRegistration,
-    proposalInfo: {
-      ...mockProposalInfo,
-      id: BigInt(2),
-    },
+    proposalIdString: "2",
   };
 
   afterEach(() => {
@@ -49,7 +39,7 @@ describe("voting-store", () => {
     voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
 
     voteRegistrationStore.updateStatus({
-      proposalId: voteA.proposalInfo.id as ProposalId,
+      proposalIdString: voteA.proposalIdString,
       status: "complete",
       canisterId: OWN_CANISTER_ID,
     });
@@ -66,12 +56,12 @@ describe("voting-store", () => {
 
     voteRegistrationStore.updateStatus({
       status: "complete",
-      proposalId: voteA.proposalInfo.id as ProposalId,
+      proposalIdString: voteA.proposalIdString,
       canisterId: OWN_CANISTER_ID,
     });
 
     voteRegistrationStore.remove({
-      proposalId: voteA.proposalInfo.id as ProposalId,
+      proposalIdString: voteA.proposalIdString,
       canisterId: OWN_CANISTER_ID,
     });
 
@@ -97,7 +87,7 @@ describe("voting-store", () => {
 
     for (const neuronId of successfullyVotedNeuronIds) {
       voteRegistrationStore.addSuccessfullyVotedNeuronId({
-        proposalId: voteA.proposalInfo.id as ProposalId,
+        proposalIdString: voteA.proposalIdString,
         neuronId,
         canisterId: OWN_CANISTER_ID,
       });
@@ -105,7 +95,7 @@ describe("voting-store", () => {
 
     expect(
       get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()].find(
-        ({ proposalInfo: { id } }) => id === voteA.proposalInfo.id
+        ({ proposalIdString }) => proposalIdString === voteA.proposalIdString
       )?.successfullyVotedNeuronIds
     ).toEqual(successfullyVotedNeuronIds);
   });
