@@ -20,6 +20,7 @@ pub struct CanisterArguments {
 }
 
 thread_local! {
+  /// Arguments provided at installation or upgrade.
   pub static CANISTER_ARGUMENTS: RefCell<CanisterArguments> = RefCell::new(CanisterArguments::default().with_own_canister_id());
 }
 
@@ -118,7 +119,9 @@ pub fn set_canister_arguments(canister_arguments: Option<CanisterArguments>) {
 
 /// Replaces arguments in a template
 pub struct TemplateEngine {
+    /// Values to replace
     args: HashMap<String, String>,
+    /// The regular expression used to identify strings to replace.
     regex: Regex,
 }
 impl TemplateEngine {
@@ -128,6 +131,7 @@ impl TemplateEngine {
     pub fn new(key_val_pairs: &[(String, String)]) -> Self {
         let args = key_val_pairs.iter().cloned().collect();
         // Please see .populate() to learn what this regex does.
+        #[allow(clippy::expect_used)]
         let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}|<!-- *([_0-9A-Z]+) *-->").expect("Invalid regex");
         TemplateEngine { args, regex }
     }
@@ -151,7 +155,7 @@ impl TemplateEngine {
             .replace_all(input, |cap: &Captures| {
                 if let Some(key) = cap.get(1).or_else(|| cap.get(2)) {
                     let val = self.args.get(key.as_str());
-                    val.cloned().unwrap_or_else(|| cap.get(0).unwrap().as_str().to_string())
+                    val.cloned().unwrap_or_else(|| cap.get(0).map(|x| x.as_str().to_string()).unwrap_or_default())
                 } else {
                     "REGEX ERROR".to_string()
                 }
