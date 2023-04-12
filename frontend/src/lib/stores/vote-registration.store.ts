@@ -89,8 +89,12 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         const universeRegistrations = registrations[canisterId.toText()];
 
         if (universeRegistrations === undefined) {
-          registrations[canisterId.toText()] = [newEntry];
-          return { registrations };
+          return {
+            registrations: {
+              ...registrations,
+              [canisterId.toText()]: [newEntry],
+            },
+          };
         }
 
         if (
@@ -104,8 +108,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         }
 
         return {
-          registrations,
-          [canisterId.toText()]: [...universeRegistrations, newEntry],
+          registrations: {
+            ...registrations,
+            [canisterId.toText()]: [...universeRegistrations, newEntry],
+          },
         };
       });
     },
