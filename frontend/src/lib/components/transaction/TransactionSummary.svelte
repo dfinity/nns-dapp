@@ -5,7 +5,6 @@
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import en from "../../../tests/mocks/i18n.mock";
 
   export let amount: number;
   export let token: Token;
@@ -19,9 +18,12 @@
   });
 
   let ledgerFeeLabel: string;
-  $: ledgerFeeLabel = replacePlaceholders(en.accounts.token_transaction_fee, {
-    $tokenSymbol: token.symbol,
-  });
+  $: ledgerFeeLabel = replacePlaceholders(
+    $i18n.accounts.token_transaction_fee,
+    {
+      $tokenSymbol: token.symbol,
+    }
+  );
 
   let totalDeducted: bigint;
   $: totalDeducted = tokenAmount.toE8s() + transactionFee.toE8s();
@@ -56,15 +58,7 @@
     <IconSouth />
   </div>
 
-  <div>
-    <p class="label subtitle">
-      {$i18n.accounts.received_amount}
-    </p>
-
-    <p>
-      <AmountDisplay inline detailed amount={tokenAmount} />
-    </p>
-  </div>
+  <slot name="received-amount" />
 </article>
 
 <style lang="scss">

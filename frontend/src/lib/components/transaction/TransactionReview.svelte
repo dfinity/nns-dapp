@@ -36,10 +36,13 @@
   <div class="info">
     <TransactionSource account={sourceAccount} />
 
-    <TransactionSummary {amount} {token} {transactionFee} />
+    <TransactionSummary {amount} {token} {transactionFee}>
+      <slot name="received-amount" slot="received-amount" />
+    </TransactionSummary>
 
     <TransactionDescription {selectedNetwork} {destinationAddress}>
       <slot name="description" slot="description" />
+      <slot name="destination-info" slot="destination-info" />
     </TransactionDescription>
 
     <slot name="additional-info" />
