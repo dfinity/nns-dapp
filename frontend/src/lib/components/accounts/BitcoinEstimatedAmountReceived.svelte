@@ -5,6 +5,7 @@
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -34,3 +35,5 @@
     >{$i18n.accounts.estimated_amount_received}</svelte:fragment
   >
 </TransactionReceivedTokenAmount>
+
+<BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />

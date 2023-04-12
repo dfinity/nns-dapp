@@ -8,7 +8,7 @@
 </script>
 
 <div data-tid={testId}>
-  <p class="label subtitle">
+  <p class="label">
     <slot name="label">
       {$i18n.accounts.received_amount}
     </slot>
@@ -20,7 +20,7 @@
 </div>
 
 <style lang="scss">
-  .subtitle {
+  p {
     margin: 0 0 var(--padding-0_5x);
   }
 </style>

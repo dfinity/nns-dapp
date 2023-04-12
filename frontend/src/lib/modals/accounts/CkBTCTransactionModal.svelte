@@ -18,7 +18,6 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
-  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
   import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
@@ -171,8 +170,6 @@
     />
   </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
-    <BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
-
     {#if networkBtc}
       <p class="label no-margin">{$i18n.ckbtc.estimated_receive_time}</p>
       <p class="value no-margin">

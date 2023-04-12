@@ -227,7 +227,7 @@
     "network_btc_mainnet": "Bitcoin (BTC)",
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
-    "estimated_bitcoin_transaction_fee": "Estimated Bitcoin network fee (deducted)",
+    "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
     "estimated_amount_received": "Estimated Received Amount",
     "receive_account": "Account",
     "sending_amount": "Sending Amount",

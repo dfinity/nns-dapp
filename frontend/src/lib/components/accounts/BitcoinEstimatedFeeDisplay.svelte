@@ -2,16 +2,26 @@
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { KeyValuePair } from "../../../../../../gix-components";
 
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}
-  <div data-tid="bitcoin-estimated-fee-display">
-    <p class="label">{$i18n.accounts.estimated_bitcoin_transaction_fee}</p>
-    <p class="value">
+  <KeyValuePair testId="bitcoin-estimated-fee-display">
+    <span class="label" slot="key"
+      >{$i18n.accounts.estimated_bitcoin_transaction_fee}</span
+    >
+    <span class="value" slot="value">
       {formatEstimatedFee(bitcoinEstimatedFee)}
-      {$i18n.ckbtc.btc}
-    </p>
-  </div>
+      <span class="label">{$i18n.ckbtc.btc}</span>
+    </span>
+  </KeyValuePair>
 {/if}
+
+<style lang="scss">
+  .value {
+    text-align: right;
+  }
+</style>
