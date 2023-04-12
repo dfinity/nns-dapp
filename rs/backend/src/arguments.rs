@@ -75,6 +75,14 @@ impl TemplateEngine {
         TemplateEngine { args, regex }
     }
     /// Replaces substrings of the form `${{ARG_KEY}}` and `<!-- ARG_KEY -->` with the corresponding argument value.
+    /// ```
+    /// let values = vec![("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER_MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")];
+    /// let template_engine = TemplateEngine::new(&values);
+    /// assert_eq!(template_engine.populate("${{FOO}}", "bar"));
+    /// assert_eq!(template_engine.populate("<!--FOO-->", "bar"));
+    /// assert_eq!(template_engine.populate("They say that ${{SUPER-MAN}} is not <!--SUPERMAN-->", "They say that Lex Luthor is not Peter Parker"));
+    /// assert_eq!(template_engine.populate("${{lowercase}} variables are not replaced", "They say that Lex Luthor is not Peter Parker"));
+    /// ```
     pub fn populate(&self, input: &str) -> String {
         self.regex
             .replace_all(input, |cap: &Captures| {
