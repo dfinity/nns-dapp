@@ -12,7 +12,7 @@ type EnvironmentVars = {
   featureFlags: string;
   fetchRootKey: string;
   host: string;
-  governanceCaniserId: string;
+  governanceCanisterId: string;
   identityServiceUrl: string;
   ledgerCanisterId: string;
   ownCanisterId: string;
@@ -27,7 +27,7 @@ const mandatoryEnvVarKeys: EnvironmentVars = {
   featureFlags: "",
   fetchRootKey: "",
   host: "",
-  governanceCaniserId: "",
+  governanceCanisterId: "",
   identityServiceUrl: "",
   ledgerCanisterId: "",
   ownCanisterId: "",
@@ -90,7 +90,7 @@ const getBuildEnvVars = (): EnvironmentVars => {
       import.meta.env.VITE_FETCH_ROOT_KEY
     ),
     host: convertEmtpyStringToUndefined(import.meta.env.VITE_HOST),
-    governanceCaniserId: convertEmtpyStringToUndefined(
+    governanceCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_GOVERNANCE_CANISTER_ID
     ),
     identityServiceUrl: convertEmtpyStringToUndefined(

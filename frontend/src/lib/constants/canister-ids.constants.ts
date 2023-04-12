@@ -7,7 +7,7 @@ export const OWN_CANISTER_ID_TEXT = envVars?.ownCanisterId ?? "";
 export const OWN_CANISTER_ID = Principal.fromText(OWN_CANISTER_ID_TEXT);
 export const LEDGER_CANISTER_ID = Principal.fromText(envVars.ledgerCanisterId);
 export const GOVERNANCE_CANISTER_ID = Principal.fromText(
-  envVars.governanceCaniserId
+  envVars.governanceCanisterId
 );
 export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
   envVars.cyclesMintingCanisterId

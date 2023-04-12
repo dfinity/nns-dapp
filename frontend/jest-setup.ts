@@ -38,7 +38,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",
-    governanceCaniserId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    governanceCanisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
     identityServiceUrl: "http://localhost:8000/",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
