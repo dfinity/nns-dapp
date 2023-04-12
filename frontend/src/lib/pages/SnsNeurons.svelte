@@ -24,6 +24,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
+  import { Html } from "@dfinity/gix-components";
 
   let loading = true;
 
@@ -92,8 +93,8 @@
     >
       {$i18n.sns_neuron_detail.community_fund_section}
     </h2>
-    <p data-tid="community-fund-description" class="bottom-margin">
-      {$i18n.sns_neuron_detail.community_fund_section_description}
+    <p class="bottom-margin">
+      <Html text={$i18n.sns_neuron_detail.community_fund_section_description} />
     </p>
     <div class="card-grid">
       {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
