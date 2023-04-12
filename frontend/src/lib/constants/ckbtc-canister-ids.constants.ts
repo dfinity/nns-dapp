@@ -1,6 +1,5 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { Principal } from "@dfinity/principal";
-import { notEmptyString } from "@dfinity/utils";
 
 const envVars = getEnvVars();
 
@@ -14,17 +13,11 @@ export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
 const MAINNET_CKBTC_LEDGER_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
 const MAINNET_CKBTC_INDEX_CANISTER_ID = "n5wcd-faaaa-aaaar-qaaea-cai";
 
-const ENV_CKBTC_LEDGER_CANISTER_ID = envVars.ckbtcLedgerCanisterId ?? "";
-const ENV_CKBTC_INDEX_CANISTER_ID = envVars.ckbtcIndexCanisterId ?? "";
 export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
-  notEmptyString(ENV_CKBTC_LEDGER_CANISTER_ID)
-    ? ENV_CKBTC_LEDGER_CANISTER_ID
-    : MAINNET_CKBTC_LEDGER_CANISTER_ID
+  envVars.ckbtcLedgerCanisterId ?? MAINNET_CKBTC_LEDGER_CANISTER_ID
 );
 export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
-  notEmptyString(ENV_CKBTC_INDEX_CANISTER_ID)
-    ? ENV_CKBTC_INDEX_CANISTER_ID
-    : MAINNET_CKBTC_INDEX_CANISTER_ID
+  envVars.ckbtcIndexCanisterId ?? MAINNET_CKBTC_INDEX_CANISTER_ID
 );
 
 // TODO: to be remove - ckBTCTest on mainnet

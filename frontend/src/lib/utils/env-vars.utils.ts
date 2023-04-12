@@ -49,7 +49,7 @@ function assertEnvVars(
 }
 
 const getHtmlEnvVars = (): EnvironmentVars => {
-  const ENV_VARS_ELEMENT_SELECTOR = "meta[name=env-vars]";
+  const ENV_VARS_ELEMENT_SELECTOR = "meta[name=nns-dapp-vars]";
   const dataElement: HTMLElement | null = window.document.querySelector(
     ENV_VARS_ELEMENT_SELECTOR
   );
@@ -63,23 +63,47 @@ const getHtmlEnvVars = (): EnvironmentVars => {
   return envVars;
 };
 
+const convertEmtpyStringToUndefined = (str: string): string | undefined =>
+  str === "" ? undefined : str;
+
 const getBuildEnvVars = (): EnvironmentVars => {
   const envVars = {
     // Environments without ckBTC canisters are valid
-    ckbtcIndexCanisterId: import.meta.env.VITE_CKBTC_INDEX_CANISTER_ID,
-    ckbtcLedgerCanisterId: import.meta.env.VITE_CKBTC_LEDGER_CANISTER_ID,
-    cyclesMintingCanisterId: import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID,
-    dfxNetwork: import.meta.env.VITE_DFX_NETWORK,
-    featureFlags: import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"'),
-    fetchRootKey: import.meta.env.VITE_FETCH_ROOT_KEY,
-    host: import.meta.env.VITE_HOST,
-    governanceCaniserId: import.meta.env.VITE_GOVERNANCE_CANISTER_ID,
-    identityServiceUrl: import.meta.env.VITE_IDENTITY_SERVICE_URL,
-    ledgerCanisterId: import.meta.env.VITE_LEDGER_CANISTER_ID,
-    ownCanisterId: import.meta.env.VITE_OWN_CANISTER_ID,
-    // Environments without SNS aggregator are valid
-    snsAggregatorUrl: import.meta.env.VITE_AGGREGATOR_CANISTER_URL,
-    wasmCanisterId: import.meta.env.VITE_WASM_CANISTER_ID,
+    ckbtcIndexCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKBTC_INDEX_CANISTER_ID
+    ),
+    ckbtcLedgerCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKBTC_LEDGER_CANISTER_ID
+    ),
+    cyclesMintingCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID
+    ),
+    dfxNetwork: convertEmtpyStringToUndefined(import.meta.env.VITE_DFX_NETWORK),
+    featureFlags: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"')
+    ),
+    fetchRootKey: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_FETCH_ROOT_KEY
+    ),
+    host: convertEmtpyStringToUndefined(import.meta.env.VITE_HOST),
+    governanceCaniserId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_GOVERNANCE_CANISTER_ID
+    ),
+    identityServiceUrl: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_IDENTITY_SERVICE_URL
+    ),
+    ledgerCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_LEDGER_CANISTER_ID
+    ),
+    ownCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_OWN_CANISTER_ID
+    ),
+    snsAggregatorUrl: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_AGGREGATOR_CANISTER_URL
+    ),
+    wasmCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_WASM_CANISTER_ID
+    ),
   };
   assertEnvVars(envVars);
   return envVars;
