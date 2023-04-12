@@ -211,7 +211,7 @@ jobs:
         run: |
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check config script
-        run: ./config.test
+        run: bash -x ./config.test
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check"]
     if: ${{ always() }}
