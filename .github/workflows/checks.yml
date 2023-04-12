@@ -197,6 +197,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - name: Install tools
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
