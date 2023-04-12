@@ -22,7 +22,7 @@
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { registerVotes } from "$lib/services/vote-registration.services";
+  import { registerNnsVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
@@ -48,7 +48,7 @@
 
   $: voteRegistration = (
     $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
-  ).find(({ proposalInfo: { id } }) => proposalInfo.id === id);
+  ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
 
   $: $definedNeuronsStore,
     (visible =
@@ -72,7 +72,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
-    await registerVotes({
+    await registerNnsVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds.map(BigInt),
       vote: detail.voteType,
       proposalInfo,

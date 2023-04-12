@@ -67,7 +67,9 @@ const hide = ({
   }) ||
   // hide proposals that are currently in the voting state
   Object.values(registrations).find((votings) =>
-    votings.find(({ proposalInfo: { id } }) => proposalInfo.id === id)
+    votings.find(
+      ({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString
+    )
   ) !== undefined;
 
 export interface UIProposalsStore {

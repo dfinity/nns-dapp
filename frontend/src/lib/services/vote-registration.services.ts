@@ -41,7 +41,8 @@ import { listNeurons } from "./neurons.services";
  * In order to improve UX optimistic UI update is used:
  * after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron)and update the stores with optimistic values.
  */
-export const registerVotes = async ({
+// TODO(sns-voting): add registerSnsVotes
+export const registerNnsVotes = async ({
   neuronIds,
   proposalInfo,
   vote,
@@ -54,10 +55,10 @@ export const registerVotes = async ({
 }): Promise<void> => {
   try {
     const toastId = createRegisterVotesToast({ vote, proposalInfo, neuronIds });
-    const proposalId = proposalInfo.id as bigint;
+    const proposalIdString = `${proposalInfo.id}`;
     voteRegistrationStore.add({
       vote,
-      proposalInfo,
+      proposalIdString,
       neuronIds,
       canisterId: OWN_CANISTER_ID,
     });
@@ -72,17 +73,18 @@ export const registerVotes = async ({
     });
 
     voteRegistrationStore.updateStatus({
-      proposalId,
+      proposalIdString,
       status: "post-update",
       canisterId: OWN_CANISTER_ID,
     });
 
     // update the toast state (voting -> updating the data)
     const { successfullyVotedNeuronIds } =
-      voteRegistrationByProposal(proposalId);
+      voteRegistrationByProposal(proposalIdString);
     updateVoteRegistrationToastMessage({
       toastId,
-      proposalInfo,
+      proposalIdString,
+      proposalTopic: proposalInfo.topic,
       neuronIds,
       successfullyVotedNeuronIds,
       registrationDone: true,
@@ -99,7 +101,10 @@ export const registerVotes = async ({
 
     // cleanup
     toastsHide(toastId);
-    voteRegistrationStore.remove({ proposalId, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.remove({
+      proposalIdString,
+      canisterId: OWN_CANISTER_ID,
+    });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
@@ -146,18 +151,19 @@ const createRegisterVotesToast = ({
 };
 
 const voteRegistrationByProposal = (
-  proposalId: ProposalId
+  proposalIdString: string
 ): VoteRegistrationStoreEntry => {
   const registration = get(voteRegistrationStore).registrations[
     OWN_CANISTER_ID.toText()
-  ].find(({ proposalInfo: { id } }) => id === proposalId);
+  ].find(({ proposalIdString: id }) => id === proposalIdString);
 
   assertNonNullish(registration);
 
   return registration;
 };
 
-const neuronRegistrationComplete = ({
+// TODO(sns-voting): create `snsNeuronRegistrationComplete`
+const nnsNeuronRegistrationComplete = ({
   neuronId,
   proposalId,
   updateProposalContext,
@@ -168,18 +174,22 @@ const neuronRegistrationComplete = ({
   updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
-  const { vote, proposalInfo, neuronIds } =
-    voteRegistrationByProposal(proposalId);
+  const proposalIdString = `${proposalId}`;
+  const { vote, neuronIds } = voteRegistrationByProposal(proposalIdString);
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
     ({ neuronId: id }) => id === neuronId
   );
+  const proposalInfo = get(proposalsStore).proposals.find(
+    ({ id }) => id === proposalId
+  );
+  assertNonNullish(proposalInfo, `Proposal (${proposalIdString}) not found`);
 
   // TODO: remove after live testing. In theory it should be always defined here.
   assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
-    proposalId,
+    proposalIdString,
     neuronId,
     canisterId: OWN_CANISTER_ID,
   });
@@ -206,12 +216,13 @@ const neuronRegistrationComplete = ({
 
   updateVoteRegistrationToastMessage({
     toastId,
-    proposalInfo,
+    proposalIdString: `${proposalInfo.id}`,
+    proposalTopic: proposalInfo.topic,
     neuronIds,
     registrationDone: false,
     // use the most actual value
     successfullyVotedNeuronIds:
-      voteRegistrationByProposal(proposalId).successfullyVotedNeuronIds,
+      voteRegistrationByProposal(proposalIdString).successfullyVotedNeuronIds,
     vote,
   });
 };
@@ -219,21 +230,22 @@ const neuronRegistrationComplete = ({
 /** Reflects vote registration in a toast message */
 const updateVoteRegistrationToastMessage = ({
   toastId,
-  proposalInfo,
+  proposalIdString,
+  proposalTopic,
   neuronIds,
   successfullyVotedNeuronIds,
   registrationDone,
   vote,
 }: {
   toastId: symbol;
-  proposalInfo: ProposalInfo;
+  proposalIdString: string;
+  proposalTopic: Topic;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
   registrationDone: boolean;
   vote: Vote;
 }) => {
   const $i18n = get(i18n);
-  const { id, topic } = proposalInfo;
   const totalNeurons = neuronIds.length;
   const completeNeurons = successfullyVotedNeuronIds.length;
   const status = registrationDone
@@ -253,8 +265,8 @@ const updateVoteRegistrationToastMessage = ({
       level: "info",
       spinner: true,
       substitutions: {
-        $proposalId: `${id}`,
-        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
+        $proposalId: proposalIdString,
+        $topic: keyOf({ obj: $i18n.topics, key: Topic[proposalTopic] }),
         $status: status,
       },
     },
@@ -290,7 +302,7 @@ const registerNeuronsVote = async ({
           })
           // call it only after successful registration
           .then(() =>
-            neuronRegistrationComplete({
+            nnsNeuronRegistrationComplete({
               neuronId,
               proposalId,
               updateProposalContext,

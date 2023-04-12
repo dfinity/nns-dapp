@@ -2,7 +2,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
+import type { NeuronId, Vote } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
@@ -12,7 +12,8 @@ export type VoteRegistrationStatus =
 
 export interface VoteRegistrationStoreEntry {
   status: VoteRegistrationStatus;
-  proposalInfo: ProposalInfo;
+  /** Text version of nns or sns proposal id. */
+  proposalIdString: string;
   neuronIds: NeuronId[];
   successfullyVotedNeuronIds: NeuronId[];
   vote: Vote;
@@ -32,19 +33,19 @@ export type VoteRegistrationStoreAddData = {
 } & Omit<VoteRegistrationStoreEntry, "status" | "successfullyVotedNeuronIds">;
 
 export type VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData = {
-  proposalId: ProposalId;
+  proposalIdString: string;
   neuronId: NeuronId;
   canisterId: UniverseCanisterId;
 };
 
 export type VoteRegistrationStoreUpdateStatusData = {
-  proposalId: ProposalId;
+  proposalIdString: string;
   status: VoteRegistrationStatus;
   canisterId: UniverseCanisterId;
 };
 
 export type VoteRegistrationStoreRemoveData = {
-  proposalId: ProposalId;
+  proposalIdString: string;
   canisterId: UniverseCanisterId;
 };
 
@@ -73,13 +74,13 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
 
     add({
       vote,
-      proposalInfo,
+      proposalIdString,
       neuronIds,
       canisterId,
     }: VoteRegistrationStoreAddData): void {
       const newEntry: VoteRegistrationStoreEntry = {
         status: "vote-registration",
-        proposalInfo,
+        proposalIdString: proposalIdString,
         neuronIds,
         successfullyVotedNeuronIds: [],
         vote,
@@ -99,7 +100,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
 
         if (
           universeRegistrations.find(
-            ({ proposalInfo: { id } }) => id === proposalInfo.id
+            ({ proposalIdString: id }) => id === proposalIdString
           )
         ) {
           // Proposal `id` is used for the store entries indentification
@@ -117,14 +118,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
     },
 
     addSuccessfullyVotedNeuronId({
-      proposalId,
+      proposalIdString,
       neuronId,
       canisterId,
-    }: {
-      proposalId: ProposalId;
-      neuronId: NeuronId;
-      canisterId: UniverseCanisterId;
-    }) {
+    }: VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData) {
       update(({ registrations }) => {
         const universeRegistrations = registrations[canisterId.toText()];
 
@@ -133,16 +130,16 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         }
 
         const proposalRegistration = universeRegistrations.find(
-          ({ proposalInfo: { id } }) => id === proposalId
+          ({ proposalIdString: id }) => id === proposalIdString
         );
 
         if (proposalRegistration === undefined) {
           console.error(
             "updating not voting item",
             canisterId.toText(),
-            proposalId
+            proposalIdString
           );
-          // TODO: add test or throw
+          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
@@ -151,7 +148,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
             ...registrations,
             [canisterId.toText()]: [
               ...universeRegistrations.filter(
-                ({ proposalInfo: { id } }) => id !== proposalId
+                ({ proposalIdString: id }) => id !== proposalIdString
               ),
               {
                 ...proposalRegistration,
@@ -170,14 +167,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
     },
 
     updateStatus({
-      proposalId,
+      proposalIdString,
       status,
       canisterId,
-    }: {
-      proposalId: ProposalId;
-      status: VoteRegistrationStatus;
-      canisterId: UniverseCanisterId;
-    }) {
+    }: VoteRegistrationStoreUpdateStatusData) {
       update(({ registrations }) => {
         const universeRegistrations = registrations[canisterId.toText()];
 
@@ -186,16 +179,16 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         }
 
         const proposalRegistration = universeRegistrations.find(
-          ({ proposalInfo: { id } }) => id === proposalId
+          ({ proposalIdString: id }) => id === proposalIdString
         );
 
         if (proposalRegistration === undefined) {
           console.error(
             "updating not voting item",
             canisterId.toText(),
-            proposalId
+            proposalIdString
           );
-          // TODO: add test or throw
+          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
@@ -204,7 +197,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
             ...registrations,
             [canisterId.toText()]: [
               ...universeRegistrations.filter(
-                ({ proposalInfo: { id } }) => id !== proposalId
+                ({ proposalIdString: id }) => id !== proposalIdString
               ),
               {
                 ...proposalRegistration,
@@ -216,13 +209,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
       });
     },
 
-    remove({
-      proposalId,
-      canisterId,
-    }: {
-      proposalId: ProposalId;
-      canisterId: UniverseCanisterId;
-    }) {
+    remove({ proposalIdString, canisterId }: VoteRegistrationStoreRemoveData) {
       update(({ registrations }) => {
         const universeRegistrations = registrations[canisterId.toText()];
 
@@ -235,7 +222,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
             ...registrations,
             [canisterId.toText()]: [
               ...universeRegistrations.filter(
-                ({ proposalInfo: { id } }) => id !== proposalId
+                ({ proposalIdString: id }) => id !== proposalIdString
               ),
             ],
           },
