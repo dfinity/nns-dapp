@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+JSON_CONFIG=deployment-config.json
+ENV_CONFIG="frontend/.env"
+(
+  echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
+  echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
+
+  DFX_NETWORK=mainnet ./config.sh &>/dev/null
+  json_diff="$(
+    diff "$JSON_CONFIG" <(
+      cat <<-EOF
+		{
+		  "API_HOST": "https://icp-api.io",
+		  "CKBTC_INDEX_CANISTER_ID": "n5wcd-faaaa-aaaar-qaaea-cai",
+		  "CKBTC_LEDGER_CANISTER_ID": "mxzaz-hqaaa-aaaar-qaada-cai",
+		  "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
+		  "DFX_NETWORK": "mainnet",
+		  "FEATURE_FLAGS": {
+		    "ENABLE_CKBTC": true,
+		    "ENABLE_CKTESTBTC": false,
+		    "ENABLE_SNS_2": false,
+		    "ENABLE_SNS_AGGREGATOR": true,
+		    "ENABLE_SNS_VOTING": false
+		  },
+		  "FETCH_ROOT_KEY": false,
+		  "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+		  "GOVERNANCE_CANISTER_URL": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io",
+		  "HOST": "https://icp-api.io",
+		  "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
+		  "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+		  "LEDGER_CANISTER_URL": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io",
+		  "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
+		  "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+		  "ROBOTS": "<meta name=\"robots\" content=\"noindex, nofollow\" />",
+		  "SNS_AGGREGATOR_URL": "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io",
+		  "STATIC_HOST": "https://icp0.io",
+		  "WASM_CANISTER_ID": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+		}
+		EOF
+    )
+  )"
+  [[ "${json_diff:-}" == "" ]] || {
+    printf "ERROR: %s\n" "Unexpected difference in $JSON_CONFIG:"
+    printf "%s\n" "$json_diff"
+    exit 1
+  } >&2
+  env_diff="$(
+    diff "$ENV_CONFIG" <(
+      cat <<-EOF
+		VITE_DFX_NETWORK=mainnet
+		VITE_CYCLES_MINTING_CANISTER_ID=rkp4c-7iaaa-aaaaa-aaaca-cai
+		VITE_WASM_CANISTER_ID=qaa6y-5yaaa-aaaaa-aaafa-cai
+		VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
+		VITE_GOVERNANCE_CANISTER_URL=https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io
+		VITE_LEDGER_CANISTER_ID=ryjl3-tyaaa-aaaaa-aaaba-cai
+		VITE_LEDGER_CANISTER_URL=https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io
+		VITE_OWN_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
+		VITE_OWN_CANISTER_URL=https://nns.internetcomputer.org
+		VITE_FETCH_ROOT_KEY=false
+		VITE_FEATURE_FLAGS="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SNS_2\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}"
+		VITE_HOST=https://icp-api.io
+		VITE_IDENTITY_SERVICE_URL=https://identity.internetcomputer.org/
+		VITE_AGGREGATOR_CANISTER_URL=https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io
+		VITE_CKBTC_LEDGER_CANISTER_ID=mxzaz-hqaaa-aaaar-qaada-cai
+		VITE_CKBTC_INDEX_CANISTER_ID=n5wcd-faaaa-aaaar-qaaea-cai
+		EOF
+    )
+  )"
+  [[ "${json_diff:-}" == "" ]] || {
+    printf "ERROR: %s\n" "Unexpected difference in $ENV_CONFIG:"
+    printf "%s\n" "$env_diff"
+    exit 1
+  } >&2
+)
+
+(
+  echo "Network parameter is in config"
+  for DFX_NETWORK in mainnet local; do
+    DFX_NETWORK="$DFX_NETWORK" ./config.sh &>/dev/null
+    JSON_NETWORK="$(jq -r .DFX_NETWORK "$JSON_CONFIG")"
+    [[ "$DFX_NETWORK" == "$JSON_NETWORK" ]] || {
+      printf "ERROR: %s\n" "Unexpected DFX_NETWORK value in $JSON_CONFIG:" \
+        "Expected: $DFX_NETWORK" \
+        "Actual:   $JSON_NETWORK"
+      exit 1
+    } >&2
+  done
+
+)
