@@ -131,6 +131,19 @@ impl TemplateEngine {
     /// Creates a templating engine from canister arguments
     ///
     /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
+    /// * Values are taken from the engine `args` map.
+    ///
+    /// # Examples
+    /// ```
+    /// use nns_dapp::arguments::{TemplateEngine, CanisterArguments};
+    /// let values: Vec<(String, String)> = CanisterArguments::args_from_str(&[("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER-MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")]);
+    /// let template_engine = TemplateEngine::new(&values[..]);
+    /// assert_eq!(template_engine.populate("${{FOO}}"), "bar");
+    /// assert_eq!(template_engine.populate("<!--FOO-->"), "bar");
+    /// assert_eq!(template_engine.populate("They say that <!--SUPERMAN--> is ${{SUPER-MAN}}"), "They say that Peter Parker is ${{SUPER-MAN}}", "Hyphens are not supported");
+    /// assert_eq!(template_engine.populate("${{lowercase}}"), "${{lowercase}}", "Only uppercase, digits and underscore are valid");
+    /// ```
+
     pub fn new(key_val_pairs: &[(String, String)]) -> Self {
         let args = key_val_pairs.iter().cloned().collect();
         // Please see .populate() to learn what this regex does.
@@ -143,16 +156,8 @@ impl TemplateEngine {
     ///
     /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
     /// * Values are taken from the engine `args` map.
+    ///   * If no match is found in the args map, variables are left unchanged.
     ///
-    /// ```
-    /// use nns_dapp::arguments::{TemplateEngine, CanisterArguments};
-    /// let values: Vec<(String, String)> = CanisterArguments::args_from_str(&[("FOO", "bar"), ("SUPERMAN", "Peter Parker"), ("SUPER-MAN", "Lex Luthor"), ("lowercase", "SKY HIGH")]);
-    /// let template_engine = TemplateEngine::new(&values[..]);
-    /// assert_eq!(template_engine.populate("${{FOO}}"), "bar");
-    /// assert_eq!(template_engine.populate("<!--FOO-->"), "bar");
-    /// assert_eq!(template_engine.populate("They say that <!--SUPERMAN--> is ${{SUPER-MAN}}"), "They say that Peter Parker is ${{SUPER-MAN}}", "Hyphens are not supported");
-    /// assert_eq!(template_engine.populate("${{lowercase}}"), "${{lowercase}}", "Only uppercase, digits and underscore are valid");
-    /// ```
     pub fn populate(&self, input: &str) -> String {
         self.regex
             .replace_all(input, |cap: &Captures| {
