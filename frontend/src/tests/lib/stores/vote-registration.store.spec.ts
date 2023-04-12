@@ -3,6 +3,7 @@ import {
   voteRegistrationStore,
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { get } from "svelte/store";
 
@@ -98,5 +99,18 @@ describe("voting-store", () => {
         ({ proposalIdString }) => proposalIdString === voteA.proposalIdString
       )?.successfullyVotedNeuronIdStrings
     ).toEqual(successfullyVotedNeuronIdStrings);
+  });
+
+  it("should support universes", () => {
+    voteRegistrationStore.reset();
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.add({ ...voteB, canisterId: mockPrincipal });
+
+    expect(
+      get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+    ).toEqual(voteA);
+    expect(
+      get(voteRegistrationStore).registrations[mockPrincipal.toText()][0]
+    ).toEqual(voteB);
   });
 });
