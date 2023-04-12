@@ -42,7 +42,6 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     identityServiceUrl: "http://localhost:8000/",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
-    ownCanisterUrl: "nns.ic0.app",
     // Environments without SNS aggregator are valid
     snsAggregatorUrl:
       "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
