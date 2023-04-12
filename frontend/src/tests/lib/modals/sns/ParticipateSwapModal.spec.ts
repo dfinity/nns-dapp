@@ -86,7 +86,7 @@ describe("ParticipateSwapModal", () => {
   ): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderSwapModal(swapCommitment);
 
-    const { queryByText, getByTestId, container } = result;
+    const { getByTestId, container } = result;
 
     await waitFor(() =>
       expect(getByTestId("transaction-step-1")).toBeInTheDocument()

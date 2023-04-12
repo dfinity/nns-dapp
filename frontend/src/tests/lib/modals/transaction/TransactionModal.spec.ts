@@ -106,7 +106,7 @@ describe("TransactionModal", () => {
       mustSelectNetwork,
     });
 
-    const { queryAllByText, getByTestId, container } = result;
+    const { getByTestId, container } = result;
 
     const participateButton = getByTestId("transaction-button-next");
     expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
@@ -373,7 +373,7 @@ describe("TransactionModal", () => {
 
   describe("with sns project id", () => {
     it("should move to the last step and trigger nnsSubmit event", async () => {
-      const { queryByText, getByTestId, container, component } =
+      const { getByTestId, container, component } =
         await renderTransactionModal({
           rootCanisterId: mockPrincipal,
         });
