@@ -242,6 +242,7 @@ interface I18nAccounts {
   sending_amount: string;
   total_deducted: string;
   received_amount: string;
+  transaction_time: string;
 }
 
 interface I18nNeurons {
@@ -906,7 +907,6 @@ interface I18nCkbtc {
   step_send_btc: string;
   step_reload: string;
   sending_ckbtc_to_btc: string;
-  estimated_receive_time: string;
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;

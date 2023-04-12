@@ -225,9 +225,7 @@ describe("CkBTCTransactionModal", () => {
       destinationAddress: mockBTCAddressTestnet,
     });
 
-    expect(
-      result.getByText(en.ckbtc.estimated_receive_time)
-    ).toBeInTheDocument();
+    expect(result.getByText(en.accounts.transaction_time)).toBeInTheDocument();
 
     expect(result.getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
   });
