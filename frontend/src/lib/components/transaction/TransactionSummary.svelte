@@ -36,17 +36,17 @@
 </script>
 
 <article class="container">
-  <KeyValuePair>
+  <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
     <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
   </KeyValuePair>
 
-  <KeyValuePair>
+  <KeyValuePair testId="transaction-summary-fee">
     <span class="label" slot="key">{ledgerFeeLabel}</span>
     <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
   </KeyValuePair>
 
-  <div class="deducted">
+  <div class="deducted" data-tid="transaction-summary-total-deducted">
     <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
     <p>

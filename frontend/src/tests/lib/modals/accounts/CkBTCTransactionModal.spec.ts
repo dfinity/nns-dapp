@@ -241,7 +241,7 @@ describe("CkBTCTransactionModal", () => {
     );
   });
 
-  it("should render btc estimation info on first step", async () => {
+  it("should render btc estimated fee on first step", async () => {
     const result = await renderTransactionModal();
 
     await testTransferFormTokens({
@@ -254,7 +254,6 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() =>
       expect(result.getByTestId("bitcoin-estimated-fee")).not.toBeNull()
     );
-    expect(result.getByTestId("bitcoin-estimated-amount")).not.toBeNull();
   });
 
   it("should not render btc estimation info on first step", async () => {

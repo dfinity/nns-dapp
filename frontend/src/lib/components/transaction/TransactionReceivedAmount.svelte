@@ -12,4 +12,7 @@
   });
 </script>
 
-<TransactionReceivedTokenAmount amount={tokenAmount} />
+<TransactionReceivedTokenAmount
+  amount={tokenAmount}
+  testId="transaction-summary-total-received"
+/>

@@ -104,7 +104,13 @@ describe("ParticipateSwapModal", () => {
     fireEvent.click(participateButton);
 
     await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
-    expect(queryByText(icpAmount, { exact: false })).toBeInTheDocument();
+
+    expect(
+      getByTestId("transaction-summary-sending-amount")?.textContent
+    ).toContain(icpAmount);
+    expect(
+      getByTestId("transaction-summary-total-received")?.textContent
+    ).toContain(icpAmount);
 
     return result;
   };
