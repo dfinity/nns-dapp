@@ -108,7 +108,9 @@ describe("BitcoinEstimatedAmountReceived", () => {
     });
 
     const element = getByTestId("bitcoin-estimated-amount-value");
-    expect(element?.textContent ?? "").toContain("0");
+    expect((element?.textContent ?? "").trim()).toEqual(
+      `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`
+    );
   });
 
   it("should display estimated received amount as zero if kyt fee not defined", () => {
@@ -122,7 +124,9 @@ describe("BitcoinEstimatedAmountReceived", () => {
     });
 
     const element = getByTestId("bitcoin-estimated-amount-value");
-    expect(element?.textContent ?? "").toContain("0");
+    expect((element?.textContent ?? "").trim()).toEqual(
+      `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`
+    );
   });
 
   it("should display estimated received amount", () => {
