@@ -24,7 +24,7 @@
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
-  import BitcoinEstimatedTransactionTime from "$lib/components/accounts/BitcoinEstimatedTransactionTime.svelte";
+  import BitcoinTransactionInfo from "$lib/components/accounts/BitcoinTransactionInfo.svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
@@ -171,7 +171,7 @@
       bind:bitcoinEstimatedFee
     />
   </svelte:fragment>
-  <BitcoinEstimatedTransactionTime {networkBtc} slot="additional-info-review" />
+  <BitcoinTransactionInfo {networkBtc} slot="additional-info-review" />
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
