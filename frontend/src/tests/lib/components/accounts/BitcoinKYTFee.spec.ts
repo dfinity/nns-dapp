@@ -32,17 +32,22 @@ describe("BitcoinKYTFee", () => {
         props,
       });
 
-      await waitFor(() => expect(getByTestId("kyt-fee")).not.toBeNull());
+      await waitFor(() =>
+        expect(getByTestId("kyt-estimated-fee-label")).not.toBeNull()
+      );
 
       // Query + update
       expect(spyDepositFee).toHaveBeenCalledTimes(2);
 
       await waitFor(() => {
-        const content = getByTestId("kyt-fee")?.textContent ?? "";
+        const label = getByTestId("kyt-estimated-fee-label")?.textContent ?? "";
+        expect(
+          label.includes(en.accounts.estimated_internetwork_fee)
+        ).toBeTruthy();
 
-        expect(content.includes(en.ckbtc.kyt_fee)).toBeTruthy();
-        expect(content.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
-        expect(content.includes(en.ckbtc.btc)).toBeTruthy();
+        const fee = getByTestId("kyt-estimated-fee")?.textContent ?? "";
+        expect(fee.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
+        expect(fee.includes(en.ckbtc.btc)).toBeTruthy();
       });
     });
   });
@@ -63,11 +68,10 @@ describe("BitcoinKYTFee", () => {
         props,
       });
 
-      await waitFor(() => expect(getByTestId("kyt-fee")).not.toBeNull());
+      await waitFor(() => expect(spyDepositFee).toHaveBeenCalled());
 
-      const content = getByTestId("kyt-fee")?.textContent ?? "";
-
-      expect(content.trim()).toEqual(`${en.ckbtc.kyt_fee}`);
+      expect(() => getByTestId("kyt-estimated-fee-label")).toThrow();
+      expect(() => getByTestId("kyt-estimated-fee")).toThrow();
     });
   });
 });
