@@ -9,11 +9,14 @@
     initAppPublicData,
   } from "$lib/services/$public/app.services";
   import Warnings from "$lib/components/metrics/Warnings.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
   $: syncBeforeUnload(
-    voteRegistrationActive($voteRegistrationStore.registrations)
+    voteRegistrationActive(
+      $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
+    )
   );
 </script>
 

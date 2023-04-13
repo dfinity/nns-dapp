@@ -20,15 +20,16 @@
   } from "$lib/utils/proposals.utils";
   import {
     voteRegistrationStore,
-    type VoteRegistration,
+    type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { registerVotes } from "$lib/services/vote-registration.services";
+  import { registerNnsVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   export let proposalInfo: ProposalInfo;
 
@@ -43,11 +44,11 @@
   let visible = false;
   /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteRegistration: VoteRegistration | undefined = undefined;
+  let voteRegistration: VoteRegistrationStoreEntry | undefined = undefined;
 
-  $: voteRegistration = $voteRegistrationStore.registrations.find(
-    ({ proposalInfo: { id } }) => proposalInfo.id === id
-  );
+  $: voteRegistration = (
+    $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
+  ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
 
   $: $definedNeuronsStore,
     (visible =
@@ -71,7 +72,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
   const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
-    await registerVotes({
+    await registerNnsVotes({
       neuronIds: $votingNeuronSelectStore.selectedIds.map(BigInt),
       vote: detail.voteType,
       proposalInfo,

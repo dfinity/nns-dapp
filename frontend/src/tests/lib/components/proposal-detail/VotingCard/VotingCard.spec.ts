@@ -60,7 +60,13 @@ describe("VotingCard", () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
-  beforeEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
+  beforeEach(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+
+    neuronsStore.setNeurons({ neurons: [], certified: true });
+  });
 
   afterAll(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -73,15 +79,16 @@ describe("VotingCard", () => {
     expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
   });
 
-  it.skip("should be visible if there are some not-voted-neurons", async () => {
+  it("should be visible if there are some not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { getByTestId } = renderVotingCard();
+
     await waitFor(() =>
       expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument()
     );
   });
 
-  it.skip("should disable action buttons if no neurons selected", async () => {
+  it("should disable action buttons if no neurons selected", async () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = renderVotingCard();
     // remove neuron selection
@@ -91,7 +98,7 @@ describe("VotingCard", () => {
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });
 
-  it.skip("should enable action buttons when neurons are selected", async () => {
+  it("should enable action buttons when neurons are selected", async () => {
     // changing the neuronStore automatically updates votingNeuronSelectStore with initial pre-selection of all neurons
     neuronsStore.setNeurons({ neurons, certified: true });
     const { container } = renderVotingCard();

@@ -107,6 +107,14 @@ const initProposalsStore = () => {
         certified,
       }));
     },
+
+    // Used in tests
+    reset(): void {
+      this.setProposals({
+        proposals: [],
+        certified: true,
+      });
+    },
   };
 };
 
