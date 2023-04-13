@@ -8,6 +8,7 @@ import {
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
   registerVote,
@@ -650,6 +651,24 @@ describe("neurons-api", () => {
         proposalId,
         vote: Vote.Yes,
       });
+    });
+  });
+
+  describe("queryLastestRewardEvent", () => {
+    const identity = mockIdentity;
+
+    it("should call the canister to get the latest reward", async () => {
+      const certified = true;
+      await queryLastestRewardEvent({
+        certified,
+        identity,
+      });
+      expect(
+        mockGovernanceCanister.getLastestRewardEvent
+      ).toHaveBeenCalledTimes(1);
+      expect(mockGovernanceCanister.getLastestRewardEvent).toHaveBeenCalledWith(
+        certified
+      );
     });
   });
 });

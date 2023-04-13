@@ -9,6 +9,7 @@ import {
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
   registerVote,
@@ -120,6 +121,9 @@ export const governanceApiService = {
       timestampSeconds: nowInSeconds(),
     };
     return knownNeuronsCache.knownNeurons;
+  },
+  queryLastestRewardEvent(params: ApiQueryParams) {
+    return queryLastestRewardEvent(params);
   },
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);
