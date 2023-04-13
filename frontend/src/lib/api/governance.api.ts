@@ -17,6 +17,7 @@ import type {
   Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
+import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 import type { Principal } from "@dfinity/principal";
 import { ledgerCanister as getLedgerCanister } from "./ledger.api";
 
@@ -467,6 +468,25 @@ export const registerVote = async ({
       neuronId
     )}) complete.`
   );
+};
+
+export const lastestRewardEvent = async ({
+  identity,
+  certified,
+}: ApiQueryParams): Promise<RewardEvent> => {
+  logWithTimestamp(
+    `Getting latest reward event call certified: ${certified}...`
+  );
+
+  const governance: GovernanceCanister = await governanceCanister({ identity });
+
+  try {
+    return governance.lastestRewardEvent(certified);
+  } finally {
+    logWithTimestamp(
+      `Getting latest reward event call certified: ${certified} complete.`
+    );
+  }
 };
 
 /**

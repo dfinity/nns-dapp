@@ -5,6 +5,7 @@ import {
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
+  lastestRewardEvent,
   leaveCommunityFund,
   mergeMaturity,
   mergeNeurons,
@@ -128,6 +129,9 @@ export const governanceApiService = {
   },
   joinCommunityFund(params: ApiManageNeuronParams) {
     return clearCacheAfter(joinCommunityFund(params));
+  },
+  latestRewardEven(params: ApiQueryParams) {
+    return lastestRewardEvent(params);
   },
   leaveCommunityFund(params: ApiManageNeuronParams) {
     return clearCacheAfter(leaveCommunityFund(params));
