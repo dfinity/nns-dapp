@@ -7,7 +7,7 @@ type RewardEventData = {
   certified: boolean;
 };
 
-export type NnsLatestRewardEventStoreData = RewardEventData | undefined;
+type NnsLatestRewardEventStoreData = RewardEventData | undefined;
 
 interface NnsLatestRewardEventStore
   extends Readable<NnsLatestRewardEventStoreData | undefined> {
