@@ -2,7 +2,7 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
-  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     IconExpandCircleDown,
@@ -13,7 +13,8 @@
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
 
   export let proposalInfo: ProposalInfo;
-  export let voteRegistration: VoteRegistration | undefined = undefined;
+  export let voteRegistration: VoteRegistrationStoreEntry | undefined =
+    undefined;
 
   let totalNeuronsVotingPower: bigint;
   let disabled = false;

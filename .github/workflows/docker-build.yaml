@@ -1,6 +1,12 @@
 name: Docker build
 on:
   push:
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'no-cache'
+        default: false
+        type: boolean
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -26,6 +32,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+          no-cache: ${{ inputs.no_cache || false }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out

@@ -6,11 +6,12 @@
   import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import { Spinner, busy } from "@dfinity/gix-components";
-  import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
-  export let voteRegistration: VoteRegistration | undefined = undefined;
+  export let voteRegistration: VoteRegistrationStoreEntry | undefined =
+    undefined;
 
   let total: bigint;
   let disabled = true;

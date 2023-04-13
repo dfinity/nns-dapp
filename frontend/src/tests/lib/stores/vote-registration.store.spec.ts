@@ -1,28 +1,20 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   voteRegistrationStore,
-  type VoteRegistration,
+  type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
-import {
-  mockProposalInfo,
-  mockVoteRegistration,
-} from "$tests/mocks/proposal.mock";
-import type { ProposalId } from "@dfinity/nns";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { get } from "svelte/store";
 
 describe("voting-store", () => {
-  const voteA: VoteRegistration = {
+  const voteA: VoteRegistrationStoreEntry = {
     ...mockVoteRegistration,
-    proposalInfo: {
-      ...mockProposalInfo,
-      id: BigInt(1),
-    },
+    proposalIdString: "1",
   };
-  const voteB: VoteRegistration = {
+  const voteB: VoteRegistrationStoreEntry = {
     ...mockVoteRegistration,
-    proposalInfo: {
-      ...mockProposalInfo,
-      id: BigInt(2),
-    },
+    proposalIdString: "2",
   };
 
   afterEach(() => {
@@ -30,71 +22,95 @@ describe("voting-store", () => {
   });
 
   it("should set voting items", () => {
-    voteRegistrationStore.add(voteA);
-
-    expect(get(voteRegistrationStore)).toEqual({ registrations: [voteA] });
-
-    voteRegistrationStore.add(voteB);
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
 
     expect(get(voteRegistrationStore)).toEqual({
-      registrations: [voteA, voteB],
+      registrations: { [OWN_CANISTER_ID.toText()]: [voteA] },
+    });
+
+    voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
+
+    expect(get(voteRegistrationStore)).toEqual({
+      registrations: { [OWN_CANISTER_ID.toText()]: [voteA, voteB] },
     });
   });
 
   it("should update status", () => {
     voteRegistrationStore.reset();
-    voteRegistrationStore.add(voteA);
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
 
     voteRegistrationStore.updateStatus({
-      proposalId: voteA.proposalInfo.id as ProposalId,
+      proposalIdString: voteA.proposalIdString,
       status: "complete",
+      canisterId: OWN_CANISTER_ID,
     });
 
-    expect(get(voteRegistrationStore).registrations[0].status).toEqual(
-      "complete"
-    );
+    expect(
+      get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+        .status
+    ).toEqual("complete");
   });
 
   it("should remove completed voting items", () => {
-    voteRegistrationStore.add(voteA);
-    voteRegistrationStore.add(voteB);
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
 
     voteRegistrationStore.updateStatus({
       status: "complete",
-      proposalId: voteA.proposalInfo.id as ProposalId,
+      proposalIdString: voteA.proposalIdString,
+      canisterId: OWN_CANISTER_ID,
     });
 
-    voteRegistrationStore.remove(voteA.proposalInfo.id as ProposalId);
+    voteRegistrationStore.remove({
+      proposalIdString: voteA.proposalIdString,
+      canisterId: OWN_CANISTER_ID,
+    });
 
-    expect(get(voteRegistrationStore)).toEqual({ registrations: [voteB] });
+    expect(get(voteRegistrationStore)).toEqual({
+      registrations: { [OWN_CANISTER_ID.toText()]: [voteB] },
+    });
   });
 
   it("should reset votes", () => {
-    voteRegistrationStore.add(voteA);
-    voteRegistrationStore.add(voteB);
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
 
     voteRegistrationStore.reset();
 
-    expect(get(voteRegistrationStore)).toEqual({ registrations: [] });
+    expect(get(voteRegistrationStore)).toEqual({ registrations: {} });
   });
 
-  it("should update successfullyVotedNeuronIds", () => {
-    const successfullyVotedNeuronIds = [BigInt(0), BigInt(2)];
+  it("should update successfullyVotedNeuronIdStrings", () => {
+    const successfullyVotedNeuronIdStrings = ["0", "2"];
 
-    voteRegistrationStore.add(voteA);
-    voteRegistrationStore.add(voteB);
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
 
-    for (const neuronId of successfullyVotedNeuronIds) {
+    for (const neuronIdString of successfullyVotedNeuronIdStrings) {
       voteRegistrationStore.addSuccessfullyVotedNeuronId({
-        proposalId: voteA.proposalInfo.id as ProposalId,
-        neuronId,
+        proposalIdString: voteA.proposalIdString,
+        neuronIdString,
+        canisterId: OWN_CANISTER_ID,
       });
     }
 
     expect(
-      get(voteRegistrationStore).registrations.find(
-        ({ proposalInfo: { id } }) => id === voteA.proposalInfo.id
-      )?.successfullyVotedNeuronIds
-    ).toEqual(successfullyVotedNeuronIds);
+      get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()].find(
+        ({ proposalIdString }) => proposalIdString === voteA.proposalIdString
+      )?.successfullyVotedNeuronIdStrings
+    ).toEqual(successfullyVotedNeuronIdStrings);
+  });
+
+  it("should support universes", () => {
+    voteRegistrationStore.reset();
+    voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
+    voteRegistrationStore.add({ ...voteB, canisterId: mockPrincipal });
+
+    expect(
+      get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+    ).toEqual(voteA);
+    expect(
+      get(voteRegistrationStore).registrations[mockPrincipal.toText()][0]
+    ).toEqual(voteB);
   });
 });

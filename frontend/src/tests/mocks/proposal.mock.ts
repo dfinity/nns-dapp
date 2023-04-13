@@ -1,4 +1,4 @@
-import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import { Vote, type Action, type ProposalInfo } from "@dfinity/nns";
 import { deadlineTimestampSeconds } from "./proposals.store.mock";
 
@@ -72,9 +72,9 @@ export const mockProposalInfo: ProposalInfo = {
 } as unknown as ProposalInfo;
 
 export const mockVoteRegistration = {
-  proposalInfo: { ...mockProposalInfo },
-  neuronIds: [BigInt(0)],
-  successfullyVotedNeuronIds: [],
+  proposalIdString: "10000",
+  neuronIdStrings: ["1234567890"],
+  successfullyVotedNeuronIdStrings: [],
   vote: Vote.No,
   status: "vote-registration",
-} as VoteRegistration;
+} as VoteRegistrationStoreEntry;

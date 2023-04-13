@@ -4,9 +4,11 @@
 
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as neuronsServices from "$lib/services/neurons.services";
-import { registerVotes } from "$lib/services/vote-registration.services";
+import { registerNnsVotes } from "$lib/services/vote-registration.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -15,13 +17,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import {
-  GovernanceError,
-  Topic,
-  Vote,
-  type NeuronId,
-  type ProposalInfo,
-} from "@dfinity/nns";
+import { GovernanceError, Topic, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -49,6 +45,7 @@ describe("vote-registration-services", () => {
   const spyOnToastsUpdate = jest.spyOn(toastsStore, "toastsUpdate");
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  let proposal: ProposalInfo = proposalInfo();
 
   const mockRegisterVote = () => {
     return Promise.resolve();
@@ -72,6 +69,13 @@ describe("vote-registration-services", () => {
     spyOnToastsUpdate.mockClear();
     spyOnToastsError.mockClear();
     spyOnToastsShow.mockClear();
+
+    proposalsStore.reset();
+    proposal = proposalInfo();
+    proposalsStore.setProposals({
+      proposals: [proposal],
+      certified: true,
+    });
   });
 
   describe("success voting", () => {
@@ -84,9 +88,9 @@ describe("vote-registration-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should call the api to register multiple votes", async () => {
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.Yes,
         reloadProposalCallback: () => {
           // do nothing
@@ -100,9 +104,9 @@ describe("vote-registration-services", () => {
 
     it("should not display errors on successful vote registration", async () => {
       const spyToastError = jest.spyOn(toastsStore, "toastsError");
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.Yes,
         reloadProposalCallback: () => {
           // do nothing
@@ -118,7 +122,7 @@ describe("vote-registration-services", () => {
           .mockImplementation(() => Promise.resolve());
         jest
           .spyOn(proposalsApi, "queryProposal")
-          .mockImplementation(() => Promise.resolve(proposalInfo()));
+          .mockImplementation(() => Promise.resolve(proposal));
 
         jest
           .spyOn(governanceApi, "registerVote")
@@ -139,8 +143,7 @@ describe("vote-registration-services", () => {
       });
 
       it("should update store with a new vote registration", (done) => {
-        const proposal = proposalInfo();
-        registerVotes({
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
@@ -150,23 +153,28 @@ describe("vote-registration-services", () => {
           },
         });
 
-        expect(get(voteRegistrationStore).registrations[0]).toBeDefined();
-
-        expect(get(voteRegistrationStore).registrations[0].neuronIds).toEqual(
-          neuronIds
-        );
         expect(
-          get(voteRegistrationStore).registrations[0].proposalInfo.id
-        ).toEqual(proposal.id);
-        expect(get(voteRegistrationStore).registrations[0].vote).toEqual(
-          Vote.Yes
-        );
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+        ).toBeDefined();
+
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .neuronIdStrings
+        ).toEqual(neuronIds.map(String));
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .proposalIdString
+        ).toEqual(`${proposal.id}`);
+        expect(
+          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
+            .vote
+        ).toEqual(Vote.Yes);
       });
 
       it("should clear the store after registration", async () => {
-        await registerVotes({
+        await registerNnsVotes({
           neuronIds,
-          proposalInfo: proposalInfo(),
+          proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
             //
@@ -174,20 +182,23 @@ describe("vote-registration-services", () => {
         });
 
         await waitFor(() =>
-          expect(get(voteRegistrationStore).registrations[0]).not.toBeDefined()
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0]
+          ).not.toBeDefined()
         );
       });
 
-      it("should update successfullyVotedNeuronIds in the store", async () => {
+      it("should update successfullyVotedNeuronIdStrings in the store", async () => {
         voteRegistrationStore.reset();
 
-        const proposal = proposalInfo();
         const spyOnAddSuccessfullyVotedNeuronId = jest.spyOn(
           voteRegistrationStore,
           "addSuccessfullyVotedNeuronId"
         );
 
-        registerVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
@@ -202,16 +213,17 @@ describe("vote-registration-services", () => {
 
         for (const neuronId of neuronIds) {
           expect(spyOnAddSuccessfullyVotedNeuronId).toHaveBeenCalledWith({
-            proposalId: proposal.id,
-            neuronId,
+            proposalIdString: `${proposal.id}`,
+            neuronIdString: `${neuronId}`,
+            canisterId: OWN_CANISTER_ID,
           });
         }
       });
 
       it("should show the vote adopt_in_progress toast", async () => {
-        registerVotes({
+        registerNnsVotes({
           neuronIds,
-          proposalInfo: proposalInfo(),
+          proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
@@ -228,9 +240,9 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote reject_in_progress toast", async () => {
-        registerVotes({
+        registerNnsVotes({
           neuronIds,
-          proposalInfo: proposalInfo(),
+          proposalInfo: proposal,
           vote: Vote.No,
           reloadProposalCallback: () => {
             // do nothing
@@ -247,11 +259,9 @@ describe("vote-registration-services", () => {
       });
 
       it("should display voted neurons count", async () => {
-        const proposal = proposalInfo();
-
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
-        await registerVotes({
+        registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -260,13 +270,17 @@ describe("vote-registration-services", () => {
           },
         });
 
+        // initial message + update message (2 pro neuron)
+        await waitFor(() =>
+          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length * 2)
+        );
+
         for (let i = 1; i <= neuronIds.length; i++) {
-          expect(spyOnToastsUpdate).toHaveBeenNthCalledWith(
-            i,
+          expect(spyOnToastsUpdate).toHaveBeenCalledWith(
             expect.objectContaining({
               content: expect.objectContaining({
                 substitutions: {
-                  $proposalId: expect.any(String),
+                  $proposalId: `${proposal.id}`,
                   $status: replacePlaceholders(
                     en.proposal_detail__vote.vote_status_registering,
                     {
@@ -283,11 +297,9 @@ describe("vote-registration-services", () => {
       });
 
       it("should display updating... message", async () => {
-        const proposal = proposalInfo();
-
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
-        await registerVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -301,13 +313,7 @@ describe("vote-registration-services", () => {
             expect.objectContaining({
               content: expect.objectContaining({
                 substitutions: expect.objectContaining({
-                  $status: replacePlaceholders(
-                    en.proposal_detail__vote.vote_status_registering,
-                    {
-                      $completed: `${i}`,
-                      $amount: `${neuronIds.length}`,
-                    }
-                  ),
+                  $status: en.proposal_detail__vote.vote_status_updating,
                 }),
               }),
             })
@@ -316,9 +322,9 @@ describe("vote-registration-services", () => {
       });
 
       it("should hide the vote in progress toast after voting", async () => {
-        await registerVotes({
+        await registerNnsVotes({
           neuronIds,
-          proposalInfo: proposalInfo(),
+          proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
             // do nothing
@@ -352,9 +358,9 @@ describe("vote-registration-services", () => {
     afterAll(() => jest.clearAllMocks());
 
     it("should ignore already voted error", async () => {
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
@@ -387,16 +393,18 @@ describe("vote-registration-services", () => {
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
-      await registerVotes({
-        neuronIds: null as unknown as NeuronId[],
-        proposalInfo: null as unknown as ProposalInfo,
+      expect(spyOnToastsError).toBeCalledTimes(0);
+
+      await registerNnsVotes({
+        neuronIds: [],
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
-          // do nothing
+          throw new Error("test");
         },
       });
 
-      expect(spyOnToastsError).toBeCalled();
+      expect(spyOnToastsError).toBeCalledTimes(1);
 
       expect(spyOnToastsError).toBeCalledWith(
         expect.objectContaining({ labelKey: "error.register_vote_unknown" })
@@ -408,9 +416,9 @@ describe("vote-registration-services", () => {
         .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
@@ -426,12 +434,11 @@ describe("vote-registration-services", () => {
     });
 
     it("should display proopsalId in error detail", async () => {
-      const proposal = proposalInfo();
       jest
         .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
         proposalInfo: proposal,
         vote: Vote.No,
@@ -455,9 +462,9 @@ describe("vote-registration-services", () => {
         .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteError);
 
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
@@ -478,9 +485,9 @@ describe("vote-registration-services", () => {
         .spyOn(governanceApi, "registerVote")
         .mockImplementation(mockRegisterVoteGovernanceError);
 
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds,
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.No,
         reloadProposalCallback: () => {
           // do nothing
@@ -509,9 +516,9 @@ describe("vote-registration-services", () => {
     });
 
     it("should display error if no identity", async () => {
-      await registerVotes({
+      await registerNnsVotes({
         neuronIds: [BigInt(0)],
-        proposalInfo: proposalInfo(),
+        proposalInfo: proposal,
         vote: Vote.Yes,
         reloadProposalCallback: () => {
           // do nothing

@@ -99,7 +99,7 @@
   $: inVotingProcess =
     neuron !== undefined &&
     neuronVoting({
-      neuronId: neuron.neuronId,
+      neuronIdString: `${neuron.neuronId}`,
       store: $voteRegistrationStore,
     });
 

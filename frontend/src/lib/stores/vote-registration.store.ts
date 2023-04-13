@@ -1,32 +1,75 @@
-import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { writable } from "svelte/store";
+import type {
+  UniverseCanisterId,
+  UniverseCanisterIdText,
+} from "$lib/types/universe";
+import type { Vote } from "@dfinity/nns";
+import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
   | "vote-registration"
   | "post-update"
   | "complete";
 
-export interface VoteRegistration {
+export interface VoteRegistrationStoreEntry {
   status: VoteRegistrationStatus;
-  proposalInfo: ProposalInfo;
-  neuronIds: NeuronId[];
-  successfullyVotedNeuronIds: NeuronId[];
+  /** Text version of nns or sns proposal id. */
+  proposalIdString: string;
+  neuronIdStrings: string[];
+  successfullyVotedNeuronIdStrings: string[];
   vote: Vote;
 }
 
-export interface VoteRegistrationStore {
-  registrations: VoteRegistration[];
+export type VoteRegistrationStoreMap = Record<
+  UniverseCanisterIdText,
+  VoteRegistrationStoreEntry[]
+>;
+
+export interface VoteRegistrationStoreData {
+  registrations: VoteRegistrationStoreMap;
 }
 
-// TODO: think about having an abstract store for the basic CRUD
+export type VoteRegistrationStoreAddData = {
+  canisterId: UniverseCanisterId;
+} & Omit<
+  VoteRegistrationStoreEntry,
+  "status" | "successfullyVotedNeuronIdStrings"
+>;
+
+export type VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData = {
+  proposalIdString: string;
+  neuronIdString: string;
+  canisterId: UniverseCanisterId;
+};
+
+export type VoteRegistrationStoreUpdateStatusData = {
+  proposalIdString: string;
+  status: VoteRegistrationStatus;
+  canisterId: UniverseCanisterId;
+};
+
+export type VoteRegistrationStoreRemoveData = {
+  proposalIdString: string;
+  canisterId: UniverseCanisterId;
+};
+
+export interface VoteRegistrationStore
+  extends Readable<VoteRegistrationStoreData> {
+  add: (data: VoteRegistrationStoreAddData) => void;
+  addSuccessfullyVotedNeuronId: (
+    data: VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData
+  ) => void;
+  updateStatus: (data: VoteRegistrationStoreUpdateStatusData) => void;
+  remove: (data: VoteRegistrationStoreRemoveData) => void;
+  reset: () => void;
+}
 
 /**
  * A store that contain votes in progress data (proposals and neurons that were not confirmed by `update` calls)
  * Is used for optimistic UI update
  */
-const initVoteRegistrationStore = () => {
-  const { subscribe, update, set } = writable<VoteRegistrationStore>({
-    registrations: [],
+const initVoteRegistrationStore = (): VoteRegistrationStore => {
+  const { subscribe, update, set } = writable<VoteRegistrationStoreData>({
+    registrations: {},
   });
 
   return {
@@ -34,93 +77,164 @@ const initVoteRegistrationStore = () => {
 
     add({
       vote,
-      proposalInfo,
-      neuronIds,
-    }: {
-      vote: Vote;
-      proposalInfo: ProposalInfo;
-      neuronIds: NeuronId[];
-    }): VoteRegistration {
-      const newEntry: VoteRegistration = {
+      proposalIdString,
+      neuronIdStrings,
+      canisterId,
+    }: VoteRegistrationStoreAddData): void {
+      const newEntry: VoteRegistrationStoreEntry = {
         status: "vote-registration",
-        proposalInfo,
-        neuronIds,
-        successfullyVotedNeuronIds: [],
+        proposalIdString: proposalIdString,
+        neuronIdStrings,
+        successfullyVotedNeuronIdStrings: [],
         vote,
       };
 
-      update(({ registrations: votes }) => {
-        if (votes.find(({ proposalInfo: { id } }) => id === proposalInfo.id)) {
+      update(({ registrations }): VoteRegistrationStoreData => {
+        const universeRegistrations = registrations[canisterId.toText()];
+
+        if (universeRegistrations === undefined) {
+          return {
+            registrations: {
+              ...registrations,
+              [canisterId.toText()]: [newEntry],
+            },
+          };
+        }
+
+        if (
+          universeRegistrations.find(
+            ({ proposalIdString: id }) => id === proposalIdString
+          )
+        ) {
           // Proposal `id` is used for the store entries indentification
           // Simultaneous voting for the same proposal is blocked by UI. But this is so critical that the throw was added. Otherwise potential errors would be extremely difficult to detect.
           throw new Error("Simultaneous proposal voting");
         }
 
         return {
-          registrations: [...votes, newEntry],
+          registrations: {
+            ...registrations,
+            [canisterId.toText()]: [...universeRegistrations, newEntry],
+          },
         };
       });
-
-      return newEntry;
     },
 
     addSuccessfullyVotedNeuronId({
-      proposalId,
-      neuronId,
-    }: {
-      proposalId: ProposalId;
-      neuronId: NeuronId;
-    }) {
-      update(({ registrations: votes }) => {
-        const item = votes.find(
-          ({ proposalInfo: { id } }) => id === proposalId
+      proposalIdString,
+      neuronIdString,
+      canisterId,
+    }: VoteRegistrationStoreAddSuccessfullyVotedNeuronIdData) {
+      update(({ registrations }) => {
+        const universeRegistrations = registrations[canisterId.toText()];
+
+        if (universeRegistrations === undefined) {
+          throw new Error("no registrations for canister id");
+        }
+
+        const proposalRegistration = universeRegistrations.find(
+          ({ proposalIdString: id }) => id === proposalIdString
         );
 
-        if (item === undefined) {
-          console.error("updating not voting item", votes, proposalId);
-          return { registrations: votes };
+        if (proposalRegistration === undefined) {
+          console.error(
+            "updating not voting item",
+            canisterId.toText(),
+            proposalIdString
+          );
+          // TODO(sns-voting): add test or throw
+          return { registrations };
         }
 
         return {
-          registrations: [
-            ...votes.filter(({ proposalInfo: { id } }) => id !== proposalId),
-            {
-              ...item,
-              successfullyVotedNeuronIds: Array.from(
-                new Set([...item.successfullyVotedNeuronIds, neuronId])
+          registrations: {
+            ...registrations,
+            [canisterId.toText()]: [
+              ...universeRegistrations.filter(
+                ({ proposalIdString: id }) => id !== proposalIdString
               ),
-            },
-          ],
+              {
+                ...proposalRegistration,
+                // store only unique ids
+                successfullyVotedNeuronIdStrings: Array.from(
+                  new Set([
+                    ...proposalRegistration.successfullyVotedNeuronIdStrings,
+                    neuronIdString,
+                  ])
+                ),
+              },
+            ],
+          },
         };
       });
     },
 
     updateStatus({
-      proposalId,
+      proposalIdString,
       status,
-    }: {
-      proposalId: ProposalId;
-      status: VoteRegistrationStatus;
-    }) {
-      update(({ registrations: votes }) => ({
-        registrations: votes.map((storeVote) =>
-          storeVote.proposalInfo.id === proposalId
-            ? { ...storeVote, status }
-            : storeVote
-        ),
-      }));
+      canisterId,
+    }: VoteRegistrationStoreUpdateStatusData) {
+      update(({ registrations }) => {
+        const universeRegistrations = registrations[canisterId.toText()];
+
+        if (universeRegistrations === undefined) {
+          throw new Error("no registrations for canister id");
+        }
+
+        const proposalRegistration = universeRegistrations.find(
+          ({ proposalIdString: id }) => id === proposalIdString
+        );
+
+        if (proposalRegistration === undefined) {
+          console.error(
+            "updating not voting item",
+            canisterId.toText(),
+            proposalIdString
+          );
+          // TODO(sns-voting): add test or throw
+          return { registrations };
+        }
+
+        return {
+          registrations: {
+            ...registrations,
+            [canisterId.toText()]: [
+              ...universeRegistrations.filter(
+                ({ proposalIdString: id }) => id !== proposalIdString
+              ),
+              {
+                ...proposalRegistration,
+                status,
+              },
+            ],
+          },
+        };
+      });
     },
 
-    remove(proposalId: ProposalId) {
-      update(({ registrations: votes }) => ({
-        registrations: votes.filter(
-          ({ proposalInfo: { id } }) => id !== proposalId
-        ),
-      }));
+    remove({ proposalIdString, canisterId }: VoteRegistrationStoreRemoveData) {
+      update(({ registrations }) => {
+        const universeRegistrations = registrations[canisterId.toText()];
+
+        if (universeRegistrations === undefined) {
+          throw new Error("no registrations for canister id");
+        }
+
+        return {
+          registrations: {
+            ...registrations,
+            [canisterId.toText()]: [
+              ...universeRegistrations.filter(
+                ({ proposalIdString: id }) => id !== proposalIdString
+              ),
+            ],
+          },
+        };
+      });
     },
 
     reset() {
-      set({ registrations: [] });
+      set({ registrations: {} });
     },
   };
 };

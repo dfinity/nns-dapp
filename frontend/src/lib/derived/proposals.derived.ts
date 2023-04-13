@@ -10,7 +10,7 @@ import {
 } from "$lib/stores/proposals.store";
 import {
   voteRegistrationStore,
-  type VoteRegistration,
+  type VoteRegistrationStoreMap,
 } from "$lib/stores/vote-registration.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
@@ -56,7 +56,7 @@ const hide = ({
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
-  registrations: VoteRegistration[];
+  registrations: VoteRegistrationStoreMap;
   identity: Identity | undefined | null;
 }): boolean =>
   hideProposal({
@@ -66,8 +66,11 @@ const hide = ({
     identity,
   }) ||
   // hide proposals that are currently in the voting state
-  registrations.find(({ proposalInfo: { id } }) => proposalInfo.id === id) !==
-    undefined;
+  Object.values(registrations).find((votings) =>
+    votings.find(
+      ({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString
+    )
+  ) !== undefined;
 
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
