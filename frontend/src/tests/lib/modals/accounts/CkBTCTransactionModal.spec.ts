@@ -286,4 +286,25 @@ describe("CkBTCTransactionModal", () => {
     expect(() => result.getByTestId("bitcoin-estimated-fee")).toThrow();
     expect(() => result.getByTestId("kyt-estimated-fee")).toThrow();
   });
+
+  it("should render estimated fee info on review step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferReviewTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+    });
+
+    await waitFor(() => {
+      expect(
+        result.getByTestId("transaction-summary-total-deducted")
+      ).not.toBeNull();
+
+      expect(
+        result.getByTestId("bitcoin-estimated-fee-display")
+      ).not.toBeNull();
+      expect(result.getByTestId("kyt-estimated-fee-display")).not.toBeNull();
+    });
+  });
 });

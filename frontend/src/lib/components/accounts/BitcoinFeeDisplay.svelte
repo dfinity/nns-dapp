@@ -5,10 +5,11 @@
   import { KeyValuePair } from "@dfinity/gix-components";
 
   export let fee: bigint | undefined | null = undefined;
+  export let testId: string | undefined = undefined;
 </script>
 
 {#if nonNullish(fee)}
-  <KeyValuePair testId="bitcoin-estimated-fee-display">
+  <KeyValuePair {testId}>
     <span class="label" slot="key"><slot /></span>
     <span class="value" slot="value">
       {formatEstimatedFee(fee)}

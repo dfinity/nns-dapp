@@ -9,11 +9,13 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("BitcoinFeeDisplay", () => {
+  const testId = "bitcoin-estimated-fee-display";
+
   it("should display estimated fee", async () => {
     const fee = 45356n;
 
     const { getByTestId } = render(BitcoinFeeDisplayTest, {
-      props: { fee },
+      props: { fee, testId },
     });
 
     const content =
@@ -27,7 +29,7 @@ describe("BitcoinFeeDisplay", () => {
   });
 
   it("should not display estimated fee", () => {
-    const { getByTestId } = render(BitcoinFeeDisplay);
+    const { getByTestId } = render(BitcoinFeeDisplay, { props: { testId } });
 
     const call = () => getByTestId("bitcoin-estimated-fee-display");
     expect(call).toThrow();

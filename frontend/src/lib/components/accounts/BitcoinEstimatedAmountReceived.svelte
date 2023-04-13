@@ -53,10 +53,13 @@
   estimation
 />
 
-<BitcoinFeeDisplay fee={bitcoinEstimatedFee}>
+<BitcoinFeeDisplay
+  fee={bitcoinEstimatedFee}
+  testId="bitcoin-estimated-fee-display"
+>
   {$i18n.accounts.estimated_bitcoin_transaction_fee}
 </BitcoinFeeDisplay>
 
-<BitcoinFeeDisplay fee={kytEstimatedFee}>
+<BitcoinFeeDisplay fee={kytEstimatedFee} testId="kyt-estimated-fee-display">
   {$i18n.accounts.estimated_internetwork_fee}
 </BitcoinFeeDisplay>
