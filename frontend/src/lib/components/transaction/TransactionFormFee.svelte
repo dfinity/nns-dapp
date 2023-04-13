@@ -6,16 +6,16 @@
   export let transactionFee: TokenAmount;
 </script>
 
-<p class="fee description">
-  <slot name="label">{$i18n.accounts.transaction_fee}</slot>: <AmountDisplay
-    amount={transactionFee}
-    singleLine
-  />
-</p>
+<div>
+  <p class="fee description no-margin">
+    <slot name="label">{$i18n.accounts.transaction_fee}</slot>
+  </p>
+
+  <p class="no-margin"><AmountDisplay amount={transactionFee} singleLine /></p>
+</div>
 
 <style lang="scss">
   .fee {
-    text-align: right;
-    padding-top: var(--padding-0_5x);
+    padding: var(--padding-0_5x) 0;
   }
 </style>

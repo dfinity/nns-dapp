@@ -62,6 +62,22 @@ test("Test accounts requirements", async ({ page, context }) => {
   );
   expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("5.00");
 
-  // TODO:
   // AU005: The user MUST be able to see the transactions of a specific account
+  const mainAccountAddress = await nnsAccountsPo.getAccountAddress(
+    mainAccountName
+  );
+  await nnsAccountsPo.openAccount(subAccountName);
+  const transactionList = appPo
+    .getWalletPo()
+    .getNnsWalletPo()
+    .getTransactionListPo();
+  await transactionList.waitForLoaded();
+  const transactions = await transactionList.getTransactionCardPos();
+  expect(transactions).toHaveLength(1);
+  const transaction = transactions[0];
+
+  expect(await transaction.getIdentifier()).toBe(
+    `Source: ${mainAccountAddress}`
+  );
+  expect(await transaction.getAmount()).toBe("+5.00");
 });

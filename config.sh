@@ -109,6 +109,16 @@ local_deployment_data="$(
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
+  : "Define the robots text, if any"
+  if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
+    ROBOTS=''
+  else
+    # shellcheck disable=SC2089 # yes, we really want the backslash
+    ROBOTS='<meta name="robots" content="noindex, nofollow" />'
+  fi
+  # shellcheck disable=SC2090 # We still want the backslash.
+  export ROBOTS
+
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
@@ -116,6 +126,7 @@ local_deployment_data="$(
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
+    ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'

@@ -42,7 +42,7 @@
   div {
     display: inline-grid;
     grid-template-columns: repeat(2, auto);
-    grid-gap: 5px;
+    grid-gap: var(--padding-0_5x);
     align-items: baseline;
 
     span:first-of-type {

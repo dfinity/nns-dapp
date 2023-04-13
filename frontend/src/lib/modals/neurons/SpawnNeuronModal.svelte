@@ -109,10 +109,10 @@
         >{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment
       >
       <svelte:fragment slot="description">
-        <p class="description">
+        <p class="description no-margin">
           <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
         </p>
-        <p class="description">
+        <p class="description no-margin">
           <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
         </p>
       </svelte:fragment>

@@ -13,7 +13,17 @@
 
 <div class="select-account" data-tid="transaction-from-account">
   <KeyValuePair>
-    <span slot="key" class="label">{$i18n.accounts.source}</span>
+    <svelte:fragment slot="key">
+      {#if canSelectSource}
+        <span class="label">{$i18n.accounts.source}</span>
+      {:else}
+        <span class="label account-name"
+          >{$i18n.accounts.source}: {selectedAccount?.name ??
+            $i18n.accounts.main}</span
+        >
+      {/if}
+    </svelte:fragment>
+
     <!-- svelte:fragment needed to avoid warnings -->
     <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
     <svelte:fragment slot="value">
@@ -26,9 +36,6 @@
   {#if canSelectSource}
     <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
   {:else}
-    <p>
-      {selectedAccount?.name ?? $i18n.accounts.main}
-    </p>
     <p class="account-identifier">
       {selectedAccount?.identifier}
     </p>
@@ -36,10 +43,12 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+
   .select-account {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-0_5x);
   }
 
   p {
@@ -48,5 +57,10 @@
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .account-name {
+    word-break: break-all;
+    @include text.clamp(2);
   }
 </style>
