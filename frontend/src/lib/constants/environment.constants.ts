@@ -1,15 +1,16 @@
+import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { addRawToUrl } from "$lib/utils/env.utils";
 
-export const DFX_NETWORK = import.meta.env.VITE_DFX_NETWORK;
-export const HOST = import.meta.env.VITE_HOST as string;
+const envVars = getEnvVars();
+
+export const DFX_NETWORK = envVars.dfxNetwork;
+export const HOST = envVars.host;
 export const DEV = import.meta.env.DEV;
-export const FETCH_ROOT_KEY: boolean =
-  import.meta.env.VITE_FETCH_ROOT_KEY === "true";
+export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
 export const HOST_IC0_APP = "https://ic0.app";
 
-const snsAggregatorUrlEnv = import.meta.env
-  .VITE_AGGREGATOR_CANISTER_URL as string;
+const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
@@ -56,8 +57,8 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  * @see feature-flags.store.ts to use feature flags
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
-  import.meta.env.VITE_FEATURE_FLAGS.replace(/\\"/g, '"') ??
-    '{"ENABLE_SNS_2":false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
+  envVars?.featureFlags ??
+    '{"ENABLE_SNS_2": false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
 );
 
 export const IS_TESTNET: boolean =

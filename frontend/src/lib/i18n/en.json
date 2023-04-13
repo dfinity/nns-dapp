@@ -868,7 +868,9 @@
     "loading_address": "Loading the address",
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
-    "refresh_balance": "Refresh Balance"
+    "refresh_balance": "Refresh Balance",
+    "confirmations": "Confirmations",
+    "typically_twelve": "Typically 12"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
