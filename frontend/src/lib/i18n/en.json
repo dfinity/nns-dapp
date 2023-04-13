@@ -230,6 +230,7 @@
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
     "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
+    "estimated_internetwork_fee": "Estimated Internetwork Fee",
     "estimated_amount_received": "Estimated Received Amount",
     "receive_account": "Account",
     "sending_amount": "Sending Amount",
@@ -868,7 +869,6 @@
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
-    "kyt_fee": "Inter-network Fee",
     "confirmations": "Confirmations",
     "typically_twelve": "Typically 12"
   },

@@ -78,6 +78,8 @@ describe("CkBTCTransactionModal", () => {
     jest
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
+
+    jest.spyOn(minterApi, "depositFee").mockResolvedValue(789n);
   });
 
   it("should transfer tokens", async () => {
@@ -256,6 +258,21 @@ describe("CkBTCTransactionModal", () => {
     );
   });
 
+  it("should render kyt estimated fee on first step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+      amount: "0.002",
+    });
+
+    await waitFor(() =>
+      expect(result.getByTestId("kyt-estimated-fee")).not.toBeNull()
+    );
+  });
+
   it("should not render btc estimation info on first step", async () => {
     const result = await renderTransactionModal();
 
@@ -267,5 +284,27 @@ describe("CkBTCTransactionModal", () => {
     });
 
     expect(() => result.getByTestId("bitcoin-estimated-fee")).toThrow();
+    expect(() => result.getByTestId("kyt-estimated-fee")).toThrow();
+  });
+
+  it("should render estimated fee info on review step", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferReviewTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+    });
+
+    await waitFor(() => {
+      expect(
+        result.getByTestId("transaction-summary-total-deducted")
+      ).not.toBeNull();
+
+      expect(
+        result.getByTestId("bitcoin-estimated-fee-display")
+      ).not.toBeNull();
+      expect(result.getByTestId("kyt-estimated-fee-display")).not.toBeNull();
+    });
   });
 });

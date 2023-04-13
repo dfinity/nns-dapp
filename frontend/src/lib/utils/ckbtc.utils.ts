@@ -13,12 +13,14 @@ export const assertCkBTCUserInputAmount = ({
   sourceAccount,
   amount,
   bitcoinEstimatedFee,
+  kytEstimatedFee,
   transactionFee,
 }: {
   networkBtc: boolean;
   sourceAccount: Account | undefined;
   amount: number | undefined;
   bitcoinEstimatedFee: bigint | undefined | null;
+  kytEstimatedFee: bigint | undefined | null;
   transactionFee: bigint;
 }) => {
   if (!networkBtc) {
@@ -58,6 +60,10 @@ export const assertCkBTCUserInputAmount = ({
 
   assertEnoughAccountFunds({
     account: sourceAccount,
-    amountE8s: amountE8s + transactionFee + (bitcoinEstimatedFee ?? BigInt(0)),
+    amountE8s:
+      amountE8s +
+      transactionFee +
+      (bitcoinEstimatedFee ?? BigInt(0)) +
+      (kytEstimatedFee ?? BigInt(0)),
   });
 };
