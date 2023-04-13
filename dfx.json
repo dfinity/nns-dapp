@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "scripts/docker-build",
+      "build": "./build.sh",
       "remote": {
         "id": {
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
@@ -99,7 +99,9 @@
       "type": "custom"
     },
     "sns_aggregator": {
-      "build": "scripts/docker-build",
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
       "type": "custom",
