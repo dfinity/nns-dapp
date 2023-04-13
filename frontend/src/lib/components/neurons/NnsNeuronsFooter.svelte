@@ -7,6 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   type ModalKey = "stake-neuron" | "merge-neurons";
   let showModal: ModalKey | undefined = undefined;
@@ -14,7 +15,9 @@
   const closeModal = () => (showModal = undefined);
 
   let votingInProgress = false;
-  $: votingInProgress = $voteRegistrationStore.registrations.length > 0;
+  $: votingInProgress =
+    ($voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []).length >
+    0;
   let enoughNeuronsToMerge: boolean;
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>

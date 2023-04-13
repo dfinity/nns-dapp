@@ -3,6 +3,7 @@
  */
 
 import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -73,7 +74,10 @@ describe("NnsNeurons", () => {
       const stakeNeuronButton = queryByTestId("stake-neuron-button");
       expect(stakeNeuronButton).not.toBeNull();
 
-      voteRegistrationStore.add(mockVoteRegistration);
+      voteRegistrationStore.add({
+        ...mockVoteRegistration,
+        canisterId: OWN_CANISTER_ID,
+      });
 
       waitFor(() =>
         expect(stakeNeuronButton?.getAttribute("disabled")).not.toBeNull()

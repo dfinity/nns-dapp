@@ -4,7 +4,7 @@ import {
 } from "$lib/constants/proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
-import type { VoteRegistration } from "$lib/stores/vote-registration.store";
+import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
 import type { Identity } from "@dfinity/agent";
 import type {
@@ -559,7 +559,7 @@ export const updateProposalVote = ({
 
 /** Returns `registerVote` error reason text or undefined if not an error */
 const registerVoteErrorReason = (
-  neuronId: NeuronId,
+  neuronIdString: string,
   result: PromiseSettledResult<void>
 ): string | undefined => {
   if (result.status === "fulfilled") {
@@ -570,7 +570,7 @@ const registerVoteErrorReason = (
     result.reason instanceof Error ? errorToString(result.reason) : undefined;
   // detail text
   return replacePlaceholders(get(i18n).error.register_vote_neuron, {
-    $neuronId: neuronId.toString(),
+    $neuronId: neuronIdString,
     $reason:
       reason === undefined || reason?.length === 0
         ? get(i18n).error.fail
@@ -581,23 +581,25 @@ const registerVoteErrorReason = (
 /** Returns `registerVote` error details (neuronId and the reason by error) */
 export const registerVoteErrorDetails = ({
   responses,
-  neuronIds,
+  neuronIdStrings,
 }: {
   responses: PromiseSettledResult<void>[];
-  neuronIds: bigint[];
+  neuronIdStrings: string[];
 }): string[] => {
   const details: string[] = responses
-    .map((response, i) => registerVoteErrorReason(neuronIds[i], response))
+    .map((response, i) => registerVoteErrorReason(neuronIdStrings[i], response))
     .filter(isDefined);
 
   return details;
 };
 
 /** There are neurons in a queue whose vote is not yet been registered */
-export const voteRegistrationActive = (votes: VoteRegistration[]): boolean =>
+export const voteRegistrationActive = (
+  votes: VoteRegistrationStoreEntry[]
+): boolean =>
   votes.find(
-    ({ neuronIds, successfullyVotedNeuronIds }) =>
-      neuronIds.length > successfullyVotedNeuronIds.length
+    ({ neuronIdStrings, successfullyVotedNeuronIdStrings }) =>
+      neuronIdStrings.length > successfullyVotedNeuronIdStrings.length
   ) !== undefined;
 
 export const nnsNeuronToVotingNeuron = ({
