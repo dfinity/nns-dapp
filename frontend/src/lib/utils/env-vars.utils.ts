@@ -112,13 +112,7 @@ const getBuildEnvVars = (): EnvironmentVars => {
 
 export const getEnvVars = (): EnvironmentVars => {
   if (isBrowser && !localDev) {
-    try {
-      return getHtmlEnvVars();
-    } catch (e) {
-      console.error(e);
-      // Fallback to build env vars
-      return getBuildEnvVars();
-    }
+    return getHtmlEnvVars();
   }
   return getBuildEnvVars();
 };
