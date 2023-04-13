@@ -8,6 +8,10 @@ print_help() {
 
 	Finds CI builds of the current commit.
 
+	Example usage, scanning a range of commits:
+	$(basename "$0") -c fab6e718a13d58d23044b708c99910957a671a4d..main --limit 2000 --nth 10 |& tee ,max-search-3
+	Note: The |& ensures that stderr is also written to the file.  Soometimes fetching logs from github fails.
+
 	Note: This searches through gihub logs.  Only fairly recent logs are readily accessible.
 	      Older runs may be found using high velues for the '--limit' flag but this is very slow.
 
