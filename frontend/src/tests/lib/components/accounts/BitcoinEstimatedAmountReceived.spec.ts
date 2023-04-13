@@ -3,51 +3,75 @@
  */
 
 import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("BitcoinEstimatedAmountReceived", () => {
   describe("should display zero as estimated received amount", () => {
+    const zeroBtc = `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`;
+
     it("both props undefined", () => {
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
-        props: { amount: undefined, bitcoinEstimatedFee: undefined },
+        props: {
+          amount: undefined,
+          bitcoinEstimatedFee: undefined,
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        },
       });
 
       const element = getByTestId("bitcoin-estimated-amount-value");
-      expect(element?.textContent ?? "").toEqual("0");
+      expect(element?.textContent ?? "").toContain(zeroBtc);
     });
 
     it("amount undefined", () => {
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
-        props: { amount: undefined, bitcoinEstimatedFee: 1_000n },
+        props: {
+          amount: undefined,
+          bitcoinEstimatedFee: 1_000n,
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        },
       });
 
       const element = getByTestId("bitcoin-estimated-amount-value");
-      expect(element?.textContent ?? "").toEqual("0");
+      expect(element?.textContent ?? "").toContain(zeroBtc);
     });
 
     it("fee undefined", () => {
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
-        props: { amount: 10, bitcoinEstimatedFee: undefined },
+        props: {
+          amount: 10,
+          bitcoinEstimatedFee: undefined,
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        },
       });
 
       const element = getByTestId("bitcoin-estimated-amount-value");
-      expect(element?.textContent ?? "").toEqual("0");
+      expect(element?.textContent ?? "").toContain(zeroBtc);
     });
 
     it("amount does not cover fee", () => {
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
-        props: { amount: 0.0000099, bitcoinEstimatedFee: 1_000n },
+        props: {
+          amount: 0.0000099,
+          bitcoinEstimatedFee: 1_000n,
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        },
       });
 
       const element = getByTestId("bitcoin-estimated-amount-value");
-      expect(element?.textContent ?? "").toEqual("0");
+      expect(element?.textContent ?? "").toContain(zeroBtc);
     });
   });
 
   it("should display label estimated amount received", () => {
     const { getByText } = render(BitcoinEstimatedAmountReceived, {
-      props: { amount: undefined, bitcoinEstimatedFee: undefined },
+      props: {
+        amount: undefined,
+        bitcoinEstimatedFee: undefined,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
     });
 
     expect(
@@ -57,7 +81,11 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
   it("should display btc label", () => {
     const { getByText } = render(BitcoinEstimatedAmountReceived, {
-      props: { amount: undefined, bitcoinEstimatedFee: undefined },
+      props: {
+        amount: undefined,
+        bitcoinEstimatedFee: undefined,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
     });
 
     expect(getByText(en.ckbtc.btc, { exact: false })).toBeInTheDocument();
@@ -65,10 +93,16 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
   it("should display estimated received amount", () => {
     const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
-      props: { amount: 0.0099, bitcoinEstimatedFee: 1_000n },
+      props: {
+        amount: 0.0099,
+        bitcoinEstimatedFee: 1_000n,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
     });
 
     const element = getByTestId("bitcoin-estimated-amount-value");
-    expect(element?.textContent ?? "").toEqual("0.00989");
+
+    const resultBtc = `${formatEstimatedFee(989_000n)} ${en.ckbtc.btc}`;
+    expect(element?.textContent ?? "").toContain(resultBtc);
   });
 });

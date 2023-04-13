@@ -7,42 +7,33 @@
   export let account: Account;
 </script>
 
+<p class="label account-name" data-tid="transaction-review-source-account-name">
+  {$i18n.accounts.from}: {account.name ?? $i18n.accounts.main}
+</p>
+
+<p
+  data-tid="transaction-review-source-account"
+  class="account-identifier value"
+>
+  {account.identifier}
+</p>
+
 <KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.source}</span>
-  <div class="balance" slot="value">
-    <span class="label">{$i18n.accounts.balance}</span>
-    <AmountDisplay singleLine amount={account.balance} />
-  </div>
+  <span class="label" slot="key">{$i18n.accounts.balance}</span>
+  <AmountDisplay slot="value" singleLine detailed amount={account.balance} />
 </KeyValuePair>
 
-<div class="source value">
-  <p data-tid="transaction-review-source-account-name">
-    {account.name ?? $i18n.accounts.main}
-  </p>
-  <p data-tid="transaction-review-source-account" class="account-identifier">
-    {account.identifier}
-  </p>
-</div>
-
 <style lang="scss">
-  .balance {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: var(--padding-1_5x);
-  }
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
-  .source {
-    p:first-of-type {
-      margin: 0;
-    }
-
-    p:last-of-type {
-      margin-top: 0;
-    }
+  .account-name {
+    word-break: break-all;
+    @include text.clamp(2);
+    margin: 0;
   }
 
   .account-identifier {
     word-break: break-all;
+    margin: 0 0 var(--padding-2x);
   }
 </style>

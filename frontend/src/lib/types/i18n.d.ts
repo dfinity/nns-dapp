@@ -200,7 +200,10 @@ interface I18nAccounts {
   enter_icp_amount: string;
   source: string;
   destination: string;
+  from: string;
+  to_address: string;
   hardware_wallet_text: string;
+  token_transaction_fee: string;
   transaction_fee: string;
   new_transaction_fee: string;
   review_transaction: string;
@@ -238,6 +241,10 @@ interface I18nAccounts {
   estimated_bitcoin_transaction_fee: string;
   estimated_amount_received: string;
   receive_account: string;
+  sending_amount: string;
+  total_deducted: string;
+  received_amount: string;
+  transaction_time: string;
 }
 
 interface I18nNeurons {
@@ -679,6 +686,7 @@ interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
   community_fund_section: string;
+  community_fund_section_description: string;
   add_hotkey_info: string;
   add_hotkey_tooltip: string;
 }
@@ -902,7 +910,6 @@ interface I18nCkbtc {
   step_send_btc: string;
   step_reload: string;
   sending_ckbtc_to_btc: string;
-  estimated_receive_time: string;
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;

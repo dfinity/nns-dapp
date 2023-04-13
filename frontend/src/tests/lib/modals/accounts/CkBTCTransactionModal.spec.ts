@@ -225,9 +225,7 @@ describe("CkBTCTransactionModal", () => {
       destinationAddress: mockBTCAddressTestnet,
     });
 
-    expect(
-      result.getByText(en.ckbtc.estimated_receive_time)
-    ).toBeInTheDocument();
+    expect(result.getByText(en.accounts.transaction_time)).toBeInTheDocument();
 
     expect(result.getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
   });
@@ -243,7 +241,7 @@ describe("CkBTCTransactionModal", () => {
     );
   });
 
-  it("should render btc estimation info on first step", async () => {
+  it("should render btc estimated fee on first step", async () => {
     const result = await renderTransactionModal();
 
     await testTransferFormTokens({
@@ -256,7 +254,6 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() =>
       expect(result.getByTestId("bitcoin-estimated-fee")).not.toBeNull()
     );
-    expect(result.getByTestId("bitcoin-estimated-amount")).not.toBeNull();
   });
 
   it("should not render btc estimation info on first step", async () => {
