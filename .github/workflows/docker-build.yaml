@@ -5,7 +5,6 @@ on:
     inputs:
       no_cache:
         description: 'no-cache'
-        required: true
         default: false
         type: boolean
 concurrency:

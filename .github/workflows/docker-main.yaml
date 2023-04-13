@@ -9,7 +9,6 @@ on:
     inputs:
       network:
         description: 'Network'
-        required: true
         default: 'local'
         type: string
       no_cache:
