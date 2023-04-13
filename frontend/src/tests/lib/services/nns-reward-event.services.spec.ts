@@ -27,7 +27,7 @@ describe("nns-reward-event-services", () => {
 
     expect(spyQueryLatestRewardEvent).toHaveBeenCalled();
 
-    expect(get(nnsLatestRewardEventStore)).toEqual(mockRewardEvent);
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(mockRewardEvent);
   });
 
   it("should not load reward event if no identity", async () => {

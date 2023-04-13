@@ -1,11 +1,17 @@
 import type { RewardEvent } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
 
-export type NnsLatestRewardEventStoreData = RewardEvent | undefined;
+type RewardEventData = {
+  rewardEvent: RewardEvent;
+  certified: boolean;
+};
+
+export type NnsLatestRewardEventStoreData = RewardEventData | undefined;
 
 interface NnsLatestRewardEventStore
-  extends Readable<NnsLatestRewardEventStoreData> {
-  setLatestRewardEvent: (rewardEvent: RewardEvent) => void;
+  extends Readable<NnsLatestRewardEventStoreData | undefined> {
+  setLatestRewardEvent: (data: RewardEventData) => void;
   reset: () => void;
 }
 
@@ -16,13 +22,28 @@ interface NnsLatestRewardEventStore
  * - reset: reset the store to its initial state.
  */
 const initNnsLatestRewardEventStore = (): NnsLatestRewardEventStore => {
-  const { subscribe, set } = writable<NnsLatestRewardEventStoreData>(undefined);
+  const { subscribe, set, update } =
+    writable<NnsLatestRewardEventStoreData>(undefined);
 
   return {
     subscribe,
 
-    setLatestRewardEvent(rewardEvent: RewardEvent) {
-      set(rewardEvent);
+    setLatestRewardEvent({ rewardEvent, certified }: RewardEventData) {
+      update((currentData) => {
+        if (isNullish(currentData)) {
+          return { rewardEvent, certified };
+        }
+        const prevRewardEvent = currentData.rewardEvent;
+        // Keep current data if the new reward event is older than the current one and the current is certified.
+        if (
+          prevRewardEvent.actual_timestamp_seconds >=
+            rewardEvent.actual_timestamp_seconds &&
+          currentData.certified
+        ) {
+          return currentData;
+        }
+        return { rewardEvent, certified };
+      });
     },
 
     // For testing purposes.

@@ -6,8 +6,11 @@ import { queryAndUpdate } from "./utils.services";
 export const loadLatestRewardEvent = (): Promise<void> => {
   return queryAndUpdate<RewardEvent, unknown>({
     request: (options) => governanceApiService.queryLastestRewardEvent(options),
-    onLoad: ({ response: rewardEvent }) => {
-      nnsLatestRewardEventStore.setLatestRewardEvent(rewardEvent);
+    onLoad: ({ response: rewardEvent, certified }) => {
+      nnsLatestRewardEventStore.setLatestRewardEvent({
+        rewardEvent,
+        certified,
+      });
     },
     onError: ({ error: err }) => {
       console.error(err);

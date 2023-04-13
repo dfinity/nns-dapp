@@ -11,14 +11,62 @@ describe("nnsLatestRewardEventStore", () => {
     const initialReward = get(nnsLatestRewardEventStore);
     expect(initialReward).toBeUndefined();
 
-    nnsLatestRewardEventStore.setLatestRewardEvent(mockRewardEvent);
-    expect(get(nnsLatestRewardEventStore)).toEqual(mockRewardEvent);
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: mockRewardEvent,
+      certified: true,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(mockRewardEvent);
 
     const anotherReward = {
       ...mockRewardEvent,
-      day_after_genesis: BigInt(4),
+      actual_timestamp_seconds: mockRewardEvent.actual_timestamp_seconds + 1n,
     };
-    nnsLatestRewardEventStore.setLatestRewardEvent(anotherReward);
-    expect(get(nnsLatestRewardEventStore)).toEqual(anotherReward);
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: anotherReward,
+      certified: true,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(anotherReward);
+  });
+
+  it("should not set an older reward event if current is certified", () => {
+    const newReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(4),
+    };
+    const oldReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(3),
+    };
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: newReward,
+      certified: true,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(newReward);
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: oldReward,
+      certified: true,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(newReward);
+  });
+
+  it("should set an older reward event if current is not certified", () => {
+    const newReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(4),
+    };
+    const oldReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(3),
+    };
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: newReward,
+      certified: false,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(newReward);
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: oldReward,
+      certified: true,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(oldReward);
   });
 });
