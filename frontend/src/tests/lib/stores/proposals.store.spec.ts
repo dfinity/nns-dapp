@@ -3,8 +3,8 @@ import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
-  votingNeuronSelectStore,
 } from "$lib/stores/proposals.store";
+import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
 import { generateMockProposals } from "$tests/mocks/proposal.mock";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";

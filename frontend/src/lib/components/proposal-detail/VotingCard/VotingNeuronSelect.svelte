@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
-  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
@@ -11,6 +10,7 @@
   } from "@dfinity/gix-components";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import VotingNeuronSelectContainer from "./VotingNeuronSelectContainer.svelte";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   export let proposalInfo: ProposalInfo;
   export let voteRegistration: VoteRegistrationStoreEntry | undefined =
