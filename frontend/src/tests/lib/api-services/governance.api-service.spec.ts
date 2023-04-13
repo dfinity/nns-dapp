@@ -13,6 +13,7 @@ import {
   createMockKnownNeuron,
   createMockNeuron,
 } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
@@ -386,14 +387,7 @@ describe("neurons api-service", () => {
   });
 
   describe("queryLastestRewardEvent", () => {
-    const rewardEvent1: RewardEvent = {
-      rounds_since_last_distribution: [BigInt(1_000)],
-      day_after_genesis: BigInt(365),
-      actual_timestamp_seconds: BigInt(12234455555),
-      total_available_e8s_equivalent: BigInt(20_000_000_000),
-      distributed_e8s_equivalent: BigInt(2_000_000_000),
-      settled_proposals: [],
-    };
+    const rewardEvent1: RewardEvent = mockRewardEvent;
     const rewardEvent2: RewardEvent = {
       ...rewardEvent1,
       rounds_since_last_distribution: [BigInt(2_000)],

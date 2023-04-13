@@ -11,7 +11,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { rewardEvent } from "$tests/mocks/nns-reward-event.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -39,7 +39,9 @@ describe("NeuronDetail", () => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
     jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
-    jest.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
+    jest
+      .spyOn(api, "queryLastestRewardEvent")
+      .mockResolvedValue(mockRewardEvent);
   });
 
   it("should query neurons", async () => {

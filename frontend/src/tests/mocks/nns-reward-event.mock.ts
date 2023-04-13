@@ -1,6 +1,6 @@
 import type { RewardEvent } from "@dfinity/nns";
 
-export const rewardEvent: RewardEvent = {
+export const mockRewardEvent: RewardEvent = {
   rounds_since_last_distribution: [BigInt(1_000)],
   day_after_genesis: BigInt(365),
   actual_timestamp_seconds: BigInt(12234455555),

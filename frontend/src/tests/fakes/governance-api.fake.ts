@@ -1,7 +1,7 @@
 import type { ApiQueryParams } from "$lib/api/governance.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { rewardEvent } from "$tests/mocks/nns-reward-event.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import {
   installImplAndBlockRest,
   makePausable,
@@ -58,7 +58,7 @@ async function queryLastestRewardEvent({
   identity: _,
   certified: __,
 }: ApiQueryParams): Promise<RewardEvent> {
-  return rewardEvent;
+  return mockRewardEvent;
 }
 
 /////////////////////////////////
