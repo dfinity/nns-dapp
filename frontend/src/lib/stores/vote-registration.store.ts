@@ -1,4 +1,4 @@
-import { VotingNeuron } from "$lib/types/proposals";
+import type { VotingNeuron } from "$lib/types/proposals";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
