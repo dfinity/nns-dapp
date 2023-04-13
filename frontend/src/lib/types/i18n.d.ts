@@ -917,6 +917,8 @@ interface I18nCkbtc {
   block_explorer: string;
   refresh_balance: string;
   kyt_fee: string;
+  confirmations: string;
+  typically_twelve: string;
 }
 
 interface I18nError__ckbtc {
