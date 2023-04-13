@@ -26,7 +26,7 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import BitcoinEstimatedTransactionTime from "$lib/components/accounts/BitcoinEstimatedTransactionTime.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import BitcoinKYTSendFee from "$lib/components/accounts/BitcoinKYTSendFee.svelte";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -173,7 +173,7 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-    <BitcoinKYTSendFee
+    <BitcoinKYTFee
       {selectedNetwork}
       minterCanisterId={canisters.minterCanisterId}
       bind:kytFee={kytEstimatedFee}

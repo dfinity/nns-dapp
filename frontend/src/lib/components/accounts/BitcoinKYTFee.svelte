@@ -32,7 +32,7 @@
 </script>
 
 {#if nonNullish(kytFee)}
-  <p class="fee description no-margin" data-tid="kyt-estimated-fee-label">
+  <p class="fee label no-margin" data-tid="kyt-estimated-fee-label">
     {$i18n.accounts.estimated_internetwork_fee}
   </p>
 

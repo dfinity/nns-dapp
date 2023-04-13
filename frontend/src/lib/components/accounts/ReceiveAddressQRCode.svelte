@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Copy, KeyValuePair, QRCode } from "@dfinity/gix-components";
+  import { Copy, QRCode } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/environment.constants";
   import { nonNullish } from "@dfinity/utils";
@@ -43,13 +43,11 @@
 
   {#if addressSelected && qrCodeRendered}
     <div class="address-block">
-      <KeyValuePair>
-        <span slot="key" class="label"><slot name="address-label" /></span>
-        <div slot="value" class="address">
-          <span class="value" data-tid="qrcode-display-address">{address}</span>
-          <Copy value={address ?? ""} />
-        </div>
-      </KeyValuePair>
+      <p class="label no-margin"><slot name="address-label" /></p>
+      <div class="address">
+        <span class="value" data-tid="qrcode-display-address">{address}</span>
+        <Copy value={address ?? ""} />
+      </div>
 
       <slot name="additional-information" />
     </div>
@@ -73,12 +71,12 @@
   .address {
     display: flex;
     align-items: center;
-    gap: var(--padding-0_5x);
+    gap: var(--padding);
+    margin: var(--padding-0_5x) var(--padding) 0 0;
   }
 
   .value {
     word-break: break-word;
-    margin-top: 4px;
   }
 
   .qrcode {
@@ -118,7 +116,6 @@
   .address-block {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
 
     margin: var(--padding) 0;
 

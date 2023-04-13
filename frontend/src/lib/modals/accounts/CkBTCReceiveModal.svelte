@@ -26,7 +26,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
-  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTReceiveFee.svelte";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import { TransactionNetwork } from "$lib/types/transaction";
 
   export let data: CkBTCReceiveModalData;
 
@@ -172,7 +173,12 @@
 
       <svelte:fragment slot="additional-information">
         {#if bitcoin}
-          <BitcoinKYTFee minterCanisterId={canisters.minterCanisterId} />
+          <BitcoinKYTFee
+            minterCanisterId={canisters.minterCanisterId}
+            selectedNetwork={ckTESTBTC
+              ? TransactionNetwork.BTC_TESTNET
+              : TransactionNetwork.BTC_MAINNET}
+          />
         {/if}
       </svelte:fragment>
     </ReceiveAddressQRCode>
