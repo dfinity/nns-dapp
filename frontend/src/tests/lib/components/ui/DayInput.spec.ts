@@ -7,8 +7,6 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("DayInput", () => {
-  const testId = "day-input";
-
   it("should render a default name attribute", () => {
     const { container } = render(DayInput);
     expect(container.querySelector("input")?.getAttribute("name")).toEqual(
