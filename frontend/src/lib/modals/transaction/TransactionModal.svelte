@@ -13,6 +13,7 @@
   } from "$lib/types/transaction";
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
 
   export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
@@ -143,6 +144,9 @@
       <slot name="additional-info-review" slot="additional-info" />
       <slot name="destination-info" slot="destination-info" />
       <slot name="description" slot="description" />
+      <slot name="received-amount" slot="received-amount">
+        <TransactionReceivedAmount {amount} {token} />
+      </slot>
     </TransactionReview>
   {/if}
   {#if currentStep?.name === STEP_PROGRESS}

@@ -154,6 +154,19 @@ describe("SnsNeurons", () => {
       );
     });
 
+    it("should render Community Fund neurons text", async () => {
+      const { queryByTestId } = render(SnsNeurons);
+
+      const div = document.createElement("div");
+      div.innerHTML = en.sns_neuron_detail.community_fund_section_description;
+
+      await waitFor(() =>
+        expect(
+          queryByTestId("community-fund-description").textContent.trim()
+        ).toBe(div.textContent.trim())
+      );
+    });
+
     it("should render two grids", async () => {
       const { container } = render(SnsNeurons);
 

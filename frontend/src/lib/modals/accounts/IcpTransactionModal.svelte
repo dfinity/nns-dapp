@@ -69,7 +69,7 @@
   transactionFee={$mainTransactionFeeStoreAsToken}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
-  <p slot="description" class="value">
+  <p slot="description" class="value no-margin">
     {$i18n.accounts.icp_transaction_description}
   </p>
 </TransactionModal>
