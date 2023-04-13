@@ -27,16 +27,6 @@ const config: UserConfig = {
             return "qr";
           }
 
-          // Put ledger and anything commonjs polyfill in the same chunk
-          if (
-            ["@ledgerhq", "semver", "@zondax", "buffer"].find((lib) =>
-              folder.includes(lib)
-            ) !== undefined &&
-            folder.includes("node_modules")
-          ) {
-            return "hw";
-          }
-
           if (
             ["@sveltejs", "svelte", "@dfinity/gix-components"].find((lib) =>
               folder.includes(lib)
