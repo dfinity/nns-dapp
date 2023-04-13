@@ -5,11 +5,11 @@ import {
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
-  lastestRewardEvent,
   leaveCommunityFund,
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
   registerVote,
@@ -92,6 +92,9 @@ export const governanceApiService = {
   queryKnownNeurons(params: ApiQueryParams) {
     return queryKnownNeurons(params);
   },
+  queryLastestRewardEvent(params: ApiQueryParams) {
+    return queryLastestRewardEvent(params);
+  },
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);
   },
@@ -129,9 +132,6 @@ export const governanceApiService = {
   },
   joinCommunityFund(params: ApiManageNeuronParams) {
     return clearCacheAfter(joinCommunityFund(params));
-  },
-  latestRewardEven(params: ApiQueryParams) {
-    return lastestRewardEvent(params);
   },
   leaveCommunityFund(params: ApiManageNeuronParams) {
     return clearCacheAfter(leaveCommunityFund(params));

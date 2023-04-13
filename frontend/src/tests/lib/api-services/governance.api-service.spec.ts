@@ -15,6 +15,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Topic, Vote } from "@dfinity/nns";
+import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 
 jest.mock("$lib/api/governance.api");
 
@@ -379,6 +380,66 @@ describe("neurons api-service", () => {
       await shouldNotInvalidateCache({
         apiFunc: api.queryKnownNeurons,
         apiServiceFunc: governanceApiService.queryKnownNeurons,
+        params: { identity: identity1, ...params },
+      });
+    });
+  });
+
+  describe("queryLastestRewardEvent", () => {
+    const rewardEvent1: RewardEvent = {
+      rounds_since_last_distribution: [BigInt(1_000)],
+      day_after_genesis: BigInt(365),
+      actual_timestamp_seconds: BigInt(12234455555),
+      total_available_e8s_equivalent: BigInt(20_000_000_000),
+      distributed_e8s_equivalent: BigInt(2_000_000_000),
+      settled_proposals: [],
+    };
+    const rewardEvent2: RewardEvent = {
+      ...rewardEvent1,
+      rounds_since_last_distribution: [BigInt(2_000)],
+    };
+    beforeEach(() => {
+      jest
+        .spyOn(api, "queryLastestRewardEvent")
+        .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
+          if (identity === identity1) {
+            return rewardEvent1;
+          }
+          if (identity === identity2) {
+            return rewardEvent2;
+          }
+          throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
+        });
+    });
+
+    const params = { certified: true };
+
+    it("should call queryLastestRewardEvent api", async () => {
+      const params1 = { identity: identity1, ...params };
+      const params2 = { identity: identity2, ...params };
+      expect(
+        await governanceApiService.queryLastestRewardEvent(params1)
+      ).toEqual(rewardEvent1);
+      expect(
+        await governanceApiService.queryLastestRewardEvent(params2)
+      ).toEqual(rewardEvent2);
+      expect(api.queryLastestRewardEvent).toHaveBeenCalledTimes(2);
+    });
+
+    it("should fail if queryLastestRewardEvent api fails", async () => {
+      expect(() =>
+        governanceApiService.queryLastestRewardEvent({
+          identity: unknownIdentity,
+          ...params,
+        })
+      ).rejects.toThrow("Unknown identity");
+      expect(api.queryLastestRewardEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not invalidate the cache", async () => {
+      await shouldNotInvalidateCache({
+        apiFunc: api.queryLastestRewardEvent,
+        apiServiceFunc: governanceApiService.queryLastestRewardEvent,
         params: { identity: identity1, ...params },
       });
     });

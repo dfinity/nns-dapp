@@ -4,11 +4,11 @@ import {
   disburse,
   increaseDissolveDelay,
   joinCommunityFund,
-  lastestRewardEvent,
   leaveCommunityFund,
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
   registerVote,
@@ -654,19 +654,19 @@ describe("neurons-api", () => {
     });
   });
 
-  describe("lastestRewardEvent", () => {
+  describe("queryLastestRewardEvent", () => {
     const identity = mockIdentity;
 
     it("should call the canister to get the latest reward", async () => {
       const certified = true;
-      await lastestRewardEvent({
+      await queryLastestRewardEvent({
         certified,
         identity,
       });
-      expect(mockGovernanceCanister.lastestRewardEvent).toHaveBeenCalledTimes(
-        1
-      );
-      expect(mockGovernanceCanister.lastestRewardEvent).toHaveBeenCalledWith(
+      expect(
+        mockGovernanceCanister.getLastestRewardEvent
+      ).toHaveBeenCalledTimes(1);
+      expect(mockGovernanceCanister.getLastestRewardEvent).toHaveBeenCalledWith(
         certified
       );
     });
