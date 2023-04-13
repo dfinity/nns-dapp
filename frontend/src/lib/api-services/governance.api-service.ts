@@ -57,7 +57,7 @@ const hasValidKnownNeuronsCache = (): boolean => {
     return false;
   }
   return (
-    nowInSeconds() - knownNeuronsCache.timestampSeconds <
+    nowInSeconds() - knownNeuronsCache.timestampSeconds <=
     cacheExpirationDurationSeconds
   );
 };
