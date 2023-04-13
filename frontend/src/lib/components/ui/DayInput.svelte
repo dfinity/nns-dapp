@@ -7,6 +7,7 @@
   export let days: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
+  export let placeholderLabelKey = "core.amount";
 
   const dispatch = createEventDispatcher();
   const setMin = () => dispatch("nnsMin");
@@ -14,7 +15,7 @@
 </script>
 
 <InputWithError
-  placeholderLabelKey="core.amount"
+  {placeholderLabelKey}
   name="amount"
   bind:value={days}
   {max}

@@ -293,6 +293,7 @@ interface I18nNeurons {
   no_delay: string;
   dissolve_delay_description: string;
   dissolve_delay_label: string;
+  dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
   dissolve_delay_above_maximum: string;
   voting_power: string;
