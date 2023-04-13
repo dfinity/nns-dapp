@@ -4,16 +4,14 @@
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
 
-  export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+  export let fee: bigint | undefined | null = undefined;
 </script>
 
-{#if nonNullish(bitcoinEstimatedFee)}
+{#if nonNullish(fee)}
   <KeyValuePair testId="bitcoin-estimated-fee-display">
-    <span class="label" slot="key"
-      >{$i18n.accounts.estimated_bitcoin_transaction_fee}</span
-    >
+    <span class="label" slot="key"><slot /></span>
     <span class="value" slot="value">
-      {formatEstimatedFee(bitcoinEstimatedFee)}
+      {formatEstimatedFee(fee)}
       <span class="label">{$i18n.ckbtc.btc}</span>
     </span>
   </KeyValuePair>

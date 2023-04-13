@@ -26,7 +26,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
-  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTReceiveFee.svelte";
 
   export let data: CkBTCReceiveModalData;
 

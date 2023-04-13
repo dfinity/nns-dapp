@@ -3,7 +3,7 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTReceiveFee.svelte";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import en from "$tests/mocks/i18n.mock";
