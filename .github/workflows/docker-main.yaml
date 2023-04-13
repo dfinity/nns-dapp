@@ -5,24 +5,23 @@ on:
       - main
       # Use this branch for tests:
       - docker-main-test
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Network'
+        default: 'local'
+        type: string
+      no_cache:
+        description: 'no-cache'
+        required: true
+        default: false
+        type: boolean
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   builder:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        include:
-          # Note: It seems that having several entries here upsets the cache.
-          # Having just one entry makes others faster, but we use local builds more
-          # than mainnet, so let's prioritize that.  Soon this will be a non-issue
-          # anyway as we will pass the network as an argument.
-          # It would still be nice to figure out why; presumably there is a single
-          # cache that gets wiped out and replaced, not added to.  And there is probably
-          # a namespace one can provide to prevent differing builds from clobbering each other.
-          - BUILD_NAME: "local"
-            DFX_NETWORK: "local"
     steps:
       - uses: actions/checkout@v3
       # We use buildx and its GitHub Actions caching support `type=gha`. For
@@ -36,7 +35,8 @@ jobs:
           context: .
           file: Dockerfile
           build-args: |
-            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+            DFX_NETWORK=${{ inputs.network || 'local' }}
+          no-cache: ${{ inputs.no_cache || false }}
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
