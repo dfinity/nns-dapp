@@ -74,4 +74,24 @@ describe("BitcoinKYTFee", () => {
       expect(() => getByTestId("kyt-estimated-fee")).toThrow();
     });
   });
+
+  describe("no selected network", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      spyDepositFee = jest.spyOn(minterApi, "depositFee").mockResolvedValue(0n);
+    });
+
+    it("should not display deposit fee", async () => {
+      const { getByTestId } = render(BitcoinKYTFee, {
+        props: {
+          minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+        },
+      });
+
+      expect(spyDepositFee).not.toHaveBeenCalled();
+      expect(() => getByTestId("kyt-estimated-fee-label")).toThrow();
+      expect(() => getByTestId("kyt-estimated-fee")).toThrow();
+    });
+  });
 });
