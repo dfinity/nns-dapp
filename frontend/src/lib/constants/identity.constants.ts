@@ -1,6 +1,8 @@
-// Config replaces "import.meta.env.VITE_IDENTITY_SERVICE_URL", prettier splits it in two lines.
-// prettier-ignore
-export const IDENTITY_SERVICE_URL = import.meta.env.VITE_IDENTITY_SERVICE_URL as string;
+import { getEnvVars } from "$lib/utils/env-vars.utils";
+
+const envVars = getEnvVars();
+
+export const IDENTITY_SERVICE_URL = envVars.identityServiceUrl;
 export const OLD_MAINNET_IDENTITY_SERVICE_URL = "https://identity.ic0.app";
 
 // The authentication expires after 30 minutes
