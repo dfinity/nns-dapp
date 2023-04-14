@@ -13,6 +13,9 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -31,6 +34,12 @@ describe("NeuronDetail", () => {
   const props = {
     neuronIdText: `${neuronId}`,
   };
+  const rewardEvent = {
+    ...mockRewardEvent,
+    actual_timestamp_seconds: BigInt(
+      new Date("1992-05-22T21:00:00").getTime() / 1000
+    ),
+  };
 
   const querySkeleton = (container: HTMLElement): HTMLElement | null =>
     container.querySelector('[data-tid="skeleton-card"]');
@@ -39,9 +48,7 @@ describe("NeuronDetail", () => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
     jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
-    jest
-      .spyOn(api, "queryLastestRewardEvent")
-      .mockResolvedValue(mockRewardEvent);
+    jest.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
   });
 
   it("should query neurons", async () => {
@@ -118,5 +125,18 @@ describe("NeuronDetail", () => {
     });
 
     await waitFor(() => expect(querySkeleton(container)).not.toBeNull());
+  });
+
+  it("should render last maturity distribution", async () => {
+    const { container } = render(NnsNeuronDetail, props);
+
+    await runResolvedPromises();
+
+    const keyValuePairPo = KeyValuePairPo.under({
+      element: new JestPageObjectElement(container),
+      testId: "last-distribution-maturity",
+    });
+
+    expect(await keyValuePairPo.getValueText()).toEqual("May 22, 1992");
   });
 });

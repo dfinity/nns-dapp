@@ -268,8 +268,10 @@ describe("NnsNeuronMaturityCard", () => {
     it("should render last maturity distribution if present in store", async () => {
       const rewardEvent = {
         ...mockRewardEvent,
-        actual_timestamp_seconds: BigInt(new Date("1992-05-22T21:00:00").getTime() / 1000),
-      }
+        actual_timestamp_seconds: BigInt(
+          new Date("1992-05-22T21:00:00").getTime() / 1000
+        ),
+      };
       nnsLatestRewardEventStore.setLatestRewardEvent({
         rewardEvent,
         certified: true,
@@ -297,8 +299,10 @@ describe("NnsNeuronMaturityCard", () => {
           testComponent: NnsNeuronMaturityCard,
         },
       });
-      
-      expect(queryByTestId("last-distribution-maturity")).not.toBeInTheDocument();
+
+      expect(
+        queryByTestId("last-distribution-maturity")
+      ).not.toBeInTheDocument();
     });
-  })
+  });
 });
