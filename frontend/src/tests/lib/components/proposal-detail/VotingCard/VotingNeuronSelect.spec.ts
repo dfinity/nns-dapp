@@ -4,7 +4,7 @@
 
 import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
 import en from "$tests/mocks/i18n.mock";

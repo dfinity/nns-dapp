@@ -9,13 +9,15 @@ import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
-  votingNeuronSelectStore,
 } from "$lib/stores/proposals.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import {
+  voteRegistrationStore,
+  votingNeuronSelectStore,
+} from "$lib/stores/vote-registration.store";
 import type { AddAccountStore } from "$lib/types/add-account.context";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";

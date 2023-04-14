@@ -1,10 +1,8 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { storeLocalStorageKey } from "$lib/constants/stores.constants";
-import type { VotingNeuron } from "$lib/types/proposals";
 import {
   concatenateUniqueProposals,
   excludeProposals,
-  preserveNeuronSelectionAfterUpdate,
   replaceAndConcatenateProposals,
   replaceProposals,
 } from "$lib/utils/proposals.utils";
@@ -29,12 +27,6 @@ export interface ProposalsFiltersStore {
     | "rewards"
     | "status"
     | "excludeVotedProposals";
-}
-
-export interface NeuronSelectionStore {
-  neurons: VotingNeuron[];
-  // TODO: selectedNeurons OR selectedIdStrings
-  selectedIds: string[];
 }
 
 export interface ProposalsStore {
@@ -183,54 +175,6 @@ const initProposalsFiltersStore = () => {
   };
 };
 
-/**
- * Contains available for voting neurons and their selection state
- */
-const initNeuronSelectStore = () => {
-  const { subscribe, update, set } = writable<NeuronSelectionStore>({
-    neurons: [],
-    selectedIds: [],
-  });
-
-  return {
-    subscribe,
-
-    set(neurons: VotingNeuron[]) {
-      set({
-        neurons: [...neurons],
-        selectedIds: neurons.map(({ neuronIdString }) => neuronIdString),
-      });
-    },
-
-    updateNeurons(neurons: VotingNeuron[]) {
-      update(({ neurons: currentNeurons, selectedIds }) => {
-        return {
-          neurons,
-          selectedIds: preserveNeuronSelectionAfterUpdate({
-            neurons: currentNeurons,
-            updatedNeurons: neurons,
-            selectedIds,
-          }),
-        };
-      });
-    },
-
-    // Used for testing purpose
-    reset() {
-      this.set([]);
-    },
-
-    toggleSelection(neuronId: string) {
-      update(({ neurons, selectedIds }) => ({
-        neurons,
-        selectedIds: selectedIds.includes(neuronId)
-          ? selectedIds.filter((id) => id !== neuronId)
-          : Array.from(new Set([...selectedIds, neuronId])),
-      }));
-    },
-  };
-};
-
 const initProposalPayloadsStore = () => {
   const throwOnSet = (
     map: Map<ProposalId, ProposalPayload>
@@ -269,6 +213,4 @@ const initProposalPayloadsStore = () => {
 
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
-
-export const votingNeuronSelectStore = initNeuronSelectStore();
 export const proposalPayloadsStore = initProposalPayloadsStore();

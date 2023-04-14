@@ -7,7 +7,6 @@
 
   import { getContext } from "svelte";
   import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
   import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
   import {
@@ -30,6 +29,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   export let proposalInfo: ProposalInfo;
 
