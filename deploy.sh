@@ -7,9 +7,9 @@ help_text() {
 
 	Deploys the nns-dapp or internet identity to a network.
 
-  This file will recreate the arguments file and override it.
+	This file will recreate the arguments file and override it.
 
-  If you want to use a custom arguments file, use dfx directly.
+	If you want to use a custom arguments file, use dfx directly.
 
 	Usage:
 
@@ -20,9 +20,9 @@ help_text() {
 	./deploy.sh --nns-dapp <network>
 	  Deploys nns-dapp to the selected network. The default is "local".
 
-The available networks are the ones listed in dfx.json.
+	The available networks are the ones listed in dfx.json.
 
-EOF
+	EOF
 }
 
 #
