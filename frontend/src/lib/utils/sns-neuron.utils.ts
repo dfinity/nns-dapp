@@ -8,7 +8,7 @@ import { votingPower } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -16,6 +16,7 @@ import {
   type SnsNervousSystemFunction,
   type SnsNervousSystemParameters,
   type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
 import {
   fromDefinedNullable,
@@ -682,4 +683,43 @@ export const snsNeuronVotingPower = ({
 
   // The voting power multiplier is applied against the total voting power of the neuron
   return vp * (Number(voting_power_percentage_multiplier) / 100);
+};
+
+export const ineligibleSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  const { ballots, proposal_creation_timestamp_seconds } = proposal;
+
+  return neurons.filter((neuron) => {
+    const neuronId = getSnsNeuronIdAsHexString(neuron);
+    const createdSinceProposal: boolean =
+      neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds;
+    // TODO(sns-voting): validate that no extra logic needs to be applied.
+    const dissolveTooShort: boolean =
+      ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
+      undefined;
+
+    return createdSinceProposal || dissolveTooShort;
+  });
+};
+
+export const votableSnsNeurons = ({
+  neurons,
+  proposal: { ballots },
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  // TODO(sns-voting): validate that this is enough (no ineligible neuron filter)
+  return neurons.filter((neuron) =>
+    ballots.find(
+      ([ballotNeuronId, { vote }]) =>
+        getSnsNeuronIdAsHexString(neuron) === ballotNeuronId &&
+        vote === Vote.Unspecified
+    )
+  );
 };
