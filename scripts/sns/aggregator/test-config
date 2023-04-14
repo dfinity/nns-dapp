@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+
+check() {
+  sleep 2
+  ACTUAL_CONFIG="$(dfx canister call sns_aggregator get_canister_config --query)"
+  DIFF="$(diff <(echo "($EXPECTED_CONFIG)" | idl2json | jq .) <(echo "$ACTUAL_CONFIG" | idl2json | jq .) || true)"
+  test -z "${DIFF:-}" || {
+    scripts/sns/aggregator/get_log
+    echo
+    printf "ERROR: %s\n" "Deployed config is not as expected." "Expected:" "$EXPECTED_CONFIG" "Actual:" "$ACTUAL_CONFIG" "Diff:" "$DIFF"
+    exit 1
+  }
+}
+
+EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
+dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+
+EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
+dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+
+EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
+dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
