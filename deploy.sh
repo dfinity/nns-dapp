@@ -7,6 +7,10 @@ help_text() {
 
 	Deploys the nns-dapp or internet identity to a network.
 
+  This file will recreate the arguments file and override it.
+
+  If you want to use a custom arguments file, use dfx directly.
+
 	Usage:
 
 	Preflight: Make sure that you can run build.sh before using deploy.sh.  The build
@@ -66,7 +70,6 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probably don't.
-  ./config.sh
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
   dfx deploy nns-dapp --argument "$(cat nns-dapp-arg.did)" --upgrade-unchanged --network "$DFX_NETWORK" --no-wallet
   OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
