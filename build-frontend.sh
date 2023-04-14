@@ -50,6 +50,12 @@ cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
 # brew install xz
 cd "$tarball_dir"
 
+# Archive and remove sourcemap files.
+find . -name '*.map' | "$tar" cJv \
+  --files-from=- \
+  --remove-files \
+  -f "$TOPLEVEL/sourcemaps.tar.xz"
+
 # shellcheck disable=SC2038 # We have sane filenames, without return characters in them.
 find . -type f | xargs -I{} gzip -fn "{}"
 

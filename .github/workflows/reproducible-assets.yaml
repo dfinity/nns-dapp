@@ -67,6 +67,7 @@ jobs:
           esac
           mkdir -p builds
           cp assets.tar.xz "builds/assets_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
+          cp sourcemaps.tar.xz "builds/sourcemaps_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
         if: always()

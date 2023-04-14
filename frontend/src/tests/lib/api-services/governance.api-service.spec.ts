@@ -13,8 +13,10 @@ import {
   createMockKnownNeuron,
   createMockNeuron,
 } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Topic, Vote } from "@dfinity/nns";
+import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 
 jest.mock("$lib/api/governance.api");
 
@@ -27,7 +29,6 @@ const identity2 = createMockIdentity(2);
 const unknownIdentity = createMockIdentity(999);
 
 const knownNeuron1 = createMockKnownNeuron(1001);
-const knownNeuron2 = createMockKnownNeuron(1002);
 
 const shouldNotInvalidateCache = async <P, R>({
   apiFunc,
@@ -338,14 +339,129 @@ describe("neurons api-service", () => {
 
   describe("queryKnownNeurons", () => {
     beforeEach(() => {
+      jest.spyOn(api, "queryKnownNeurons").mockResolvedValue([knownNeuron1]);
+    });
+
+    const certifiedParams = { identity: identity1, certified: true };
+    const uncertifiedParams = { identity: identity1, certified: false };
+
+    it("should call queryKnownNeurons api", async () => {
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+      expect(api.queryKnownNeurons).toHaveBeenCalledWith({
+        identity: identity1,
+        certified: true,
+      });
+    });
+
+    it("should fail if queryKnownNeurons api fails", async () => {
       jest
         .spyOn(api, "queryKnownNeurons")
+        .mockRejectedValueOnce(new Error("500"));
+
+      expect(() =>
+        governanceApiService.queryKnownNeurons(certifiedParams)
+      ).rejects.toThrow("500");
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call queryKnownNeurons api once for duplicate certified calls", async () => {
+      // Calls API.
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+      // Uses cache.
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+    });
+
+    it("should call queryKnownNeurons api twice for simultaneous certified calls", async () => {
+      const promise1 = governanceApiService.queryKnownNeurons(certifiedParams);
+      // We didn't await the promise so nothing is cached yet when we make
+      // the second call.
+      const promise2 = governanceApiService.queryKnownNeurons(certifiedParams);
+      expect(promise1).not.toBe(promise2);
+      expect(await promise1).toEqual([knownNeuron1]);
+      expect(await promise2).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should call queryKnownNeurons api twice for duplicate uncertified calls", async () => {
+      expect(
+        await governanceApiService.queryKnownNeurons(uncertifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(
+        await governanceApiService.queryKnownNeurons(uncertifiedParams)
+      ).toEqual([knownNeuron1]);
+      // We don't cache uncertified calls.
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should respond to an uncertified call from the cache", async () => {
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(
+        await governanceApiService.queryKnownNeurons(uncertifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledWith(certifiedParams);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not cache error responses", async () => {
+      jest
+        .spyOn(api, "queryKnownNeurons")
+        .mockRejectedValueOnce(new Error("500"));
+
+      expect(() =>
+        governanceApiService.queryKnownNeurons(certifiedParams)
+      ).rejects.toThrow("500");
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+    });
+
+    it("should expire its cache after 5 minutes", async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date("2020-8-1 21:55:00"));
+
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      jest.setSystemTime(new Date("2020-8-1 21:59:59"));
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+      jest.setSystemTime(new Date("2020-8-1 22:00:01"));
+      expect(
+        await governanceApiService.queryKnownNeurons(certifiedParams)
+      ).toEqual([knownNeuron1]);
+      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("queryLastestRewardEvent", () => {
+    const rewardEvent1: RewardEvent = mockRewardEvent;
+    const rewardEvent2: RewardEvent = {
+      ...rewardEvent1,
+      rounds_since_last_distribution: [BigInt(2_000)],
+    };
+    beforeEach(() => {
+      jest
+        .spyOn(api, "queryLastestRewardEvent")
         .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
           if (identity === identity1) {
-            return [knownNeuron1];
+            return rewardEvent1;
           }
           if (identity === identity2) {
-            return [knownNeuron2];
+            return rewardEvent2;
           }
           throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
         });
@@ -353,32 +469,32 @@ describe("neurons api-service", () => {
 
     const params = { certified: true };
 
-    it("should call queryKnownNeurons api", async () => {
+    it("should call queryLastestRewardEvent api", async () => {
       const params1 = { identity: identity1, ...params };
       const params2 = { identity: identity2, ...params };
-      expect(await governanceApiService.queryKnownNeurons(params1)).toEqual([
-        knownNeuron1,
-      ]);
-      expect(await governanceApiService.queryKnownNeurons(params2)).toEqual([
-        knownNeuron2,
-      ]);
-      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(2);
+      expect(
+        await governanceApiService.queryLastestRewardEvent(params1)
+      ).toEqual(rewardEvent1);
+      expect(
+        await governanceApiService.queryLastestRewardEvent(params2)
+      ).toEqual(rewardEvent2);
+      expect(api.queryLastestRewardEvent).toHaveBeenCalledTimes(2);
     });
 
-    it("should fail if queryKnownNeurons api fails", async () => {
+    it("should fail if queryLastestRewardEvent api fails", async () => {
       expect(() =>
-        governanceApiService.queryKnownNeurons({
+        governanceApiService.queryLastestRewardEvent({
           identity: unknownIdentity,
           ...params,
         })
       ).rejects.toThrow("Unknown identity");
-      expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
+      expect(api.queryLastestRewardEvent).toHaveBeenCalledTimes(1);
     });
 
     it("should not invalidate the cache", async () => {
       await shouldNotInvalidateCache({
-        apiFunc: api.queryKnownNeurons,
-        apiServiceFunc: governanceApiService.queryKnownNeurons,
+        apiFunc: api.queryLastestRewardEvent,
+        apiServiceFunc: governanceApiService.queryLastestRewardEvent,
         params: { identity: identity1, ...params },
       });
     });

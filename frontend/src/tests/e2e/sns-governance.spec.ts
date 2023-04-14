@@ -32,6 +32,14 @@ test("Test SNS governance", async ({ page, context }) => {
       .getBalance()
   ).toEqual("20.00");
 
+  await appPo.goToNeurons();
+  await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
+  expect(
+    await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
+  ).toEqual(
+    `You have no ${snsProjectName} neurons. Stake a neuron to vote on proposals for ${snsProjectName}.`
+  );
+
   // TODO:
   // SN001: User can see the list of neurons
 

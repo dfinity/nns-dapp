@@ -34,11 +34,13 @@
   import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
   import { listNeurons } from "$lib/services/neurons.services";
+  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
 
   export let neuronIdText: string | undefined | null;
 
   onMount(() => {
     listNeurons();
+    loadLatestRewardEvent();
   });
 
   const mapNeuronId = (

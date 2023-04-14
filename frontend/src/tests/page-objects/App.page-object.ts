@@ -1,9 +1,10 @@
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
+import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class AppPo extends BasePageObject {
   getAccountsPo(): AccountsPo {
@@ -12,6 +13,10 @@ export class AppPo extends BasePageObject {
 
   getWalletPo(): WalletPo {
     return WalletPo.under(this.root);
+  }
+
+  getNeuronsPo(): NeuronsPo {
+    return NeuronsPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {
@@ -61,6 +66,12 @@ export class AppPo extends BasePageObject {
       await this.toggleMenu();
       await backdrop.waitForAbsent();
     }
+  }
+
+  async goToNeurons(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickNeuronStaking();
+    // Menu closes automatically.
   }
 
   async getTokens(amount: number): Promise<void> {

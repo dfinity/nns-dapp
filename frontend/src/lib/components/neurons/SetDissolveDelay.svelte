@@ -128,6 +128,8 @@
         on:nnsInput={updateInputError}
         on:blur={updateInputError}
         errorMessage={inputError}
+        placeholderLabelKey="neurons.dissolve_delay_placeholder"
+        name="dissolve_delay"
       />
     </div>
     <div class="range">

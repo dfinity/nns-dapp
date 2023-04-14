@@ -6,6 +6,7 @@
 
 build-inputs.txt
 assets.tar.xz
+sourcemaps.tar.xz
 Dockerfile
 backend-tests
 node_modules

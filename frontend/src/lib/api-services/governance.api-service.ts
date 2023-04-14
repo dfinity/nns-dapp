@@ -9,6 +9,7 @@ import {
   mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
   queryNeuron,
   queryNeurons,
   registerVote,
@@ -39,10 +40,28 @@ import {
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import type { Identity } from "@dfinity/agent";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const cacheExpirationDurationSeconds = 5 * SECONDS_IN_MINUTE;
+
+interface KnownNeuronsCache {
+  knownNeurons: KnownNeuron[];
+  // When the neurons were cached.
+  timestampSeconds: number;
+}
+
+let knownNeuronsCache: KnownNeuronsCache | null = null;
+
+const hasValidKnownNeuronsCache = (): boolean => {
+  if (isNullish(knownNeuronsCache)) {
+    return false;
+  }
+  return (
+    nowInSeconds() - knownNeuronsCache.timestampSeconds <=
+    cacheExpirationDurationSeconds
+  );
+};
 
 interface NeuronsCache {
   neurons: NeuronInfo[];
@@ -56,6 +75,7 @@ let neuronsCache: NeuronsCache | null = null;
 
 export const clearCache = () => {
   neuronsCache = null;
+  knownNeuronsCache = null;
 };
 
 const hasValidCachedNeurons = (identity: Identity): boolean => {
@@ -88,8 +108,22 @@ export const resetNeuronsApiService = () => {
 
 export const governanceApiService = {
   // Read calls
-  queryKnownNeurons(params: ApiQueryParams) {
-    return queryKnownNeurons(params);
+  async queryKnownNeurons(params: ApiQueryParams) {
+    if (nonNullish(knownNeuronsCache) && hasValidKnownNeuronsCache()) {
+      return knownNeuronsCache.knownNeurons;
+    }
+    const promise = queryKnownNeurons(params);
+    if (!params.certified) {
+      return promise;
+    }
+    knownNeuronsCache = {
+      knownNeurons: await promise,
+      timestampSeconds: nowInSeconds(),
+    };
+    return knownNeuronsCache.knownNeurons;
+  },
+  queryLastestRewardEvent(params: ApiQueryParams) {
+    return queryLastestRewardEvent(params);
   },
   queryNeuron(params: ApiQueryNeuronParams) {
     return queryNeuron(params);

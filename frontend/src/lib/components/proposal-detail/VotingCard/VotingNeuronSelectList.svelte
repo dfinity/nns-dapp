@@ -1,9 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { Checkbox } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   export let disabled: boolean;
 

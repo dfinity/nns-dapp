@@ -1,18 +1,20 @@
 import type { ApiQueryParams } from "$lib/api/governance.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
-import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
+import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
 const fakeFunctions = {
   queryNeurons,
   queryKnownNeurons,
+  queryLastestRewardEvent,
 };
 
 //////////////////////////////////////////////
@@ -50,6 +52,13 @@ async function queryKnownNeurons({
   certified: __,
 }: ApiQueryParams): Promise<KnownNeuron[]> {
   return [];
+}
+
+async function queryLastestRewardEvent({
+  identity: _,
+  certified: __,
+}: ApiQueryParams): Promise<RewardEvent> {
+  return mockRewardEvent;
 }
 
 /////////////////////////////////

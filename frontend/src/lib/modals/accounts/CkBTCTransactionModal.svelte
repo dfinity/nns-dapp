@@ -26,6 +26,7 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import BitcoinTransactionInfo from "$lib/components/accounts/BitcoinTransactionInfo.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -42,6 +43,7 @@
 
   let selectedNetwork: TransactionNetwork | undefined = undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+  let kytEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep;
 
@@ -134,6 +136,7 @@
       amount,
       transactionFee: transactionFee.toE8s(),
       bitcoinEstimatedFee,
+      kytEstimatedFee,
     });
 
     return undefined;
@@ -170,12 +173,18 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
+    <BitcoinKYTFee
+      {selectedNetwork}
+      minterCanisterId={canisters.minterCanisterId}
+      bind:kytFee={kytEstimatedFee}
+    />
   </svelte:fragment>
   <BitcoinTransactionInfo {networkBtc} slot="additional-info-review" />
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
+        {kytEstimatedFee}
         {universeId}
         amount={userAmount}
       />

@@ -7,7 +7,7 @@
 </script>
 
 <div>
-  <p class="fee description no-margin">
+  <p class="fee label no-margin">
     <slot name="label">{$i18n.accounts.transaction_fee}</slot>
   </p>
 
