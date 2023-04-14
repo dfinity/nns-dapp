@@ -57,9 +57,7 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
 #[ic_cdk_macros::query]
 #[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
 fn get_canister_config() -> Config {
-    STATE.with(|state| {
-        state.stable.borrow().config.borrow().clone()
-    })
+    STATE.with(|state| state.stable.borrow().config.borrow().clone())
 }
 
 /// API method to dump stable data, preserved across upgrades, as JSON.
