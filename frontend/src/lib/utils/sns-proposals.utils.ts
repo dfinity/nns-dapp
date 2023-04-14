@@ -17,7 +17,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { keyOfOptional } from "./utils";
@@ -37,6 +37,7 @@ export type SnsProposalDataMap = {
   wait_for_quiet_deadline_increase_seconds: bigint;
   decided_timestamp_seconds: bigint;
   proposer?: SnsNeuronId;
+  /** will be removed in the future */
   is_eligible_for_rewards: boolean;
   executed_timestamp_seconds: bigint;
 
@@ -338,3 +339,9 @@ export const proposalActionFields = (
     return false;
   });
 };
+
+export const snsProposalIdString = (proposal: SnsProposalData): string =>
+  fromDefinedNullable(proposal.id).id.toString();
+
+export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
+  proposal.decided_timestamp_seconds === 0n;
