@@ -542,6 +542,7 @@
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
     "community_fund_more_info": "Join the community fund to support growing projects on the IC. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/community-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about the community fund\" target=\"_blank\">Learn more</a> about how your neurons (un-staked) maturity is used.",
     "maturity_title": "Maturity",
+    "maturity_last_distribution": "Last Maturity Distribution",
     "stake_maturity": "Stake Maturity",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",

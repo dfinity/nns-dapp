@@ -42,13 +42,15 @@
   </KeyValuePair>
 
   {#if hasStakedMaturity(neuron)}
-    <KeyValuePair testId="staked-maturity">
-      <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
+    <div class="details">
+      <KeyValuePair testId="staked-maturity">
+        <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
 
-      <span slot="value" class="staked-maturity"
-        >{formattedStakedMaturity(neuron)}</span
-      >
-    </KeyValuePair>
+        <span slot="value">{formattedStakedMaturity(neuron)}</span>
+      </KeyValuePair>
+
+      <!-- TODO: Add Last maturity distribution date -->
+    </div>
   {/if}
 
   {#if allowedToStakeMaturity}
