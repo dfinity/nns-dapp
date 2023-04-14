@@ -18,6 +18,9 @@
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+  import { nonNullish } from "@dfinity/utils";
+  import { secondsToDate } from "$lib/utils/date.utils";
 
   export let neuron: NeuronInfo;
 
@@ -27,6 +30,11 @@
     identity: $authStore.identity,
     accounts: $accountsStore,
   });
+
+  let showDetails: boolean;
+  $: showDetails =
+    nonNullish(neuron.fullNeuron?.stakedMaturityE8sEquivalent) ||
+    nonNullish($nnsLatestRewardEventStore);
 </script>
 
 <CardInfo>
@@ -40,13 +48,30 @@
     <h3 slot="value">{formattedTotalMaturity(neuron)}</h3>
   </KeyValuePairInfo>
 
-  {#if neuron.fullNeuron?.stakedMaturityE8sEquivalent !== undefined}
-    <KeyValuePair testId="staked-maturity">
-      <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
-      <span slot="value" class="staked-maturity"
-        >{formattedStakedMaturity(neuron)}</span
-      >
-    </KeyValuePair>
+  {#if showDetails}
+    <div class="details">
+      {#if nonNullish(neuron.fullNeuron?.stakedMaturityE8sEquivalent)}
+        <KeyValuePair testId="staked-maturity">
+          <svelte:fragment slot="key">{$i18n.neurons.staked}</svelte:fragment>
+          <span slot="value">{formattedStakedMaturity(neuron)}</span>
+        </KeyValuePair>
+      {/if}
+
+      {#if nonNullish($nnsLatestRewardEventStore)}
+        <KeyValuePair testId="last-distribution-maturity">
+          <svelte:fragment slot="key"
+            >{$i18n.neuron_detail.maturity_last_distribution}</svelte:fragment
+          >
+          <span slot="value"
+            >{secondsToDate(
+              Number(
+                $nnsLatestRewardEventStore.rewardEvent.actual_timestamp_seconds
+              )
+            )}</span
+          >
+        </KeyValuePair>
+      {/if}
+    </div>
   {/if}
 
   {#if isControllable}

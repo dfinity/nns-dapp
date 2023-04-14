@@ -6,6 +6,7 @@ import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturi
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
   formattedStakedMaturity,
   formattedTotalMaturity,
@@ -20,6 +21,9 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
@@ -255,4 +259,46 @@ describe("NnsNeuronMaturityCard", () => {
       );
     });
   });
+
+  describe("last maturity distribution", () => {
+    beforeEach(() => {
+      nnsLatestRewardEventStore.reset();
+    });
+
+    it("should render last maturity distribution if present in store", async () => {
+      const rewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: BigInt(new Date("1992-05-22T21:00:00").getTime() / 1000),
+      }
+      nnsLatestRewardEventStore.setLatestRewardEvent({
+        rewardEvent,
+        certified: true,
+      });
+
+      const { container } = render(NeuronContextActionsTest, {
+        props: {
+          neuron,
+          testComponent: NnsNeuronMaturityCard,
+        },
+      });
+
+      const keyValuePairPo = KeyValuePairPo.under({
+        element: new JestPageObjectElement(container),
+        testId: "last-distribution-maturity",
+      });
+
+      expect(await keyValuePairPo.getValueText()).toEqual("May 22, 1992");
+    });
+
+    it("should not render last maturity distribution if not in store", async () => {
+      const { queryByTestId } = render(NeuronContextActionsTest, {
+        props: {
+          neuron,
+          testComponent: NnsNeuronMaturityCard,
+        },
+      });
+      
+      expect(queryByTestId("last-distribution-maturity")).not.toBeInTheDocument();
+    });
+  })
 });
