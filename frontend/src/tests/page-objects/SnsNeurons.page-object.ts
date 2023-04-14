@@ -10,8 +10,9 @@ export class SnsNeuronsPo extends BasePageObject {
     return new SnsNeuronsPo(element.byTestId(SnsNeuronsPo.TID));
   }
 
-  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
-    return SkeletonCardPo.allUnder(this.root);
+  getSkeletonCardPo(): SkeletonCardPo {
+    // There are multiple but we only need one.
+    return SkeletonCardPo.under(this.root);
   }
 
   getNeuronCardPos(): Promise<SnsNeuronCardPo[]> {
@@ -20,8 +21,17 @@ export class SnsNeuronsPo extends BasePageObject {
 
   async isContentLoaded(): Promise<boolean> {
     return (
-      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+      (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
     );
+  }
+
+  async waitForContentLoaded(): Promise<void> {
+    await this.waitFor();
+    await this.getSkeletonCardPo().waitForAbsent();
+  }
+
+  getEmptyMessage(): Promise<string> {
+    return this.getText("empty-message-component");
   }
 
   async getNeuronIds(): Promise<string[]> {
