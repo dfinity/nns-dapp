@@ -107,11 +107,15 @@ describe("BtcCkBTCReceiveModal", () => {
 
         await selectSegmentBTC(container);
 
-        await waitFor(() =>
-          expect(getByTestId("kyt-fee")?.textContent).toEqual(
-            `${en.ckbtc.kyt_fee} ${formatEstimatedFee(789n)} ${en.ckbtc.btc}`
-          )
-        );
+        await waitFor(() => {
+          expect(
+            getByTestId("kyt-estimated-fee-label")?.textContent.trim()
+          ).toEqual(`${en.accounts.estimated_internetwork_fee}`);
+
+          expect(getByTestId("kyt-estimated-fee")?.textContent).toEqual(
+            `${formatEstimatedFee(789n)} ${en.ckbtc.btc}`
+          );
+        });
       });
 
       it("should render account identifier (without being shortened)", async () => {

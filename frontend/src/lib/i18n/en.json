@@ -230,6 +230,7 @@
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
     "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
+    "estimated_internetwork_fee": "Estimated Internetwork Fee",
     "estimated_amount_received": "Estimated Received Amount",
     "receive_account": "Account",
     "sending_amount": "Sending Amount",
@@ -282,6 +283,7 @@
     "no_delay": "0",
     "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
     "dissolve_delay_label": "Dissolve Delay (in days)",
+    "dissolve_delay_placeholder": "Delay in days",
     "dissolve_delay_below_minimum": "Dissolve delay is below minimum voting allowance",
     "dissolve_delay_above_maximum": "Dissolve delay exceeds the maximum allowed delay",
     "voting_power": "Voting Power",
@@ -868,7 +870,6 @@
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
-    "kyt_fee": "Inter-network Fee",
     "confirmations": "Confirmations",
     "typically_twelve": "Typically 12"
   },

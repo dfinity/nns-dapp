@@ -239,6 +239,7 @@ interface I18nAccounts {
   network_btc_testnet: string;
   select_network: string;
   estimated_bitcoin_transaction_fee: string;
+  estimated_internetwork_fee: string;
   estimated_amount_received: string;
   receive_account: string;
   sending_amount: string;
@@ -292,6 +293,7 @@ interface I18nNeurons {
   no_delay: string;
   dissolve_delay_description: string;
   dissolve_delay_label: string;
+  dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
   dissolve_delay_above_maximum: string;
   voting_power: string;
@@ -916,7 +918,6 @@ interface I18nCkbtc {
   incoming_bitcoin_network: string;
   block_explorer: string;
   refresh_balance: string;
-  kyt_fee: string;
   confirmations: string;
   typically_twelve: string;
 }

@@ -5,6 +5,7 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
@@ -14,6 +15,7 @@ describe("BitcoinKYTFee", () => {
 
   const props = {
     minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+    selectedNetwork: TransactionNetwork.BTC_TESTNET,
   };
 
   describe("display fee", () => {
@@ -30,17 +32,22 @@ describe("BitcoinKYTFee", () => {
         props,
       });
 
-      await waitFor(() => expect(getByTestId("kyt-fee")).not.toBeNull());
+      await waitFor(() =>
+        expect(getByTestId("kyt-estimated-fee-label")).not.toBeNull()
+      );
 
       // Query + update
       expect(spyDepositFee).toHaveBeenCalledTimes(2);
 
       await waitFor(() => {
-        const content = getByTestId("kyt-fee")?.textContent ?? "";
+        const label = getByTestId("kyt-estimated-fee-label")?.textContent ?? "";
+        expect(
+          label.includes(en.accounts.estimated_internetwork_fee)
+        ).toBeTruthy();
 
-        expect(content.includes(en.ckbtc.kyt_fee)).toBeTruthy();
-        expect(content.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
-        expect(content.includes(en.ckbtc.btc)).toBeTruthy();
+        const fee = getByTestId("kyt-estimated-fee")?.textContent ?? "";
+        expect(fee.includes(`${formatEstimatedFee(result)}`)).toBeTruthy();
+        expect(fee.includes(en.ckbtc.btc)).toBeTruthy();
       });
     });
   });
@@ -61,11 +68,30 @@ describe("BitcoinKYTFee", () => {
         props,
       });
 
-      await waitFor(() => expect(getByTestId("kyt-fee")).not.toBeNull());
+      await waitFor(() => expect(spyDepositFee).toHaveBeenCalled());
 
-      const content = getByTestId("kyt-fee")?.textContent ?? "";
+      expect(() => getByTestId("kyt-estimated-fee-label")).toThrow();
+      expect(() => getByTestId("kyt-estimated-fee")).toThrow();
+    });
+  });
 
-      expect(content.trim()).toEqual(`${en.ckbtc.kyt_fee}`);
+  describe("no selected network", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      spyDepositFee = jest.spyOn(minterApi, "depositFee").mockResolvedValue(0n);
+    });
+
+    it("should not display deposit fee", async () => {
+      const { getByTestId } = render(BitcoinKYTFee, {
+        props: {
+          minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+        },
+      });
+
+      expect(spyDepositFee).not.toHaveBeenCalled();
+      expect(() => getByTestId("kyt-estimated-fee-label")).toThrow();
+      expect(() => getByTestId("kyt-estimated-fee")).toThrow();
     });
   });
 });

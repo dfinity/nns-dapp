@@ -4,13 +4,14 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import { TokenAmount } from "@dfinity/nns";
-  import BitcoinEstimatedFeeDisplay from "$lib/components/accounts/BitcoinEstimatedFeeDisplay.svelte";
+  import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
   import type { Token } from "@dfinity/nns/dist/types/token";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+  export let kytEstimatedFee: bigint | undefined | null = undefined;
   export let universeId: UniverseCanisterId;
 
   let bitcoinLabel: string;
@@ -27,10 +28,16 @@
   let amountE8s = BigInt(0);
   $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : BigInt(0);
 
+  let estimatedFee = BigInt(0);
+  $: estimatedFee =
+    (bitcoinEstimatedFee ?? BigInt(0)) + (kytEstimatedFee ?? BigInt(0));
+
   let estimatedAmount = BigInt(0);
   $: estimatedAmount =
-    nonNullish(bitcoinEstimatedFee) && amountE8s > bitcoinEstimatedFee
-      ? amountE8s - bitcoinEstimatedFee
+    nonNullish(bitcoinEstimatedFee) &&
+    nonNullish(kytEstimatedFee) &&
+    amountE8s > estimatedFee
+      ? amountE8s - estimatedFee
       : BigInt(0);
 
   let tokenEstimatedAmount: TokenAmount;
@@ -46,4 +53,13 @@
   estimation
 />
 
-<BitcoinEstimatedFeeDisplay {bitcoinEstimatedFee} />
+<BitcoinFeeDisplay
+  fee={bitcoinEstimatedFee}
+  testId="bitcoin-estimated-fee-display"
+>
+  {$i18n.accounts.estimated_bitcoin_transaction_fee}
+</BitcoinFeeDisplay>
+
+<BitcoinFeeDisplay fee={kytEstimatedFee} testId="kyt-estimated-fee-display">
+  {$i18n.accounts.estimated_internetwork_fee}
+</BitcoinFeeDisplay>

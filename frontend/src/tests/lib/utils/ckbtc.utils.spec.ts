@@ -15,6 +15,7 @@ describe("ckbtc.utils", () => {
     amount: 0.002,
     bitcoinEstimatedFee: 1n,
     transactionFee: 2n,
+    kytEstimatedFee: 3n,
   };
 
   it("should not throw error", () => {
@@ -92,14 +93,23 @@ describe("ckbtc.utils", () => {
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
 
+    const closestAmount =
+      Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP -
+      Number(params.bitcoinEstimatedFee) / E8S_PER_ICP -
+      Number(params.kytEstimatedFee) / E8S_PER_ICP -
+      Number(params.transactionFee) / E8S_PER_ICP;
+
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
-        amount:
-          Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP -
-          Number(params.bitcoinEstimatedFee) / E8S_PER_ICP -
-          Number(params.transactionFee) / E8S_PER_ICP +
-          0.01,
+        amount: closestAmount,
+      })
+    ).not.toThrow(new NotEnoughAmountError("error.insufficient_funds"));
+
+    expect(() =>
+      assertCkBTCUserInputAmount({
+        ...params,
+        amount: closestAmount + 0.01,
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });

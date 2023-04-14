@@ -13,6 +13,7 @@ const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
     target: "es2020",
+    sourcemap: "hidden",
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -25,16 +26,6 @@ const config: UserConfig = {
             folder.includes("node_modules")
           ) {
             return "qr";
-          }
-
-          // Put ledger and anything commonjs polyfill in the same chunk
-          if (
-            ["@ledgerhq", "semver", "@zondax", "buffer"].find((lib) =>
-              folder.includes(lib)
-            ) !== undefined &&
-            folder.includes("node_modules")
-          ) {
-            return "hw";
           }
 
           if (

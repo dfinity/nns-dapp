@@ -17,6 +17,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: undefined,
           bitcoinEstimatedFee: undefined,
+          kytEstimatedFee: undefined,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -30,6 +31,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: undefined,
           bitcoinEstimatedFee: 1_000n,
+          kytEstimatedFee: 2_000n,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -43,6 +45,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: 10,
           bitcoinEstimatedFee: undefined,
+          kytEstimatedFee: undefined,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -55,7 +58,8 @@ describe("BitcoinEstimatedAmountReceived", () => {
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
         props: {
           amount: 0.0000099,
-          bitcoinEstimatedFee: 1_000n,
+          bitcoinEstimatedFee: 5_000n,
+          kytEstimatedFee: 5_000n,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -70,6 +74,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: undefined,
         bitcoinEstimatedFee: undefined,
+        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -84,6 +89,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: undefined,
         bitcoinEstimatedFee: undefined,
+        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -91,18 +97,51 @@ describe("BitcoinEstimatedAmountReceived", () => {
     expect(getByText(en.ckbtc.btc, { exact: false })).toBeInTheDocument();
   });
 
+  it("should display estimated received amount as zero if estimated btc fee not defined", () => {
+    const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
+      props: {
+        amount: 0.0099,
+        bitcoinEstimatedFee: undefined,
+        kytEstimatedFee: 1_000n,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
+    });
+
+    const element = getByTestId("bitcoin-estimated-amount-value");
+    expect((element?.textContent ?? "").trim()).toEqual(
+      `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`
+    );
+  });
+
+  it("should display estimated received amount as zero if kyt fee not defined", () => {
+    const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
+      props: {
+        amount: 0.0099,
+        bitcoinEstimatedFee: 1_000n,
+        kytEstimatedFee: undefined,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
+    });
+
+    const element = getByTestId("bitcoin-estimated-amount-value");
+    expect((element?.textContent ?? "").trim()).toEqual(
+      `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`
+    );
+  });
+
   it("should display estimated received amount", () => {
     const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
       props: {
         amount: 0.0099,
         bitcoinEstimatedFee: 1_000n,
+        kytEstimatedFee: 2_000n,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
 
     const element = getByTestId("bitcoin-estimated-amount-value");
 
-    const resultBtc = `${formatEstimatedFee(989_000n)} ${en.ckbtc.btc}`;
+    const resultBtc = `${formatEstimatedFee(987_000n)} ${en.ckbtc.btc}`;
     expect(element?.textContent ?? "").toContain(resultBtc);
   });
 });
