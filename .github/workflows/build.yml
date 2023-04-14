@@ -58,7 +58,7 @@ jobs:
           DFX_NETWORK=local ./config.sh
           echo "Install:"
           dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
-          dfx canister install sns_aggregator --wasm out/sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
+          dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # Is the argument not passed through, or why is this so slow?
           dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
