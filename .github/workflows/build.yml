@@ -116,7 +116,7 @@ jobs:
              num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
              (( num_sns < 12)) || break
              printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
+             sleep 10
           done
       - name: Run Playwright end-to-end tests
         working-directory: frontend
