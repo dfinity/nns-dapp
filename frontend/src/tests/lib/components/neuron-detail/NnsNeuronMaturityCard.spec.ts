@@ -22,13 +22,8 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
-// TODO: Fix prettier command. For some reason it moves the JestPageObjectElement import after the KeyValuePairPo import.
-// Yet, it doesn't happen in other files like NnsNeuronDetails.spec.ts
-// VSCode prettier plugin works fine.
-// prettier-ignore
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-// prettier-ignore
-import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
+import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
@@ -289,12 +284,11 @@ describe("NnsNeuronMaturityCard", () => {
         },
       });
 
-      const keyValuePairPo = KeyValuePairPo.under({
-        element: new JestPageObjectElement(container),
-        testId: "last-distribution-maturity",
-      });
+      const po = NnsNeuronMaturityCardPo.under(
+        new JestPageObjectElement(container)
+      );
 
-      expect(await keyValuePairPo.getValueText()).toEqual("May 22, 1992");
+      expect(await po.getLastDistributionMaturity()).toEqual("May 22, 1992");
     });
 
     it("should not render last maturity distribution if not in store", async () => {

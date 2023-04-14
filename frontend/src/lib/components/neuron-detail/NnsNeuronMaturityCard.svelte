@@ -37,7 +37,7 @@
     nonNullish($nnsLatestRewardEventStore);
 </script>
 
-<CardInfo>
+<CardInfo testId="nns-neuron-maturity-card-component">
   <KeyValuePairInfo testId="maturity">
     <h3 slot="key">{$i18n.neuron_detail.maturity_title}</h3>
     <svelte:fragment slot="info"
