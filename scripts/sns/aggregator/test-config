@@ -12,6 +12,7 @@ source "$SOURCE_DIR/../../clap.bash"
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
+EXIT=0
 
 check() {
   sleep 2
@@ -23,6 +24,7 @@ check() {
     printf "ERROR: %s\n" "Deployed config is not as expected." "Expected:" "$EXPECTED_CONFIG" "Actual:" "$ACTUAL_CONFIG" "Diff:" "$DIFF"
     exit 1
   }
+  echo "Check passes"
 }
 
 (
@@ -49,8 +51,21 @@ check() {
   check
 ) || EXIT=1
 
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking reconfiguring - present only for dev builds"
+  EXPECTED_CONFIG='record { update_interval_ms = 9834; fast_interval_ms = 1_123_456_789; }'
+  test -f sns_aggregator_dev.wasm || cp out/sns_aggregator_dev.wasm ./sns_aggregator_dev.wasm
+  dfx canister install sns_aggregator --wasm ./sns_aggregator_dev.wasm --mode upgrade
+  dfx canister call sns_aggregator reconfigure "( opt $EXPECTED_CONFIG)"
+  check
+) || EXIT=1
+
 : TODO : Test deploying by proposal
 
-: TODO: Test reconfiguring
-
-exit "${EXIT:-0}"
+printf "\n\n\n=========================================\n"
+if (( "$EXIT" == 0 ))
+then echo ALL AGGREGATOR CONFIG TESTS PASSED
+else echo SOME AGGREGATOR CONFIG TESTS FAILED
+fi
+exit "${EXIT}"
