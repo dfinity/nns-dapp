@@ -111,6 +111,7 @@ jobs:
           npm ci
       - name: Wait for aggregator to get all SNSs
         run: |
+          set +x
           for (( try=300; try>0; try-- )); do
              num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
              (( num_sns < 12)) || break
