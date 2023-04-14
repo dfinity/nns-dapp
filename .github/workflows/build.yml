@@ -112,8 +112,9 @@ jobs:
       - name: Wait for aggregator to get all SNSs
         run: |
           for (( i=300; i>0; i-- )); do
-             (( $(seq 0 1 | xargs -I{} curl -sS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/{}/slow.json" | jq '.[]|.index' | wc -l) < 12)) || break
-             printf "\r % 4d" "$i"
+             num_sns="$(for ((i=0; i<3; i++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$i/slow.json" | jq length ; } 2>/dev/null ; done | awk '{i+=$1}END{print i}')"
+             (( num_sns < 12)) || break
+             printf "\r #SNS: % 4d   Tries remaining: 4d" "$num_sns" "$i"
              sleep 1
           done
       - name: Run Playwright end-to-end tests
