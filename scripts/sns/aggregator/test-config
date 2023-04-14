@@ -64,8 +64,9 @@ check() {
 : TODO : Test deploying by proposal
 
 printf "\n\n\n=========================================\n"
-if (( "$EXIT" == 0 ))
-then echo ALL AGGREGATOR CONFIG TESTS PASSED
-else echo SOME AGGREGATOR CONFIG TESTS FAILED
+if (("$EXIT" == 0)); then
+  echo ALL AGGREGATOR CONFIG TESTS PASSED
+else
+  echo SOME AGGREGATOR CONFIG TESTS FAILED
 fi
 exit "${EXIT}"
