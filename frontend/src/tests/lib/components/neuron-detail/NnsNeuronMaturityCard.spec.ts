@@ -22,7 +22,12 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
+// TODO: Fix prettier command. For some reason it moves the JestPageObjectElement import after the KeyValuePairPo import.
+// Yet, it doesn't happen in other files like NnsNeuronDetails.spec.ts
+// VSCode prettier plugin works fine.
+// prettier-ignore
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+// prettier-ignore
 import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
