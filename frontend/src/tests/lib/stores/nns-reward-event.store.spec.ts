@@ -69,4 +69,25 @@ describe("nnsLatestRewardEventStore", () => {
     });
     expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(oldReward);
   });
+
+  it("should not change the reward event that has an older timestamp if the event in the store is not certified and the new event is also not certified", () => {
+    const newReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(4),
+    };
+    const oldReward = {
+      ...mockRewardEvent,
+      actual_timestamp_seconds: BigInt(3),
+    };
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: newReward,
+      certified: false,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(newReward);
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      rewardEvent: oldReward,
+      certified: false,
+    });
+    expect(get(nnsLatestRewardEventStore).rewardEvent).toEqual(newReward);
+  });
 });

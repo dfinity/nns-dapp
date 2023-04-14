@@ -34,11 +34,11 @@ const initNnsLatestRewardEventStore = (): NnsLatestRewardEventStore => {
           return { rewardEvent, certified };
         }
         const prevRewardEvent = currentData.rewardEvent;
-        // Keep current data if the new reward event is older than the current one and the current is certified.
+        // Keep current data if the reward event parameter has a timestamp older than the current one and the current is certified.
         if (
           prevRewardEvent.actual_timestamp_seconds >=
             rewardEvent.actual_timestamp_seconds &&
-          currentData.certified
+          (currentData.certified || !certified)
         ) {
           return currentData;
         }
