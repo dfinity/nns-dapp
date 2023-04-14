@@ -58,7 +58,7 @@ jobs:
           DFX_NETWORK=local ./config.sh
           echo "Install:"
           dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
           jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
           curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
@@ -109,6 +109,13 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
+      - name: Wait for aggregator to get all SNSs
+        run: |
+          for (( i=300; i>0; i-- )); do
+             (( $(seq 0 1 | xargs -I{} curl -sS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/{}/slow.json" | jq '.[]|.index' | wc -l) < 12)) || break
+             printf "\r % 4d" "$i"
+             sleep 1
+          done
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: npm run test-e2e
