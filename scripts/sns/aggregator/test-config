@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
 
+	Tests that the aggregator canister config is set to the expected value after deploying.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 check() {
   sleep 2
@@ -14,14 +25,32 @@ check() {
   }
 }
 
-EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
-dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
-check
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking direct reinstallation"
+  EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+  check
+) || EXIT=1
 
-EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
-dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
-check
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking upgrade with a raw argument"
+  EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+  check
+) || EXIT=1
 
-EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
-dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
-check
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking upgrade with a candid argument"
+  EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
+  check
+) || EXIT=1
+
+: TODO : Test deploying by proposal
+
+: TODO: Test reconfiguring
+
+exit "${EXIT:-0}"
