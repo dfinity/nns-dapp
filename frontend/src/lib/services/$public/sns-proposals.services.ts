@@ -220,12 +220,15 @@ const getProposalFromStoreById = ({
  * @param {Object} params
  * @param {Principal} params.rootCanisterId
  * @param {SnsProposalId} params.proposalId
+ * @param {Function} params.handleError
+ * @param {boolean} params.reloadForBallots Skip the store value and fetch the proposal when there is no ballots available.
  */
 export const getSnsProposalById = async ({
   rootCanisterId,
   proposalId,
   setProposal,
   handleError,
+  reloadForBallots,
 }: {
   rootCanisterId: Principal;
   proposalId: SnsProposalId;
@@ -234,13 +237,24 @@ export const getSnsProposalById = async ({
     certified: boolean;
   }) => void;
   handleError?: (err: unknown) => void;
+  // TODO(sns-voting): test for `reloadForBallots`
+  /**  */
+  reloadForBallots?: boolean;
 }): Promise<void> => {
   const proposal = getProposalFromStoreById({
     rootCanisterId,
     proposalId,
     certified: true,
   });
-  if (nonNullish(proposal)) {
+
+  // Skip proposal from the store if there is no ballots loaded
+  // (proposalList returns ballots: [])
+  if (
+    nonNullish(proposal) &&
+    reloadForBallots &&
+    proposal.ballots.length === 0
+  ) {
+    // TODO(sns-voting)
     setProposal({ proposal, certified: true });
     return;
   }

@@ -20,6 +20,6 @@
     total={Number(tally.total)}
   />
 
-  <!--  TODO: check {#if !settled} logic for sns-->
+  <!--  TODO(sns-voting): check {#if !settled} logic for sns-->
   <SnsVotingCard {proposal} />
 </div>
