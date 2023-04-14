@@ -16,9 +16,12 @@ check() {
 
 EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
 dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+check
 
 EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
 dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+check
 
 EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
 dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
+check
