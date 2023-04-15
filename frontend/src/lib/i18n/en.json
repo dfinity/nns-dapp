@@ -236,7 +236,8 @@
     "sending_amount": "Sending Amount",
     "total_deducted": "Total Deducted",
     "received_amount": "Received Amount",
-    "transaction_time": "Transaction Time"
+    "transaction_time": "Transaction Time",
+    "transaction_time_seconds": "Seconds"
   },
   "neurons": {
     "title": "Neurons",
