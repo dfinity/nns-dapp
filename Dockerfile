@@ -83,11 +83,12 @@ RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Image to build the nns-dapp frontend.
-# Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY --from=configurator /build/frontend/.env /build/frontend/.env
+# ... If .env is present, it can cause this entire stage to miss the cache.
+#     The .dockerignore _should_ prevent it from appearing here.
+RUN if test -e /build/frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
 COPY ./build-frontend.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
@@ -134,9 +135,10 @@ RUN ./build-sns-aggregator.sh
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
+# Note: The frontend/.env is kept for use with local deployments only.
+COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
