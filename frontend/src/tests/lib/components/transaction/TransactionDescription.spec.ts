@@ -26,12 +26,17 @@ describe("TransactionDescription", () => {
     expect(getByText(en.accounts.description)).toBeInTheDocument();
   });
 
-  it("should not render network", () => {
+  it("should render ICP network as default", () => {
     const { getByTestId } = render(TransactionDescription, {
-      props: { destinationAddress: mockMainAccount.identifier },
+      props: {
+        destinationAddress: mockMainAccount.identifier,
+        selectedNetwork: undefined,
+      },
     });
 
-    expect(() => getByTestId("transaction-description-network")).toThrow();
+    expect(getByTestId("transaction-description-network")?.textContent).toEqual(
+      en.accounts.network_icp
+    );
   });
 
   it("should render network", () => {
