@@ -229,13 +229,16 @@
     "network_btc_mainnet": "Bitcoin (BTC)",
     "network_btc_testnet": "Bitcoin (Testnet BTC)",
     "select_network": "Select network",
+    "bitcoin_transaction_fee_notice": "BTC Network Fee *",
     "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
+    "internetwork_fee_notice": "Internetwork Fee *",
     "estimated_internetwork_fee": "Estimated Internetwork Fee",
-    "estimated_amount_received": "Estimated Received Amount",
+    "estimation_notice": "* Estimation. Fees are applied when transfer is effective.",
     "receive_account": "Account",
     "sending_amount": "Sending Amount",
     "total_deducted": "Total Deducted",
     "received_amount": "Received Amount",
+    "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time"
   },
   "neurons": {
