@@ -30,10 +30,10 @@ source "$(clap.build)"
 
 get_data() {
   (
-    DFX_COMMIT="$(git rev-parse "$1")"
-    export DFX_COMMIT
+    COMMIT="$(git rev-parse "$1")"
+    export COMMIT
 
-    printf "\n\n## Commit $DFX_COMMIT $(git show -s --format=%ci "$DFX_COMMIT")\n\`\`\`\n"
+    printf "\n\n## Commit %s %s\n\`\`\`" "$COMMIT" "$(git show -s --format=%ci "$COMMIT")"
 
     build_hash_from_logs() {
       sed -nr 's&.*\<([a-z0-9]{64}) +(\/build\/)?'"$DFX_ASSET"'.*&\1&g;ta;b;:a;p' | tail -n1 | grep .
@@ -44,7 +44,7 @@ get_data() {
     LOG_END="$(($(date +%s) / 3600))"
     logfile=",ci-builds-of-${DFX_LIMIT}-${LOG_END}.txt"
     test -s "$logfile" || gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha >"$logfile"
-    readarray -t runs < <(jq '.[] | select(.headSha==env.DFX_COMMIT) | select(.conclusion=="success") | .databaseId' "$logfile")
+    readarray -t runs < <(jq '.[] | select(.headSha==env.COMMIT) | select(.conclusion=="success") | .databaseId' "$logfile")
     for run in "${runs[@]}"; do
       : Cache the logfile:
       logfile=",ci-log-${DFX_LIMIT}-$run.log"
@@ -80,7 +80,7 @@ get_data() {
 }
 
 if [[ "$DFX_COMMIT" == *..* ]]; then
-  git log --pretty=%P "$DFX_COMMIT" | awk -v nth="$DFX_NTH" '(NR%nth == 0)' | while read line; do get_data "$line"; done
+  git log --pretty=%P "$DFX_COMMIT" | awk -v nth="$DFX_NTH" '(NR%nth == 0)' | while read -r line; do get_data "$line"; done
 else
   get_data "$DFX_COMMIT"
 fi
