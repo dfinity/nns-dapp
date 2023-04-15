@@ -27,7 +27,7 @@ print_help() {
 	Warning: The script will check out each commit in turn.
 
 	Note: This searches through gihub logs.  Only fairly recent logs are readily accessible.
-	      Older runs may be found using high velues for the '--limit' flag but this is very slow.
+	      Older runs may be found using high values for the '--limit' flag but this is very slow.
 
 	EOF
 }
@@ -37,7 +37,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
 clap.define short=f long=file desc="The file to compare" variable=DFX_ASSET default="nns-dapp.wasm"
-clap.define short=c long=commit desc="The commit to check (will be checked out)" variable=DFX_COMMIT default="HEAD"
+clap.define short=c long=commit desc="The commit to check (will be checked out).  May be a range, as defined here: https://git-scm.com/docs/git-log" variable=DFX_COMMIT default="HEAD"
 clap.define short=n long=nth desc="Test every Nth commit" variable=DFX_NTH default="1"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
