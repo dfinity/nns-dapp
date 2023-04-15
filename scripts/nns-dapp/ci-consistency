@@ -8,9 +8,13 @@ print_help() {
 
 	Finds CI builds of the current commit.
 
-	Example usage, scanning a range of commits:
+	Example: Checking consistent builds of the current commit
+	$(basename "$0")
+
+	Example: Scanning a range of commits:
 	$(basename "$0") -c fab6e718a13d58d23044b708c99910957a671a4d..main --limit 2000 --nth 10 |& tee ,max-search-3
-	Note: The |& ensures that stderr is also written to the file.  Soometimes fetching logs from github fails.
+	Note: The |& ensures that stderr is also written to the file.  Sometimes fetching logs from github fails.
+	Warning: The script will check out each commit in turn.
 
 	Note: This searches through gihub logs.  Only fairly recent logs are readily accessible.
 	      Older runs may be found using high velues for the '--limit' flag but this is very slow.
@@ -33,7 +37,7 @@ get_data() {
     COMMIT="$(git rev-parse "$1")"
     export COMMIT
 
-    printf "\n\n## Commit %s %s\n\`\`\`" "$COMMIT" "$(git show -s --format=%ci "$COMMIT")"
+    printf '\n\n## Commit %s %s\n```\n' "$COMMIT" "$(git show -s --format=%ci "$COMMIT")"
 
     build_hash_from_logs() {
       sed -nr 's&.*\<([a-z0-9]{64}) +(\/build\/)?'"$DFX_ASSET"'.*&\1&g;ta;b;:a;p' | tail -n1 | grep .
@@ -75,7 +79,7 @@ get_data() {
     #esac
     #printf "% 64s Local native build\n" "${native_hash:-}"
 
-    printf "\`\`\`\n\n"
+    printf '```\n\n'
   ) || true
 }
 
