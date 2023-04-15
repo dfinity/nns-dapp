@@ -72,6 +72,7 @@ RUN didc --version
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
@@ -86,22 +87,19 @@ RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-# ... If .env is present, it can cause this entire stage to miss the cache.
-#     The .dockerignore _should_ prevent it from appearing here.
-RUN if test -e /build/frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
-COPY ./build-frontend.sh /build/
+COPY ./build-frontend.sh config.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
+# ... If .env has been copied in, it can cause this entire stage to miss the cache.
+#     The .dockerignore _should_ prevent it from appearing here.
+RUN if test -e frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
+# The mainnet config is compiled in but may be overridden with deployment args.
+RUN DFX_NETWORK=mainnet ./config.sh
 RUN ./build-frontend.sh
 
 # Title: Image to build the nns-dapp backend.
-# Args: DFX_NETWORK env var for enabling/disabling features.
-#       Note:  Better would probably be to take a config so
-#       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-ARG DFX_NETWORK=mainnet
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
 COPY ./build-backend.sh /build/
