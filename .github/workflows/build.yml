@@ -65,31 +65,16 @@ jobs:
           jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
           curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
           dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
-      - name: Basic downgrade-upgrade test
-        run: |
-          git fetch --depth 1 origin tag prod
-          if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
-          else echo "Skipping test as there are no relevant code changes"
-          fi
-      - name: Wait for aggregator to get all SNSs
-        run: |
-          set +x
-          for (( try=300; try>0; try-- )); do
-             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
-             (( num_sns < 12)) || break
-             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
-          done
       - name: Verify that arguments are set in index.html
         run: |
           go install github.com/ericchiang/pup@latest
           for ((i=5; i>0; i--)); do
-            if curl -sS --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
-            then break
-            else echo "NNS-dapp not ready"
-                 sleep 5
-            fi
+            (
+              curl -fs --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              file index.html
+              < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+            ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
+            break
           done
           echo "Check a few values:"
           for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
@@ -98,6 +83,13 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Basic downgrade-upgrade test
+        run: |
+          git fetch --depth 1 origin tag prod
+          if git diff tags/prod rs/backend | grep -q .
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
+          else echo "Skipping test as there are no relevant code changes"
+          fi
       - name: Rename nns-dapp.wasm for upload
         run: cp nns-dapp.wasm nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
@@ -126,6 +118,15 @@ jobs:
         working-directory: frontend
         run: |
           npm ci
+      - name: Wait for aggregator to get all SNSs
+        run: |
+          set +x
+          for (( try=300; try>0; try-- )); do
+             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
+             (( num_sns < 12)) || break
+             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
+             sleep 2
+          done
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: npm run test-e2e
