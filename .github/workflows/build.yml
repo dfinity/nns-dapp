@@ -65,12 +65,15 @@ jobs:
           jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
           curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
           dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
-      - name: Verify that arguments are set in index.html
+      - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
+          pup --version
+      - name: Verify that arguments are set in index.html
+        run: |
           for ((i=5; i>0; i--)); do
             (
-              curl -fs --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              curl --fail --silent --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
               file index.html
               < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
             ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
