@@ -84,7 +84,13 @@ jobs:
       - name: Verify that arguments are set in index.html
         run: |
           go install github.com/ericchiang/pup@latest
-          curl -sS --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+          for ((i=5; i>0; i--)); do
+            if curl -sS --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+            then break
+            else echo "NNS-dapp not ready"
+                 sleep 5
+            fi
+          done
           echo "Check a few values:"
           for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
             # Verify that the key is non-trivial:
