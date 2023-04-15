@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { nonNullish } from "@dfinity/utils";
   import { TransactionNetwork } from "$lib/types/transaction";
 
   export let destinationAddress: string;
