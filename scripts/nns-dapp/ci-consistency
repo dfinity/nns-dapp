@@ -6,7 +6,17 @@ PATH="$SOURCE_DIR:$PATH"
 print_help() {
   cat <<-EOF
 
-	Finds CI builds of the current commit.
+	Compares CI and local docker builds.
+
+	For a single commit, this:
+	* Searches for builds of the commit in CI and gets the build hashes.
+	* Checks out the commit, if it is not HEAD.
+	* Builds the commit locally in docker.
+	* Prints the results.
+
+	For a range of commits, this:
+	* Gets each commit in the range, optionally picking only every nth one.
+	* Checks out and compares builds of that commit.
 
 	Example: Checking consistent builds of the current commit
 	$(basename "$0")
