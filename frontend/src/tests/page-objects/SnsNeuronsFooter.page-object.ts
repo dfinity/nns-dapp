@@ -28,7 +28,7 @@ export class SnsNeuronsFooterPo extends BasePageObject {
   async stakeNeuron(amount: number): Promise<void> {
     await this.clickStakeNeuronsButton();
     const modal = this.getSnsStakeNeuronModalPo();
-    await modal.stake(5);
+    await modal.stake(amount);
     await modal.waitForAbsent();
   }
 }
