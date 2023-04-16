@@ -718,6 +718,7 @@ export const votableSnsNeurons = ({
 }): SnsNeuron[] => {
   // TODO(sns-voting): validate that this is enough (no ineligible neuron filter)
   return neurons.filter((neuron) =>
+    // TODO(sns-voting): is hasPermissionToVote necessary?
     ballots.find(
       ([ballotNeuronId, { vote }]) =>
         getSnsNeuronIdAsHexString(neuron) === ballotNeuronId &&
