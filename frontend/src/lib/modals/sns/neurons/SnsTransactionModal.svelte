@@ -20,6 +20,7 @@
 </script>
 
 <TransactionModal
+  testId="sns-stake-neuron-modal-component"
   {rootCanisterId}
   on:nnsSubmit
   on:nnsClose
