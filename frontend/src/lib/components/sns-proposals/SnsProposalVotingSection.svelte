@@ -3,22 +3,25 @@
   import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 
   export let proposal: SnsProposalData;
 
   let tally: SnsTally;
   $: tally = fromDefinedNullable(proposal.latest_tally);
+  let yes = 0;
+  $: Number(tally.yes) / E8S_PER_ICP;
+  let no = 0;
+  $: no = Number(tally.no) / E8S_PER_ICP;
+  let total = 0;
+  $: total = Number(tally.total) / E8S_PER_ICP;
 </script>
 
 <div
   class="content-cell-island"
   data-tid="sns-proposal-voting-section-component"
 >
-  <VotesResults
-    yes={Number(tally.yes)}
-    no={Number(tally.no)}
-    total={Number(tally.total)}
-  />
+  <VotesResults {yes} {no} {total} />
 
   <!--  TODO(sns-voting): check {#if !settled} logic for sns-->
   <SnsVotingCard {proposal} />
