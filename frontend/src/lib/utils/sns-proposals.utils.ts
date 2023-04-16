@@ -4,10 +4,17 @@ import {
   SNS_PROPOSAL_COLOR,
 } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { VotingNeuron } from "$lib/types/proposals";
+import {
+  getSnsNeuronIdAsHexString,
+  snsNeuronVotingPower,
+} from "$lib/utils/sns-neuron.utils";
 import type {
+  NervousSystemParameters,
   SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
+  SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
@@ -345,3 +352,14 @@ export const snsProposalIdString = (proposal: SnsProposalData): string =>
 
 export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
   proposal.decided_timestamp_seconds === 0n;
+
+export const snsNeuronToVotingNeuron = ({
+  neuron,
+  snsParameters,
+}: {
+  neuron: SnsNeuron;
+  snsParameters: NervousSystemParameters;
+}): VotingNeuron => ({
+  neuronIdString: getSnsNeuronIdAsHexString(neuron),
+  votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
+});

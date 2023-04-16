@@ -15,13 +15,14 @@
   import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { listNeurons } from "$lib/services/neurons.services";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { proposalsPathStore } from "$lib/derived/paths.derived";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -33,27 +34,55 @@
     nonNullish(universeIdText) &&
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
 
-  $: if (!neuronsReady) {
-    // fetch neurons when not fetched yet (neurons store undefined)
-    (async () => {
-      await syncSnsNeurons(Principal.from(universeIdText));
-    })();
-  }
-
-  // TODO(sns-voting): Use proposal to render the component.
+  // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | "loading" | "error" = "loading";
+
+  let loading = false;
 
   const isLoadedProposal = (
     proposal: SnsProposalData | "loading" | "error"
   ): proposal is SnsProposalData =>
     proposal !== "loading" && proposal !== "error";
 
-  onMount(() => {
+  const goBack = (replaceState: boolean): Promise<void> =>
+    goto($proposalsPathStore, { replaceState });
+
+  onMount(async () => {
     // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
     if (!$ENABLE_SNS_VOTING) {
       goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
         replaceState: true,
       });
+    }
+
+    if (isNullish(proposalIdText)) {
+      await goBack(true);
+      return;
+    }
+
+    try {
+      const universeId = Principal.fromText($pageStore.universe);
+      const universeIdText = universeId.toText();
+      const neuronsReady =
+        nonNullish(universeIdText) &&
+        nonNullish($snsNeuronsStore[universeIdText]?.neurons);
+
+      startBusy({ initiator: "load-sns-accounts" });
+      loading = true;
+
+      await Promise.all([
+        neuronsReady ? undefined : syncSnsNeurons(universeId),
+        loadSnsParameters(universeId),
+        // TODO(sns-voting): move getSnsProposalById here?
+        // TODO(sns-voting): check do we need to sync accounts there?
+        // syncSnsAccounts({ universeId }),
+      ]);
+
+      stopBusy("load-sns-accounts");
+      loading = false;
+    } catch (err: unknown) {
+      // $pageStore.universe might be an invalid principal etc
+      await goBack(true);
     }
   });
 
@@ -82,6 +111,7 @@
         const reloadForBallots =
           neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
         proposal = "loading";
+
         getSnsProposalById({
           rootCanisterId: universeCanisterId,
           proposalId,
@@ -120,7 +150,7 @@
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if isLoadedProposal(proposal) && nonNullish(universeCanisterId)}
+  {#if isLoadedProposal(proposal) && nonNullish(universeCanisterId) && !loading}
     <div class="content-a">
       <SnsProposalSystemInfoSection
         {proposal}

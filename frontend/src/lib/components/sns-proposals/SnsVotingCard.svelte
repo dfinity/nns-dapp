@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BottomSheet } from "@dfinity/gix-components";
+  import { BottomSheet, startBusy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
@@ -14,12 +14,19 @@
   import {
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
+    votingNeuronSelectStore,
   } from "$lib/stores/vote-registration.store";
   import {
+    snsNeuronToVotingNeuron,
     snsProposalIdString,
     snsProposalOpen,
   } from "$lib/utils/sns-proposals.utils";
   import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
+  import type { NervousSystemParameters, SnsVote } from "@dfinity/sns";
+  import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 
   export let proposal: SnsProposalData;
 
@@ -29,10 +36,17 @@
   let universeIdText: UniverseCanisterIdText | undefined;
   $: universeIdText = $snsOnlyProjectStore?.toText();
 
+  let snsParameters: NervousSystemParameters | undefined;
+  $: if (nonNullish(universeIdText)) {
+    snsParameters = $snsParametersStore[universeIdText]?.parameters;
+  }
+
   let voteRegistration: VoteRegistrationStoreEntry | undefined = undefined;
-  $: voteRegistration = (
-    $voteRegistrationStore.registrations[universeIdText] ?? []
-  ).find(({ proposalIdString: id }) => proposalIdString === id);
+  $: if (nonNullish(universeIdText)) {
+    voteRegistration = (
+      $voteRegistrationStore.registrations[universeIdText] ?? []
+    ).find(({ proposalIdString: id }) => proposalIdString === id);
+  }
 
   let votableNeurons: SnsNeuron[] = [];
   $: votableNeurons = votableSnsNeurons({
@@ -47,7 +61,18 @@
       voteRegistration !== undefined ||
       (votableNeurons.length > 0 && snsProposalOpen(proposal)));
 
-  // TODO: implement initial selection (see initialSelectionDone)
+  // TODO(sns-voting): implement initial selection (see initialSelectionDone)
+  // DEMO selection
+  $: if (votableNeurons.length > 0 && nonNullish(snsParameters)) {
+    votingNeuronSelectStore.set(
+      votableNeurons.map((neuron: SnsNeuron) =>
+        snsNeuronToVotingNeuron({
+          neuron,
+          snsParameters: snsParameters as NervousSystemParameters,
+        })
+      )
+    );
+  }
 
   let neuronsReady = false;
   $: neuronsReady =
@@ -57,6 +82,11 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
+  const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
+    startBusy({ initiator: "load-sns-accounts" });
+    await registerVoteDemo({ proposal, vote: detail.voteType });
+    stopBusy("load-sns-accounts");
+  };
 </script>
 
 <BottomSheet>
@@ -65,7 +95,10 @@
       {#if $sortedSnsUserNeuronsStore.length > 0}
         {#if neuronsReady}
           {#if visible}
-            TODO: add VotingConfirmationToolbar
+            <VotingConfirmationToolbar
+              {voteRegistration}
+              on:nnsConfirm={vote}
+            />
           {/if}
           TODO: add VotingNeuronSelect {fromDefinedNullable(proposal.id).id}
         {:else}
