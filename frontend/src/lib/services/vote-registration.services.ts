@@ -1,5 +1,4 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
-import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { i18n } from "$lib/stores/i18n";
@@ -58,6 +57,7 @@ export const registerNnsVotes = async ({
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
   await registerVotes({
+    universeCanisterId: OWN_CANISTER_ID,
     neuronIdStrings: neuronIds.map(String),
     proposalIdString: `${proposalInfo.id}`,
     proposalTopic: proposalInfo.topic,
@@ -104,8 +104,9 @@ export const registerSnsVotes = async ({
   reloadProposalCallback: (proposal: SnsProposalData) => void;
 }): Promise<void> => {
   await registerVotes({
+    universeCanisterId,
     neuronIdStrings: neurons.map(String),
-    proposalIdString: `${proposal.id}`,
+    proposalIdString: fromDefinedNullable(proposal.id).id.toString(),
     // TODO(sns-voting): set real topic/type
     proposalTopic: Topic.Unspecified,
     vote,
@@ -138,6 +139,7 @@ export const registerSnsVotes = async ({
  * (regardless of neuron type nns/sns)
  */
 const registerVotes = async ({
+  universeCanisterId,
   neuronIdStrings,
   proposalIdString,
   proposalTopic,
@@ -145,6 +147,7 @@ const registerVotes = async ({
   registerVotes,
   updateProposals,
 }: {
+  universeCanisterId: UniverseCanisterId;
   neuronIdStrings: string[];
   proposalIdString: string;
   proposalTopic: Topic;
@@ -163,7 +166,7 @@ const registerVotes = async ({
       vote,
       proposalIdString,
       neuronIdStrings,
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
 
     await registerVotes(toastId);
@@ -171,12 +174,14 @@ const registerVotes = async ({
     voteRegistrationStore.updateStatus({
       proposalIdString,
       status: "post-update",
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
 
     // update the toast state (voting -> updating the data)
-    const { successfullyVotedNeuronIdStrings } =
-      voteRegistrationByProposal(proposalIdString);
+    const { successfullyVotedNeuronIdStrings } = voteRegistrationByProposal({
+      proposalIdString,
+      universeCanisterId,
+    });
     updateVoteRegistrationToastMessage({
       toastId,
       proposalIdString,
@@ -193,7 +198,7 @@ const registerVotes = async ({
     toastsHide(toastId);
     voteRegistrationStore.remove({
       proposalIdString,
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
@@ -241,11 +246,15 @@ const createRegisterVotesToast = ({
   });
 };
 
-const voteRegistrationByProposal = (
-  proposalIdString: string
-): VoteRegistrationStoreEntry => {
+const voteRegistrationByProposal = ({
+  universeCanisterId,
+  proposalIdString,
+}: {
+  universeCanisterId: UniverseCanisterId;
+  proposalIdString: string;
+}): VoteRegistrationStoreEntry => {
   const registration = get(voteRegistrationStore).registrations[
-    OWN_CANISTER_ID.toText()
+    universeCanisterId.toText()
   ].find(({ proposalIdString: id }) => id === proposalIdString);
 
   assertNonNullish(registration);
@@ -266,8 +275,10 @@ const nnsNeuronRegistrationComplete = ({
   toastId: symbol;
 }) => {
   const proposalIdString = `${proposalId}`;
-  const { vote, neuronIdStrings } =
-    voteRegistrationByProposal(proposalIdString);
+  const { vote, neuronIdStrings } = voteRegistrationByProposal({
+    proposalIdString,
+    universeCanisterId: OWN_CANISTER_ID,
+  });
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
     ({ neuronId: id }) => id === neuronId
@@ -313,36 +324,39 @@ const nnsNeuronRegistrationComplete = ({
     neuronIdStrings,
     registrationDone: false,
     // use the most actual value
-    successfullyVotedNeuronIdStrings:
-      voteRegistrationByProposal(proposalIdString)
-        .successfullyVotedNeuronIdStrings,
+    successfullyVotedNeuronIdStrings: voteRegistrationByProposal({
+      proposalIdString,
+      universeCanisterId: OWN_CANISTER_ID,
+    }).successfullyVotedNeuronIdStrings,
     vote,
   });
 };
 
 const snsNeuronRegistrationComplete = ({
-  universeId,
+  universeCanisterId,
   neuron,
   proposal,
   updateProposalContext,
   toastId,
 }: {
-  universeId: UniverseCanisterId;
+  universeCanisterId: UniverseCanisterId;
   neuron: SnsNeuron;
   proposal: SnsProposalData;
   updateProposalContext: (proposal: SnsProposalData) => void;
   toastId: symbol;
 }) => {
-  const proposalIdString = `${fromDefinedNullable(proposal.id).id}`;
-  const { vote, neuronIdStrings } =
-    voteRegistrationByProposal(proposalIdString);
+  const proposalIdString = fromDefinedNullable(proposal.id).id.toString();
+  const { vote, neuronIdStrings } = voteRegistrationByProposal({
+    proposalIdString,
+    universeCanisterId,
+  });
 
   // TODO(sns-voting): fake registration (see nnsNeuronRegistrationComplete)
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalIdString,
     neuronIdString: getSnsNeuronIdAsHexString(neuron),
-    canisterId: universeId,
+    canisterId: universeCanisterId,
   });
 
   // TODO(sns-voting): Optimistically update neuron vote state
@@ -362,9 +376,10 @@ const snsNeuronRegistrationComplete = ({
     neuronIdStrings,
     registrationDone: false,
     // use the most actual value
-    successfullyVotedNeuronIdStrings:
-      voteRegistrationByProposal(proposalIdString)
-        .successfullyVotedNeuronIdStrings,
+    successfullyVotedNeuronIdStrings: voteRegistrationByProposal({
+      proposalIdString,
+      universeCanisterId,
+    }).successfullyVotedNeuronIdStrings,
     vote,
   });
 };
@@ -515,7 +530,7 @@ const registerSnsNeuronsVote = async ({
           // call it only after successful registration
           .then(() =>
             snsNeuronRegistrationComplete({
-              universeId: universeCanisterId,
+              universeCanisterId: universeCanisterId,
               neuron,
               proposal,
               updateProposalContext,
@@ -537,7 +552,7 @@ const registerSnsNeuronsVote = async ({
     processRegisterVoteErrors({
       registerVoteResponses,
       neuronIdStrings: neurons.map(String),
-      proposalIdString: `${proposalId}`,
+      proposalIdString: proposalId.id.toString(),
       // TODO(sns-voting): set real topic/type
       topic: Topic.Unspecified,
     });

@@ -138,7 +138,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         const universeRegistrations = registrations[canisterId.toText()];
 
         if (universeRegistrations === undefined) {
-          throw new Error("no registrations for canister id");
+          throw new Error("No registrations for canister id");
         }
 
         const proposalRegistration = universeRegistrations.find(
@@ -187,7 +187,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         const universeRegistrations = registrations[canisterId.toText()];
 
         if (universeRegistrations === undefined) {
-          throw new Error("no registrations for canister id");
+          throw new Error("no registrations for canister ID");
         }
 
         const proposalRegistration = universeRegistrations.find(
