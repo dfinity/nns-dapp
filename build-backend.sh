@@ -12,3 +12,6 @@ if [[ $DFX_NETWORK != "mainnet" ]]; then
 else
   "$TOPLEVEL/build-rs.sh" nns-dapp
 fi
+
+# Sanity check
+scripts/nns-dapp/test-exports

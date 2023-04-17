@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+diff <(sort rs/backend/nns-dapp-exports.txt) <(wasm-nm -je <(gunzip <nns-dapp.wasm)| sort)
