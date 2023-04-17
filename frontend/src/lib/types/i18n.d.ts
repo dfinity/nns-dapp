@@ -238,13 +238,16 @@ interface I18nAccounts {
   network_btc_mainnet: string;
   network_btc_testnet: string;
   select_network: string;
+  bitcoin_transaction_fee_notice: string;
   estimated_bitcoin_transaction_fee: string;
+  internetwork_fee_notice: string;
   estimated_internetwork_fee: string;
-  estimated_amount_received: string;
+  estimation_notice: string;
   receive_account: string;
   sending_amount: string;
   total_deducted: string;
   received_amount: string;
+  received_amount_notice: string;
   transaction_time: string;
   transaction_time_seconds: string;
 }
