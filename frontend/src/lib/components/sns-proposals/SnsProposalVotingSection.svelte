@@ -6,6 +6,7 @@
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 
   export let proposal: SnsProposalData;
+  export let reloadProposal: () => Promise<void>;
 
   let tally: SnsTally;
   $: tally = fromDefinedNullable(proposal.latest_tally);
@@ -24,5 +25,5 @@
   <VotesResults {yes} {no} {total} />
 
   <!--  TODO(sns-voting): check {#if !settled} logic for sns-->
-  <SnsVotingCard {proposal} />
+  <SnsVotingCard {proposal} {reloadProposal} />
 </div>

@@ -8,6 +8,10 @@ import type { NervousSystemParameters } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
+/**
+ * Skip request when available in the `snsParametersStore`
+ * @param rootCanisterId Principal
+ */
 export const loadSnsParameters = async (
   rootCanisterId: Principal
 ): Promise<void> => {

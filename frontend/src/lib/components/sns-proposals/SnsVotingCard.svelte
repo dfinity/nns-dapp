@@ -29,6 +29,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 
   export let proposal: SnsProposalData;
+  export let reloadProposal: () => Promise<void>;
 
   let proposalIdString: string;
   $: proposalIdString = snsProposalIdString(proposal);
@@ -84,7 +85,10 @@
 
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     startBusy({ initiator: "load-sns-accounts" });
+
     await registerVoteDemo({ proposal, vote: detail.voteType });
+    await reloadProposal();
+
     stopBusy("load-sns-accounts");
   };
 </script>
