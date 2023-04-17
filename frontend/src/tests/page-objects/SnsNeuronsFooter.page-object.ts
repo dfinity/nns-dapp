@@ -10,7 +10,7 @@ export class SnsNeuronsFooterPo extends BasePageObject {
     return new SnsNeuronsFooterPo(element.byTestId(SnsNeuronsFooterPo.TID));
   }
 
-  getStakeNeuronsButton(): ButtonPo {
+  getStakeNeuronsButtonPo(): ButtonPo {
     return ButtonPo.under({
       element: this.root,
       testId: "stake-sns-neuron-button",
@@ -22,7 +22,7 @@ export class SnsNeuronsFooterPo extends BasePageObject {
   }
 
   clickStakeNeuronsButton(): Promise<void> {
-    return this.getStakeNeuronsButton().click();
+    return this.getStakeNeuronsButtonPo().click();
   }
 
   async stakeNeuron(amount: number): Promise<void> {
