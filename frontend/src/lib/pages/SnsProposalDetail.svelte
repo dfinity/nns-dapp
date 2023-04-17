@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
-  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
@@ -16,18 +12,26 @@
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
-  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
+  import { stringifyJson } from "$lib/utils/utils";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
-  import { proposalsPathStore } from "$lib/derived/paths.derived";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 
   export let proposalIdText: string | undefined | null = undefined;
 
-  let universeIdText: UniverseCanisterIdText | undefined;
-  $: universeIdText = $snsOnlyProjectStore?.toText();
+  let universeId: Principal;
+  $: universeId = Principal.fromText($pageStore.universe);
+
+  let universeIdText: string | undefined;
+  $: universeIdText = universeId.toText();
+
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
 
   let neuronsReady = false;
   $: neuronsReady =
@@ -44,92 +48,76 @@
   ): proposal is SnsProposalData =>
     proposal !== "loading" && proposal !== "error";
 
-  const goBack = (replaceState: boolean): Promise<void> =>
-    goto($proposalsPathStore, { replaceState });
-
-  onMount(async () => {
-    // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
-    if (!$ENABLE_SNS_VOTING) {
-      goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
-        replaceState: true,
-      });
+  const goBack = (
+    universe: UniverseCanisterIdText | undefined
+  ): Promise<void> => {
+    if (nonNullish(universe)) {
+      return goto(
+        buildProposalsUrl({
+          universe,
+        }),
+        {
+          replaceState: true,
+        }
+      );
     }
-
-    if (isNullish(proposalIdText)) {
-      await goBack(true);
-      return;
-    }
-
-    try {
-      const universeId = Principal.fromText($pageStore.universe);
-      const universeIdText = universeId.toText();
-      const neuronsReady =
-        nonNullish(universeIdText) &&
-        nonNullish($snsNeuronsStore[universeIdText]?.neurons);
-
-      startBusy({ initiator: "load-sns-accounts" });
-      loading = true;
-
-      await Promise.all([
-        neuronsReady ? undefined : syncSnsNeurons(universeId),
-        loadSnsParameters(universeId),
-        // TODO(sns-voting): move getSnsProposalById here?
-        // TODO(sns-voting): check do we need to sync accounts there?
-        // syncSnsAccounts({ universeId }),
-      ]);
-
-      stopBusy("load-sns-accounts");
-      loading = false;
-    } catch (err: unknown) {
-      // $pageStore.universe might be an invalid principal etc
-      await goBack(true);
-    }
-  });
+  };
 
   // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
   let universeCanisterId: Principal | undefined;
   $: universeCanisterId = nonNullish(universeIdText)
     ? Principal.fromText(universeIdText)
     : undefined;
-  $: {
+
+  let universeCanisterIdAtTimeOfRequest: string | undefined;
+  const reloadProposal = async () => {
+    if (
+      isNullish(proposalIdText) ||
+      isNullish(universeIdText) ||
+      isNullish(universeCanisterId)
+    ) {
+      return;
+    }
+
+    // We need this to be used in the handleError callback.
+    // Otherwise, TS doesn't believe that the value of `universeCanisterIdText` won't change.
+    universeCanisterIdAtTimeOfRequest = universeIdText;
+
+    const proposalId: SnsProposalId = {
+      id: BigInt(proposalIdText as string),
+    };
+    // No need to force getProposal when user has no sns neurons
+    const reloadForBallots =
+      neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
+    return getSnsProposalById({
+      rootCanisterId: universeCanisterId as Principal,
+      proposalId,
+      setProposal: ({ proposal: proposalData }) => {
+        proposal = proposalData;
+      },
+      handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
+      reloadForBallots,
+    });
+  };
+
+  const update = async () => {
     // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
     if (
       nonNullish(proposalIdText) &&
       nonNullish(universeIdText) &&
-      nonNullish(universeCanisterId) &&
-      // neurons should be already loaded to differentiate
-      neuronsReady
+      nonNullish(universeCanisterId)
     ) {
-      // We need this to be used in the handleError callback.
-      // Otherwise, TS doesn't believe that the value of `universeCanisterIdText` won't change.
-      const universeCanisterIdAtTimeOfRequest = universeIdText;
       try {
-        const proposalId: SnsProposalId = {
-          id: BigInt(proposalIdText as string),
-        };
-        // No need to force getProposal when user has no sns neurons
-        const reloadForBallots =
-          neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
         proposal = "loading";
 
-        getSnsProposalById({
-          rootCanisterId: universeCanisterId,
-          proposalId,
-          setProposal: ({ proposal: proposalData }) => {
-            proposal = proposalData;
-          },
-          handleError: () => {
-            goto(
-              buildProposalsUrl({
-                universe: universeCanisterIdAtTimeOfRequest,
-              }),
-              {
-                replaceState: true,
-              }
-            );
-          },
-          reloadForBallots,
-        });
+        await Promise.all([
+          // skip neurons call when not signedIn
+          neuronsReady || !isSignedIn ? undefined : syncSnsNeurons(universeId),
+          loadSnsParameters(universeId),
+          reloadProposal(),
+          // TODO(sns-voting): check do we need to sync accounts there?
+          // syncSnsAccounts({ universeId }),
+        ]);
       } catch (error) {
         proposal = "error";
         toastsError({
@@ -138,15 +126,15 @@
             $proposalId: proposalIdText,
           },
         });
-        goto(buildProposalsUrl({ universe: universeIdText }), {
-          replaceState: true,
-        });
+        await goBack(universeIdText);
       }
     } else {
       // Reset proposal to the initial state.
       proposal = "loading";
     }
-  }
+  };
+
+  $: universeIdText, proposalIdText, update();
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
@@ -158,7 +146,25 @@
       />
     </div>
     <div class="content-b expand-content-b">
-      <SnsProposalVotingSection {proposal} />
+      <SnsProposalVotingSection {proposal} {reloadProposal} />
+
+      <h1>Log ballots:</h1>
+      {stringifyJson(proposal?.ballots)}
+      <hr />
+      yes: {Number(
+        (proposal?.ballots ?? []).reduce(
+          (sum, [_, { vote, voting_power }]) =>
+            vote === 1 ? sum + voting_power : sum,
+          0n
+        )
+      ) / E8S_PER_ICP}
+      no: {Number(
+        (proposal?.ballots ?? []).reduce(
+          (sum, [_, { vote, voting_power }]) =>
+            vote === 2 ? sum + voting_power : sum,
+          0n
+        )
+      ) / E8S_PER_ICP}
     </div>
     <div class="content-c proposal-data-section">
       <SnsProposalSummarySection {proposal} />
