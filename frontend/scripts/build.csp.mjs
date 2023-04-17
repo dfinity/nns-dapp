@@ -8,6 +8,9 @@ import { findHtmlFiles } from "./build.utils.mjs";
 
 dotenv.config();
 
+const aggregatorCanisterUrl = process.env.VITE_AGGREGATOR_CANISTER_URL;
+const isAggregatorCanisterUrlDefined = aggregatorCanisterUrl.length > 0;
+
 const buildCsp = (htmlFile) => {
   // 1. We extract the start script parsed by SvelteKit into the html file
   const indexHTMLWithoutStartScript = extractStartScript(htmlFile);
@@ -212,6 +215,10 @@ const cspConnectSrc = () => {
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
   ];
+
+  if (isAggregatorCanisterUrlDefined) {
+    src.push(aggregatorCanisterUrl);
+  }
 
   return src
     .filter((url) => url !== undefined)
