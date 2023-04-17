@@ -10,6 +10,7 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
+    Modal,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
   import { createEventDispatcher, onDestroy, tick } from "svelte";
@@ -157,7 +158,15 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
+    ? "scroll"
+    : "auto"}
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
   >

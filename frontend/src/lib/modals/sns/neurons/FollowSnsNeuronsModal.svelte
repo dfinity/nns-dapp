@@ -14,26 +14,20 @@
   $: functions = $snsFunctionsStore[rootCanisterId.toString()]?.nsFunctions;
 </script>
 
-<Modal on:nnsClose testId="follow-sns-neurons-modal">
+<Modal
+  on:nnsClose
+  testId="follow-sns-neurons-modal"
+  --modal-content-overflow-y="scroll"
+>
   <svelte:fragment slot="title"
     >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
   >
-  <div>
-    <p class="description">{$i18n.follow_neurons.description}</p>
-    {#if functions === undefined}
-      <Spinner />
-    {:else}
-      {#each functions as nsFunction (nsFunction.id.toString())}
-        <FollowSnsTopicSection {nsFunction} {rootCanisterId} {neuron} />
-      {/each}
-    {/if}
-  </div>
+  <p class="description">{$i18n.follow_neurons.description}</p>
+  {#if functions === undefined}
+    <Spinner />
+  {:else}
+    {#each functions as nsFunction (nsFunction.id.toString())}
+      <FollowSnsTopicSection {nsFunction} {rootCanisterId} {neuron} />
+    {/each}
+  {/if}
 </Modal>
-
-<style lang="scss">
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-1_5x);
-  }
-</style>

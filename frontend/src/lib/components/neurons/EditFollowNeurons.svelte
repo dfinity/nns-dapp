@@ -23,18 +23,8 @@
 {#if neuron !== undefined}
   <div data-tid="edit-followers-screen">
     <p class="description">{$i18n.follow_neurons.description}</p>
-    <div>
-      {#each topics as topic}
-        <FollowNnsTopicSection {neuron} {topic} />
-      {/each}
-    </div>
+    {#each topics as topic}
+      <FollowNnsTopicSection {neuron} {topic} />
+    {/each}
   </div>
 {/if}
-
-<style lang="scss">
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-1_5x);
-  }
-</style>
