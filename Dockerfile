@@ -29,7 +29,6 @@ RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
-RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -63,14 +62,13 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
+RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
-RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
@@ -88,7 +86,6 @@ RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 # Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
-ARG FRONTEND_CACHE_KEY=0
 COPY ./frontend /build/frontend
 COPY --from=configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
@@ -102,7 +99,6 @@ RUN ./build-frontend.sh
 #       Note:  Better would probably be to take a config so
 #       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-ARG BACKEND_CACHE_KEY=0
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
@@ -114,9 +110,7 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
-RUN rm -fr target
 RUN ./build-backend.sh
-RUN ls -lh target/wasm32-unknown-unknown/release/nns-dapp.wasm
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
