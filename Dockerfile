@@ -106,6 +106,7 @@ RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
+COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
