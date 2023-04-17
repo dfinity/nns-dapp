@@ -245,6 +245,7 @@ interface I18nAccounts {
   total_deducted: string;
   received_amount: string;
   transaction_time: string;
+  transaction_time_seconds: string;
 }
 
 interface I18nNeurons {
