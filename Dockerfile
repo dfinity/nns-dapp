@@ -110,6 +110,16 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
+# We need to make sure that the rebuild happens if the code has changed.
+# - Docker checks whether the filesystem or command line have changed, so it will
+#   run if there are code changes and skip otherwise.  Perfect.
+# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
+#   rebuilding is necessary due to the potentially recent dependency building step above.
+#   Cargo checks whether the mtime of some code is newer than its last build, like
+#   it's 1974, unlike bazel that uses checksums.
+# So we update the timestamps of the root code files.
+# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
+# We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
 
@@ -127,16 +137,7 @@ COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
 COPY ./dfx.json /build/dfx.json
 WORKDIR /build
-# We need to make sure that the rebuild happens if the code has changed.
-# - Docker checks whether the filesystem or command line have changed, so it will
-#   run if there are code changes and skip otherwise.  Perfect.
-# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
-#   rebuilding is necessary due to the potentially recent dependency building step above.
-#   Cargo checks whether the mtime of some code is newer than its last build, like
-#   it's 1974, unlike bazel that uses checksums.
-# So we update the timestamps of the root code files.
-# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
-# We don't wish to update the code from main.rs to lib.rs and then have builds break.
+# Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
