@@ -48,21 +48,19 @@
   ): proposal is SnsProposalData =>
     proposal !== "loading" && proposal !== "error";
 
-  const goBack = (
+  const goBack = async (
     universe: UniverseCanisterIdText | undefined
-  ): Promise<void> => {
-    if (nonNullish(universe)) {
-      return goto(
-        buildProposalsUrl({
-          universe,
-        }),
-        {
-          replaceState: true,
-        }
-      );
-    }
-  };
-
+  ): Promise<void> =>
+    nonNullish(universe)
+      ? goto(
+          buildProposalsUrl({
+            universe,
+          }),
+          {
+            replaceState: true,
+          }
+        )
+      : undefined;
   // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
   let universeCanisterId: Principal | undefined;
   $: universeCanisterId = nonNullish(universeIdText)

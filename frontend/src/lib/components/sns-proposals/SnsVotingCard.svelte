@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BottomSheet, startBusy } from "@dfinity/gix-components";
+  import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import { isSignedIn } from "$lib/utils/auth.utils";
@@ -24,9 +24,9 @@
   import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import type { NervousSystemParameters, SnsVote } from "@dfinity/sns";
-  import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
-  import { stopBusy } from "$lib/stores/busy.store";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
+  import { registerSnsVotes } from "$lib/services/vote-registration.services";
+  import { Principal } from "@dfinity/principal";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -51,7 +51,7 @@
 
   let votableNeurons: SnsNeuron[] = [];
   $: votableNeurons = votableSnsNeurons({
-    proposal: proposal,
+    proposal,
     neurons: $sortedSnsUserNeuronsStore,
   });
 
@@ -63,7 +63,7 @@
       (votableNeurons.length > 0 && snsProposalOpen(proposal)));
 
   // TODO(sns-voting): implement initial selection (see initialSelectionDone)
-  // DEMO selection
+  // DEMO (select all by default)
   $: if (votableNeurons.length > 0 && nonNullish(snsParameters)) {
     votingNeuronSelectStore.set(
       votableNeurons.map((neuron: SnsNeuron) =>
@@ -84,12 +84,23 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
-    startBusy({ initiator: "load-sns-accounts" });
+    // DEMO voting
+    // startBusy({ initiator: "load-sns-accounts" });
+    // await registerVoteDemo({ proposal, vote: detail.voteType });
+    // await reloadProposal();
+    // stopBusy("load-sns-accounts");
 
-    await registerVoteDemo({ proposal, vote: detail.voteType });
-    await reloadProposal();
-
-    stopBusy("load-sns-accounts");
+    if (nonNullish(universeIdText) && votableNeurons.length > 0) {
+      await registerSnsVotes({
+        universeCanisterId: Principal.from(universeIdText),
+        neurons: votableNeurons,
+        proposal,
+        vote: detail.voteType,
+        reloadProposalCallback: async () => {
+          await reloadProposal();
+        },
+      });
+    }
   };
 </script>
 

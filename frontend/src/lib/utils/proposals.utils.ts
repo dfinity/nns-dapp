@@ -24,6 +24,7 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
@@ -526,12 +527,13 @@ export const updateProposalVote = ({
 }: {
   proposalInfo: ProposalInfo;
   neuron: NeuronInfo;
-  vote: Vote;
+  vote: Vote | SnsVote;
 }): ProposalInfo => {
   const { votingPower, neuronId } = neuron;
   const votedBallot: Ballot = {
     neuronId,
-    vote,
+    // TODO(sns-voting): toNnsVote
+    vote: vote as Vote,
     votingPower,
   };
 
