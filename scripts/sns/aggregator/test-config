@@ -33,7 +33,10 @@ check() {
   EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
   dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
   check
-) || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
 #) || EXIT=1
 
 (
@@ -42,7 +45,10 @@ check() {
   EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
   dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
   check
-) || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
 #) || EXIT=1
 
 (
@@ -51,7 +57,10 @@ check() {
   EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
   dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
   check
-) || echo 'TODO: The argument is not provided to post_install(...).  Find out why and fix.'
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to post_install(...).  Find out why and fix.'
 #) || EXIT=1
 
 (
