@@ -32,6 +32,7 @@ CONFIG_FILE="./frontend/.env" # the location of the dapp .env config, computed f
 # Whether to run each action:
 DEPLOY_II="false"
 DEPLOY_NNS_DAPP="false"
+DEPLOY_SNS_AGGREGATOR="false"
 
 while (($# > 0)); do
   env="$1"
@@ -46,6 +47,9 @@ while (($# > 0)); do
     ;;
   --nns-dapp)
     DEPLOY_NNS_DAPP="true"
+    ;;
+  --sns-aggregator)
+    DEPLOY_SNS_AGGREGATOR="true"
     ;;
   *)
     DFX_NETWORK="$env"
@@ -66,11 +70,17 @@ if [[ "$DEPLOY_II" == "true" ]]; then
   sleep 4
 fi
 
+if [[ "$DEPLOY_SNS_AGGREGATOR" == "true" ]]; then
+  dfx canister --network "$DFX_NETWORK" create sns_aggregator --no-wallet || echo "canister for SNS Aggregator may have been created already"
+  dfx deploy --network "$DFX_NETWORK" sns_aggregator --no-wallet
+  echo "SNS Aggregator deployed"
+fi
+
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probably don't.
-  dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister may have been created already"
+  dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister for NNS Dapp may have been created already"
   dfx deploy nns-dapp --argument "$(cat nns-dapp-arg.did)" --upgrade-unchanged --network "$DFX_NETWORK" --no-wallet
   OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
   echo "Deployed to: $OWN_CANISTER_URL"
