@@ -5,6 +5,7 @@ import type {
 } from "$lib/types/universe";
 import { preserveNeuronSelectionAfterUpdate } from "$lib/utils/proposals.utils";
 import type { Vote } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
@@ -18,7 +19,7 @@ export interface VoteRegistrationStoreEntry {
   proposalIdString: string;
   neuronIdStrings: string[];
   successfullyVotedNeuronIdStrings: string[];
-  vote: Vote;
+  vote: Vote | SnsVote;
 }
 
 export type VoteRegistrationStoreMap = Record<
