@@ -88,7 +88,6 @@ RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 # Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
-ARG FRONTEND_CACHE_KEY=0
 COPY ./frontend /build/frontend
 COPY --from=configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
@@ -102,7 +101,6 @@ RUN ./build-frontend.sh
 #       Note:  Better would probably be to take a config so
 #       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-ARG BACKEND_CACHE_KEY=0
 ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
@@ -114,9 +112,7 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
-RUN rm -fr target
 RUN ./build-backend.sh
-RUN ls -lh target/wasm32-unknown-unknown/release/nns-dapp.wasm
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
