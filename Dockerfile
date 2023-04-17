@@ -62,7 +62,7 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
+RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -110,7 +110,7 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
-RUN rm -f target/wasm32-unknown-unknown/release/*wasm && touch --no-create rs/backend/src/main.rs
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
@@ -127,6 +127,7 @@ COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
 COPY ./dfx.json /build/dfx.json
 WORKDIR /build
+RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
 RUN ./build-sns-aggregator.sh
