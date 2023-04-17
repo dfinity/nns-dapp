@@ -62,8 +62,8 @@
   id={String(topic)}
   count={followees.length}
 >
-  <h3 slot="title">{title}</h3>
-  <p slot="subtitle" class="subtitle description">{subtitle}</p>
+  <svelte:fragment slot="title">{title}</svelte:fragment>
+  <svelte:fragment slot="subtitle">{subtitle}</svelte:fragment>
   <ul>
     {#each followees as followee (followee.neuronId)}
       <li data-tid="current-followee-item">
@@ -94,9 +94,5 @@
     button {
       display: flex;
     }
-  }
-
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
   }
 </style>
