@@ -50,7 +50,7 @@ if test -d src; then
   rm -fr src
 fi
 
-readarray packages < <(yq -r .workspace.members[] Cargo.toml -o json)
+readarray -t packages < <(yq -r .workspace.members[] Cargo.toml -o json)
 for package in "${packages[@]}"; do
   echo "Pre-building ${package:-}"
   "$0" --dir "${package:-}"
