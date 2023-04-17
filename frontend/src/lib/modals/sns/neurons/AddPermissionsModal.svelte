@@ -31,7 +31,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   let principal: Principal | undefined = undefined;
@@ -82,7 +82,7 @@
     >{`${currentStep?.title} - TESTNET ONLY`}</svelte:fragment
   >
 
-  {#if currentStep.name === "AddPrincipal"}
+  {#if currentStep?.name === "AddPrincipal"}
     <AddPrincipal
       bind:principal
       on:nnsSelectPrincipal={() => modal.next()}
@@ -93,7 +93,7 @@
     </AddPrincipal>
   {/if}
 
-  {#if currentStep.name === "AddPermissions"}
+  {#if currentStep?.name === "AddPermissions"}
     <p>{`Select permissions for ${principal?.toText()}`}</p>
     {#each selectablePermissions as { checked, permission }}
       <Checkbox

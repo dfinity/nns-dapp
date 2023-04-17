@@ -47,4 +47,16 @@ describe("FollowTopicsSection", () => {
 
     await waitFor(() => expect(openSpy).toBeCalled());
   });
+
+  it("should not render currently following label ", () => {
+    const { getByTestId } = render(FollowTopicsSectionTest, {
+      props: {
+        title,
+        subtitle,
+        id: "3",
+        count: 0,
+      },
+    });
+    expect(() => getByTestId("current-followees-label")).toThrow();
+  });
 });

@@ -80,8 +80,21 @@ describe("BitcoinEstimatedAmountReceived", () => {
     });
 
     expect(
-      getByText(en.accounts.estimated_amount_received, { exact: false })
+      getByText(en.accounts.received_amount_notice, { exact: false })
     ).toBeInTheDocument();
+  });
+
+  it("should display label estimated notice", () => {
+    const { getByText } = render(BitcoinEstimatedAmountReceived, {
+      props: {
+        amount: undefined,
+        bitcoinEstimatedFee: undefined,
+        kytEstimatedFee: undefined,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      },
+    });
+
+    expect(getByText(en.accounts.estimation_notice)).toBeInTheDocument();
   });
 
   it("should display btc label", () => {

@@ -87,7 +87,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      selectedNetwork: TransactionNetwork.ICP,
     });
 
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
@@ -150,7 +150,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      selectedNetwork: TransactionNetwork.ICP,
     });
 
     await waitFor(
@@ -174,7 +174,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferReviewTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      selectedNetwork: TransactionNetwork.ICP,
     });
 
     const description = replacePlaceholders(
@@ -278,7 +278,7 @@ describe("CkBTCTransactionModal", () => {
 
     await testTransferFormTokens({
       result,
-      selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+      selectedNetwork: TransactionNetwork.ICP,
       destinationAddress: mockCkBTCMainAccount.identifier,
       amount: "0.002",
     });
