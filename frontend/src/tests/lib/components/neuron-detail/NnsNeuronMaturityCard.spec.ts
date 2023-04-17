@@ -289,6 +289,9 @@ describe("NnsNeuronMaturityCard", () => {
       );
 
       expect(await po.getLastDistributionMaturity()).toEqual("May 22, 1992");
+      expect(await po.getLastDistributionMaturityDescription()).toEqual(
+        "Merge Maturity has been replaced by Stake Maturity. Learn more."
+      );
     });
 
     it("should not render last maturity distribution if not in store", async () => {
