@@ -46,8 +46,6 @@ if test -d src; then
   done
 
   cargo build
-  # Remove the dummy code
-  rm -fr src
 fi
 
 readarray -t packages < <(yq -r .workspace.members[] Cargo.toml -o json)
