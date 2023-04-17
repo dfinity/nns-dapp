@@ -110,6 +110,7 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
+RUN rm -f target/wasm32-unknown-unknown/release/*wasm && touch --no-create rs/backend/src/main.rs
 RUN ./build-backend.sh
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
