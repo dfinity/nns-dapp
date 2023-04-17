@@ -10,7 +10,6 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
-    Modal,
   } from "@dfinity/gix-components";
   import { wizardStepIndex } from "@dfinity/gix-components";
   import { createEventDispatcher, onDestroy, tick } from "svelte";
