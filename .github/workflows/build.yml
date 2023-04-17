@@ -73,7 +73,7 @@ jobs:
         run: |
           for ((i=5; i>0; i--)); do
             (
-              timeout 60 curl --fail --silent --retry 10 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
               file index.html
               < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
             ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
