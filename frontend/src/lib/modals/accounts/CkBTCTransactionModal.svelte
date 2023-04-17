@@ -45,7 +45,7 @@
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
   let kytEstimatedFee: bigint | undefined | null = undefined;
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let title: string;
   $: title =
