@@ -4,7 +4,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
-	cat <<-EOF
+  cat <<-EOF
 
 	Deletes Rust source code and builds the dependencies of the blank crate.
 
@@ -26,33 +26,32 @@ source "$(clap.build)"
 cd "${DFX_CRATE_DIR:-.}"
 
 test -e Cargo.toml || {
-	echo "ERROR: Not a rust source dir: $(pwd)"
-	exit 1
+  echo "ERROR: Not a rust source dir: $(pwd)"
+  exit 1
 } >&2
 
+if test -d src; then
+  # Get a list of the root library and executable source files.
+  readarray -t minimal_files < <(find src/main.rs src/lib.rs src/main/*.rs 2>/dev/null)
 
-if test -d src ; then
-# Get a list of the root library and executable source files.
-readarray -t minimal_files < <(find src/main.rs src/lib.rs src/main/*.rs 2>/dev/null)
+  # Remove the code
+  rm -fr src
 
-# Remove the code
-rm -fr src
+  # Create minimal files
+  for file in "${minimal_files[@]}"; do
+    mkdir -p "$(dirname "${file:-}")"
+    touch "${file:-}"
+    # Main files need a main function
+    [[ "${file:-}" == "src/lib.rs" ]] || echo 'fn main(){}' >"$file"
+  done
 
-# Create minimal files
-for file in "${minimal_files[@]}" ; do
-	mkdir -p "$(dirname "${file:-}")"
-	touch "${file:-}"
-	# Main files need a main function
-	[[ "${file:-}" == "src/lib.rs" ]] || echo 'fn main(){}' > "$file"
-done
-
-cargo build
-# Remove the dummy code
-rm -fr src
+  cargo build
+  # Remove the dummy code
+  rm -fr src
 fi
 
 readarray packages < <(yq -r .workspace.members[] Cargo.toml -o json)
 for package in "${packages[@]}"; do
-	echo "Pre-building ${package:-}"
-"$0" --dir "${package:-}"
+  echo "Pre-building ${package:-}"
+  "$0" --dir "${package:-}"
 done
