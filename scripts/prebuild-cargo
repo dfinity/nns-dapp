@@ -45,7 +45,7 @@ if test -d src; then
     [[ "${file:-}" == "src/lib.rs" ]] || echo 'fn main(){}' >"$file"
   done
 
-  cargo build
+  cargo build --target wasm32-unknown-unknown --release
 fi
 
 readarray -t packages < <(yq -r .workspace.members[] Cargo.toml -o json)
