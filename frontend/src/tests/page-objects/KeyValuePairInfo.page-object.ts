@@ -3,6 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class KeyValuePairInfoPo extends BasePageObject {
   private parent: PageObjectElement;
+  private testId: string;
 
   /**
    * KeyValuePairInfo renders two components:
@@ -15,12 +16,15 @@ export class KeyValuePairInfoPo extends BasePageObject {
   constructor({
     parent,
     element,
+    testId,
   }: {
     element: PageObjectElement;
     parent: PageObjectElement;
+    testId: string;
   }) {
     super(element);
     this.parent = parent;
+    this.testId = testId;
   }
 
   static under({
@@ -31,8 +35,9 @@ export class KeyValuePairInfoPo extends BasePageObject {
     testId: string;
   }): KeyValuePairInfoPo {
     return new KeyValuePairInfoPo({
-      element: element.querySelector(`[data-tid=${testId}]`),
+      element: element.byTestId(testId),
       parent: element,
+      testId,
     });
   }
 
@@ -45,6 +50,6 @@ export class KeyValuePairInfoPo extends BasePageObject {
   }
 
   getDescriptionText(): Promise<string> {
-    return this.parent.byTestId("collapsible-content").getText();
+    return this.parent.byTestId(`${this.testId}-description`).getText();
   }
 }

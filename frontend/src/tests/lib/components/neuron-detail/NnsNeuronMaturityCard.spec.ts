@@ -290,7 +290,7 @@ describe("NnsNeuronMaturityCard", () => {
 
       expect(await po.getLastDistributionMaturity()).toEqual("May 22, 1992");
       expect(await po.getLastDistributionMaturityDescription()).toEqual(
-        "Merge Maturity has been replaced by Stake Maturity. Learn more."
+        "On a day with no settled proposals, no rewards are distributed; rather rewards will roll over to the following day. The last distribution date is the last time rewards were distributed. Learn more"
       );
     });
 
