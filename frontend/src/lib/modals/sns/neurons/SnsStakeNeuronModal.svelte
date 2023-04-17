@@ -94,6 +94,7 @@
 </script>
 
 <SnsTransactionModal
+  testId="sns-stake-neuron-modal-component"
   {rootCanisterId}
   on:nnsSubmit={stake}
   on:nnsClose
