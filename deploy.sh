@@ -97,7 +97,7 @@ if [[ "$DEPLOY_SNS_AGGREGATOR" == "true" ]]; then
   dfx canister --network "$DFX_NETWORK" create sns_aggregator --no-wallet || echo "canister for SNS Aggregator may have been created already"
   dfx deploy --network "$DFX_NETWORK" sns_aggregator --no-wallet --upgrade-unchanged --argument '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
   SNS_AGGREGATOR_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
-  SNS_AGGREGATOR_CANISTER_URL="$(canister_static_url_from_id $SNS_AGGREGATOR_CANISTER_ID)"
+  SNS_AGGREGATOR_CANISTER_URL="$(canister_static_url_from_id "$SNS_AGGREGATOR_CANISTER_ID")"
   echo "SNS Aggregator deployed to: $SNS_AGGREGATOR_CANISTER_URL"
 fi
 
