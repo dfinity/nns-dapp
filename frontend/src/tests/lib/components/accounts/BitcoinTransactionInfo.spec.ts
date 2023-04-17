@@ -7,15 +7,6 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("BitcoinTransactionInfo", () => {
-  it("should display estimated static transaction time", () => {
-    const { getByText } = render(BitcoinEstimatedTransactionTime, {
-      props: { networkBtc: true },
-    });
-
-    expect(getByText(en.accounts.transaction_time)).toBeInTheDocument();
-    expect(getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
-  });
-
   it("should display confirmations", () => {
     const { getByText } = render(BitcoinEstimatedTransactionTime, {
       props: { networkBtc: true },

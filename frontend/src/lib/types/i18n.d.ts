@@ -249,6 +249,7 @@ interface I18nAccounts {
   received_amount: string;
   received_amount_notice: string;
   transaction_time: string;
+  transaction_time_seconds: string;
 }
 
 interface I18nNeurons {
