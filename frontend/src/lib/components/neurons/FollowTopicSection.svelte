@@ -66,12 +66,13 @@
     background-color: var(--background-contrast);
     color: var(--background);
     border-radius: 50%;
-    padding: var(--padding);
-    width: var(--padding);
-    height: var(--padding);
+    padding: var(--padding-1_5x);
+    height: var(--padding-0_5x);
     display: flex;
     align-items: center;
     justify-content: center;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
   }
 
   .button-wrapper {
