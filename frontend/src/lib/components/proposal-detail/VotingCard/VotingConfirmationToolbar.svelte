@@ -3,10 +3,10 @@
   import { createEventDispatcher } from "svelte";
   import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import { Spinner, busy } from "@dfinity/gix-components";
   import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 

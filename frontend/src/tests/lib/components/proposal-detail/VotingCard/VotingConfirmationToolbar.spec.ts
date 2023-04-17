@@ -4,7 +4,7 @@
 
 import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { votingNeuronSelectStore } from "$lib/stores/proposals.store";
+import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";

@@ -9,6 +9,10 @@ export class MenuItemsPo extends BasePageObject {
     return new MenuItemsPo(element.byTestId(MenuItemsPo.TID));
   }
 
+  clickNeuronStaking(): void {
+    this.click("menuitem-neurons");
+  }
+
   getGetTokensPo(): GetTokensPo {
     return GetTokensPo.under(this.root);
   }

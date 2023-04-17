@@ -293,6 +293,7 @@ interface I18nNeurons {
   no_delay: string;
   dissolve_delay_description: string;
   dissolve_delay_label: string;
+  dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
   dissolve_delay_above_maximum: string;
   voting_power: string;
@@ -564,6 +565,7 @@ interface I18nNeuron_detail {
   auto_stake_maturity_off_success: string;
   community_fund_more_info: string;
   maturity_title: string;
+  maturity_last_distribution: string;
   stake_maturity: string;
   stake: string;
   spawn_neuron: string;

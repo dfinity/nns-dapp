@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NnsNeuronMaturityCardPo } from "./NnsNeuronMaturityCard.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";
@@ -17,5 +18,9 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return (
       (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
     );
+  }
+
+  getMaturityCardPo(): NnsNeuronMaturityCardPo {
+    return NnsNeuronMaturityCardPo.under(this.root);
   }
 }

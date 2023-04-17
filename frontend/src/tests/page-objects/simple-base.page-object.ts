@@ -1,4 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { isNullish } from "@dfinity/utils";
 
 // Most page objects should extends BasePageObject instead.
 export class SimpleBasePageObject {
@@ -20,11 +21,17 @@ export class SimpleBasePageObject {
     return this.root.waitForAbsent();
   }
 
-  click(): Promise<void> {
-    return this.root.click();
+  click(tid: string | undefined): Promise<void> {
+    if (isNullish(tid)) {
+      return this.root.click();
+    }
+    return this.root.byTestId(tid).click();
   }
 
-  getText(tid: string): Promise<string> {
+  getText(tid: string | undefined): Promise<string> {
+    if (isNullish(tid)) {
+      return this.root.getText();
+    }
     return this.root.byTestId(tid).getText();
   }
 }

@@ -13,6 +13,7 @@ use crate::{
 };
 use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
+use ic_cdk::api::time;
 use ic_cdk::timer::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -120,6 +121,8 @@ thread_local! {
 /// Log to console and store for retrieval by query calls.
 pub fn log(message: String) {
     ic_cdk::api::print(&message);
+    let now = time();
+    let message = format!("{now}: {message}");
     STATE.with(|state| {
         state.log.borrow_mut().push_back(message);
         if state.log.borrow().len() > 200 {

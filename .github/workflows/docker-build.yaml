@@ -69,7 +69,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: NNS ${{ matrix.BUILD_NAME }} frontend assets
-          path: ${{ matrix.BUILD_NAME }}-out/assets.tar.xz
+          path: |
+            ${{ matrix.BUILD_NAME }}-out/assets.tar.xz
+            ${{ matrix.BUILD_NAME }}-out/sourcemaps.tar.xz
       - name: "Link the build sha to this commit"
         run: |
           : Set up git

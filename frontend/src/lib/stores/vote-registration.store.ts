@@ -1,7 +1,9 @@
+import type { VotingNeuron } from "$lib/types/proposals";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
+import { preserveNeuronSelectionAfterUpdate } from "$lib/utils/proposals.utils";
 import type { Vote } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
@@ -61,6 +63,12 @@ export interface VoteRegistrationStore
   updateStatus: (data: VoteRegistrationStoreUpdateStatusData) => void;
   remove: (data: VoteRegistrationStoreRemoveData) => void;
   reset: () => void;
+}
+
+export interface NeuronSelectionStore {
+  neurons: VotingNeuron[];
+  // TODO: selectedNeurons OR selectedIdStrings
+  selectedIds: string[];
 }
 
 /**
@@ -239,4 +247,53 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
   };
 };
 
+/**
+ * Contains available for voting neurons and their selection state
+ */
+const initNeuronSelectStore = () => {
+  const { subscribe, update, set } = writable<NeuronSelectionStore>({
+    neurons: [],
+    selectedIds: [],
+  });
+
+  return {
+    subscribe,
+
+    set(neurons: VotingNeuron[]) {
+      set({
+        neurons: [...neurons],
+        selectedIds: neurons.map(({ neuronIdString }) => neuronIdString),
+      });
+    },
+
+    updateNeurons(neurons: VotingNeuron[]) {
+      update(({ neurons: currentNeurons, selectedIds }) => {
+        return {
+          neurons,
+          selectedIds: preserveNeuronSelectionAfterUpdate({
+            neurons: currentNeurons,
+            updatedNeurons: neurons,
+            selectedIds,
+          }),
+        };
+      });
+    },
+
+    // Used for testing purpose
+    reset() {
+      this.set([]);
+    },
+
+    toggleSelection(neuronId: string) {
+      update(({ neurons, selectedIds }) => ({
+        neurons,
+        selectedIds: selectedIds.includes(neuronId)
+          ? selectedIds.filter((id) => id !== neuronId)
+          : Array.from(new Set([...selectedIds, neuronId])),
+      }));
+    },
+  };
+};
+
 export const voteRegistrationStore = initVoteRegistrationStore();
+export const votingNeuronSelectStore = initNeuronSelectStore();
