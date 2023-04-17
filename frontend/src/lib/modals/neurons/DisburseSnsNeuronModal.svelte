@@ -54,7 +54,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let loading = false;
 
   let destinationAddress: string | undefined;
@@ -113,7 +113,7 @@
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
-  {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
+  {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
       on:nnsBack={() => {

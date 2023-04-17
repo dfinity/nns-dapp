@@ -34,7 +34,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   let delayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
@@ -80,7 +80,7 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
-  {#if currentStep.name === "SetSnsDissolveDelay"}
+  {#if currentStep?.name === "SetSnsDissolveDelay"}
     <SetSnsDissolveDelay
       {rootCanisterId}
       {neuron}
@@ -95,7 +95,7 @@
       >
     </SetSnsDissolveDelay>
   {/if}
-  {#if currentStep.name === "ConfirmSnsDissolveDelay"}
+  {#if currentStep?.name === "ConfirmSnsDissolveDelay"}
     <ConfirmSnsDissolveDelay
       {rootCanisterId}
       {neuron}
