@@ -32,13 +32,13 @@ test -e Cargo.toml || {
 
 if test -d src; then
   # Get a list of the root library and executable source files.
-  readarray -t minimal_files < <(find src/main.rs src/lib.rs src/main/*.rs 2>/dev/null)
+  readarray -t root_files < <(find src/main.rs src/lib.rs src/main/*.rs 2>/dev/null)
 
   # Remove the code
   rm -fr src
 
   # Create minimal files
-  for file in "${minimal_files[@]}"; do
+  for file in "${root_files[@]}"; do
     mkdir -p "$(dirname "${file:-}")"
     touch "${file:-}"
     # Main files need a main function
