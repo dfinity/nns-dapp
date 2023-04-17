@@ -48,7 +48,7 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/tip/state.tar.xz > state.tar.xz
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/testing/state.tar.xz > state.tar.xz
           dfx-snapshot-restore --snapshot state.tar.xz --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
@@ -61,10 +61,6 @@ jobs:
           dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
           dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-          # We wish to upgrade the II canister, so the II canister is no longer remote per the dfx remote canister concept.
-          jq '.canisters.internet_identity.remote.id={}' dfx.json > dfx.json.v2 && mv dfx.json.v2 dfx.json
-          curl --retry 5 --fail -sSL "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm" -o internet_identity_dev.wasm
-          dfx canister install internet_identity --wasm internet_identity_dev.wasm --upgrade-unchanged --mode reinstall --yes
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest

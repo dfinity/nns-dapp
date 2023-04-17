@@ -113,21 +113,21 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: undefined,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: "test",
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: mockAddressInputInvalid,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -166,7 +166,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockAddressInputValid,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: OWN_CANISTER_ID,
           })
         ).toBeFalsy();
@@ -183,7 +183,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: subaccountString,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeFalsy();
@@ -231,7 +231,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressTestnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -309,7 +309,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressTestnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -333,7 +333,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressMainnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();

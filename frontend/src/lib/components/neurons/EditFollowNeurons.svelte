@@ -7,6 +7,7 @@
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuronId: NeuronId;
 
@@ -23,18 +24,11 @@
 {#if neuron !== undefined}
   <div data-tid="edit-followers-screen">
     <p class="description">{$i18n.follow_neurons.description}</p>
-    <div>
-      {#each topics as topic}
-        <FollowNnsTopicSection {neuron} {topic} />
-      {/each}
-    </div>
+
+    <Separator spacing="medium" />
+
+    {#each topics as topic}
+      <FollowNnsTopicSection {neuron} {topic} />
+    {/each}
   </div>
 {/if}
-
-<style lang="scss">
-  div {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-1_5x);
-  }
-</style>

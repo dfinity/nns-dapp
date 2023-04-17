@@ -11,13 +11,13 @@
 <div>
   <p class="label">
     {#if estimation}
-      {$i18n.accounts.estimated_amount_received}
+      {$i18n.accounts.received_amount_notice}
     {:else}
       {$i18n.accounts.received_amount}
     {/if}
   </p>
 
-  <p class="no-margin" data-tid={testId}>
+  <p class="no-margin" data-tid={testId} class:estimation>
     {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay
       inline
       detailed
@@ -29,5 +29,9 @@
 <style lang="scss">
   p {
     margin: 0 0 var(--padding-0_5x);
+  }
+
+  .estimation {
+    padding: 0 0 var(--padding-0_5x);
   }
 </style>

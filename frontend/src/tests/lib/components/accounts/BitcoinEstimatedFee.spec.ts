@@ -40,7 +40,7 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should not display estimated fee if network ckBTC", () => {
     const { getByTestId } = render(BitcoinEstimatedFee, {
-      props: { selectedNetwork: TransactionNetwork.ICP_CKBTC, ...props },
+      props: { selectedNetwork: TransactionNetwork.ICP, ...props },
     });
 
     const call = () => getByTestId("bitcoin-estimated-fee");
