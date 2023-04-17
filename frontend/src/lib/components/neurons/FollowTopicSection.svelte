@@ -24,7 +24,10 @@
       <p class="subtitle description"><slot name="subtitle" /></p>
 
       {#if count > 0}
-        <p class="description current-following">
+        <p
+          class="description current-followees"
+          data-tid="current-followees-label"
+        >
           {$i18n.follow_neurons.current_followees}
         </p>
       {/if}
@@ -86,7 +89,7 @@
     padding: 0 0 var(--padding) 0;
   }
 
-  .current-following {
+  .current-followees {
     padding: var(--padding) 0 0;
   }
 </style>
