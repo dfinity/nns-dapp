@@ -86,7 +86,7 @@ RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
 # Title: Gets the mainnet config, used for builds
-# Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Args: None.  This is fixed and studiously avoids depending on variables such as DFX_NETWORK.
 # Note: This MUST NOT be used as an input for the frontend or wasm.
 #       The mainnet config is compiled in and may be overridden using deploy args.
 FROM builder AS mainnet_configurator
