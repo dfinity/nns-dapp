@@ -11,7 +11,7 @@
   export let rootCanisterId: Principal;
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
-  export let currentStep: WizardStep;
+  export let currentStep: WizardStep | undefined;
   export let validateAmount: ValidateAmountFn = () => undefined;
 
   let transactionInit: TransactionInit = {

@@ -25,7 +25,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   let percentageToStake = 0;
@@ -43,7 +43,7 @@
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
 
-  {#if currentStep.name === "SelectPercentage"}
+  {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
       {formattedMaturity}
       buttonText={$i18n.neuron_detail.stake}
@@ -56,7 +56,7 @@
         {$i18n.neuron_detail.stake_maturity_modal_description}
       </svelte:fragment>
     </NeuronSelectPercentage>
-  {:else if currentStep.name === "ConfirmStake"}
+  {:else if currentStep?.name === "ConfirmStake"}
     <NeuronConfirmActionScreen
       on:nnsConfirm={stakeNeuronMaturity}
       on:nnsCancel={modal.back}
