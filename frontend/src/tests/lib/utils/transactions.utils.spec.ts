@@ -381,10 +381,8 @@ describe("transactions-utils", () => {
     });
 
     it("should not be network Btc", () => {
-      expect(
-        isTransactionNetworkBtc(TransactionNetwork.ICP_CKTESTBTC)
-      ).toBeFalsy();
-      expect(isTransactionNetworkBtc(TransactionNetwork.ICP_CKBTC)).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
     });
   });
 });

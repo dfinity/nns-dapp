@@ -57,9 +57,17 @@
   fee={bitcoinEstimatedFee}
   testId="bitcoin-estimated-fee-display"
 >
-  {$i18n.accounts.estimated_bitcoin_transaction_fee}
+  {$i18n.accounts.bitcoin_transaction_fee_notice}
 </BitcoinFeeDisplay>
 
 <BitcoinFeeDisplay fee={kytEstimatedFee} testId="kyt-estimated-fee-display">
-  {$i18n.accounts.estimated_internetwork_fee}
+  {$i18n.accounts.internetwork_fee_notice}
 </BitcoinFeeDisplay>
+
+<p>{$i18n.accounts.estimation_notice}</p>
+
+<style lang="scss">
+  p {
+    margin: var(--padding) 0 0;
+  }
+</style>

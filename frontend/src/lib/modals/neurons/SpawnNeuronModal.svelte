@@ -53,7 +53,7 @@
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let percentageToSpawn = 0;
 
@@ -96,7 +96,7 @@
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
-  {#if currentStep.name === "SelectPercentage"}
+  {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
       formattedMaturity={formattedMaturity(neuron)}
       buttonText={$i18n.neuron_detail.spawn}
@@ -109,15 +109,15 @@
         >{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment
       >
       <svelte:fragment slot="description">
-        <p class="description no-margin">
+        <p class="description">
           <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
         </p>
-        <p class="description no-margin">
+        <p class="description">
           <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
         </p>
       </svelte:fragment>
     </NeuronSelectPercentage>
-  {:else if currentStep.name === "ConfirmSpawn"}
+  {:else if currentStep?.name === "ConfirmSpawn"}
     <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
 </WizardModal>
