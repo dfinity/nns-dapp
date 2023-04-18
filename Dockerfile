@@ -83,19 +83,30 @@ RUN mkdir -p frontend
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
+# Title: Gets the mainnet config, used for builds
+# Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
+#       The mainnet config is compiled in and may be overridden using deploy args.
+FROM builder AS mainnet_configurator
+SHELL ["bash", "-c"]
+COPY dfx.json config.sh /build/
+WORKDIR /build
+RUN mkdir -p frontend
+RUN DFX_NETWORK=mainnet ./config.sh
+RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
+
 # Title: Image to build the nns-dapp frontend.
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY ./build-frontend.sh config.sh /build/
+# ... If .env has been copied in, it can cause this entire stage to miss the cache.
+#     The .dockerignore _should_ prevent it from appearing here.
+RUN if test -e /build/frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
+COPY --from=mainnet_configurator /build/frontend/.env /build/frontend/.env
+COPY ./build-frontend.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
 RUN ( cd frontend && npm ci )
-# ... If .env has been copied in, it can cause this entire stage to miss the cache.
-#     The .dockerignore _should_ prevent it from appearing here.
-RUN if test -e frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
-# The mainnet config is compiled in but may be overridden with deployment args.
-RUN DFX_NETWORK=mainnet ./config.sh
 RUN ./build-frontend.sh
 
 # Title: Image to build the nns-dapp backend.
@@ -133,7 +144,7 @@ RUN ./build-sns-aggregator.sh
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
-# Note: The frontend/.env is kept for use with local deployments only.
+# Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
