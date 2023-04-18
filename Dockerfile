@@ -97,11 +97,7 @@ RUN ( cd frontend && npm ci )
 RUN ./build-frontend.sh
 
 # Title: Image to build the nns-dapp backend.
-# Args: DFX_NETWORK env var for enabling/disabling features.
-#       Note:  Better would probably be to take a config so
-#       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
