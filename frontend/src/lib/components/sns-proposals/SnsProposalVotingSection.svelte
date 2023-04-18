@@ -1,17 +1,19 @@
 <script lang="ts">
-  import type {SnsProposalData, SnsTally} from "@dfinity/sns";
-  import {SnsProposalRewardStatus} from "@dfinity/sns";
+  import type { SnsProposalData, SnsTally } from "@dfinity/sns";
+  import { SnsProposalRewardStatus } from "@dfinity/sns";
   import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-  import {fromDefinedNullable} from "@dfinity/utils";
-  import {E8S_PER_ICP} from "$lib/constants/icp.constants";
-  import {snsRewardStatus} from "$lib/utils/sns-proposals.utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { snsRewardStatus } from "$lib/utils/sns-proposals.utils";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
 
   let settled = false;
-  $: settled = snsRewardStatus(proposal) === SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
+  $: settled =
+    snsRewardStatus(proposal) ===
+    SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
 
   let tally: SnsTally;
   $: tally = fromDefinedNullable(proposal.latest_tally);
