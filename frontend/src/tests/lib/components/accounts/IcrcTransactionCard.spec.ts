@@ -44,8 +44,14 @@ describe("IcrcTransactionCard", () => {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
-  const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
-  const transactionToMainFromSubaccount = createIcrcTransactionWithId(from, to);
+  const transactionFromMainToSubaccount = createIcrcTransactionWithId({
+    to,
+    from,
+  });
+  const transactionToMainFromSubaccount = createIcrcTransactionWithId({
+    to: from,
+    from: to,
+  });
 
   beforeEach(() => {
     jest
@@ -82,7 +88,10 @@ describe("IcrcTransactionCard", () => {
       owner: mockSnsFullProject.summary.governanceCanisterId,
       subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
     };
-    const stakeNeuronTransaction = createIcrcTransactionWithId(toGov, from);
+    const stakeNeuronTransaction = createIcrcTransactionWithId({
+      to: toGov,
+      from,
+    });
     stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
     const { getByText } = renderTransactionCard(
       mockSnsMainAccount,
