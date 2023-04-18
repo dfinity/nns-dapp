@@ -210,6 +210,7 @@ const cspConnectSrc = () => {
     "${{HOST}}",
     "${{GOVERNANCE_CANISTER_URL}}",
     "${{LEDGER_CANISTER_URL}}",
+    "${{SNS_AGGREGATOR_URL}}",
     // TODO: solve with a worker
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",

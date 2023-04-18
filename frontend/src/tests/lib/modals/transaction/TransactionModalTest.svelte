@@ -5,7 +5,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 
-  export let currentStep: WizardStep;
+  export let currentStep: WizardStep | undefined;
 
   let modal: TransactionModal;
 

@@ -194,7 +194,7 @@ describe("CkBTCWallet", () => {
 
       await testTransferTokens({
         result,
-        selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+        selectedNetwork: TransactionNetwork.ICP,
       });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());

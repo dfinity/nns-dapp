@@ -26,17 +26,19 @@
 </script>
 
 <div class="wrapper" data-tid="confirm-cycles-canister-screen">
-  <div class="conversion">
-    <h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
-    <p>{$i18n.core.icp}</p>
+  <p class="conversion">
+    <span class="value"
+      >{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</span
+    >
+    <span>{$i18n.core.icp}</span>
     {#if tCyclesFormatted !== undefined}
-      <p>{$i18n.canisters.converted_to}</p>
-      <h3>
+      <span class="description">{$i18n.canisters.converted_to}</span>
+      <span class="value">
         {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
-      </h3>
-      <p>{$i18n.canisters.t_cycles}</p>
+      </span>
+      <span>{$i18n.canisters.t_cycles}</span>
     {/if}
-  </div>
+  </p>
   <div>
     <TransactionSource {account} />
   </div>
@@ -58,7 +60,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .wrapper {
     display: flex;
@@ -66,20 +68,7 @@
     gap: var(--padding);
   }
 
-  .conversion {
-    padding: 0 0 var(--padding-4x);
-
-    p,
-    h3 {
-      margin: 0;
-      display: inline-block;
-    }
-
-    @include media.min-width(small) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--padding);
-    }
+  .value {
+    @include fonts.h3;
   }
 </style>

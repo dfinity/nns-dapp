@@ -39,9 +39,7 @@ describe("TransactionReceivedTokenAmount", () => {
       props: { amount, estimation: true },
     });
 
-    expect(
-      getByText(en.accounts.estimated_amount_received)
-    ).toBeInTheDocument();
+    expect(getByText(en.accounts.received_amount_notice)).toBeInTheDocument();
   });
 
   it("should render estimation amount with equals sign", () => {

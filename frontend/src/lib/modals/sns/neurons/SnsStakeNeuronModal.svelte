@@ -24,7 +24,7 @@
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let stakeNeuronText = replacePlaceholders(
     $i18n.sns_neurons.stake_sns_neuron,

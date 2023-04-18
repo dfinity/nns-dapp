@@ -25,7 +25,7 @@
     pollAccounts();
   });
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let title: string;
   $: title =
