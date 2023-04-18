@@ -1,5 +1,21 @@
 # Changelog
 
+## Proposal XXX
+* Display info text for Last Distribution.
+* User is able to see the details of the action for an SNS proposal.
+* Add new field to NNS payload to show arguments as hex string.
+* Accessibility improvement: colors and proposal payload/summary contrast.
+* Use only type for SNS proposals, no topic.
+* Performance improvements (neuron caching).
+* Redesign and review of transaction confirmation step.
+* Narrowed modal design.
+* Modal wizard animation.
+* Make followees modal UI more compact.
+* Minor style fixes.
+* Fix settings title glitch.
+* Label updates.
+* Minor fixes.
+
 ## Proposal 115271
 * Fix back to detail from "Settings" page.
 * UX improvements:
