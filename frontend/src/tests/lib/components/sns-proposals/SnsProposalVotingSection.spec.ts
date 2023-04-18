@@ -25,6 +25,9 @@ describe("SnsProposalVotingSection", () => {
   it("should render vote results", async () => {
     const { container } = render(SnsProposalVotingSection, {
       props: {
+        reloadProposal: () => {
+          // do nothing
+        },
         proposal: {
           ...proposal,
         },

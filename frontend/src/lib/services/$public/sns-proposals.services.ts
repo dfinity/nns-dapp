@@ -247,14 +247,12 @@ export const getSnsProposalById = async ({
     certified: true,
   });
 
-  // Skip proposal from the store if there is no ballots loaded
-  // (proposalList returns ballots: [])
+  // Get proposal from the store if proposal is there:
+  // (when ballots not needed OR when proposal has ballots)
   if (
     nonNullish(proposal) &&
-    reloadForBallots &&
-    proposal.ballots.length === 0
+    (proposal.ballots.length > 0 || !reloadForBallots)
   ) {
-    // TODO(sns-voting)
     setProposal({ proposal, certified: true });
     return;
   }
