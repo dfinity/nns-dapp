@@ -11,7 +11,7 @@
   let tally: SnsTally;
   $: tally = fromDefinedNullable(proposal.latest_tally);
   let yes = 0;
-  $: Number(tally.yes) / E8S_PER_ICP;
+  $: yes = Number(tally.yes) / E8S_PER_ICP;
   let no = 0;
   $: no = Number(tally.no) / E8S_PER_ICP;
   let total = 0;
