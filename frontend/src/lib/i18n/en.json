@@ -293,7 +293,7 @@
     "skip": "Skip",
     "update_delay": "Update Delay",
     "set_delay": "Set Delay",
-    "confirm_update_delay": "Confirm and Update Delay",
+    "confirm_update_delay": "Confirm",
     "confirm_set_delay": "Confirm and Set Delay",
     "edit_delay": "Edit Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
