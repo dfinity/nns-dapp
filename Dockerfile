@@ -29,6 +29,7 @@ RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
+RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -69,6 +70,7 @@ RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfi
 RUN dfx --version
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
+RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
@@ -103,6 +105,8 @@ ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
+COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
+COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
