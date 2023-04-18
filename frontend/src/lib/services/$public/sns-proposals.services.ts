@@ -237,7 +237,6 @@ export const getSnsProposalById = async ({
     certified: boolean;
   }) => void;
   handleError?: (err: unknown) => void;
-  // TODO(sns-voting): test for `reloadForBallots`
   /**  */
   reloadForBallots?: boolean;
 }): Promise<void> => {

@@ -21,6 +21,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -111,10 +112,10 @@
         await Promise.all([
           // skip neurons call when not signedIn
           neuronsReady || !isSignedIn ? undefined : syncSnsNeurons(universeId),
+
           loadSnsParameters(universeId),
+          loadSnsNervousSystemFunctions(universeId),
           reloadProposal(),
-          // TODO(sns-voting): check do we need to sync accounts there?
-          // syncSnsAccounts({ universeId }),
         ]);
       } catch (error) {
         proposal = "error";

@@ -698,7 +698,6 @@ export const ineligibleSnsNeurons = ({
     const neuronId = getSnsNeuronIdAsHexString(neuron);
     const createdSinceProposal: boolean =
       neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds;
-    // TODO(sns-voting): validate that no extra logic needs to be applied.
     const dissolveTooShort: boolean =
       ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
       undefined;
