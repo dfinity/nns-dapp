@@ -99,7 +99,6 @@ RUN ./build-frontend.sh
 #       Note:  Better would probably be to take a config so
 #       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-ARG DFX_NETWORK=mainnet
 RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
