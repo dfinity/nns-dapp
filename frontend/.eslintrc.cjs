@@ -17,7 +17,8 @@ module.exports = {
     ecmaVersion: 2020,
   },
   rules: {
-    eqeqeq: ["error"],
+    "eqeqeq": ["error"],
+    "no-unreachable": ["error"],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {

@@ -58,7 +58,7 @@
       {/if}
 
       {#if nonNullish($nnsLatestRewardEventStore)}
-        <KeyValuePair testId="last-distribution-maturity">
+        <KeyValuePairInfo testId="last-distribution-maturity">
           <svelte:fragment slot="key"
             >{$i18n.neuron_detail.maturity_last_distribution}</svelte:fragment
           >
@@ -69,7 +69,12 @@
               )
             )}</span
           >
-        </KeyValuePair>
+          <svelte:fragment slot="info"
+            ><Html
+              text={$i18n.neuron_detail.maturity_last_distribution_info}
+            /></svelte:fragment
+          >
+        </KeyValuePairInfo>
       {/if}
     </div>
   {/if}

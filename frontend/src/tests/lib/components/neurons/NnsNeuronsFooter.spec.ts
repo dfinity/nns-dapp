@@ -34,7 +34,7 @@ describe("NnsNeurons", () => {
       const spawningNeuron = {
         ...mockNeuron,
         state: NeuronState.Spawning,
-        neuronId: BigInt(223),
+        neuronId: BigInt(456),
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: BigInt(12312313),

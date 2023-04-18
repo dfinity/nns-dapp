@@ -14,7 +14,7 @@ const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
-    if (["localhost", "127.0.0.1"].includes(hostname)) {
+    if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
       return url;
     }
 

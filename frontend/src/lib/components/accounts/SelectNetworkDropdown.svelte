@@ -40,9 +40,7 @@
     const validIcpAddress = !invalidIcpAddress(selectedDestinationAddress);
     const validIcrcAddress = !invalidIcrcAddress(selectedDestinationAddress);
     if (validIcpAddress || validIcrcAddress) {
-      selectedNetwork = ckTESTBTC
-        ? TransactionNetwork.ICP_CKTESTBTC
-        : TransactionNetwork.ICP_CKBTC;
+      selectedNetwork = TransactionNetwork.ICP;
       return;
     }
 
@@ -71,17 +69,14 @@
     <option disabled selected value={undefined} class="hidden"
       ><span class="description">{$i18n.accounts.select_network}</span></option
     >
+    <DropdownItem value={TransactionNetwork.ICP}
+      >{$i18n.accounts.network_icp}</DropdownItem
+    >
     {#if ckTESTBTC}
-      <DropdownItem value={TransactionNetwork.ICP_CKTESTBTC}
-        >{$i18n.accounts.network_icp_cktestbtc}</DropdownItem
-      >
       <DropdownItem value={TransactionNetwork.BTC_TESTNET}
         >{$i18n.accounts.network_btc_testnet}</DropdownItem
       >
     {:else}
-      <DropdownItem value={TransactionNetwork.ICP_CKBTC}
-        >{$i18n.accounts.network_icp_ckbtc}</DropdownItem
-      >
       <DropdownItem value={TransactionNetwork.BTC_MAINNET}
         >{$i18n.accounts.network_btc_mainnet}</DropdownItem
       >
