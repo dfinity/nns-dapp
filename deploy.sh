@@ -83,7 +83,7 @@ first_not_null() {
 }
 
 static_host() {
-    jq -re '.networks[env.DFX_NETWORK].config | .STATIC_HOST // .HOST' dfx.json
+  jq -re '.networks[env.DFX_NETWORK].config | .STATIC_HOST // .HOST' dfx.json
 }
 
 canister_static_url_from_id() {
