@@ -8,10 +8,13 @@ export interface IcrcCandidAccount {
   subaccount: [] | [Uint8Array];
 }
 
-export const createIcrcTransactionWithId = (
-  to: IcrcCandidAccount,
-  from: IcrcCandidAccount
-): IcrcTransactionWithId => ({
+export const createIcrcTransactionWithId = ({
+  from,
+  to,
+}: {
+  to: IcrcCandidAccount;
+  from: IcrcCandidAccount;
+}): IcrcTransactionWithId => ({
   id: BigInt(123),
   transaction: {
     kind: "transfer",
