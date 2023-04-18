@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# shellcheck disable=SC2317
 print_help() {
   cat <<-EOF
 
