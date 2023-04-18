@@ -711,18 +711,24 @@ export const ineligibleSnsNeurons = ({
 
 export const votableSnsNeurons = ({
   neurons,
-  proposal: { ballots },
+  proposal,
 }: {
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
 }): SnsNeuron[] => {
   // TODO(sns-voting): validate that this is enough (no ineligible neuron filter)
-  return neurons.filter((neuron) =>
-    // TODO(sns-voting): is hasPermissionToVote necessary?
-    ballots.find(
-      ([ballotNeuronId, { vote }]) =>
-        getSnsNeuronIdAsHexString(neuron) === ballotNeuronId &&
-        vote === Vote.Unspecified
-    )
+  return neurons.filter(
+    (neuron) =>
+      // TODO(sns-voting): is hasPermissionToVote necessary when they are in ballots?
+      ineligibleSnsNeurons({
+        neurons: [neuron],
+        proposal,
+      }).length === 0 &&
+      proposal.ballots.find(
+        ([ballotNeuronId, { vote }]) =>
+          getSnsNeuronIdAsHexString(neuron) === ballotNeuronId &&
+          // neuron is not voted yet
+          vote === Vote.Unspecified
+      )
   );
 };
