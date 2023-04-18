@@ -62,7 +62,7 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp
+RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
@@ -110,6 +110,17 @@ COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
+# We need to make sure that the rebuild happens if the code has changed.
+# - Docker checks whether the filesystem or command line have changed, so it will
+#   run if there are code changes and skip otherwise.  Perfect.
+# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
+#   rebuilding is necessary due to the potentially recent dependency building step above.
+#   Cargo checks whether the mtime of some code is newer than its last build, like
+#   it's 1974, unlike bazel that uses checksums.
+# So we update the timestamps of the root code files.
+# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
+# We don't wish to update the code from main.rs to lib.rs and then have builds break.
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
@@ -126,6 +137,8 @@ COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
 COPY ./dfx.json /build/dfx.json
 WORKDIR /build
+# Ensure that the code is newer than any cache.
+RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
 RUN ./build-sns-aggregator.sh
