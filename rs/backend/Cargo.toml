@@ -54,6 +54,3 @@ regex = "1.7.1"
 
 [dev-dependencies]
 maplit = "1.0.2"
-
-[features]
-mock_conversion_rate = []
