@@ -88,7 +88,7 @@
     swap: { params },
   } = summary);
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let title: string | undefined;
   $: title =
     currentStep?.name === "Form"

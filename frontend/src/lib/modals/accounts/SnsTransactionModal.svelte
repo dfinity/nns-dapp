@@ -23,7 +23,7 @@
     sourceAccount: selectedAccount,
   };
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   $: title =
     currentStep?.name === "Form"

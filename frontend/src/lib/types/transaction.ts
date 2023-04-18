@@ -60,8 +60,7 @@ export interface Transaction {
 }
 
 export enum TransactionNetwork {
-  ICP_CKBTC = "network_icp_ckbtc",
-  ICP_CKTESTBTC = "network_icp_cktestbtc",
+  ICP = "network_icp",
   BTC_MAINNET = "network_btc_mainnet",
   BTC_TESTNET = "network_btc_testnet",
 }

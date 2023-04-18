@@ -109,7 +109,7 @@
   </form>
 
   <div class="following">
-    <h4>{$i18n.new_followee.options_title}</h4>
+    <span class="label">{$i18n.new_followee.options_title}</span>
     {#if $sortedknownNeuronsStore === undefined}
       <Spinner />
     {:else}
@@ -148,10 +148,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
-    padding: 0;
+    padding: var(--padding-1_5x) 0 0;
   }
 
   .following {
-    margin: var(--padding-2x) 0;
+    margin: var(--padding-4x) 0 0;
   }
 </style>

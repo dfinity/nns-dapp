@@ -44,7 +44,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let loading = false;
   let amount: TokenAmount;
@@ -100,10 +100,10 @@
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
-  {#if currentStep.name === "SelectDestination"}
+  {#if currentStep?.name === "SelectDestination"}
     <DestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
-  {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
+  {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
       on:nnsConfirm={executeTransaction}
