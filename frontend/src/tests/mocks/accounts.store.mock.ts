@@ -20,6 +20,11 @@ export const mockMainAccount: Account = {
   type: "main",
 };
 
+export const mockSubAccountArray = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 1,
+];
+
 export const mockSubAccount: Account = {
   identifier:
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
@@ -27,10 +32,7 @@ export const mockSubAccount: Account = {
     amount: "1234567.8901",
     token: ICPToken,
   }) as TokenAmount,
-  subAccount: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 1,
-  ],
+  subAccount: mockSubAccountArray,
   name: "test subaccount",
   type: "subAccount",
 };

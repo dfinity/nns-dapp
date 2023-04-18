@@ -11,13 +11,14 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests//mocks/sns-accounts.mock";
+import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 
 describe("icrc-transaction utils", () => {
   const to = {
     owner: mockPrincipal,
-    subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+    subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
   };
   const from = {
     owner: mockPrincipal,

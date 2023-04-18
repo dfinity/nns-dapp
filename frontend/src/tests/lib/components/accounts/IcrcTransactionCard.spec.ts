@@ -6,6 +6,7 @@ import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.sv
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
@@ -37,13 +38,14 @@ describe("IcrcTransactionCard", () => {
 
   const to = {
     owner: mockPrincipal,
-    subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+    subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
   };
   const from = {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
   const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
+  const transactionToMainFromSubaccount = createIcrcTransactionWithId(from, to);
 
   beforeEach(() => {
     jest
@@ -143,14 +145,24 @@ describe("IcrcTransactionCard", () => {
     expect(identifier).toContain(en.wallet.direction_from);
   });
 
-  it("displays identifier for sent", () => {
+  it("displays identifier for sent for main sns account", () => {
     const { getByTestId } = renderTransactionCard(
       mockSnsMainAccount,
       transactionFromMainToSubaccount
     );
     const identifier = getByTestId("identifier")?.textContent;
 
-    expect(identifier).toContain(mockSnsSubAccount.identifier);
+    expect(identifier).toContain(mockSnsMainAccount.identifier);
     expect(identifier).toContain(en.wallet.direction_to);
+  });
+
+  it("displays identifier for sent for sub sns account", () => {
+    const { getByTestId } = renderTransactionCard(
+      mockSnsMainAccount,
+      transactionToMainFromSubaccount
+    );
+    const identifier = getByTestId("identifier")?.textContent;
+
+    expect(identifier).toContain(mockSnsSubAccount.identifier);
   });
 });
