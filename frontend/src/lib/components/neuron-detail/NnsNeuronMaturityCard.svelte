@@ -58,23 +58,27 @@
       {/if}
 
       {#if nonNullish($nnsLatestRewardEventStore)}
-        <KeyValuePairInfo testId="last-distribution-maturity">
-          <svelte:fragment slot="key"
-            >{$i18n.neuron_detail.maturity_last_distribution}</svelte:fragment
-          >
-          <span slot="value"
-            >{secondsToDate(
-              Number(
-                $nnsLatestRewardEventStore.rewardEvent.actual_timestamp_seconds
-              )
-            )}</span
-          >
-          <svelte:fragment slot="info"
-            ><Html
-              text={$i18n.neuron_detail.maturity_last_distribution_info}
-            /></svelte:fragment
-          >
-        </KeyValuePairInfo>
+        <!-- Extra div to avoid the gap of the flex container to be applied between the collapsible header and its content -->
+        <div>
+          <KeyValuePairInfo testId="last-distribution-maturity">
+            <svelte:fragment slot="key"
+              >{$i18n.neuron_detail.maturity_last_distribution}</svelte:fragment
+            >
+            <span slot="value"
+              >{secondsToDate(
+                Number(
+                  $nnsLatestRewardEventStore.rewardEvent
+                    .actual_timestamp_seconds
+                )
+              )}</span
+            >
+            <svelte:fragment slot="info"
+              ><Html
+                text={$i18n.neuron_detail.maturity_last_distribution_info}
+              /></svelte:fragment
+            >
+          </KeyValuePairInfo>
+        </div>
       {/if}
     </div>
   {/if}
