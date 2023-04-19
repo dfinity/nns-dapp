@@ -18,7 +18,10 @@ jobs:
       - name: Tag main
         run: |
           set -x
+          : Log commit and existing tags
+          git rev-parse HEAD
           git tag --points-at HEAD
+          : Add a tag if appropriate
           if git tag --points-at HEAD | grep -E '\<nightly-'
           then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
           else
