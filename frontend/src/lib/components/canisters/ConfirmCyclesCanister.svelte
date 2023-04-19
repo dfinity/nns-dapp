@@ -27,16 +27,16 @@
 
 <div class="wrapper" data-tid="confirm-cycles-canister-screen">
   <p class="conversion">
-    <span class="value"
-      >{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</span
+    <span><span class="value"
+    >{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</span
     >
-    <span>{$i18n.core.icp}</span>
+    <span>{$i18n.core.icp}</span></span>
     {#if tCyclesFormatted !== undefined}
       <span class="description">{$i18n.canisters.converted_to}</span>
-      <span class="value">
+      <span><span class="value">
         {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
       </span>
-      <span>{$i18n.canisters.t_cycles}</span>
+      <span>{$i18n.canisters.t_cycles}</span></span>
     {/if}
   </p>
   <div>
@@ -70,5 +70,12 @@
 
   .value {
     @include fonts.h3;
+  }
+
+  .conversion {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 </style>
