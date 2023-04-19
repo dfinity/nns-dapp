@@ -6,7 +6,7 @@
 # docker rm --volumes $container_id
 
 # Operating system with basic tools
-FROM ubuntu:20.04 as base
+FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -66,7 +66,7 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
