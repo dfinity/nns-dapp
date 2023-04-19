@@ -261,7 +261,7 @@ describe("vote-registration-services", () => {
       it("should display voted neurons count", async () => {
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -288,7 +288,7 @@ describe("vote-registration-services", () => {
                       $amount: `${neuronIds.length}`,
                     }
                   ),
-                  $topic: en.topics[Topic[proposal.topic]],
+                  $topic: "Motion",
                 },
               }),
             })
