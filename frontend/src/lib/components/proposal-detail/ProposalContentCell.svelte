@@ -1,18 +1,14 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-
-  export let testId = "";
+  export let testId: string | undefined = undefined;
 </script>
 
-<TestIdWrapper {testId}>
-  <div class="content-cell-title">
-    <slot name="start" />
-  </div>
+<div class="content-cell-title">
+  <slot name="start" />
+</div>
 
-  <div class="content-cell-details">
-    <slot />
-  </div>
-</TestIdWrapper>
+<div class="content-cell-details" data-tid={testId}>
+  <slot />
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
