@@ -52,7 +52,9 @@ jobs:
       - name: Release
         run: |
           cd "${{ matrix.BUILD_NAME }}-out"
-          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz)
+          daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
+          cp nns-dapp.wasm "$daily_build_name"
+          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
           ls -l "${artefacts[@]}"
           for tag in $(git tag --points-at HEAD) ; do
             : Creates or updates a release for the tag
@@ -60,8 +62,8 @@ jobs:
             then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
             else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" "${artefacts[@]}"
             fi
-            : If the tag is for a proposal, make it public
-            [[ "$tag" != proposal-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
+            : If the tag is for a proposal or nightly, make it public
+            [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
