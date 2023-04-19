@@ -66,7 +66,7 @@ jobs:
           # the pushing fail
           pull_strategy: "NO-PULL"
   nightly-passes:
-    needs: ["update-ii", "update-chromedriver"]
+    needs: ["tag-main", "update-ii", "update-chromedriver"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
