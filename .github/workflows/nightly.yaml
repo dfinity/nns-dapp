@@ -1,7 +1,7 @@
 name: Nightly Publication
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "10 0 * * *"
   push:
     branches:
       # Commit to the nightly branch and push to test.
@@ -10,6 +10,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  tag-main:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Tag main
+        run: |
+                tag_name="$(date +nightly-%Y-%m-%d)"
+                git tag "${tag_name}"
+                git push origin "refs/tags/${tag_name}"
   update-ii:
     runs-on: ubuntu-20.04
     steps:
