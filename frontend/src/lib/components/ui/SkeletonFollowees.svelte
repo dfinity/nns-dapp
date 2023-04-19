@@ -28,7 +28,6 @@
   .tags {
     display: flex;
     gap: var(--padding-0_5x);
-    border-bottom: 1px solid currentColor;
     margin-bottom: var(--padding);
     padding-bottom: var(--padding-2x);
   }

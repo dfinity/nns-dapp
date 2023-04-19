@@ -52,6 +52,14 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {}. Err: {:#?}", own_canister_id, err))
 }
 
+/// API method to get the current config
+#[candid_method(query)]
+#[ic_cdk_macros::query]
+#[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
+fn get_canister_config() -> Config {
+    STATE.with(|state| state.stable.borrow().config.borrow().clone())
+}
+
 /// API method to dump stable data, preserved across upgrades, as JSON.
 #[candid_method(query)]
 #[ic_cdk_macros::query]

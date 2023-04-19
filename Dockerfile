@@ -29,6 +29,7 @@ RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
+RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -69,9 +70,11 @@ RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfi
 RUN dfx --version
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
+RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
@@ -82,12 +85,26 @@ RUN mkdir -p frontend
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
+# Title: Gets the mainnet config, used for builds
+# Args: None.  This is fixed and studiously avoids depending on variables such as DFX_NETWORK.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
+#       The mainnet config is compiled in and may be overridden using deploy args.
+FROM builder AS mainnet_configurator
+SHELL ["bash", "-c"]
+COPY dfx.json config.sh /build/
+WORKDIR /build
+RUN mkdir -p frontend
+RUN DFX_NETWORK=mainnet ./config.sh
+RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
+
 # Title: Image to build the nns-dapp frontend.
-# Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY --from=configurator /build/frontend/.env /build/frontend/.env
+# ... If .env has been copied in, it can cause this entire stage to miss the cache.
+#     The .dockerignore _should_ prevent it from appearing here.
+RUN if test -e /build/frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
+COPY --from=mainnet_configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
@@ -95,14 +112,11 @@ RUN ( cd frontend && npm ci )
 RUN ./build-frontend.sh
 
 # Title: Image to build the nns-dapp backend.
-# Args: DFX_NETWORK env var for enabling/disabling features.
-#       Note:  Better would probably be to take a config so
-#       that prod-like config can be used in another deployment.
 FROM builder AS build_nnsdapp
-ARG DFX_NETWORK=mainnet
-RUN echo "DFX_NETWORK: '$DFX_NETWORK'"
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
+COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
+COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
@@ -147,9 +161,10 @@ RUN ./build-sns-aggregator.sh
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
+# Note: The frontend/.env is kept for use with test deployments only.
+COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /

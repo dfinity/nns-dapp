@@ -40,6 +40,8 @@ test("Test SNS governance", async ({ page, context }) => {
     `You have no ${snsProjectName} neurons. Stake a neuron to vote on proposals for ${snsProjectName}.`
   );
 
+  await appPo.getNeuronsPo().getSnsNeuronsFooterPo().stakeNeuron(5);
+
   // TODO:
   // SN001: User can see the list of neurons
 

@@ -10,6 +10,7 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -66,7 +67,7 @@ describe("ckbtc-convert-services", () => {
   describe("withdrawal account succeed", () => {
     const mockAccount = {
       owner: mockPrincipal,
-      subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+      subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
     };
 
     const getWithdrawalAccountSpy =
