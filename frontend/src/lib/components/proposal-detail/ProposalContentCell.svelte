@@ -1,10 +1,8 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-
   export let testId = "";
 </script>
 
-<TestIdWrapper {testId}>
+<div class="content-cell" data-tid={testId}>
   <div class="content-cell-title">
     <slot name="start" />
   </div>
@@ -12,12 +10,12 @@
   <div class="content-cell-details">
     <slot />
   </div>
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .content-cell-details:last-of-type {
+  .content-cell:last-of-type .content-cell-details {
     margin-bottom: 0;
   }
 
