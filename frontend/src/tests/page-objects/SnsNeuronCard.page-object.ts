@@ -26,7 +26,7 @@ export class SnsNeuronCardPo extends BasePageObject {
     return this.getCardTitlePo().getNeuronId();
   }
 
-  getStake(): Promise<number> {
+  getStake(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
   }
 }
