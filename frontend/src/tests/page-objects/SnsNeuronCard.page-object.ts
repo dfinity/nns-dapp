@@ -1,3 +1,4 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { SnsNeuronCardTitlePo } from "$tests/page-objects/SnsNeuronCardTitle.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -17,7 +18,15 @@ export class SnsNeuronCardPo extends BasePageObject {
     return SnsNeuronCardTitlePo.under(this.root);
   }
 
+  getAmountDisplayPo(): AmountDisplayPo {
+    return AmountDisplayPo.under(this.root);
+  }
+
   getNeuronId(): Promise<string> {
     return this.getCardTitlePo().getNeuronId();
+  }
+
+  getStake(): Promise<string> {
+    return this.getAmountDisplayPo().getAmount();
   }
 }
