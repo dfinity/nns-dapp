@@ -52,7 +52,9 @@ jobs:
       - name: Release
         run: |
           cd "${{ matrix.BUILD_NAME }}-out"
-          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz)
+          daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
+          cp nns-dapp.wasm "$daily_build_name"
+          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
           ls -l "${artefacts[@]}"
           for tag in $(git tag --points-at HEAD) ; do
             : Creates or updates a release for the tag
