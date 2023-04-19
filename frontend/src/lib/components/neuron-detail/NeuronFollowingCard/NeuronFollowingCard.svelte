@@ -45,8 +45,6 @@
 
   {#if followees.length > 0}
     <div class="frame">
-      <hr />
-
       {#each followees as followee}
         <Followee {followee} />
       {/each}
@@ -68,7 +66,7 @@
   }
 
   .frame {
-    padding-bottom: var(--padding-0_5x);
+    padding: var(--padding-2x) 0 var(--padding-0_5x);
   }
 
   .actions {
