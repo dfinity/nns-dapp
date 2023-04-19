@@ -78,7 +78,7 @@ get_data() {
     done
 
     : Local docker build
-    docker_hash="$(./scripts/docker-build |& build_hash_from_logs)"
+    docker_hash="$(git checkout "$COMMIT" && ./scripts/docker-build |& build_hash_from_logs)"
     printf "% 64s Local docker build\n" "${docker_hash:-}"
 
     : Native build
