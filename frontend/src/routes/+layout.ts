@@ -8,7 +8,7 @@
 // modules are analyzed, hopefully avoiding the buggy behavior.
 // It probably doesn't matter where we put this import, so I put it as close to
 // the root of the app as I could find.
-// // TODO: Remove when the Rollup issue is fixed.
+// TODO: Remove when the Rollup issue is fixed.
 import "lru-cache";
 
 export const prerender = true;
