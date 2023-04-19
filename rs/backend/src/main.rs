@@ -48,7 +48,7 @@ fn main() {}
 #[pre_upgrade]
 fn pre_upgrade() {
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter before saving state: {}",
+        "pre_upgrade instruction_counter before saving state: {:?}",
         ic_cdk::api::instruction_counter
     ));
     STATE.with(|s| {
@@ -56,7 +56,7 @@ fn pre_upgrade() {
         stable::set(&bytes);
     });
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter after saving state: {}",
+        "pre_upgrade instruction_counter after saving state: {:?}",
         ic_cdk::api::instruction_counter
     ));
 }
