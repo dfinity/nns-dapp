@@ -42,6 +42,10 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return SnsNeuronInfoStakePo.under(this.root);
   }
 
+  getStake(): Promise<string> {
+    return this.getStakeCardPo().getStakeAmount();
+  }
+
   getFollowingCardPo(): SnsNeuronFollowingCardPo {
     return SnsNeuronFollowingCardPo.under(this.root);
   }
@@ -50,8 +54,8 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return SummaryPo.under(this.root);
   }
 
-  getTitle(): Promise<string> {
-    return this.getSummaryPo().getTitle();
+  async getTitle(): Promise<string> {
+    return (await this.getSummaryPo().getTitle()).trim();
   }
 
   getIncreaseStakeModalPo(): SnsIncreaseStakeNeuronModalPo {
