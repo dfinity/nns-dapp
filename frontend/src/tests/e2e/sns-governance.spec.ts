@@ -42,8 +42,13 @@ test("Test SNS governance", async ({ page, context }) => {
 
   await appPo.getNeuronsPo().getSnsNeuronsFooterPo().stakeNeuron(5);
 
-  // TODO:
   // SN001: User can see the list of neurons
+  const neuronCards = await appPo
+    .getNeuronsPo()
+    .getSnsNeuronsPo()
+    .getNeuronCardPos();
+  expect(neuronCards.length).toBe(1);
+  expect(await neuronCards[0].getStake()).toEqual("5.00");
 
   // SN002: User can see the details of a neuron
 

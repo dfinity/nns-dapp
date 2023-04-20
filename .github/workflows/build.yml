@@ -61,10 +61,20 @@ jobs:
           dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
           dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-      - name: Verify that arguments are set in index.html
+      - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
-          curl "http://$(dfx canister id nns-dapp).localhost:8080/" | gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+          pup --version
+      - name: Verify that arguments are set in index.html
+        run: |
+          for ((i=5; i>0; i--)); do
+            (
+              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              file index.html
+              < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+            ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
+            break
+          done
           echo "Check a few values:"
           for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
             # Verify that the key is non-trivial:

@@ -28,7 +28,7 @@ export class AccountCardPo extends BasePageObject {
     return this.root.byTestId("account-name").getText();
   }
 
-  getBalance(): Promise<number> {
+  getBalance(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
   }
 
