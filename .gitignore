@@ -103,6 +103,7 @@ canister_ids.json.*
 e2e-tests/node_modules
 /deployment-config.json
 nns-dapp-arg.did
+nns-dapp-arg.bin
 release/
 
 .dfx/
