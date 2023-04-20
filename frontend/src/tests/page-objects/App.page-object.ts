@@ -1,6 +1,7 @@
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
+import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
@@ -17,6 +18,10 @@ export class AppPo extends BasePageObject {
 
   getNeuronsPo(): NeuronsPo {
     return NeuronsPo.under(this.root);
+  }
+
+  getNeuronDetailPo(): NeuronDetailPo {
+    return NeuronDetailPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {
