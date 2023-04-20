@@ -9,6 +9,7 @@ import {
   getSnsNeuronIdAsHexString,
   snsNeuronVotingPower,
 } from "$lib/utils/sns-neuron.utils";
+import type { Vote } from "@dfinity/nns";
 import type {
   NervousSystemParameters,
   SnsAction,
@@ -19,6 +20,7 @@ import type {
   SnsProposalData,
   SnsProposalId,
   SnsTally,
+  SnsVote,
 } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
@@ -363,3 +365,7 @@ export const snsNeuronToVotingNeuron = ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
   votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
 });
+
+/** Simple casting to have the logic in one place */
+export const toNnsVote = (vote: SnsVote | Vote): Vote =>
+  vote as unknown as Vote;

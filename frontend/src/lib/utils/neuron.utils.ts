@@ -51,6 +51,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { toNnsVote } from "./sns-proposals.utils";
 import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
@@ -775,8 +776,7 @@ export const updateNeuronsVote = ({
   proposalId: ProposalId;
 }): NeuronInfo => {
   const newBallot: BallotInfo = {
-    // TODO(sns-voting): implement `toNnsVote(vote: SnsVote)` util function
-    vote: vote as Vote,
+    vote: toNnsVote(vote),
     proposalId,
   };
   const recentBallots = [
