@@ -127,7 +127,7 @@ describe("SnsNeuronDetail", () => {
     it("should render sns project name", async () => {
       const po = await renderComponent(props);
 
-      expect(await (await po.getTitle()).trim()).toBe(projectName);
+      expect(await po.getTitle()).toBe(projectName);
     });
 
     it("should render cards", async () => {
@@ -155,7 +155,7 @@ describe("SnsNeuronDetail", () => {
       const po = await renderComponent(props);
 
       // `neuronStake` to string formatted as expected
-      expect(await po.getStakeCardPo().getStakeAmount()).toBe("1.00");
+      expect(await po.getStake()).toBe("1.00");
       const amountToStake = 20;
       fakeSnsGovernanceApi.setNeuronWith({
         rootCanisterId,
@@ -167,7 +167,7 @@ describe("SnsNeuronDetail", () => {
       await runResolvedPromises();
 
       // `neuronStake` + 10 to string and formatted as expected
-      expect(await po.getStakeCardPo().getStakeAmount()).toBe("21.00");
+      expect(await po.getStake()).toBe("21.00");
       expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
       expect(increaseStakeNeuron).toHaveBeenCalledWith({
         neuronId: validNeuronId,
