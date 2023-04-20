@@ -30,6 +30,7 @@ import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
+import { toNnsVote } from "./sns-proposals.utils";
 import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
@@ -532,8 +533,7 @@ export const updateProposalVote = ({
   const { votingPower, neuronId } = neuron;
   const votedBallot: Ballot = {
     neuronId,
-    // TODO(sns-voting): toNnsVote
-    vote: vote as Vote,
+    vote: toNnsVote(vote),
     votingPower,
   };
 
