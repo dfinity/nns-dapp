@@ -109,6 +109,10 @@ local_deployment_data="$(
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
+    : "Try to find the TVL canister ID"
+  TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
+  export TVL_CANISTER_ID
+
   : "Define the robots text, if any"
   if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
     ROBOTS=''
@@ -128,6 +132,7 @@ local_deployment_data="$(
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
+    TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'
 )"
@@ -157,6 +162,7 @@ cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
 wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
 governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
 governanceCanisterUrl=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_URL")
+tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
 ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
@@ -174,6 +180,7 @@ VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
 VITE_WASM_CANISTER_ID=$wasmCanisterId
 VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
 VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
+VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
 VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
 VITE_OWN_CANISTER_ID=$ownCanisterId
@@ -216,6 +223,9 @@ GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
 GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
 export GOVERNANCE_CANISTER_URL
+
+TVL_CANISTER_ID="$tvlCanisterId"
+export TVL_CANISTER_ID
 
 LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID

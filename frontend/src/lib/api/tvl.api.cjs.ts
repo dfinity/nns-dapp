@@ -1,7 +1,6 @@
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
-import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { HOST_IC0_APP } from "$lib/constants/environment.constants";
+import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
@@ -13,19 +12,19 @@ import { HttpAgent } from "@dfinity/agent/lib/cjs/index";
 export const queryTVL = async ({
   identity,
   certified,
+  canisterId,
 }: {
   identity: Identity;
   certified: boolean;
+  canisterId: Principal;
 }): Promise<TvlResult> => {
-  logWithTimestamp(`Getting canister ${TVL_CANISTER_ID.toText()} TVL call...`);
+  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL call...`);
 
-  const { getTVL } = await canister({ identity, canisterId: TVL_CANISTER_ID });
+  const { getTVL } = await canister({ identity, canisterId });
 
   const result = getTVL({ certified });
 
-  logWithTimestamp(
-    `Getting canister ${TVL_CANISTER_ID.toText()} TVL complete.`
-  );
+  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL complete.`);
 
   return result;
 };
@@ -39,7 +38,7 @@ const canister = async ({
 }): Promise<TVLCanister> => {
   const agent = new HttpAgent({
     identity,
-    host: HOST_IC0_APP,
+    host: HOST,
   });
 
   return TVLCanister.create({
