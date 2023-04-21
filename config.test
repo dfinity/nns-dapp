@@ -44,8 +44,8 @@ clean_config() {
 		  "ROBOTS": "<meta name=\"robots\" content=\"noindex, nofollow\" />",
 		  "SNS_AGGREGATOR_URL": "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io",
 		  "STATIC_HOST": "https://icp0.io",
-		  "WASM_CANISTER_ID": "qaa6y-5yaaa-aaaaa-aaafa-cai",
-		  "TVL_CANISTER_ID": "ewh3f-3qaaa-aaaap-aazjq-cai"
+		  "TVL_CANISTER_ID": "ewh3f-3qaaa-aaaap-aazjq-cai",
+		  "WASM_CANISTER_ID": "qaa6y-5yaaa-aaaaa-aaafa-cai"
 		}
 		EOF
     )

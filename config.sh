@@ -109,7 +109,7 @@ local_deployment_data="$(
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
-    : "Try to find the TVL canister ID"
+  : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
   export TVL_CANISTER_ID
 
