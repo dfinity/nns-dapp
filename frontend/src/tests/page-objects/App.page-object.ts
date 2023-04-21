@@ -47,7 +47,16 @@ export class AppPo extends BasePageObject {
     return this.getMenuTogglePo().click();
   }
 
+  waitForContentLoaded(): Promise<void> {
+    // Wait for an arbitrary element that is present when the content is loaded.
+    return this.getButton("account-menu").waitFor();
+  }
+
   async openMenu(): Promise<void> {
+    // If the content isn't loaded yet, it looks like the menu toggle isn't
+    // there but it's just not there *yet*.
+    await this.waitForContentLoaded();
+
     // Whether the menu needs to be opened depends on the size of the viewport.
     const isTogglePresent = await this.getMenuTogglePo().isPresent();
     if (isTogglePresent) {
@@ -76,6 +85,12 @@ export class AppPo extends BasePageObject {
   async goToNeurons(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
+    // Menu closes automatically.
+  }
+
+  async goToLaunchpad(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickLaunchpad();
     // Menu closes automatically.
   }
 
