@@ -91,7 +91,11 @@
     return getSnsProposalById({
       rootCanisterId: universeCanisterId as Principal,
       proposalId,
-      setProposal: ({ proposal: proposalData }) => {
+      setProposal: ({
+        proposal: proposalData,
+      }: {
+        proposal: SnsProposalData;
+      }) => {
         proposal = proposalData;
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
@@ -110,7 +114,7 @@
         proposal = "loading";
 
         await Promise.all([
-          // skip neurons call when not signedIn
+          // skip neurons call when not signedIn or when neurons are not ready
           neuronsReady || !isSignedIn ? undefined : syncSnsNeurons(universeId),
 
           loadSnsParameters(universeId),
@@ -133,7 +137,8 @@
     }
   };
 
-  $: universeIdText, proposalIdText, update();
+  // The `update` function cares about the necessary data to be refetched.
+  $: universeIdText, proposalIdText, $snsNeuronsStore, update();
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
