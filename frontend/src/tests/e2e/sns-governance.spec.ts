@@ -40,7 +40,9 @@ test("Test SNS governance", async ({ page, context }) => {
     `You have no ${snsProjectName} neurons. Stake a neuron to vote on proposals for ${snsProjectName}.`
   );
 
-  await appPo.getNeuronsPo().getSnsNeuronsFooterPo().stakeNeuron(5);
+  const stake = 5;
+  const formattedStake = "5.00";
+  await appPo.getNeuronsPo().getSnsNeuronsFooterPo().stakeNeuron(stake);
 
   // SN001: User can see the list of neurons
   const neuronCards = await appPo
@@ -48,9 +50,14 @@ test("Test SNS governance", async ({ page, context }) => {
     .getSnsNeuronsPo()
     .getNeuronCardPos();
   expect(neuronCards.length).toBe(1);
-  expect(await neuronCards[0].getStake()).toEqual("5.00");
+  const neuronCard = neuronCards[0];
+  expect(await neuronCard.getStake()).toEqual(formattedStake);
 
   // SN002: User can see the details of a neuron
+  await neuronCard.click();
+  const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
+  expect(await neuronDetail.getTitle()).toBe(snsProjectName);
+  expect(await neuronDetail.getStake()).toBe(formattedStake);
 
   // SN003: User can add a hotkey
 

@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NnsNeuronMaturityCardPo } from "./NnsNeuronMaturityCard.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";

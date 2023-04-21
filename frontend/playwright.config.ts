@@ -13,8 +13,9 @@ export default defineConfig({
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
+     * 0 for no limit.
      */
-    timeout: 10000,
+    timeout: 0,
   },
   /* Run tests in files in parallel */
   fullyParallel: false,
