@@ -27,10 +27,8 @@ import {
 } from "$lib/utils/proposals.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mapProposalInfo as mapSnsProposal } from "$lib/utils/sns-proposals.utils";
-import { keyOf } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
-  Topic,
   Vote,
   type NeuronId,
   type ProposalId,
@@ -69,8 +67,6 @@ export const registerNnsVotes = async ({
   vote: Vote;
   reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
 }): Promise<void> => {
-  // keyOf({ obj: get(i18n).topics, key: Topic[proposalInfo.topic] })
-
   const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
 
   await registerVotes({
@@ -89,6 +85,7 @@ export const registerNnsVotes = async ({
         toastId,
       });
     },
+
     updateProposals: async () => {
       // reload and replace proposal and neurons (`update` call) to display the actual backend state
       const updatedProposalInfo = await updateAfterNnsVoteRegistration(
@@ -261,7 +258,7 @@ const createRegisterVotesToast = ({
     spinner: true,
     substitutions: {
       $proposalId: proposalIdString,
-      $topic: proposalType,
+      $proposalType: proposalType,
       $status: status,
     },
   });
@@ -448,7 +445,7 @@ const updateVoteRegistrationToastMessage = ({
       spinner: true,
       substitutions: {
         $proposalId: proposalIdString,
-        $topic: proposalType,
+        $proposalType: proposalType,
         $status: status,
       },
     },
@@ -472,8 +469,9 @@ const registerNnsNeuronsVote = async ({
   toastId: symbol;
 }) => {
   const identity: Identity = await getAuthenticatedIdentity();
-  const { id, topic } = proposalInfo;
+  const { id } = proposalInfo;
   const proposalId = id as ProposalId;
+  const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
 
   try {
     const requests = neuronIds.map(
@@ -509,7 +507,7 @@ const registerNnsNeuronsVote = async ({
       registerVoteResponses,
       neuronIdStrings: neuronIds.map(String),
       proposalIdString: `${proposalId}`,
-      topic,
+      proposalType,
     });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
@@ -541,7 +539,10 @@ const registerSnsNeuronsVote = async ({
 }) => {
   const identity = await getSnsNeuronIdentity();
   const proposalId = fromDefinedNullable(proposal.id);
-
+  const nsFunctions: SnsNervousSystemFunction[] =
+    get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
+  const proposalType =
+    mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
   try {
     const requests = neurons.map(
       (neuron): Promise<void> =>
@@ -579,7 +580,7 @@ const registerSnsNeuronsVote = async ({
       registerVoteResponses,
       neuronIdStrings: neurons.map(String),
       proposalIdString: proposalId.id.toString(),
-      topic: Topic.Unspecified,
+      proposalType: proposalType,
     });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
@@ -595,12 +596,12 @@ const processRegisterVoteErrors = ({
   registerVoteResponses,
   neuronIdStrings,
   proposalIdString,
-  topic,
+  proposalType,
 }: {
   registerVoteResponses: PromiseSettledResult<void>[];
   neuronIdStrings: string[];
   proposalIdString: string;
-  topic: Topic;
+  proposalType: string;
 }) => {
   const rejectedResponses = registerVoteResponses.filter(
     (response: PromiseSettledResult<void>) => {
@@ -624,14 +625,13 @@ const processRegisterVoteErrors = ({
       responses: registerVoteResponses,
       neuronIdStrings,
     });
-    const $i18n = get(i18n);
 
     toastsShow({
       labelKey: "error.register_vote",
       level: "error",
       substitutions: {
         $proposalId: proposalIdString,
-        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
+        $proposalType: proposalType,
       },
       detail: details.join(", "),
     });

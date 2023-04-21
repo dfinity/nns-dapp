@@ -17,7 +17,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { GovernanceError, Topic, Vote, type ProposalInfo } from "@dfinity/nns";
+import { GovernanceError, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -288,7 +288,7 @@ describe("vote-registration-services", () => {
                       $amount: `${neuronIds.length}`,
                     }
                   ),
-                  $topic: "Motion",
+                  $proposalType: "Motion",
                 },
               }),
             })

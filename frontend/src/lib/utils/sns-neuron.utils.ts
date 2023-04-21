@@ -713,7 +713,6 @@ export const votableSnsNeurons = ({
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
 }): SnsNeuron[] => {
-  // TODO(sns-voting): validate that this is enough (no ineligible neuron filter)
   return neurons.filter(
     (neuron) =>
       // TODO(sns-voting): is hasPermissionToVote necessary when they are in ballots?

@@ -151,7 +151,6 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
             canisterId.toText(),
             proposalIdString
           );
-          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
@@ -196,11 +195,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
 
         if (proposalRegistration === undefined) {
           console.error(
-            "updating not voting item",
+            "Updating not voting item",
             canisterId.toText(),
             proposalIdString
           );
-          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
