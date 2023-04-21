@@ -1,5 +1,6 @@
 import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 
@@ -25,6 +26,7 @@ describe("tvl api", () => {
   const params = {
     identity: new AnonymousIdentity(),
     certified: true,
+    canisterId: mockCanisterId,
   };
 
   it("returns the tvl", async () => {
