@@ -3,7 +3,6 @@
  */
 
 import * as tvlApi from "$lib/api/tvl.api.cjs";
-import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
@@ -29,7 +28,6 @@ describe("tvl services", () => {
       expect(spyQueryTVL).toBeCalledWith({
         identity: new AnonymousIdentity(),
         certified: false,
-        canisterId: TVL_CANISTER_ID,
       })
     );
   });

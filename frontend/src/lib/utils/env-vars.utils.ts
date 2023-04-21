@@ -60,7 +60,7 @@ const mapEmtpyStringsToUndefined = (obj: {
 }): { [key: string]: string | undefined } => {
   const result: { [key: string]: string | undefined } = {};
   Object.keys(obj).forEach((key: string) => {
-    result[key] = convertEmtpyStringToUndefined(obj[key] as string);
+    result[key] = convertEmtpyStringToUndefined(obj[key]);
   });
   return result;
 };

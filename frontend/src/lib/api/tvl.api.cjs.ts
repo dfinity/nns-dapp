@@ -7,24 +7,29 @@ import type { Principal } from "@dfinity/principal";
 /**
  * HTTP-Agent explicit CJS import for compatibility with web worker - avoid Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
  */
+import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HttpAgent } from "@dfinity/agent/lib/cjs/index";
+import { isNullish } from "@dfinity/utils";
 
 export const queryTVL = async ({
   identity,
   certified,
-  canisterId,
 }: {
   identity: Identity;
   certified: boolean;
-  canisterId: Principal;
-}): Promise<TvlResult> => {
-  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL call...`);
+}): Promise<TvlResult | undefined> => {
+  if (isNullish(TVL_CANISTER_ID)) {
+    return undefined;
+  }
+  logWithTimestamp(`Getting canister ${TVL_CANISTER_ID.toText()} TVL call...`);
 
-  const { getTVL } = await canister({ identity, canisterId });
+  const { getTVL } = await canister({ identity, canisterId: TVL_CANISTER_ID });
 
   const result = getTVL({ certified });
 
-  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL complete.`);
+  logWithTimestamp(
+    `Getting canister ${TVL_CANISTER_ID.toText()} TVL complete.`
+  );
 
   return result;
 };
