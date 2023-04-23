@@ -21,7 +21,6 @@
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { registerNnsVotes } from "$lib/services/vote-registration.services";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
@@ -30,6 +29,7 @@
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+  import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 
   export let proposalInfo: ProposalInfo;
 

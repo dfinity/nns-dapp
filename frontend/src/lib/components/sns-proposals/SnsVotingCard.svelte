@@ -25,7 +25,7 @@
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import type { NervousSystemParameters, SnsVote } from "@dfinity/sns";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import { registerSnsVotes } from "$lib/services/vote-registration.services";
+  import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
 
   export let proposal: SnsProposalData;
