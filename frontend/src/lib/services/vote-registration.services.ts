@@ -69,13 +69,13 @@ export const registerNnsVotes = async ({
 }): Promise<void> => {
   const proposalType = mapNnsProposal(proposalInfo).topic ?? "";
 
-  await registerVotes({
+  await manageVotesRegistration({
     universeCanisterId: OWN_CANISTER_ID,
     neuronIdStrings: neuronIds.map(String),
     proposalIdString: `${proposalInfo.id}`,
     proposalType,
     vote,
-    registerVotes: async (toastId: symbol) => {
+    registerNeuronVotes: async (toastId: symbol) => {
       // make register vote calls (one per neuron)
       await registerNnsNeuronsVote({
         neuronIds,
@@ -85,8 +85,7 @@ export const registerNnsVotes = async ({
         toastId,
       });
     },
-
-    updateProposals: async () => {
+    postRegistration: async () => {
       // reload and replace proposal and neurons (`update` call) to display the actual backend state
       const updatedProposalInfo = await updateAfterNnsVoteRegistration(
         proposalInfo.id as ProposalId
@@ -122,13 +121,13 @@ export const registerSnsVotes = async ({
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
 
-  await registerVotes({
+  await manageVotesRegistration({
     universeCanisterId,
     neuronIdStrings: neurons.map(String),
     proposalIdString: fromDefinedNullable(proposal.id).id.toString(),
     proposalType,
     vote,
-    registerVotes: async (toastId: symbol) => {
+    registerNeuronVotes: async (toastId: symbol) => {
       // make register vote calls (one per neuron)
       await registerSnsNeuronsVote({
         universeCanisterId,
@@ -139,7 +138,7 @@ export const registerSnsVotes = async ({
         toastId,
       });
     },
-    updateProposals: async () => {
+    postRegistration: async () => {
       // TODO(sns-voting): reload proposal and replace in the store
       // The store is not yet implemented
       // // reload and replace proposal and neurons (`update` call) to display the actual backend state
@@ -156,22 +155,22 @@ export const registerSnsVotes = async ({
  * Reflects vote registration status with a toast messages
  * (regardless of neuron type nns/sns)
  */
-const registerVotes = async ({
+const manageVotesRegistration = async ({
   universeCanisterId,
   neuronIdStrings,
   proposalIdString,
   proposalType,
   vote,
-  registerVotes,
-  updateProposals,
+  registerNeuronVotes,
+  postRegistration,
 }: {
   universeCanisterId: UniverseCanisterId;
   neuronIdStrings: string[];
   proposalIdString: string;
   proposalType: string;
   vote: Vote | SnsVote;
-  registerVotes: (toastId: symbol) => Promise<void>;
-  updateProposals: () => Promise<void>;
+  registerNeuronVotes: (toastId: symbol) => Promise<void>;
+  postRegistration: () => Promise<void>;
 }): Promise<void> => {
   try {
     const toastId = createRegisterVotesToast({
@@ -187,7 +186,7 @@ const registerVotes = async ({
       canisterId: universeCanisterId,
     });
 
-    await registerVotes(toastId);
+    await registerNeuronVotes(toastId);
 
     voteRegistrationStore.updateStatus({
       proposalIdString,
@@ -210,7 +209,7 @@ const registerVotes = async ({
       vote,
     });
 
-    await updateProposals();
+    await postRegistration();
 
     // cleanup
     toastsHide(toastId);
