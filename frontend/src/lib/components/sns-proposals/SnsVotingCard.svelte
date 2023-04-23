@@ -84,12 +84,6 @@
   $: signedIn = isSignedIn($authStore.identity);
 
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
-    // DEMO voting
-    // startBusy({ initiator: "load-sns-accounts" });
-    // await registerVoteDemo({ proposal, vote: detail.voteType });
-    // await reloadProposal();
-    // stopBusy("load-sns-accounts");
-
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
