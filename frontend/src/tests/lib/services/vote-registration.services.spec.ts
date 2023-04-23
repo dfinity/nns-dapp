@@ -6,7 +6,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as neuronsServices from "$lib/services/neurons.services";
-import { registerNnsVotes } from "$lib/services/vote-registration.services";
+import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
