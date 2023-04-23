@@ -22,6 +22,7 @@
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
+  import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -40,14 +41,8 @@
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
 
   // TODO: Use proposal to render the component.
-  let proposal: SnsProposalData | "loading" | "error" = "loading";
-
-  let loading = false;
-
-  const isLoadedProposal = (
-    proposal: SnsProposalData | "loading" | "error"
-  ): proposal is SnsProposalData =>
-    proposal !== "loading" && proposal !== "error";
+  let proposal: SnsProposalData | undefined;
+  let updating = false;
 
   const goBack = async (
     universe: UniverseCanisterIdText | undefined
@@ -96,6 +91,11 @@
       }: {
         proposal: SnsProposalData;
       }) => {
+        // Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+        // TODO(sns-voting): test this
+        if (snsProposalIdString(proposalData) !== proposalIdText) {
+          return;
+        }
         proposal = proposalData;
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
@@ -104,36 +104,41 @@
   };
 
   const update = async () => {
-    // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+    if (updating) {
+      return;
+    }
+
     if (
       nonNullish(proposalIdText) &&
       nonNullish(universeIdText) &&
       nonNullish(universeCanisterId)
     ) {
       try {
-        proposal = "loading";
+        updating = true;
 
         await Promise.all([
           // skip neurons call when not signedIn or when neurons are not ready
-          neuronsReady || !isSignedIn ? undefined : syncSnsNeurons(universeId),
-
-          loadSnsParameters(universeId),
+          neuronsReady || !signedIn ? undefined : syncSnsNeurons(universeId),
+          //
+          !signedIn ? undefined : loadSnsParameters(universeId),
           loadSnsNervousSystemFunctions(universeId),
           reloadProposal(),
         ]);
       } catch (error) {
-        proposal = "error";
         toastsError({
           labelKey: "error.wrong_proposal_id",
           substitutions: {
             $proposalId: proposalIdText,
           },
         });
+
         await goBack(universeIdText);
+      } finally {
+        updating = false;
       }
     } else {
       // Reset proposal to the initial state.
-      proposal = "loading";
+      proposal = undefined;
     }
   };
 
@@ -142,7 +147,7 @@
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if isLoadedProposal(proposal) && nonNullish(universeCanisterId) && !loading}
+  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <div class="content-a">
       <SnsProposalSystemInfoSection
         {proposal}
