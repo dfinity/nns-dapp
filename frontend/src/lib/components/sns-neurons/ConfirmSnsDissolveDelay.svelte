@@ -14,7 +14,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import type { Token } from "@dfinity/nns";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
@@ -32,7 +32,7 @@
   let neuronId: string;
   $: neuronId = getSnsNeuronIdAsHexString(neuron);
 
-  let snsParameters: NervousSystemParameters | undefined;
+  let snsParameters: SnsNervousSystemParameters | undefined;
   $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
   let votingPower: number | undefined;

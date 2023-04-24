@@ -21,7 +21,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import type { Token } from "@dfinity/nns";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -54,7 +54,8 @@ describe("SnsNeuronMetaInfoCard", () => {
       },
       reload: jest.fn(),
       props: {
-        parameters: snsNervousSystemParametersMock as NervousSystemParameters,
+        parameters:
+          snsNervousSystemParametersMock as SnsNervousSystemParameters,
         token: mockToken as Token,
         transactionFee: 100n,
       },

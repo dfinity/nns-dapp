@@ -25,7 +25,7 @@ import {
 } from "$tests/utils/neurons-modal.test-utils";
 import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 
@@ -91,7 +91,7 @@ describe("SnsStakeNeuronModal", () => {
 
   it("should show error if amount is less than minimum stake in parameter", async () => {
     const minimumAmount = 1;
-    const snsParameters: NervousSystemParameters = {
+    const snsParameters: SnsNervousSystemParameters = {
       ...snsNervousSystemParametersMock,
       neuron_minimum_stake_e8s: [BigInt(minimumAmount * E8S_PER_ICP)],
     };

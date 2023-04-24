@@ -1,6 +1,7 @@
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
+import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
@@ -17,6 +18,10 @@ export class AppPo extends BasePageObject {
 
   getNeuronsPo(): NeuronsPo {
     return NeuronsPo.under(this.root);
+  }
+
+  getNeuronDetailPo(): NeuronDetailPo {
+    return NeuronDetailPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {
@@ -42,8 +47,18 @@ export class AppPo extends BasePageObject {
     return this.getMenuTogglePo().click();
   }
 
+  waitForHeaderLoaded(): Promise<void> {
+    return this.root.byTestId("header-component").waitFor();
+  }
+
   async openMenu(): Promise<void> {
-    // Whether the menu needs to be opened depends on the size of the viewport.
+    // On large viewports, the menu is always open, but on smaller windows, we
+    // need to click the menu toggle to open the menu. So we check if the menu toggle is
+    // there and wait for the menu to open if necessary.
+
+    // If the header isn't loaded yet, it looks like the menu toggle isn't
+    // there but it's just not there *yet*.
+    await this.waitForHeaderLoaded();
     const isTogglePresent = await this.getMenuTogglePo().isPresent();
     if (isTogglePresent) {
       const backdrop = this.getBackdropPo();
@@ -71,6 +86,12 @@ export class AppPo extends BasePageObject {
   async goToNeurons(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
+    // Menu closes automatically.
+  }
+
+  async goToLaunchpad(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickLaunchpad();
     // Menu closes automatically.
   }
 
