@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXXXXX
+* UI fixes.
+* Testing improvements.
+* Minor configuration clean up.
+
 ## Proposal 119296
 * Display info text for Last Distribution.
 * Add new field to NNS payload to show arguments as hex string.
