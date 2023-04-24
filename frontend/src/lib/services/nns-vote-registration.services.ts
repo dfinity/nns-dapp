@@ -71,19 +71,61 @@ export const registerNnsVotes = async ({
   });
 };
 
-const nnsNeuronRegistrationComplete = ({
+/** Update voting store state and toast message text */
+const updateToastAfterNeuronRegistration = ({
   neuronId,
   proposalId,
-  updateProposalContext,
   toastId,
 }: {
   neuronId: NeuronId;
   proposalId: ProposalId;
-  updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
   const proposalIdString = `${proposalId}`;
   const { vote, neuronIdStrings } = voteRegistrationByProposal({
+    proposalIdString,
+    universeCanisterId: OWN_CANISTER_ID,
+  });
+  const proposalInfo = get(proposalsStore).proposals.find(
+    ({ id }) => id === proposalId
+  );
+  const proposalType = nonNullish(proposalInfo)
+    ? mapNnsProposal(proposalInfo).type ?? ""
+    : "";
+
+  voteRegistrationStore.addSuccessfullyVotedNeuronId({
+    proposalIdString,
+    neuronIdString: `${neuronId}`,
+    canisterId: OWN_CANISTER_ID,
+  });
+
+  updateVoteRegistrationToastMessage({
+    toastId,
+    proposalIdString,
+    proposalType,
+    neuronIdStrings,
+    registrationDone: false,
+    // use the most actual value
+    successfullyVotedNeuronIdStrings: voteRegistrationByProposal({
+      proposalIdString,
+      universeCanisterId: OWN_CANISTER_ID,
+    }).successfullyVotedNeuronIdStrings,
+    vote,
+  });
+};
+
+/** Optimistically update the neuron and proposal state after successful vote registration */
+const updateOptimisticStateAfterNeuronVote = ({
+  neuronId,
+  proposalId,
+  updateProposalContext,
+}: {
+  neuronId: NeuronId;
+  proposalId: ProposalId;
+  updateProposalContext: (proposal: ProposalInfo) => void;
+}) => {
+  const proposalIdString = `${proposalId}`;
+  const { vote } = voteRegistrationByProposal({
     proposalIdString,
     universeCanisterId: OWN_CANISTER_ID,
   });
@@ -94,19 +136,10 @@ const nnsNeuronRegistrationComplete = ({
   const proposalInfo = get(proposalsStore).proposals.find(
     ({ id }) => id === proposalId
   );
-  const proposalType = nonNullish(proposalInfo)
-    ? mapNnsProposal(proposalInfo).type ?? ""
-    : "";
   assertNonNullish(proposalInfo, `Proposal (${proposalIdString}) not found`);
 
   // TODO: remove after live testing. In theory it should be always defined here.
   assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
-
-  voteRegistrationStore.addSuccessfullyVotedNeuronId({
-    proposalIdString,
-    neuronIdString: `${neuronId}`,
-    canisterId: OWN_CANISTER_ID,
-  });
 
   // Optimistically update neuron vote state
   const votingNeuron = updateNeuronsVote({
@@ -127,20 +160,6 @@ const nnsNeuronRegistrationComplete = ({
 
   // Update proposal context store
   updateProposalContext(votingProposal);
-
-  updateVoteRegistrationToastMessage({
-    toastId,
-    proposalIdString: `${proposalInfo.id}`,
-    proposalType,
-    neuronIdStrings,
-    registrationDone: false,
-    // use the most actual value
-    successfullyVotedNeuronIdStrings: voteRegistrationByProposal({
-      proposalIdString,
-      universeCanisterId: OWN_CANISTER_ID,
-    }).successfullyVotedNeuronIdStrings,
-    vote,
-  });
 };
 
 /**
@@ -175,15 +194,18 @@ const registerNnsNeuronsVote = async ({
             identity,
           })
           // call it only after successful registration
-          .then(() =>
-            nnsNeuronRegistrationComplete({
+          .then(() => {
+            updateToastAfterNeuronRegistration({
+              neuronId,
+              proposalId,
+              toastId,
+            });
+            updateOptimisticStateAfterNeuronVote({
               neuronId,
               proposalId,
               updateProposalContext,
-              toastId,
-            })
-          )
-      // )
+            });
+          })
     );
 
     logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
