@@ -46,6 +46,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     snsAggregatorUrl:
       "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
     wasmCanisterId: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+    tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
   }),
 }));
 
