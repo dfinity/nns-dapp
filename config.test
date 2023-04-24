@@ -16,8 +16,8 @@ clean_config() {
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
 
-  clean_config
   DFX_NETWORK=mainnet
+  clean_config
   export DFX_NETWORK
   chronic ./config.sh
   json_diff="$(
