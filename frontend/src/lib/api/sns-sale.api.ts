@@ -3,11 +3,11 @@ import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import { SnsSwapCanister } from "@dfinity/sns";
 import type {
   SnsRefreshBuyerTokensResponse,
   SnsSwapTicket,
 } from "@dfinity/sns";
+import { SnsSwapCanister } from "@dfinity/sns";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({

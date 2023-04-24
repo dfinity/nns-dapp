@@ -38,6 +38,7 @@ import type {
   Action,
   Ballot,
   ExecuteNnsFunction,
+  KnownNeuron,
   NeuronInfo,
   Proposal,
   ProposalInfo,
@@ -49,7 +50,6 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import type { KnownNeuron } from "@dfinity/nns";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,

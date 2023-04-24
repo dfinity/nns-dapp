@@ -24,11 +24,11 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
 } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

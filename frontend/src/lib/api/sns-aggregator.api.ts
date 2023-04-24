@@ -9,11 +9,11 @@ import type {
   IcrcTokenMetadataResponse,
 } from "@dfinity/ledger";
 import type {
+  SnsFunctionType,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsSwap,
   SnsSwapDerivedState,
-  SnsFunctionType
 } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
 

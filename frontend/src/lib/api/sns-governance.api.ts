@@ -3,9 +3,9 @@ import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
-  SnsNervousSystemParameters,
   SnsListProposalsParams,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
   SnsNeuronPermissionType,

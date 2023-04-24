@@ -13,9 +13,9 @@ import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
-  type SnsNeuron,
   type SnsNervousSystemFunction,
-  type SnsNervousSystemParameters
+  type SnsNervousSystemParameters,
+  type SnsNeuron,
 } from "@dfinity/sns";
 import {
   fromDefinedNullable,
@@ -547,7 +547,7 @@ export const followeesByFunction = ({
 
 export interface SnsFolloweesByNeuron {
   neuronIdHex: string;
-  nsFunctions: NervousSystemFunction[];
+  nsFunctions: SnsNervousSystemFunction[];
 }
 
 /**
@@ -557,7 +557,7 @@ export interface SnsFolloweesByNeuron {
  *
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
- * @param {NervousSystemFunction[]} params.nsFunctions
+ * @param {SnsNervousSystemFunction[]} params.nsFunctions
  * @returns {SnsFolloweesByNeuron[]}
  */
 export const followeesByNeuronId = ({

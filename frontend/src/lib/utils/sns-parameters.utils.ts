@@ -1,11 +1,11 @@
-import type { SnsNeuronPermissionType } from "@dfinity/sns";
 import type {
-  DefaultFollowees,
   SnsNervousSystemParameters,
   SnsNeuronId,
   SnsNeuronPermissionList,
+  SnsNeuronPermissionType,
   SnsVotingRewardsParameters,
 } from "@dfinity/sns";
+import type { DefaultFollowees } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
 interface DefaultFolloweeMap {

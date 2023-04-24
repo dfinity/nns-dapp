@@ -45,16 +45,16 @@ import {
   type BlockHeight,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type {
+  SnsInvalidUserAmount,
+  SnsRefreshBuyerTokensResponse,
+  SnsSwapTicket,
+} from "@dfinity/sns";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
-} from "@dfinity/sns";
-import type {
-  SnsInvalidUserAmount,
-  SnsRefreshBuyerTokensResponse,
-  SnsSwapTicket,
 } from "@dfinity/sns";
 import {
   assertNonNullish,
