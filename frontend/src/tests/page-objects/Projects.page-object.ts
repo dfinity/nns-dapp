@@ -1,8 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { isNullish } from "@dfinity/utils";
 
 export class ProjectsPo extends BasePageObject {
   static under({
@@ -27,5 +26,5 @@ export class ProjectsPo extends BasePageObject {
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
     await this.getSkeletonCardPo().waitForAbsent();
-  }  
+  }
 }
