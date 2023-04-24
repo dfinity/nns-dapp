@@ -14,9 +14,9 @@ import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
-  NervousSystemParameters,
   SnsListProposalsParams,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
@@ -117,7 +117,7 @@ async function nervousSystemParameters({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<NervousSystemParameters> {
+}): Promise<SnsNervousSystemParameters> {
   return snsNervousSystemParametersMock;
 }
 

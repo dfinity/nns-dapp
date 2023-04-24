@@ -1,10 +1,10 @@
 import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { writable } from "svelte/store";
 
 export interface SnsParameters {
-  parameters: NervousSystemParameters;
+  parameters: SnsNervousSystemParameters;
   certified: boolean;
 }
 
@@ -32,7 +32,7 @@ const initSnsParametersStore = () => {
       certified,
     }: {
       rootCanisterId: Principal;
-      parameters: NervousSystemParameters;
+      parameters: SnsNervousSystemParameters;
       certified: boolean;
     }) {
       update((currentState: SnsParametersStore) => ({

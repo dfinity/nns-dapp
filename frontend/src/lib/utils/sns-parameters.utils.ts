@@ -1,16 +1,16 @@
-import type { SnsNeuronPermissionType } from "@dfinity/sns";
 import type {
-  DefaultFollowees,
-  NervousSystemParameters,
-  NeuronId,
-  NeuronPermissionList,
-  VotingRewardsParameters,
-} from "@dfinity/sns/dist/candid/sns_governance";
+  SnsNervousSystemParameters,
+  SnsNeuronId,
+  SnsNeuronPermissionList,
+  SnsNeuronPermissionType,
+  SnsVotingRewardsParameters,
+} from "@dfinity/sns";
+import type { DefaultFollowees } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
 interface DefaultFolloweeMap {
   functionId: bigint;
-  followees: NeuronId[];
+  followees: SnsNeuronId[];
 }
 interface NervousSystemParametersMap {
   default_followees: DefaultFolloweeMap[];
@@ -30,7 +30,7 @@ interface NervousSystemParametersMap {
   max_number_of_proposals_with_ballots: bigint;
   max_age_bonus_percentage: bigint;
   neuron_grantable_permissions: SnsNeuronPermissionType[];
-  voting_rewards_parameters: Record<keyof VotingRewardsParameters, bigint>;
+  voting_rewards_parameters: Record<keyof SnsVotingRewardsParameters, bigint>;
   max_number_of_principals_per_neuron: bigint;
 }
 
@@ -43,15 +43,15 @@ const getDefaultFollowees = (
   }));
 
 const getPermissions = (
-  permissionList: NeuronPermissionList
+  permissionList: SnsNeuronPermissionList
 ): SnsNeuronPermissionType[] =>
   nonNullish(permissionList?.permissions)
     ? Array.from(permissionList.permissions)
     : permissionList?.permissions;
 
 const getRewardsParameters = (
-  rewardsParameters: VotingRewardsParameters
-): Record<keyof VotingRewardsParameters, bigint> => ({
+  rewardsParameters: SnsVotingRewardsParameters
+): Record<keyof SnsVotingRewardsParameters, bigint> => ({
   final_reward_rate_basis_points: fromDefinedNullable(
     rewardsParameters.final_reward_rate_basis_points
   ),
@@ -67,7 +67,7 @@ const getRewardsParameters = (
 });
 
 export const mapNervousSystemParameters = (
-  parameters: NervousSystemParameters
+  parameters: SnsNervousSystemParameters
 ): Readonly<NervousSystemParametersMap> => ({
   default_followees: getDefaultFollowees(
     fromDefinedNullable(parameters.default_followees)

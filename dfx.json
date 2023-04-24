@@ -144,6 +144,19 @@
           "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
         }
       }
+    },
+    "tvl": {
+      "build": [
+        "true"
+      ],
+      "type": "custom",
+      "candid": "TODO-deploy-tvl-testnet",
+      "wasm": "TODO-deploy-tvl-testnet",
+      "remote": {
+        "id": {
+          "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
+        }
+      }
     }
   },
   "networks": {

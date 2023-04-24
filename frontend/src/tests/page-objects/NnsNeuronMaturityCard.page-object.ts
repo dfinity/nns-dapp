@@ -1,6 +1,6 @@
+import { KeyValuePairInfoPo } from "$tests/page-objects/KeyValuePairInfo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { KeyValuePairInfoPo } from "./KeyValuePairInfo.page-object";
 
 export class NnsNeuronMaturityCardPo extends BasePageObject {
   private static readonly TID = "nns-neuron-maturity-card-component";

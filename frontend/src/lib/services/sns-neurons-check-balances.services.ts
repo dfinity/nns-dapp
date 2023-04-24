@@ -15,7 +15,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import {
   neuronSubaccount,
   type SnsNeuron,
@@ -280,7 +280,7 @@ const checkNeurons = async ({
  * It refetches the neurons that are not in sync with the subaccounts and adds them to the store.
  *
  * Note:
- * `NervousSystemParameters` should be preloaded before calling this function.
+ * `SnsNervousSystemParameters` should be preloaded before calling this function.
  *
  * @param param0
  * @returns {boolean}
@@ -299,7 +299,7 @@ export const checkSnsNeuronBalances = async ({
   const neuronMinimumStake = fromDefinedNullable(
     (
       get(snsParametersStore)?.[rootCanisterId.toText()]
-        ?.parameters as NervousSystemParameters
+        ?.parameters as SnsNervousSystemParameters
     ).neuron_minimum_stake_e8s ?? [0n]
   );
 

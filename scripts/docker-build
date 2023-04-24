@@ -5,7 +5,8 @@
 
 set -euo pipefail
 
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$(dirname "${BASH_SOURCE[0]}")"
+SCRIPTS_DIR="$(pwd)"
 
 cd "$SCRIPTS_DIR/.."
 
