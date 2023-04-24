@@ -37,7 +37,6 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
   snsAggregatorUrl(snsAggregatorUrlEnv);
 
 export interface FeatureFlags<T> {
-  ENABLE_SNS_2: T;
   ENABLE_SNS_VOTING: T;
   ENABLE_SNS_AGGREGATOR: T;
   ENABLE_CKBTC: T;
@@ -56,7 +55,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_SNS_2": false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
+    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
 );
 
 export const IS_TESTNET: boolean =
