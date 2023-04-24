@@ -49,7 +49,7 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import type { KnownNeuron } from "@dfinity/nns/dist/types/types/governance_converters";
+import type { KnownNeuron } from "@dfinity/nns";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
