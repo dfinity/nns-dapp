@@ -3,10 +3,12 @@ set -euo pipefail
 
 JSON_CONFIG="deployment-config.json"
 ENV_CONFIG="frontend/.env"
-ARG_CONFIG="nns-dapp-arg.did"
+arg_config() {
+  echo "nns-dapp-arg-${DFX_NETWORK}.did"
+}
 
-ALL_CONFIG=("$JSON_CONFIG" "$ENV_CONFIG" "$ARG_CONFIG")
 clean_config() {
+  ALL_CONFIG=("$JSON_CONFIG" "$ENV_CONFIG" "$(arg_config)")
   rm -f "${ALL_CONFIG[@]}"
 }
 
@@ -14,8 +16,10 @@ clean_config() {
   echo "Stability test: Verifies that mainnet parameters have not changed unintentionally."
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
 
+  DFX_NETWORK=mainnet
   clean_config
-  DFX_NETWORK=mainnet chronic ./config.sh
+  export DFX_NETWORK
+  chronic ./config.sh
   json_diff="$(
     diff "$JSON_CONFIG" <(
       cat <<-EOF
@@ -85,7 +89,7 @@ clean_config() {
   } >&2
 
   arg_diff="$(
-    diff "$ARG_CONFIG" <(
+    diff "$(arg_config)" <(
       cat <<-EOF
 		(opt record{
 		  args = vec {
@@ -115,7 +119,7 @@ clean_config() {
     )
   )"
   [[ "${arg_diff:-}" == "" ]] || {
-    printf "ERROR: %s\n" "Unexpected difference in $ARG_CONFIG:"
+    printf "ERROR: %s\n" "Unexpected difference in $(arg_config):"
     printf "%s\n" "$arg_diff"
     exit 1
   } >&2
@@ -136,9 +140,9 @@ clean_config() {
       exit 1
     } >&2
     : "Check value in arg"
-    ARG_NETWORK="$(idl2json <nns-dapp-arg.did | jq -r '.[0].args[]|select(.["0"] == "DFX_NETWORK")|.["1"]')"
+    ARG_NETWORK="$(idl2json <"$(arg_config)" | jq -r '.[0].args[]|select(.["0"] == "DFX_NETWORK")|.["1"]')"
     [[ "$DFX_NETWORK" == "$ARG_NETWORK" ]] || {
-      printf "ERROR: %s\n" "Unexpected DFX_NETWORK value in $ARG_CONFIG:" \
+      printf "ERROR: %s\n" "Unexpected DFX_NETWORK value in $(arg_config):" \
         "Expected: $DFX_NETWORK" \
         "Actual:   $ARG_NETWORK"
       exit 1

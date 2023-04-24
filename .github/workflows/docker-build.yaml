@@ -45,8 +45,8 @@ jobs:
           path: |
             ${{ matrix.BUILD_NAME }}-out/commit.txt
             ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg.did
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg.bin
+            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-$${{ matrix.DFX_NETWORK }}.did
+            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-$${{ matrix.DFX_NETWORK }}.bin
             ${{ matrix.BUILD_NAME }}-out/frontend-config.sh
             ${{ matrix.BUILD_NAME }}-out/deployment-config.json
       - name: Release
