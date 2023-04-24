@@ -13,7 +13,7 @@
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { Html } from "@dfinity/gix-components";
 
-  export let testId: string | undefined = undefined;
+  export let testId: string;
   export let status: SnsSwapLifecycle;
 
   let projects: SnsFullProject[];
