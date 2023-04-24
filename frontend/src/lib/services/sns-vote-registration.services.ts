@@ -7,18 +7,23 @@ import {
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { mapProposalInfo as mapSnsProposal } from "$lib/utils/sns-proposals.utils";
+import {
+  mapProposalInfo as mapSnsProposal,
+  toSnsVote,
+} from "$lib/utils/sns-proposals.utils";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsProposalData,
   SnsVote,
 } from "@dfinity/sns";
+import type { Ballot } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -33,13 +38,13 @@ export const registerSnsVotes = async ({
   neurons,
   proposal,
   vote,
-  reloadProposalCallback: updateProposalContext,
+  updateProposalCallback: updateProposalContext,
 }: {
   universeCanisterId: UniverseCanisterId;
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
   vote: SnsVote;
-  reloadProposalCallback: (proposal: SnsProposalData) => void;
+  updateProposalCallback: (proposal: SnsProposalData) => void;
 }): Promise<void> => {
   const nsFunctions: SnsNervousSystemFunction[] =
     get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
@@ -64,27 +69,34 @@ export const registerSnsVotes = async ({
       });
     },
     postRegistration: async () => {
-      // TODO(sns-voting): reload proposal and replace in the store
-      // The store is not yet implemented
-      // // reload and replace proposal and neurons (`update` call) to display the actual backend state
-      // const updatedProposalInfo = await updateAfterNnsVoteRegistration(
-      //   proposal.id as ProposalId
-      // );
-      // proposalsStore.replaceProposals([updatedProposalInfo]);
-      // updateProposalContext(updatedProposalInfo);
+      const optimisticProposal = proposalAfterVote({
+        proposal,
+        neurons,
+        vote,
+      });
+
+      // replace proposal in the store to make sns proposal filtering work (not yet implemented)
+      snsProposalsStore.addProposals({
+        rootCanisterId: universeCanisterId,
+        proposals: [optimisticProposal],
+        certified: false,
+        completed: true,
+      });
     },
   });
 };
 
-const snsNeuronRegistrationComplete = ({
+const snsNeuronRegistrationComplete = async ({
   universeCanisterId,
   neuron,
+  successfulVotedNeurons,
   proposal,
   updateProposalContext,
   toastId,
 }: {
   universeCanisterId: UniverseCanisterId;
   neuron: SnsNeuron;
+  successfulVotedNeurons: SnsNeuron[];
   proposal: SnsProposalData;
   updateProposalContext: (proposal: SnsProposalData) => void;
   toastId: symbol;
@@ -99,21 +111,18 @@ const snsNeuronRegistrationComplete = ({
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
 
-  // TODO(sns-voting): fake registration (see nnsNeuronRegistrationComplete)
-
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalIdString,
     neuronIdString: getSnsNeuronIdAsHexString(neuron),
     canisterId: universeCanisterId,
   });
 
-  // TODO(sns-voting): Optimistically update neuron vote state
-  // ... neuronsStore.replaceNeurons([votingNeuron]);
-
-  // TODO(sns-voting): Optimistically update proposal vote state
-  // ... proposalsStore.replaceProposals([votingProposal]);
-
-  updateProposalContext(proposal);
+  const optimisticProposal = proposalAfterVote({
+    proposal,
+    neurons: successfulVotedNeurons,
+    vote: toSnsVote(vote),
+  });
+  await updateProposalContext(optimisticProposal);
 
   updateVoteRegistrationToastMessage({
     toastId,
@@ -128,6 +137,39 @@ const snsNeuronRegistrationComplete = ({
     }).successfullyVotedNeuronIdStrings,
     vote,
   });
+};
+
+/** Optimistically update proposal state */
+const proposalAfterVote = ({
+  proposal,
+  neurons,
+  vote,
+}: {
+  proposal: SnsProposalData;
+  neurons: SnsNeuron[];
+  vote: SnsVote;
+}): SnsProposalData => {
+  const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
+  const optimisticBallots: Array<[string, Ballot]> = Array.from(
+    votedNeuronsIds
+  ).map((id) => [
+    id,
+    {
+      vote,
+      cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
+      // TODO(sns-voting): get voting power if needed
+      voting_power: 0n,
+    } as Ballot,
+  ]);
+  return {
+    ...proposal,
+    ballots: [
+      // not voted ballots
+      ...proposal.ballots.filter(([id]) => !votedNeuronsIds.has(id)),
+      // voted ballots
+      ...optimisticBallots,
+    ],
+  };
 };
 
 /**
@@ -154,6 +196,7 @@ const registerSnsNeuronsVote = async ({
     get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
+  const successfulVotedNeurons: SnsNeuron[] = [];
   try {
     const requests = neurons.map(
       (neuron): Promise<void> =>
@@ -166,15 +209,17 @@ const registerSnsNeuronsVote = async ({
           vote,
         })
           // call it only after successful registration
-          .then(() =>
-            snsNeuronRegistrationComplete({
+          .then(() => {
+            successfulVotedNeurons.push(neuron);
+            return snsNeuronRegistrationComplete({
               universeCanisterId: universeCanisterId,
               neuron,
+              successfulVotedNeurons,
               proposal,
               updateProposalContext,
               toastId,
-            })
-          )
+            });
+          })
     );
 
     logWithTimestamp(

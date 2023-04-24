@@ -5,7 +5,12 @@
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
+  import type {
+    NervousSystemParameters,
+    SnsNeuron,
+    SnsProposalData,
+    SnsVote,
+  } from "@dfinity/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -23,7 +28,6 @@
   } from "$lib/utils/sns-proposals.utils";
   import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
-  import type { NervousSystemParameters, SnsVote } from "@dfinity/sns";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
@@ -90,10 +94,11 @@
         neurons: votableNeurons,
         proposal,
         vote: detail.voteType,
-        reloadProposalCallback: async () => {
-          await reloadProposal();
+        updateProposalCallback: async (updatedProposal: SnsProposalData) => {
+          proposal = updatedProposal;
         },
       });
+      await reloadProposal();
     }
   };
 </script>

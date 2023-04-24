@@ -366,6 +366,10 @@ export const snsNeuronToVotingNeuron = ({
   votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
 });
 
-/** Simple casting to have the logic in one place */
+/** To have the logic in one place */
 export const toNnsVote = (vote: SnsVote | Vote): Vote =>
   vote as unknown as Vote;
+
+/** To have the logic in one place */
+export const toSnsVote = (vote: SnsVote | Vote): SnsVote =>
+  vote as unknown as SnsVote;
