@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
+import { SnsNeuronsFooterPo } from "$tests/page-objects/SnsNeuronsFooter.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NeuronsPo extends BasePageObject {
@@ -16,6 +17,10 @@ export class NeuronsPo extends BasePageObject {
 
   getSnsNeuronsPo(): SnsNeuronsPo {
     return SnsNeuronsPo.under(this.root);
+  }
+
+  getSnsNeuronsFooterPo(): SnsNeuronsFooterPo {
+    return SnsNeuronsFooterPo.under(this.root);
   }
 
   hasNnsNeuronsPo(): Promise<boolean> {

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# shellcheck disable=SC2317
+print_help() {
+  cat <<-EOF
+
+	Tests that the aggregator canister config is set to the expected value after deploying.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+EXIT=0
+
+check() {
+  sleep 2
+  ACTUAL_CONFIG="$(dfx canister call sns_aggregator get_canister_config --query)"
+  DIFF="$(diff <(echo "($EXPECTED_CONFIG)" | idl2json | jq .) <(echo "$ACTUAL_CONFIG" | idl2json | jq .) || true)"
+  test -z "${DIFF:-}" || {
+    scripts/sns/aggregator/get_log
+    echo
+    printf "ERROR: %s\n" "Deployed config is not as expected." "Expected:" "$EXPECTED_CONFIG" "Actual:" "$ACTUAL_CONFIG" "Diff:" "$DIFF"
+    exit 1
+  }
+  echo "Check passes"
+}
+
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking direct reinstallation"
+  EXPECTED_CONFIG='record { update_interval_ms = 1345; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode reinstall --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+  check
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
+#) || EXIT=1
+
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking upgrade with a raw argument"
+  EXPECTED_CONFIG='record { update_interval_ms = 1366; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "$(didc encode "( opt $EXPECTED_CONFIG)")" --argument-type raw --yes
+  check
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to init(...).  Find out why and fix.'
+#) || EXIT=1
+
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking upgrade with a candid argument"
+  EXPECTED_CONFIG='record { update_interval_ms = 3233; fast_interval_ms = 1_123_456_789; }'
+  dfx canister install sns_aggregator --wasm ./sns_aggregator.wasm --mode upgrade --argument "( opt $EXPECTED_CONFIG)" --yes
+  check
+) && {
+  echo "ERROR: You forgot to enable the test after fixing the bug."
+  exit 1
+} >&2 || echo 'TODO: The argument is not provided to post_install(...).  Find out why and fix.'
+#) || EXIT=1
+
+(
+  printf "\n\n\n=========================================\n"
+  echo "Checking reconfiguring - present only for dev builds"
+  EXPECTED_CONFIG='record { update_interval_ms = 9834; fast_interval_ms = 1_123_456_789; }'
+  test -f sns_aggregator_dev.wasm || cp out/sns_aggregator_dev.wasm ./sns_aggregator_dev.wasm
+  dfx canister install sns_aggregator --wasm ./sns_aggregator_dev.wasm --mode upgrade
+  dfx canister call sns_aggregator reconfigure "( opt $EXPECTED_CONFIG)"
+  check
+) || EXIT=1
+
+echo 'TODO : Test deploying by proposal'
+
+printf "\n\n\n=========================================\n"
+if (("$EXIT" == 0)); then
+  echo ALL AGGREGATOR CONFIG TESTS PASSED
+else
+  echo SOME AGGREGATOR CONFIG TESTS FAILED
+fi
+exit "${EXIT}"

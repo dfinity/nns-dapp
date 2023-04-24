@@ -6,7 +6,7 @@
 # docker rm --volumes $container_id
 
 # Operating system with basic tools
-FROM ubuntu:20.04 as base
+FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -66,7 +66,7 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
@@ -74,6 +74,7 @@ RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
@@ -84,12 +85,26 @@ RUN mkdir -p frontend
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
 
+# Title: Gets the mainnet config, used for builds
+# Args: None.  This is fixed and studiously avoids depending on variables such as DFX_NETWORK.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
+#       The mainnet config is compiled in and may be overridden using deploy args.
+FROM builder AS mainnet_configurator
+SHELL ["bash", "-c"]
+COPY dfx.json config.sh /build/
+WORKDIR /build
+RUN mkdir -p frontend
+RUN DFX_NETWORK=mainnet ./config.sh
+RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
+
 # Title: Image to build the nns-dapp frontend.
-# Args: A file with env vars at frontend/.env created by config.sh
 FROM builder AS build_frontend
 SHELL ["bash", "-c"]
 COPY ./frontend /build/frontend
-COPY --from=configurator /build/frontend/.env /build/frontend/.env
+# ... If .env has been copied in, it can cause this entire stage to miss the cache.
+#     The .dockerignore _should_ prevent it from appearing here.
+RUN if test -e /build/frontend/.env ; then echo "ERROR: There should be no frontend/.env in docker!" ; exit 1 ; fi
+COPY --from=mainnet_configurator /build/frontend/.env /build/frontend/.env
 COPY ./build-frontend.sh /build/
 COPY ./scripts/require-dfx-network.sh /build/scripts/
 WORKDIR /build
@@ -146,9 +161,10 @@ RUN ./build-sns-aggregator.sh
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
+# Note: The frontend/.env is kept for use with test deployments only.
+COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_frontend /build/frontend/.env /frontend-config.sh
 COPY --from=build_aggregate /build/sns_aggregator.wasm /
 COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /

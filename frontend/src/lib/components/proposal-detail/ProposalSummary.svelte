@@ -27,10 +27,6 @@
   .markdown {
     overflow-wrap: break-word;
 
-    :global(*) {
-      color: var(--label-color);
-    }
-
     :global(strong) {
       font-weight: var(--font-weight-bold);
     }
