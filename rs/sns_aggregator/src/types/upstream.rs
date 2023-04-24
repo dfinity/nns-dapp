@@ -2,13 +2,13 @@
 use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use super::ic_sns_ledger::Value as Icrc1Value;
 use super::ic_sns_root::ListSnsCanistersResponse;
-use super::ic_sns_swap::{GetStateResponse, GetSaleParametersResponse};
+use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
-use ic_cdk::api::management_canister::provisional::CanisterId;
-use std::collections::BTreeMap;
 use candid::Nat;
+use ic_cdk::api::management_canister::provisional::CanisterId;
 use serde::Serialize;
+use std::collections::BTreeMap;
 
 /// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
