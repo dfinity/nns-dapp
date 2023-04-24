@@ -28,16 +28,16 @@
 
 <main>
   <h2>{$i18n.sns_launchpad.open_projects}</h2>
-  <Projects status={SnsSwapLifecycle.Open} />
+  <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
 
   {#if showAdopted}
     <h2>{$i18n.sns_launchpad.upcoming_projects}</h2>
-    <Projects status={SnsSwapLifecycle.Adopted} />
+    <Projects testId="upcoming-projects" status={SnsSwapLifecycle.Adopted} />
   {/if}
 
   {#if showCommitted}
     <h2>{$i18n.sns_launchpad.committed_projects}</h2>
-    <Projects status={SnsSwapLifecycle.Committed} />
+    <Projects testId="committed-projects" status={SnsSwapLifecycle.Committed} />
   {/if}
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>

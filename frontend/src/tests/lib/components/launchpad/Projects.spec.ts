@@ -42,6 +42,7 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });
@@ -73,6 +74,7 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "upcoming-projects",
         status: SnsSwapLifecycle.Adopted,
       },
     });
@@ -104,6 +106,7 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "committed-projects",
         status: SnsSwapLifecycle.Committed,
       },
     });
@@ -124,6 +127,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });
@@ -142,6 +146,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "upcoming-projects",
         status: SnsSwapLifecycle.Adopted,
       },
     });
@@ -160,6 +165,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "committed-projects",
         status: SnsSwapLifecycle.Committed,
       },
     });
@@ -170,6 +176,7 @@ describe("Projects", () => {
   it("should render skeletons", async () => {
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });
