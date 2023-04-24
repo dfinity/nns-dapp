@@ -8,9 +8,9 @@ use super::{CandidType, Deserialize};
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use std::collections::BTreeMap;
 
+use crate::types::ic_sns_swap::{GetSaleParametersResponse, Params};
 use candid::Nat;
 use serde::Serialize;
-use crate::types::ic_sns_swap::Params;
 
 /// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
@@ -54,5 +54,5 @@ pub struct UpstreamData {
     /// The ledger total tokens supply
     pub icrc1_total_supply: Nat,
     /// The params of the swap
-    pub swap_params: Option<Params>,
+    pub swap_params: Option<GetSaleParametersResponse>,
 }

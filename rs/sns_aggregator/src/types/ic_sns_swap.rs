@@ -229,9 +229,7 @@ pub struct Params {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
-pub struct GetSaleParametersResponse {
-  pub params: Option<Params>
-}
+pub struct GetSaleParametersResponse { params: Option<Params> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct get_state_arg0 {}

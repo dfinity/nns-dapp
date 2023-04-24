@@ -1,7 +1,7 @@
 //! Slowly changing information about an SNS
 use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
-use crate::types::ic_sns_swap::{DerivedState, GetStateResponse, Init, Params, Swap};
+use crate::types::ic_sns_swap::{DerivedState, GetSaleParametersResponse, GetStateResponse, Init, Params, Swap};
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
@@ -32,7 +32,7 @@ pub struct SlowSnsData {
     /// The ledger total tokens supply
     pub icrc1_total_supply: u64,
     /// The initialization params of the swap
-    pub swap_params: Option<Params>,
+    pub swap_params: Option<GetSaleParametersResponse>,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
