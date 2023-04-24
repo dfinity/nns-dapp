@@ -28,7 +28,7 @@ import { fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 /**
- * Create Makes multiple registerVote calls (1 per neuronId).
+ * Makes multiple registerVote calls (1 per neuronId).
  *
  * In order to improve UX optimistic UI update is used:
  * after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron)and update the stores with optimistic values.
@@ -139,7 +139,7 @@ const snsNeuronRegistrationComplete = async ({
   });
 };
 
-/** Optimistically update proposal state */
+/** Optimistically update proposal ballots (how they expected to be after successful voting) */
 const proposalAfterVote = ({
   proposal,
   neurons,
