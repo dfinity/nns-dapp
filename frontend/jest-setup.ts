@@ -28,7 +28,6 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
-      ENABLE_SNS_2: true,
       ENABLE_SNS_VOTING: true,
       ENABLE_SNS_AGGREGATOR: true,
       ENABLE_CKBTC: true,
@@ -57,7 +56,6 @@ jest.mock("./src/lib/constants/environment.constants.ts", () => ({
   DEV: false,
   FETCH_ROOT_KEY: false,
   FEATURE_FLAG_ENVIRONMENT: {
-    ENABLE_SNS_2: true,
     ENABLE_SNS_VOTING: true,
     ENABLE_SNS_AGGREGATOR: true,
     ENABLE_CKBTC: true,

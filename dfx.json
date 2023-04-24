@@ -168,7 +168,6 @@
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
         "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
@@ -184,7 +183,6 @@
       "config": {
         "HOST": "https://nnsdapp.testnet.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": false,
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
@@ -290,7 +288,6 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
@@ -677,7 +674,6 @@
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
         "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_2": true,
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
