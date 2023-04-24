@@ -14,11 +14,9 @@ import {
   SnsNeuronPermissionType,
   neuronSubaccount,
   type SnsNeuron,
+  type SnsNervousSystemFunction,
+  type SnsNervousSystemParameters
 } from "@dfinity/sns";
-import type {
-  NervousSystemFunction,
-  NervousSystemParameters,
-} from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -179,7 +177,7 @@ export const nextMemo = ({
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
  * @param {Identity | undefined | null} params.identity
- * @param {NervousSystemParameters} params.parameters
+ * @param {SnsNervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,
@@ -188,7 +186,7 @@ export const canIdentityManageHotkeys = ({
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
-  parameters: NervousSystemParameters;
+  parameters: SnsNervousSystemParameters;
 }): boolean => {
   const { neuron_grantable_permissions } =
     mapNervousSystemParameters(parameters);
@@ -567,10 +565,10 @@ export const followeesByNeuronId = ({
   nsFunctions,
 }: {
   neuron: SnsNeuron;
-  nsFunctions: NervousSystemFunction[];
+  nsFunctions: SnsNervousSystemFunction[];
 }): SnsFolloweesByNeuron[] => {
   const followeesDictionary = neuron.followees.reduce<{
-    [key: string]: NervousSystemFunction[];
+    [key: string]: SnsNervousSystemFunction[];
   }>((acc, [functionId, followeesData]) => {
     const nsFunction = nsFunctions.find(({ id }) => id === functionId);
     // Edge case, all ns functions in followees should also be in the nervous system.
@@ -605,7 +603,7 @@ export const followeesByNeuronId = ({
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
  *
  * @param {SnsNeuron} neuron
- * @param {NervousSystemParameters} neuron.snsParameters
+ * @param {SnsNervousSystemParameters} neuron.snsParameters
  * @param {number} neuron.newDissolveDelayInSeconds
  */
 export const snsNeuronVotingPower = ({
@@ -614,7 +612,7 @@ export const snsNeuronVotingPower = ({
   newDissolveDelayInSeconds,
 }: {
   neuron: SnsNeuron;
-  snsParameters: NervousSystemParameters;
+  snsParameters: SnsNervousSystemParameters;
   newDissolveDelayInSeconds?: bigint;
 }): number => {
   const dissolveDelayInSeconds =

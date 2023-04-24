@@ -5,10 +5,9 @@ import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapCanister } from "@dfinity/sns";
 import type {
-  RefreshBuyerTokensResponse,
-  Ticket,
-} from "@dfinity/sns/dist/candid/sns_swap";
-import type { E8s } from "@dfinity/sns/dist/types/types/common";
+  SnsRefreshBuyerTokensResponse,
+  SnsSwapTicket,
+} from "@dfinity/sns";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
@@ -19,7 +18,7 @@ export const getOpenTicket = async ({
   identity: Identity;
   swapCanisterId: Principal;
   certified: boolean;
-}): Promise<Ticket | undefined> => {
+}): Promise<SnsSwapTicket | undefined> => {
   logWithTimestamp(`[sale] getOpenTicket call...`);
   const agent = await createAgent({
     identity,
@@ -46,9 +45,9 @@ export const newSaleTicket = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  amount_icp_e8s: E8s;
+  amount_icp_e8s: bigint;
   subaccount?: Uint8Array;
-}): Promise<Ticket> => {
+}): Promise<SnsSwapTicket> => {
   logWithTimestamp(`[sale]newSaleTicket call...`);
 
   const { newSaleTicket } = await wrapper({
@@ -70,7 +69,7 @@ export const notifyPaymentFailure = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-}): Promise<Ticket | undefined> => {
+}): Promise<SnsSwapTicket | undefined> => {
   logWithTimestamp(`[sale] notifyPaymentFailure call...`);
 
   const { notifyPaymentFailure } = await wrapper({
@@ -94,7 +93,7 @@ export const notifyParticipation = async ({
   identity: Identity;
   rootCanisterId: Principal;
   buyer: Principal;
-}): Promise<RefreshBuyerTokensResponse> => {
+}): Promise<SnsRefreshBuyerTokensResponse> => {
   logWithTimestamp(`[sale] notifyParticipation call...`);
 
   const { notifyParticipation: notifyParticipationApi } = await wrapper({

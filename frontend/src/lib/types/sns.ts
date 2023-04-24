@@ -8,7 +8,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
+import type { SnsSwapTicket } from "@dfinity/sns";
 import type { PngDataUrl } from "./assets";
 
 export type RootCanisterId = Principal;
@@ -73,5 +73,5 @@ export interface SnsSwapCommitment {
 
 export interface SnsTicket {
   rootCanisterId: Principal;
-  ticket?: Ticket;
+  ticket?: SnsSwapTicket;
 }

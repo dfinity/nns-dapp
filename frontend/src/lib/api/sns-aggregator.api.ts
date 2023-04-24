@@ -13,11 +13,8 @@ import type {
   SnsNervousSystemFunction,
   SnsSwap,
   SnsSwapDerivedState,
+  SnsFunctionType
 } from "@dfinity/sns";
-import type {
-  FunctionType,
-  NervousSystemFunction,
-} from "@dfinity/sns/dist/candid/sns_governance";
 import { nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
@@ -74,7 +71,7 @@ type CachedNervousFunctionDto = {
   id: number;
   name: string;
   description: string;
-  function_type: FunctionType;
+  function_type: SnsFunctionType;
 };
 
 type CachedSnsSwapDto = {
@@ -162,7 +159,7 @@ const convertNervousFuncttion = ({
   name,
   description,
   function_type,
-}: CachedNervousFunctionDto): NervousSystemFunction => ({
+}: CachedNervousFunctionDto): SnsNervousSystemFunction => ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
