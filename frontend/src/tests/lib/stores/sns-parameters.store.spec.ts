@@ -2,7 +2,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("SNS Parameters store", () => {
@@ -37,11 +37,11 @@ describe("SNS Parameters store", () => {
       const params1 = {
         ...snsNervousSystemParametersMock,
         max_age_bonus_percentage: [123n],
-      } as NervousSystemParameters;
+      } as SnsNervousSystemParameters;
       const params2 = {
         ...snsNervousSystemParametersMock,
         max_age_bonus_percentage: [321n],
-      } as NervousSystemParameters;
+      } as SnsNervousSystemParameters;
       const principal2 = Principal.fromText("aaaaa-aa");
 
       snsParametersStore.setParameters({

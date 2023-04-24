@@ -42,11 +42,12 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Open).length
     );
   });
@@ -73,11 +74,12 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "upcoming-projects",
         status: SnsSwapLifecycle.Adopted,
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Adopted).length
     );
   });
@@ -104,11 +106,12 @@ describe("Projects", () => {
 
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "committed-projects",
         status: SnsSwapLifecycle.Committed,
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Committed).length
     );
   });
@@ -124,6 +127,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });
@@ -142,6 +146,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "upcoming-projects",
         status: SnsSwapLifecycle.Adopted,
       },
     });
@@ -160,6 +165,7 @@ describe("Projects", () => {
 
     const { queryByTestId } = render(Projects, {
       props: {
+        testId: "committed-projects",
         status: SnsSwapLifecycle.Committed,
       },
     });
@@ -170,6 +176,7 @@ describe("Projects", () => {
   it("should render skeletons", async () => {
     const { getAllByTestId } = render(Projects, {
       props: {
+        testId: "open-projects",
         status: SnsSwapLifecycle.Open,
       },
     });

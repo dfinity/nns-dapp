@@ -5,7 +5,7 @@
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import { TokenAmount } from "@dfinity/nns";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import type { Token } from "@dfinity/nns/dist/types/token";
+  import type { Token } from "@dfinity/nns";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
 

@@ -4,7 +4,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
@@ -20,7 +20,7 @@ export const loadSnsParameters = async (
   if (storeData[rootCanisterId.toText()]?.certified === true) {
     return;
   }
-  await queryAndUpdate<NervousSystemParameters, unknown>({
+  await queryAndUpdate<SnsNervousSystemParameters, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       nervousSystemParameters({

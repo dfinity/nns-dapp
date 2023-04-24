@@ -18,10 +18,10 @@ import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { ProposalStatus } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
+  type SnsGetDerivedStateResponse,
   type SnsSwap,
   type SnsSwapDerivedState,
 } from "@dfinity/sns";
-import type { GetDerivedStateResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
@@ -276,7 +276,7 @@ describe("sns.store", () => {
 
       const updatedBuyerTotalIcps = BigInt(1000_000_000);
       const updatedSnsTokensPerIcp = 10_000;
-      const updatedDerivedState: GetDerivedStateResponse = {
+      const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [updatedSnsTokensPerIcp],
         buyer_total_icp_e8s: [updatedBuyerTotalIcps],
       };
@@ -311,7 +311,7 @@ describe("sns.store", () => {
       const rootCanisterId = metadatas[0].rootCanisterId;
 
       const updatedBuyerTotalIcps = BigInt(1000_000_000);
-      const updatedDerivedState: GetDerivedStateResponse = {
+      const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [],
         buyer_total_icp_e8s: [updatedBuyerTotalIcps],
       };
@@ -346,7 +346,7 @@ describe("sns.store", () => {
       const rootCanisterId = metadatas[0].rootCanisterId;
 
       const updatedSnsTokensPerIcp = 10_000;
-      const updatedDerivedState: GetDerivedStateResponse = {
+      const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [updatedSnsTokensPerIcp],
         buyer_total_icp_e8s: [],
       };

@@ -57,7 +57,7 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
@@ -1465,7 +1465,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as NervousSystemParameters,
+        } as unknown as SnsNervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1492,7 +1492,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as NervousSystemParameters,
+        } as unknown as SnsNervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1521,7 +1521,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as NervousSystemParameters,
+        } as unknown as SnsNervousSystemParameters,
       });
 
       expect(votingPower).toEqual(
@@ -1550,7 +1550,7 @@ describe("sns-neuron utils", () => {
           max_dissolve_delay_bonus_percentage: [100n],
           max_age_bonus_percentage: [25n],
           neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
-        } as unknown as NervousSystemParameters,
+        } as unknown as SnsNervousSystemParameters,
       });
 
       expect(votingPower).toEqual(100);
