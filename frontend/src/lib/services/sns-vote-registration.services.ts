@@ -86,19 +86,16 @@ export const registerSnsVotes = async ({
   });
 };
 
+/** Update voting store state and toast message text */
 const snsNeuronRegistrationComplete = async ({
   universeCanisterId,
   neuron,
-  successfulVotedNeurons,
   proposal,
-  updateProposalContext,
   toastId,
 }: {
   universeCanisterId: UniverseCanisterId;
   neuron: SnsNeuron;
-  successfulVotedNeurons: SnsNeuron[];
   proposal: SnsProposalData;
-  updateProposalContext: (proposal: SnsProposalData) => void;
   toastId: symbol;
 }) => {
   const proposalIdString = fromDefinedNullable(proposal.id).id.toString();
@@ -116,13 +113,6 @@ const snsNeuronRegistrationComplete = async ({
     neuronIdString: getSnsNeuronIdAsHexString(neuron),
     canisterId: universeCanisterId,
   });
-
-  const optimisticProposal = proposalAfterVote({
-    proposal,
-    neurons: successfulVotedNeurons,
-    vote: toSnsVote(vote),
-  });
-  await updateProposalContext(optimisticProposal);
 
   updateVoteRegistrationToastMessage({
     toastId,
@@ -209,16 +199,22 @@ const registerSnsNeuronsVote = async ({
           vote,
         })
           // call it only after successful registration
-          .then(() => {
+          .then(async () => {
             successfulVotedNeurons.push(neuron);
-            return snsNeuronRegistrationComplete({
+
+            snsNeuronRegistrationComplete({
               universeCanisterId: universeCanisterId,
               neuron,
-              successfulVotedNeurons,
               proposal,
-              updateProposalContext,
               toastId,
             });
+
+            const optimisticProposal = proposalAfterVote({
+              proposal,
+              neurons: successfulVotedNeurons,
+              vote: toSnsVote(vote),
+            });
+            await updateProposalContext(optimisticProposal);
           })
     );
 
