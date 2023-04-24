@@ -5,7 +5,6 @@
 * User is able to see the details of the action for an SNS proposal.
 * Add new field to NNS payload to show arguments as hex string.
 * Accessibility improvement: colors and proposal payload/summary contrast.
-* Use only type for SNS proposals, no topic.
 * Performance improvements (neuron caching).
 * Redesign and review of transaction confirmation step.
 * Narrowed modal design.
