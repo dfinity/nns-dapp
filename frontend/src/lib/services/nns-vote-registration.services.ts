@@ -163,7 +163,7 @@ const updateOptimisticStateAfterNeuronVote = ({
 };
 
 /**
- * Make governance api call per neuronId and handles update errors
+ * Make governance registerVote api call per neuronId and handles update errors
  */
 const registerNnsNeuronsVote = async ({
   neuronIds,
