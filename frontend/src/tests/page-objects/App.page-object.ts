@@ -47,17 +47,18 @@ export class AppPo extends BasePageObject {
     return this.getMenuTogglePo().click();
   }
 
-  waitForContentLoaded(): Promise<void> {
-    // Wait for an arbitrary element that is present when the content is loaded.
-    return this.getButton("account-menu").waitFor();
+  waitForHeaderLoaded(): Promise<void> {
+    return this.root.byTestId("header-component").waitFor();
   }
 
   async openMenu(): Promise<void> {
-    // If the content isn't loaded yet, it looks like the menu toggle isn't
-    // there but it's just not there *yet*.
-    await this.waitForContentLoaded();
+    // On large viewports, the menu is always open, but on smaller windows, we
+    // need to click the menu toggle to open the menu. So we check if the menu toggle is
+    // there and wait for the menu to open if necessary.
 
-    // Whether the menu needs to be opened depends on the size of the viewport.
+    // If the header isn't loaded yet, it looks like the menu toggle isn't
+    // there but it's just not there *yet*.
+    await this.waitForHeaderLoaded();
     const isTogglePresent = await this.getMenuTogglePo().isPresent();
     if (isTogglePresent) {
       const backdrop = this.getBackdropPo();
