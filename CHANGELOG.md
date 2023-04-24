@@ -2,7 +2,6 @@
 
 ## Proposal 119296
 * Display info text for Last Distribution.
-* User is able to see the details of the action for an SNS proposal.
 * Add new field to NNS payload to show arguments as hex string.
 * Accessibility improvement: colors and proposal payload/summary contrast.
 * Performance improvements (neuron caching).
