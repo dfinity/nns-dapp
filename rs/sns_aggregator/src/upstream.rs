@@ -9,6 +9,7 @@ use crate::types::upstream::UpstreamData;
 use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
+use crate::types::ic_sns_swap::GetSaleParametersResponse;
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
@@ -130,6 +131,12 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| anyhow!("Failed to get ledger total tokens supply: {err:?}"))
         .unwrap_or_default();
 
+    let swap_params_response: GetSaleParametersResponse = ic_cdk::api::call::call(swap_canister_id, "get_sale_parameters", (EmptyRecord {},))
+        .await
+        .map(|response: (_,)| response.0)
+        .map_err(|err| crate::state::log(format!("Failed to get swap params: {err:?}")))
+        .unwrap_or_default();
+
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
     FastScheduler::global_schedule_sns(&swap_state);
@@ -144,6 +151,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         icrc1_metadata,
         icrc1_fee,
         icrc1_total_supply,
+        swap_params: swap_params_response.params,
     };
     State::insert_sns(index, slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))

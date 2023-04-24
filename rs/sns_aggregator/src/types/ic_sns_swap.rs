@@ -228,8 +228,10 @@ pub struct Params {
   pub  min_icp_e8s: u64,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct GetSaleParametersResponse { params: Option<Params> }
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+pub struct GetSaleParametersResponse {
+  pub params: Option<Params>
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct get_state_arg0 {}

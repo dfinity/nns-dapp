@@ -31,6 +31,8 @@ pub struct SlowSnsData {
     pub icrc1_fee: Nat,
     /// The ledger total tokens supply
     pub icrc1_total_supply: u64,
+    /// The initialization params of the swap
+    pub swap_params: Option<Params>,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
@@ -46,6 +48,7 @@ impl From<&UpstreamData> for SlowSnsData {
             icrc1_fee: upstream.icrc1_fee.clone(),
             // Fallback to 0 if conversion to u64 fails.
             icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().unwrap_or(0),
+            swap_params: upstream.swap_params.clone(),
         }
     }
 }

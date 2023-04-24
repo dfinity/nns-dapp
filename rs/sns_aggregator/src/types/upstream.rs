@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 
 use candid::Nat;
 use serde::Serialize;
+use crate::types::ic_sns_swap::Params;
 
 /// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
@@ -52,4 +53,6 @@ pub struct UpstreamData {
     pub icrc1_fee: Nat,
     /// The ledger total tokens supply
     pub icrc1_total_supply: Nat,
+    /// The params of the swap
+    pub swap_params: Option<Params>,
 }
