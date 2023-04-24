@@ -15,8 +15,6 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
-  import { stringifyJson } from "$lib/utils/utils";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
@@ -156,24 +154,6 @@
     </div>
     <div class="content-b expand-content-b">
       <SnsProposalVotingSection {proposal} {reloadProposal} />
-
-      <h1>Log ballots:</h1>
-      {stringifyJson(proposal?.ballots)}
-      <hr />
-      yes: {Number(
-        (proposal?.ballots ?? []).reduce(
-          (sum, [_, { vote, voting_power }]) =>
-            vote === 1 ? sum + voting_power : sum,
-          0n
-        )
-      ) / E8S_PER_ICP}
-      no: {Number(
-        (proposal?.ballots ?? []).reduce(
-          (sum, [_, { vote, voting_power }]) =>
-            vote === 2 ? sum + voting_power : sum,
-          0n
-        )
-      ) / E8S_PER_ICP}
     </div>
     <div class="content-c proposal-data-section">
       <SnsProposalSummarySection {proposal} />
