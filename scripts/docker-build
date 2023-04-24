@@ -68,7 +68,7 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # In normal production builds, only these files will be generated,
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
-assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm "nns-dapp-arg-${DFX_NETWORK}.did" nns-dapp-arg-${DFX_NETWORK}.bin)
+assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm "nns-dapp-arg-${DFX_NETWORK}.did" "nns-dapp-arg-${DFX_NETWORK}.bin")
 for file in "${assets[@]}"; do
   rm -f "$file"
 done
