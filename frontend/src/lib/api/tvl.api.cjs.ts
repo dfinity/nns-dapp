@@ -9,7 +9,6 @@ import type { Principal } from "@dfinity/principal";
  */
 import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HttpAgent } from "@dfinity/agent/lib/cjs/index";
-import { isNullish } from "@dfinity/utils";
 
 export const queryTVL = async ({
   identity,
@@ -18,9 +17,6 @@ export const queryTVL = async ({
   identity: Identity;
   certified: boolean;
 }): Promise<TvlResult | undefined> => {
-  if (isNullish(TVL_CANISTER_ID)) {
-    return undefined;
-  }
   logWithTimestamp(`Getting canister ${TVL_CANISTER_ID.toText()} TVL call...`);
 
   const { getTVL } = await canister({ identity, canisterId: TVL_CANISTER_ID });
