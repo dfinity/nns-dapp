@@ -1,5 +1,19 @@
 # Changelog
 
+## Proposal 119296
+* Display info text for Last Distribution.
+* Add new field to NNS payload to show arguments as hex string.
+* Accessibility improvement: colors and proposal payload/summary contrast.
+* Performance improvements (neuron caching).
+* Redesign and review of transaction confirmation step.
+* Narrowed modal design.
+* Modal wizard animation.
+* Make followees modal UI more compact.
+* Minor style fixes.
+* Fix settings title glitch.
+* Label updates.
+* Minor fixes.
+
 ## Proposal 115271
 * Fix back to detail from "Settings" page.
 * UX improvements:
