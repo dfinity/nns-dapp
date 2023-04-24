@@ -8,8 +8,6 @@ export const HOST = envVars.host;
 export const DEV = import.meta.env.DEV;
 export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
-export const HOST_IC0_APP = "https://ic0.app";
-
 const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {

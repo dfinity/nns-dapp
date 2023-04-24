@@ -19,6 +19,8 @@ type EnvironmentVars = {
   // Environments without SNS aggregator are valid
   snsAggregatorUrl?: string;
   wasmCanisterId: string;
+  // Environments without TVL are valid
+  tvlCanisterId?: string;
 };
 
 const mandatoryEnvVarKeys: EnvironmentVars = {
@@ -49,6 +51,20 @@ function assertEnvVars(
   }
 }
 
+const convertEmtpyStringToUndefined = (
+  str: string | undefined
+): string | undefined => (str === "" ? undefined : str);
+
+const mapEmtpyStringsToUndefined = (obj: {
+  [key: string]: string | undefined;
+}): { [key: string]: string | undefined } => {
+  const result: { [key: string]: string | undefined } = {};
+  Object.keys(obj).forEach((key: string) => {
+    result[key] = convertEmtpyStringToUndefined(obj[key]);
+  });
+  return result;
+};
+
 const getHtmlEnvVars = (): EnvironmentVars => {
   const ENV_VARS_ELEMENT_SELECTOR = "meta[name=nns-dapp-vars]";
   const dataElement: HTMLElement | null = window.document.querySelector(
@@ -59,13 +75,11 @@ const getHtmlEnvVars = (): EnvironmentVars => {
       `Missing environment variables element with selector ${ENV_VARS_ELEMENT_SELECTOR} in HTML page.`
     );
   }
-  const envVars: Record<string, unknown> = dataElement.dataset ?? {};
+  const envVars: Record<string, string | undefined> =
+    mapEmtpyStringsToUndefined(dataElement.dataset ?? {});
   assertEnvVars(envVars);
   return envVars;
 };
-
-const convertEmtpyStringToUndefined = (str: string): string | undefined =>
-  str === "" ? undefined : str;
 
 const getBuildEnvVars = (): EnvironmentVars => {
   const envVars = {
@@ -104,6 +118,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     wasmCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_WASM_CANISTER_ID
+    ),
+    tvlCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_TVL_CANISTER_ID
     ),
   };
   assertEnvVars(envVars);

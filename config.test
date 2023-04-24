@@ -44,6 +44,7 @@ clean_config() {
 		  "ROBOTS": "<meta name=\"robots\" content=\"noindex, nofollow\" />",
 		  "SNS_AGGREGATOR_URL": "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io",
 		  "STATIC_HOST": "https://icp0.io",
+		  "TVL_CANISTER_ID": "ewh3f-3qaaa-aaaap-aazjq-cai",
 		  "WASM_CANISTER_ID": "qaa6y-5yaaa-aaaaa-aaafa-cai"
 		}
 		EOF
@@ -63,6 +64,7 @@ clean_config() {
 		VITE_WASM_CANISTER_ID=qaa6y-5yaaa-aaaaa-aaafa-cai
 		VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
 		VITE_GOVERNANCE_CANISTER_URL=https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io
+		VITE_TVL_CANISTER_ID=ewh3f-3qaaa-aaaap-aazjq-cai
 		VITE_LEDGER_CANISTER_ID=ryjl3-tyaaa-aaaaa-aaaba-cai
 		VITE_LEDGER_CANISTER_URL=https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io
 		VITE_OWN_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
@@ -106,6 +108,7 @@ clean_config() {
 		    record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
 		    record{ 0="SNS_AGGREGATOR_URL"; 1="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io" };
 		    record{ 0="STATIC_HOST"; 1="https://icp0.io" };
+		    record{ 0="TVL_CANISTER_ID"; 1="ewh3f-3qaaa-aaaap-aazjq-cai" };
 		    record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
 		  };
 		})
