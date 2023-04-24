@@ -17,7 +17,9 @@ clean_config() {
   echo "(If the mainnet parameters have changed intentionally, please update the values in this test.)"
 
   clean_config
-  DFX_NETWORK=mainnet chronic ./config.sh
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  chronic ./config.sh
   json_diff="$(
     diff "$JSON_CONFIG" <(
       cat <<-EOF
