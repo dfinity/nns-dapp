@@ -37,6 +37,6 @@ export class KeyValuePairInfoPo extends BasePageObject {
   }
 
   getDescriptionText(): Promise<string> {
-    return this.root.byTestId(`${this.testId}-description`).getText();
+    return this.getText(`${this.testId}-description`);
   }
 }
