@@ -116,6 +116,7 @@ jobs:
       - name: Prepare for Playwright end-to-end tests
         working-directory: frontend
         run: |
+          npx playwright install --with-deps firefox
           npm ci
       - name: Wait for aggregator to get all SNSs
         run: |
