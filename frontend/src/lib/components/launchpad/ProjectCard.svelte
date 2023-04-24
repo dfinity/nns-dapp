@@ -37,6 +37,7 @@
 </script>
 
 <Card
+  testId="project-card-component"
   role="link"
   on:click={showProject}
   theme={commitmentE8s !== undefined ? "highlighted" : undefined}

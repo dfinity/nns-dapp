@@ -46,7 +46,7 @@ describe("Projects", () => {
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Open).length
     );
   });
@@ -77,7 +77,7 @@ describe("Projects", () => {
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Adopted).length
     );
   });
@@ -108,7 +108,7 @@ describe("Projects", () => {
       },
     });
 
-    expect(getAllByTestId("card").length).toBe(
+    expect(getAllByTestId("project-card-component").length).toBe(
       lifecycles.filter((lc) => lc === SnsSwapLifecycle.Committed).length
     );
   });
