@@ -3,7 +3,7 @@
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import { neuronCanBeSplit } from "$lib/utils/sns-neuron.utils";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -12,7 +12,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let neuron: SnsNeuron;
-  export let parameters: NervousSystemParameters;
+  export let parameters: SnsNervousSystemParameters;
   export let transactionFee: E8s;
   export let token: Token;
 
