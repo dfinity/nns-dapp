@@ -15,7 +15,7 @@
   <div class="content-cell-details">
     <ProposalSummary {summary}>
       <svelte:fragment slot="title">
-        <p class="value">{title ?? ""}</p>
+        <p data-tid="propose-summary-title" class="value">{title ?? ""}</p>
 
         {#if url}
           <a
