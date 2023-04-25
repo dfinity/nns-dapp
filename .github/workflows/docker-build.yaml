@@ -20,6 +20,21 @@ jobs:
             DFX_NETWORK: "mainnet"
     steps:
       - uses: actions/checkout@v3
+      - name: Print tags
+        run: |
+          set -x
+          : Note: This printout is for debugging.  Please keep it in main until tags are handled correctly.
+          : Log commit and existing tags
+          git rev-parse HEAD
+          git tag --points-at HEAD
+          readarray -t TAGS < <(git tag --points-at HEAD)
+          : Log tag that triggered this run, if any
+          GH_REF="${{github.ref}}"
+          GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
+          GH_TAG="${GH_REF_WITHOUT_PREFIX}"
+          : ... This run was not triggered by a tag OR the tag is already included OR add the github event tag to the list of tags.
+          [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || (for t in "${TAGS[@]}"; do [[ "$t" == "$GH_TAG" ]] && exit 0; done; exit 1) || TAGS+=( "${GH_TAG}" )
+          echo tags: "${TAGS[@]}"
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
       # Build and upload testnet assets
@@ -49,12 +64,24 @@ jobs:
             ${{ matrix.BUILD_NAME }}-out/deployment-config.json
       - name: Release
         run: |
+          : Get a list of tags
+          readarray -t TAGS < <(git tag --points-at HEAD)
+          : Add tag that triggered this run, if any.  There is no guarantee that it has been included already.
+          GH_REF="${{github.ref}}"
+          GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
+          GH_TAG="${GH_REF_WITHOUT_PREFIX}"
+          : ... This run was not triggered by a tag OR the tag is already included OR add the github event tag to the list of tags.
+          [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || (for t in "${TAGS[@]}"; do [[ "$t" == "$GH_TAG" ]] && exit 0; done; exit 1) || TAGS+=( "${GH_TAG}" )
+          echo Tags: "${TAGS[@]}"
+          : Get a list of assets
           cd "${{ matrix.BUILD_NAME }}-out"
           daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
           cp nns-dapp.wasm "$daily_build_name"
           artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
+          echo "Assets:"
           ls -l "${artefacts[@]}"
-          for tag in $(git tag --points-at HEAD) ; do
+          : Make or update a release for every tag
+          for tag in "${TAGS[@]}" ; do
             : Creates or updates a release for the tag
             if gh release view "$tag"
             then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
