@@ -4,6 +4,7 @@
 * UI fixes.
 * Testing improvements.
 * Minor configuration clean up.
+* Fix bug when filtering proposals.
 
 ## Proposal 119296
 * Display info text for Last Distribution.
