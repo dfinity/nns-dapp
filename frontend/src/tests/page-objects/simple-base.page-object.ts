@@ -21,14 +21,14 @@ export class SimpleBasePageObject {
     return this.root.waitForAbsent();
   }
 
-  click(tid: string | undefined): Promise<void> {
+  click(tid: string | undefined = undefined): Promise<void> {
     if (isNullish(tid)) {
       return this.root.click();
     }
     return this.root.byTestId(tid).click();
   }
 
-  getText(tid: string | undefined): Promise<string> {
+  getText(tid: string | undefined = undefined): Promise<string> {
     if (isNullish(tid)) {
       return this.root.getText();
     }
