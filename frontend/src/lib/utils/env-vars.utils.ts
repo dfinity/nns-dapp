@@ -1,7 +1,7 @@
 import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
 import { isNullish } from "@dfinity/utils";
 
-const localDev = import.meta.env.DEV;
+const localDevelopment = import.meta.env.DEV;
 
 type EnvironmentVars = {
   // Environments without ckBTC canisters are valid
@@ -145,9 +145,11 @@ export const getEnvVars = (): EnvironmentVars => {
   // - The local dev server started by `npm run dev`
   // - The local dev server started by `npm run preview`. The only way to distinguis this one is by the port.
   // We need to check `isBrowser` to skip the check when running the build.
-  const isLocalDevServer =
-    localDev || (isBrowser && window.location.port !== "");
-  if (!isBrowser || isLocalDevServer) {
+  const isDevServer =
+    localDevelopment ||
+    (isBrowser &&
+      (window.location.port === "5173" || window.location.port === "4173"));
+  if (!isBrowser || isDevServer) {
     return getBuildEnvVars();
   }
   return getHtmlEnvVars();

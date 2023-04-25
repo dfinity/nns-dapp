@@ -18,8 +18,8 @@ const snsAggregatorUrl = (url: string) => {
       return url;
     }
 
-    // If the nns-dapp is running in loalhost, we need to add `raw` to the URL to avoid CORS issues.
-    if (DEV || (isBrowser && isLocalhost(window.location.hostname))) {
+    // If the nns-dapp is running in localhost, we need to add `raw` to the URL to avoid CORS issues.
+    if (isBrowser && isLocalhost(window.location.hostname)) {
       return addRawToUrl(url);
     }
 
