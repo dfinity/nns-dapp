@@ -147,8 +147,7 @@ export const getEnvVars = (): EnvironmentVars => {
   // We need to check `isBrowser` to skip the check when running the build.
   const isDevServer =
     localDevelopment ||
-    (isBrowser &&
-      (window.location.port === "5173" || window.location.port === "4173"));
+    (isBrowser && ["5173", "4173"].includes(window.location.port));
   if (!isBrowser || isDevServer) {
     return getBuildEnvVars();
   }
