@@ -1,5 +1,6 @@
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
