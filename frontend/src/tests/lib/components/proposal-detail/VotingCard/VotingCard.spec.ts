@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -24,7 +24,7 @@ import { tick } from "svelte";
 import { writable } from "svelte/store";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
-describe("VotingCard", () => {
+describe("NnsVotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
   const proposalInfo: ProposalInfo = {
     ...mockProposalInfo,
@@ -52,7 +52,7 @@ describe("VotingCard", () => {
             proposal: proposalInfo,
           }),
         } as SelectedProposalContext,
-        Component: VotingCard,
+        Component: NnsVotingCard,
       },
     });
 
@@ -93,7 +93,7 @@ describe("VotingCard", () => {
     const { container } = renderVotingCard();
     // remove neuron selection
     votingNeuronSelectStore.reset();
-    // wait for UI update (src/lib/components/proposal-detail/VotingCard/VotingCard.svelte#34)
+    // wait for UI update (src/lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte#34)
     await tick();
     expect(container.querySelectorAll("button[disabled]").length).toBe(2);
   });

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProposalInfo } from "@dfinity/nns";
   import VotesResults from "./VotesResults.svelte";
-  import VotingCard from "./VotingCard/VotingCard.svelte";
+  import NnsVotingCard from "./VotingCard/NnsVotingCard.svelte";
   import { ProposalRewardStatus } from "@dfinity/nns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 
@@ -25,6 +25,6 @@
   <VotesResults {yes} {no} {total} />
 
   {#if !settled}
-    <VotingCard {proposalInfo} />
+    <NnsVotingCard {proposalInfo} />
   {/if}
 </div>

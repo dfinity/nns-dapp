@@ -1,7 +1,7 @@
 <script lang="ts">
   import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
   import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
-  import ProposalVotingSection from "./ProposalVotingSection.svelte";
+  import NnsProposalVotingSection from "./NnsProposalVotingSection.svelte";
   import ProposalNavigation from "./ProposalNavigation.svelte";
   import { getContext } from "svelte";
   import {
@@ -25,7 +25,7 @@
       <ProposalSystemInfoSection proposalInfo={$store.proposal} />
     </div>
     <div class="content-b expand-content-b">
-      <ProposalVotingSection proposalInfo={$store.proposal} />
+      <NnsProposalVotingSection proposalInfo={$store.proposal} />
     </div>
     <div class="content-c proposal-data-section">
       <NnsProposalSummarySection proposalInfo={$store.proposal} />

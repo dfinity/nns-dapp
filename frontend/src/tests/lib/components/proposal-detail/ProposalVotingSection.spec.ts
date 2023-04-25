@@ -22,7 +22,7 @@ import {
 import { render } from "@testing-library/svelte";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
-describe("ProposalVotingSection", () => {
+describe("NnsProposalVotingSection", () => {
   jest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);

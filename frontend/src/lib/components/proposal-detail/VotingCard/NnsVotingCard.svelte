@@ -30,6 +30,7 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+  import NnsVotingNeuronSelectContainer from "$lib/components/proposal-detail/VotingCard/NnsVotingNeuronSelectContainer.svelte";
 
   export let proposalInfo: ProposalInfo;
 
@@ -117,7 +118,12 @@
             />
           {/if}
 
-          <VotingNeuronSelect {proposalInfo} {voteRegistration} />
+          <VotingNeuronSelect {voteRegistration}>
+            <NnsVotingNeuronSelectContainer
+              {proposalInfo}
+              disabled={voteRegistration !== undefined}
+            />
+          </VotingNeuronSelect>
         {:else}
           <div class="loader">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { ProposalInfo } from "@dfinity/nns";
-  import ProposalVotingSection from "$lib/components/proposal-detail/ProposalVotingSection.svelte";
+  import NnsProposalVotingSection from "$lib/components/proposal-detail/NnsProposalVotingSection.svelte";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalStore,
@@ -18,4 +18,4 @@
   setContext(SELECTED_PROPOSAL_CONTEXT_KEY, { store });
 </script>
 
-<ProposalVotingSection {proposalInfo} />
+<NnsProposalVotingSection {proposalInfo} />
