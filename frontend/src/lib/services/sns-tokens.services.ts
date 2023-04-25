@@ -1,5 +1,5 @@
 import { getSnsToken } from "$lib/api/sns-ledger.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";

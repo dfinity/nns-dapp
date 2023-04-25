@@ -1,6 +1,6 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";

@@ -4,7 +4,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapCommitments,
 } from "$lib/api/sns.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import {
   snsQueryStore,
