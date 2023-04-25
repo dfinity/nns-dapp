@@ -39,6 +39,14 @@ Once you have a running replica with nns installed and a fixed
 
 The [canister_ids.json] data provides the list of canister IDs available for various test environments.
 
+## Preview
+
+To run a production like environment locally agains a replica run:
+
+```bash
+DFX_NETWORK=<replica-network> npm run preview
+```
+
 ### Configure
 
 To develop and run locally the dapp against a testnet, proceed as following:

@@ -127,9 +127,28 @@ const getBuildEnvVars = (): EnvironmentVars => {
   return envVars;
 };
 
+/**
+ * Returns the environment variables depending on the environment.
+ *
+ * The environment variables might be set in the HTML or from the build environment variables.
+ *
+ * We use the build environment variables when one of the following conditions is true:
+ * - Not in the browser
+ * - Local development server
+ *
+ * All the other scenarios use the HTML environment variables.
+ *
+ * @returns {EnvironmentVars}
+ */
 export const getEnvVars = (): EnvironmentVars => {
-  if (isBrowser && !localDev) {
-    return getHtmlEnvVars();
+  // There are two instances of local dev server:
+  // - The local dev server started by `npm run dev`
+  // - The local dev server started by `npm run preview`. The only way to distinguis this one is by the port.
+  // We need to check `isBrowser` to skip the check when running the build.
+  const isLocalDevServer =
+    localDev || (isBrowser && window.location.port !== "");
+  if (!isBrowser || isLocalDevServer) {
+    return getBuildEnvVars();
   }
-  return getBuildEnvVars();
+  return getHtmlEnvVars();
 };
