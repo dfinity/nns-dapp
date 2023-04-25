@@ -41,10 +41,12 @@ The [canister_ids.json] data provides the list of canister IDs available for var
 
 ## Preview
 
-To run a production like environment locally agains a replica run:
+To run a production like environment locally against a replica run:
 
 ```bash
-DFX_NETWORK=<replica-network> npm run preview
+DFX_NETWORK=<replica-network> ../config.sh
+npm run build
+npm run preview
 ```
 
 ### Configure
