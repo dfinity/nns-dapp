@@ -69,11 +69,13 @@ jobs:
           GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
           GH_TAG="${GH_REF_WITHOUT_PREFIX}"
           [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || (for e in "${TAGS[@]}"; do [[ "$e" == "$GH_TAG" ]] && exit 0; done; exit 1) || TAGS+=( "${GH_TAG}" )
+          echo Tags: "${TAGS[@]}"
           : Get a list of assets
           cd "${{ matrix.BUILD_NAME }}-out"
           daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
           cp nns-dapp.wasm "$daily_build_name"
           artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
+          echo "Assets:"
           ls -l "${artefacts[@]}"
           : Make or update a release for every tag
           for tag in "${TAGS[@]}" ; do
