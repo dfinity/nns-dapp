@@ -49,7 +49,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   }),
 }));
 
-jest.mock("./src/lib/constants/environment-flags.constants.ts", () => ({
+jest.mock("./src/lib/constants/mockable.constants.ts", () => ({
   DEV: false,
   ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,

@@ -19,7 +19,7 @@ import {
   increaseStakeNeuron as increaseStakeNeuronApi,
   stakeNeuron as stakeNeuronApi,
 } from "$lib/api/sns.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import {

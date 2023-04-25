@@ -8,7 +8,7 @@ import {
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,

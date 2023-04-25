@@ -42,7 +42,7 @@
   import { SaleStep } from "$lib/types/sale";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { browser } from "$app/environment";
-  import { IS_TEST_ENV } from "$lib/constants/environment-flags.constants";
+  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
 
   export let rootCanisterId: string | undefined | null;
 

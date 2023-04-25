@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { DEV } from "$lib/constants/environment-flags.constants";
+  import { DEV } from "$lib/constants/mockable.constants";
   import { browser } from "$app/environment";
 
   const localstorageKey = "nnsdapp-testnet-banner-display";

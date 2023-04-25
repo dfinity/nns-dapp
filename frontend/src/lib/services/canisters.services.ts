@@ -13,7 +13,7 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment-flags.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
