@@ -1,3 +1,4 @@
+// These are constants that can have a different value during tests but which are not set with the arguments passed to the canister.
 export const DEV = import.meta.env.DEV;
 
 // Disable TVL or transaction rate warning locally because that information is not crucial when we develop
