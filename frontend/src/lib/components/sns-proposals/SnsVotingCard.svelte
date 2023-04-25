@@ -11,7 +11,7 @@
     SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
-  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
@@ -26,7 +26,10 @@
     snsProposalIdString,
     snsProposalOpen,
   } from "$lib/utils/sns-proposals.utils";
-  import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    votableSnsNeurons,
+  } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
@@ -89,11 +92,14 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
+  const selectedNeurons = $votingNeuronSelectStore.selectedIds.map((id) =>
+    votableNeurons.find((neuron) => getSnsNeuronIdAsHexString(neuron) === id)
+  );
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
-        neurons: votableNeurons,
+        neurons: selectedNeurons(),
         proposal,
         vote: detail.voteType,
         updateProposalCallback: async (updatedProposal: SnsProposalData) => {
