@@ -70,6 +70,7 @@ jobs:
           GH_REF="${{github.ref}}"
           GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
           GH_TAG="${GH_REF_WITHOUT_PREFIX}"
+          : ... This run was not triggered by a tag OR the tag is already included OR add the github event tag to the list of tags.
           [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || (for t in "${TAGS[@]}"; do [[ "$t" == "$GH_TAG" ]] && exit 0; done; exit 1) || TAGS+=( "${GH_TAG}" )
           echo Tags: "${TAGS[@]}"
           : Get a list of assets
