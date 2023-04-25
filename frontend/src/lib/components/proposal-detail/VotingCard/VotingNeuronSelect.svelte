@@ -9,6 +9,7 @@
   } from "@dfinity/gix-components";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+  import VotingNeuronSelectContainer from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectContainer.svelte";
 
   export let voteRegistration: VoteRegistrationStoreEntry | undefined =
     undefined;
@@ -74,7 +75,9 @@
     {/if}
   </div>
 
-  <slot />
+  <VotingNeuronSelectContainer>
+    <slot />
+  </VotingNeuronSelectContainer>
 </Collapsible>
 
 <style lang="scss">
