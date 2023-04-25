@@ -26,13 +26,13 @@ jobs:
           : Log commit and existing tags
           git rev-parse HEAD
           git tag --points-at HEAD
+          readarray -t TAGS < <(git tag --points-at HEAD)
           : Log tag that triggered this run, if any
           GH_REF="${{github.ref}}"
           GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
-          [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || {
-                  GH_TAG="${GH_REF_WITHOUT_PREFIX}"
-            echo "Tag: $GH_TAG"
-          }
+          GH_TAG="${GH_REF_WITHOUT_PREFIX}"
+          [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || (for e in "${TAGS[@]}"; do [[ "$e" == "GH_TAG" ]] && exit 0; done; exit 1) || TAGS+=( "${GH_TAG}" )
+          echo tags: "${TAGS[@]}"
       - name: Set up docker buildx
         uses: docker/setup-buildx-action@v2
       # Build and upload testnet assets
