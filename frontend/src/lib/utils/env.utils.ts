@@ -28,3 +28,6 @@ export const addRawToUrl = (urlString: string): string => {
 
   return hasTrailingSlash ? url.toString() : url.toString().slice(0, -1);
 };
+
+export const isLocalhost = (hostname: string) =>
+  hostname.includes("localhost") || hostname.includes("127.0.0.1");

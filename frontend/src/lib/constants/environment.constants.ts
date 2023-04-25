@@ -1,22 +1,25 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { addRawToUrl } from "$lib/utils/env.utils";
+import { addRawToUrl, isLocalhost } from "$lib/utils/env.utils";
+import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
 
 const envVars = getEnvVars();
 
 export const DFX_NETWORK = envVars.dfxNetwork;
 export const HOST = envVars.host;
 export const DEV = import.meta.env.DEV;
+
 export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
 const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
-    if (hostname.includes("localhost") || hostname.includes("127.0.0.1")) {
+    if (isLocalhost(hostname)) {
       return url;
     }
 
-    if (DEV) {
+    // If the nns-dapp is running in localhost, we need to add `raw` to the URL to avoid CORS issues.
+    if (isBrowser && isLocalhost(window.location.hostname)) {
       return addRawToUrl(url);
     }
 
