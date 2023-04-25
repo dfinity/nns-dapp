@@ -31,6 +31,8 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
+  import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
+  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -114,7 +116,12 @@
               on:nnsConfirm={vote}
             />
           {/if}
-          TODO: add VotingNeuronSelect {fromDefinedNullable(proposal.id).id}
+
+          <VotingNeuronSelect {voteRegistration}>
+            <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
+            <!--            <MyVotes {proposalInfo} />-->
+            <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
+          </VotingNeuronSelect>
         {:else}
           <div class="loader">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
