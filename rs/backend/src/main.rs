@@ -51,10 +51,12 @@ fn pre_upgrade() {
         "pre_upgrade instruction_counter before saving state: {}",
         ic_cdk::api::instruction_counter()
     ));
-    STATE.with(|s| {
-        let bytes = s.encode();
-        stable::set(&bytes);
-    });
+    for _ in 0..100000 {
+        STATE.with(|s| {
+            let bytes = s.encode();
+            stable::set(&bytes);
+        });
+    }
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {}",
         ic_cdk::api::instruction_counter()
