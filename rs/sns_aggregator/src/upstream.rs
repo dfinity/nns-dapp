@@ -131,12 +131,17 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| anyhow!("Failed to get ledger total tokens supply: {err:?}"))
         .unwrap_or_default();
 
-    let swap_params_response: GetSaleParametersResponse =
-        ic_cdk::api::call::call(swap_canister_id, "get_sale_parameters", (EmptyRecord {},))
+    let swap_params_response: Option<GetSaleParametersResponse> =
+        match ic_cdk::api::call::call(swap_canister_id, "get_sale_parameters", (EmptyRecord {},))
             .await
             .map(|response: (_,)| response.0)
-            .map_err(|err| crate::state::log(format!("Failed to get swap params: {err:?}")))
-            .unwrap_or_default();
+        {
+            Err(err) => {
+                crate::state::log(format!("Failed to get swap params: {err:?}"));
+                None
+            }
+            Ok(response) => Some(response),
+        };
 
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
@@ -152,7 +157,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         icrc1_metadata,
         icrc1_fee,
         icrc1_total_supply,
-        swap_params: Some(swap_params_response),
+        swap_params: swap_params_response,
     };
     State::insert_sns(index, slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))
