@@ -21,6 +21,13 @@ jobs:
           : Log commit and existing tags
           git rev-parse HEAD
           git tag --points-at HEAD
+          : Log tag that triggered this run, if any
+          GH_REF="${{github.ref}}"
+          GH_REF_WITHOUT_PREFIX="${GH_REF#refs/tags/}"
+          [[ "$GH_REF" == "$GH_REF_WITHOUT_PREFIX" ]] || {
+                  GH_TAG="${GH_REF_WITHOUT_PREFIX}"
+            echo "Tag: $GH_TAG"
+          }
           : Add a tag if appropriate
           if git tag --points-at HEAD | grep -E '\<nightly-'
           then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
