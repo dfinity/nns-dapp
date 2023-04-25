@@ -6,7 +6,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import type {
-    NervousSystemParameters,
+    SnsNervousSystemParameters,
     SnsNeuron,
     SnsProposalData,
     SnsVote,
@@ -41,7 +41,7 @@
   let universeIdText: UniverseCanisterIdText | undefined;
   $: universeIdText = $snsOnlyProjectStore?.toText();
 
-  let snsParameters: NervousSystemParameters | undefined;
+  let snsParameters: SnsNervousSystemParameters | undefined;
   $: if (nonNullish(universeIdText)) {
     snsParameters = $snsParametersStore[universeIdText]?.parameters;
   }
@@ -73,7 +73,7 @@
       votableNeurons.map((neuron: SnsNeuron) =>
         snsNeuronToVotingNeuron({
           neuron,
-          snsParameters: snsParameters as NervousSystemParameters,
+          snsParameters: snsParameters as SnsNervousSystemParameters,
         })
       )
     );

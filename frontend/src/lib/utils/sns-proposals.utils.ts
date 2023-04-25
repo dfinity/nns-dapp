@@ -11,10 +11,10 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Vote } from "@dfinity/nns";
 import type {
-  NervousSystemParameters,
   SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
@@ -360,7 +360,7 @@ export const snsNeuronToVotingNeuron = ({
   snsParameters,
 }: {
   neuron: SnsNeuron;
-  snsParameters: NervousSystemParameters;
+  snsParameters: SnsNervousSystemParameters;
 }): VotingNeuron => ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
   votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
