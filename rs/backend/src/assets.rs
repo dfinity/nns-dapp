@@ -364,7 +364,7 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
 ///
 /// Note: Used both in init and post_upgrade
 pub fn init_assets() {
-    dfn_core::api::print("Inserting assets...".to_string());
+    dfn_core::api::print("Inserting assets...");
     let mut num_assets = 0;
     let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
     let mut decompressed = Vec::new();
