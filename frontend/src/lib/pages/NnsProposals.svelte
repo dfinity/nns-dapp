@@ -127,7 +127,7 @@
     debounceFindProposals?.();
   };
 
-  $: applyFilter($proposalsFiltersStore);
+  $: $definedNeuronsStore, applyFilter($proposalsFiltersStore);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
 
