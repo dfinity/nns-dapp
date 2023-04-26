@@ -92,9 +92,14 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  const selectedNeurons = $votingNeuronSelectStore.selectedIds.map((id) =>
-    votableNeurons.find((neuron) => getSnsNeuronIdAsHexString(neuron) === id)
-  );
+  const selectedNeurons = (): SnsNeuron[] =>
+    $votingNeuronSelectStore.selectedIds
+      .map((id) =>
+        votableNeurons.find(
+          (neuron) => getSnsNeuronIdAsHexString(neuron) === id
+        )
+      )
+      .filter(nonNullish);
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
@@ -123,7 +128,7 @@
             />
           {/if}
 
-          <VotingNeuronSelect {voteRegistration}>
+          <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
             <!--            <MyVotes {proposalInfo} />-->
             <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
