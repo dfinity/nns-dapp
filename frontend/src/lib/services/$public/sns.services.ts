@@ -73,14 +73,11 @@ export const loadSnsProjects = async (): Promise<void> => {
     ];
     snsQueryStore.setData(snsQueryStoreData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
-      cachedSnses
-        .filter(({ icrc1_total_supply }) => nonNullish(icrc1_total_supply))
-        .map(({ icrc1_total_supply, canister_ids }) => ({
-          rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
-          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
-          totalSupply: icrc1_total_supply as bigint,
-          certified: true,
-        }))
+      cachedSnses.map(({ icrc1_total_supply, canister_ids }) => ({
+        rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
+        totalSupply: icrc1_total_supply,
+        certified: true,
+      }))
     );
     snsFunctionsStore.setProjectsFunctions(
       cachedSnses.map((sns) => ({
