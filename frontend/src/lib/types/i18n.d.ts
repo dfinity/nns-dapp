@@ -935,6 +935,7 @@ interface I18nError__ckbtc {
   get_btc_no_account: string;
   get_btc_no_universe: string;
   update_balance: string;
+  no_new_confirmed_btc: string;
   withdrawal_account: string;
   retrieve_btc: string;
   malformed_address: string;

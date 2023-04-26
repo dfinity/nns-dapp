@@ -8,9 +8,13 @@ import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
-import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  toastsError,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
-import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
+import { CkBTCErrorKey, CkBTCInfoKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   MinterAlreadyProcessingError,
@@ -110,7 +114,7 @@ export const updateBalance = async ({
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
-}): Promise<{ success: boolean; err?: unknown }> => {
+}): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
   startBusy({
     initiator: "update-ckbtc-balance",
   });
@@ -130,6 +134,16 @@ export const updateBalance = async ({
   } catch (error: unknown) {
     const err = mapUpdateBalanceError(error);
 
+    // Few errors returned by the minter are considered to be displayed as information for the user
+    if (err instanceof CkBTCInfoKey) {
+      toastsShow({
+        labelKey: err.message,
+        level: "info",
+      });
+
+      return { success: true };
+    }
+
     toastsError({
       labelKey: "error__ckbtc.update_balance",
       err,
@@ -141,7 +155,9 @@ export const updateBalance = async ({
   }
 };
 
-const mapUpdateBalanceError = (err: unknown): unknown => {
+const mapUpdateBalanceError = (
+  err: unknown
+): CkBTCErrorKey | CkBTCInfoKey | unknown => {
   const labels = get(i18n);
 
   if (err instanceof MinterTemporaryUnavailableError) {
@@ -155,7 +171,7 @@ const mapUpdateBalanceError = (err: unknown): unknown => {
   }
 
   if (err instanceof MinterNoNewUtxosError) {
-    return new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
+    return new CkBTCInfoKey(labels.error__ckbtc.no_new_confirmed_btc);
   }
 
   if (err instanceof MinterGenericError) {
