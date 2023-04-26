@@ -27,9 +27,7 @@ import {
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const getBTCAddress = async (
-  minterCanisterId: CanisterId
-): Promise<string> => {
+const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
   return getBTCAddressAPI({ identity, canisterId: minterCanisterId });
 };

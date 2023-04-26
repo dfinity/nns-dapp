@@ -3,12 +3,18 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_MINTER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockBTCAddressTestnet,
+  mockCkBTCMainAccount,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -22,13 +28,17 @@ import { waitFor } from "@testing-library/svelte";
 describe("ckbtc-minter-services", () => {
   afterEach(() => jest.clearAllMocks());
 
-  describe("getBTCAddress", () => {
+  describe("loadBtcAddress", () => {
     it("should get bitcoin address", async () => {
       const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
-      await services.getBTCAddress(CKBTC_MINTER_CANISTER_ID);
+      await services.loadBtcAddress({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+        identifier: mockCkBTCMainAccount.identifier,
+      });
 
       await waitFor(() =>
         expect(spyGetAddress).toBeCalledWith({
