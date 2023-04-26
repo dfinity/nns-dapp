@@ -16,6 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Tag main
+        id: tag_main
         run: |
           set -x
           : Log commit and existing tags
@@ -28,11 +29,14 @@ jobs:
             tag_name="$(date +nightly-%Y-%m-%d)"
             git tag "${tag_name}"
             git push origin "refs/tags/${tag_name}"
+            echo "need_release=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Set up docker buildx
+        if: steps.tag_name.outputs.need_release == 'true'
         uses: docker/setup-buildx-action@v2
       # Build and upload testnet assets
       - name: Build nns-dapp Docker image
+        if: steps.tag_name.outputs.need_release == 'true'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -40,8 +44,10 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           outputs: out
       - name: 'Record the git commit and any tags'
+        if: steps.tag_name.outputs.need_release == 'true'
         run: git log | head -n1 > out/commit.txt
       - name: Release
+        if: steps.tag_name.outputs.need_release == 'true'
         uses: ./.github/actions/release_nns_dapp
         with:
           assets_dir: 'out'
