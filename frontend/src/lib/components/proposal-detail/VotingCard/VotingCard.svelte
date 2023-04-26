@@ -120,7 +120,7 @@
             />
           {/if}
 
-          <VotingNeuronSelect {voteRegistration}>
+          <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
             <MyVotes {proposalInfo} />
             <IneligibleNeuronsCard

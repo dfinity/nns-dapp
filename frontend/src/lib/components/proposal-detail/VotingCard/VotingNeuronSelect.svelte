@@ -1,6 +1,5 @@
 <script lang="ts">
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
-  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     IconExpandCircleDown,
@@ -11,13 +10,7 @@
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import VotingNeuronSelectContainer from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectContainer.svelte";
 
-  export let voteRegistration: VoteRegistrationStoreEntry | undefined =
-    undefined;
-
   let totalNeuronsVotingPower: bigint;
-  let disabled = false;
-
-  $: disabled = voteRegistration !== undefined;
 
   $: totalNeuronsVotingPower = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
