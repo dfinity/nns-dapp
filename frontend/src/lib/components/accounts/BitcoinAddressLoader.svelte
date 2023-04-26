@@ -50,6 +50,4 @@
   $: identifier, (async () => await loadBtcAddress())();
 </script>
 
-{#if enabled}
-  <slot />
-{/if}
+<slot />
