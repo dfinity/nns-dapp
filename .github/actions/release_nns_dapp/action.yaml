@@ -1,6 +1,8 @@
 name: 'Release the nns-dapp'
 description: |
   Creates or updates a release for every tag pointing at HEAD.
+
+  Releases for tags named proposal-* or nightly-* are made public.
 inputs:
   assets_dir:
     description: "The directory containing the assets.  Usually, the docker out directory."
