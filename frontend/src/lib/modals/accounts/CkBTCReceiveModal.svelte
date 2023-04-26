@@ -28,6 +28,7 @@
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
   import { TransactionNetwork } from "$lib/types/transaction";
+  import BitcoinAddressLoader from "$lib/components/accounts/BitcoinAddressLoader.svelte";
 
   export let data: CkBTCReceiveModalData;
 
@@ -140,73 +141,81 @@
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  {#if displayBtcAddress}
-    <div class="receive">
-      <Segment bind:selectedSegmentId bind:this={segment}>
-        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
-        <SegmentButton segmentId={bitcoinSegmentId}
-          >{bitcoinSegmentLabel}</SegmentButton
-        >
-      </Segment>
-    </div>
-  {/if}
-
-  <ReceiveSelectAccountDropdown
-    {account}
-    canSelectAccount={!bitcoin && canSelectAccount}
+  <BitcoinAddressLoader
     {universeId}
-    on:nnsSelectedAccount={({ detail }) => (account = detail)}
-  />
-
-  {#if nonNullish(address)}
-    <ReceiveAddressQRCode
-      {address}
-      renderQRCode={modalRendered}
-      qrCodeLabel={bitcoin
-        ? $i18n.ckbtc.qrcode_aria_label_bitcoin
-        : $i18n.ckbtc.qrcode_aria_label_ckBTC}
-      {logo}
-      logoArialLabel={tokenLabel}
-      bind:qrCodeRendered
-    >
-      <svelte:fragment slot="address-label">{title}</svelte:fragment>
-
-      <svelte:fragment slot="additional-information">
-        {#if bitcoin}
-          <BitcoinKYTFee
-            minterCanisterId={canisters.minterCanisterId}
-            selectedNetwork={ckTESTBTC
-              ? TransactionNetwork.BTC_TESTNET
-              : TransactionNetwork.BTC_MAINNET}
-          />
-        {/if}
-      </svelte:fragment>
-    </ReceiveAddressQRCode>
-  {:else}
-    <div class="loading description">
-      <span>{$i18n.ckbtc.loading_address}</span>
-      <div><Spinner size="small" inline /></div>
-    </div>
-  {/if}
-
-  <div class="toolbar">
-    {#if qrCodeRendered}
-      {#if bitcoin}
-        <button
-          class="primary"
-          on:click={updateBalance}
-          disabled={$busy}
-          data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
-        >
-      {:else}
-        <button
-          class="primary"
-          on:click={reloadAccountAndClose}
-          data-tid="reload-receive-account">{$i18n.core.finish}</button
-        >
-      {/if}
+    minterCanisterId={canisters.minterCanisterId}
+    identifier={account?.identifier}
+  >
+    {#if displayBtcAddress}
+      <div class="receive">
+        <Segment bind:selectedSegmentId bind:this={segment}>
+          <SegmentButton segmentId={ckBTCSegmentId}
+            >{segmentLabel}</SegmentButton
+          >
+          <SegmentButton segmentId={bitcoinSegmentId}
+            >{bitcoinSegmentLabel}</SegmentButton
+          >
+        </Segment>
+      </div>
     {/if}
-  </div>
+
+    <ReceiveSelectAccountDropdown
+      {account}
+      canSelectAccount={!bitcoin && canSelectAccount}
+      {universeId}
+      on:nnsSelectedAccount={({ detail }) => (account = detail)}
+    />
+
+    {#if nonNullish(address)}
+      <ReceiveAddressQRCode
+        {address}
+        renderQRCode={modalRendered}
+        qrCodeLabel={bitcoin
+          ? $i18n.ckbtc.qrcode_aria_label_bitcoin
+          : $i18n.ckbtc.qrcode_aria_label_ckBTC}
+        {logo}
+        logoArialLabel={tokenLabel}
+        bind:qrCodeRendered
+      >
+        <svelte:fragment slot="address-label">{title}</svelte:fragment>
+
+        <svelte:fragment slot="additional-information">
+          {#if bitcoin}
+            <BitcoinKYTFee
+              minterCanisterId={canisters.minterCanisterId}
+              selectedNetwork={ckTESTBTC
+                ? TransactionNetwork.BTC_TESTNET
+                : TransactionNetwork.BTC_MAINNET}
+            />
+          {/if}
+        </svelte:fragment>
+      </ReceiveAddressQRCode>
+    {:else}
+      <div class="loading description">
+        <span>{$i18n.ckbtc.loading_address}</span>
+        <div><Spinner size="small" inline /></div>
+      </div>
+    {/if}
+
+    <div class="toolbar">
+      {#if qrCodeRendered}
+        {#if bitcoin}
+          <button
+            class="primary"
+            on:click={updateBalance}
+            disabled={$busy}
+            data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
+          >
+        {:else}
+          <button
+            class="primary"
+            on:click={reloadAccountAndClose}
+            data-tid="reload-receive-account">{$i18n.core.finish}</button
+          >
+        {/if}
+      {/if}
+    </div>
+  </BitcoinAddressLoader>
 </Modal>
 
 <style lang="scss">

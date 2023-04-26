@@ -1,8 +1,5 @@
 <script lang="ts">
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import { getBTCAddress } from "$lib/services/ckbtc-minter.services";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { onMount } from "svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
   import type { Account, AccountIdentifierText } from "$lib/types/account";
@@ -15,6 +12,7 @@
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
     BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
   } from "$lib/constants/bitcoin.constants";
+  import BitcoinAddressLoader from "$lib/components/accounts/BitcoinAddressLoader.svelte";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
@@ -30,34 +28,6 @@
   let btcAddressLoaded = false;
   $: btcAddressLoaded = nonNullish($bitcoinAddressStore[identifier]);
 
-  // TODO: to be removed when ckBTC with minter is live.
-  let enabled = false;
-  $: enabled = isUniverseCkTESTBTC(universeId);
-
-  const loadBtcAddress = async () => {
-    if (!enabled) {
-      return;
-    }
-
-    if (btcAddressLoaded) {
-      return;
-    }
-
-    try {
-      // TODO(GIX-1303): ckBTC - derive the address in frontend. side note: should we keep track of the address in a store?
-      const btcAddress = await getBTCAddress(minterCanisterId);
-
-      bitcoinAddressStore.set({ identifier, btcAddress });
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error__ckbtc.get_btc_address",
-        err,
-      });
-    }
-  };
-
-  onMount(async () => await loadBtcAddress());
-
   let blockExplorerUrl: string;
   $: blockExplorerUrl = `${
     isUniverseCkTESTBTC(universeId)
@@ -66,7 +36,7 @@
   }/${btcAddress ?? ""}`;
 </script>
 
-{#if enabled}
+<BitcoinAddressLoader {universeId} {minterCanisterId} {identifier}>
   <p class="description">
     {$i18n.ckbtc.incoming_bitcoin_network}
     <a
@@ -83,7 +53,7 @@
       {/if}
     </a>.
   </p>
-{/if}
+</BitcoinAddressLoader>
 
 <style lang="scss">
   div {
