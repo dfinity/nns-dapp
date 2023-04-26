@@ -1,7 +1,7 @@
 name: Nightly Publication
 on:
   schedule:
-    - cron: "10 0 * * *"
+    - cron: "10 * * * *"
   push:
     branches:
       # Commit to the nightly branch and push to test.
@@ -29,6 +29,23 @@ jobs:
             git tag "${tag_name}"
             git push origin "refs/tags/${tag_name}"
           fi
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      # Build and upload testnet assets
+      - name: Build nns-dapp Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          cache-from: type=gha,scope=cached-stage
+          outputs: out
+      - name: 'Record the git commit and any tags'
+        run: git log | head -n1 > out/commit.txt
+      - name: Release
+        uses: ./.github/actions/release_nns_dapp
+        with:
+          assets_dir: 'out'
+          token: ${{ secrets.GITHUB_TOKEN }}
   update-ii:
     runs-on: ubuntu-20.04
     steps:
