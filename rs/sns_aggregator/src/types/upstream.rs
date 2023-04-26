@@ -54,6 +54,6 @@ pub struct UpstreamData {
     pub icrc1_total_supply: Nat,
     /// The params of the swap
     pub swap_params: Option<GetSaleParametersResponse>,
-    // The initialization params of the swap
+    /// The initialization params of the swap
     pub init: Option<GetInitResponse>,
 }
