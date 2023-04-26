@@ -3,7 +3,9 @@
  */
 
 import * as api from "$lib/api/ckbtc-minter.api";
+import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
+  CKBTC_MINTER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -14,6 +16,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
@@ -48,17 +51,10 @@ describe("BtcCkBTCReceiveModal", () => {
     },
   ];
 
-  const data = {
-    identifier: mockCkBTCMainAccount.identifier,
-    btcAddress: mockBTCAddressTestnet,
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
 
     jest.spyOn(api, "updateBalance").mockResolvedValue(success);
-
-    bitcoinAddressStore.set(data);
   });
 
   const renderReceiveModal = ({
@@ -82,13 +78,47 @@ describe("BtcCkBTCReceiveModal", () => {
       },
     });
 
-  it("should render a QR code", async () => {
-    const { getByTestId } = await renderReceiveModal({});
+  describe("not matching bitcoin address store", () => {
+    let spyGetAddress;
 
-    expect(getByTestId("qr-code")).toBeInTheDocument();
+    beforeEach(() => {
+      spyGetAddress = jest
+        .spyOn(minterApi, "getBTCAddress")
+        .mockResolvedValue(mockBTCAddressTestnet);
+    });
+
+    it("should load bitcoin address on mount", async () => {
+      await renderReceiveModal({});
+
+      await waitFor(() =>
+        expect(spyGetAddress).toBeCalledWith({
+          identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
+        })
+      );
+    });
   });
 
   describe("with btc", () => {
+    describe("without BTC address", () => {
+      beforeEach(() => {
+        bitcoinAddressStore.reset();
+
+        jest.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
+      });
+
+      it("should render spinner while loading BTC address", async () => {
+        const { getByText, getByTestId, container } = await renderReceiveModal(
+          {}
+        );
+
+        await selectSegmentBTC(container);
+
+        expect(getByTestId("spinner")).not.toBeNull();
+        expect(getByText(en.ckbtc.loading_address)).toBeInTheDocument();
+      });
+    });
+
     describe("with BTC address", () => {
       beforeEach(() => {
         bitcoinAddressStore.set({
@@ -263,23 +293,12 @@ describe("BtcCkBTCReceiveModal", () => {
         expect(reloadSpy).not.toHaveBeenCalled();
       });
     });
+  });
 
-    describe("without BTC address", () => {
-      beforeEach(() => {
-        bitcoinAddressStore.reset();
-      });
+  it("should render a QR code", async () => {
+    const { getByTestId } = await renderReceiveModal({});
 
-      it("should render spinner while loading BTC address", async () => {
-        const { getByText, getByTestId, container } = await renderReceiveModal(
-          {}
-        );
-
-        await selectSegmentBTC(container);
-
-        expect(getByTestId("spinner")).not.toBeNull();
-        expect(getByText(en.ckbtc.loading_address)).toBeInTheDocument();
-      });
-    });
+    expect(getByTestId("qr-code")).toBeInTheDocument();
   });
 
   describe("without btc", () => {
