@@ -147,12 +147,11 @@
       return;
     }
 
-    async () =>
-      await loadBtcAddress({
-        universeId,
-        minterCanisterId: canisters.minterCanisterId,
-        identifier,
-      });
+    await loadBtcAddress({
+      universeId,
+      minterCanisterId: canisters.minterCanisterId,
+      identifier,
+    });
   };
 
   $: loadBitcoinAddress(account?.identifier);
