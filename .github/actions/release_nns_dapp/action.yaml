@@ -12,6 +12,7 @@ runs:
   using: "composite"
   steps:
     - name: Release
+      shell: bash
       run: |
         set -euxo pipefail
         cd "${{ inputs.assets_dir }}"
