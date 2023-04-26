@@ -1,7 +1,7 @@
 import { ckBTCTransfer, getCkBTCAccounts } from "$lib/api/ckbtc-ledger.api";
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";

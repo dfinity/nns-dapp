@@ -107,7 +107,8 @@
       ["icrc1:symbol", { "Text": "CFD" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 1100000000000
   },
   {
     "index": 10,
@@ -214,7 +215,8 @@
       ["icrc1:symbol", { "Text": "PETE" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 1000000000000
   },
   {
     "index": 9,
@@ -321,7 +323,8 @@
       ["icrc1:symbol", { "Text": "NOT_CFD_I" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 900000000000
   },
   {
     "index": 8,
@@ -413,7 +416,8 @@
       ["icrc1:symbol", { "Text": "NOT_CFD" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 800000000000
   },
   {
     "index": 7,
@@ -520,7 +524,8 @@
       ["icrc1:symbol", { "Text": "NOT_CFD" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 700000000000
   },
   {
     "index": 6,
@@ -627,7 +632,8 @@
       ["icrc1:symbol", { "Text": "HAXOH" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 600000000000
   },
   {
     "index": 5,
@@ -719,7 +725,8 @@
       ["icrc1:symbol", { "Text": "RUSOW" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 500000000000
   },
   {
     "index": 4,
@@ -826,7 +833,8 @@
       ["icrc1:symbol", { "Text": "TALOD" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 400000000000
   },
   {
     "index": 3,
@@ -933,7 +941,8 @@
       ["icrc1:symbol", { "Text": "PEKAP" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 300000000000
   },
   {
     "index": 2,
@@ -1040,6 +1049,7 @@
       ["icrc1:symbol", { "Text": "FEGEN" }],
       ["icrc1:fee", { "Nat": [1000] }]
     ],
-    "icrc1_fee": [1000]
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 200000000000
   }
 ]

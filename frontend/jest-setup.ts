@@ -49,23 +49,8 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   }),
 }));
 
-// TODO: Split the constants that depend on the environment variables and the ones that don't.
-jest.mock("./src/lib/constants/environment.constants.ts", () => ({
-  DFX_NETWORK: "testnet",
-  HOST: "https://icp-api.io",
+jest.mock("./src/lib/constants/mockable.constants.ts", () => ({
   DEV: false,
-  FETCH_ROOT_KEY: false,
-  FEATURE_FLAG_ENVIRONMENT: {
-    ENABLE_SNS_VOTING: true,
-    ENABLE_SNS_AGGREGATOR: true,
-    ENABLE_CKBTC: true,
-    ENABLE_CKTESTBTC: true,
-    TEST_FLAG_EDITABLE: true,
-    TEST_FLAG_NOT_EDITABLE: true,
-  },
-  SNS_AGGREGATOR_CANISTER_URL:
-    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
-  STAKE_MATURITY: true,
   ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,

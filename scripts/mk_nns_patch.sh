@@ -6,7 +6,7 @@ set -euxo pipefail
 ##########################
 print_help() {
   cat <<-EOF
-    Makes a patch file for a rust file gfrom local customizations.
+    Makes a patch file for a rust file from local customizations.
 
 	Usage: $(basename "$0") <CANISTER_NAME>
 	takes inputs:
