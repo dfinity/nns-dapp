@@ -15,7 +15,8 @@ export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
 );
 export const WASM_CANISTER_ID = envVars.wasmCanisterId;
 
-export const TVL_CANISTER_ID: Principal = nonNullish(envVars?.tvlCanisterId)
+export const TVL_CANISTER_ID: Principal | undefined = nonNullish(
+  envVars?.tvlCanisterId
+)
   ? Principal.fromText(envVars?.tvlCanisterId)
-  : // TODO: Return undefined and manage `undefined` in tvl api function
-    Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai");
+  : undefined;
