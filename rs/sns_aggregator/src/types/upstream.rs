@@ -9,6 +9,7 @@ use candid::Nat;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use serde::Serialize;
 use std::collections::BTreeMap;
+use crate::types::ic_sns_swap::GetInitResponse;
 
 /// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
@@ -53,4 +54,6 @@ pub struct UpstreamData {
     pub icrc1_total_supply: Nat,
     /// The params of the swap
     pub swap_params: Option<GetSaleParametersResponse>,
+    // The initialization params of the swap
+    pub init: Option<GetInitResponse>,
 }
