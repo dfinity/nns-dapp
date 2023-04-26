@@ -12,6 +12,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -167,16 +168,20 @@ describe("ckbtc-minter-services", () => {
       expect(result).toEqual({ success: false, err });
     });
 
-    it("should return no new UTXOs error", async () => {
+    it("should handle no new UTXOs info", async () => {
       jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
 
-      const err = new ApiErrorKey(en.error__ckbtc.no_new_utxo);
+      const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
 
       const result = await services.updateBalance(params);
 
-      expect(result).toEqual({ success: false, err });
+      expect(result).toEqual({ success: true });
+      expect(spyOnToastsShow).toHaveBeenCalledWith({
+        level: "info",
+        labelKey: en.error__ckbtc.no_new_confirmed_btc,
+      });
     });
   });
 

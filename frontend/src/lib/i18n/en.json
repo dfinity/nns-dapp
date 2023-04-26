@@ -886,6 +886,7 @@
     "get_btc_no_account": "An account should be provided to execute this feature",
     "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",
     "update_balance": "Sorry, the balance cannot be updated.",
+    "no_new_confirmed_btc": "Updated available ckBTC : No new confirmed BTC.",
     "withdrawal_account": "Sorry, no withdrawal account can be found.",
     "retrieve_btc": "Sorry, retrieving BTC failed.",
     "malformed_address": "Address malformed.",

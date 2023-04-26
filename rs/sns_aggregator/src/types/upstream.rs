@@ -5,6 +5,7 @@ use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
+use crate::types::ic_sns_swap::GetInitResponse;
 use candid::Nat;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use serde::Serialize;
@@ -53,4 +54,6 @@ pub struct UpstreamData {
     pub icrc1_total_supply: Nat,
     /// The params of the swap
     pub swap_params: Option<GetSaleParametersResponse>,
+    /// The initialization params of the swap
+    pub init: Option<GetInitResponse>,
 }
