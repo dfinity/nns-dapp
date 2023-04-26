@@ -144,6 +144,7 @@ export const aggregatorSnsMock: CachedSns = {
     ["icrc1:fee", { Nat: aggregatorTokenMock.fee }],
   ],
   icrc1_fee: aggregatorTokenMock.fee,
+  icrc1_total_supply: BigInt(1100_000_000_000),
 };
 
 export const aggregatorSnsMockWith = ({
