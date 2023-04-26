@@ -5,11 +5,14 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
-  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_MINTER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
@@ -29,21 +32,26 @@ describe("ckbtc-minter-services", () => {
   afterEach(() => jest.clearAllMocks());
 
   describe("loadBtcAddress", () => {
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
+
     it("should get bitcoin address", async () => {
       const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
       await services.loadBtcAddress({
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
         identifier: mockCkBTCMainAccount.identifier,
       });
 
       await waitFor(() =>
         expect(spyGetAddress).toBeCalledWith({
           identity: mockIdentity,
-          canisterId: CKBTC_MINTER_CANISTER_ID,
+          canisterId: CKTESTBTC_MINTER_CANISTER_ID,
         })
       );
     });
