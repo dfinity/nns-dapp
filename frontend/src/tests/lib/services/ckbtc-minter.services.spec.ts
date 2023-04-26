@@ -10,6 +10,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
@@ -27,6 +28,7 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
   afterEach(() => jest.clearAllMocks());
@@ -42,6 +44,9 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
+      const store = get(bitcoinAddressStore);
+      expect(store[mockCkBTCMainAccount.identifier]).toBeUndefined();
+
       await services.loadBtcAddress({
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
         minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
@@ -53,6 +58,11 @@ describe("ckbtc-minter-services", () => {
           identity: mockIdentity,
           canisterId: CKTESTBTC_MINTER_CANISTER_ID,
         })
+      );
+
+      const storeAfter = get(bitcoinAddressStore);
+      expect(storeAfter[mockCkBTCMainAccount.identifier]).toEqual(
+        mockBTCAddressTestnet
       );
     });
   });

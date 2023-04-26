@@ -36,13 +36,12 @@
       : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
   }/${btcAddress ?? ""}`;
 
-  onMount(
-    async () =>
-      await loadBtcAddress({
-        universeId,
-        minterCanisterId,
-        identifier: account.identifier,
-      })
+  onMount(() =>
+    loadBtcAddress({
+      universeId,
+      minterCanisterId,
+      identifier: account.identifier,
+    })
   );
 </script>
 
