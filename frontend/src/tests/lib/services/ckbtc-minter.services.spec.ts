@@ -3,13 +3,23 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_MINTER_CANISTER_ID,
+  CKTESTBTC_MINTER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockBTCAddressTestnet,
+  mockCkBTCMainAccount,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -19,23 +29,41 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
   afterEach(() => jest.clearAllMocks());
 
-  describe("getBTCAddress", () => {
+  describe("loadBtcAddress", () => {
+    page.mock({
+      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
+
     it("should get bitcoin address", async () => {
       const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
-      await services.getBTCAddress(CKBTC_MINTER_CANISTER_ID);
+      const store = get(bitcoinAddressStore);
+      expect(store[mockCkBTCMainAccount.identifier]).toBeUndefined();
+
+      await services.loadBtcAddress({
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
+        identifier: mockCkBTCMainAccount.identifier,
+      });
 
       await waitFor(() =>
         expect(spyGetAddress).toBeCalledWith({
           identity: mockIdentity,
-          canisterId: CKBTC_MINTER_CANISTER_ID,
+          canisterId: CKTESTBTC_MINTER_CANISTER_ID,
         })
+      );
+
+      const storeAfter = get(bitcoinAddressStore);
+      expect(storeAfter[mockCkBTCMainAccount.identifier]).toEqual(
+        mockBTCAddressTestnet
       );
     });
   });

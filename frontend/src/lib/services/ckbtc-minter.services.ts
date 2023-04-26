@@ -6,6 +6,7 @@ import {
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
 import {
@@ -13,9 +14,12 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
+import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCInfoKey } from "$lib/types/ckbtc.errors";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
+import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -24,13 +28,46 @@ import {
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
 } from "@dfinity/ckbtc";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const getBTCAddress = async (
-  minterCanisterId: CanisterId
-): Promise<string> => {
+const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
   return getBTCAddressAPI({ identity, canisterId: minterCanisterId });
+};
+
+export const loadBtcAddress = async ({
+  minterCanisterId,
+  universeId,
+  identifier,
+}: {
+  minterCanisterId: CanisterId;
+  universeId: UniverseCanisterId;
+  identifier: AccountIdentifierText;
+}) => {
+  // TODO: to be removed when ckBTC with minter is live.
+  if (!isUniverseCkTESTBTC(universeId)) {
+    return;
+  }
+
+  const store = get(bitcoinAddressStore);
+  const btcAddressLoaded = nonNullish(store[identifier]);
+
+  // We load the BTC address once per session
+  if (btcAddressLoaded) {
+    return;
+  }
+
+  try {
+    const btcAddress = await getBTCAddress(minterCanisterId);
+
+    bitcoinAddressStore.set({ identifier, btcAddress });
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__ckbtc.get_btc_address",
+      err,
+    });
+  }
 };
 
 export const estimateFee = async ({
