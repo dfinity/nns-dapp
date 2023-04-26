@@ -8,7 +8,7 @@
   import nnsLogo from "$lib/assets/nns-logo.svg";
   import { i18n } from "$lib/stores/i18n";
   import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
-  import { ENABLE_METRICS } from "$lib/constants/environment.constants";
+  import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
 
   let innerWidth = 0;
   let displayTvl = false;

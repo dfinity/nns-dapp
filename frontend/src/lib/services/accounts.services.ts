@@ -18,7 +18,7 @@ import {
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
