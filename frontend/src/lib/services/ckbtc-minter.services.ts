@@ -137,7 +137,7 @@ export const updateBalance = async ({
     // Few errors returned by the minter are considered to be displayed as information for the user
     if (err instanceof CkBTCInfoKey) {
       toastsShow({
-        labelKey: err.key,
+        labelKey: err.message,
         level: "info",
       });
 
@@ -171,7 +171,7 @@ const mapUpdateBalanceError = (
   }
 
   if (err instanceof MinterNoNewUtxosError) {
-    return new CkBTCInfoKey(labels.error__ckbtc.no_new_utxo);
+    return new CkBTCInfoKey(labels.error__ckbtc.no_new_confirmed_btc);
   }
 
   if (err instanceof MinterGenericError) {

@@ -1,14 +1,10 @@
 export class CkBTCErrorKey extends Error {}
 
 export class CkBTCInfoKey {
-  private readonly labelKey: string;
+  public readonly message: string;
 
-  constructor(labelKey: string) {
-    this.labelKey = labelKey;
-  }
-
-  get key() {
-    return this.labelKey;
+  constructor(message: string) {
+    this.message = message;
   }
 }
 
