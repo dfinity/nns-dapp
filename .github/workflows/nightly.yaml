@@ -28,8 +28,10 @@ jobs:
           else
             tag_name="$(date +nightly-%Y-%m-%d)"
             git tag "${tag_name}"
-            git push origin "refs/tags/${tag_name}"
-            echo "need_release=true" >> "$GITHUB_OUTPUT"
+            if git push origin "refs/tags/${tag_name}"
+            then echo "need_release=true" >> "$GITHUB_OUTPUT"
+            else echo "Skipping, as the tag already exists on another commit."
+            fi
           fi
       - name: Set up docker buildx
         if: steps.tag_main.outputs.need_release == 'true'
