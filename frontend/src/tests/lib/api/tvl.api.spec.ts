@@ -37,7 +37,8 @@ describe("tvl api", () => {
 
   describe("with tvl canister id set", () => {
     beforeEach(async () => {
-      // Casting to `any` is needed to change the value at runtime
+      // `import` returns "readonly" propertlies.
+      // casting to `any` is needed to change the value
       const canisterIds = (await import(
         "$lib/constants/canister-ids.constants"
       )) as any;
@@ -67,7 +68,8 @@ describe("tvl api", () => {
 
   describe("with tvl canister id not set", () => {
     beforeEach(async () => {
-      // Casting to `any` is needed to change the value at runtime
+      // `import` returns "readonly" propertlies.
+      // casting to `any` is needed to change the value
       const canisterIds = (await import(
         "$lib/constants/canister-ids.constants"
       )) as any;
