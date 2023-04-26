@@ -48,10 +48,17 @@ describe("BtcCkBTCReceiveModal", () => {
     },
   ];
 
+  const data = {
+    identifier: mockCkBTCMainAccount.identifier,
+    btcAddress: mockBTCAddressTestnet,
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     jest.spyOn(api, "updateBalance").mockResolvedValue(success);
+
+    bitcoinAddressStore.set(data);
   });
 
   const renderReceiveModal = ({
