@@ -19,8 +19,8 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type {
-  NervousSystemParameters,
   SnsAction,
+  SnsNervousSystemParameters,
   SnsNeuron,
   SnsProposalData,
 } from "@dfinity/sns";
@@ -487,7 +487,7 @@ describe("sns-proposals utils", () => {
         voting_power_percentage_multiplier: 100n,
         cached_neuron_stake_e8s: 100n,
       };
-      const testParameters: NervousSystemParameters = {
+      const testParameters: SnsNervousSystemParameters = {
         ...snsNervousSystemParametersMock,
         max_dissolve_delay_seconds: [100n],
         max_neuron_age_for_age_bonus: [100n],
