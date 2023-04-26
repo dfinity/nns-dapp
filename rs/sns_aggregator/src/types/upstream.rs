@@ -5,11 +5,11 @@ use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
+use crate::types::ic_sns_swap::GetInitResponse;
 use candid::Nat;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use serde::Serialize;
 use std::collections::BTreeMap;
-use crate::types::ic_sns_swap::GetInitResponse;
 
 /// Data retrieved from upstream and stored as is, without aggregation or processing.
 #[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]

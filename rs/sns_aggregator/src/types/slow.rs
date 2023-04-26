@@ -1,7 +1,9 @@
 //! Slowly changing information about an SNS
 use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
-use crate::types::ic_sns_swap::{DerivedState, GetInitResponse, GetSaleParametersResponse, GetStateResponse, Init, Params, Swap};
+use crate::types::ic_sns_swap::{
+    DerivedState, GetInitResponse, GetSaleParametersResponse, GetStateResponse, Init, Params, Swap,
+};
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
