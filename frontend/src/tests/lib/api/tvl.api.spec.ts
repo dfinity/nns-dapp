@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { AnonymousIdentity } from "@dfinity/agent";
@@ -37,11 +36,11 @@ describe("tvl api", () => {
 
   describe("with tvl canister id set", () => {
     beforeEach(async () => {
-      // `import` returns "readonly" propertlies.
-      // casting to `any` is needed to change the value
+      // `import` returns "readonly" properties.
+      // casting is needed to change the value
       const canisterIds = (await import(
         "$lib/constants/canister-ids.constants"
-      )) as any;
+      )) as { TVL_CANISTER_ID: Principal };
       canisterIds.TVL_CANISTER_ID = defaultTVLCanisterId;
     });
 
@@ -68,11 +67,11 @@ describe("tvl api", () => {
 
   describe("with tvl canister id not set", () => {
     beforeEach(async () => {
-      // `import` returns "readonly" propertlies.
-      // casting to `any` is needed to change the value
+      // `import` returns "readonly" properties.
+      // casting is needed to change the value
       const canisterIds = (await import(
         "$lib/constants/canister-ids.constants"
-      )) as any;
+      )) as { TVL_CANISTER_ID: Principal };
       canisterIds.TVL_CANISTER_ID = undefined;
     });
 
