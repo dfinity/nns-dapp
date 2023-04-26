@@ -12,7 +12,8 @@
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
     BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
   } from "$lib/constants/bitcoin.constants";
-  import BitcoinAddressLoader from "$lib/components/accounts/BitcoinAddressLoader.svelte";
+  import { onMount } from "svelte";
+  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
@@ -34,26 +35,33 @@
       ? BITCOIN_BLOCK_EXPLORER_TESTNET_URL
       : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
   }/${btcAddress ?? ""}`;
+
+  onMount(
+    async () =>
+      await loadBtcAddress({
+        universeId,
+        minterCanisterId,
+        identifier: account.identifier,
+      })
+  );
 </script>
 
-<BitcoinAddressLoader {universeId} {minterCanisterId} {identifier}>
-  <p class="description">
-    {$i18n.ckbtc.incoming_bitcoin_network}
-    <a
-      data-tid="block-explorer-link"
-      href={btcAddressLoaded ? blockExplorerUrl : ""}
-      rel="noopener noreferrer external"
-      target="_blank"
-      aria-disabled={!btcAddressLoaded}
-      >{$i18n.ckbtc.block_explorer}
-      {#if !btcAddressLoaded}
-        <div class="spinner">
-          <Spinner size="tiny" inline />
-        </div>
-      {/if}
-    </a>.
-  </p>
-</BitcoinAddressLoader>
+<p class="description">
+  {$i18n.ckbtc.incoming_bitcoin_network}
+  <a
+    data-tid="block-explorer-link"
+    href={btcAddressLoaded ? blockExplorerUrl : ""}
+    rel="noopener noreferrer external"
+    target="_blank"
+    aria-disabled={!btcAddressLoaded}
+    >{$i18n.ckbtc.block_explorer}
+    {#if !btcAddressLoaded}
+      <div class="spinner">
+        <Spinner size="tiny" inline />
+      </div>
+    {/if}
+  </a>.
+</p>
 
 <style lang="scss">
   div {

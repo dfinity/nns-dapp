@@ -7,12 +7,15 @@
     Spinner,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import {
+    loadBtcAddress,
+    updateBalance as updateBalanceService,
+  } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -20,7 +23,7 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -28,7 +31,6 @@
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import BitcoinAddressLoader from "$lib/components/accounts/BitcoinAddressLoader.svelte";
 
   export let data: CkBTCReceiveModalData;
 
@@ -136,86 +138,96 @@
       ? $bitcoinAddressStore[account?.identifier]
       : undefined
     : account?.identifier;
+
+  // When used in ckBTC receive modal, the identifier is originally undefined that's why we reload when it changes
+  const loadBitcoinAddress = async (
+    identifier: AccountIdentifierText | undefined
+  ) => {
+    if (isNullish(identifier)) {
+      return;
+    }
+
+    async () =>
+      await loadBtcAddress({
+        universeId,
+        minterCanisterId: canisters.minterCanisterId,
+        identifier,
+      });
+  };
+
+  $: loadBitcoinAddress(account?.identifier);
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  <BitcoinAddressLoader
-    {universeId}
-    minterCanisterId={canisters.minterCanisterId}
-    identifier={account?.identifier}
-  >
-    {#if displayBtcAddress}
-      <div class="receive">
-        <Segment bind:selectedSegmentId bind:this={segment}>
-          <SegmentButton segmentId={ckBTCSegmentId}
-            >{segmentLabel}</SegmentButton
-          >
-          <SegmentButton segmentId={bitcoinSegmentId}
-            >{bitcoinSegmentLabel}</SegmentButton
-          >
-        </Segment>
-      </div>
-    {/if}
-
-    <ReceiveSelectAccountDropdown
-      {account}
-      canSelectAccount={!bitcoin && canSelectAccount}
-      {universeId}
-      on:nnsSelectedAccount={({ detail }) => (account = detail)}
-    />
-
-    {#if nonNullish(address)}
-      <ReceiveAddressQRCode
-        {address}
-        renderQRCode={modalRendered}
-        qrCodeLabel={bitcoin
-          ? $i18n.ckbtc.qrcode_aria_label_bitcoin
-          : $i18n.ckbtc.qrcode_aria_label_ckBTC}
-        {logo}
-        logoArialLabel={tokenLabel}
-        bind:qrCodeRendered
-      >
-        <svelte:fragment slot="address-label">{title}</svelte:fragment>
-
-        <svelte:fragment slot="additional-information">
-          {#if bitcoin}
-            <BitcoinKYTFee
-              minterCanisterId={canisters.minterCanisterId}
-              selectedNetwork={ckTESTBTC
-                ? TransactionNetwork.BTC_TESTNET
-                : TransactionNetwork.BTC_MAINNET}
-            />
-          {/if}
-        </svelte:fragment>
-      </ReceiveAddressQRCode>
-    {:else}
-      <div class="loading description">
-        <span>{$i18n.ckbtc.loading_address}</span>
-        <div><Spinner size="small" inline /></div>
-      </div>
-    {/if}
-
-    <div class="toolbar">
-      {#if qrCodeRendered}
-        {#if bitcoin}
-          <button
-            class="primary"
-            on:click={updateBalance}
-            disabled={$busy}
-            data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
-          >
-        {:else}
-          <button
-            class="primary"
-            on:click={reloadAccountAndClose}
-            data-tid="reload-receive-account">{$i18n.core.finish}</button
-          >
-        {/if}
-      {/if}
+  {#if displayBtcAddress}
+    <div class="receive">
+      <Segment bind:selectedSegmentId bind:this={segment}>
+        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
+        <SegmentButton segmentId={bitcoinSegmentId}
+          >{bitcoinSegmentLabel}</SegmentButton
+        >
+      </Segment>
     </div>
-  </BitcoinAddressLoader>
+  {/if}
+
+  <ReceiveSelectAccountDropdown
+    {account}
+    canSelectAccount={!bitcoin && canSelectAccount}
+    {universeId}
+    on:nnsSelectedAccount={({ detail }) => (account = detail)}
+  />
+
+  {#if nonNullish(address)}
+    <ReceiveAddressQRCode
+      {address}
+      renderQRCode={modalRendered}
+      qrCodeLabel={bitcoin
+        ? $i18n.ckbtc.qrcode_aria_label_bitcoin
+        : $i18n.ckbtc.qrcode_aria_label_ckBTC}
+      {logo}
+      logoArialLabel={tokenLabel}
+      bind:qrCodeRendered
+    >
+      <svelte:fragment slot="address-label">{title}</svelte:fragment>
+
+      <svelte:fragment slot="additional-information">
+        {#if bitcoin}
+          <BitcoinKYTFee
+            minterCanisterId={canisters.minterCanisterId}
+            selectedNetwork={ckTESTBTC
+              ? TransactionNetwork.BTC_TESTNET
+              : TransactionNetwork.BTC_MAINNET}
+          />
+        {/if}
+      </svelte:fragment>
+    </ReceiveAddressQRCode>
+  {:else}
+    <div class="loading description">
+      <span>{$i18n.ckbtc.loading_address}</span>
+      <div><Spinner size="small" inline /></div>
+    </div>
+  {/if}
+
+  <div class="toolbar">
+    {#if qrCodeRendered}
+      {#if bitcoin}
+        <button
+          class="primary"
+          on:click={updateBalance}
+          disabled={$busy}
+          data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
+        >
+      {:else}
+        <button
+          class="primary"
+          on:click={reloadAccountAndClose}
+          data-tid="reload-receive-account">{$i18n.core.finish}</button
+        >
+      {/if}
+    {/if}
+  </div>
 </Modal>
 
 <style lang="scss">
