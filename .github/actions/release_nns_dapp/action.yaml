@@ -6,7 +6,7 @@ inputs:
     description: "The directory containing the assets.  Usually, the docker out directory."
     required: true
   token:
-    desctiption: "Github access token used to make the release"
+    description: "Github access token used to make the release"
     required: true
 runs:
   using: "composite"
