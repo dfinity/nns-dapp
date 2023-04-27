@@ -6,6 +6,7 @@ on:
     branches:
       # Commit to the nightly branch and push to test.
       - nightly
+      - nightly-tag
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
