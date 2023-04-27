@@ -18,7 +18,7 @@ jobs:
         id: preflight
         run: |
           tag_name="$(date +nightly-%Y-%m-%d)"
-          echo "tag_name=${tag_name} >> "$GITHUB_OUTPUT"
+          echo "tag_name=${tag_name}" >> "$GITHUB_OUTPUT"
           if gh release view --repo dfinity/nns-dapp "${tag_name}"
           then echo "Skipping as the release already exists"
           elif git tag --points-at HEAD | grep -E '\<nightly-'
