@@ -100,4 +100,49 @@ describe("neuronsVotedInLastRewardEventStore", () => {
     expect(neuronsLastDistributed.has(neuronVotedAll.neuronId)).toBe(true);
     expect(neuronsLastDistributed.has(neuronVotedOne.neuronId)).toBe(true);
   });
+
+  it("does not return neurons that voted in proposals that are not settled", () => {
+    const neuronVotedSettled: NeuronInfo = {
+      ...mockNeuron,
+      neuronId: BigInt(2),
+      recentBallots: [
+        {
+          proposalId: settledProposal1.id,
+          vote: Vote.Unspecified,
+        },
+        {
+          proposalId: settledProposal2.id,
+          vote: Vote.Yes,
+        },
+      ],
+    };
+    const neuronVotedNotSettled: NeuronInfo = {
+      ...mockNeuron,
+      neuronId: BigInt(3),
+      recentBallots: [
+        {
+          proposalId: BigInt(133333),
+          vote: Vote.Yes,
+        },
+        {
+          proposalId: settledProposal2.id,
+          vote: Vote.Unspecified,
+        },
+      ],
+    };
+    nnsLatestRewardEventStore.setLatestRewardEvent({
+      certified: true,
+      rewardEvent,
+    });
+    neuronsStore.setNeurons({
+      certified: true,
+      neurons: [neuronVotedNotSettled, neuronVotedSettled],
+    });
+
+    const neuronsLastDistributed = get(neuronsVotedInLastRewardEventStore);
+    expect(neuronsLastDistributed.has(neuronVotedNotSettled.neuronId)).toBe(
+      false
+    );
+    expect(neuronsLastDistributed.has(neuronVotedSettled.neuronId)).toBe(true);
+  });
 });
