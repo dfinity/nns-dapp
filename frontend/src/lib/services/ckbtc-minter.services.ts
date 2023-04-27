@@ -6,12 +6,20 @@ import {
 } from "$lib/api/ckbtc-minter.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
-import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  toastsError,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
+import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
-import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
+import { CkBTCErrorKey, CkBTCInfoKey } from "$lib/types/ckbtc.errors";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
+import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -20,13 +28,46 @@ import {
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
 } from "@dfinity/ckbtc";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const getBTCAddress = async (
-  minterCanisterId: CanisterId
-): Promise<string> => {
+const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
   return getBTCAddressAPI({ identity, canisterId: minterCanisterId });
+};
+
+export const loadBtcAddress = async ({
+  minterCanisterId,
+  universeId,
+  identifier,
+}: {
+  minterCanisterId: CanisterId;
+  universeId: UniverseCanisterId;
+  identifier: AccountIdentifierText;
+}) => {
+  // TODO: to be removed when ckBTC with minter is live.
+  if (!isUniverseCkTESTBTC(universeId)) {
+    return;
+  }
+
+  const store = get(bitcoinAddressStore);
+  const btcAddressLoaded = nonNullish(store[identifier]);
+
+  // We load the BTC address once per session
+  if (btcAddressLoaded) {
+    return;
+  }
+
+  try {
+    const btcAddress = await getBTCAddress(minterCanisterId);
+
+    bitcoinAddressStore.set({ identifier, btcAddress });
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__ckbtc.get_btc_address",
+      err,
+    });
+  }
 };
 
 export const estimateFee = async ({
@@ -110,7 +151,7 @@ export const updateBalance = async ({
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
-}): Promise<{ success: boolean; err?: unknown }> => {
+}): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
   startBusy({
     initiator: "update-ckbtc-balance",
   });
@@ -130,6 +171,16 @@ export const updateBalance = async ({
   } catch (error: unknown) {
     const err = mapUpdateBalanceError(error);
 
+    // Few errors returned by the minter are considered to be displayed as information for the user
+    if (err instanceof CkBTCInfoKey) {
+      toastsShow({
+        labelKey: err.message,
+        level: "info",
+      });
+
+      return { success: true };
+    }
+
     toastsError({
       labelKey: "error__ckbtc.update_balance",
       err,
@@ -141,7 +192,9 @@ export const updateBalance = async ({
   }
 };
 
-const mapUpdateBalanceError = (err: unknown): unknown => {
+const mapUpdateBalanceError = (
+  err: unknown
+): CkBTCErrorKey | CkBTCInfoKey | unknown => {
   const labels = get(i18n);
 
   if (err instanceof MinterTemporaryUnavailableError) {
@@ -155,7 +208,7 @@ const mapUpdateBalanceError = (err: unknown): unknown => {
   }
 
   if (err instanceof MinterNoNewUtxosError) {
-    return new CkBTCErrorKey(labels.error__ckbtc.no_new_utxo);
+    return new CkBTCInfoKey(labels.error__ckbtc.no_new_confirmed_btc);
   }
 
   if (err instanceof MinterGenericError) {

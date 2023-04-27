@@ -48,16 +48,17 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-04-21/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-04-27/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
           dfx-snapshot-restore --snapshot state.tar.xz --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
           echo "Create the nns-dapp install argument:"
-          DFX_NETWORK=local ./config.sh
+          export DFX_NETWORK=local
+          ./config.sh
           echo "Install:"
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg.did)"
+          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
           dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
           # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
           dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
@@ -116,8 +117,8 @@ jobs:
       - name: Prepare for Playwright end-to-end tests
         working-directory: frontend
         run: |
-          npx playwright install --with-deps firefox
           npm ci
+          npx playwright install --with-deps firefox
       - name: Wait for aggregator to get all SNSs
         run: |
           set +x
@@ -163,7 +164,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."

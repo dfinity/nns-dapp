@@ -1,5 +1,5 @@
 import { nervousSystemParameters } from "$lib/api/sns-governance.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";

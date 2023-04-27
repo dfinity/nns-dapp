@@ -175,20 +175,5 @@ describe("SNS public services", () => {
       expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(totalSupply);
     });
-
-    it("should not load the store if total token supply not present", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
-        );
-
-      await loadSnsProjects();
-
-      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
-      const supplies = get(snsTotalTokenSupplyStore);
-      const data = supplies[rootCanisterId];
-      expect(data).toBeUndefined();
-    });
   });
 });

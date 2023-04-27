@@ -1,0 +1,35 @@
+name: 'Release the nns-dapp'
+description: |
+  Creates or updates a release for every tag pointing at HEAD.
+
+  Releases for tags named proposal-* or nightly-* are made public.
+inputs:
+  assets_dir:
+    description: "The directory containing the assets.  Usually, the docker out directory."
+    required: true
+  token:
+    description: "Github access token used to make the release"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Release
+      shell: bash
+      run: |
+        set -euxo pipefail
+        cd "${{ inputs.assets_dir }}"
+        daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
+        cp nns-dapp.wasm "$daily_build_name"
+        artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
+        ls -l "${artefacts[@]}"
+        for tag in $(git tag --points-at HEAD) ; do
+          : Creates or updates a release for the tag
+          if gh release view "$tag"
+          then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
+          else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" "${artefacts[@]}"
+          fi
+          : If the tag is for a proposal or nightly, make it public
+          [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
+        done
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}

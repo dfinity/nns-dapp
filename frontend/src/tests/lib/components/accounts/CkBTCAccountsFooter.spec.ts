@@ -8,10 +8,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import {
-  mockBTCAddressTestnet,
-  mockCkBTCMainAccount,
-} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/dom";
@@ -28,7 +25,7 @@ jest.mock("$lib/api/ckbtc-minter.api", () => {
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
     ...jest.requireActual("$lib/services/ckbtc-minter.services"),
-    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
+    loadBtcAddress: jest.fn().mockImplementation(() => undefined),
   };
 });
 

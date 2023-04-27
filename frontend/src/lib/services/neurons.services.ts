@@ -1,10 +1,8 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import {
-  FORCE_CALL_STRATEGY,
-  IS_TESTNET,
-} from "$lib/constants/environment.constants";
+import { IS_TESTNET } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import {
   CANDID_PARSER_VERSION,
   MIN_VERSION_STAKE_MATURITY_WORKAROUND,

@@ -19,13 +19,14 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
-ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
-JSON_OUT="deployment-config.json"
-CANDID_ARGS_FILE="nns-dapp-arg.did"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
+
+ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
+JSON_OUT="deployment-config.json"
+CANDID_ARGS_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
 
 first_not_null() {
   for x in "$@"; do

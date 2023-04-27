@@ -26,7 +26,7 @@
   $: showAdopted = $snsProjectsAdoptedStore.length > 0;
 </script>
 
-<main>
+<main data-tid="launchpad-component">
   <h2>{$i18n.sns_launchpad.open_projects}</h2>
   <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
 

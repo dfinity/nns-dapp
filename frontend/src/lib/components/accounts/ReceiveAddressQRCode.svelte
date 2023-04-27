@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Copy, QRCode } from "@dfinity/gix-components";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/environment.constants";
+  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import { nonNullish } from "@dfinity/utils";
 
   export let address: string | undefined;
