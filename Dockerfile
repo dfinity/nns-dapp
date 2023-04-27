@@ -83,7 +83,7 @@ WORKDIR /build
 ARG DFX_NETWORK=mainnet
 RUN mkdir -p frontend
 RUN ./config.sh
-RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
+RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-arg-${DFX_NETWORK}.bin
 
 # Title: Gets the mainnet config, used for builds
 # Args: None.  This is fixed and studiously avoids depending on variables such as DFX_NETWORK.
@@ -94,8 +94,9 @@ SHELL ["bash", "-c"]
 COPY dfx.json config.sh /build/
 WORKDIR /build
 RUN mkdir -p frontend
-RUN DFX_NETWORK=mainnet ./config.sh
-RUN didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p >nns-dapp-arg.bin
+ENV DFX_NETWORK=mainnet
+RUN ./config.sh
+RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-arg-${DFX_NETWORK}.bin
 
 # Title: Image to build the nns-dapp frontend.
 FROM builder AS build_frontend
@@ -160,7 +161,7 @@ RUN ./build-sns-aggregator.sh
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
 COPY --from=configurator /build/deployment-config.json /
-COPY --from=configurator /build/nns-dapp-arg.did /build/nns-dapp-arg.bin /
+COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /

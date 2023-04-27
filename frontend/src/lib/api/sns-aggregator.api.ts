@@ -58,7 +58,7 @@ export type CachedSns = {
    * @deprecated we will use the icrc1_metadata.fee as source information for the fee
    */
   icrc1_fee?: bigint;
-  icrc1_total_supply?: bigint;
+  icrc1_total_supply: bigint;
 };
 
 type CachedSnsMetadataDto = {
@@ -135,7 +135,7 @@ type CachedSnsDto = {
   };
   icrc1_metadata: CachedSnsTokenMetadataDto;
   icrc1_fee: [] | [number];
-  icrc1_total_supply?: number;
+  icrc1_total_supply: number;
 };
 
 const convertOptionalNumToBigInt = (
@@ -275,9 +275,7 @@ const convertSnsData = ({
   },
   icrc1_metadata: convertIcrc1Metadata(icrc1_metadata),
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
-  icrc1_total_supply: nonNullish(icrc1_total_supply)
-    ? BigInt(icrc1_total_supply)
-    : undefined,
+  icrc1_total_supply: BigInt(icrc1_total_supply),
 });
 
 const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>

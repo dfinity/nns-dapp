@@ -7,12 +7,15 @@
     Spinner,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import {
+    loadBtcAddress,
+    updateBalance as updateBalanceService,
+  } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -20,7 +23,7 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -135,6 +138,23 @@
       ? $bitcoinAddressStore[account?.identifier]
       : undefined
     : account?.identifier;
+
+  // When used in ckBTC receive modal, the identifier is originally undefined that's why we reload when it changes
+  const loadBitcoinAddress = async (
+    identifier: AccountIdentifierText | undefined
+  ) => {
+    if (isNullish(identifier)) {
+      return;
+    }
+
+    await loadBtcAddress({
+      universeId,
+      minterCanisterId: canisters.minterCanisterId,
+      identifier,
+    });
+  };
+
+  $: loadBitcoinAddress(account?.identifier);
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>

@@ -36,21 +36,4 @@ describe("sns-aggregator api", () => {
       expect(sns).toEqual(aggregatorSnsMock);
     });
   });
-
-  it("should include icrc1_total_supply property", async () => {
-    const mockFetch = jest.fn();
-    const totalSupply = BigInt(2000_000_000);
-    const aggregatedSnsesResponse = [
-      { ...aggregatedSnses[0], icrc1_total_supply: totalSupply },
-    ];
-    mockFetch.mockReturnValueOnce(
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(aggregatedSnsesResponse),
-      })
-    );
-    global.fetch = mockFetch;
-    const snses = await querySnsProjects();
-    expect(snses[0].icrc1_total_supply).toEqual(totalSupply);
-  });
 });

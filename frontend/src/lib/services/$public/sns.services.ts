@@ -2,7 +2,7 @@ import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
@@ -73,14 +73,11 @@ export const loadSnsProjects = async (): Promise<void> => {
     ];
     snsQueryStore.setData(snsQueryStoreData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
-      cachedSnses
-        .filter(({ icrc1_total_supply }) => nonNullish(icrc1_total_supply))
-        .map(({ icrc1_total_supply, canister_ids }) => ({
-          rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
-          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
-          totalSupply: icrc1_total_supply as bigint,
-          certified: true,
-        }))
+      cachedSnses.map(({ icrc1_total_supply, canister_ids }) => ({
+        rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
+        totalSupply: icrc1_total_supply,
+        certified: true,
+      }))
     );
     snsFunctionsStore.setProjectsFunctions(
       cachedSnses.map((sns) => ({
