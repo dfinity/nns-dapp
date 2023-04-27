@@ -13,13 +13,12 @@ jobs:
   tag-main:
     runs-on: ubuntu-20.04
     steps:
-      - name: Set tag name
-        id: tag_name
-        run: echo "tag_name=$(date +nightly-%Y-%m-%d)" >> "$GITHUB_OUTPUT"
       - name: Preflight checks
         id: preflight
         run: |
-          if gh release view --repo dfinity/nns-dapp "${{steps.tag_name.outputs.tag_name}}"
+          tag_name="$(date +nightly-%Y-%m-%d)"
+          echo "tag_name=${tag_name} >> "$GITHUB_OUTPUT"
+          if gh release view --repo dfinity/nns-dapp "${tag_name}"
           then echo "Skipping as the release already exists"
           elif git tag --points-at HEAD | grep -E '\<nightly-'
           then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
@@ -48,8 +47,8 @@ jobs:
       - name: Tag commit
         if: steps.preflight.outputs.need_release == 'true'
         run: |
-          git tag "${{steps.tag_name.outputs.tag_name}}"
-          git push origin "refs/tags/${{steps.tag_name.outputs.tag_name}}"
+          git tag "${{steps.preflight.outputs.tag_name}}"
+          git push origin "refs/tags/${{steps.preflight.outputs.tag_name}}"
           # Note: This will fail if something else created the tag in the meantime
       - name: Release
         if: steps.preflight.outputs.need_release == 'true'
