@@ -363,7 +363,9 @@ export const snsNeuronToVotingNeuron = ({
   snsParameters: SnsNervousSystemParameters;
 }): VotingNeuron => ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
-  votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
+  votingPower: BigInt(
+    Math.round(snsNeuronVotingPower({ neuron, snsParameters }))
+  ),
 });
 
 /** To have the logic in one place */
