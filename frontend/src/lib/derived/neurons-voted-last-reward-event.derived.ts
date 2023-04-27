@@ -13,6 +13,9 @@ import {
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
+/**
+ * Returns a function that checks if a neuron voted in the reward event.
+ */
 const votedInReward =
   (rewardEvent: RewardEvent | undefined) =>
   (neuron: NeuronInfo): boolean => {
