@@ -22,12 +22,12 @@ jobs:
       - name: Preflight checks
         id: preflight
         run: |
-                if gh release list | grep "${{steps.tag_name.outputs.tag_name}}"
-                then echo "Skipping as the release already exists"
-                elif git tag --points-at HEAD | grep -E '\<nightly-'
-                then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
-                else echo "need_release=true" >> "$GITHUB_OUTPUT"
-                fi
+          if gh release list | grep "${{steps.tag_name.outputs.tag_name}}"
+          then echo "Skipping as the release already exists"
+          elif git tag --points-at HEAD | grep -E '\<nightly-'
+          then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
+          else echo "need_release=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Set up docker buildx
         if: steps.preflight.outputs.need_release == 'true'
         uses: docker/setup-buildx-action@v2
@@ -46,9 +46,9 @@ jobs:
       - name: Tag commit
         if: steps.preflight.outputs.need_release == 'true'
         run: |
-            git tag "${{steps.tag_name.outputs.tag_name}}"
-            git push origin "refs/tags/${{steps.tag_name.outputs.tag_name}}"
-            # Note: This will fail if something else created the tag in the meantime
+          git tag "${{steps.tag_name.outputs.tag_name}}"
+          git push origin "refs/tags/${{steps.tag_name.outputs.tag_name}}"
+          # Note: This will fail if something else created the tag in the meantime
       - name: Release
         if: steps.preflight.outputs.need_release == 'true'
         uses: ./.github/actions/release_nns_dapp
