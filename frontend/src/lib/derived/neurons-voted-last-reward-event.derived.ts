@@ -13,7 +13,7 @@ import {
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
-const votedInLatestReward =
+const votedInReward =
   (rewardEvent: RewardEvent | undefined) =>
   (neuron: NeuronInfo): boolean => {
     if (isNullish(rewardEvent)) {
@@ -38,7 +38,7 @@ export const neuronsVotedInLastRewardEventStore = derived<
   ([neuronsData, nnsLatestRewardEvent]) =>
     new Set(
       neuronsData.neurons
-        ?.filter(votedInLatestReward(nnsLatestRewardEvent?.rewardEvent))
+        ?.filter(votedInReward(nnsLatestRewardEvent?.rewardEvent))
         .map(({ neuronId }) => neuronId) ?? []
     )
 );

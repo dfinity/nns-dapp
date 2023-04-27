@@ -101,7 +101,7 @@ describe("neuronsVotedInLastRewardEventStore", () => {
     expect(neuronsLastDistributed.has(neuronVotedOne.neuronId)).toBe(true);
   });
 
-  it("does not return neurons that voted in proposals that are not settled", () => {
+  it("does not return neurons that voted in proposals but are not settled in the latest reward event", () => {
     const neuronVotedSettled: NeuronInfo = {
       ...mockNeuron,
       neuronId: BigInt(2),
