@@ -2,7 +2,8 @@
 use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
-    DerivedState, GetInitResponse, GetSaleParametersResponse, GetStateResponse, Init, Params, Swap,
+    DerivedState, GetDerivedStateResponse, GetInitResponse, GetSaleParametersResponse, GetStateResponse, Init, Params,
+    Swap,
 };
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
@@ -37,6 +38,8 @@ pub struct SlowSnsData {
     pub swap_params: Option<GetSaleParametersResponse>,
     /// The initialization params of the swap
     pub init: Option<GetInitResponse>,
+    /// The derived state of the swap
+    pub derived_state: Option<GetDerivedStateResponse>,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
@@ -54,6 +57,7 @@ impl From<&UpstreamData> for SlowSnsData {
             icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().unwrap_or(0),
             swap_params: upstream.swap_params.clone(),
             init: upstream.init.clone(),
+            derived_state: upstream.derived_state.clone(),
         }
     }
 }
