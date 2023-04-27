@@ -27,13 +27,18 @@ const votedInLatestReward =
     );
   };
 
-export const neuronsLastDistributedMaturityStore = derived<
+/**
+ * Filters the neurons store for neurons that voted in the latest reward event.
+ */
+export const neuronsVotedInLastRewardEventStore = derived<
   [Readable<NeuronsStore>, Readable<NnsLatestRewardEventStoreData>],
-  NeuronId[]
+  Set<NeuronId>
 >(
   [neuronsStore, nnsLatestRewardEventStore],
   ([neuronsData, nnsLatestRewardEvent]) =>
-    neuronsData.neurons
-      ?.filter(votedInLatestReward(nnsLatestRewardEvent?.rewardEvent))
-      .map(({ neuronId }) => neuronId) ?? []
+    new Set(
+      neuronsData.neurons
+        ?.filter(votedInLatestReward(nnsLatestRewardEvent?.rewardEvent))
+        .map(({ neuronId }) => neuronId) ?? []
+    )
 );

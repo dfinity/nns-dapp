@@ -1,4 +1,4 @@
-import { neuronsLastDistributedMaturityStore } from "$lib/derived/neurons-last-distributed.derived";
+import { neuronsVotedInLastRewardEventStore } from "$lib/derived/neurons-voted-last-reward-event.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -6,7 +6,7 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { Vote, type NeuronInfo, type RewardEvent } from "@dfinity/nns";
 import { get } from "svelte/store";
 
-describe("neuronsLastDistributedMaturityStore", () => {
+describe("neuronsVotedInLastRewardEventStore", () => {
   const settledProposal1 = { id: BigInt(123) };
   const settledProposal2 = { id: BigInt(456) };
   const settledProposals = [settledProposal1, settledProposal2];
@@ -34,8 +34,8 @@ describe("neuronsLastDistributedMaturityStore", () => {
       neurons: [mockNeuron],
     });
 
-    const neuronsLastDistributed = get(neuronsLastDistributedMaturityStore);
-    expect(neuronsLastDistributed).toHaveLength(0);
+    const neuronsLastDistributed = get(neuronsVotedInLastRewardEventStore);
+    expect(neuronsLastDistributed.size).toBe(0);
   });
 
   it("returns empty array if neurons have not voted in the reward proposals", () => {
@@ -56,8 +56,8 @@ describe("neuronsLastDistributedMaturityStore", () => {
       neurons: [neuron1, neuron2],
     });
 
-    const neuronsLastDistributed = get(neuronsLastDistributedMaturityStore);
-    expect(neuronsLastDistributed).toHaveLength(0);
+    const neuronsLastDistributed = get(neuronsVotedInLastRewardEventStore);
+    expect(neuronsLastDistributed.size).toBe(0);
   });
 
   it("returns neuron ids of the neurons that voted in at least one settled proposals", () => {
@@ -96,10 +96,8 @@ describe("neuronsLastDistributedMaturityStore", () => {
       neurons: [neuronNotVoted, neuronVotedAll, neuronVotedOne],
     });
 
-    const neuronsLastDistributed = get(neuronsLastDistributedMaturityStore);
-    expect(neuronsLastDistributed).toEqual([
-      neuronVotedAll.neuronId,
-      neuronVotedOne.neuronId,
-    ]);
+    const neuronsLastDistributed = get(neuronsVotedInLastRewardEventStore);
+    expect(neuronsLastDistributed.has(neuronVotedAll.neuronId)).toBe(true);
+    expect(neuronsLastDistributed.has(neuronVotedOne.neuronId)).toBe(true);
   });
 });
