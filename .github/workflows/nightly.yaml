@@ -20,7 +20,7 @@ jobs:
       - name: Preflight checks
         id: preflight
         run: |
-          if gh release list | grep "${{steps.tag_name.outputs.tag_name}}"
+          if gh release list --repo dfinity/nns-dapp | grep "${{steps.tag_name.outputs.tag_name}}"
           then echo "Skipping as the release already exists"
           elif git tag --points-at HEAD | grep -E '\<nightly-'
           then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
