@@ -47,12 +47,15 @@ jobs:
         run: git log | head -n1 > out/commit.txt
       - name: Tag commit
         if: steps.preflight.outputs.need_release == 'true'
+        id: tag
         run: |
           git tag "${{steps.preflight.outputs.tag_name}}"
-          git push origin "refs/tags/${{steps.preflight.outputs.tag_name}}"
-          # Note: This will fail if something else created the tag in the meantime
+          if git push origin "refs/tags/${{steps.preflight.outputs.tag_name}}"
+          then echo "success=true" >> "$GITHUB_OUTPUT"
+          else echo "Abort: Failed to push tag '${{steps.preflight.outputs.tag_name}}'.  It probably already exists, possibly on a different commit."
+          fi
       - name: Release
-        if: steps.preflight.outputs.need_release == 'true'
+        if: (steps.preflight.outputs.need_release == 'true') && (steps.tag.outputs.success == 'true')
         uses: ./.github/actions/release_nns_dapp
         with:
           assets_dir: 'out'
