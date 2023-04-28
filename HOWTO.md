@@ -119,15 +119,17 @@ has moved, [here](https://github.com/dfinity/ic/blob/509b1e62ba94014246c019fb26b
 
 ### Understand the impact
 
-A new `nnsFunction` does not break backwards compatibility. Therefore, there is no need to synchronize releases.
+A new `nnsFunction` does not break backwards compatibility. Therefore, there
+is no need to synchronize releases.
 
-Yet, a proposal of with that `nnsFunction` won't be rendered properly until the changes are made and release.
+Yet, a proposal with that `nnsFunction` won't be rendered properly until the
+changes are made and released.
 
 
 ### Install a new governance canister
 
-Here we explain how to do it on local. It's possible to do the same on testnet
-but that's not described here.
+Here we explain how to do it on dfx network `local`. It's possible to do the
+same on testnet but that's not described here.
 
 First you need to determine from which commit you want to install the governance
 canister. This can be the commit that added the new proposal type or the latest
@@ -145,10 +147,10 @@ However, if there is a version of the canister in the dfx cache, that version
 is the one that will be used. So we first need to remove the canister from the
 cache and then run `dfx nns install`.
 
-If the last step below gives an error because it can't download some canister
-(for example `lifeline.wasm`), you can copy that canister back from the backup
-directory into the cache directory and try again, as long as it isn't the
-governance canister itself.
+**Note**: If the last step below gives an error because it can't download some
+canister (for example `lifeline.wasm`), you can copy that canister back from
+the backup directory into the cache directory and try again, as long as it
+isn't the governance canister itself.
 
 1. `DFX_CACHE_DIR="$(dfx cache show)"`
 2. `echo $DFX_CACHE_DIR`
