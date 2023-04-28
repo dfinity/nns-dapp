@@ -261,7 +261,7 @@ describe("vote-registration-services", () => {
         );
       });
 
-      it.skip("should display voted neurons count", async () => {
+      it("should display voted neurons count", async () => {
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
         await registerNnsVotes({
