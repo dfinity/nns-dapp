@@ -107,10 +107,10 @@ detail below but at a high level they are:
 
 ### Verify that the new proposal type an NNS function
 
-All the NNS functions are defined
+All the NNS functions are defined under `pub enum NnsFunction {`
 [here](https://github.com/dfinity/ic/blame/master/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#:~:text=pub%20enum%20NnsFunction%20%7B).
-Check towards the bottom of the list of NNS functions to find the new type. Note
-down its name and number. For example `BitcoinSetConfig = 39`.
+Check towards the bottom of the list of NNS functions to find the new type.
+Note down its name and number. For example `BitcoinSetConfig = 39`.
 
 **Note**: If the above link is broken because the file
 has moved, [here](https://github.com/dfinity/ic/blob/509b1e62ba94014246c019fb26bba404f25adabd/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#L3102) is an old version to track down what happened.
