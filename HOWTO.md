@@ -40,12 +40,13 @@ type Proposal = record {
 
 Adding a new `Action` variant breaks backwards compatibility.
 
-This means that we need to upgrade the candid files and related, and synchronize the release with the Governance canister.
+This means that we need to upgrade a few dependencies.
 
 ### How To Update
 
-- Upgrade candid file.
+- Upgrade candid files in nns-js and their related files. Fix any type errors.
 - Add the i18n label in `en.governance.json`.
+- Upgrade the IC dependencies in nns-dapp canister. Upgrading `ic-nns-governance` might be enough, otherwise upgrade them all.
 
 ## New Proposal Topic
 
