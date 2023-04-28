@@ -353,7 +353,8 @@ pub struct BitcoinSetConfigProposalHumanReadable {
     pub set_config_request: ic_btc_interface::SetConfigRequest,
 }
 ```
-4. Implmement `From<ProposalType>` for ProposalTypeHumanReadable. For example:
+4. Implmement `From<ProposalType>` for `ProposalTypeHumanReadable`. For
+   example:
 ```
 impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
     fn from(proposal: BitcoinSetConfigProposal) -> Self {
