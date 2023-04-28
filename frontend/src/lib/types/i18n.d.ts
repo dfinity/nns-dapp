@@ -1106,6 +1106,7 @@ interface I18nNns_functions {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18nNns_functions_description {
@@ -1148,6 +1149,7 @@ interface I18nNns_functions_description {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18n {
