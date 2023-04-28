@@ -22,7 +22,7 @@ GOLDEN_FILE="rs/backend/nns-dapp-exports.txt"
 
 if [ "$UPDATE_GOLDEN" = "true" ]; then
   echo "Updating golden file"
-  wasm-nm -je <(gunzip <"$DFX_WASM_PATH") | sort > "$GOLDEN_FILE"
+  wasm-nm -je <(gunzip <"$DFX_WASM_PATH") | sort >"$GOLDEN_FILE"
   exit 0
 fi
 
