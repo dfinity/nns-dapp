@@ -610,8 +610,7 @@ mod def {
 
     // NNS function 39 - BitcoinSetConfig
     // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
-    pub type BitcoinSetConfigProposal =
-        ic_nns_governance::governance::BitcoinSetConfigProposal;
+    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct BitcoinSetConfigProposalHumanReadable {
@@ -621,8 +620,7 @@ mod def {
 
     impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
         fn from(proposal: BitcoinSetConfigProposal) -> Self {
-            let set_config_request: ic_btc_interface::SetConfigRequest =
-              candid::decode_one(&proposal.payload).unwrap();
+            let set_config_request: ic_btc_interface::SetConfigRequest = candid::decode_one(&proposal.payload).unwrap();
             BitcoinSetConfigProposalHumanReadable {
                 network: proposal.network,
                 set_config_request,
