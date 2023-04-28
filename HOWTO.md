@@ -269,6 +269,8 @@ value with a revision that contains the changes that you need.
 6. Once the changes to `Cargo.toml` have been made, run `cargo update` to
 generate the required changes in `Cargo.lock`.
 
+**Note**: The updated dependencies might have breaking changes which need to
+be fixed when building nns-dapp later.
 
 ##### en.governance.json
 
