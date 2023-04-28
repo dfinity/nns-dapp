@@ -170,6 +170,10 @@ You'll need to use `ic-admin` to create the proposal. Because the proposal
 type is new, your current version of `ic-admin` probably doesn't know about
 it. So you should get a new version of `ic-admin`:
 
+**Note**: For Linux, use
+`https://download.dfinity.systems/ic/$IC_COMMIT/binaries/x86_64-linux/ic-admin}.gz`
+instead of the darwin URL.
+
 1. `curl "https://download.dfinity.systems/ic/$IC_COMMIT/openssl-static-binaries/x86_64-darwin/ic-admin.gz" | gunzip > ic-admin`
 2. `chmod +x ./ic-admin`
 3. `./ic-admin --help`
