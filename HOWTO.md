@@ -269,7 +269,7 @@ generate the required changes in `Cargo.lock`.
 ##### en.governance.json
 
 In `en.governance.json`, you'll have to add entries to 2 different maps:
-[nns_functions](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions%22%3A%20%7B') and
+[nns_functions](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions%22%3A%20%7B) and
 [nns_functions_description](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions_description%22%3A%20%7B).
 
 As the key in both maps, use the name that you noted down before and also used
