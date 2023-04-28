@@ -193,14 +193,14 @@ the proposal renders without the required changes. You'll be able to see that
 it doesn't cause errors but also doesn't render the payload correctly.
 
 To be able to deploy `nns-dapp` locally, you need its canister ID in
-`.dfx/local/canister_ids.json`. If it doesn't already, make sure that
+`.dfx/local/canister_ids.json`. If it isn't already, make sure that
 `.dfx/local/canister_ids.json` has at least the following:
 
 ```
 {
   "nns-dapp": {
     "local": "qsgjb-riaaa-aaaaa-aaaga-cai"
-  },
+  }
 }
 ```
 
