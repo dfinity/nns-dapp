@@ -299,7 +299,7 @@ find the fully qualified name as follows:
 
 For example for
 [BitcoinSetConfigProposal](https://github.com/dfinity/ic/blame/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930),
-you would get `ic-nns-governance::governance::BitcoinSetConfigProposal`.
+you would get `ic_nns_governance::governance::BitcoinSetConfigProposal`.
 
 If you're lucky, the new type can be used as-is. But in some cases a
 transformation to the type is required to render it in a human readable way.
