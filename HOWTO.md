@@ -232,7 +232,7 @@ function".
 You'll need to change the following files:
 
 1. [rs/backend/Cargo.toml](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/Cargo.toml)
-2. [frontend/src/lib/i18n/en.governance.json](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json))
+2. [frontend/src/lib/i18n/en.governance.json](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json)
 3.  [rs/backend/src/proposals.rs](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs)
 
 ##### Cargo.toml
