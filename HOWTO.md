@@ -208,7 +208,7 @@ If the file/directory doesn't exist at all, create it with that content.
 
 Then deploy `nns-dapp`:
 
-1. `./build.sh`
+1. `DFX_NETWORK=local ./build.sh`
 2. `dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
 
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
