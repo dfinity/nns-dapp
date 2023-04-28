@@ -193,6 +193,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
+        39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -223,7 +224,7 @@ mod def {
 
     // NNS function 3 - AddNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::AddCanisterProposal;
+    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -263,7 +264,7 @@ mod def {
 
     // NNS function 4 - UpgradeNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::ChangeCanisterProposal;
+    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -384,7 +385,7 @@ mod def {
 
     // NNS function 17 - StopOrStartNNSCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
-    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::StopOrStartCanisterProposal;
+    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
 
     // NNS function 18 - RemoveNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
@@ -606,6 +607,26 @@ mod def {
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
     pub type UpdateElectedReplicaVersionsPayload =
         registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
+
+    // NNS function 39 - BitcoinSetConfig
+    // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
+    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct BitcoinSetConfigProposalHumanReadable {
+        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub set_config_request: ic_btc_interface::SetConfigRequest,
+    }
+
+    impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
+        fn from(proposal: BitcoinSetConfigProposal) -> Self {
+            let set_config_request: ic_btc_interface::SetConfigRequest = candid::decode_one(&proposal.payload).unwrap();
+            BitcoinSetConfigProposalHumanReadable {
+                network: proposal.network,
+                set_config_request,
+            }
+        }
+    }
 }
 
 #[cfg(test)]

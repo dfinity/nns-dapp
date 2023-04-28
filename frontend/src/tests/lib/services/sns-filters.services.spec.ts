@@ -2,15 +2,18 @@ import { loadSnsFilters } from "$lib/services/sns-filters.services";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { enumSize } from "$lib/utils/enum.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+} from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-filters services", () => {
   describe("loadSnsFilters", () => {
-    afterEach(() => {
+    beforeEach(() => {
       snsFiltersStore.reset();
     });
-    it("should load the sns filters store with status but not Unspecified", async () => {
+    it("should load the sns decision status filters store but not Unspecified", async () => {
       await loadSnsFilters(mockPrincipal);
 
       const projectStore = get(snsFiltersStore)[mockPrincipal.toText()];
@@ -22,6 +25,21 @@ describe("sns-filters services", () => {
         projectStore.decisionStatus.map(({ value }) => value)
       ).not.toContainEqual(
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED
+      );
+    });
+
+    it("should load the sns reward status filters store but not Unspecified", async () => {
+      await loadSnsFilters(mockPrincipal);
+
+      const projectStore = get(snsFiltersStore)[mockPrincipal.toText()];
+
+      expect(projectStore.rewardStatus).toHaveLength(
+        enumSize(SnsProposalRewardStatus) - 1
+      );
+      expect(
+        projectStore.rewardStatus.map(({ value }) => value)
+      ).not.toContainEqual(
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_UNSPECIFIED
       );
     });
 
