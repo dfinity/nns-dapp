@@ -275,7 +275,7 @@ In `en.governance.json`, you'll have to add entries to 2 different maps:
 As the key in both maps, use the name that you noted down before and also used
 in the enum in the ic-js repo.
 
-For `nns_functions` use a name that's more or less the enum value name with
+For `nns_functions` use a label that's more or less the enum value name but
 human readable. For example, for `BitcoinSetConfig` use "Set Bitcoin Config".
 
 For `nns_functions_description` you might be able to find a good description
@@ -294,7 +294,8 @@ find the fully qualified name as follows:
 1. Find the package name as described in the `Cargo.toml` section above.
 2. Take the directories under `/src/` on the path to the file.
 3. If the filename is not `lib.rs`, take the filename as well.
-4. Join everything from (1), (2), and (3) together with `::`.
+4. Join everything from (1), (2), and (3) together with `::` and replace any
+   hyphens with underscores.
 
 For example for
 [BitcoinSetConfigProposal](https://github.com/dfinity/ic/blame/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930),
