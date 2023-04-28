@@ -372,4 +372,4 @@ impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
 
 Follow the steps from "Verify that it doesn't render correctly yet" above to
 deploy the nns-dapp canister again and verify that now the proposal renders
-correctl.
+correctly.
