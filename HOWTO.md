@@ -157,7 +157,8 @@ isn't the governance canister itself.
 3. `WASMS_BACKUP_DIR="$HOME/dfx-cache-wasms-backup-$(date +"%Y-%m-%d")"`
 4. `echo $WASMS_BACKUP_DIR`
 5. `mkdir -p "$WASMS_BACKUP_DIR"`
-6. `mv "$DFX_CACHE_DIR/wasms/*" "$WASMS_BACKUP_DIR"`
+6. `mv $DFX_CACHE_DIR/wasms/* "$WASMS_BACKUP_DIR"`
+7. `ls -l "$WASMS_BACKUP_DIR"`
 7. `dfx start –clean`
 8. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
 
