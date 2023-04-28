@@ -147,10 +147,10 @@ However, if there is a version of the canister in the dfx cache, that version
 is the one that will be used. So we first need to remove the canister from the
 cache and then run `dfx nns install`.
 
-**Note**: If the last step below gives an error because it can't download some
-canister (for example `lifeline.wasm`), you can copy that canister back from
-the backup directory into the cache directory and try again, as long as it
-isn't the governance canister itself.
+**Note**: If the last step below (`dfx nns install`) gives an error because it
+can't download some canister (for example `lifeline.wasm`), you can copy that
+canister back from the backup directory into the cache directory and try
+again, as long as it isn't the governance canister itself.
 
 1. `DFX_CACHE_DIR="$(dfx cache show)"`
 2. `echo $DFX_CACHE_DIR`
@@ -159,8 +159,9 @@ isn't the governance canister itself.
 5. `mkdir -p "$WASMS_BACKUP_DIR"`
 6. `mv $DFX_CACHE_DIR/wasms/* "$WASMS_BACKUP_DIR"`
 7. `ls -l "$WASMS_BACKUP_DIR"`
-7. `dfx start --clean  # This will continue running so continue from another terminal`
-8. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
+8. `dfx start --clean  # This will continue running so continue from another terminal`
+9. `echo $IC_COMMIT`
+10. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
 
 
 ### Create a proposal of the new type
@@ -189,7 +190,7 @@ echo $NNS_URL
 
 In order to be able to see the difference later, it's a good idea to see how
 the proposal renders without the required changes. You'll be able to see that
-it doesn't cause error but also doesn't render the payload correctly.
+it doesn't cause errors but also doesn't render the payload correctly.
 
 To be able to deploy `nns-dapp` locally, you need its canister ID in
 `.dfx/local/canister_ids.json`. If it doesn't already, make sure that
