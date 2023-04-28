@@ -223,7 +223,7 @@ mod def {
 
     // NNS function 3 - AddNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::AddCanisterProposal;
+    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -263,7 +263,7 @@ mod def {
 
     // NNS function 4 - UpgradeNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::ChangeCanisterProposal;
+    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -384,7 +384,7 @@ mod def {
 
     // NNS function 17 - StopOrStartNNSCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
-    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::StopOrStartCanisterProposal;
+    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
 
     // NNS function 18 - RemoveNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
