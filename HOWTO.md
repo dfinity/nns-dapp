@@ -159,7 +159,7 @@ isn't the governance canister itself.
 5. `mkdir -p "$WASMS_BACKUP_DIR"`
 6. `mv $DFX_CACHE_DIR/wasms/* "$WASMS_BACKUP_DIR"`
 7. `ls -l "$WASMS_BACKUP_DIR"`
-7. `dfx start –clean`
+7. `dfx start –clean  # This will continue running so continue from another terminal`
 8. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
 
 
