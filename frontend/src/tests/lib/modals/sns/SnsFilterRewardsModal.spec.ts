@@ -77,7 +77,7 @@ describe("SnsFilterRewardsModal", () => {
     button && fireEvent.click(button);
   });
 
-  it("should filter filters", async () => {
+  it("should change reward status filters", async () => {
     const uncheckedFilters = filters.map((filter) => ({
       ...filter,
       checked: false,
