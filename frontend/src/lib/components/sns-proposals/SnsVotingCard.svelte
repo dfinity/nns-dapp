@@ -71,19 +71,6 @@
       voteRegistration !== undefined ||
       (votableNeurons.length > 0 && snsProposalOpen(proposal)));
 
-  // TODO(sns-voting): implement initial selection (see initialSelectionDone)
-  // DEMO (select all by default)
-  $: if (votableNeurons.length > 0 && nonNullish(snsParameters)) {
-    votingNeuronSelectStore.set(
-      votableNeurons.map((neuron: SnsNeuron) =>
-        snsNeuronToVotingNeuron({
-          neuron,
-          snsParameters: snsParameters as SnsNervousSystemParameters,
-        })
-      )
-    );
-  }
-
   let neuronsReady = false;
   $: neuronsReady =
     nonNullish(universeIdText) &&
@@ -92,7 +79,7 @@
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
 
-  const selectedNeurons = (): SnsNeuron[] =>
+  const userSelectedNeurons = (): SnsNeuron[] =>
     $votingNeuronSelectStore.selectedIds
       .map((id) =>
         votableNeurons.find(
@@ -100,11 +87,36 @@
         )
       )
       .filter(nonNullish);
+
+  const votingNeurons = () =>
+    nonNullish(snsParameters)
+      ? votableNeurons.map((neuron) =>
+          snsNeuronToVotingNeuron({
+            neuron,
+            snsParameters: snsParameters as SnsNervousSystemParameters,
+          })
+        )
+      : [];
+  /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
+  let initialSelectionDone = false;
+  const updateVotingNeuronSelectedStore = () => {
+    if (!initialSelectionDone) {
+      initialSelectionDone = true;
+      // initially preselect all neurons
+      votingNeuronSelectStore.set(votingNeurons());
+    } else {
+      // update checkbox selection after neurons update (e.g. queryAndUpdate second callback)
+      votingNeuronSelectStore.updateNeurons(votingNeurons());
+    }
+  };
+
+  $: votableNeurons, updateVotingNeuronSelectedStore();
+
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
-        neurons: selectedNeurons(),
+        neurons: userSelectedNeurons(),
         proposal,
         vote: detail.voteType,
         updateProposalCallback: async (updatedProposal: SnsProposalData) => {
