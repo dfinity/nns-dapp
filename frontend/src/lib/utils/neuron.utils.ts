@@ -41,6 +41,7 @@ import {
   type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { SvelteComponent } from "svelte";
 import {
@@ -50,6 +51,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
+import { toNnsVote } from "./sns-proposals.utils";
 import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
@@ -770,11 +772,11 @@ export const updateNeuronsVote = ({
   proposalId,
 }: {
   neuron: NeuronInfo;
-  vote: Vote;
+  vote: Vote | SnsVote;
   proposalId: ProposalId;
 }): NeuronInfo => {
   const newBallot: BallotInfo = {
-    vote,
+    vote: toNnsVote(vote),
     proposalId,
   };
   const recentBallots = [

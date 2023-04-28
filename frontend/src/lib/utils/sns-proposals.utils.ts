@@ -4,20 +4,29 @@ import {
   SNS_PROPOSAL_COLOR,
 } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { VotingNeuron } from "$lib/types/proposals";
+import {
+  getSnsNeuronIdAsHexString,
+  snsNeuronVotingPower,
+} from "$lib/utils/sns-neuron.utils";
+import type { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
+  SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
   SnsTally,
+  SnsVote,
 } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { keyOfOptional } from "./utils";
@@ -37,6 +46,7 @@ export type SnsProposalDataMap = {
   wait_for_quiet_deadline_increase_seconds: bigint;
   decided_timestamp_seconds: bigint;
   proposer?: SnsNeuronId;
+  /** will be removed in the future */
   is_eligible_for_rewards: boolean;
   executed_timestamp_seconds: bigint;
 
@@ -338,3 +348,28 @@ export const proposalActionFields = (
     return false;
   });
 };
+
+export const snsProposalIdString = (proposal: SnsProposalData): string =>
+  fromDefinedNullable(proposal.id).id.toString();
+
+export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
+  proposal.decided_timestamp_seconds === 0n;
+
+export const snsNeuronToVotingNeuron = ({
+  neuron,
+  snsParameters,
+}: {
+  neuron: SnsNeuron;
+  snsParameters: SnsNervousSystemParameters;
+}): VotingNeuron => ({
+  neuronIdString: getSnsNeuronIdAsHexString(neuron),
+  votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
+});
+
+/** To have the logic in one place */
+export const toNnsVote = (vote: SnsVote | Vote): Vote =>
+  vote as unknown as Vote;
+
+/** To have the logic in one place */
+export const toSnsVote = (vote: SnsVote | Vote): SnsVote =>
+  vote as unknown as SnsVote;

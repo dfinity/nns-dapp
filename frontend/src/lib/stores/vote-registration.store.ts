@@ -5,6 +5,7 @@ import type {
 } from "$lib/types/universe";
 import { preserveNeuronSelectionAfterUpdate } from "$lib/utils/proposals.utils";
 import type { Vote } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus =
@@ -18,7 +19,7 @@ export interface VoteRegistrationStoreEntry {
   proposalIdString: string;
   neuronIdStrings: string[];
   successfullyVotedNeuronIdStrings: string[];
-  vote: Vote;
+  vote: Vote | SnsVote;
 }
 
 export type VoteRegistrationStoreMap = Record<
@@ -137,7 +138,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         const universeRegistrations = registrations[canisterId.toText()];
 
         if (universeRegistrations === undefined) {
-          throw new Error("no registrations for canister id");
+          throw new Error("No registrations for canister id");
         }
 
         const proposalRegistration = universeRegistrations.find(
@@ -150,7 +151,6 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
             canisterId.toText(),
             proposalIdString
           );
-          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
@@ -186,7 +186,7 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
         const universeRegistrations = registrations[canisterId.toText()];
 
         if (universeRegistrations === undefined) {
-          throw new Error("no registrations for canister id");
+          throw new Error("no registrations for canister ID");
         }
 
         const proposalRegistration = universeRegistrations.find(
@@ -195,11 +195,10 @@ const initVoteRegistrationStore = (): VoteRegistrationStore => {
 
         if (proposalRegistration === undefined) {
           console.error(
-            "updating not voting item",
+            "Updating not voting item",
             canisterId.toText(),
             proposalIdString
           );
-          // TODO(sns-voting): add test or throw
           return { registrations };
         }
 
