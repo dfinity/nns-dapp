@@ -156,6 +156,23 @@ describe("CkBTCWallet", () => {
       );
     });
 
+    it("should render a detailed balance in summary", async () => {
+      const { queryByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+      );
+
+      const icp: HTMLSpanElement | null = queryByTestId("token-value");
+
+      expect(icp?.innerHTML).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balance.toE8s(),
+          detailed: true,
+        })}`
+      );
+    });
+
     const modalProps = {
       ...props,
       testComponent: CkBTCWallet,
@@ -186,7 +203,10 @@ describe("CkBTCWallet", () => {
       // Check original sum
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: mockCkBTCMainAccount.balance.toE8s() })}`
+          `${formatToken({
+            value: mockCkBTCMainAccount.balance.toE8s(),
+            detailed: true,
+          })}`
         )
       );
 
