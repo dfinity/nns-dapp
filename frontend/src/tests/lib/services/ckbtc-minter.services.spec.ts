@@ -168,7 +168,7 @@ describe("ckbtc-minter-services", () => {
       expect(result).toEqual({ success: false, err });
     });
 
-    it("should handle no new UTXOs info", async () => {
+    it("should handle no new UTXOs success", async () => {
       jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
@@ -179,8 +179,10 @@ describe("ckbtc-minter-services", () => {
 
       expect(result).toEqual({ success: true });
       expect(spyOnToastsShow).toHaveBeenCalledWith({
-        level: "info",
+        level: "success",
         labelKey: en.error__ckbtc.no_new_confirmed_btc,
+        duration: "4000",
+        substitutions: undefined,
       });
     });
   });
