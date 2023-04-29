@@ -181,7 +181,7 @@ describe("ckbtc-minter-services", () => {
       expect(spyOnToastsShow).toHaveBeenCalledWith({
         level: "success",
         labelKey: en.error__ckbtc.no_new_confirmed_btc,
-        duration: "4000",
+        duration: 4000,
         substitutions: undefined,
       });
     });
