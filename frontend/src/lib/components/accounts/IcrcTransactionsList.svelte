@@ -15,7 +15,7 @@
   export let completed = false;
   export let description:
     | ((transaction: Transaction) => string | undefined)
-    | undefined;
+    | undefined = undefined;
 </script>
 
 <div data-tid="transactions-list">

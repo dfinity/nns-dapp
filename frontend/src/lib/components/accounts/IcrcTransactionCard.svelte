@@ -12,7 +12,7 @@
   export let governanceCanisterId: Principal | undefined = undefined;
   export let description:
     | ((transaction: Transaction) => string | undefined)
-    | undefined;
+    | undefined = undefined;
 
   let transactionData: Transaction | undefined;
   $: transactionData = mapIcrcTransaction({

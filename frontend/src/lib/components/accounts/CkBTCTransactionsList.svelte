@@ -12,10 +12,6 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
   import type { Transaction } from "$lib/types/transaction";
-  import { AccountTransactionType } from "$lib/types/transaction";
-  import { i18n } from "$lib/stores/i18n";
-  import { decodeIcrcAccount } from "@dfinity/ledger";
-  import { nonNullish } from "@dfinity/utils";
   import { transactionDescription } from "$lib/utils/ckbtc.utils";
 
   export let minterCanisterId: CanisterId;

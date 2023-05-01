@@ -21,16 +21,18 @@ import { render } from "@testing-library/svelte";
 describe("TransactionCard", () => {
   const renderTransactionCard = ({
     transaction = mockTransactionSendDataFromMain,
-    descriptions,
+    description,
   }: {
     transaction?: Transaction;
-    descriptions?: Record<string, string>;
+    description?:
+      | ((transaction: Transaction) => string | undefined)
+      | undefined;
   }) =>
     render(TransactionCard, {
       props: {
         transaction,
         token: ICPToken,
-        descriptions,
+        description,
       },
     });
 
@@ -46,12 +48,15 @@ describe("TransactionCard", () => {
   });
 
   it("renders received description", () => {
-    const { getByText, getByTestId } = renderTransactionCard({
-      transaction: {
-        ...mockTransactionReceiveDataFromMain,
-        type: AccountTransactionType.Burn,
-      },
-      descriptions: en.ckbtc_transaction_names,
+    const spy = jest.fn();
+    const transaction = {
+      ...mockTransactionReceiveDataFromMain,
+      type: AccountTransactionType.Burn,
+    };
+
+    const { getByText } = renderTransactionCard({
+      transaction,
+      description: spy,
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.burn, {
@@ -59,9 +64,8 @@ describe("TransactionCard", () => {
     });
     expect(getByText(expectedText)).toBeInTheDocument();
 
-    expect(getByTestId("transaction-description")?.textContent).toEqual(
-      "To: BTC Network"
-    );
+    expect(spy).toBeCalledTimes(1);
+    expect(spy).toBeCalledWith(transaction);
   });
 
   it("renders sent headline", () => {

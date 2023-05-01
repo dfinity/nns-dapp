@@ -18,7 +18,7 @@
   export let token: Token;
   export let description:
     | ((transaction: Transaction) => string | undefined)
-    | undefined;
+    | undefined = undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
