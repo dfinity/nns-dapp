@@ -9,17 +9,21 @@
 </script>
 
 {#if nonNullish(fee)}
-  <KeyValuePair {testId}>
-    <span class="label" slot="key"><slot /></span>
-    <span class="value" slot="value">
+  <div data-tid={testId}>
+    <p class="label subtitle"><slot /></p>
+    <p class="value">
       {formatEstimatedFee(fee)}
       <span class="label">{$i18n.ckbtc.btc}</span>
-    </span>
-  </KeyValuePair>
+    </p>
+  </div>
 {/if}
 
 <style lang="scss">
+  .subtitle {
+    margin: 0 0 var(--padding-0_5x);
+  }
+
   .value {
-    text-align: right;
+    margin: 0;
   }
 </style>

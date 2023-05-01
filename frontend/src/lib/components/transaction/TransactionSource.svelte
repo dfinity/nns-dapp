@@ -7,7 +7,10 @@
   export let account: Account;
 </script>
 
-<p class="label account-name" data-tid="transaction-review-source-account-name">
+<p
+  class="label account-name title"
+  data-tid="transaction-review-source-account-name"
+>
   {$i18n.accounts.from}: {account.name ?? $i18n.accounts.main}
 </p>
 
@@ -18,22 +21,31 @@
   {account.identifier}
 </p>
 
-<KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.balance}</span>
+<p class="label title">{$i18n.accounts.balance}</p>
+
+<p class="balance">
   <AmountDisplay slot="value" singleLine detailed amount={account.balance} />
-</KeyValuePair>
+</p>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
 
+  .title {
+    margin: 0;
+  }
+
   .account-name {
     word-break: break-all;
     @include text.clamp(2);
-    margin: 0;
   }
 
   .account-identifier {
     word-break: break-all;
-    margin: 0 0 var(--padding-2x);
+    margin: 0 0 var(--padding-1_5x);
+  }
+
+  .balance {
+    word-break: break-all;
+    margin: 0;
   }
 </style>
