@@ -69,7 +69,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await ckBTCTransferTokens({
+    const { blockIndex } = await ckBTCTransferTokens({
       source: sourceAccount,
       destinationAddress,
       amount,
@@ -80,7 +80,7 @@
 
     stopBusy("accounts");
 
-    if (success) {
+    if (nonNullish(blockIndex)) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsTransfer");
     }

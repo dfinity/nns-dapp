@@ -142,9 +142,9 @@ describe("sns-accounts-services", () => {
       });
       const spyTransfer = jest
         .spyOn(ledgerApi, "snsTransfer")
-        .mockResolvedValue(undefined);
+        .mockResolvedValue(123n);
 
-      const { success } = await services.snsTransferTokens({
+      const { blockIndex } = await services.snsTransferTokens({
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
@@ -152,7 +152,7 @@ describe("sns-accounts-services", () => {
         loadTransactions: false,
       });
 
-      expect(success).toBe(true);
+      expect(blockIndex).toEqual(123n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
     });
@@ -165,9 +165,9 @@ describe("sns-accounts-services", () => {
       });
       const spyTransfer = jest
         .spyOn(ledgerApi, "snsTransfer")
-        .mockResolvedValue(undefined);
+        .mockResolvedValue(123n);
 
-      const { success } = await services.snsTransferTokens({
+      const { blockIndex } = await services.snsTransferTokens({
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
@@ -175,7 +175,7 @@ describe("sns-accounts-services", () => {
         loadTransactions: true,
       });
 
-      expect(success).toBe(true);
+      expect(blockIndex).toEqual(123n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
       expect(loadSnsAccountTransactions).toBeCalled();
@@ -192,7 +192,7 @@ describe("sns-accounts-services", () => {
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      const { success } = await services.snsTransferTokens({
+      const { blockIndex } = await services.snsTransferTokens({
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
@@ -200,7 +200,7 @@ describe("sns-accounts-services", () => {
         loadTransactions: false,
       });
 
-      expect(success).toBe(false);
+      expect(blockIndex).toBeUndefined();
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
@@ -213,7 +213,7 @@ describe("sns-accounts-services", () => {
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      const { success } = await services.snsTransferTokens({
+      const { blockIndex } = await services.snsTransferTokens({
         rootCanisterId: mockPrincipal,
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
@@ -221,7 +221,7 @@ describe("sns-accounts-services", () => {
         loadTransactions: false,
       });
 
-      expect(success).toBe(false);
+      expect(blockIndex).toBeUndefined();
       expect(spyTransfer).not.toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
