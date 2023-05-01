@@ -151,10 +151,6 @@ After deployment, their respective IDs shall be collected and updated in [ckbtc-
 
 Likewise, as the configuration is not yet automated, there are no `.env` variable that are yet generated.
 
-### Index
-
-The index canister does not exist yet on mainnet but, will be proposed soon. Same pattern will apply.
-
 ### Feature flag
 
 Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default. 
