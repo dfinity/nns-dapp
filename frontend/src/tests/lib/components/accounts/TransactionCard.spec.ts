@@ -54,7 +54,7 @@ describe("TransactionCard", () => {
       type: AccountTransactionType.Burn,
     };
 
-    const { getByText } = renderTransactionCard({
+    const { getByText, getByTestId } = renderTransactionCard({
       transaction,
       description: spy,
     });
@@ -66,6 +66,20 @@ describe("TransactionCard", () => {
 
     expect(spy).toBeCalledTimes(1);
     expect(spy).toBeCalledWith(transaction);
+  });
+
+  it("should not render identifier if a description is provided", () => {
+    const transaction = {
+      ...mockTransactionReceiveDataFromMain,
+      type: AccountTransactionType.Burn,
+    };
+
+    const { getByTestId } = renderTransactionCard({
+      transaction,
+      description: () => "test",
+    });
+
+    expect(() => getByTestId("identifier")).toThrow();
   });
 
   it("renders sent headline", () => {
