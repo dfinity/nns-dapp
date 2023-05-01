@@ -24,7 +24,7 @@
 <p class="label title">{$i18n.accounts.balance}</p>
 
 <p class="balance">
-  <AmountDisplay slot="value" singleLine detailed amount={account.balance} />
+  <AmountDisplay singleLine detailed amount={account.balance} />
 </p>
 
 <style lang="scss">

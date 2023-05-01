@@ -39,14 +39,14 @@
   <div data-tid="transaction-summary-sending-amount">
     <p class="label subtitle">{$i18n.accounts.sending_amount}</p>
     <p>
-      <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+      <AmountDisplay singleLine detailed amount={tokenAmount} />
     </p>
   </div>
 
   <div data-tid="transaction-summary-fee">
     <p class="label subtitle">{ledgerFeeLabel}</p>
     <p>
-      <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+      <AmountDisplay singleLine detailed amount={transactionFee} />
     </p>
   </div>
 
