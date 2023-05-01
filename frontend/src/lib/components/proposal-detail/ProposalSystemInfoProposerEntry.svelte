@@ -3,7 +3,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
-  import { authSignedInStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposer: NeuronId | undefined;
 

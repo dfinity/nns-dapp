@@ -8,7 +8,8 @@
     snsProjectsCommittedStore,
   } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
-  import { authSignedInStore, authStore } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   const loadSnsSale = async () => {
     if (!$authSignedInStore) {

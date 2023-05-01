@@ -2,7 +2,6 @@
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import type {
     SnsNervousSystemParameters,
@@ -30,6 +29,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;

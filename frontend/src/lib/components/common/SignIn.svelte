@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { authSignedInStore, authStore } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
   import { layoutAuthReady } from "$lib/stores/layout.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   // Asks the user to authenticate themselves with a TPM or similar.
   const signIn = async () => {

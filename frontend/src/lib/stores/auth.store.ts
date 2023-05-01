@@ -5,12 +5,12 @@ import {
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
 import { NNS_IC_APP_DERIVATION_ORIGIN } from "$lib/constants/origin.constants";
-import { createAuthClient, isSignedIn } from "$lib/utils/auth.utils";
+import { createAuthClient } from "$lib/utils/auth.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
 import type { Readable } from "svelte/store";
-import { derived, writable } from "svelte/store";
+import { writable } from "svelte/store";
 
 export interface AuthStoreData {
   identity: Identity | undefined | null;
@@ -112,8 +112,3 @@ const initAuthStore = (): AuthStore => {
 export const authStore = initAuthStore();
 
 export const authRemainingTimeStore = writable<number | undefined>(undefined);
-
-export const authSignedInStore: Readable<boolean> = derived(
-  authStore,
-  ({ identity }) => isSignedIn(identity)
-);

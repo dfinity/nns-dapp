@@ -7,7 +7,7 @@
     IconLaunchpad,
   } from "@dfinity/gix-components";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { authSignedInStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
 <ul>

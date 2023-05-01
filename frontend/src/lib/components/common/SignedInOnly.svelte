@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
 {#if $authSignedInStore}

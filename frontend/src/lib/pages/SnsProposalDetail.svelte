@@ -15,11 +15,11 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 

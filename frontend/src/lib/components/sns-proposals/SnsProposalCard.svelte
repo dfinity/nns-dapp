@@ -14,10 +14,10 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import { SnsProposalDecisionStatus, SnsVote } from "@dfinity/sns";
   import { busy, startBusy } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;

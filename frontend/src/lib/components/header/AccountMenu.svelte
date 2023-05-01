@@ -3,8 +3,8 @@
   import Logout from "./Logout.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;

@@ -23,8 +23,9 @@
     sortedProposals,
     filteredProposals,
   } from "$lib/derived/proposals.derived";
-  import { authSignedInStore, authStore } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value

@@ -14,9 +14,10 @@
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { authSignedInStore, authStore } from "$lib/stores/auth.store";
+  import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
   import { browser } from "$app/environment";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;

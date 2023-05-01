@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
   import Accounts from "$lib/routes/Accounts.svelte";
-  import { authSignedInStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let innerWidth = 0;
 

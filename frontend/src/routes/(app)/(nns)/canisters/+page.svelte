@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import SignInCanisters from "$lib/pages/SignInCanisters.svelte";
   import { onMount } from "svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -9,6 +8,7 @@
   import type { Navigation } from "@sveltejs/kit";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import Canisters from "$lib/pages/Canisters.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let referrerPath: AppPath | undefined = undefined;
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));

@@ -13,7 +13,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { authSignedInStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let visible = false;
   let transferring = false;

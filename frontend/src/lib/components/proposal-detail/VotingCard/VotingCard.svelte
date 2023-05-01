@@ -24,11 +24,11 @@
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import { authSignedInStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalInfo: ProposalInfo;
 
