@@ -1,4 +1,5 @@
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
+import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
@@ -56,19 +57,24 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
   ],
 };
 
-export const mockIcrcTransactionBurn: IcrcTransaction = {
-  kind: "burn",
+export const mockIcrcTransactionTransferToMinter: IcrcTransaction = {
+  kind: "transfer",
   timestamp: BigInt(12354),
-  burn: [
+  burn: [],
+  mint: [],
+  transfer: [
     {
-      amount: BigInt(33),
+      to: {
+        owner: mockCkBTCAdditionalCanisters.minterCanisterId,
+        subaccount: [],
+      },
       from: fakeAccount,
       memo: [],
       created_at_time: [BigInt(123)],
+      amount: BigInt(33),
+      fee: [BigInt(1)],
     },
   ],
-  mint: [],
-  transfer: [],
 };
 
 export const mockIcrcTransactionMint: IcrcTransaction = {

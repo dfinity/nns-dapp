@@ -9,9 +9,9 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
-  mockIcrcTransactionBurn,
   mockIcrcTransactionMint,
   mockIcrcTransactionsStoreSubscribe,
+  mockIcrcTransactionTransferToMinter,
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { render } from "@testing-library/svelte";
@@ -29,6 +29,7 @@ describe("CkBTCTransactionList", () => {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+        minterCanisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
       },
     });
 
@@ -62,14 +63,14 @@ describe("CkBTCTransactionList", () => {
     expect(queryAllByTestId("transaction-card").length).toBe(1);
   });
 
-  it("should render description burn to btc network", () => {
+  it("should render description to btc network", () => {
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
               id: BigInt(123),
-              transaction: mockIcrcTransactionBurn,
+              transaction: mockIcrcTransactionTransferToMinter,
             },
           ],
           completed: false,
