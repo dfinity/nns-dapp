@@ -863,7 +863,7 @@
     "bitcoin": "Bitcoin",
     "test_bitcoin": "Bitcoin Testnet",
     "btc": "BTC",
-    "ckbtc_balance_updated": "Balance successfully updated.",
+    "ckbtc_balance_updated": "Updated available ckBTC : New confirmed BTC.",
     "step_initialization": "Initializing transaction",
     "step_locking_ckbtc": "Confirming ckBTC",
     "step_send_btc": "Sending BTC",
