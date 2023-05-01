@@ -50,10 +50,11 @@ export interface BitcoinConvertBlockIndexesStore
   extends Readable<IcrcBlockIndex[]> {
   addBlockIndex: (blockIndex: IcrcBlockIndex) => void;
   removeBlockIndex: (blockIndex: IcrcBlockIndex) => void;
+  reset: () => void;
 }
 
 const initBitcoinConvertBlockIndexes = (): BitcoinConvertBlockIndexesStore => {
-  const { subscribe, update } = writableStored<IcrcBlockIndex[]>({
+  const { subscribe, update, set } = writableStored<IcrcBlockIndex[]>({
     key: storeLocalStorageKey.BitcoinConvertBlockIndexes,
     defaultValue: [],
   });
@@ -70,6 +71,8 @@ const initBitcoinConvertBlockIndexes = (): BitcoinConvertBlockIndexesStore => {
       update((blockIndexes) =>
         blockIndexes.filter((block) => block !== blockIndex)
       ),
+
+    reset: () => set([]),
   };
 };
 
