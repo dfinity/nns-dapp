@@ -12,7 +12,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
   import type { Transaction } from "$lib/types/transaction";
-  import { transactionDescription } from "$lib/utils/ckbtc.utils";
+  import { ckBTCTransactionDescription } from "$lib/utils/ckbtc.utils";
 
   export let minterCanisterId: CanisterId;
   export let indexCanisterId: CanisterId;
@@ -48,7 +48,7 @@
   });
 
   const description = (transaction: Transaction): string | undefined =>
-    transactionDescription({ transaction, minterCanisterId });
+    ckBTCTransactionDescription({ transaction, minterCanisterId });
 </script>
 
 <IcrcTransactionsList

@@ -74,7 +74,7 @@ export const assertCkBTCUserInputAmount = ({
   });
 };
 
-export const transactionDescription = ({
+export const ckBTCTransactionDescription = ({
   transaction: { type, to },
   minterCanisterId,
 }: {
