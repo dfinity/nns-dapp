@@ -2,7 +2,7 @@
   import type { Token } from "@dfinity/nns";
   import { TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
+  import { IconSouth } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 

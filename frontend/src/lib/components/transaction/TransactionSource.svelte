@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
 
   export let account: Account;
