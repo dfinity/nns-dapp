@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { toastsShow } from "$lib/stores/toasts.store";
@@ -8,7 +7,6 @@
   import { authStore } from "$lib/stores/auth.store";
 
   const showWarning = () => {
-    console.log("here", isSignedIn($authStore.identity));
     // Display a warning only if signed in
     if (!isSignedIn($authStore.identity)) {
       return;
