@@ -1,11 +1,17 @@
 import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
+import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
+import {
+  AccountTransactionType,
+  type Transaction,
+} from "$lib/types/transaction";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
-import { isNullish } from "@dfinity/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const assertCkBTCUserInputAmount = ({
@@ -66,4 +72,30 @@ export const assertCkBTCUserInputAmount = ({
       (bitcoinEstimatedFee ?? BigInt(0)) +
       (kytEstimatedFee ?? BigInt(0)),
   });
+};
+
+export const transactionDescription = ({
+  transaction: { type, to },
+  minterCanisterId,
+}: {
+  transaction: Transaction;
+  minterCanisterId: CanisterId;
+}): string | undefined => {
+  const {
+    ckbtc_transaction_names: { mint, burn },
+  } = get(i18n);
+
+  if (type === AccountTransactionType.Mint) {
+    return mint;
+  }
+
+  if (type === AccountTransactionType.Send && nonNullish(to)) {
+    const { owner } = decodeIcrcAccount(to);
+
+    if (owner.toText() === minterCanisterId.toText()) {
+      return burn;
+    }
+  }
+
+  return undefined;
 };

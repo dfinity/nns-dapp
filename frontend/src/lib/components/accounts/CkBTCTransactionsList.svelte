@@ -11,8 +11,14 @@
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
+  import type { Transaction } from "$lib/types/transaction";
+  import { AccountTransactionType } from "$lib/types/transaction";
   import { i18n } from "$lib/stores/i18n";
+  import { decodeIcrcAccount } from "@dfinity/ledger";
+  import { nonNullish } from "@dfinity/utils";
+  import { transactionDescription } from "$lib/utils/ckbtc.utils";
 
+  export let minterCanisterId: CanisterId;
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let account: Account;
@@ -45,11 +51,8 @@
     account,
   });
 
-  let descriptions: Record<string, string>;
-  $: descriptions = $i18n.ckbtc_transaction_names as unknown as Record<
-    string,
-    string
-  >;
+  const description = (transaction: Transaction): string | undefined =>
+    transactionDescription({ transaction, minterCanisterId });
 </script>
 
 <IcrcTransactionsList
@@ -58,5 +61,5 @@
   {transactions}
   {loading}
   {completed}
-  {descriptions}
+  {description}
 />

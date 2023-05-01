@@ -6,13 +6,16 @@
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { IcrcTransactionData } from "$lib/types/transaction";
+  import type { Transaction } from "$lib/types/transaction";
 
   export let account: Account;
   export let transactions: IcrcTransactionData[];
   export let loading: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
-  export let descriptions: Record<string, string> | undefined = undefined;
+  export let description:
+    | ((transaction: Transaction) => string | undefined)
+    | undefined;
 </script>
 
 <div data-tid="transactions-list">
@@ -29,7 +32,7 @@
           {toSelfTransaction}
           {account}
           {governanceCanisterId}
-          {descriptions}
+          {description}
         />
       {/each}
     </InfiniteScroll>

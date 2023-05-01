@@ -16,7 +16,9 @@
   export let transaction: Transaction;
   export let toSelfTransaction = false;
   export let token: Token;
-  export let descriptions: Record<string, string> | undefined = undefined;
+  export let description:
+    | ((transaction: Transaction) => string | undefined)
+    | undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
@@ -43,8 +45,8 @@
       ? $i18n.wallet.direction_to
       : undefined;
 
-  let description: string | undefined;
-  $: description = descriptions?.[type];
+  let customDescription: string | undefined;
+  $: customDescription = description?.(transaction);
 
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
@@ -73,11 +75,11 @@
 
     <ColumnRow>
       <div slot="start" class="identifier">
-        {#if nonNullish(description)}
-          <p data-tid="transaction-description"><Html text={description} /></p>
-        {/if}
-
-        {#if nonNullish(identifier)}
+        {#if nonNullish(customDescription)}
+          <p data-tid="transaction-description">
+            <Html text={customDescription} />
+          </p>
+        {:else if nonNullish(identifier)}
           <Identifier size="medium" {label} {identifier} />
         {/if}
       </div>

@@ -181,6 +181,7 @@
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             indexCanisterId={canisters.indexCanisterId}
+            minterCanisterId={canisters.minterCanisterId}
           />
         {/if}
       {:else}
