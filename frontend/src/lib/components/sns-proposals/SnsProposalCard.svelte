@@ -14,8 +14,7 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/stores/auth.store";
   import { SnsProposalDecisionStatus, SnsVote } from "@dfinity/sns";
   import { busy, startBusy } from "@dfinity/gix-components";
   import { stopBusy } from "$lib/stores/busy.store";
@@ -58,14 +57,10 @@
       })
     );
 
-  // DEMO VOTING
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   // TODO(demo): remove after voting implementation
   let demoVoteEnable = false;
   $: demoVoteEnable =
-    signedIn &&
+    $authSignedInStore &&
     status === SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
 
   // TODO(demo): remove after voting implementation

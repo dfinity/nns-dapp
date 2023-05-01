@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authSignedInStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
@@ -17,11 +16,8 @@
     await authStore.signIn(onError);
   };
 
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   let disabled = true;
-  $: disabled = signedIn || !$layoutAuthReady;
+  $: disabled = $authSignedInStore || !$layoutAuthReady;
 </script>
 
 <button on:click={signIn} data-tid="login-button" class="primary" {disabled}>

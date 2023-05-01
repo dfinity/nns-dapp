@@ -15,8 +15,7 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
@@ -29,9 +28,6 @@
 
   let universeIdText: string | undefined;
   $: universeIdText = universeId.toText();
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
 
   let neuronsReady = false;
   $: neuronsReady =
@@ -116,9 +112,11 @@
 
         await Promise.all([
           // skip neurons call when not signedIn or when neurons are not ready
-          neuronsReady || !signedIn ? undefined : syncSnsNeurons(universeId),
+          neuronsReady || !$authSignedInStore
+            ? undefined
+            : syncSnsNeurons(universeId),
           //
-          !signedIn ? undefined : loadSnsParameters(universeId),
+          !$authSignedInStore ? undefined : loadSnsParameters(universeId),
           loadSnsNervousSystemFunctions(universeId),
           reloadProposal(),
         ]);

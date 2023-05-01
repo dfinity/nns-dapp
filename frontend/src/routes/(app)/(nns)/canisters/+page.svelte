@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authSignedInStore } from "$lib/stores/auth.store";
   import SignInCanisters from "$lib/pages/SignInCanisters.svelte";
   import { onMount } from "svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -11,16 +10,13 @@
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import Canisters from "$lib/pages/Canisters.svelte";
 
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   let referrerPath: AppPath | undefined = undefined;
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
 
   onMount(() => layoutTitleStore.set($i18n.navigation.canisters));
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <Canisters {referrerPath} />
 {:else}
   <SignInCanisters />
