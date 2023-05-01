@@ -54,7 +54,7 @@ describe("TransactionCard", () => {
       type: AccountTransactionType.Burn,
     };
 
-    const { getByText, getByTestId } = renderTransactionCard({
+    const { getByText } = renderTransactionCard({
       transaction,
       description: spy,
     });
