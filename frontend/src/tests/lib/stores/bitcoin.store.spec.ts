@@ -1,4 +1,7 @@
-import {bitcoinAddressStore, bitcoinConvertBlockIndexes} from "$lib/stores/bitcoin.store";
+import {
+  bitcoinAddressStore,
+  bitcoinConvertBlockIndexes,
+} from "$lib/stores/bitcoin.store";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -19,7 +22,7 @@ describe("bitcoin-store", () => {
 
       const store = get(bitcoinAddressStore);
       expect(store[mockCkBTCMainAccount.identifier]).toEqual(
-          mockBTCAddressTestnet
+        mockBTCAddressTestnet
       );
     });
 
@@ -82,4 +85,4 @@ describe("bitcoin-store", () => {
       expect(store3.length).toEqual(0);
     });
   });
-})
+});

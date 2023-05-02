@@ -2,7 +2,6 @@
   import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { toastsShow } from "$lib/stores/toasts.store";
-  import { layoutWarningToastId } from "$lib/stores/layout.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
