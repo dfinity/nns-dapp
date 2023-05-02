@@ -33,6 +33,10 @@
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
+  import {
+    type CompactNeuronInfo,
+    votedNeuronDetails,
+  } from "$lib/utils/neuron.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -106,6 +110,14 @@
 
   let signedIn = false;
   $: signedIn = isSignedIn($authStore.identity);
+
+  let neuronsVotedForProposal: CompactNeuronInfo[];
+  $: {
+    neuronsVotedForProposal = votedNeuronDetails({
+      neurons: $definedNeuronsStore,
+      proposal: proposalInfo,
+    });
+  }
 </script>
 
 <BottomSheet>
@@ -122,7 +134,7 @@
 
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes {proposalInfo} />
+            <MyVotes {neuronsVotedForProposal} />
             <IneligibleNeuronsCard
               {proposalInfo}
               neurons={$definedNeuronsStore}
