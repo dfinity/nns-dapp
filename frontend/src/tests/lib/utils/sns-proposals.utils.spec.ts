@@ -203,7 +203,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
