@@ -3,10 +3,7 @@
  */
 
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
-import {
-  CKBTC_MINTER_CANISTER_ID,
-  CKBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-accounts-loader.services";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
