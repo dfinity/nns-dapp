@@ -105,7 +105,7 @@ detail below but at a high level they are:
 6. Make the code changes
 7. Verify that it does render correctly
 
-### Verify that the intended change is for a new NNS function
+### 1. Verify that the intended change is for a new NNS function
 
 All the NNS functions are defined
 [here](https://github.com/dfinity/ic/blame/master/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#:~:text=pub%20enum%20NnsFunction%20%7B)
@@ -117,7 +117,7 @@ Note down its name and number. For example `BitcoinSetConfig = 39`.
 has moved, [here](https://github.com/dfinity/ic/blob/509b1e62ba94014246c019fb26bba404f25adabd/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#L3102) is an old version to track down what happened.
 
 
-### Understand the impact
+### 2. Understand the impact
 
 A new `nnsFunction` does not break backwards compatibility. Therefore, there
 is no need to synchronize releases.
@@ -126,7 +126,7 @@ Yet, a proposal with that `nnsFunction` won't be rendered properly until the
 changes are made and released.
 
 
-### Install a new governance canister
+### 3. Install a new governance canister
 
 Here we explain how to do it on dfx network `local`. It's possible to do the
 same on testnet but that's not described here.
@@ -164,7 +164,7 @@ again, as long as it isn't the governance canister itself.
 10. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
 
 
-### Create a proposal with a payload for the new NNS function
+### 4. Create a proposal with a payload for the new NNS function
 
 You'll need to use `ic-admin` to create the proposal. Because the payload
 type is new, your current version of `ic-admin` probably doesn't know about
@@ -190,7 +190,7 @@ echo $NNS_URL
 ```
 
 
-### Verify that it doesn't render correctly yet
+### 5. Verify that it doesn't render correctly yet
 
 In order to be able to see the difference later, it's a good idea to see how
 the proposal renders without the required changes. You'll be able to see that
@@ -219,7 +219,7 @@ Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.
 
 
-### Make the code changes
+### 6. Make the code changes
 
 #### Changes in ic-js
 
@@ -375,7 +375,7 @@ impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
 ```
 
 
-### Verify that it does render correctly
+### 7. Verify that it does render correctly
 
 Follow the steps from "Verify that it doesn't render correctly yet" above to
 deploy the nns-dapp canister again and verify that now the proposal renders
