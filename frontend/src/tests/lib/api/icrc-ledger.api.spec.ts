@@ -1,5 +1,5 @@
 import {
-  getIcrcMainAccount,
+  getIcrcAccount,
   getIcrcToken,
   icrcTransfer,
 } from "$lib/api/icrc-ledger.api";
@@ -16,9 +16,10 @@ describe("icrc-ledger api", () => {
     it("returns main account with balance and project token metadata", async () => {
       const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
 
-      const account = await getIcrcMainAccount({
+      const account = await getIcrcAccount({
         certified: true,
-        identity: mockIdentity,
+        owner: mockIdentity.getPrincipal(),
+        type: "main",
         getBalance: balanceSpy,
         getMetadata: metadataSpy,
       });
@@ -26,6 +27,11 @@ describe("icrc-ledger api", () => {
       expect(account).not.toBeUndefined();
 
       expect(account.balance.toE8s()).toEqual(BigInt(10_000_000));
+
+      expect(account.principal.toText()).toEqual(
+        mockIdentity.getPrincipal().toText()
+      );
+      expect(account.type).toEqual("main");
 
       expect(balanceSpy).toBeCalled();
       expect(metadataSpy).toBeCalled();
@@ -37,9 +43,10 @@ describe("icrc-ledger api", () => {
       };
 
       const call = () =>
-        getIcrcMainAccount({
+        getIcrcAccount({
           certified: true,
-          identity: mockIdentity,
+          owner: mockIdentity.getPrincipal(),
+          type: "main",
           getBalance: balanceSpy,
           getMetadata: metadataSpy,
         });
