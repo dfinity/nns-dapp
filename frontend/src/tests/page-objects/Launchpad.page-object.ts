@@ -12,4 +12,11 @@ export class LaunchpadPo extends BasePageObject {
   getOpenProjectsPo(): ProjectsPo {
     return ProjectsPo.under({ element: this.root, testId: "open-projects" });
   }
+
+  getCommittedProjectsPo(): ProjectsPo {
+    return ProjectsPo.under({
+      element: this.root,
+      testId: "committed-projects",
+    });
+  }
 }
