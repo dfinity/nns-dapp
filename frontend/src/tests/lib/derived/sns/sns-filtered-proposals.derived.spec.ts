@@ -192,6 +192,6 @@ describe("snsFilteredProposalsStore", () => {
 
     expect(
       get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(1);
+    ).toMatchObject([acceptVotesProposal]);
   });
 });
