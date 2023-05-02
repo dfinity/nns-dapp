@@ -93,8 +93,8 @@ describe("ckbtc-convert-services", () => {
 
     describe("transfer tokens succeed", () => {
       jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
-        .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       const transferSpy = ledgerCanisterMock.transfer.mockResolvedValue(123n);
 
