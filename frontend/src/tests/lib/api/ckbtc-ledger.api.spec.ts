@@ -1,6 +1,6 @@
 import {
   ckBTCTransfer,
-  getCkBTCAccounts,
+  getCkBTCAccount,
   getCkBTCToken,
 } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -32,7 +32,7 @@ describe("ckbtc-ledger api", () => {
         BigInt(10_000_000)
       );
 
-      const accounts = await getCkBTCAccounts({
+      const accounts = await getCkBTCAccount({
         certified: true,
         identity: mockIdentity,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
@@ -53,7 +53,7 @@ describe("ckbtc-ledger api", () => {
       ledgerCanisterMock.metadata.mockResolvedValue([]);
 
       const call = () =>
-        getCkBTCAccounts({
+        getCkBTCAccount({
           certified: true,
           identity: mockIdentity,
           canisterId: CKBTC_LEDGER_CANISTER_ID,

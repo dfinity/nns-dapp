@@ -6,40 +6,45 @@ import {
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import { HOST } from "$lib/constants/environment.constants";
-import type { Account } from "$lib/types/account";
+import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister, type BalanceParams } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 
-export const getCkBTCAccounts = async ({
+export const getCkBTCAccount = async ({
   identity,
   certified,
   canisterId,
+  ...rest
 }: {
   identity: Identity;
   certified: boolean;
   canisterId: Principal;
-}): Promise<Account[]> => {
+  type: AccountType;
+} & BalanceParams): Promise<Account> => {
   // TODO: Support subaccounts
-  logWithTimestamp("Getting ckBTC accounts: call...");
+  logWithTimestamp("Getting ckBTC account: call...");
 
   const {
     canister: { metadata, balance },
   } = await ckBTCLedgerCanister({ identity, canisterId });
 
-  const mainAccount = await getIcrcAccount({
-    owner: identity.getPrincipal(),
-    type: "main",
+  const callParams = {
     certified,
     getBalance: balance,
     getMetadata: metadata,
+  };
+
+  const account = await getIcrcAccount({
+    ...rest,
+    ...callParams,
   });
 
-  logWithTimestamp("Getting ckBTC accounts: done");
+  logWithTimestamp("Getting ckBTC account: done");
 
-  return [mainAccount];
+  return account;
 };
 
 export const getCkBTCToken = async ({

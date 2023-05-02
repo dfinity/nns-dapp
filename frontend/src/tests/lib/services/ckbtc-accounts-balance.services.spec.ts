@@ -43,7 +43,7 @@ describe("ckbtc-accounts-balance.services", () => {
       .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
     const spyQuery = jest
-      .spyOn(ledgerApi, "getCkBTCAccounts")
+      .spyOn(ledgerApi, "getCkBTCAccount")
       .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);
@@ -65,7 +65,7 @@ describe("ckbtc-accounts-balance.services", () => {
       .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
     jest
-      .spyOn(ledgerApi, "getCkBTCAccounts")
+      .spyOn(ledgerApi, "getCkBTCAccount")
       .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);
@@ -87,7 +87,7 @@ describe("ckbtc-accounts-balance.services", () => {
 
   it("should toast error", async () => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest.spyOn(ledgerApi, "getCkBTCAccounts").mockRejectedValue(new Error());
+    jest.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);
 
