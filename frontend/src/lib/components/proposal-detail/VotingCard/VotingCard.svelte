@@ -1,8 +1,9 @@
 <script lang="ts">
   import {
     type ProposalInfo,
-    type Vote,
+    ProposalStatus,
     votableNeurons as getVotableNeurons,
+    type Vote,
   } from "@dfinity/nns";
 
   import { getContext } from "svelte";
@@ -20,6 +21,7 @@
   import {
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
+    votingNeuronSelectStore,
   } from "$lib/stores/vote-registration.store";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -28,7 +30,6 @@
   import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 
   export let proposalInfo: ProposalInfo;
@@ -52,9 +53,10 @@
 
   $: $definedNeuronsStore,
     (visible =
-      voteRegistration !== undefined ||
-      (votableNeurons().length > 0 &&
-        isProposalDeadlineInTheFuture(proposalInfo)));
+      proposalInfo.status === ProposalStatus.Open &&
+      (voteRegistration !== undefined ||
+        (votableNeurons().length > 0 &&
+          isProposalDeadlineInTheFuture(proposalInfo))));
 
   const updateVotingNeuronSelectedStore = () => {
     if (!initialSelectionDone) {
