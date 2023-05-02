@@ -130,7 +130,12 @@ e.g. in `canisters`:
   "type": "custom",
   "candid": "target/ic/ckbtc_index.did",
   "wasm": "target/ic/ckbtc_index.wasm"
-}
+},
+"ckbtc_test_kyt": {
+  "type": "custom",
+  "candid": "target/ic/ckbtc_kyt.did",
+  "wasm": "target/ic/ckbtc_kyt.wasm"
+},
 ```
 
 Once canisters deployed, their respective IDs shall be collected and updated in [canister-ids.constants.ts](./frontend/src/lib/constants/canister-ids.constants.ts).
