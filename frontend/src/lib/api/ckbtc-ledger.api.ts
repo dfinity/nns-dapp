@@ -1,6 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
 import {
-  getIcrcMainAccount,
+  getIcrcAccount,
   getIcrcToken,
   icrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
@@ -29,8 +29,9 @@ export const getCkBTCAccounts = async ({
     canister: { metadata, balance },
   } = await ckBTCLedgerCanister({ identity, canisterId });
 
-  const mainAccount = await getIcrcMainAccount({
-    identity,
+  const mainAccount = await getIcrcAccount({
+    owner: identity.getPrincipal(),
+    type: "main",
     certified,
     getBalance: balance,
     getMetadata: metadata,
