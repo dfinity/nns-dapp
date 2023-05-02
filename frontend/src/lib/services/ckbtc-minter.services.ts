@@ -23,9 +23,11 @@ import {
   MinterTemporaryUnavailableError,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -211,4 +213,30 @@ const mapUpdateBalanceError = (
   }
 
   return err;
+};
+
+export const getWithdrawalAccount = async ({
+  minterCanisterId,
+}: {
+  minterCanisterId: CanisterId;
+}): Promise<WithdrawalAccount | undefined> => {
+  const identity = await getAuthenticatedIdentity();
+
+  try {
+    const account = await getWithdrawalAccountAPI({
+      identity,
+      canisterId: minterCanisterId,
+    });
+
+    return account;
+  } catch (err: unknown) {
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__ckbtc.withdrawal_account",
+      })
+    );
+
+    return undefined;
+  }
 };
