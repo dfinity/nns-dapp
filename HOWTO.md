@@ -100,7 +100,7 @@ detail below but at a high level they are:
 1. Verify that the intended change is for a new NNS function
 2. Understand the impact of a new NNS function
 3. Install a new governance canister
-4. Create a proposal of the new type
+4. Create a proposal with a payload for the new NNS function
 5. Verify that it doesn't render correctly yet
 6. Make the code changes
 7. Verify that it does render correctly
@@ -164,9 +164,9 @@ again, as long as it isn't the governance canister itself.
 10. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
 
 
-### Create a proposal of the new type
+### Create a proposal with a payload for the new NNS function
 
-You'll need to use `ic-admin` to create the proposal. Because the proposal
+You'll need to use `ic-admin` to create the proposal. Because the payload
 type is new, your current version of `ic-admin` probably doesn't know about
 it. So you should get a new version of `ic-admin`:
 
