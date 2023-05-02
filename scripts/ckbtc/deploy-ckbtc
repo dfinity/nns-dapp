@@ -76,4 +76,4 @@ dfx deploy ckbtc_test_index --network "$DFX_NETWORK" --argument "(record { ledge
 
 echo "Step 5: transfer ckBTC to principal..."
 # record { owner= principal “”;}
-dfx canister call ckbtc_test_ledger --network "$DFX_NETWORK" icrc1_transfer "(record {from=null; to=record { owner= principal \"73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe\";}; amount=1000000; fee=null; memo=null; created_at_time=null;})"
+dfx canister call ckbtc_test_ledger --network "$DFX_NETWORK" icrc1_transfer "(record {from=null; to=record { owner= principal \"73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe\";}; amount=100000000; fee=null; memo=null; created_at_time=null;})"
