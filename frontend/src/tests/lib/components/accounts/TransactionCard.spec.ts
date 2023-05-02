@@ -21,10 +21,10 @@ import { render } from "@testing-library/svelte";
 describe("TransactionCard", () => {
   const renderTransactionCard = ({
     transaction = mockTransactionSendDataFromMain,
-    description,
+    mapDescription,
   }: {
     transaction?: Transaction;
-    description?:
+    mapDescription?:
       | ((transaction: Transaction) => string | undefined)
       | undefined;
   }) =>
@@ -32,7 +32,7 @@ describe("TransactionCard", () => {
       props: {
         transaction,
         token: ICPToken,
-        description,
+        mapDescription: mapDescription,
       },
     });
 
@@ -56,7 +56,7 @@ describe("TransactionCard", () => {
 
     const { getByText } = renderTransactionCard({
       transaction,
-      description: spy,
+      mapDescription: spy,
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.burn, {
@@ -76,7 +76,7 @@ describe("TransactionCard", () => {
 
     const { getByTestId } = renderTransactionCard({
       transaction,
-      description: () => "test",
+      mapDescription: () => "test",
     });
 
     expect(() => getByTestId("identifier")).toThrow();

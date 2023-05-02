@@ -10,7 +10,7 @@
   export let account: Account;
   export let toSelfTransaction: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
-  export let description:
+  export let mapDescription:
     | ((transaction: Transaction) => string | undefined)
     | undefined = undefined;
 
@@ -28,6 +28,6 @@
     {toSelfTransaction}
     transaction={transactionData}
     token={account.balance.token}
-    {description}
+    {mapDescription}
   />
 {/if}

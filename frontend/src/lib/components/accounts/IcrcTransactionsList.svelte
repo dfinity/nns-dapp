@@ -13,7 +13,7 @@
   export let loading: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
-  export let description:
+  export let mapDescription:
     | ((transaction: Transaction) => string | undefined)
     | undefined = undefined;
 </script>
@@ -32,7 +32,7 @@
           {toSelfTransaction}
           {account}
           {governanceCanisterId}
-          {description}
+          {mapDescription}
         />
       {/each}
     </InfiniteScroll>

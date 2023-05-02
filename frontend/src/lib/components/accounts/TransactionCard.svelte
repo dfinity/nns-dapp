@@ -16,7 +16,7 @@
   export let transaction: Transaction;
   export let toSelfTransaction = false;
   export let token: Token;
-  export let description:
+  export let mapDescription:
     | ((transaction: Transaction) => string | undefined)
     | undefined = undefined;
 
@@ -46,7 +46,7 @@
       : undefined;
 
   let customDescription: string | undefined;
-  $: customDescription = description?.(transaction);
+  $: customDescription = mapDescription?.(transaction);
 
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;

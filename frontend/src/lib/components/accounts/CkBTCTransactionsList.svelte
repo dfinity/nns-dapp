@@ -47,7 +47,7 @@
     account,
   });
 
-  const description = (transaction: Transaction): string | undefined =>
+  const mapDescription = (transaction: Transaction): string | undefined =>
     ckBTCTransactionDescription({ transaction, minterCanisterId });
 </script>
 
@@ -57,5 +57,5 @@
   {transactions}
   {loading}
   {completed}
-  {description}
+  {mapDescription}
 />
