@@ -238,7 +238,7 @@ export const snsRewardStatus = ({
     // Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L760
     throw new Error("Proposal must have a wait_for_quiet_state.");
   }
-  if (now > deadline) {
+  if (now < deadline) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
   }
 
