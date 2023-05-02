@@ -13,6 +13,7 @@
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
 
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
   // This way we can reuse this component in a dashboard page.
@@ -40,7 +41,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await snsTransferTokens({
+    const { blockIndex } = await snsTransferTokens({
       source: sourceAccount,
       destinationAddress,
       amount,
@@ -50,7 +51,7 @@
 
     stopBusy("accounts");
 
-    if (success) {
+    if (nonNullish(blockIndex)) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsClose");
     }

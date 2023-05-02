@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import type { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import type { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
 type WritableStored<T> = Writable<T> & {
@@ -10,7 +10,7 @@ export const writableStored = <T>({
   key,
   defaultValue,
 }: {
-  key: storeLocalStorageKey;
+  key: StoreLocalStorageKey;
   defaultValue: T;
 }): WritableStored<T> => {
   const getInitialValue = (): T => {

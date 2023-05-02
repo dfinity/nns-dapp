@@ -15,6 +15,7 @@ import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcBlockIndex } from "@dfinity/ledger";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
@@ -76,7 +77,7 @@ export const ckBTCTransferTokens = async ({
   loadTransactions: boolean;
   universeId: UniverseCanisterId;
 } & Pick<CkBTCAdditionalCanisters, "indexCanisterId">): Promise<{
-  success: boolean;
+  blockIndex: IcrcBlockIndex | undefined;
 }> => {
   const fee = get(ckBTCTokenStore)[universeId.toText()]?.token.fee;
 

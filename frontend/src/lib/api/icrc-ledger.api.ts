@@ -110,8 +110,8 @@ export const icrcTransfer = async ({
   createdAt,
   transfer: transferApi,
   ...rest
-}: IcrcTransferParams): Promise<void> => {
-  await transferApi({
+}: IcrcTransferParams): Promise<IcrcBlockIndex> =>
+  transferApi({
     to: {
       owner,
       subaccount: toNullable(subaccount),
@@ -122,4 +122,3 @@ export const icrcTransfer = async ({
       : undefined,
     ...rest,
   });
-};
