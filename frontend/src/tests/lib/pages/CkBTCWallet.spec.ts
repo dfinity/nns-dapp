@@ -264,7 +264,9 @@ describe("CkBTCWallet", () => {
 
       const spy = jest.spyOn(services, "syncCkBTCAccounts");
 
-      fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+      fireEvent.click(
+        getByTestId("reload-receive-account") as HTMLButtonElement
+      );
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
     });
