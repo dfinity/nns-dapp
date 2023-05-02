@@ -924,12 +924,14 @@ interface I18nCkbtc {
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;
+  minter: string;
 }
 
 interface I18nError__ckbtc {
   already_process: string;
   no_new_utxo: string;
   temporary_unavailable: string;
+  no_minter_defined: string;
   get_btc_address: string;
   get_btc_no_account: string;
   get_btc_no_universe: string;

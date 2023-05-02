@@ -9,6 +9,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import CkBTCMinterAccount from "$lib/components/accounts/CkBTCMinterButton.svelte";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -56,5 +57,7 @@
         {account}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}
+
+    <CkBTCMinterAccount />
   {/if}
 </div>

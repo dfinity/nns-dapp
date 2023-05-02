@@ -1,7 +1,7 @@
+import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import type { WithdrawalAccount } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterAmountTooLowError,
@@ -12,9 +12,8 @@ import {
 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import { assertNonNullish, fromNullable, isNullish } from "@dfinity/utils";
-import { getWithdrawalAccount, retrieveBtc } from "../api/ckbtc-minter.api";
+import { retrieveBtc } from "../api/ckbtc-minter.api";
 import { toastsError } from "../stores/toasts.store";
-import { toToastError } from "../utils/error.utils";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
@@ -48,23 +47,7 @@ export const convertCkBTCToBtc = async ({
 
   const identity = await getAuthenticatedIdentity();
 
-  let account: WithdrawalAccount | undefined;
-
-  try {
-    account = await getWithdrawalAccount({
-      identity,
-      canisterId: minterCanisterId,
-    });
-  } catch (err: unknown) {
-    toastsError(
-      toToastError({
-        err,
-        fallbackErrorLabelKey: "error__ckbtc.withdrawal_account",
-      })
-    );
-
-    return { success: false };
-  }
+  const account = await getWithdrawalAccount({ minterCanisterId });
 
   // Account cannot be null here. We add this guard to comply with type safety.
   assertNonNullish(account);

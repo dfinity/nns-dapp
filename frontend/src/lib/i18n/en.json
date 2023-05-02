@@ -875,12 +875,14 @@
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
-    "confirmations": "Confirmations"
+    "confirmations": "Confirmations",
+    "minter": "Minter"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
     "no_new_utxo": "There are no new UTXOs to process.",
     "temporary_unavailable": "The minter is temporary unavailable.",
+    "no_minter_defined": "No minter canister is defined.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
     "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",

@@ -2,7 +2,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 
-export type AccountType = "main" | "subAccount" | "hardwareWallet";
+export type AccountType = "main" | "subAccount" | "hardwareWallet" | "minter";
 
 export type AccountIdentifierText = string;
 
