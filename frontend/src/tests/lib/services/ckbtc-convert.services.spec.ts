@@ -96,8 +96,7 @@ describe("ckbtc-convert-services", () => {
         .spyOn(ledgerApi, "getCkBTCAccounts")
         .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
 
-      const transferSpy =
-        ledgerCanisterMock.transfer.mockResolvedValue(undefined);
+      const transferSpy = ledgerCanisterMock.transfer.mockResolvedValue(123n);
 
       beforeAll(() => tokensStore.setTokens(mockTokens));
 

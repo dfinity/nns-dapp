@@ -53,7 +53,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
-      return { success: true };
+      return { blockIndex: 123n };
     }),
   };
 });
@@ -156,6 +156,23 @@ describe("CkBTCWallet", () => {
       );
     });
 
+    it("should render a detailed balance in summary", async () => {
+      const { queryByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+      );
+
+      const icp: HTMLSpanElement | null = queryByTestId("token-value");
+
+      expect(icp?.innerHTML).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balance.toE8s(),
+          detailed: true,
+        })}`
+      );
+    });
+
     const modalProps = {
       ...props,
       testComponent: CkBTCWallet,
@@ -186,7 +203,10 @@ describe("CkBTCWallet", () => {
       // Check original sum
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: mockCkBTCMainAccount.balance.toE8s() })}`
+          `${formatToken({
+            value: mockCkBTCMainAccount.balance.toE8s(),
+            detailed: true,
+          })}`
         )
       );
 
@@ -244,7 +264,9 @@ describe("CkBTCWallet", () => {
 
       const spy = jest.spyOn(services, "syncCkBTCAccounts");
 
-      fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+      fireEvent.click(
+        getByTestId("reload-receive-account") as HTMLButtonElement
+      );
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
     });

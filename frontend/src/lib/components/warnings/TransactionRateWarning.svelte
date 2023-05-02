@@ -4,7 +4,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { WARNING_TRANSACTIONS_PER_SECONDS_HIGH_LOAD } from "$lib/constants/warnings.constants";
-  import TransactionRateWarningIcon from "$lib/components/metrics/TransactionRateWarningIcon.svelte";
+  import TransactionRateWarningIcon from "$lib/components/warnings/TransactionRateWarningIcon.svelte";
   import { layoutWarningToastId } from "$lib/stores/layout.store";
 
   const transactionRateWarning = () => {

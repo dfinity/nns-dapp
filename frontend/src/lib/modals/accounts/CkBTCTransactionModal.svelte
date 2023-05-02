@@ -24,7 +24,6 @@
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
-  import BitcoinTransactionInfo from "$lib/components/accounts/BitcoinTransactionInfo.svelte";
   import { nonNullish } from "@dfinity/utils";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 
@@ -69,7 +68,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await ckBTCTransferTokens({
+    const { blockIndex } = await ckBTCTransferTokens({
       source: sourceAccount,
       destinationAddress,
       amount,
@@ -80,7 +79,7 @@
 
     stopBusy("accounts");
 
-    if (success) {
+    if (nonNullish(blockIndex)) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsTransfer");
     }
@@ -179,7 +178,6 @@
       bind:kytFee={kytEstimatedFee}
     />
   </svelte:fragment>
-  <BitcoinTransactionInfo {networkBtc} slot="additional-info-review" />
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived

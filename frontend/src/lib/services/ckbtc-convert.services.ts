@@ -11,7 +11,7 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { assertNonNullish, fromNullable } from "@dfinity/utils";
+import { assertNonNullish, fromNullable, isNullish } from "@dfinity/utils";
 import { getWithdrawalAccount, retrieveBtc } from "../api/ckbtc-minter.api";
 import { toastsError } from "../stores/toasts.store";
 import { toToastError } from "../utils/error.utils";
@@ -78,7 +78,7 @@ export const convertCkBTCToBtc = async ({
   updateProgress(ConvertBtcStep.LOCKING_CKBTC);
 
   // We reload the transactions only at the end of the process for performance reason.
-  const { success: transferSuccess } = await ckBTCTransferTokens({
+  const { blockIndex } = await ckBTCTransferTokens({
     source,
     amount,
     destinationAddress: ledgerAddress,
@@ -87,11 +87,9 @@ export const convertCkBTCToBtc = async ({
     indexCanisterId,
   });
 
-  if (!transferSuccess) {
+  if (isNullish(blockIndex)) {
     return { success: false };
   }
-
-  // TODO(GIX-1324): how do we handle failure between these steps UX wise?
 
   updateProgress(ConvertBtcStep.SEND_BTC);
 
