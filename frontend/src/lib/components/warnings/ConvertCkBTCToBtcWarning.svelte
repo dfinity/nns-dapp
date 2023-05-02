@@ -18,7 +18,6 @@
     }
 
     toastsShow({
-      id: $layoutWarningToastId,
       labelKey: "ckbtc.warning_transaction_description",
       level: "error",
       position: "top",
