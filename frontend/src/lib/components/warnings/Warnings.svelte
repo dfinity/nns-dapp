@@ -6,6 +6,7 @@
   import ConvertCkBTCToBtcWarning from "$lib/components/warnings/ConvertCkBTCToBtcWarning.svelte";
 
   export let bringToastsForward = false;
+  export let ckBTCWarnings = false;
 </script>
 
 {#if ENABLE_METRICS}
@@ -17,7 +18,10 @@
 </div>
 
 <TransactionRateWarning />
-<ConvertCkBTCToBtcWarning />
+
+{#if ckBTCWarnings}
+  <ConvertCkBTCToBtcWarning />
+{/if}
 
 <style lang="scss">
   .forward {

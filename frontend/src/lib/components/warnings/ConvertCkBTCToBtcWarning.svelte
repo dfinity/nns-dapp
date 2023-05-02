@@ -27,7 +27,8 @@
       theme: "inverted",
     });
 
-    // For simplicity reason we display once the warning message and empty the list at the same time
+    // For simplicity reason we display once the warning message and empty the list at the same time.
+    // The toast is displayed until the user closes it anyway.
     bitcoinConvertBlockIndexes.reset();
   };
 
