@@ -27,6 +27,7 @@
       theme: "inverted",
     });
 
+    // For simplicity reason we display once the warning message and empty the list at the same time
     bitcoinConvertBlockIndexes.reset();
   };
 
