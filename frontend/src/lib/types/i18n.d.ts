@@ -925,6 +925,8 @@ interface I18nCkbtc {
   refresh_balance: string;
   confirmations: string;
   typically_twelve: string;
+  warning_transaction_failed: string;
+  warning_transaction_description: string;
 }
 
 interface I18nError__ckbtc {

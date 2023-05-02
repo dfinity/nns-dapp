@@ -5,6 +5,7 @@
   import { layoutWarningToastId } from "$lib/stores/layout.store";
   import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
 
   const showWarning = () => {
     // Display a warning only if signed in
@@ -18,11 +19,11 @@
 
     toastsShow({
       id: $layoutWarningToastId,
-      labelKey: "a_sub_title",
-      level: "custom",
+      labelKey: "ckbtc.warning_transaction_description",
+      level: "error",
       position: "top",
-      title: "TODO: conversion not finished",
-      truncate: true,
+      title: $i18n.ckbtc.warning_transaction_failed,
+      overflow: "clamp",
       theme: "inverted",
     });
 
