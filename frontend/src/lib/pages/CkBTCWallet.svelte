@@ -159,7 +159,7 @@
       {#if loaded}
         <Summary />
 
-        <WalletSummary />
+        <WalletSummary detailedBalance />
 
         {#if nonNullish(canisters)}
           <CkBTCWalletActions
