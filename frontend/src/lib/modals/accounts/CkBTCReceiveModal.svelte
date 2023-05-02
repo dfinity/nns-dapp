@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    busy,
     Modal,
     Segment,
     SegmentButton,
@@ -12,10 +11,7 @@
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import {
-    loadBtcAddress,
-    updateBalance as updateBalanceService,
-  } from "$lib/services/ckbtc-minter.services";
+  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -95,20 +91,6 @@
   let qrCodeRendered: boolean;
 
   const dispatcher = createEventDispatcher();
-
-  // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
-  const updateBalance = async () => {
-    const { success } = await updateBalanceService({
-      minterCanisterId: canisters.minterCanisterId,
-      reload,
-    });
-
-    if (!success) {
-      return;
-    }
-
-    dispatcher("nnsClose");
-  };
 
   const reloadAccountAndClose = async () => {
     startBusy({
@@ -211,20 +193,11 @@
 
   <div class="toolbar">
     {#if qrCodeRendered}
-      {#if bitcoin}
-        <button
-          class="primary"
-          on:click={updateBalance}
-          disabled={$busy}
-          data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
-        >
-      {:else}
-        <button
-          class="primary"
-          on:click={reloadAccountAndClose}
-          data-tid="reload-receive-account">{$i18n.core.finish}</button
-        >
-      {/if}
+      <button
+        class="primary"
+        on:click={reloadAccountAndClose}
+        data-tid="reload-receive-account">{$i18n.core.finish}</button
+      >
     {/if}
   </div>
 </Modal>
