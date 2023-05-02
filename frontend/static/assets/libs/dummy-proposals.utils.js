@@ -234,6 +234,12 @@ const addOrRemoveDataCentersPayload = new Uint8Array([
   44, 84, 111, 107, 121, 111, 7, 69, 113, 117, 105, 110, 105, 120, 0,
 ]);
 
+const exchageRatePayload = new Uint8Array([
+  68, 73, 68, 76, 1, 108, 3, 144, 203, 139, 170, 1, 113, 223, 245, 129, 160, 8, 120,
+  214, 213, 218, 198, 15, 120, 1, 0, 3, 105, 109, 102, 16, 39, 0, 0, 0, 0, 0, 0, 229,
+  10, 27, 96, 0, 0, 0, 0
+]);
+
 const makeMotionDummyProposalRequest = ({ title, url, summary, neuronId }) => ({
   neuronId,
   title,
@@ -481,6 +487,17 @@ export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId })
     });
     console.log("Execute NNS Function Proposal...");
     await canister.makeProposal(request7);
+    const request8 = makeExecuteNnsFunctionDummyProposalRequest({
+      neuronId,
+      title: "Exchange Rate Proposal Tests",
+      url: "",
+      summary:
+          "Test proposal for exchange rate.",
+      nnsFunction: 10,
+      payload: exchageRatePayload,
+    });
+    console.log("Execute NNS Function Proposal...");
+    await canister.makeProposal(request8);
     console.log("Finished making dummy proposals");
   } catch (e) {
     console.log(e);
