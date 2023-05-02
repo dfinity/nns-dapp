@@ -6,7 +6,11 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  type SnsProposalData,
+} from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("snsFilteredProposalsStore", () => {
@@ -130,5 +134,64 @@ describe("snsFilteredProposalsStore", () => {
     expect(
       get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
     ).toHaveLength(1);
+  });
+
+  it("should return accept votes proposals if Accepting Votes status is checked", () => {
+    const rootCanisterId = mockPrincipal;
+    const acceptVotesProposal = createSnsProposal({
+      proposalId: BigInt(2),
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+    });
+    const settledProposal = createSnsProposal({
+      proposalId: BigInt(3),
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
+    });
+    const readyToSettleProposal = createSnsProposal({
+      proposalId: BigInt(4),
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+      rewardStatus:
+        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+    });
+    const proposals: SnsProposalData[] = [
+      settledProposal,
+      acceptVotesProposal,
+      readyToSettleProposal,
+    ];
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+    const rewardStatus = [
+      {
+        id: "1",
+        name: "status-1",
+        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        checked: true,
+      },
+      {
+        id: "2",
+        name: "status-2",
+        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+        checked: false,
+      },
+      {
+        id: "3",
+        name: "status-3",
+        value: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
+        checked: false,
+      },
+    ];
+    snsFiltersStore.setRewardStatus({
+      rootCanisterId,
+      rewardStatus,
+    });
+
+    expect(
+      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
+    ).toMatchObject([acceptVotesProposal]);
   });
 });

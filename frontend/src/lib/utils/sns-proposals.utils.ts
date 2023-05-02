@@ -227,7 +227,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > 0) {
+  if (reward_event_round > BigInt(0)) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
