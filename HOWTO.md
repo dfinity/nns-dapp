@@ -97,7 +97,7 @@ The topic descriptions can be found in [governance.proto](https://github.com/dfi
 There are several steps to adding a new NNS function. They are described in
 detail below but at a high level they are:
 
-1. Verify that the new proposal type is an NNS function
+1. Verify that the intended change is for a new NNS function
 2. Understand the impact of a new NNS function
 3. Install a new governance canister
 4. Create a proposal of the new type
@@ -105,7 +105,7 @@ detail below but at a high level they are:
 6. Make the code changes
 7. Verify that it does render correctly
 
-### Verify that the new proposal type an NNS function
+### Verify that the intended change is for a new NNS function
 
 All the NNS functions are defined
 [here](https://github.com/dfinity/ic/blame/master/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#:~:text=pub%20enum%20NnsFunction%20%7B)
@@ -212,8 +212,8 @@ If the file/directory doesn't exist at all, create it with that content.
 
 Then deploy `nns-dapp`:
 
-1. `DFX_NETWORK=local ./build.sh`
-2. `dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
+1. Build the wasm. E.g.: `DFX_NETWORK=local ./build.sh`
+2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
 
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.
@@ -228,8 +228,8 @@ You'll need to make a 1-line change in the `ic-js`
 the [NnsFunction
 enum](https://github.com/dfinity/ic-js/blame/main/packages/nns/src/enums/governance.enums.ts#:~:text=export%20enum%20NnsFunction%20%7B)
 in `packages/nns/src/enums/governance.enums.ts`. Use the name and number that
-you noted down above in the section "Verify that the new proposal type an NNS
-function".
+you noted down above in the section "Verify that the intended change is for a
+new NNS function".
 
 #### Changes in nns-dapp
 
@@ -314,8 +314,8 @@ If no transformation is required:
 
 1. Add a new entry to [match
 nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
-  Use the number you noted down above in the section "Verify that the new
-  proposal type an NNS function". And use the (non-fully qualified) name of
+  Use the number you noted down above in the section "Verify that the intended
+  change is for a new NNS function". And use the (non-fully qualified) name of
   the new proposal type. For example:
 ```
 38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
@@ -336,9 +336,10 @@ If a transformation is required:
 
 1. Add a new entry to [match
 nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
-  Use the number you noted down above in the section "Verify that the new
-  proposal type an NNS function". And use the (non-fully qualified) name of
-  the new proposal type, and then repeat it with the `HumanReadable` suffix. For example:
+  Use the number you noted down above in the section "Verify that the intended
+  change is for a new NNS function". And use the (non-fully qualified) name of
+  the new proposal type, and then repeat it with the `HumanReadable` suffix.
+  For example:
 ```
 39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
 ```
