@@ -924,7 +924,6 @@ interface I18nCkbtc {
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;
-  typically_twelve: string;
   warning_transaction_failed: string;
   warning_transaction_description: string;
 }

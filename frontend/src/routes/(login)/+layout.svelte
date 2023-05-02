@@ -9,7 +9,7 @@
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
   import { navigating } from "$app/stores";
   import { isNullish } from "@dfinity/utils";
-  import Warnings from "$lib/components/metrics/Warnings.svelte";
+  import Warnings from "$lib/components/warnings/Warnings.svelte";
 
   onMount(async () => await initAppAuth());
 </script>

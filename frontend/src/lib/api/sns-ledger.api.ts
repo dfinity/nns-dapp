@@ -1,5 +1,5 @@
 import {
-  getIcrcMainAccount,
+  getIcrcAccount,
   getIcrcToken,
   icrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
@@ -30,8 +30,9 @@ export const getSnsAccounts = async ({
     certified,
   });
 
-  const mainAccount = await getIcrcMainAccount({
-    identity,
+  const mainAccount = await getIcrcAccount({
+    owner: identity.getPrincipal(),
+    type: "main",
     certified,
     getBalance,
     getMetadata,
