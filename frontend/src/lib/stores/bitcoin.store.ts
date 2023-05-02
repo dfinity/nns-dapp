@@ -1,4 +1,4 @@
-import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type { BtcAddressText } from "$lib/types/bitcoin";
@@ -55,7 +55,7 @@ export interface BitcoinConvertBlockIndexesStore
 
 const initBitcoinConvertBlockIndexes = (): BitcoinConvertBlockIndexesStore => {
   const { subscribe, update, set } = writableStored<IcrcBlockIndex[]>({
-    key: storeLocalStorageKey.BitcoinConvertBlockIndexes,
+    key: StoreLocalStorageKey.BitcoinConvertBlockIndexes,
     defaultValue: [],
   });
 
