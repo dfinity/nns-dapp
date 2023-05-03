@@ -15,6 +15,10 @@ export class ProjectMetadataSectionPo extends BasePageObject {
     return SkeletonDetailsPo.under(this.root);
   }
 
+  getProjectName(): Promise<string> {
+    return this.getText("project-name");
+  }
+
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
     await this.getSkeletonDetailsPo().waitForAbsent();

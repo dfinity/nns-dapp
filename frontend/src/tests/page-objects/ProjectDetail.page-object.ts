@@ -23,6 +23,10 @@ export class ProjectDetailPo extends BasePageObject {
     return ProjectStatusSectionPo.under(this.root);
   }
 
+  getProjectName(): Promise<string> {
+    return this.getProjectMetadataSectionPo().getProjectName();
+  }
+
   getTokenSymbol(): Promise<string> {
     return this.getProjectInfoSectionPo().getTokenSymbol();
   }

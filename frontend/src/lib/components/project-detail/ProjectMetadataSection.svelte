@@ -33,7 +33,7 @@
     <div data-tid="sns-project-detail-metadata">
       <div class="title">
         <Logo src={metadata.logo} alt={$i18n.sns_launchpad.project_logo} />
-        <h1 class="content-cell-title">{metadata.name}</h1>
+        <h1 class="content-cell-title" data-tid="project-name">{metadata.name}</h1>
       </div>
       <a href={metadata.url} target="_blank" rel="noopener noreferrer"
         >{metadata.url}</a
