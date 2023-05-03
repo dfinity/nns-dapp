@@ -5,7 +5,7 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { loadCkBTCAccountsMinter } from "$lib/services/ckbtc-accounts-minter.services";
   import { onMount } from "svelte";
-  import { Account } from "$lib/types/account";
+  import type { Account } from "$lib/types/account";
   import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-accounts.store";
 
   const reloadAccount = async () => {
