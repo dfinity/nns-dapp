@@ -32,6 +32,7 @@ import {
   NeuronState,
   Topic,
   Vote,
+  ineligibleNeurons,
   votedNeurons,
   type BallotInfo,
   type Followees,
@@ -828,3 +829,25 @@ export const validTopUpAmount = ({
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
   BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
+
+export interface IneligibleNeuronData {
+  neuronIdString: string;
+  reason: "since" | "short";
+}
+export const filterIneligibleNnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: NeuronInfo[];
+  proposal: ProposalInfo;
+}): IneligibleNeuronData[] =>
+  ineligibleNeurons({
+    neurons,
+    proposal,
+  }).map(({ createdTimestampSeconds, neuronId }) => ({
+    neuronIdString: neuronId.toString(),
+    reason:
+      createdTimestampSeconds > proposal.proposalTimestampSeconds
+        ? "since"
+        : "short",
+  }));
