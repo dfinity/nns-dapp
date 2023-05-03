@@ -35,7 +35,7 @@ export const loadCkBTCAccounts = async ({
   return [account];
 };
 
-export const loadMinterCkBTCAccount = async ({
+export const loadMinterCkBTCAccounts = async ({
   universeId,
   certified,
   identity,
@@ -43,7 +43,7 @@ export const loadMinterCkBTCAccount = async ({
   universeId: UniverseCanisterId;
   certified: boolean;
   identity: Identity;
-}): Promise<Account | undefined> => {
+}): Promise<Account[]> => {
   const canisters: CkBTCAdditionalCanisters | undefined =
     CKBTC_ADDITIONAL_CANISTERS[universeId.toText()];
 
@@ -61,10 +61,11 @@ export const loadMinterCkBTCAccount = async ({
   // TODO: load only if needed
   const withdrawalAccount = !certified
     ? undefined
-    : await getWithdrawalAccount({ minterCanisterId });
+    : // TODO: Support subaccounts
+      await getWithdrawalAccount({ minterCanisterId });
 
   if (isNullish(withdrawalAccount)) {
-    return undefined;
+    return [];
   }
 
   const account = await getCkBTCAccount({
@@ -76,8 +77,10 @@ export const loadMinterCkBTCAccount = async ({
     type: "minter",
   });
 
-  return {
-    ...account,
-    name,
-  };
+  return [
+    {
+      ...account,
+      name,
+    },
+  ];
 };
