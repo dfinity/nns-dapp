@@ -1,23 +1,17 @@
 <script lang="ts">
-  import { ineligibleNeurons as filterIneligibleNeurons } from "@dfinity/nns";
-  import type { ProposalInfo, NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import ProposalContentCell from "./ProposalContentCell.svelte";
+  import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 
-  export let proposalInfo: ProposalInfo;
-  export let neurons: NeuronInfo[];
+  export let ineligibleNeurons: IneligibleNeuronData[] = [];
 
-  let ineligibleNeurons: NeuronInfo[];
   let visible = false;
-
-  $: ineligibleNeurons = filterIneligibleNeurons({
-    neurons,
-    proposal: proposalInfo,
-  });
   $: visible = ineligibleNeurons.length > 0;
 
-  const reason = ({ createdTimestampSeconds }: NeuronInfo): string =>
-    createdTimestampSeconds > proposalInfo.proposalTimestampSeconds
+  const reasonText = (reason: "since" | "short"): string =>
+    reason === "since"
       ? $i18n.proposal_detail__ineligible.reason_since
       : $i18n.proposal_detail__ineligible.reason_short;
 </script>
@@ -28,8 +22,11 @@
     <p class="description">{$i18n.proposal_detail__ineligible.text}</p>
     <ul>
       {#each ineligibleNeurons as neuron}
-        <li class="value">
-          {neuron.neuronId}<small>{reason(neuron)}</small>
+        <li class="value" title={neuron.neuronIdString}>
+          {shortenWithMiddleEllipsis(
+            neuron.neuronIdString,
+            SNS_NEURON_ID_DISPLAY_LENGTH
+          )}<small>{reasonText(neuron.reason)}</small>
         </li>
       {/each}
     </ul>

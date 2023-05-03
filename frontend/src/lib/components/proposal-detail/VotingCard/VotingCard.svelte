@@ -35,6 +35,8 @@
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import {
     type CompactNeuronInfo,
+    filterIneligibleNnsNeurons,
+    type IneligibleNeuronData,
     votedNeuronDetails,
   } from "$lib/utils/neuron.utils";
 
@@ -118,6 +120,12 @@
       proposal: proposalInfo,
     });
   }
+
+  let ineligibleNeurons: IneligibleNeuronData[];
+  $: ineligibleNeurons = filterIneligibleNnsNeurons({
+    neurons: $definedNeuronsStore,
+    proposal: proposalInfo,
+  });
 </script>
 
 <BottomSheet>
@@ -135,10 +143,7 @@
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
             <MyVotes {neuronsVotedForProposal} />
-            <IneligibleNeuronsCard
-              {proposalInfo}
-              neurons={$definedNeuronsStore}
-            />
+            <IneligibleNeuronsCard {ineligibleNeurons} />
           </VotingNeuronSelect>
         {:else}
           <div class="loader">

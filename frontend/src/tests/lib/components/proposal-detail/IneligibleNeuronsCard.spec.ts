@@ -2,28 +2,15 @@
  * @jest-environment jsdom
  */
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-
-const proposalTimestampSeconds = BigInt(100);
-const proposalInfo = {
-  ...mockProposalInfo,
-  proposalTimestampSeconds,
-} as ProposalInfo;
-const neuron = {
-  ...mockNeuron,
-  createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
-} as NeuronInfo;
 
 describe("IneligibleNeuronsCard", () => {
   it("should be hidden if no neurons", () => {
     const { queryByTestId } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo,
-        neurons: [],
+        ineligibleNeurons: [],
       },
     });
     expect(queryByTestId("neuron-card")).not.toBeInTheDocument();
@@ -32,13 +19,12 @@ describe("IneligibleNeuronsCard", () => {
   it("should display texts", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo,
-        neurons: [
+        ineligibleNeurons: [
           {
-            neuron,
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+            neuronIdString: "123",
+            reason: "short",
           },
-        ],
+        ] as IneligibleNeuronData[],
       },
     });
     expect(
@@ -50,14 +36,12 @@ describe("IneligibleNeuronsCard", () => {
   it("should display ineligible neurons (< 6 months) ", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: { ...proposalInfo, ballots: [] },
-        neurons: [
+        ineligibleNeurons: [
           {
-            ...neuron,
-            createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
-            neuronId: BigInt(123),
+            neuronIdString: "123",
+            reason: "short",
           },
-        ] as NeuronInfo[],
+        ] as IneligibleNeuronData[],
       },
     });
     expect(getByText("123", { exact: false })).toBeInTheDocument();
@@ -68,19 +52,12 @@ describe("IneligibleNeuronsCard", () => {
 
   it("should display ineligible neurons (created after proposal) ", () => {
     const { getByText, container } = render(IneligibleNeuronsCard, {
-      props: {
-        proposalInfo: {
-          ...proposalInfo,
-          ballots: [],
+      ineligibleNeurons: [
+        {
+          neuronIdString: "111",
+          reason: "since",
         },
-        neurons: [
-          {
-            ...neuron,
-            neuronId: BigInt(111),
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
-          },
-        ] as NeuronInfo[],
-      },
+      ] as IneligibleNeuronData[],
     });
     expect(getByText("111", { exact: false })).toBeInTheDocument();
     expect(
@@ -91,23 +68,16 @@ describe("IneligibleNeuronsCard", () => {
   it("should display multiple ineligible neurons", () => {
     const { container, getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: {
-          ...proposalInfo,
-          proposalTimestampSeconds,
-          ballots: [],
-        },
-        neurons: [
+        ineligibleNeurons: [
           {
-            ...neuron,
-            neuronId: BigInt(111),
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+            neuronIdString: "111",
+            reason: "since",
           },
           {
-            ...neuron,
-            neuronId: BigInt(222),
-            createdTimestampSeconds: proposalTimestampSeconds,
+            neuronIdString: "222",
+            reason: "short",
           },
-        ] as NeuronInfo[],
+        ] as IneligibleNeuronData[],
       },
     });
     expect(container.querySelectorAll("li").length).toBe(2);
