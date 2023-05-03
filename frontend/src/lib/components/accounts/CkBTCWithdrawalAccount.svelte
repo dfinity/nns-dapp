@@ -1,7 +1,7 @@
 <script lang="ts">
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { loadCkBTCAccountsMinter } from "$lib/services/ckbtc-accounts-minter.services";
+  import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
   import { onMount } from "svelte";
   import {
     type CkBTCBTCWithdrawalAccount,
@@ -15,7 +15,7 @@
       return;
     }
 
-    await loadCkBTCAccountsMinter({
+    await loadCkBTCWithdrawalAccount({
       universeId: $selectedCkBTCUniverseIdStore,
     });
   };

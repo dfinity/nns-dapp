@@ -1,5 +1,5 @@
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { loadMinterCkBTCAccount } from "$lib/services/ckbtc-accounts-loader.services";
+import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import {
   ckBTCWithdrawalAccountsStore,
@@ -7,17 +7,15 @@ import {
 } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 
-export const loadCkBTCAccountsMinter = async ({
-  handleError,
+export const loadCkBTCWithdrawalAccount = async ({
   universeId,
 }: {
-  handleError?: () => void;
   universeId: UniverseCanisterId;
 }): Promise<void> => {
   return queryAndUpdate<CkBTCBTCWithdrawalAccount, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      loadMinterCkBTCAccount({ identity, certified, universeId }),
+      getCkBTCWithdrawalAccount({ identity, certified, universeId }),
     onLoad: ({ response: account, certified }) =>
       ckBTCWithdrawalAccountsStore.set({
         universeId,
@@ -37,9 +35,7 @@ export const loadCkBTCAccountsMinter = async ({
       ckBTCWithdrawalAccountsStore.reset();
 
       // No toast errors here. Particular errors are displayed in functions that are called.
-
-      handleError?.();
     },
-    logMessage: "Syncing ckBTC Minter Accounts",
+    logMessage: "Syncing ckBTC Withdrawal Account",
   });
 };

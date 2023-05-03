@@ -45,7 +45,7 @@ export const getCkBTCAccounts = async ({
   return [account];
 };
 
-export const loadMinterCkBTCAccount = async ({
+export const getCkBTCWithdrawalAccount = async ({
   universeId,
   certified,
   identity,
