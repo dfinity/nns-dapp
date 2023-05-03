@@ -3,7 +3,7 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 
-export const loadCkBTCAccounts = async ({
+export const getCkBTCAccounts = async ({
   identity,
   certified,
   universeId,

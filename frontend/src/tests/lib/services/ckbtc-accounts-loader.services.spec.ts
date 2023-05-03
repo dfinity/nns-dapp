@@ -12,13 +12,13 @@ import { waitFor } from "@testing-library/svelte";
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => jest.clearAllMocks());
 
-  describe("loadCkBTCAccounts", () => {
+  describe("getCkBTCAccounts", () => {
     it("should call get CkBTC account", async () => {
       const spyEstimateFee = jest
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCMainAccount);
 
-      await services.loadCkBTCAccounts({
+      await services.getCkBTCAccounts({
         identity: mockIdentity,
         certified: true,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
