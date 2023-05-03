@@ -1,5 +1,6 @@
 <script lang="ts">
   import { setContext, onDestroy } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ProjectInfoSection from "$lib/components/project-detail/ProjectInfoSection.svelte";
   import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
   import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
@@ -268,26 +269,28 @@
   });
 </script>
 
-<main>
-  <div class="stretch-mobile">
-    <div class="content-grid">
-      <div class="content-a">
-        <ProjectMetadataSection />
-      </div>
+<TestIdWrapper testId="project-detail-component">
+  <main>
+    <div class="stretch-mobile">
+      <div class="content-grid">
+        <div class="content-a">
+          <ProjectMetadataSection />
+        </div>
 
-      <div class="content-c">
-        <ProjectInfoSection />
-      </div>
-      <div class="content-d">
-        <ProjectStatusSection />
+        <div class="content-c">
+          <ProjectInfoSection />
+        </div>
+        <div class="content-d">
+          <ProjectStatusSection />
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
-{#if nonNullish(progressStep)}
-  <SaleInProgressModal {progressStep} />
-{/if}
+  {#if nonNullish(progressStep)}
+    <SaleInProgressModal {progressStep} />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

@@ -29,6 +29,7 @@
   import {
     getSnsNeuronIdAsHexString,
     votableSnsNeurons,
+    votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -36,6 +37,8 @@
   import { Principal } from "@dfinity/principal";
   import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
+  import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
+  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -126,6 +129,15 @@
       await reloadProposal();
     }
   };
+
+  let neuronsVotedForProposal: CompactNeuronInfo[];
+  $: if (nonNullish(snsParameters) && votableNeurons.length > 0) {
+    neuronsVotedForProposal = votedSnsNeuronDetails({
+      neurons: $sortedSnsUserNeuronsStore,
+      proposal,
+      snsParameters,
+    });
+  }
 </script>
 
 <BottomSheet>
@@ -142,7 +154,7 @@
 
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <!--            <MyVotes {proposalInfo} />-->
+            <MyVotes {neuronsVotedForProposal} />
             <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
           </VotingNeuronSelect>
         {:else}

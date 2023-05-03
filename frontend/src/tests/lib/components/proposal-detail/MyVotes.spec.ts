@@ -3,69 +3,47 @@
  */
 
 import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
-import { neuronsStore } from "$lib/stores/neurons.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("MyVotes", () => {
-  const noVoted = {
-    ...mockNeuron,
-    neuronId: BigInt(100),
-    recentBallots: [
-      {
-        proposalId: mockProposalInfo.id,
-        vote: Vote.No,
-      },
-    ],
+  const noVoted: CompactNeuronInfo = {
+    idString: "100",
+    votingPower: 100n,
+    vote: Vote.No,
   };
-  const yesVoted = {
-    ...mockNeuron,
-    neuronId: BigInt(10),
-    recentBallots: [
-      {
-        proposalId: mockProposalInfo.id,
-        vote: Vote.Yes,
-      },
-    ],
+  const yesVoted: CompactNeuronInfo = {
+    idString: "200",
+    votingPower: 200n,
+    vote: Vote.Yes,
   };
-  const votedNeurons = [mockNeuron, noVoted, yesVoted];
-  const proposal = {
-    ...mockProposalInfo,
-    ballots: votedNeurons.map(({ neuronId, votingPower }) => ({
-      neuronId,
-      votingPower,
-      vote: Vote.Unspecified,
-    })),
-  };
+  const neuronsVotedForProposal = [noVoted, yesVoted];
+
   it("should have title when proposal has been voted by some owned neuron", () => {
-    neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
     const { getByText } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal,
       },
     });
     expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
   });
 
   it("should not have title when proposal has not been voted by some owned neuron", () => {
-    neuronsStore.setNeurons({ neurons: [], certified: true });
     const { getByText } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal: [],
       },
     });
     expect(() => getByText(en.proposal_detail.my_votes)).toThrow();
   });
 
   it("should render an item per voted neuron", () => {
-    neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
     const { container } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal,
       },
     });
     const neuronElements = container.querySelectorAll(
@@ -75,10 +53,9 @@ describe("MyVotes", () => {
   });
 
   it("should render the proper icon item for YES and NO", () => {
-    neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
     const { container } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal,
       },
     });
     const thumbUpElements = container.querySelectorAll('[data-tid="thumb-up"]');
@@ -91,17 +68,16 @@ describe("MyVotes", () => {
   });
 
   it("should have title attribute per voted neuron for YES or NO", () => {
-    neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
     const { getByTitle } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal,
       },
     });
 
     expect(
       getByTitle(
         replacePlaceholders(en.proposal_detail__vote.vote_status, {
-          $neuronId: noVoted.neuronId.toString(),
+          $neuronId: noVoted.idString,
           $vote: en.core.no,
         })
       )
@@ -110,7 +86,7 @@ describe("MyVotes", () => {
     expect(
       getByTitle(
         replacePlaceholders(en.proposal_detail__vote.vote_status, {
-          $neuronId: yesVoted.neuronId.toString(),
+          $neuronId: yesVoted.idString,
           $vote: en.core.yes,
         })
       )
@@ -118,10 +94,9 @@ describe("MyVotes", () => {
   });
 
   it("should have aria-label attribute", () => {
-    neuronsStore.setNeurons({ neurons: votedNeurons, certified: true });
     const { container } = render(MyVotes, {
       props: {
-        proposalInfo: proposal,
+        neuronsVotedForProposal,
       },
     });
     const element = container.querySelector(`[data-tid="neuron-data"]`);

@@ -4,7 +4,7 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
-import { votingPower } from "$lib/utils/neuron.utils";
+import { votingPower, type CompactNeuronInfo } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
@@ -728,3 +728,60 @@ export const votableSnsNeurons = ({
       )
   );
 };
+
+/** Returns the neurons that have voted on the proposal (based on proposal ballots) */
+export const votedSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  const votedNeuronIds = new Set(
+    proposal.ballots
+      // filter out the unspecified votes or the ballots that are not presented in ballots
+      .filter(([, { vote }]) => vote === Vote.Yes || vote === Vote.No)
+      .map(([neuronId]) => neuronId)
+  );
+  return neurons.filter((neuron) =>
+    votedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
+  );
+};
+
+export const votedSnsNeuronDetails = ({
+  neurons,
+  proposal,
+  snsParameters,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+  snsParameters: SnsNervousSystemParameters;
+}): CompactNeuronInfo[] =>
+  votedSnsNeurons({
+    neurons,
+    proposal,
+  })
+    .map((neuron) => ({
+      idString: getSnsNeuronIdAsHexString(neuron),
+      votingPower: BigInt(
+        snsNeuronVotingPower({
+          neuron,
+          snsParameters,
+        })
+      ),
+      vote: getSnsNeuronVote({ neuron, proposal }),
+    }))
+    // Exclude the cases where the vote was not found.
+    .filter(({ vote }) => vote !== undefined) as CompactNeuronInfo[];
+
+/** Returns neuron vote using proposal ballots. */
+export const getSnsNeuronVote = ({
+  neuron,
+  proposal,
+}: {
+  neuron: SnsNeuron;
+  proposal: SnsProposalData;
+}): Vote | undefined =>
+  proposal.ballots.find(
+    ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
+  )?.[1].vote;

@@ -1687,7 +1687,9 @@ describe("neuron-utils", () => {
         proposal,
       });
       expect(expected).toHaveLength(2);
-      const compactNeuron1 = expected.find(({ id }) => id === neuronId1);
+      const compactNeuron1 = expected.find(
+        ({ idString }) => idString === neuronId1.toString()
+      );
       expect(compactNeuron1).toBeDefined();
       compactNeuron1 &&
         expect(compactNeuron1.votingPower).toBe(ballot1.votingPower);
