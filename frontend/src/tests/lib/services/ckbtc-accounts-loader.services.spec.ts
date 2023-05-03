@@ -178,10 +178,8 @@ describe("ckbtc-accounts-loader-services", () => {
       });
 
       describe("withdrawal error", () => {
-        let spyGetWithdrawalAccount;
-
         beforeEach(() => {
-          spyGetWithdrawalAccount = jest
+          jest
             .spyOn(minterServices, "getWithdrawalAccount")
             .mockRejectedValue(new Error());
         });
