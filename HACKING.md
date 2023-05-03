@@ -84,7 +84,7 @@ The `dfx` version installed locally should match the one defined in [dfx.json](h
 
 ## ckBTC deployment
 
-> Last update: 2023, Jan. 30
+> Last update: 2023, May 1
 
 ckBTC deployment and development in NNS-dapp are in progress.
 
@@ -105,41 +105,56 @@ Add following in `defaults` of [dfx.json](./dfx.json).
 }
 ```
 
-### Ledger and minter
+### Ledger, Index and Minter
 
-Deploying ckBTC ledger and minter are as well not yet automated.
+Deploying ckBTC ledger, index and minter are as well not yet automated.
 
-To deploy these locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc).
+Their wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
 
-However, this scripts requires downloading these canisters WASM and did files locally first and configuring these manually in [dfx.json](./dfx.json).
+```
+./scripts/ckbtc/download-ckbtc
+```
+
+To deploy the canisters locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc) as well.
+
+However, it requires first to manually edit [dfx.json](./dfx.json).
 
 e.g. in `canisters`:
 
 ```
-"ckbtc_test_minter": {
+"ckbtc_minter": {
   "type": "custom",
   "candid": "target/ic/ckbtc_minter.did",
   "wasm": "target/ic/ckbtc_minter.wasm"
 },
-"ckbtc_test_ledger": {
+"ckbtc_ledger": {
   "type": "custom",
   "candid": "target/ic/ckbtc_ledger.did",
   "wasm": "target/ic/ckbtc_ledger.wasm"
 },
-"ckbtc_test_index": {
+"ckbtc_index": {
   "type": "custom",
   "candid": "target/ic/ckbtc_index.did",
   "wasm": "target/ic/ckbtc_index.wasm"
-}
+},
+"ckbtc_kyt": {
+  "type": "custom",
+  "candid": "target/ic/ckbtc_kyt.did",
+  "wasm": "target/ic/ckbtc_kyt.wasm"
+},
 ```
 
-Once canisters deployed, their respective IDs shall be collected and updated in [canister-ids.constants.ts](./frontend/src/lib/constants/canister-ids.constants.ts).
+Once set, the script can be executed.
+
+> Note: when the script is run, the network should be provided
+
+```bash
+DFX_NETWORK=local ./scripts/ckbtc/deploy-ckbtc
+```
+
+After deployment, their respective IDs shall be collected and updated in [ckbtc-canister-ids.constants.ts](./frontend/src/lib/constants/ckbtc-canister-ids.constants.ts).
 
 Likewise, as the configuration is not yet automated, there are no `.env` variable that are yet generated.
-
-### Index
-
-The index canister does not exist yet on mainnet but, will be proposed soon. Same pattern will apply.
 
 ### Feature flag
 

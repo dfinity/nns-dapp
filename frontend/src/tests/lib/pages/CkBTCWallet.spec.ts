@@ -53,7 +53,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
-      return { success: true };
+      return { blockIndex: 123n };
     }),
   };
 });

@@ -5,11 +5,14 @@
 
 dfx canister create ckbtc_ledger --network "$DFX_NETWORK"
 dfx canister create ckbtc_minter --network "$DFX_NETWORK"
+dfx canister create ckbtc_kyt --network "$DFX_NETWORK"
 
 MINTERID="$(dfx canister id ckbtc_minter --network "$DFX_NETWORK")"
 echo "$MINTERID"
 LEDGERID="$(dfx canister id ckbtc_ledger --network "$DFX_NETWORK")"
 echo "$LEDGERID"
+KYTID="$(dfx canister id ckbtc_kyt --network "$DFX_NETWORK")"
+echo "$KYTID"
 
 # echo "Step 2: deploying minter canister..."
 dfx deploy ckbtc_minter --network "$DFX_NETWORK" --argument "(variant {
@@ -22,7 +25,7 @@ dfx deploy ckbtc_minter --network "$DFX_NETWORK" --argument "(variant {
        min_confirmations = opt 12;
        mode = variant { GeneralAvailability };
        kyt_fee = opt 13_333;
-       kyt_principal = null;
+       kyt_principal = opt principal \"$KYTID\";
    }
 })" --mode=reinstall
 
@@ -45,6 +48,14 @@ dfx deploy ckbtc_ledger --network "$DFX_NETWORK" --argument "(variant {
  }
 })" --mode=reinstall
 
+dfx deploy ckbtc_kyt --network "$DFX_NETWORK" --argument "(variant {
+  InitArg = record {
+    minter_id = principal \"$MINTERID\";
+    maintainers = vec {};
+    mode = variant { AcceptAll };
+   }
+})" --mode=reinstall
+
 echo "Step 4: deploying index canister..."
 dfx deploy ckbtc_index --network "$DFX_NETWORK" --argument "(record { ledger_id = principal \"$LEDGERID\" })" --mode=reinstall
 
@@ -65,4 +76,4 @@ dfx deploy ckbtc_index --network "$DFX_NETWORK" --argument "(record { ledger_id 
 
 echo "Step 5: transfer ckBTC to principal..."
 # record { owner= principal “”;}
-dfx canister call ckbtc_ledger --network "$DFX_NETWORK" icrc1_transfer "(record {from=null; to=record { owner= principal \"73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe\";}; amount=1000000; fee=null; memo=null; created_at_time=null;})"
+dfx canister call ckbtc_ledger --network "$DFX_NETWORK" icrc1_transfer "(record {from=null; to=record { owner= principal \"73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe\";}; amount=100000000; fee=null; memo=null; created_at_time=null;})"

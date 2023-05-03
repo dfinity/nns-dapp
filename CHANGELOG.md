@@ -1,5 +1,14 @@
 # Changelog
 
+## Proposal 120468
+* UI fixes.
+* Testing improvements.
+* Minor configuration clean up.
+* Fix bug when filtering proposals.
+* Upgrade dependencies to IC to prepare for new NNS Proposal Action.
+* Improve modal width.
+* Some copy changes.
+
 ## Proposal 119296
 * Display info text for Last Distribution.
 * Add new field to NNS payload to show arguments as hex string.

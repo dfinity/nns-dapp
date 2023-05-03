@@ -2,10 +2,16 @@
  * @jest-environment jsdom
  */
 
+import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
+import { authStore } from "$lib/stores/auth.store";
+import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
+import { layoutWarningToastId } from "$lib/stores/layout.store";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -106,6 +112,86 @@ describe("Warnings", () => {
       await tick();
 
       expect(container.querySelectorAll(".toast").length).toEqual(1);
+    });
+  });
+
+  describe("ConvertCkBTCToBtcWarning", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+
+      layoutWarningToastId.set(undefined);
+      metricsStore.set(undefined);
+      toastsStore.reset();
+
+      bitcoinConvertBlockIndexes.reset();
+    });
+
+    describe("signed in", () => {
+      beforeEach(() =>
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe)
+      );
+
+      it("should render ckBTC to BTC warning", async () => {
+        bitcoinConvertBlockIndexes.addBlockIndex(1n);
+
+        const { container } = render(Warnings, {
+          props: {
+            ckBTCWarnings: true,
+          },
+        });
+
+        await waitFor(() => {
+          const toast = container.querySelector(".toast");
+
+          expect(toast?.textContent ?? "").toContain(
+            en.ckbtc.warning_transaction_failed
+          );
+          expect(toast?.textContent ?? "").toContain(
+            en.ckbtc.warning_transaction_description
+          );
+        });
+      });
+
+      it("should render no ckBTC warning if no warning", async () => {
+        const { container } = render(Warnings, {
+          props: {
+            ckBTCWarnings: true,
+          },
+        });
+
+        await waitFor(() => {
+          expect(container.querySelector(".toast")).toBeNull();
+        });
+      });
+
+      it("should render no ckBTC warning if disabled", async () => {
+        bitcoinConvertBlockIndexes.addBlockIndex(1n);
+
+        const { container } = render(Warnings);
+
+        await waitFor(() => {
+          expect(container.querySelector(".toast")).toBeNull();
+        });
+      });
+    });
+
+    describe("not signed in", () => {
+      it("should render no ckBTC warning", async () => {
+        bitcoinConvertBlockIndexes.addBlockIndex(1n);
+
+        const { container } = render(Warnings, {
+          props: {
+            ckBTCWarnings: true,
+          },
+        });
+
+        await waitFor(() => {
+          expect(container.querySelector(".toast")).toBeNull();
+        });
+      });
     });
   });
 });

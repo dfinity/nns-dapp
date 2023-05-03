@@ -924,6 +924,8 @@ interface I18nCkbtc {
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;
+  warning_transaction_failed: string;
+  warning_transaction_description: string;
 }
 
 interface I18nError__ckbtc {

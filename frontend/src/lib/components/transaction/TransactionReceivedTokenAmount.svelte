@@ -28,6 +28,6 @@
   }
 
   .estimation {
-    padding: 0 0 var(--padding-0_5x);
+    padding: 0 0 var(--padding);
   }
 </style>

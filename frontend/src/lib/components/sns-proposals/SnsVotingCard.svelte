@@ -9,7 +9,7 @@
     SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
-  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
@@ -24,11 +24,16 @@
     snsProposalIdString,
     snsProposalOpen,
   } from "$lib/utils/sns-proposals.utils";
-  import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    votableSnsNeurons,
+  } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
+  import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
+  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposal: SnsProposalData;
@@ -65,29 +70,52 @@
       voteRegistration !== undefined ||
       (votableNeurons.length > 0 && snsProposalOpen(proposal)));
 
-  // TODO(sns-voting): implement initial selection (see initialSelectionDone)
-  // DEMO (select all by default)
-  $: if (votableNeurons.length > 0 && nonNullish(snsParameters)) {
-    votingNeuronSelectStore.set(
-      votableNeurons.map((neuron: SnsNeuron) =>
-        snsNeuronToVotingNeuron({
-          neuron,
-          snsParameters: snsParameters as SnsNervousSystemParameters,
-        })
-      )
-    );
-  }
-
   let neuronsReady = false;
   $: neuronsReady =
     nonNullish(universeIdText) &&
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
 
+  let signedIn = false;
+  $: signedIn = isSignedIn($authStore.identity);
+
+  const userSelectedNeurons = (): SnsNeuron[] =>
+    $votingNeuronSelectStore.selectedIds
+      .map((id) =>
+        votableNeurons.find(
+          (neuron) => getSnsNeuronIdAsHexString(neuron) === id
+        )
+      )
+      .filter(nonNullish);
+
+  const votingNeurons = () =>
+    nonNullish(snsParameters)
+      ? votableNeurons.map((neuron) =>
+          snsNeuronToVotingNeuron({
+            neuron,
+            snsParameters: snsParameters as SnsNervousSystemParameters,
+          })
+        )
+      : [];
+  /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
+  let initialSelectionDone = false;
+  const updateVotingNeuronSelectedStore = () => {
+    if (!initialSelectionDone) {
+      initialSelectionDone = true;
+      // initially preselect all neurons
+      votingNeuronSelectStore.set(votingNeurons());
+    } else {
+      // update checkbox selection after neurons update (e.g. queryAndUpdate second callback)
+      votingNeuronSelectStore.updateNeurons(votingNeurons());
+    }
+  };
+
+  $: votableNeurons, updateVotingNeuronSelectedStore();
+
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
-        neurons: votableNeurons,
+        neurons: userSelectedNeurons(),
         proposal,
         vote: detail.voteType,
         updateProposalCallback: async (updatedProposal: SnsProposalData) => {
@@ -110,7 +138,12 @@
               on:nnsConfirm={vote}
             />
           {/if}
-          TODO: add VotingNeuronSelect {fromDefinedNullable(proposal.id).id}
+
+          <VotingNeuronSelect>
+            <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
+            <!--            <MyVotes {proposalInfo} />-->
+            <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
+          </VotingNeuronSelect>
         {:else}
           <div class="loader">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>

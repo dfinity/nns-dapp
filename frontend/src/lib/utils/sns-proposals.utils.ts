@@ -227,7 +227,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > 0) {
+  if (reward_event_round > BigInt(0)) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
@@ -238,7 +238,7 @@ export const snsRewardStatus = ({
     // Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L760
     throw new Error("Proposal must have a wait_for_quiet_state.");
   }
-  if (now > deadline) {
+  if (now < deadline) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
   }
 
@@ -363,7 +363,9 @@ export const snsNeuronToVotingNeuron = ({
   snsParameters: SnsNervousSystemParameters;
 }): VotingNeuron => ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
-  votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
+  votingPower: BigInt(
+    Math.round(snsNeuronVotingPower({ neuron, snsParameters }))
+  ),
 });
 
 /** To have the logic in one place */

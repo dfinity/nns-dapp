@@ -146,7 +146,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
@@ -162,7 +162,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: true,
@@ -179,7 +179,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: false,
@@ -203,7 +203,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };

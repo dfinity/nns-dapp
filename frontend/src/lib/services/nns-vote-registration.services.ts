@@ -65,6 +65,7 @@ export const registerNnsVotes = async ({
         proposalInfo.id as ProposalId
       );
 
+      // the one that was called
       proposalsStore.replaceProposals([updatedProposalInfo]);
       updateProposalContext(updatedProposalInfo);
     },
@@ -117,14 +118,14 @@ const updateToastAfterNeuronRegistration = ({
 /** Optimistically update the neuron and proposal state after successful vote registration */
 const updateOptimisticStateAfterNeuronVote = ({
   neuronId,
-  proposalId,
+  proposalInfo,
   updateProposalContext,
 }: {
   neuronId: NeuronId;
-  proposalId: ProposalId;
+  proposalInfo: ProposalInfo;
   updateProposalContext: (proposal: ProposalInfo) => void;
 }) => {
-  const proposalIdString = `${proposalId}`;
+  const proposalIdString = `${proposalInfo.id}`;
   const { vote } = voteRegistrationByProposal({
     proposalIdString,
     universeCanisterId: OWN_CANISTER_ID,
@@ -132,9 +133,6 @@ const updateOptimisticStateAfterNeuronVote = ({
   const $definedNeuronsStore = get(definedNeuronsStore);
   const originalNeuron = $definedNeuronsStore.find(
     ({ neuronId: id }) => id === neuronId
-  );
-  const proposalInfo = get(proposalsStore).proposals.find(
-    ({ id }) => id === proposalId
   );
   assertNonNullish(proposalInfo, `Proposal (${proposalIdString}) not found`);
 
@@ -145,7 +143,7 @@ const updateOptimisticStateAfterNeuronVote = ({
   const votingNeuron = updateNeuronsVote({
     neuron: originalNeuron,
     vote,
-    proposalId,
+    proposalId: proposalInfo.id as bigint,
   });
   neuronsStore.replaceNeurons([votingNeuron]);
 
@@ -202,7 +200,7 @@ const registerNnsNeuronsVote = async ({
             });
             updateOptimisticStateAfterNeuronVote({
               neuronId,
-              proposalId,
+              proposalInfo,
               updateProposalContext,
             });
           })

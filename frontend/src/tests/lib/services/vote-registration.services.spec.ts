@@ -143,13 +143,16 @@ describe("vote-registration-services", () => {
       });
 
       it("should update store with a new vote registration", (done) => {
+        let updateContextCalls = 0;
         registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
-            done();
+            updateContextCalls += 1;
+            if (updateContextCalls === neuronIds.length) {
+              done();
+            }
           },
         });
 
@@ -177,7 +180,7 @@ describe("vote-registration-services", () => {
           proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
 
@@ -221,7 +224,7 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote adopt_in_progress toast", async () => {
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
@@ -240,7 +243,7 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote reject_in_progress toast", async () => {
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -258,7 +261,7 @@ describe("vote-registration-services", () => {
         );
       });
 
-      it.skip("should display voted neurons count", async () => {
+      it("should display voted neurons count", async () => {
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
         await registerNnsVotes({
@@ -270,9 +273,9 @@ describe("vote-registration-services", () => {
           },
         });
 
-        // initial message + update message (2 pro neuron)
+        // NO initial message, 1 per neuron complete + update message
         await waitFor(() =>
-          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length * 2)
+          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length + 1)
         );
 
         for (let i = 1; i <= neuronIds.length; i++) {

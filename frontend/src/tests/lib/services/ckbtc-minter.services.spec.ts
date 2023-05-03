@@ -27,6 +27,7 @@ import {
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -247,6 +248,30 @@ describe("ckbtc-minter-services", () => {
       expect(callback).toHaveBeenCalledWith(result);
       // Query + Update
       expect(callback).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("getWithdrawalAccount", () => {
+    it("should call get withdrawal account", async () => {
+      const result: WithdrawalAccount = {
+        owner: mockCkBTCMainAccount.principal,
+        subaccount: [],
+      };
+
+      const spyGetWithdrawal = jest
+        .spyOn(minterApi, "getWithdrawalAccount")
+        .mockResolvedValue(result);
+
+      await services.getWithdrawalAccount({
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      await waitFor(() =>
+        expect(spyGetWithdrawal).toBeCalledWith({
+          identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
+        })
+      );
     });
   });
 });

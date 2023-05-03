@@ -40,7 +40,8 @@ export const getIcrcAccount = async ({
    * @deprecated metadata should not be called here and token should not be interpreted per account because it is the same token for all accounts
    */
   getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
-} & BalanceParams): Promise<Account> => {
+} & IcrcAccount &
+  QueryParams): Promise<Account> => {
   const account = { owner, subaccount };
 
   const [balanceE8s, metadata] = await Promise.all([
@@ -110,8 +111,8 @@ export const icrcTransfer = async ({
   createdAt,
   transfer: transferApi,
   ...rest
-}: IcrcTransferParams): Promise<void> => {
-  await transferApi({
+}: IcrcTransferParams): Promise<IcrcBlockIndex> =>
+  transferApi({
     to: {
       owner,
       subaccount: toNullable(subaccount),
@@ -122,4 +123,3 @@ export const icrcTransfer = async ({
       : undefined,
     ...rest,
   });
-};
