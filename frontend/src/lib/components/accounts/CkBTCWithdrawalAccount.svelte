@@ -18,8 +18,24 @@
     });
   };
 
-  // TODO do not reload, once per session
-  onMount(reloadAccount);
+  const loadAccount = async () => {
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      return;
+    }
+
+    // We do not reload the account if user navigate back and forth
+    if (
+      nonNullish(
+        $ckBTCWithdrawalAccountsStore[$selectedCkBTCUniverseIdStore.toText()]
+      )
+    ) {
+      return;
+    }
+
+    await reloadAccount();
+  };
+
+  onMount(loadAccount);
 
   let account: CkBTCBTCWithdrawalAccount | undefined = undefined;
   $: account = nonNullish($selectedCkBTCUniverseIdStore)
