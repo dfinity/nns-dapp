@@ -48,7 +48,7 @@
         >
           <p class="value">
             {shortenWithMiddleEllipsis(
-              neuron.neuronIdString,
+              neuron.idString,
               SNS_NEURON_ID_DISPLAY_LENGTH
             )}
           </p>
