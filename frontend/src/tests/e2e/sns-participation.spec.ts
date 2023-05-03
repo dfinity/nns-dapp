@@ -31,7 +31,13 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(committedProjects.length).toBeGreaterThan(1);
 
   // D003: User can see the details of one sale
-  // TODO
+  const snsProjectName = await openProjects[0].getProjectName();
+  await openProjects[0].click();
+  const projectDetail = appPo.getProjectDetailPo();
+  await projectDetail.waitForContentLoaded();
+  const tokenSymbol = await projectDetail.getTokenSymbol();
+  expect("Project " + tokenSymbol).toBe(snsProjectName);
+  expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
   // D004: User can participate in a sale
   // TODO

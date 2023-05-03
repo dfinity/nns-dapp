@@ -9,4 +9,8 @@ export class ProjectCardPo extends BasePageObject {
       (el) => new ProjectCardPo(el)
     );
   }
+
+  getProjectName(): Promise<string> {
+    return this.getText("project-name");
+  }
 }
