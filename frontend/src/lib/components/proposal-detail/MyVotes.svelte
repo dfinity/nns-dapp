@@ -8,6 +8,8 @@
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 
@@ -38,10 +40,18 @@
       {#each neuronsVotedForProposal as neuron}
         <li
           data-tid="neuron-data"
-          aria-label={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
+          aria-label={voteMapper({
+            neuron: neuron.idString,
+            vote: neuron.vote,
+          })}
           title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
         >
-          <p class="value">{neuron.idString}</p>
+          <p class="value">
+            {shortenWithMiddleEllipsis(
+              neuron.neuronIdString,
+              SNS_NEURON_ID_DISPLAY_LENGTH
+            )}
+          </p>
           <p class="vote-details">
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
