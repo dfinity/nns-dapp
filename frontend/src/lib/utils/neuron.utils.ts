@@ -694,8 +694,7 @@ export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined;
 
 export type CompactNeuronInfo = {
-  // TODO(sns-voting): rename to idString
-  id: string;
+  idString: string;
   votingPower: bigint;
   vote: Vote;
 };
@@ -734,7 +733,7 @@ export const votedNeuronDetails = ({
     proposal,
   })
     .map((neuron) => ({
-      id: neuron.neuronId.toString(),
+      idString: neuron.neuronId.toString(),
       votingPower: getVotingPower({ neuron, proposal }),
       vote: getVote({ neuron, proposal }),
     }))

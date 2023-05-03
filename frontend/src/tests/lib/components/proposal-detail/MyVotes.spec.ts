@@ -11,12 +11,12 @@ import { render } from "@testing-library/svelte";
 
 describe("MyVotes", () => {
   const noVoted: CompactNeuronInfo = {
-    id: "100",
+    idString: "100",
     votingPower: 100n,
     vote: Vote.No,
   };
   const yesVoted: CompactNeuronInfo = {
-    id: "200",
+    idString: "200",
     votingPower: 200n,
     vote: Vote.Yes,
   };
@@ -77,7 +77,7 @@ describe("MyVotes", () => {
     expect(
       getByTitle(
         replacePlaceholders(en.proposal_detail__vote.vote_status, {
-          $neuronId: noVoted.id,
+          $neuronId: noVoted.idString,
           $vote: en.core.no,
         })
       )
@@ -86,7 +86,7 @@ describe("MyVotes", () => {
     expect(
       getByTitle(
         replacePlaceholders(en.proposal_detail__vote.vote_status, {
-          $neuronId: yesVoted.id,
+          $neuronId: yesVoted.idString,
           $vote: en.core.yes,
         })
       )

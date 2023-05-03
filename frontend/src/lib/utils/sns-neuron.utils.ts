@@ -761,7 +761,7 @@ export const votedSnsNeuronDetails = ({
     proposal,
   })
     .map((neuron) => ({
-      id: getSnsNeuronIdAsHexString(neuron),
+      idString: getSnsNeuronIdAsHexString(neuron),
       votingPower: BigInt(
         snsNeuronVotingPower({
           neuron,

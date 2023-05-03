@@ -38,10 +38,10 @@
       {#each neuronsVotedForProposal as neuron}
         <li
           data-tid="neuron-data"
-          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
-          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          aria-label={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
+          title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
         >
-          <p class="value">{neuron.id}</p>
+          <p class="value">{neuron.idString}</p>
           <p class="vote-details">
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
