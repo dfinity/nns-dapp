@@ -12,11 +12,12 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-  mockCkBTCWithdrawalAccount,
+  mockCkBTCWithdrawalAccount, mockCkBTCWithdrawalIcrcAccount,
   mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import {decodeIcrcAccount} from "@dfinity/ledger";
 
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => jest.clearAllMocks());
@@ -121,7 +122,13 @@ describe("ckbtc-accounts-loader-services", () => {
       expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
       expect(result.balance.toE8s()).toEqual(mockAccountBalance.toE8s());
 
-      expect(spyGetCkBTCAccount).toHaveBeenCalled();
+      expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
+        identity: params.identity,
+        certified: false,
+        canisterId: params.universeId,
+        ...mockCkBTCWithdrawalIcrcAccount,
+        "type": "withdrawalAccount",
+      });
     });
   });
 });
