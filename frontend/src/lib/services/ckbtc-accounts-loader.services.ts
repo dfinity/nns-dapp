@@ -1,13 +1,15 @@
 import { getCkBTCAccount } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
+import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-accounts.store";
 import { i18n } from "$lib/stores/i18n";
+import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { assertNonNullish, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const getCkBTCAccounts = async ({
@@ -35,7 +37,7 @@ export const getCkBTCAccounts = async ({
   return [account];
 };
 
-export const loadMinterCkBTCAccounts = async ({
+export const loadMinterCkBTCAccount = async ({
   universeId,
   certified,
   identity,
@@ -43,7 +45,7 @@ export const loadMinterCkBTCAccounts = async ({
   universeId: UniverseCanisterId;
   certified: boolean;
   identity: Identity;
-}): Promise<Account[]> => {
+}): Promise<CkBTCBTCWithdrawalAccount> => {
   const canisters: CkBTCAdditionalCanisters | undefined =
     CKBTC_ADDITIONAL_CANISTERS[universeId.toText()];
 
@@ -53,20 +55,27 @@ export const loadMinterCkBTCAccounts = async ({
   } = get(i18n);
 
   if (isNullish(canisters?.minterCanisterId)) {
+    toastsError({
+      labelKey: "error__ckbtc.no_minter_defined",
+    });
     throw new Error(no_minter_defined);
+  }
+
+  // We have to load the withdrawal account with an update call but, we use the query to indicate we are about to load the data
+  if (!certified) {
+    return {
+      type: "minter",
+    };
   }
 
   const { minterCanisterId } = canisters;
 
   // TODO: load only if needed
-  const withdrawalAccount = !certified
-    ? undefined
-    : // TODO: Support subaccounts
-      await getWithdrawalAccount({ minterCanisterId });
+  // TODO: Support subaccounts
+  const withdrawalAccount = await getWithdrawalAccount({ minterCanisterId });
 
-  if (isNullish(withdrawalAccount)) {
-    return [];
-  }
+  // withdrawalAccount should not be undefined to continue
+  assertNonNullish(withdrawalAccount);
 
   const account = await getCkBTCAccount({
     identity,
@@ -77,10 +86,8 @@ export const loadMinterCkBTCAccounts = async ({
     type: "minter",
   });
 
-  return [
-    {
-      ...account,
-      name,
-    },
-  ];
+  return {
+    ...account,
+    name,
+  };
 };

@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconAdd } from "@dfinity/gix-components";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { loadCkBTCAccountsMinter } from "$lib/services/ckbtc-accounts-minter.services";
   import { onMount } from "svelte";
-  import type { Account } from "$lib/types/account";
-  import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+  import {
+    type CkBTCBTCWithdrawalAccount,
+    ckBTCWithdrawalAccountsStore,
+  } from "$lib/stores/ckbtc-accounts.store";
 
   const reloadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -21,16 +21,28 @@
   // TODO do not reload, once per session
   onMount(reloadAccount);
 
-  let accounts: Account[] = [];
-  $: accounts = nonNullish($selectedCkBTCUniverseIdStore)
+  let account: CkBTCBTCWithdrawalAccount | undefined = undefined;
+  $: account = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCWithdrawalAccountsStore[$selectedCkBTCUniverseIdStore.toText()]
-        ?.accounts ?? []
-    : [];
+        ?.account
+    : undefined;
+
+  let loading = false;
+  $: loading =
+    nonNullish(account) &&
+    (isNullish(account.balance) || isNullish(account.identifier));
 </script>
 
-{#each accounts as account}
-  <button class="card" data-tid="open-restart-convert-ckbtc-to-btc">
-    <IconAdd />
-    {$i18n.accounts.add_account}
+{#if nonNullish(account)}
+  <button
+    class="card"
+    data-tid="open-restart-convert-ckbtc-to-btc"
+    disabled={isNullish(account.balance) || isNullish(account.identifier)}
+  >
+    {#if loading}
+      Loading
+    {:else}
+      Loaded
+    {/if}
   </button>
-{/each}
+{/if}

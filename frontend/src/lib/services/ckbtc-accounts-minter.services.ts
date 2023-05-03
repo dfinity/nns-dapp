@@ -1,11 +1,11 @@
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { loadMinterCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
+import { loadMinterCkBTCAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-accounts.store";
-import { toastsError } from "$lib/stores/toasts.store";
-import type { Account } from "$lib/types/account";
+import {
+  ckBTCWithdrawalAccountsStore,
+  type CkBTCBTCWithdrawalAccount,
+} from "$lib/stores/ckbtc-accounts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import { toToastError } from "$lib/utils/error.utils";
 
 export const loadCkBTCAccountsMinter = async ({
   handleError,
@@ -14,15 +14,15 @@ export const loadCkBTCAccountsMinter = async ({
   handleError?: () => void;
   universeId: UniverseCanisterId;
 }): Promise<void> => {
-  return queryAndUpdate<Account[], unknown>({
+  return queryAndUpdate<CkBTCBTCWithdrawalAccount, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      loadMinterCkBTCAccounts({ identity, certified, universeId }),
-    onLoad: ({ response: accounts, certified }) =>
+      loadMinterCkBTCAccount({ identity, certified, universeId }),
+    onLoad: ({ response: account, certified }) =>
       ckBTCWithdrawalAccountsStore.set({
         universeId,
-        accounts: {
-          accounts,
+        account: {
+          account,
           certified,
         },
       }),
@@ -36,12 +36,7 @@ export const loadCkBTCAccountsMinter = async ({
       // hide unproven data
       ckBTCWithdrawalAccountsStore.reset();
 
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_load",
-        })
-      );
+      // No toast errors here. Particular errors are displayed in functions that are called.
 
       handleError?.();
     },

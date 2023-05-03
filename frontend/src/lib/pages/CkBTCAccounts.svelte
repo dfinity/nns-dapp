@@ -9,7 +9,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import CkBTCMinterAccounts from "$lib/components/accounts/CkBTCMinterAccounts.svelte";
+  import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
@@ -64,7 +64,7 @@
     {/each}
 
     {#if ckTESTBTC}
-      <CkBTCMinterAccounts />
+      <CkBTCWithdrawalAccount />
     {/if}
   {/if}
 </div>
