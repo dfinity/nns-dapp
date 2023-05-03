@@ -8,16 +8,17 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import * as services from "$lib/services/ckbtc-accounts-loader.services";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
+import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
-  mockCkBTCWithdrawalAccount, mockCkBTCWithdrawalIcrcAccount,
+  mockCkBTCWithdrawalAccount,
+  mockCkBTCWithdrawalIcrcAccount,
   mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
-import {decodeIcrcAccount} from "@dfinity/ledger";
 
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => jest.clearAllMocks());
@@ -47,8 +48,6 @@ describe("ckbtc-accounts-loader-services", () => {
   });
 
   describe("getCkBTCWithdrawalAccount", () => {
-    let spyGetCkBTCAccount;
-
     const params = {
       identity: mockIdentity,
       certified: true,
@@ -62,16 +61,8 @@ describe("ckbtc-accounts-loader-services", () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      jest.resetAllMocks();
 
       ckBTCWithdrawalAccountsStore.reset();
-
-      spyGetCkBTCAccount = jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
-        .mockResolvedValue({
-          ...mockCkBTCWithdrawalAccount,
-          balance: mockAccountBalance,
-        });
     });
 
     it("should throw no minter found for incompatible universe", () => {
@@ -93,41 +84,85 @@ describe("ckbtc-accounts-loader-services", () => {
       expect(result.type).toEqual("withdrawalAccount");
     });
 
-    it("should return empty account if query call and unknown withdrawal account", async () => {
-      const result = await getCkBTCWithdrawalAccount({
-        ...params,
-        certified: false,
+    describe("get account success", () => {
+      let spyGetCkBTCAccount;
+
+      beforeEach(() => {
+        spyGetCkBTCAccount = jest
+          .spyOn(ledgerApi, "getCkBTCAccount")
+          .mockResolvedValue({
+            ...mockCkBTCWithdrawalAccount,
+            balance: mockAccountBalance,
+          });
       });
 
-      expect(result.identifier).toBeUndefined();
-      expect(result.balance).toBeUndefined();
+      it("should return empty account if query call and unknown withdrawal account", async () => {
+        const result = await getCkBTCWithdrawalAccount({
+          ...params,
+          certified: false,
+        });
 
-      expect(spyGetCkBTCAccount).not.toHaveBeenCalled();
+        expect(result.identifier).toBeUndefined();
+        expect(result.balance).toBeUndefined();
+
+        expect(spyGetCkBTCAccount).not.toHaveBeenCalled();
+      });
+
+      it("should return withdrawal account with updated balance for query call", async () => {
+        ckBTCWithdrawalAccountsStore.set({
+          account: {
+            account: mockCkBTCWithdrawalAccount,
+            certified: true,
+          },
+          universeId: params.universeId,
+        });
+
+        const result = await getCkBTCWithdrawalAccount({
+          ...params,
+          certified: false,
+        });
+
+        expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
+        expect(result.balance.toE8s()).toEqual(mockAccountBalance.toE8s());
+
+        expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
+          identity: params.identity,
+          certified: false,
+          canisterId: params.universeId,
+          ...mockCkBTCWithdrawalIcrcAccount,
+          type: "withdrawalAccount",
+        });
+      });
     });
 
-    it("should return withdrawal account with updated balance for query call", async () => {
-      ckBTCWithdrawalAccountsStore.set({
-        account: {
-          account: mockCkBTCWithdrawalAccount,
-          certified: true,
-        },
-        universeId: params.universeId,
+    describe("get account error", () => {
+      let spyOnToastsError;
+
+      beforeEach(() => {
+        jest.spyOn(console, "error").mockImplementation(() => undefined);
+        jest.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+
+        spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
       });
 
-      const result = await getCkBTCWithdrawalAccount({
-        ...params,
-        certified: false,
-      });
+      it("should bubble error for query call", async () => {
+        ckBTCWithdrawalAccountsStore.set({
+          account: {
+            account: mockCkBTCWithdrawalAccount,
+            certified: true,
+          },
+          universeId: params.universeId,
+        });
 
-      expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-      expect(result.balance.toE8s()).toEqual(mockAccountBalance.toE8s());
+        const call = () =>
+          getCkBTCWithdrawalAccount({
+            ...params,
+            certified: false,
+          });
 
-      expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
-        identity: params.identity,
-        certified: false,
-        canisterId: params.universeId,
-        ...mockCkBTCWithdrawalIcrcAccount,
-        "type": "withdrawalAccount",
+        expect(call).rejects.toThrowError();
+
+        await waitFor(() => expect(spyOnToastsError).toHaveBeenCalled());
       });
     });
   });

@@ -1,6 +1,6 @@
 import { getCkBTCAccount } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
+import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { i18n } from "$lib/stores/i18n";
@@ -8,6 +8,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger";
 import { decodeIcrcAccount } from "@dfinity/ledger";
@@ -69,10 +70,10 @@ export const getCkBTCWithdrawalAccount = async ({
     throw new Error(no_minter_defined);
   }
 
-  const loadWithdrawalAccount = async (): Promise<IcrcAccount> => {
+  const getWithdrawalAccount = async (): Promise<IcrcAccount> => {
     const { minterCanisterId } = canisters;
 
-    const account = await getWithdrawalAccount({ minterCanisterId });
+    const account = await getWithdrawalAccountServices({ minterCanisterId });
 
     // withdrawalAccount should not be undefined to continue
     assertNonNullish(account);
@@ -99,18 +100,28 @@ export const getCkBTCWithdrawalAccount = async ({
     storedWithdrawalAccount?.account.identifier
   )
     ? decodeIcrcAccount(storedWithdrawalAccount.account.identifier)
-    : await loadWithdrawalAccount();
+    : await getWithdrawalAccount();
+  try {
+    const account = await getCkBTCAccount({
+      identity,
+      certified,
+      canisterId: universeId,
+      ...withdrawalAccount,
+      type: "withdrawalAccount",
+    });
 
-  const account = await getCkBTCAccount({
-    identity,
-    certified,
-    canisterId: universeId,
-    ...withdrawalAccount,
-    type: "withdrawalAccount",
-  });
+    return {
+      ...account,
+      name,
+    };
+  } catch (err: unknown) {
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error.accounts_load",
+      })
+    );
 
-  return {
-    ...account,
-    name,
-  };
+    throw err;
+  }
 };
