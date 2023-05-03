@@ -149,7 +149,7 @@ describe("SnsVotingCard", () => {
     expect(container.querySelector("button[disabled]")).toBeNull();
   });
 
-  it.only("should display my votes", async () => {
+  it("should display my votes", async () => {
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,
       neurons: [
