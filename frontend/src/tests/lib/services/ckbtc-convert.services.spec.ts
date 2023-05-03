@@ -6,6 +6,7 @@ import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
+import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -103,6 +104,11 @@ describe("ckbtc-convert-services", () => {
       const amountE8s = numberToE8s(params.amount);
 
       it("should transfer tokens to ledger", async () => {
+        const blockIndexAddSpy = jest.spyOn(
+          bitcoinConvertBlockIndexes,
+          "addBlockIndex"
+        );
+
         const updateProgressSpy = jest.fn();
 
         await convert(updateProgressSpy);
@@ -127,6 +133,9 @@ describe("ckbtc-convert-services", () => {
 
         // We test ledger here but the all test go through therefore all steps performed
         expect(updateProgressSpy).toBeCalledTimes(5);
+
+        // Should have added the block index to local storage
+        expect(blockIndexAddSpy).toHaveBeenCalledWith(123n);
       });
 
       describe("retrieve btc succeed", () => {
@@ -161,6 +170,19 @@ describe("ckbtc-convert-services", () => {
 
           expect(updateProgressSpy).toBeCalledTimes(5);
         });
+
+        it("should remove block index from local storage", async () => {
+          const blockIndexRemoveSpy = jest.spyOn(
+            bitcoinConvertBlockIndexes,
+            "removeBlockIndex"
+          );
+
+          const updateProgressSpy = jest.fn();
+
+          await convert(updateProgressSpy);
+
+          expect(blockIndexRemoveSpy).toHaveBeenCalledWith(123n);
+        });
       });
 
       describe("retrieve btc fails", () => {
@@ -178,6 +200,23 @@ describe("ckbtc-convert-services", () => {
           expect(spyOnToastsError).toBeCalled();
 
           expect(updateProgressSpy).toBeCalledTimes(4);
+        });
+
+        it("should remove the block index from local storage because ui is still active", async () => {
+          const blockIndexRemoveSpy = jest.spyOn(
+            bitcoinConvertBlockIndexes,
+            "removeBlockIndex"
+          );
+
+          minterCanisterMock.retrieveBtc.mockImplementation(async () => {
+            throw new Error();
+          });
+
+          const updateProgressSpy = jest.fn();
+
+          await convert(updateProgressSpy);
+
+          expect(blockIndexRemoveSpy).toHaveBeenCalledWith(123n);
         });
       });
     });
@@ -197,6 +236,23 @@ describe("ckbtc-convert-services", () => {
         expect(spyOnToastsError).toBeCalled();
 
         expect(updateProgressSpy).toBeCalledTimes(2);
+      });
+
+      it("should not add block index to local storage", async () => {
+        const blockIndexAddSpy = jest.spyOn(
+          bitcoinConvertBlockIndexes,
+          "addBlockIndex"
+        );
+
+        ledgerCanisterMock.transfer.mockImplementation(async () => {
+          throw new Error();
+        });
+
+        const updateProgressSpy = jest.fn();
+
+        await convert(updateProgressSpy);
+
+        expect(blockIndexAddSpy).not.toBeCalled();
       });
     });
   });

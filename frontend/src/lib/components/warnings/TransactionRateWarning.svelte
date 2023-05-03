@@ -39,7 +39,7 @@
       level: "custom",
       position: "top",
       title: $i18n.metrics.nns_high_load,
-      truncate: true,
+      overflow: "truncate",
       icon: TransactionRateWarningIcon,
       theme: "inverted",
     });

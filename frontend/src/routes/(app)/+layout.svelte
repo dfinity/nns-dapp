@@ -22,7 +22,7 @@
 
 <slot />
 
-<Warnings />
+<Warnings ckBTCWarnings />
 
 <Toasts />
 <BusyScreen />

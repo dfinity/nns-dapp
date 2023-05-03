@@ -1,4 +1,5 @@
 import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
+import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
@@ -75,6 +76,9 @@ export const convertCkBTCToBtc = async ({
     return { success: false };
   }
 
+  // Flag the transaction that was executed
+  bitcoinConvertBlockIndexes.addBlockIndex(blockIndex);
+
   updateProgress(ConvertBtcStep.SEND_BTC);
 
   try {
@@ -89,6 +93,9 @@ export const convertCkBTCToBtc = async ({
 
     return { success: false };
   } finally {
+    // Regardless if success or error, the UI is still active therefore we can remove the flag
+    bitcoinConvertBlockIndexes.removeBlockIndex(blockIndex);
+
     updateProgress(ConvertBtcStep.RELOAD);
 
     await loadCkBTCAccountTransactions({
