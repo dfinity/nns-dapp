@@ -4,7 +4,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import {
   ckBTCWithdrawalAccountsStore,
   type CkBTCBTCWithdrawalAccount,
-} from "$lib/stores/ckbtc-accounts.store";
+} from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 
 export const loadCkBTCAccountsMinter = async ({

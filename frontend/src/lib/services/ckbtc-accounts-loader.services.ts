@@ -1,8 +1,8 @@
 import { getCkBTCAccount } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
-import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-accounts.store";
-import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-accounts.store";
+import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-withdrawal-accounts.store";
+import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";

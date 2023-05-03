@@ -6,7 +6,7 @@
   import {
     type CkBTCBTCWithdrawalAccount,
     ckBTCWithdrawalAccountsStore,
-  } from "$lib/stores/ckbtc-accounts.store";
+  } from "$lib/stores/ckbtc-withdrawal-accounts.store";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { ICPToken, TokenAmount } from "@dfinity/nns";
 
