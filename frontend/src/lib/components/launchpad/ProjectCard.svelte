@@ -44,7 +44,7 @@
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h3>{title}</h3>
+    <h3 data-tid="project-name">{title}</h3>
   </div>
 
   <p class="value description">{description}</p>
