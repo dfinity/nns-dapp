@@ -1,3 +1,4 @@
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import type { Filter } from "$lib/types/filters";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -5,7 +6,8 @@ import type {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { derived, writable, type Readable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
+import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
   topics: Filter<SnsNervousSystemFunction>[];
@@ -49,7 +51,10 @@ const defaultProjectData: ProjectFiltersStoreData = {
  * TODO: persist to localstorage
  */
 export const initSnsFiltersStore = (): SnsFiltersStore => {
-  const { subscribe, set, update } = writable<SnsFiltersStoreData>({});
+  const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
+    key: StoreLocalStorageKey.SnsProposalFilters,
+    defaultValue: {},
+  });
 
   return {
     subscribe,
