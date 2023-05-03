@@ -44,7 +44,10 @@ export const writableStored = <T>({
 
     // Do not break UI if local storage fails
     try {
-      localStorage.setItem(key, JSON.stringify(store));
+      const bigintStringify = (_key: string, value: unknown): unknown =>
+        typeof value === "bigint" ? `${value}` : value;
+
+      localStorage.setItem(key, JSON.stringify(store, bigintStringify));
     } catch (error: unknown) {
       console.error(error);
     }

@@ -875,7 +875,9 @@
     "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on the",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
-    "confirmations": "Confirmations"
+    "confirmations": "Confirmations",
+    "warning_transaction_failed": "Your ckBTC transaction failed",
+    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue."
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

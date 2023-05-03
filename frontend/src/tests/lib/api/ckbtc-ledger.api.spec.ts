@@ -1,6 +1,6 @@
 import {
   ckBTCTransfer,
-  getCkBTCAccounts,
+  getCkBTCAccount,
   getCkBTCToken,
 } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -23,7 +23,7 @@ describe("ckbtc-ledger api", () => {
 
   afterAll(() => jest.clearAllMocks());
 
-  describe("getCkBTCAccounts", () => {
+  describe("getCkBTCAccount", () => {
     it("returns main account with balance and token metadata", async () => {
       const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
         mockQueryTokenResponse
@@ -32,18 +32,17 @@ describe("ckbtc-ledger api", () => {
         BigInt(10_000_000)
       );
 
-      const accounts = await getCkBTCAccounts({
+      const account = await getCkBTCAccount({
         certified: true,
         identity: mockIdentity,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
+        type: "main",
+        owner: mockIdentity.getPrincipal(),
       });
 
-      expect(accounts.length).toBeGreaterThan(0);
+      expect(account).not.toBeUndefined();
 
-      const main = accounts.find(({ type }) => type === "main");
-      expect(main).not.toBeUndefined();
-
-      expect(main?.balance.toE8s()).toEqual(BigInt(10_000_000));
+      expect(account?.balance.toE8s()).toEqual(BigInt(10_000_000));
 
       expect(balanceSpy).toBeCalled();
       expect(metadataSpy).toBeCalled();
@@ -53,10 +52,12 @@ describe("ckbtc-ledger api", () => {
       ledgerCanisterMock.metadata.mockResolvedValue([]);
 
       const call = () =>
-        getCkBTCAccounts({
+        getCkBTCAccount({
           certified: true,
           identity: mockIdentity,
           canisterId: CKBTC_LEDGER_CANISTER_ID,
+          type: "main",
+          owner: mockIdentity.getPrincipal(),
         });
 
       expect(call).rejects.toThrowError();

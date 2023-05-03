@@ -18,7 +18,12 @@ import en from "$tests/mocks/i18n.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { SnsProposalDecisionStatus, SnsSwapLifecycle } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  SnsSwapLifecycle,
+  type SnsProposalData,
+} from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/sns-governance.api");
@@ -165,14 +170,17 @@ describe("SnsProposals", () => {
   });
 
   describe("filter proposals", () => {
-    const proposals = [
+    const proposals: SnsProposalData[] = [
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         proposalId: BigInt(1),
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       }),
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
         proposalId: BigInt(2),
+        rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
       }),
     ];
     beforeEach(() => {
@@ -224,6 +232,41 @@ describe("SnsProposals", () => {
         (element) =>
           element.getAttribute("id") ===
           String(SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN)
+      );
+      expect(openCheckbox).not.toBeUndefined();
+
+      // Select Open status checkbox
+      fireEvent.click(openCheckbox);
+
+      // Apply filters
+      fireEvent.click(getByTestId("apply-filters"));
+
+      // Wait for modal to close
+      await waitFor(() =>
+        expect(queryByTestId("filter-modal")).not.toBeInTheDocument()
+      );
+
+      expect(queryAllByTestId("proposal-card").length).toBe(1);
+    });
+
+    it("should filter by reward status", async () => {
+      const { getByTestId, queryAllByTestId, queryByTestId } =
+        render(SnsProposals);
+
+      await waitFor(() =>
+        expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
+      );
+
+      fireEvent.click(getByTestId("filters-by-rewards"));
+
+      await waitFor(() =>
+        expect(queryByTestId("filter-modal")).toBeInTheDocument()
+      );
+
+      const openCheckbox = queryAllByTestId("checkbox").find(
+        (element) =>
+          element.getAttribute("id") ===
+          String(SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES)
       );
       expect(openCheckbox).not.toBeUndefined();
 

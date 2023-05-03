@@ -122,21 +122,26 @@ However, it requires first to manually edit [dfx.json](./dfx.json).
 e.g. in `canisters`:
 
 ```
-"ckbtc_test_minter": {
+"ckbtc_minter": {
   "type": "custom",
   "candid": "target/ic/ckbtc_minter.did",
   "wasm": "target/ic/ckbtc_minter.wasm"
 },
-"ckbtc_test_ledger": {
+"ckbtc_ledger": {
   "type": "custom",
   "candid": "target/ic/ckbtc_ledger.did",
   "wasm": "target/ic/ckbtc_ledger.wasm"
 },
-"ckbtc_test_index": {
+"ckbtc_index": {
   "type": "custom",
   "candid": "target/ic/ckbtc_index.did",
   "wasm": "target/ic/ckbtc_index.wasm"
-}
+},
+"ckbtc_kyt": {
+  "type": "custom",
+  "candid": "target/ic/ckbtc_kyt.did",
+  "wasm": "target/ic/ckbtc_kyt.wasm"
+},
 ```
 
 Once set, the script can be executed.
