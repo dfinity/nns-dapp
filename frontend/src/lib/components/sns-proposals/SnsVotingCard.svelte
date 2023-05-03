@@ -138,8 +138,6 @@
       snsParameters,
     });
   }
-
-  $: console.log('neuronsVotedForProposal', neuronsVotedForProposal)
 </script>
 
 <BottomSheet>

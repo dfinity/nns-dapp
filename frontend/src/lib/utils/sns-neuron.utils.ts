@@ -742,9 +742,6 @@ export const votedSnsNeurons = ({
       .filter(([, { vote }]) => vote === Vote.Unspecified)
       .map(([neuronId]) => neuronId)
   );
-  console.log('notVotedNeuronIds', neurons, neurons.filter(
-    (neuron) => !notVotedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
-  ))
   return neurons.filter(
     (neuron) => !notVotedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
   );
