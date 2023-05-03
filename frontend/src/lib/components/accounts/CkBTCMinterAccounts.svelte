@@ -28,7 +28,9 @@
     : [];
 </script>
 
-<button class="card" data-tid="open-restart-convert-ckbtc-to-btc">
-  <IconAdd />
-  {$i18n.accounts.add_account}
-</button>
+{#each accounts as account}
+  <button class="card" data-tid="open-restart-convert-ckbtc-to-btc">
+    <IconAdd />
+    {$i18n.accounts.add_account}
+  </button>
+{/each}
