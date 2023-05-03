@@ -4,6 +4,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 
   export let disabled: boolean;
 
@@ -31,7 +33,12 @@
               {
                 $neuronId: neuron.neuronIdString,
               }
-            )}>{neuron.neuronIdString}</span
+            )}
+            title={neuron.neuronIdString}
+            >{shortenWithMiddleEllipsis(
+              neuron.neuronIdString,
+              SNS_NEURON_ID_DISPLAY_LENGTH
+            )}</span
           >
           <span
             class="voting-power value"

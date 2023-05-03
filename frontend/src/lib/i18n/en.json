@@ -876,6 +876,8 @@
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
     "confirmations": "Confirmations",
+    "warning_transaction_failed": "Your ckBTC transaction failed",
+    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue.",
     "minter": "Minter"
   },
   "error__ckbtc": {

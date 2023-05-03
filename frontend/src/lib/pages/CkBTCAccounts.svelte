@@ -10,7 +10,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import CkBTCMinterAccounts from "$lib/components/accounts/CkBTCMinterAccounts.svelte";
-  import {isUniverseCkTESTBTC} from "$lib/utils/universe.utils";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 

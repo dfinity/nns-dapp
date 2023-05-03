@@ -10,7 +10,7 @@ import type { Principal } from "@dfinity/principal";
 import { fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const loadCkBTCAccounts = async ({
+export const getCkBTCAccounts = async ({
   identity,
   certified,
   universeId,

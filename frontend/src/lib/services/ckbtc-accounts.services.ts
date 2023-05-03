@@ -3,7 +3,7 @@ import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import { loadCkBTCAccounts as loadCkBTCAccountsServices } from "$lib/services/ckbtc-accounts-loader.services";
+import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
@@ -30,7 +30,7 @@ export const loadCkBTCAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      loadCkBTCAccountsServices({ identity, certified, universeId }),
+      getCkBTCAccounts({ identity, certified, universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,

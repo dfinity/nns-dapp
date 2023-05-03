@@ -38,8 +38,8 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call api.getSnsAccounts and load neurons in store", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
-        .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
@@ -57,7 +57,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
+        .spyOn(ledgerApi, "getCkBTCAccount")
         .mockRejectedValue(new Error());
 
       const spy = jest.fn();
@@ -90,7 +90,7 @@ describe("ckbtc-accounts-services", () => {
       });
 
       jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
+        .spyOn(ledgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.reject(undefined));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -113,8 +113,8 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
-        .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       const spyTokenQuery = jest
         .spyOn(ledgerApi, "getCkBTCToken")
@@ -147,8 +147,8 @@ describe("ckbtc-accounts-services", () => {
 
   describe("ckBTCTransferTokens", () => {
     const spyAccounts = jest
-      .spyOn(ledgerApi, "getCkBTCAccounts")
-      .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+      .spyOn(ledgerApi, "getCkBTCAccount")
+      .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
     beforeEach(() => {
       jest.clearAllMocks();
