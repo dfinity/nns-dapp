@@ -1,18 +1,17 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId } from "@dfinity/nns";
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { IconThumbDown, IconThumbUp, Value } from "@dfinity/gix-components";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
-    votedNeuronDetails,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 
-  export let proposalInfo: ProposalInfo;
+  export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 
   const voteIconMapper = {
     [Vote.No]: IconThumbDown,
@@ -20,7 +19,7 @@
     [Vote.Unspecified]: undefined,
   };
 
-  const voteMapper = ({ neuron, vote }: { neuron: NeuronId; vote: Vote }) => {
+  const voteMapper = ({ neuron, vote }: { neuron: string; vote: Vote }) => {
     const stringMapper = {
       [Vote.No]: $i18n.core.no,
       [Vote.Yes]: $i18n.core.yes,
@@ -32,14 +31,6 @@
       $vote: stringMapper[vote],
     });
   };
-
-  let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: {
-    neuronsVotedForProposal = votedNeuronDetails({
-      neurons: $definedNeuronsStore,
-      proposal: proposalInfo,
-    });
-  }
 </script>
 
 {#if neuronsVotedForProposal.length}
@@ -49,10 +40,18 @@
       {#each neuronsVotedForProposal as neuron}
         <li
           data-tid="neuron-data"
-          aria-label={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
-          title={voteMapper({ neuron: neuron.id, vote: neuron.vote })}
+          aria-label={voteMapper({
+            neuron: neuron.idString,
+            vote: neuron.vote,
+          })}
+          title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
         >
-          <p class="value">{neuron.id}</p>
+          <p class="value">
+            {shortenWithMiddleEllipsis(
+              neuron.idString,
+              SNS_NEURON_ID_DISPLAY_LENGTH
+            )}
+          </p>
           <p class="vote-details">
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
