@@ -9,8 +9,8 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { IcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import {
   assertNonNullish,

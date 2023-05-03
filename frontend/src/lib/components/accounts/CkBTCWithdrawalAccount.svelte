@@ -7,6 +7,7 @@
     type CkBTCBTCWithdrawalAccount,
     ckBTCWithdrawalAccountsStore,
   } from "$lib/stores/ckbtc-accounts.store";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   const reloadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -56,9 +57,9 @@
     disabled={isNullish(account.balance) || isNullish(account.identifier)}
   >
     {#if loading}
-      Loading
+      Loading redeeming account...
     {:else}
-      Loaded
+      Redeeming account <AmountDisplay singleLine amount={account?.balance} />
     {/if}
   </button>
 {/if}
