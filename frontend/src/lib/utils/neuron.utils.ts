@@ -830,6 +830,11 @@ export const validTopUpAmount = ({
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
   BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
 
+/**
+ * Represents an entry in the list of ineligible neurons.
+ * - 'short': the neuron is too young to vote
+ * - 'since': the neuron was created after the proposal was submitted
+ */
 export interface IneligibleNeuronData {
   neuronIdString: string;
   reason: "since" | "short";

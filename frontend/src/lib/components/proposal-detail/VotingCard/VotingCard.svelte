@@ -39,6 +39,9 @@
     type IneligibleNeuronData,
     votedNeuronDetails,
   } from "$lib/utils/neuron.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 
   export let proposalInfo: ProposalInfo;
 
@@ -143,7 +146,12 @@
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
             <MyVotes {neuronsVotedForProposal} />
-            <IneligibleNeuronsCard {ineligibleNeurons} />
+            <IneligibleNeuronsCard
+              {ineligibleNeurons}
+              minSnsDissolveDelaySeconds={BigInt(
+                NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE
+              )}
+            />
           </VotingNeuronSelect>
         {:else}
           <div class="loader">
