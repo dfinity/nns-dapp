@@ -10,6 +10,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
@@ -38,6 +39,14 @@ describe("SnsVotingCard", () => {
       "02",
       {
         vote: SnsVote.Unspecified,
+        cast_timestamp_seconds: 123n,
+        voting_power: 10000n,
+      },
+    ],
+    [
+      "03",
+      {
+        vote: SnsVote.Yes,
         cast_timestamp_seconds: 123n,
         voting_power: 10000n,
       },
@@ -138,6 +147,28 @@ describe("SnsVotingCard", () => {
     });
     const { container } = renderVotingCard();
     expect(container.querySelector("button[disabled]")).toBeNull();
+  });
+
+  it.only("should display my votes", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Locked,
+          }),
+          // to avoid: cannot be converted to a BigInt because it is not an integer
+          voting_power_percentage_multiplier: 100n,
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByText } = renderVotingCard();
+    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
   });
 
   describe("voting", () => {
