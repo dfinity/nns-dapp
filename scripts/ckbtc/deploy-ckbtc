@@ -5,11 +5,14 @@
 
 dfx canister create ckbtc_ledger --network "$DFX_NETWORK"
 dfx canister create ckbtc_minter --network "$DFX_NETWORK"
+dfx canister create ckbtc_kyt --network "$DFX_NETWORK"
 
 MINTERID="$(dfx canister id ckbtc_minter --network "$DFX_NETWORK")"
 echo "$MINTERID"
 LEDGERID="$(dfx canister id ckbtc_ledger --network "$DFX_NETWORK")"
 echo "$LEDGERID"
+KYTID="$(dfx canister id ckbtc_kyt --network "$DFX_NETWORK")"
+echo "$KYTID"
 
 # echo "Step 2: deploying minter canister..."
 dfx deploy ckbtc_minter --network "$DFX_NETWORK" --argument "(variant {
@@ -22,7 +25,7 @@ dfx deploy ckbtc_minter --network "$DFX_NETWORK" --argument "(variant {
        min_confirmations = opt 12;
        mode = variant { GeneralAvailability };
        kyt_fee = opt 13_333;
-       kyt_principal = null;
+       kyt_principal = opt principal \"$KYTID\";
    }
 })" --mode=reinstall
 
@@ -43,6 +46,14 @@ dfx deploy ckbtc_ledger --network "$DFX_NETWORK" --argument "(variant {
          cycles_for_archive_creation = opt 4_000_000_000_000;
      };
  }
+})" --mode=reinstall
+
+dfx deploy ckbtc_kyt --network "$DFX_NETWORK" --argument "(variant {
+  InitArg = record {
+    minter_id = principal \"$MINTERID\";
+    maintainers = vec {};
+    mode = variant { AcceptAll };
+   }
 })" --mode=reinstall
 
 echo "Step 4: deploying index canister..."
