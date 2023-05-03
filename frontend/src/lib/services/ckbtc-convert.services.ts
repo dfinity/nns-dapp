@@ -11,7 +11,7 @@ import {
   MinterTemporaryUnavailableError,
 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { assertNonNullish, fromNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import { retrieveBtc } from "../api/ckbtc-minter.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
@@ -49,8 +49,9 @@ export const convertCkBTCToBtc = async ({
 
   const account = await getWithdrawalAccount({ minterCanisterId });
 
-  // Account cannot be null here. We add this guard to comply with type safety.
-  assertNonNullish(account);
+  if (isNullish(account)) {
+    return { success: false };
+  }
 
   // For simplicity and compatibility reason with the transferTokens interface we just encode the account here instead of extending the interface to support either account identifier or {owner; subaccount;} object.
   const ledgerAddress = encodeIcrcAccount({
