@@ -8,6 +8,7 @@
     ckBTCWithdrawalAccountsStore,
   } from "$lib/stores/ckbtc-accounts.store";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
 
   const reloadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -48,6 +49,11 @@
   $: loading =
     nonNullish(account) &&
     (isNullish(account.balance) || isNullish(account.identifier));
+
+  let accountBalance: TokenAmount;
+  $: accountBalance =
+    account?.balance ??
+    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
 </script>
 
 {#if nonNullish(account)}
@@ -59,7 +65,7 @@
     {#if loading}
       Loading redeeming account...
     {:else}
-      Redeeming account <AmountDisplay singleLine amount={account?.balance} />
+      Redeeming account <AmountDisplay singleLine amount={accountBalance} />
     {/if}
   </button>
 {/if}

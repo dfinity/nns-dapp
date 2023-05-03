@@ -183,6 +183,7 @@
     "new_linked_account_placeholder": "Account Name",
     "subAccount": "Linked account",
     "hardwareWallet": "Hardware wallet",
+    "minter": "Minter",
     "select_source": "Select Source Account",
     "select_destination": "Select Destination",
     "address": "Address",
@@ -877,8 +878,7 @@
     "refresh_balance": "Refresh Balance",
     "confirmations": "Confirmations",
     "warning_transaction_failed": "Your ckBTC transaction failed",
-    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue.",
-    "minter": "Minter"
+    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue."
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

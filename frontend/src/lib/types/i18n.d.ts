@@ -192,6 +192,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   subAccount: string;
   hardwareWallet: string;
+  minter: string;
   select_source: string;
   select_destination: string;
   address: string;
@@ -926,7 +927,6 @@ interface I18nCkbtc {
   confirmations: string;
   warning_transaction_failed: string;
   warning_transaction_description: string;
-  minter: string;
 }
 
 interface I18nError__ckbtc {

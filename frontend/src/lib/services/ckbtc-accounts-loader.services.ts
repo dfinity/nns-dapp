@@ -59,7 +59,7 @@ export const loadMinterCkBTCAccount = async ({
 
   const {
     error__ckbtc: { no_minter_defined },
-    ckbtc: { minter: name },
+    accounts: { minter: name },
   } = get(i18n);
 
   if (isNullish(canisters?.minterCanisterId)) {
