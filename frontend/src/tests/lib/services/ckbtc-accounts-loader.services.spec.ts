@@ -7,6 +7,7 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-accounts-loader.services";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
+import * as minterServices from "$lib/services/ckbtc-minter.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -131,6 +132,66 @@ describe("ckbtc-accounts-loader-services", () => {
           canisterId: params.universeId,
           ...mockCkBTCWithdrawalIcrcAccount,
           type: "withdrawalAccount",
+        });
+      });
+
+      describe("withdrawal success", () => {
+        let spyGetWithdrawalAccount;
+
+        beforeEach(() => {
+          spyGetWithdrawalAccount = jest
+            .spyOn(minterServices, "getWithdrawalAccount")
+            .mockResolvedValue({
+              owner: mockCkBTCWithdrawalIcrcAccount.owner,
+              subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
+            });
+        });
+
+        it("should return withdrawal account with update calls", async () => {
+          const result = await getCkBTCWithdrawalAccount(params);
+
+          expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
+          expect(result.balance.toE8s()).toEqual(mockAccountBalance.toE8s());
+
+          expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
+            identity: params.identity,
+            certified: true,
+            canisterId: params.universeId,
+            ...mockCkBTCWithdrawalIcrcAccount,
+            type: "withdrawalAccount",
+          });
+        });
+
+        it("should not call get withdrawal if already in store", async () => {
+          ckBTCWithdrawalAccountsStore.set({
+            account: {
+              account: mockCkBTCWithdrawalAccount,
+              certified: true,
+            },
+            universeId: params.universeId,
+          });
+
+          await getCkBTCWithdrawalAccount(params);
+
+          expect(spyGetWithdrawalAccount).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("withdrawal error", () => {
+        let spyGetWithdrawalAccount;
+
+        beforeEach(() => {
+          spyGetWithdrawalAccount = jest
+            .spyOn(minterServices, "getWithdrawalAccount")
+            .mockRejectedValue(new Error());
+        });
+
+        it("should not call get account", async () => {
+          const call = () => getCkBTCWithdrawalAccount(params);
+
+          expect(call).rejects.toThrowError();
+
+          expect(spyGetCkBTCAccount).not.toBeCalled();
         });
       });
     });
