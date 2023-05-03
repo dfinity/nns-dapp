@@ -12,7 +12,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
   IcrcLedgerCanister,
-  type BalanceParams,
+  type IcrcAccount,
   type IcrcBlockIndex,
 } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
@@ -27,7 +27,7 @@ export const getCkBTCAccount = async ({
   certified: boolean;
   canisterId: Principal;
   type: AccountType;
-} & BalanceParams): Promise<Account> => {
+} & IcrcAccount): Promise<Account> => {
   logWithTimestamp("Getting ckBTC account: call...");
 
   const {
