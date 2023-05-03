@@ -11,7 +11,7 @@
     SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
-  import { fromDefinedNullable, isNullish, nonNullish } from "@dfinity/utils";
+  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
@@ -43,11 +43,8 @@
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
-  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils.js";
+  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
