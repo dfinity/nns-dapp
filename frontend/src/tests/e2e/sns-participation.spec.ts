@@ -36,7 +36,7 @@ test("Test SNS participation", async ({ page, context }) => {
   const projectDetail = appPo.getProjectDetailPo();
   await projectDetail.waitForContentLoaded();
   const tokenSymbol = await projectDetail.getTokenSymbol();
-  expect("Project " + tokenSymbol).toBe(snsProjectName);
+  expect(`Project ${tokenSymbol}`).toBe(snsProjectName);
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
   // D004: User can participate in a sale
