@@ -35,7 +35,7 @@ export const mockCkBTCWithdrawalAccount: Account = {
     token: mockCkBTCToken,
   }) as TokenAmount,
   principal: mockCkBTCWithdrawalIcrcAccount.owner,
-  type: "minter",
+  type: "withdrawalAccount",
 };
 
 export const mockCkBTCAddress =

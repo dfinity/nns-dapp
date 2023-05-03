@@ -192,7 +192,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   subAccount: string;
   hardwareWallet: string;
-  minter: string;
+  withdrawalAccount: string;
   select_source: string;
   select_destination: string;
   address: string;

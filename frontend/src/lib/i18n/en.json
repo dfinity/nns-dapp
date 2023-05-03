@@ -183,7 +183,7 @@
     "new_linked_account_placeholder": "Account Name",
     "subAccount": "Linked account",
     "hardwareWallet": "Hardware wallet",
-    "minter": "Minter",
+    "withdrawalAccount": "Redeeming account",
     "select_source": "Select Source Account",
     "select_destination": "Select Destination",
     "address": "Address",

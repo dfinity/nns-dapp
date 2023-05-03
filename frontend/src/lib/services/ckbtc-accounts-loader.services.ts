@@ -59,7 +59,7 @@ export const getCkBTCWithdrawalAccount = async ({
 
   const {
     error__ckbtc: { no_minter_defined },
-    accounts: { minter: name },
+    accounts: { withdrawalAccount: name },
   } = get(i18n);
 
   if (isNullish(canisters?.minterCanisterId)) {
@@ -67,18 +67,6 @@ export const getCkBTCWithdrawalAccount = async ({
       labelKey: "error__ckbtc.no_minter_defined",
     });
     throw new Error(no_minter_defined);
-  }
-
-  const store = get(ckBTCWithdrawalAccountsStore);
-  const storedWithdrawalAccount = store[universeId.toText()];
-
-  // We have to load the withdrawal account with an update call but, we use the query to indicate we are about to load the data
-  if (!certified) {
-    return {
-      ...(nonNullish(storedWithdrawalAccount) &&
-        storedWithdrawalAccount.account),
-      type: "minter",
-    };
   }
 
   const loadWithdrawalAccount = async (): Promise<IcrcAccount> => {
@@ -95,6 +83,17 @@ export const getCkBTCWithdrawalAccount = async ({
     };
   };
 
+  const store = get(ckBTCWithdrawalAccountsStore);
+  const storedWithdrawalAccount = store[universeId.toText()];
+
+  // We have to load the withdrawal account with an update call.
+  // If we never have loaded it, we return a empty account as result of the not certified (query) call to indicate we are about to load the data.
+  if (!certified && isNullish(storedWithdrawalAccount?.account.identifier)) {
+    return {
+      type: "withdrawalAccount",
+    };
+  }
+
   // We do not reload the withdrawal account for performance reason
   const withdrawalAccount = nonNullish(
     storedWithdrawalAccount?.account.identifier
@@ -107,7 +106,7 @@ export const getCkBTCWithdrawalAccount = async ({
     certified,
     canisterId: universeId,
     ...withdrawalAccount,
-    type: "minter",
+    type: "withdrawalAccount",
   });
 
   return {
