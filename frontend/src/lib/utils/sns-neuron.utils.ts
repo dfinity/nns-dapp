@@ -737,13 +737,14 @@ export const votedSnsNeurons = ({
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
 }): SnsNeuron[] => {
-  const notVotedNeuronIds = new Set(
+  const votedNeuronIds = new Set(
     proposal.ballots
-      .filter(([, { vote }]) => vote === Vote.Unspecified)
+      // filter out the unspecified votes or the ballots that are not presented in ballots
+      .filter(([, { vote }]) => vote === Vote.Yes || vote === Vote.No)
       .map(([neuronId]) => neuronId)
   );
-  return neurons.filter(
-    (neuron) => !notVotedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
+  return neurons.filter((neuron) =>
+    votedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
   );
 };
 
@@ -773,8 +774,8 @@ export const votedSnsNeuronDetails = ({
     // Exclude the cases where the vote was not found.
     .filter(({ vote }) => vote !== undefined) as CompactNeuronInfo[];
 
-// Get the vote of a neuron from a sns proposal.
-const getSnsNeuronVote = ({
+/** Returns neuron vote using proposal ballots. */
+export const getSnsNeuronVote = ({
   neuron,
   proposal,
 }: {
