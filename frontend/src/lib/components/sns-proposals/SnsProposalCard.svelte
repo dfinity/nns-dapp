@@ -13,7 +13,7 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -52,7 +52,6 @@
         proposalId: `${id?.id}`,
       })
     );
-
 </script>
 
 <ProposalCard
@@ -65,5 +64,4 @@
   {type}
   proposer={proposerString}
   {deadlineTimestampSeconds}
-  ></ProposalCard
->
+/>
