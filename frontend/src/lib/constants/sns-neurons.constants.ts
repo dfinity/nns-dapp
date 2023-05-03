@@ -15,4 +15,4 @@ export const MANAGE_HOTKEY_PERMISSIONS = [
 
 export const UNSPECIFIED_FUNCTION_ID = BigInt(0);
 
-export const SNS_NEURON_ID_DISPLAY_LENGTH = 12;
+export const SNS_NEURON_ID_DISPLAY_LENGTH = 14;
