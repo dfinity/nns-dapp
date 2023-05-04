@@ -16,14 +16,14 @@
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
   import type {
-    TransactionNetwork as TransactionNetworkType,
+    TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import { isNullish } from "@dfinity/utils";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import TransactionNetwork from "$lib/components/transaction/TransactionNetwork.svelte";
+  import TransactionFormNetwork from "$lib/components/transaction/TransactionFormNetwork.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -42,7 +42,7 @@
     "all";
 
   export let mustSelectNetwork = false;
-  export let selectedNetwork: TransactionNetworkType | undefined = undefined;
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let networkReadonly: boolean | undefined = undefined;
 
   export let validateAmount: ValidateAmountFn = () => undefined;
@@ -137,7 +137,7 @@
   {/if}
 
   {#if mustSelectNetwork}
-    <TransactionNetwork
+    <TransactionFormNetwork
       bind:selectedNetwork
       universeId={rootCanisterId}
       {selectedDestinationAddress}
