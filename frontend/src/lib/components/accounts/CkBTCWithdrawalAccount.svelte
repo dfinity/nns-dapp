@@ -69,9 +69,7 @@
     loading,
     (() => {
       transfersToBeCompleted =
-        loading || isNullish(account)
-          ? undefined
-          : accountBalance.toE8s() > 0n;
+        loading || isNullish(account) ? undefined : accountBalance.toE8s() > 0n;
     })();
 
   // Important: We do not explicitely use Svelte transition because according our test, use these here leads to breaking the routing.
