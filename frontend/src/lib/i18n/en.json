@@ -878,7 +878,10 @@
     "refresh_balance": "Refresh Balance",
     "confirmations": "Confirmations",
     "warning_transaction_failed": "Your ckBTC transaction failed",
-    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue."
+    "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue.",
+    "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
+    "all_btc_transfers_complete": "All transfers are complete",
+    "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
