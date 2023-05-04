@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXX
+
+* Add BitcoinSetConfig proposal payload support.
+* Minor fixes and UI improvements.
+
 ## Proposal 120468
 * UI fixes.
 * Testing improvements.
