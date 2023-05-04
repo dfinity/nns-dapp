@@ -30,6 +30,10 @@
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
+  let userHasParticipated: boolean;
+  $: userHasParticipated =
+    commitmentE8s !== undefined && commitmentE8s > BigInt(0);
+
   const showProject = async () =>
     await goto(
       `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
@@ -40,7 +44,7 @@
   testId="project-card-component"
   role="link"
   on:click={showProject}
-  theme={commitmentE8s !== undefined ? "highlighted" : undefined}
+  theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />

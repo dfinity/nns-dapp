@@ -40,7 +40,7 @@
   let myCommitment: TokenAmount | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
-    if (commitmentE8s !== undefined) {
+    if (commitmentE8s !== undefined && commitmentE8s > BigInt(0)) {
       myCommitment = TokenAmount.fromE8s({
         amount: commitmentE8s,
         token: ICPToken,
@@ -49,7 +49,7 @@
   }
 </script>
 
-<dl>
+<dl data-tid="project-card-swap-info-component">
   <!-- Sale is committed -->
   {#if lifecycle === SnsSwapLifecycle.Committed}
     <dt>{$i18n.sns_project_detail.status_completed}</dt>
@@ -70,7 +70,9 @@
 
   {#if myCommitment !== undefined}
     <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
-    <dd><AmountDisplay amount={myCommitment} singleLine inheritSize /></dd>
+    <dd data-tid="commitment-token-value">
+      <AmountDisplay amount={myCommitment} singleLine inheritSize />
+    </dd>
   {/if}
 </dl>
 
