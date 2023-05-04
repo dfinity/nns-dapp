@@ -12,6 +12,7 @@ export interface TransactionInit {
   sourceAccount?: Account;
   destinationAddress?: string;
   mustSelectNetwork?: boolean;
+  networkReadonly?: boolean;
   amount?: number;
 }
 
