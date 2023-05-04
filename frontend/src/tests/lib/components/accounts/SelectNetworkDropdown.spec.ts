@@ -19,12 +19,6 @@ import {
 describe("SelectNetworkDropdown", () => {
   const props = { universeId: CKBTC_UNIVERSE_CANISTER_ID };
 
-  it("should display a network title", () => {
-    const { getByText } = render(SelectNetworkDropdown, { props });
-
-    expect(getByText(en.accounts.network)).toBeInTheDocument();
-  });
-
   it("should render a select component", () => {
     const { getByTestId } = render(SelectNetworkDropdown, { props });
 

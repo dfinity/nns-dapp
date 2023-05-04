@@ -15,7 +15,7 @@
   <p class="label">{$i18n.accounts.network}</p>
 
   {#if networkReadonly}
-    <p class="network">
+    <p class="network" data-tid="readonly-network">
       {$i18n.accounts[selectedNetwork ?? TransactionNetwork.ICP]}
     </p>
   {:else}
