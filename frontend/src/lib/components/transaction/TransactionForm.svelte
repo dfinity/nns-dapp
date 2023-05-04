@@ -23,6 +23,7 @@
   import { isNullish } from "@dfinity/utils";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
+  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -37,6 +38,8 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+  export let selectDestinationMethods: TransactionSelectDestinationMethods =
+    "all";
 
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
@@ -126,6 +129,7 @@
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
+      bind:selectMethods={selectDestinationMethods}
       {selectedNetwork}
       on:nnsOpenQRCodeReader
     />
