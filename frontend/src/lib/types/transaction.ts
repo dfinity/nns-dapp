@@ -13,6 +13,7 @@ export interface TransactionInit {
   destinationAddress?: string;
   mustSelectNetwork?: boolean;
   amount?: number;
+  selectDestinationMethods?: TransactionSelectDestinationMethods;
 }
 
 export type ValidateAmountFn = (params: {
@@ -64,3 +65,5 @@ export enum TransactionNetwork {
   BTC_MAINNET = "network_btc_mainnet",
   BTC_TESTNET = "network_btc_testnet",
 }
+
+export type TransactionSelectDestinationMethods = "all" | "manual" | "dropdown";

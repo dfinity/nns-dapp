@@ -14,6 +14,7 @@
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
+  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
 
   export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
@@ -22,6 +23,8 @@
   let sourceAccount: Account | undefined = transactionInit.sourceAccount;
   let destinationAddress: string | undefined =
     transactionInit.destinationAddress;
+  let selectDestinationMethods: TransactionSelectDestinationMethods =
+    transactionInit.selectDestinationMethods ?? "all";
 
   // User inputs exposed for bind in consumers and initialized with initial parameters when component is mounted.
   export let amount: number | undefined = transactionInit.amount;
@@ -46,7 +49,8 @@
   let mustSelectNetwork = transactionInit.mustSelectNetwork ?? false;
 
   let selectedDestinationAddress: string | undefined = destinationAddress;
-  let showManualAddress = true;
+
+  let showManualAddress = selectDestinationMethods !== "dropdown";
 
   // Wizard modal steps and navigation
   const STEP_FORM = "Form";
@@ -114,6 +118,7 @@
       bind:selectedAccount={sourceAccount}
       bind:amount
       bind:showManualAddress
+      bind:selectDestinationMethods
       {skipHardwareWallets}
       {maxAmount}
       {token}
