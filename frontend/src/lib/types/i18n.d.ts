@@ -927,6 +927,9 @@ interface I18nCkbtc {
   confirmations: string;
   warning_transaction_failed: string;
   warning_transaction_description: string;
+  checking_incomplete_btc_transfers: string;
+  all_btc_transfers_complete: string;
+  click_to_complete_btc_transfers: string;
 }
 
 interface I18nError__ckbtc {
