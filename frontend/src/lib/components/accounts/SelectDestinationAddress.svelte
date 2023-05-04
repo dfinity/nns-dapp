@@ -11,7 +11,10 @@
   import AddressInput from "./AddressInput.svelte";
   import SelectAccountDropdown from "./SelectAccountDropdown.svelte";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import type {
+    TransactionNetwork,
+    TransactionSelectDestinationMethods,
+  } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
@@ -19,6 +22,7 @@
   export let filterAccounts: (account: Account) => boolean = () => true;
   export let showManualAddress = true;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let selectMethods: TransactionSelectDestinationMethods = "all";
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountByRootCanister({
@@ -39,9 +43,10 @@
     }
   }
 
-  // Show the toggle if there are more than one account to select from.
+  // Show the toggle if there are more than one account to select from and if all selection methods is available.
   let showToggle = true;
   $: showToggle =
+    selectMethods === "all" &&
     (getAccountsByRootCanister({
       rootCanisterId,
       universesAccounts: $universesAccountsStore,
