@@ -24,6 +24,7 @@ import {
   canBeMerged,
   checkInvalidState,
   dissolveDelayMultiplier,
+  filterIneligibleNnsNeurons,
   followeesByTopic,
   followeesNeurons,
   formatVotingPower,
@@ -57,6 +58,7 @@ import {
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
+  type IneligibleNeuronData,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
 import {
@@ -79,6 +81,8 @@ import {
   Topic,
   Vote,
   type BallotInfo,
+  type NeuronInfo,
+  type ProposalInfo,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -1893,6 +1897,72 @@ describe("neuron-utils", () => {
         ageSeconds: mockNeuron.ageSeconds + BigInt(SECONDS_IN_FOUR_YEARS),
       };
       expect(neuronAge(neuron)).toEqual(BigInt(SECONDS_IN_FOUR_YEARS));
+    });
+  });
+
+  describe("filterIneligibleNnsNeurons", () => {
+    const proposalTimestampSeconds = BigInt(100);
+    const testProposalInfo = {
+      ...mockProposalInfo,
+      proposalTimestampSeconds,
+      ballots: [
+        {
+          neuronId: 3n,
+          vote: Vote.Yes,
+          votingPower: 12345n,
+        },
+      ],
+    } as ProposalInfo;
+    const testSinceNeuron = {
+      ...mockNeuron,
+      neuronId: 1n,
+      createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+    } as NeuronInfo;
+    const testShortNeuron = {
+      ...mockNeuron,
+      neuronId: 2n,
+      createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
+    } as NeuronInfo;
+    const testVotedNeuron = {
+      ...mockNeuron,
+      neuronId: 3n,
+    } as NeuronInfo;
+
+    it("should return ineligible neurons data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testSinceNeuron, testShortNeuron, testVotedNeuron],
+        }).length
+      ).toEqual(2);
+    });
+
+    it("should return since reason data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testSinceNeuron],
+        })
+      ).toEqual([
+        {
+          neuronIdString: "1",
+          reason: "since",
+        },
+      ] as IneligibleNeuronData[]);
+    });
+
+    it("should return short reason data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testShortNeuron],
+        })
+      ).toEqual([
+        {
+          neuronIdString: "2",
+          reason: "short",
+        },
+      ] as IneligibleNeuronData[]);
     });
   });
 });

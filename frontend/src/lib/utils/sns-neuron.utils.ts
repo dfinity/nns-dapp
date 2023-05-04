@@ -4,7 +4,11 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
-import { votingPower, type CompactNeuronInfo } from "$lib/utils/neuron.utils";
+import {
+  votingPower,
+  type CompactNeuronInfo,
+  type IneligibleNeuronData,
+} from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
@@ -698,6 +702,7 @@ export const ineligibleSnsNeurons = ({
     const neuronId = getSnsNeuronIdAsHexString(neuron);
     const createdSinceProposal: boolean =
       neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds;
+    // TODO(sns-voting): is this still correct, because it's possible to check against real short, but what to display if both are false and there is no ballot in proposal?
     const dissolveTooShort: boolean =
       ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
       undefined;
@@ -785,3 +790,18 @@ export const getSnsNeuronVote = ({
   proposal.ballots.find(
     ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
   )?.[1].vote;
+
+export const snsNeuronToIneligibleNeuronData = ({
+  neurons,
+  proposal: { proposal_creation_timestamp_seconds },
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): IneligibleNeuronData[] =>
+  neurons.map((neuron) => ({
+    neuronIdString: getSnsNeuronIdAsHexString(neuron),
+    reason:
+      neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds
+        ? "since"
+        : "short",
+  }));

@@ -11,7 +11,7 @@
     SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
+  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
@@ -28,6 +28,7 @@
   } from "$lib/utils/sns-proposals.utils";
   import {
     getSnsNeuronIdAsHexString,
+    snsNeuronToIneligibleNeuronData,
     votableSnsNeurons,
     votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
@@ -37,8 +38,13 @@
   import { Principal } from "@dfinity/principal";
   import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
-  import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
+  import type {
+    CompactNeuronInfo,
+    IneligibleNeuronData,
+  } from "$lib/utils/neuron.utils";
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
+  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -138,6 +144,23 @@
       snsParameters,
     });
   }
+
+  // ineligible neurons data
+  let ineligibleNeurons: IneligibleNeuronData[];
+  $: ineligibleNeurons = snsNeuronToIneligibleNeuronData({
+    neurons: ineligibleSnsNeurons({
+      neurons: $sortedSnsUserNeuronsStore,
+      proposal,
+    }),
+    proposal,
+  });
+  let minSnsDissolveDelaySeconds: bigint;
+  $: minSnsDissolveDelaySeconds =
+    snsParameters === undefined
+      ? 0n
+      : fromDefinedNullable(
+          snsParameters.neuron_minimum_dissolve_delay_to_vote_seconds
+        );
 </script>
 
 <BottomSheet>
@@ -155,7 +178,10 @@
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
             <MyVotes {neuronsVotedForProposal} />
-            <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
+            <IneligibleNeuronsCard
+              {ineligibleNeurons}
+              {minSnsDissolveDelaySeconds}
+            />
           </VotingNeuronSelect>
         {:else}
           <div class="loader">
