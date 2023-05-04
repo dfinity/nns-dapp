@@ -17,7 +17,6 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -36,7 +35,7 @@ describe("ckbtc-accounts-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call api.getSnsAccounts and load neurons in store", async () => {
+    it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyQuery = jest
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
@@ -188,7 +187,7 @@ describe("ckbtc-accounts-services", () => {
         .mockResolvedValue(456n);
 
       const { blockIndex } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: true,
@@ -213,7 +212,7 @@ describe("ckbtc-accounts-services", () => {
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
       const { blockIndex } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
@@ -237,7 +236,7 @@ describe("ckbtc-accounts-services", () => {
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
       const { blockIndex } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,

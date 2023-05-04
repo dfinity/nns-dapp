@@ -24,7 +24,7 @@ export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
 /**
  * A store that contains the ckBTC and other Icrc compatible accounts.
  */
-export const initIcrcAccountsStore = (): IcrcAccountsStore => {
+const initIcrcAccountsStore = (): IcrcAccountsStore => {
   const initialAccounts: IcrcAccountStoreData = {};
 
   const { subscribe, update, set } =
