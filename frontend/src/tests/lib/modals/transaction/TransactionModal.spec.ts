@@ -94,12 +94,14 @@ describe("TransactionModal", () => {
     rootCanisterId,
     sourceAccount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
@@ -107,6 +109,7 @@ describe("TransactionModal", () => {
       transactionFee,
       rootCanisterId,
       mustSelectNetwork,
+      showLedgerFee,
     });
 
     const { getByTestId, container } = result;
@@ -262,6 +265,43 @@ describe("TransactionModal", () => {
       expect(
         getByText(formattedTransactionFeeICP(Number(fee.toE8s())))
       ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and show ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+      });
+
+      expect(getByTestId("transaction-summary-fee")).toBeInTheDocument();
+      expect(
+        getByTestId("transaction-summary-total-deducted")
+      ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and hide ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+        showLedgerFee: false,
+      });
+
+      expect(() => getByTestId("transaction-summary-fee")).toThrow();
+      expect(() => getByTestId("transaction-summary-total-deducted")).toThrow();
     });
 
     it("should move to the last step and trigger nnsSubmit event", async () => {
