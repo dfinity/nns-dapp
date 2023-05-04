@@ -2,12 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import {
-    debounce,
-    isNullish,
-    nonNullish,
-    notEmptyString,
-  } from "@dfinity/utils";
+  import { debounce, isNullish, nonNullish } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
