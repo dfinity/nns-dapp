@@ -45,6 +45,7 @@ describe("TransactionModal", () => {
     rootCanisterId,
     validateAmount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -52,6 +53,7 @@ describe("TransactionModal", () => {
     rootCanisterId?: Principal;
     validateAmount?: ValidateAmountFn;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -63,6 +65,7 @@ describe("TransactionModal", () => {
           sourceAccount,
           destinationAddress,
           mustSelectNetwork,
+          showLedgerFee,
         },
       },
     });
@@ -354,6 +357,25 @@ describe("TransactionModal", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+
+    it("should show the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).toBeInTheDocument();
+    });
+
+    it("should hide the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+        showLedgerFee: false,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).not.toBeInTheDocument();
     });
   });
 
