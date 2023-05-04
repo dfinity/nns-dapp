@@ -1,7 +1,8 @@
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
-import { writable, type Readable } from "svelte/store";
+import type { Readable } from "svelte/store";
+import { queuedStore } from "./queued-store";
 
 export interface AccountsStoreData {
   main?: Account;
@@ -10,16 +11,27 @@ export interface AccountsStoreData {
   certified?: boolean;
 }
 
-export interface AccountsStore extends Readable<AccountsStoreData> {
+export interface SingleMutationAccountsStore {
   set: (data: AccountsStoreData) => void;
   setBalance: ({
+    certified,
     accountIdentifier,
     balanceE8s,
   }: {
+    certified: boolean;
     accountIdentifier: string;
     balanceE8s: bigint;
   }) => void;
-  reset: () => void;
+  reset: (certified: boolean) => void;
+}
+
+export interface AccountsStore extends Readable<AccountsStoreData> {
+  // Returns a store on which operations can be performed for a single
+  // mutation. Note that the changes applied for both the query and update
+  // response count as a single mutation and should be applied using the same
+  // store. The purpose of this store is to be able to associate the query and
+  // update response of the same mutation.
+  getSingleMutationStore: () => SingleMutationAccountsStore;
 }
 
 /**
@@ -33,44 +45,58 @@ const initAccountsStore = (): AccountsStore => {
     certified: undefined,
   };
 
-  const { subscribe, set, update } =
-    writable<AccountsStoreData>(initialAccounts);
+  const { subscribe, getSingleMutationStore } =
+    queuedStore<AccountsStoreData>(initialAccounts);
 
   return {
     subscribe,
 
-    set,
+    getSingleMutationStore: () => {
+      const { set, update } = getSingleMutationStore();
 
-    setBalance({
-      accountIdentifier,
-      balanceE8s,
-    }: {
-      accountIdentifier: string;
-      balanceE8s: bigint;
-    }) {
-      update(({ main, subAccounts, hardwareWallets }) => {
-        if (isNullish(main)) {
-          // Ignore update if the main account is not set.
-          return { main, subAccounts, hardwareWallets };
-        }
-        const newBalance = TokenAmount.fromE8s({
-          amount: balanceE8s,
-          token: ICPToken,
-        });
-        const mapNewBalance = (account: Account) => {
-          return account.identifier === accountIdentifier
-            ? { ...account, balance: newBalance }
-            : account;
-        };
-        return {
-          main: mapNewBalance(main),
-          subAccounts: (subAccounts || []).map(mapNewBalance),
-          hardwareWallets: (hardwareWallets || []).map(mapNewBalance),
-        };
-      });
+      return {
+        set(accounts: AccountsStoreData) {
+          set({ data: accounts, certified: accounts.certified });
+        },
+
+        setBalance({
+          certified,
+          accountIdentifier,
+          balanceE8s,
+        }: {
+          certified: boolean;
+          accountIdentifier: string;
+          balanceE8s: bigint;
+        }) {
+          update({
+            mutation: ({ main, subAccounts, hardwareWallets }) => {
+              if (isNullish(main)) {
+                // Ignore update if the main account is not set.
+                return { main, subAccounts, hardwareWallets };
+              }
+              const newBalance = TokenAmount.fromE8s({
+                amount: balanceE8s,
+                token: ICPToken,
+              });
+              const mapNewBalance = (account: Account) => {
+                return account.identifier === accountIdentifier
+                  ? { ...account, balance: newBalance }
+                  : account;
+              };
+              return {
+                main: mapNewBalance(main),
+                subAccounts: (subAccounts || []).map(mapNewBalance),
+                hardwareWallets: (hardwareWallets || []).map(mapNewBalance),
+              };
+            },
+            certified,
+          });
+        },
+
+        reset: (certified: boolean) =>
+          set({ data: initialAccounts, certified }),
+      };
     },
-
-    reset: () => set(initialAccounts),
   };
 };
 
