@@ -46,7 +46,7 @@
           })}
           title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
         >
-          <p class="value">
+          <p class="value" title={neuron.idString}>
             {shortenWithMiddleEllipsis(
               neuron.idString,
               SNS_NEURON_ID_DISPLAY_LENGTH
