@@ -9,6 +9,7 @@
   export let amount: number;
   export let token: Token;
   export let transactionFee: TokenAmount;
+  export let showLedgerFee = true;
 
   // If we made it this far, the number is valid.
   let tokenAmount: TokenAmount;
@@ -39,24 +40,31 @@
   <div data-tid="transaction-summary-sending-amount">
     <p class="label subtitle">{$i18n.accounts.sending_amount}</p>
     <p>
-      <AmountDisplay singleLine detailed amount={tokenAmount} />
+      <AmountDisplay
+        singleLine={showLedgerFee}
+        inline={!showLedgerFee}
+        detailed
+        amount={tokenAmount}
+      />
     </p>
   </div>
 
-  <div data-tid="transaction-summary-fee">
-    <p class="label subtitle">{ledgerFeeLabel}</p>
-    <p>
-      <AmountDisplay singleLine detailed amount={transactionFee} />
-    </p>
-  </div>
+  {#if showLedgerFee}
+    <div data-tid="transaction-summary-fee">
+      <p class="label subtitle">{ledgerFeeLabel}</p>
+      <p>
+        <AmountDisplay singleLine detailed amount={transactionFee} />
+      </p>
+    </div>
 
-  <div class="deducted" data-tid="transaction-summary-total-deducted">
-    <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
+    <div class="deducted" data-tid="transaction-summary-total-deducted">
+      <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
-    <p>
-      <AmountDisplay inline detailed amount={tokenTotalDeducted} />
-    </p>
-  </div>
+      <p>
+        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
+      </p>
+    </div>
+  {/if}
 
   <div class="icon">
     <IconSouth />

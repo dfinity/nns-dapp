@@ -14,6 +14,12 @@ export interface TransactionInit {
   mustSelectNetwork?: boolean;
   amount?: number;
   selectDestinationMethods?: TransactionSelectDestinationMethods;
+  /**
+   * Fees are applied for transactions on the IC.
+   * Yet, when user restart the conversion of ckBTC -> BTC from the withdrawal account, there is no transfer to the ledger.
+   * That si why with the help of this flag, the ledger fee can be skipped on the UI side.
+   */
+  showLedgerFee?: boolean;
 }
 
 export type ValidateAmountFn = (params: {

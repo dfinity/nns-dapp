@@ -16,6 +16,7 @@
   export let transactionFee: TokenAmount;
   export let token: Token;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let showLedgerFee = true;
 
   let sourceAccount: Account;
   let amount: number;
@@ -36,7 +37,7 @@
   <div class="info">
     <TransactionSource account={sourceAccount} />
 
-    <TransactionSummary {amount} {token} {transactionFee}>
+    <TransactionSummary {amount} {token} {transactionFee} {showLedgerFee}>
       <slot name="received-amount" slot="received-amount" />
     </TransactionSummary>
 
