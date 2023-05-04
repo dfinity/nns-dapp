@@ -73,6 +73,7 @@ describe("ckbtc-accounts-loader-services", () => {
           universeId: OWN_CANISTER_ID,
         });
 
+      // Testing that the service bubbles errors is enough as the particular error are toasted within the services that are used by getCkBTCWithdrawalAccount
       expect(call).rejects.toThrowError();
     });
 

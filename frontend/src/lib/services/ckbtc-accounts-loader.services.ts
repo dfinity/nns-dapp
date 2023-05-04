@@ -46,6 +46,14 @@ export const getCkBTCAccounts = async ({
   return [account];
 };
 
+/**
+ * 1. If not yet loaded, get the ckBTC withdrawal account from the minter, otherwise use the existing value in store.
+ * 2. Get the related account metadata information and balance from the ckBTC ledger
+ *
+ * Note: the minter provides the ckBTC withdrawal account only through an update call. Because we have to display the loading in the UI to the user, this function returns a partial account if a query is started.
+ *
+ * @returns a NNS-dapp account of type "withdrawalAccount"
+ */
 export const getCkBTCWithdrawalAccount = async ({
   universeId,
   certified,

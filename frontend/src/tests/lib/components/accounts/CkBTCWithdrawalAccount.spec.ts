@@ -55,7 +55,7 @@ describe("CkBTCWithdrawalAccount", () => {
     });
   });
 
-  describe("getCkBTCAccount", () => {
+  describe("getCkBTCAccount returns a valid account", () => {
     let spyGetCkBTCAccount;
 
     beforeEach(() => {

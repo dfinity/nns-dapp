@@ -25,7 +25,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
         subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
       });
 
-    it("should call api.getSnsAccounts and load neurons in store", async () => {
+    it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyGetCkBTCAccount = jest
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
