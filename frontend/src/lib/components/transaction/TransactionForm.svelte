@@ -40,6 +40,7 @@
   export let showManualAddress = true;
   export let selectDestinationMethods: TransactionSelectDestinationMethods =
     "all";
+  export let showLedgerFee = true;
 
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
@@ -148,7 +149,9 @@
   <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
 
-    <TransactionFormFee {transactionFee} />
+    {#if showLedgerFee}
+      <TransactionFormFee {transactionFee} />
+    {/if}
 
     <slot name="additional-info" />
   </div>

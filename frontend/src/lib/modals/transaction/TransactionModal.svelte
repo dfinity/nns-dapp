@@ -26,6 +26,7 @@
   let selectDestinationMethods: TransactionSelectDestinationMethods =
     transactionInit.selectDestinationMethods ?? "all";
   let networkReadonly = transactionInit.networkReadonly;
+  let showLedgerFee = transactionInit.showLedgerFee ?? true;
 
   // User inputs exposed for bind in consumers and initialized with initial parameters when component is mounted.
   export let amount: number | undefined = transactionInit.amount;
@@ -128,6 +129,7 @@
       {mustSelectNetwork}
       bind:selectedNetwork
       {networkReadonly}
+      {showLedgerFee}
       on:nnsOpenQRCodeReader={goQRCode}
     >
       <slot name="additional-info-form" slot="additional-info" />
@@ -144,6 +146,7 @@
       {disableSubmit}
       {token}
       {selectedNetwork}
+      {showLedgerFee}
       on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose
