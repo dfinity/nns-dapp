@@ -23,7 +23,7 @@
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import TransactionFormNetwork from "$lib/components/transaction/TransactionFormNetwork.svelte";
+  import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -137,7 +137,7 @@
   {/if}
 
   {#if mustSelectNetwork}
-    <TransactionFormNetwork
+    <TransactionFormItemNetwork
       bind:selectedNetwork
       universeId={rootCanisterId}
       {selectedDestinationAddress}
