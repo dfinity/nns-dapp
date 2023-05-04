@@ -4,7 +4,7 @@ set -euo pipefail
 : "Getting URL from latest redirect..."
 II_URL="$(
   set +o pipefail # We truncate the curl output, this is fine.
-  curl -v https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm 2>&1 |
+  curl -v https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz 2>&1 |
     awk '(($1 == "<") && ($2 == "location:")){print $3; exit 0}' |
     tr -d '[:space:]'
 )"
