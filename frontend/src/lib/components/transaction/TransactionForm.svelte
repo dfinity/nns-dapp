@@ -15,7 +15,6 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
-  import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
   import type {
     TransactionNetwork,
     ValidateAmountFn,
@@ -24,6 +23,7 @@
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
+  import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -43,6 +43,7 @@
 
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let networkReadonly: boolean | undefined = undefined;
 
   export let validateAmount: ValidateAmountFn = () => undefined;
 
@@ -136,10 +137,11 @@
   {/if}
 
   {#if mustSelectNetwork}
-    <SelectNetworkDropdown
+    <TransactionFormItemNetwork
       bind:selectedNetwork
       universeId={rootCanisterId}
       {selectedDestinationAddress}
+      {networkReadonly}
     />
   {/if}
 
