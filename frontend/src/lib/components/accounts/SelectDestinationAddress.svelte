@@ -20,9 +20,9 @@
   export let rootCanisterId: Principal;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let filterAccounts: (account: Account) => boolean = () => true;
-  export let showManualAddress = true;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let selectMethods: TransactionSelectDestinationMethods = "all";
+  export let showManualAddress: boolean = selectMethods !== "dropdown";
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountByRootCanister({
