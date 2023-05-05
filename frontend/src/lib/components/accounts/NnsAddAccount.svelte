@@ -22,7 +22,7 @@
       on:click={openAddAccountModal}
       data-tid="open-add-account-modal"
     >
-      <IconAdd />
+      <div class="icon"><IconAdd /></div>
       {$i18n.accounts.add_account}
     </button>
   {/if}

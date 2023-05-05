@@ -9,7 +9,7 @@
     SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
+  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
   import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
@@ -26,7 +26,9 @@
   } from "$lib/utils/sns-proposals.utils";
   import {
     getSnsNeuronIdAsHexString,
+    snsNeuronToIneligibleNeuronData,
     votableSnsNeurons,
+    votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
   import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -34,6 +36,13 @@
   import { Principal } from "@dfinity/principal";
   import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
+  import type {
+    CompactNeuronInfo,
+    IneligibleNeuronData,
+  } from "$lib/utils/neuron.utils";
+  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
+  import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
+  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposal: SnsProposalData;
@@ -74,9 +83,6 @@
   $: neuronsReady =
     nonNullish(universeIdText) &&
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
 
   const userSelectedNeurons = (): SnsNeuron[] =>
     $votingNeuronSelectStore.selectedIds
@@ -125,6 +131,32 @@
       await reloadProposal();
     }
   };
+
+  let neuronsVotedForProposal: CompactNeuronInfo[];
+  $: if (nonNullish(snsParameters) && votableNeurons.length > 0) {
+    neuronsVotedForProposal = votedSnsNeuronDetails({
+      neurons: $sortedSnsUserNeuronsStore,
+      proposal,
+      snsParameters,
+    });
+  }
+
+  // ineligible neurons data
+  let ineligibleNeurons: IneligibleNeuronData[];
+  $: ineligibleNeurons = snsNeuronToIneligibleNeuronData({
+    neurons: ineligibleSnsNeurons({
+      neurons: $sortedSnsUserNeuronsStore,
+      proposal,
+    }),
+    proposal,
+  });
+  let minSnsDissolveDelaySeconds: bigint;
+  $: minSnsDissolveDelaySeconds =
+    snsParameters === undefined
+      ? 0n
+      : fromDefinedNullable(
+          snsParameters.neuron_minimum_dissolve_delay_to_vote_seconds
+        );
 </script>
 
 <BottomSheet>
@@ -141,8 +173,11 @@
 
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <!--            <MyVotes {proposalInfo} />-->
-            <!--            <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />-->
+            <MyVotes {neuronsVotedForProposal} />
+            <IneligibleNeuronsCard
+              {ineligibleNeurons}
+              {minSnsDissolveDelaySeconds}
+            />
           </VotingNeuronSelect>
         {:else}
           <div class="loader">

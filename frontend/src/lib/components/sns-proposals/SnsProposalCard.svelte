@@ -13,11 +13,7 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import { registerVoteDemo } from "$lib/services/$public/sns-proposals.services";
-  import { SnsProposalDecisionStatus, SnsVote } from "@dfinity/sns";
-  import { busy, startBusy } from "@dfinity/gix-components";
-  import { stopBusy } from "$lib/stores/busy.store";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -56,19 +52,6 @@
         proposalId: `${id?.id}`,
       })
     );
-
-  // TODO(demo): remove after voting implementation
-  let demoVoteEnable = false;
-  $: demoVoteEnable =
-    $authSignedInStore &&
-    status === SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
-
-  // TODO(demo): remove after voting implementation
-  const vote = async (vote: SnsVote) => {
-    startBusy({ initiator: "load-sns-accounts" });
-    await registerVoteDemo({ proposal: proposalData, vote });
-    stopBusy("load-sns-accounts");
-  };
 </script>
 
 <ProposalCard
@@ -81,29 +64,4 @@
   {type}
   proposer={proposerString}
   {deadlineTimestampSeconds}
-  >{#if demoVoteEnable}
-    <div class="demo-vote">
-      <button
-        class="secondary"
-        disabled={$busy}
-        on:click|preventDefault|stopPropagation={() => vote(SnsVote.Yes)}
-        >Vote Yes</button
-      >
-      <button
-        class="secondary"
-        disabled={$busy}
-        on:click|preventDefault|stopPropagation={() => vote(SnsVote.No)}
-        >Vote No</button
-      >
-    </div>
-  {/if}</ProposalCard
->
-
-<style lang="scss">
-  .demo-vote {
-    margin-top: var(--padding-2x);
-    display: flex;
-    justify-content: start;
-    gap: var(--padding);
-  }
-</style>
+/>

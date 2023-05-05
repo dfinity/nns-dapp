@@ -32,6 +32,7 @@ import {
   NeuronState,
   Topic,
   Vote,
+  ineligibleNeurons,
   votedNeurons,
   type BallotInfo,
   type Followees,
@@ -694,7 +695,7 @@ export const userAuthorizedNeuron = (neuron: NeuronInfo): boolean =>
   neuron.fullNeuron !== undefined;
 
 export type CompactNeuronInfo = {
-  id: NeuronId;
+  idString: string;
   votingPower: bigint;
   vote: Vote;
 };
@@ -733,7 +734,7 @@ export const votedNeuronDetails = ({
     proposal,
   })
     .map((neuron) => ({
-      id: neuron.neuronId,
+      idString: neuron.neuronId.toString(),
       votingPower: getVotingPower({ neuron, proposal }),
       vote: getVote({ neuron, proposal }),
     }))
@@ -828,3 +829,30 @@ export const validTopUpAmount = ({
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
   BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
+
+/**
+ * Represents an entry in the list of ineligible neurons.
+ * - 'short': the neuron is too young to vote
+ * - 'since': the neuron was created after the proposal was submitted
+ */
+export interface IneligibleNeuronData {
+  neuronIdString: string;
+  reason: "since" | "short";
+}
+export const filterIneligibleNnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: NeuronInfo[];
+  proposal: ProposalInfo;
+}): IneligibleNeuronData[] =>
+  ineligibleNeurons({
+    neurons,
+    proposal,
+  }).map(({ createdTimestampSeconds, neuronId }) => ({
+    neuronIdString: neuronId.toString(),
+    reason:
+      createdTimestampSeconds > proposal.proposalTimestampSeconds
+        ? "since"
+        : "short",
+  }));

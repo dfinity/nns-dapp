@@ -31,6 +31,13 @@
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
+  import {
+    type CompactNeuronInfo,
+    filterIneligibleNnsNeurons,
+    type IneligibleNeuronData,
+    votedNeuronDetails,
+  } from "$lib/utils/neuron.utils";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalInfo: ProposalInfo;
@@ -102,6 +109,20 @@
 
   let neuronsReady = false;
   $: $neuronsStore, (neuronsReady = neuronsStoreReady());
+
+  let neuronsVotedForProposal: CompactNeuronInfo[];
+  $: {
+    neuronsVotedForProposal = votedNeuronDetails({
+      neurons: $definedNeuronsStore,
+      proposal: proposalInfo,
+    });
+  }
+
+  let ineligibleNeurons: IneligibleNeuronData[];
+  $: ineligibleNeurons = filterIneligibleNnsNeurons({
+    neurons: $definedNeuronsStore,
+    proposal: proposalInfo,
+  });
 </script>
 
 <BottomSheet>
@@ -118,10 +139,12 @@
 
           <VotingNeuronSelect>
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes {proposalInfo} />
+            <MyVotes {neuronsVotedForProposal} />
             <IneligibleNeuronsCard
-              {proposalInfo}
-              neurons={$definedNeuronsStore}
+              {ineligibleNeurons}
+              minSnsDissolveDelaySeconds={BigInt(
+                NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE
+              )}
             />
           </VotingNeuronSelect>
         {:else}

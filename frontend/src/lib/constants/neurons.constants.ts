@@ -1,3 +1,4 @@
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
 import { E8S_PER_ICP } from "./icp.constants";
@@ -15,6 +16,7 @@ export const CANDID_PARSER_VERSION = "2.2.1";
 
 export const DISSOLVE_DELAY_MULTIPLIER = 1;
 export const AGE_MULTIPLIER = 0.25;
+export const NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE = SECONDS_IN_HALF_YEAR;
 
 const FIRST_TOPICS = [
   Topic.Unspecified,

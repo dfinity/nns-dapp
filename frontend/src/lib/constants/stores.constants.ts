@@ -3,4 +3,5 @@ export enum StoreLocalStorageKey {
   Theme = "nnsTheme",
   FeatureFlags = "nnsOverrideFeatureFlags",
   BitcoinConvertBlockIndexes = "nnsBitcoinConvertBlockIndexes",
+  SnsProposalFilters = "nnsSnsProposalFilters",
 }

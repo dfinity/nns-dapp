@@ -15,7 +15,6 @@
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
-  import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
   import type {
     TransactionNetwork,
     ValidateAmountFn,
@@ -23,6 +22,8 @@
   import { isNullish } from "@dfinity/utils";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
+  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
+  import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -37,9 +38,13 @@
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
   export let showManualAddress = true;
+  export let selectDestinationMethods: TransactionSelectDestinationMethods =
+    "all";
+  export let showLedgerFee = true;
 
   export let mustSelectNetwork = false;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  export let networkReadonly: boolean | undefined = undefined;
 
   export let validateAmount: ValidateAmountFn = () => undefined;
 
@@ -126,23 +131,27 @@
       filterAccounts={filterDestinationAccounts}
       bind:selectedDestinationAddress
       bind:showManualAddress
+      bind:selectMethods={selectDestinationMethods}
       {selectedNetwork}
       on:nnsOpenQRCodeReader
     />
   {/if}
 
   {#if mustSelectNetwork}
-    <SelectNetworkDropdown
+    <TransactionFormItemNetwork
       bind:selectedNetwork
       universeId={rootCanisterId}
       {selectedDestinationAddress}
+      {networkReadonly}
     />
   {/if}
 
   <div class="amount">
     <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} />
 
-    <TransactionFormFee {transactionFee} />
+    {#if showLedgerFee}
+      <TransactionFormFee {transactionFee} />
+    {/if}
 
     <slot name="additional-info" />
   </div>
