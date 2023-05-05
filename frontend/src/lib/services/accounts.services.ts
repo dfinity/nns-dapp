@@ -146,7 +146,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
     return;
   }
 
-  mutableStore.reset(certified);
+  mutableStore.reset({ certified });
 
   toastsError(
     toToastError({
@@ -162,7 +162,8 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
 const syncAccountsWithErrorHandler = (
   errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
-  const mutableStore = accountsStore.getSingleMutationStore();
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => mutableStore.set(accounts),
@@ -198,7 +199,8 @@ export const loadBalance = async ({
 }: {
   accountIdentifier: string;
 }): Promise<void> => {
-  const mutableStore = accountsStore.getSingleMutationStore();
+  const strategy = FORCE_CALL_STRATEGY;
+  const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
       queryAccountBalance({ identity, certified, accountIdentifier }),
@@ -212,7 +214,7 @@ export const loadBalance = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && strategy !== "query") {
         return;
       }
 
@@ -225,7 +227,7 @@ export const loadBalance = async ({
       });
     },
     logMessage: `Syncing Balance for ${accountIdentifier}`,
-    strategy: FORCE_CALL_STRATEGY,
+    strategy,
   });
 };
 
@@ -460,8 +462,9 @@ export const pollAccounts = async (certified = true) => {
     return;
   }
 
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
   try {
-    const mutableStore = accountsStore.getSingleMutationStore();
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({
       identity,
@@ -469,6 +472,7 @@ export const pollAccounts = async (certified = true) => {
     });
     mutableStore.set(certifiedAccounts);
   } catch (err) {
+    mutableStore.cancel();
     // Don't show error if polling was cancelled
     if (pollingCancelled(err)) {
       return;

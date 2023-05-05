@@ -1,4 +1,6 @@
-import { derived, writable, type Readable } from "svelte/store";
+import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
+import { nonNullish } from "@dfinity/utils";
+import { writable, type Readable } from "svelte/store";
 
 // A "queued store" is Svelte store which is aware of the queryAndUpdate
 // mechanism. It keeps a queue of mutations which have been applied based on
@@ -18,21 +20,15 @@ import { derived, writable, type Readable } from "svelte/store";
 //   });
 // };
 
-type StoreMutation<StoreData> = (StoreData) => StoreData;
+type Mutation<StoreData> = (data: StoreData) => StoreData;
 
 type MutationKey = number;
 
-interface StoreMutationEntry<StoreData> {
+interface MutationEntry<StoreData> {
   mutationKey: MutationKey;
-  certifiedMutation: StoreMutation<StoreData> | undefined;
-  nonCertifiedMutation: StoreMutation<StoreData> | undefined;
-}
-
-interface QueuedStoreData<StoreData> {
-  // Initial data with only certified mutations applied.
-  certifiedData: StoreData;
-  // Mutations which have not yet been applied to certifiedData.
-  mutationQueue: StoreMutationEntry<StoreData>[];
+  strategy: QueryAndUpdateStrategy;
+  certifiedMutation: Mutation<StoreData> | undefined;
+  nonCertifiedMutation: Mutation<StoreData> | undefined;
 }
 
 // A store on which operations can be performed for a single mutation.
@@ -46,133 +42,149 @@ export interface SingleMutationStore<StoreData> {
     mutation,
     certified,
   }: {
-    mutation: StoreMutation<StoreData>;
+    mutation: Mutation<StoreData>;
     certified: boolean;
   }) => void;
+  // Cancels a mutation which hasn't been applied yet.
+  // Call this to prevent it from staying in the queue forever.
+  cancel: () => void;
 }
 
 interface QueuedStore<StoreData> extends Readable<StoreData> {
-  getSingleMutationStore: () => SingleMutationStore<StoreData>;
+  getSingleMutationStore: (
+    strategy?: QueryAndUpdateStrategy | undefined
+  ) => SingleMutationStore<StoreData>;
+  resetForTesting: () => void;
 }
 
 export const queuedStore = <StoreData>(
   initialData: StoreData
 ): QueuedStore<StoreData> => {
-  const initialQueuedStoreData: QueuedStoreData<StoreData> = {
-    certifiedData: initialData,
-    mutationQueue: [],
-  };
-  const underlyingStore = writable<QueuedStoreData<StoreData>>(
-    initialQueuedStoreData
-  );
+  let certifiedData = initialData;
+  let mutationQueue: MutationEntry<StoreData>[] = [];
 
-  const exposedStore = derived<Readable<QueuedStoreData<StoreData>>, StoreData>(
-    underlyingStore,
-    ({ certifiedData, mutationQueue }) => {
-      let data = certifiedData;
-      for (const entry of mutationQueue) {
-        const mutation = entry.certifiedMutation || entry.nonCertifiedMutation;
-        if (mutation) {
-          data = mutation(data);
-        }
+  const { subscribe, set } = writable<StoreData>(initialData);
+
+  const updateExposedData = () => {
+    let data = certifiedData;
+    for (const entry of mutationQueue) {
+      const mutation = entry.certifiedMutation || entry.nonCertifiedMutation;
+      if (mutation) {
+        data = mutation(data);
       }
-      return data;
     }
-  );
+    set(data);
+  };
+
+  const isFinal = (entry: MutationEntry<StoreData>) => {
+    switch (entry.strategy) {
+      case "query_and_update":
+      case "update":
+        return nonNullish(entry.certifiedMutation);
+      case "query":
+        return nonNullish(entry.nonCertifiedMutation);
+    }
+  };
 
   const addMutation = ({
     mutationKey,
     certified,
     mutation,
-    storeData,
   }: {
     mutationKey: MutationKey;
     certified: boolean;
-    mutation: StoreMutation<StoreData>;
-    storeData: QueuedStoreData<StoreData>;
-  }): QueuedStoreData<StoreData> => {
-    let { certifiedData, mutationQueue } = storeData;
-
+    mutation: Mutation<StoreData>;
+  }): void => {
     // Update the entry in the queue with the given mutation key.
-    mutationQueue = mutationQueue.map((entry) => {
-      if (entry.mutationKey === mutationKey) {
-        return certified
-          ? {
-              ...entry,
-              certifiedMutation: mutation,
-            }
-          : {
-              ...entry,
-              nonCertifiedMutation: mutation,
-            };
-      }
-      return entry;
-    });
+    const entry = mutationQueue.find(
+      (entry) => entry.mutationKey === mutationKey
+    );
+    if (!entry) {
+      throw new Error("No entry found for this mutation " + mutationKey);
+    }
+    const key: keyof MutationEntry<StoreData> = certified
+      ? "certifiedMutation"
+      : "nonCertifiedMutation";
+    if (entry[key]) {
+      throw new Error(`We already have a ${key} for this entry`);
+    }
+    entry[key] = mutation;
 
     // Apply finalized mutations from the front of the queue.
-    while (mutationQueue.length > 0 && mutationQueue[0].certifiedMutation) {
-      const mutation = mutationQueue.shift().certifiedMutation;
+    while (mutationQueue.length > 0 && isFinal(mutationQueue[0])) {
+      const entry = mutationQueue.shift();
+      const mutation = entry.certifiedMutation || entry.nonCertifiedMutation;
       certifiedData = mutation(certifiedData);
     }
+    updateExposedData();
+  };
 
-    return {
-      certifiedData,
-      mutationQueue,
-    };
+  const cancel = (mutationKey: MutationKey) => {
+    const entry = mutationQueue.find(
+      (entry) => entry.mutationKey === mutationKey
+    );
+    if (!entry) {
+      throw new Error("No entry found for this mutation");
+    }
+    if (entry.certifiedMutation || entry.nonCertifiedMutation) {
+      throw new Error("This mutation has already been applied");
+    }
+    mutationQueue = mutationQueue.filter(
+      (entry) => entry.mutationKey !== mutationKey
+    );
   };
 
   let nextMutationKey = 1;
 
   return {
-    subscribe: exposedStore.subscribe,
+    subscribe,
 
-    getSingleMutationStore: () => {
+    getSingleMutationStore: (strategy?: QueryAndUpdateStrategy | undefined) => {
       const mutationKey = nextMutationKey++;
-      underlyingStore.update((storeData) => {
-        const { mutationQueue } = storeData;
-        const newEntry = {
-          mutationKey,
-          certifiedMutation: undefined,
-          nonCertifiedMutation: undefined,
-        };
-        // We reserve a spot at the end of the queue, but we actually don't
-        // know if mutations should be applied in the order they were
-        // reserved. And we *can't know* unless we know the block height
-        // corresponding to each response.
-        return {
-          ...storeData,
-          mutationQueue: [...mutationQueue, newEntry],
-        };
-      });
+      const newEntry = {
+        mutationKey,
+        strategy: strategy || "query_and_update",
+        certifiedMutation: undefined,
+        nonCertifiedMutation: undefined,
+      };
+      // We reserve a spot at the end of the queue, but we actually don't
+      // know if mutations should be applied in the order they were
+      // reserved. And we *can't know* unless we know the block height
+      // corresponding to each response.
+      mutationQueue.push(newEntry);
 
       return {
         set({ data, certified }: { data: StoreData; certified: boolean }) {
-          underlyingStore.update((storeData) =>
-            addMutation({
-              mutationKey,
-              certified,
-              mutation: (_) => data,
-              storeData,
-            })
-          );
+          addMutation({
+            mutationKey,
+            certified,
+            mutation: (_) => data,
+          });
         },
         update({
           mutation,
           certified,
         }: {
-          mutation: StoreMutation<StoreData>;
+          mutation: Mutation<StoreData>;
           certified: boolean;
         }) {
-          underlyingStore.update((storeData) =>
-            addMutation({
-              mutationKey,
-              certified,
-              mutation,
-              storeData,
-            })
-          );
+          addMutation({
+            mutationKey,
+            certified,
+            mutation,
+          });
+        },
+
+        cancel() {
+          cancel(mutationKey);
         },
       };
+    },
+
+    resetForTesting() {
+      certifiedData = initialData;
+      mutationQueue = [];
+      set(initialData);
     },
   };
 };

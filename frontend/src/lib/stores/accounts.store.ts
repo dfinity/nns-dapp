@@ -1,3 +1,4 @@
+import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
 import type { Account } from "$lib/types/account";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
@@ -22,7 +23,8 @@ export interface SingleMutationAccountsStore {
     accountIdentifier: string;
     balanceE8s: bigint;
   }) => void;
-  reset: (certified: boolean) => void;
+  reset: ({ certified }: { certified: boolean }) => void;
+  cancel: () => void;
 }
 
 export interface AccountsStore extends Readable<AccountsStoreData> {
@@ -31,7 +33,25 @@ export interface AccountsStore extends Readable<AccountsStoreData> {
   // response count as a single mutation and should be applied using the same
   // store. The purpose of this store is to be able to associate the query and
   // update response of the same mutation.
-  getSingleMutationStore: () => SingleMutationAccountsStore;
+  getSingleMutationAccountsStore: (
+    strategy?: QueryAndUpdateStrategy | undefined
+  ) => SingleMutationAccountsStore;
+  resetForTesting: () => void;
+  // Temporary for backwards compatibility
+  // TODO: Remove.
+  set: (data: AccountsStoreData) => void;
+  // Temporary for backwards compatibility
+  // TODO: Remove.
+  setBalance: ({
+    accountIdentifier,
+    balanceE8s,
+  }: {
+    accountIdentifier: string;
+    balanceE8s: bigint;
+  }) => void;
+  // Temporary for backwards compatibility
+  // TODO: Remove.
+  reset: () => void;
 }
 
 /**
@@ -45,57 +65,94 @@ const initAccountsStore = (): AccountsStore => {
     certified: undefined,
   };
 
-  const { subscribe, getSingleMutationStore } =
+  const { subscribe, getSingleMutationStore, resetForTesting } =
     queuedStore<AccountsStoreData>(initialAccounts);
+
+  const getSingleMutationAccountsStore = (
+    strategy?: QueryAndUpdateStrategy | undefined
+  ): SingleMutationAccountsStore => {
+    const { set, update, cancel } = getSingleMutationStore(strategy);
+
+    return {
+      set(accounts: AccountsStoreData) {
+        set({ data: accounts, certified: accounts.certified || false });
+      },
+
+      setBalance({
+        certified,
+        accountIdentifier,
+        balanceE8s,
+      }: {
+        certified: boolean;
+        accountIdentifier: string;
+        balanceE8s: bigint;
+      }) {
+        update({
+          mutation: ({ main, subAccounts, hardwareWallets }) => {
+            if (isNullish(main)) {
+              // Ignore update if the main account is not set.
+              return { main, subAccounts, hardwareWallets };
+            }
+            const newBalance = TokenAmount.fromE8s({
+              amount: balanceE8s,
+              token: ICPToken,
+            });
+            const mapNewBalance = (account: Account) => {
+              return account.identifier === accountIdentifier
+                ? { ...account, balance: newBalance }
+                : account;
+            };
+            return {
+              main: mapNewBalance(main),
+              subAccounts: (subAccounts || []).map(mapNewBalance),
+              hardwareWallets: (hardwareWallets || []).map(mapNewBalance),
+            };
+          },
+          certified,
+        });
+      },
+
+      reset: ({ certified }: { certified: boolean }) =>
+        set({ data: initialAccounts, certified }),
+
+      cancel,
+    };
+  };
 
   return {
     subscribe,
+    getSingleMutationAccountsStore,
+    resetForTesting,
 
-    getSingleMutationStore: () => {
-      const { set, update } = getSingleMutationStore();
+    // Temporary for backwards compatibility
+    // TODO: Remove.
+    set(accounts: AccountsStoreData) {
+      const mutableStore = getSingleMutationAccountsStore();
+      mutableStore.set(accounts);
+    },
 
-      return {
-        set(accounts: AccountsStoreData) {
-          set({ data: accounts, certified: accounts.certified });
-        },
+    // Temporary for backwards compatibility
+    // TODO: Remove.
+    setBalance({
+      accountIdentifier,
+      balanceE8s,
+    }: {
+      accountIdentifier: string;
+      balanceE8s: bigint;
+    }) {
+      const mutableStore = getSingleMutationAccountsStore();
+      mutableStore.setBalance({
+        accountIdentifier,
+        balanceE8s,
+        certified: true,
+      });
+    },
 
-        setBalance({
-          certified,
-          accountIdentifier,
-          balanceE8s,
-        }: {
-          certified: boolean;
-          accountIdentifier: string;
-          balanceE8s: bigint;
-        }) {
-          update({
-            mutation: ({ main, subAccounts, hardwareWallets }) => {
-              if (isNullish(main)) {
-                // Ignore update if the main account is not set.
-                return { main, subAccounts, hardwareWallets };
-              }
-              const newBalance = TokenAmount.fromE8s({
-                amount: balanceE8s,
-                token: ICPToken,
-              });
-              const mapNewBalance = (account: Account) => {
-                return account.identifier === accountIdentifier
-                  ? { ...account, balance: newBalance }
-                  : account;
-              };
-              return {
-                main: mapNewBalance(main),
-                subAccounts: (subAccounts || []).map(mapNewBalance),
-                hardwareWallets: (hardwareWallets || []).map(mapNewBalance),
-              };
-            },
-            certified,
-          });
-        },
-
-        reset: (certified: boolean) =>
-          set({ data: initialAccounts, certified }),
-      };
+    // Temporary for backwards compatibility
+    // TODO: Remove.
+    reset() {
+      const mutableStore = getSingleMutationAccountsStore();
+      mutableStore.set(initialAccounts);
     },
   };
 };
