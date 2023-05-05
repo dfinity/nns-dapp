@@ -25,8 +25,6 @@
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import {
     loadSnsSwapMetrics,
     watchSnsMetrics,
@@ -44,6 +42,7 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { browser } from "$app/environment";
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -152,7 +151,7 @@
   let swapCanisterId: Principal | undefined;
   $: swapCanisterId = $projectDetailStore.summary?.swapCanisterId;
 
-  $: if (nonNullish(rootCanisterId) && isSignedIn($authStore.identity)) {
+  $: if (nonNullish(rootCanisterId) && $authSignedInStore) {
     loadSnsSwapCommitment({
       rootCanisterId,
       onError: () => {
@@ -208,7 +207,7 @@
   // - ticket already in progress for the same root canister id
   $: if (
     $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Open &&
-    isSignedIn($authStore.identity) &&
+    $authSignedInStore &&
     nonNullish(userCommitment) &&
     nonNullish(swapCanisterId) &&
     nonNullish(rootCanisterId) &&

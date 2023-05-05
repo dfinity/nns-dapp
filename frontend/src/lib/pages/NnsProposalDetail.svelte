@@ -16,13 +16,13 @@
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { isSignedIn } from "$lib/utils/auth.utils";
   import { browser } from "$app/environment";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
   export let referrerPath: AppPath | undefined = undefined;
 
-  $: if (isSignedIn($authStore.identity)) {
+  $: if ($authSignedInStore) {
     // We want to force the strategy, otherwise uses `FORCE_CALL_STRATEGY` which is `query` for now.
     // We want certified data for the neurons when voting.
     listNeurons({ strategy: "query_and_update" });
