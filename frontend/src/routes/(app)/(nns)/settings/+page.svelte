@@ -1,14 +1,10 @@
 <script lang="ts">
-  import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
   import SignInSettings from "$lib/pages/SignInSettings.svelte";
   import Settings from "$lib/routes/Settings.svelte";
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <Settings />
 {:else}
   <SignInSettings />

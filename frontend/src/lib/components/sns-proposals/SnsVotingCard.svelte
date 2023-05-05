@@ -2,8 +2,6 @@
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import type {
     SnsNervousSystemParameters,
@@ -45,6 +43,7 @@
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -84,9 +83,6 @@
   $: neuronsReady =
     nonNullish(universeIdText) &&
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
 
   const userSelectedNeurons = (): SnsNeuron[] =>
     $votingNeuronSelectStore.selectedIds
@@ -164,7 +160,7 @@
 </script>
 
 <BottomSheet>
-  <div class="container" class:signedIn>
+  <div class="container" class:signedIn={$authSignedInStore}>
     <SignInGuard>
       {#if $sortedSnsUserNeuronsStore.length > 0}
         {#if neuronsReady}

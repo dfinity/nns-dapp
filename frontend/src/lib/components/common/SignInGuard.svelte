@@ -1,14 +1,10 @@
 <script lang="ts">
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <slot />
 {:else}
   <SignIn>

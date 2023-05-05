@@ -1,11 +1,7 @@
 <script lang="ts">
   import SignInNeurons from "$lib/pages/SignInNeurons.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   // Preloaded by +page.ts
   export let data: { neuron: string | null | undefined };
@@ -14,7 +10,7 @@
   $: ({ neuron: neuronId } = data);
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <NeuronDetail {neuronId} />
 {:else}
   <SignInNeurons />

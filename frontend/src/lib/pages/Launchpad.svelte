@@ -9,10 +9,10 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   const loadSnsSale = async () => {
-    if (!isSignedIn($authStore.identity)) {
+    if (!$authSignedInStore) {
       return;
     }
     await loadSnsSwapCommitments();
