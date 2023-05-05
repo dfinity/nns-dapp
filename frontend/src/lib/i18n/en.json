@@ -268,7 +268,7 @@
     "source": "Source",
     "transaction_fee": "Transaction Fee",
     "current_balance": "Current Balance",
-    "may_take_while": "This may take more than a minute",
+    "may_take_while": "This may take a moment",
     "create": "Create",
     "community_fund": "Community fund",
     "hotkey_control": "Hotkey control",
