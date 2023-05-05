@@ -281,7 +281,7 @@ describe("accounts-services", () => {
       expect(accounts).toEqual(mockAccounts);
     });
 
-    it("should show toast on error if no handler is passed", async () => {
+    it("should show toast on error", async () => {
       const errorTest = "test";
       jest.spyOn(ledgerApi, "queryAccountBalance");
       jest
@@ -296,25 +296,6 @@ describe("accounts-services", () => {
           text: `${en.error.accounts_not_found} ${errorTest}`,
         },
       ]);
-    });
-
-    it("should use handler passed", async () => {
-      const errorTest = new Error("test");
-      jest.spyOn(ledgerApi, "queryAccountBalance");
-      jest.spyOn(nnsdappApi, "queryAccount").mockRejectedValue(errorTest);
-
-      const handler = jest.fn();
-      await syncAccounts(handler);
-
-      expect(handler).toBeCalledTimes(2);
-      expect(handler).toBeCalledWith({
-        err: errorTest,
-        certified: false,
-      });
-      expect(handler).toBeCalledWith({
-        err: errorTest,
-        certified: true,
-      });
     });
   });
 
