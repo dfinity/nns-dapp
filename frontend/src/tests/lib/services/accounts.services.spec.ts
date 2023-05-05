@@ -471,7 +471,7 @@ describe("accounts-services", () => {
       });
     });
 
-    it.only("old update response does not replace newer response", async () => {
+    it("old update response does not replace newer response", async () => {
       const queryMainBalanceE8s = BigInt(10_000_000);
       const updateMainBalanceE8s = BigInt(20_000_000);
       const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
