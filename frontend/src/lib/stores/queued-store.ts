@@ -112,9 +112,11 @@ export const queuedStore = <StoreData>(
 
     // Apply finalized mutations from the front of the queue.
     while (mutationQueue.length > 0 && isFinal(mutationQueue[0])) {
+      // Becuase of the condition above, entry and mutation are guaranteed to
+      // be defined.
       const entry = mutationQueue.shift();
-      const mutation = entry.certifiedMutation || entry.nonCertifiedMutation;
-      certifiedData = mutation(certifiedData);
+      const mutation = entry?.certifiedMutation || entry?.nonCertifiedMutation;
+      mutation && (certifiedData = mutation(certifiedData));
     }
     updateExposedData();
   };

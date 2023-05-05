@@ -361,7 +361,7 @@ describe("accounts-services", () => {
         .mockImplementation(({ certified }) =>
           certified ? updateBalanceResponse : queryBalanceResponse
         );
-      const queryAccountSpy = jest
+      jest
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       const accountsWith = ({
