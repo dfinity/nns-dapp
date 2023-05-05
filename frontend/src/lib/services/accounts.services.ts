@@ -153,8 +153,8 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
 /**
  * Loads the account data using the ledger and the nns dapp canister.
  */
-export const syncAccounts = (
-  errorHandler: SyncAccontsErrorHandler = defaultErrorHandlerAccounts
+const syncAccountsWithErrorHandler = (
+  errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
@@ -169,6 +169,9 @@ export const syncAccounts = (
   });
 };
 
+export const syncAccounts = () =>
+  syncAccountsWithErrorHandler(defaultErrorHandlerAccounts);
+
 const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
 
 /**
@@ -176,7 +179,7 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  *
  * It ignores errors and does not show any toasts. Accounts will be synced again.
  */
-export const initAccounts = () => syncAccounts(ignoreErrors);
+export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 
 /**
  * Queries the balance of an account and loads it in the store.
