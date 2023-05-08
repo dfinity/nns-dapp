@@ -309,7 +309,7 @@ describe("ckbtc-convert-services", () => {
       });
 
       // We only test that the call is made here. Test should be covered by its respective service.
-      expect(loadCkBTCAccountTransactions).toBeCalled();
+      expect(loadCkBTCAccountTransactions).not.toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
 
       // SEND_BTC + RELOAD + DONE
@@ -336,17 +336,25 @@ describe("ckbtc-convert-services", () => {
       expect(updateProgressSpy).toBeCalledTimes(3);
     });
 
-    it("should reload transaction and withdrawal account on retrieve btc success", async () => {
+    it("should reload withdrawal account on retrieve btc success", async () => {
       await retrieveBtc({
         ...params,
         updateProgress: jest.fn(),
       });
 
-      expect(loadCkBTCAccountTransactions).toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
     });
 
-    it("should reload transaction and withdrawal account on retrieve btc error too", async () => {
+    it("should not reload transaction on retrieve btc success", async () => {
+      await retrieveBtc({
+        ...params,
+        updateProgress: jest.fn(),
+      });
+
+      expect(loadCkBTCAccountTransactions).not.toBeCalled();
+    });
+
+    it("should reload withdrawal account on retrieve btc error too", async () => {
       minterCanisterMock.retrieveBtc.mockImplementation(async () => {
         throw new Error();
       });
@@ -356,8 +364,20 @@ describe("ckbtc-convert-services", () => {
         updateProgress: jest.fn(),
       });
 
-      expect(loadCkBTCAccountTransactions).toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
+    });
+
+    it("should not reload transaction on retrieve btc error too", async () => {
+      minterCanisterMock.retrieveBtc.mockImplementation(async () => {
+        throw new Error();
+      });
+
+      await retrieveBtc({
+        ...params,
+        updateProgress: jest.fn(),
+      });
+
+      expect(loadCkBTCAccountTransactions).not.toBeCalled();
     });
   });
 });

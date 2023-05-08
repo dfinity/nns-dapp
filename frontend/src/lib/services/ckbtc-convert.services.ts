@@ -22,7 +22,10 @@ import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
-export type ConvertCkBTCToBtcParams = IcrcTransferTokensUserParams & {
+export type ConvertCkBTCToBtcParams = Omit<
+  IcrcTransferTokensUserParams,
+  "source"
+> & {
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
   updateProgress: (step: ConvertBtcStep) => void;
@@ -43,7 +46,8 @@ export const convertCkBTCToBtc = async ({
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
-}: ConvertCkBTCToBtcParams): Promise<{
+}: ConvertCkBTCToBtcParams &
+  Pick<IcrcTransferTokensUserParams, "source">): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.INITIALIZATION);
@@ -101,7 +105,6 @@ export const convertCkBTCToBtc = async ({
 export const retrieveBtc = async ({
   destinationAddress,
   amount,
-  source,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
@@ -113,7 +116,6 @@ export const retrieveBtc = async ({
   return await retrieveBtcAndReload({
     destinationAddress,
     amount,
-    source,
     universeId,
     canisters: { minterCanisterId, indexCanisterId },
     updateProgress,
@@ -128,12 +130,13 @@ const retrieveBtcAndReload = async ({
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
   blockIndex,
-}: IcrcTransferTokensUserParams & {
-  universeId: UniverseCanisterId;
-  canisters: CkBTCAdditionalCanisters;
-  updateProgress: (step: ConvertBtcStep) => void;
-  blockIndex?: bigint;
-}): Promise<{
+}: Omit<IcrcTransferTokensUserParams, "source"> &
+  Partial<Pick<IcrcTransferTokensUserParams, "source">> & {
+    universeId: UniverseCanisterId;
+    canisters: CkBTCAdditionalCanisters;
+    updateProgress: (step: ConvertBtcStep) => void;
+    blockIndex?: bigint;
+  }): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.SEND_BTC);
@@ -160,14 +163,18 @@ const retrieveBtcAndReload = async ({
     updateProgress(ConvertBtcStep.RELOAD);
 
     // Reload:
-    // - the transactions of the account for which the transfer was executed
+    // - if provided, the transactions of the account for which the transfer was executed
     // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
     await Promise.all([
-      loadCkBTCAccountTransactions({
-        account: source,
-        canisterId: universeId,
-        indexCanisterId,
-      }),
+      ...(nonNullish(source)
+        ? [
+            loadCkBTCAccountTransactions({
+              account: source,
+              canisterId: universeId,
+              indexCanisterId,
+            }),
+          ]
+        : []),
       loadCkBTCWithdrawalAccount({
         universeId,
       }),
