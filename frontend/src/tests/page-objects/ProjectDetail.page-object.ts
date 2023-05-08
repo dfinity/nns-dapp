@@ -39,6 +39,10 @@ export class ProjectDetailPo extends BasePageObject {
     return this.getProjectStatusSectionPo().getCommitmentAmount();
   }
 
+  hasCommitmentAmount(): Promise<boolean> {
+    return this.getProjectStatusSectionPo().hasCommitmentAmount();
+  }
+
   participate({ amount }: { amount: number }): Promise<void> {
     return this.getProjectStatusSectionPo().participate({ amount });
   }

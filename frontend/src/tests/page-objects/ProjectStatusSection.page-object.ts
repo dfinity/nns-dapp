@@ -36,4 +36,8 @@ export class ProjectStatusSectionPo extends BasePageObject {
   getCommitmentAmount(): Promise<string> {
     return this.getCommitmentAmountDisplayPo().getAmount();
   }
+
+  hasCommitmentAmount(): Promise<boolean> {
+    return this.getCommitmentAmountDisplayPo().isPresent();
+  }
 }
