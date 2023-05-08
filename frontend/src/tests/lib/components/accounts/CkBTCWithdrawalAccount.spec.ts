@@ -274,7 +274,7 @@ describe("CkBTCWithdrawalAccount", () => {
       tokensStore.setTokens(mockTokens);
     });
 
-    it.only("should open send modal", async () => {
+    it("should open send modal", async () => {
       const { getByTestId, container } = render(CkBTCAccountsTest, {
         props: { testComponent: CkBTCWithdrawalAccount },
       });
