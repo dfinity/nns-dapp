@@ -16,7 +16,10 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+  import {
+    convertCkBTCToBtc,
+    retrieveBtc,
+  } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
@@ -103,7 +106,9 @@
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
-    const { success } = await convertCkBTCToBtc({
+    const convert = withdrawalAccount ? retrieveBtc : convertCkBTCToBtc;
+
+    const { success } = await convert({
       source: sourceAccount,
       destinationAddress,
       amount,
@@ -201,5 +206,9 @@
       <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>
-  <ConvertBtcInProgress slot="in_progress" {progressStep} />
+  <ConvertBtcInProgress
+    slot="in_progress"
+    {progressStep}
+    transferToLedgerStep={!withdrawalAccount}
+  />
 </TransactionModal>
