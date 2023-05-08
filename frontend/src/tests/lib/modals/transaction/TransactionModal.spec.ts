@@ -45,6 +45,7 @@ describe("TransactionModal", () => {
     rootCanisterId,
     validateAmount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -52,6 +53,7 @@ describe("TransactionModal", () => {
     rootCanisterId?: Principal;
     validateAmount?: ValidateAmountFn;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -63,6 +65,7 @@ describe("TransactionModal", () => {
           sourceAccount,
           destinationAddress,
           mustSelectNetwork,
+          showLedgerFee,
         },
       },
     });
@@ -91,12 +94,14 @@ describe("TransactionModal", () => {
     rootCanisterId,
     sourceAccount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
@@ -104,6 +109,7 @@ describe("TransactionModal", () => {
       transactionFee,
       rootCanisterId,
       mustSelectNetwork,
+      showLedgerFee,
     });
 
     const { getByTestId, container } = result;
@@ -261,6 +267,43 @@ describe("TransactionModal", () => {
       ).toBeInTheDocument();
     });
 
+    it("should move to the last step and show ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+      });
+
+      expect(getByTestId("transaction-summary-fee")).toBeInTheDocument();
+      expect(
+        getByTestId("transaction-summary-total-deducted")
+      ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and hide ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+        showLedgerFee: false,
+      });
+
+      expect(() => getByTestId("transaction-summary-fee")).toThrow();
+      expect(() => getByTestId("transaction-summary-total-deducted")).toThrow();
+    });
+
     it("should move to the last step and trigger nnsSubmit event", async () => {
       const { getByTestId, component } = await renderEnter10ICPAndNext({
         rootCanisterId: OWN_CANISTER_ID,
@@ -354,6 +397,25 @@ describe("TransactionModal", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+
+    it("should show the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).toBeInTheDocument();
+    });
+
+    it("should hide the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+        showLedgerFee: false,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).not.toBeInTheDocument();
     });
   });
 

@@ -15,12 +15,12 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { pageStore } from "$lib/derived/page.derived";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSnsProposalStore } from "../derived/debug.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -30,9 +30,6 @@
   let universeIdText: string | undefined;
   $: universeIdText = universeId.toText();
 
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   let neuronsReady = false;
   $: neuronsReady =
     nonNullish(universeIdText) &&
@@ -41,6 +38,11 @@
   // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | undefined;
   let updating = false;
+
+  const setProposal = (value: typeof proposal) => {
+    proposal = value;
+    debugSnsProposalStore(value);
+  };
 
   const goBack = async (
     universe: UniverseCanisterIdText | undefined
@@ -94,7 +96,7 @@
         if (snsProposalIdString(proposalData) !== proposalIdText) {
           return;
         }
-        proposal = proposalData;
+        setProposal(proposalData);
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
       reloadForBallots,
@@ -116,9 +118,11 @@
 
         await Promise.all([
           // skip neurons call when not signedIn or when neurons are not ready
-          neuronsReady || !signedIn ? undefined : syncSnsNeurons(universeId),
+          neuronsReady || !$authSignedInStore
+            ? undefined
+            : syncSnsNeurons(universeId),
           //
-          !signedIn ? undefined : loadSnsParameters(universeId),
+          !$authSignedInStore ? undefined : loadSnsParameters(universeId),
           loadSnsNervousSystemFunctions(universeId),
           reloadProposal(),
         ]);
@@ -136,7 +140,7 @@
       }
     } else {
       // Reset proposal to the initial state.
-      proposal = undefined;
+      setProposal(undefined);
     }
   };
 

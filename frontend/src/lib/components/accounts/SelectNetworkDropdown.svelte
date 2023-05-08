@@ -2,12 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import {
-    debounce,
-    isNullish,
-    nonNullish,
-    notEmptyString,
-  } from "@dfinity/utils";
+  import { debounce, isNullish, nonNullish } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
@@ -58,40 +53,30 @@
   $: selectedDestinationAddress, onDestinationAddressInput();
 </script>
 
-<div class:placeholder={!notEmptyString(selectedNetwork)}>
-  <p class="label">{$i18n.accounts.network}</p>
-
-  <Dropdown
-    name="network"
-    bind:selectedValue={selectedNetwork}
-    testId="select-network-dropdown"
+<Dropdown
+  name="network"
+  bind:selectedValue={selectedNetwork}
+  testId="select-network-dropdown"
+>
+  <option disabled selected value={undefined} class="hidden"
+    ><span class="description">{$i18n.accounts.select_network}</span></option
   >
-    <option disabled selected value={undefined} class="hidden"
-      ><span class="description">{$i18n.accounts.select_network}</span></option
+  <DropdownItem value={TransactionNetwork.ICP}
+    >{$i18n.accounts.network_icp}</DropdownItem
+  >
+  {#if ckTESTBTC}
+    <DropdownItem value={TransactionNetwork.BTC_TESTNET}
+      >{$i18n.accounts.network_btc_testnet}</DropdownItem
     >
-    <DropdownItem value={TransactionNetwork.ICP}
-      >{$i18n.accounts.network_icp}</DropdownItem
+  {:else}
+    <DropdownItem value={TransactionNetwork.BTC_MAINNET}
+      >{$i18n.accounts.network_btc_mainnet}</DropdownItem
     >
-    {#if ckTESTBTC}
-      <DropdownItem value={TransactionNetwork.BTC_TESTNET}
-        >{$i18n.accounts.network_btc_testnet}</DropdownItem
-      >
-    {:else}
-      <DropdownItem value={TransactionNetwork.BTC_MAINNET}
-        >{$i18n.accounts.network_btc_mainnet}</DropdownItem
-      >
-    {/if}
-  </Dropdown>
-</div>
+  {/if}
+</Dropdown>
 
 <style lang="scss">
   .hidden {
     display: none;
-  }
-
-  .placeholder {
-    :global(select) {
-      color: var(--disable-contrast);
-    }
   }
 </style>

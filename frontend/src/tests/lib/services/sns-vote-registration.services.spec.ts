@@ -163,5 +163,32 @@ describe("sns-vote-registration-services", () => {
         })
       );
     });
+
+    it("should display a correct error details", async () => {
+      const spyRegisterVoteApi = jest
+        .spyOn(snsGovernanceApi, "registerVote")
+        .mockRejectedValue(new Error("test error"));
+      const spyReloadProposalCallback = jest.fn();
+
+      await callRegisterVote({
+        vote: SnsVote.Yes,
+        reloadProposalCallback: spyReloadProposalCallback,
+      });
+
+      const votableNeuronCount = neurons.length;
+      await waitFor(() =>
+        expect(spyRegisterVoteApi).toBeCalledTimes(votableNeuronCount)
+      );
+
+      expect(spyOnToastsShow).toBeCalledWith({
+        detail: "01: test error, 02: test error, 03: test error",
+        labelKey: "error.register_vote",
+        level: "error",
+        substitutions: {
+          $proposalId: "123",
+          $proposalType: "Governance",
+        },
+      });
+    });
   });
 });

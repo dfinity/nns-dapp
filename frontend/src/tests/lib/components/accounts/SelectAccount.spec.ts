@@ -14,6 +14,10 @@ import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccount", () => {
+  beforeEach(() => {
+    accountsStore.resetForTesting();
+  });
+
   it("should render a skeleton-card until accounts loaded", () => {
     const { container } = render(SelectAccount);
 
@@ -63,7 +67,7 @@ describe("SelectAccount", () => {
   });
 
   it("should render a title with subaccount", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,
@@ -78,12 +82,10 @@ describe("SelectAccount", () => {
     await waitFor(() =>
       expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
     );
-
-    accountsStore.reset();
   });
 
   it("should render a title with hardware wallet", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: [mockSubAccount],
@@ -98,12 +100,10 @@ describe("SelectAccount", () => {
     await waitFor(() =>
       expect(queryByText(en.accounts.my_accounts)).toBeInTheDocument()
     );
-
-    accountsStore.reset();
   });
 
   it("should not render a title with hardware wallet if these kind of accounts should be hidden", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: [mockSubAccount],
@@ -117,12 +117,10 @@ describe("SelectAccount", () => {
     });
 
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
-
-    accountsStore.reset();
   });
 
   it("should render no title if no accounts listed", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: undefined,
@@ -135,8 +133,6 @@ describe("SelectAccount", () => {
     });
 
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
-
-    accountsStore.reset();
   });
 
   it("should filter an account for a given identifier", () => {

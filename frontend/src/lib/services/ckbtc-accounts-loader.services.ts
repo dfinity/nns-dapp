@@ -78,6 +78,17 @@ export const getCkBTCWithdrawalAccount = async ({
     throw new Error(no_minter_defined);
   }
 
+  const store = get(ckBTCWithdrawalAccountsStore);
+  const storedWithdrawalAccount = store[universeId.toText()];
+
+  // We have to load the withdrawal account with an update call.
+  // If we never have loaded it, we return a empty account as result of the not certified (query) call to indicate we are about to load the data.
+  if (!certified && isNullish(storedWithdrawalAccount?.account.identifier)) {
+    return {
+      type: "withdrawalAccount",
+    };
+  }
+
   const getWithdrawalAccount = async (): Promise<IcrcAccount> => {
     const { minterCanisterId } = canisters;
 
@@ -92,23 +103,13 @@ export const getCkBTCWithdrawalAccount = async ({
     };
   };
 
-  const store = get(ckBTCWithdrawalAccountsStore);
-  const storedWithdrawalAccount = store[universeId.toText()];
-
-  // We have to load the withdrawal account with an update call.
-  // If we never have loaded it, we return a empty account as result of the not certified (query) call to indicate we are about to load the data.
-  if (!certified && isNullish(storedWithdrawalAccount?.account.identifier)) {
-    return {
-      type: "withdrawalAccount",
-    };
-  }
-
   // We do not reload the withdrawal account for performance reason
   const withdrawalAccount = nonNullish(
     storedWithdrawalAccount?.account.identifier
   )
     ? decodeIcrcAccount(storedWithdrawalAccount.account.identifier)
     : await getWithdrawalAccount();
+
   try {
     const account = await getCkBTCAccount({
       identity,

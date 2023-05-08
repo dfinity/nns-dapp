@@ -6,7 +6,7 @@
   export let transactionFee: TokenAmount;
 </script>
 
-<div>
+<div data-tid="transaction-form-fee">
   <p class="fee label no-margin">
     <slot name="label">{$i18n.accounts.transaction_fee}</slot>
   </p>

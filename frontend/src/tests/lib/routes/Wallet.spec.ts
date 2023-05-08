@@ -43,7 +43,7 @@ describe("Wallet", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       })
     );
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
   });
 
   beforeAll(() =>

@@ -81,12 +81,29 @@ describe("ParticipateButton", () => {
       );
     });
 
+    // TODO: Disable button until we have the commitment of the user
+    it("should show button when user has no commitment", () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: {
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
+          myCommitment: undefined,
+        },
+        Component: ParticipateButton,
+      });
+      expect(
+        queryByTestId("sns-project-participate-button")
+      ).toBeInTheDocument();
+    });
+
     it("should open swap participation modal on participate click", async () => {
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
 
       // When the modal appears, it will trigger `pollAccounts`
       // which trigger api calls if accounts are not loaded.
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
 
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,

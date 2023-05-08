@@ -2,13 +2,14 @@
   import type { Token } from "@dfinity/nns";
   import { TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSouth } from "@dfinity/gix-components";
+  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let amount: number;
   export let token: Token;
   export let transactionFee: TokenAmount;
+  export let showLedgerFee = true;
 
   // If we made it this far, the number is valid.
   let tokenAmount: TokenAmount;
@@ -36,27 +37,25 @@
 </script>
 
 <article class="container">
-  <div data-tid="transaction-summary-sending-amount">
-    <p class="label subtitle">{$i18n.accounts.sending_amount}</p>
-    <p>
-      <AmountDisplay singleLine detailed amount={tokenAmount} />
-    </p>
-  </div>
+  <KeyValuePair testId="transaction-summary-sending-amount">
+    <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
+    <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+  </KeyValuePair>
 
-  <div data-tid="transaction-summary-fee">
-    <p class="label subtitle">{ledgerFeeLabel}</p>
-    <p>
-      <AmountDisplay singleLine detailed amount={transactionFee} />
-    </p>
-  </div>
+  {#if showLedgerFee}
+    <KeyValuePair testId="transaction-summary-fee">
+      <span class="label" slot="key">{ledgerFeeLabel}</span>
+      <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+    </KeyValuePair>
 
-  <div class="deducted" data-tid="transaction-summary-total-deducted">
-    <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
+    <div class="deducted" data-tid="transaction-summary-total-deducted">
+      <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
-    <p>
-      <AmountDisplay inline detailed amount={tokenTotalDeducted} />
-    </p>
-  </div>
+      <p>
+        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
+      </p>
+    </div>
+  {/if}
 
   <div class="icon">
     <IconSouth />

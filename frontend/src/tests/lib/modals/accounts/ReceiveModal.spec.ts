@@ -73,7 +73,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a dropdown to select account", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: undefined,
@@ -89,7 +89,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should select account", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,

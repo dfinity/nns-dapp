@@ -31,7 +31,7 @@ describe("SpawnNeuronModal", () => {
   };
 
   beforeAll(() =>
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     })

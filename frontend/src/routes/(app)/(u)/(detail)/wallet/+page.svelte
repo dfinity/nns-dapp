@@ -1,11 +1,7 @@
 <script lang="ts">
   import SignInAccounts from "$lib/pages/SignInAccounts.svelte";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import Wallet from "$lib/routes/Wallet.svelte";
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   // Preloaded by +page.ts
   export let data: { account: string | null | undefined };
@@ -14,7 +10,7 @@
   $: ({ account: accountIdentifier } = data);
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <Wallet {accountIdentifier} />
 {:else}
   <SignInAccounts />

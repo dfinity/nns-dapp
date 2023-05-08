@@ -12,16 +12,11 @@
   import { Spinner, IconClock, IconCheck } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
-
-  const reloadAccount = async () => {
-    if (isNullish($selectedCkBTCUniverseIdStore)) {
-      return;
-    }
-
-    await loadCkBTCWithdrawalAccount({
-      universeId: $selectedCkBTCUniverseIdStore,
-    });
-  };
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
+  import type { Account } from "$lib/types/account";
 
   const loadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -37,7 +32,9 @@
       return;
     }
 
-    await reloadAccount();
+    await loadCkBTCWithdrawalAccount({
+      universeId: $selectedCkBTCUniverseIdStore,
+    });
   };
 
   onMount(loadAccount);
@@ -93,6 +90,34 @@
         setTimeout(() => (visibility = "hidden"), 200);
       }, 1800);
     })();
+
+  const openSend = () => {
+    const canisters = nonNullish($selectedCkBTCUniverseIdStore)
+      ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+      : undefined;
+
+    if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
+      toastsError({
+        labelKey: "error__ckbtc.get_btc_no_universe",
+      });
+      return;
+    }
+
+    emit<CkBTCWalletModal>({
+      message: "nnsCkBTCAccountsModal",
+      detail: {
+        type: "ckbtc-transaction",
+        data: {
+          // CkBTCBTCWithdrawalAccount is a partial type of Account. When action button is enable it contains similar information as Account.
+          account: account as Account,
+          reloadAccountFromStore: undefined,
+          universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
+          loadTransactions: false,
+        },
+      },
+    });
+  };
 </script>
 
 {#if visibility !== "hidden" && nonNullish(account)}
@@ -103,6 +128,7 @@
     class:fade={visibility === "fade"}
     data-tid="open-restart-convert-ckbtc-to-btc"
     disabled={transfersToBeCompleted !== true}
+    on:click={openSend}
   >
     {#if loading}
       <div>

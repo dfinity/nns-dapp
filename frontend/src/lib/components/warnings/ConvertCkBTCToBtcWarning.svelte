@@ -2,13 +2,13 @@
   import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { toastsShow } from "$lib/stores/toasts.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   const showWarning = () => {
     // Display a warning only if signed in
-    if (!isSignedIn($authStore.identity)) {
+    if (!$authSignedInStore) {
       return;
     }
 

@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -16,7 +16,11 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+  import {
+    convertCkBTCToBtc,
+    type ConvertCkBTCToBtcParams,
+    retrieveBtc,
+  } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
@@ -35,12 +39,23 @@
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
+  let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
+
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
     mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    ...(withdrawalAccount && {
+      networkReadonly: true,
+      selectDestinationMethods: "manual",
+      showLedgerFee: false,
+    }),
   };
 
-  let selectedNetwork: TransactionNetwork | undefined = undefined;
+  let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
+    ? isUniverseCkTESTBTC(universeId)
+      ? TransactionNetwork.BTC_TESTNET
+      : TransactionNetwork.BTC_MAINNET
+    : undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
   let kytEstimatedFee: bigint | undefined | null = undefined;
 
@@ -92,14 +107,20 @@
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
-    const { success } = await convertCkBTCToBtc({
-      source: sourceAccount,
+    const params: ConvertCkBTCToBtcParams = {
       destinationAddress,
       amount,
       universeId,
       canisters,
       updateProgress,
-    });
+    };
+
+    const { success } = withdrawalAccount
+      ? await retrieveBtc(params)
+      : await convertCkBTCToBtc({
+          source: sourceAccount,
+          ...params,
+        });
 
     if (success) {
       toastsSuccess({
@@ -190,5 +211,9 @@
       <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>
-  <ConvertBtcInProgress slot="in_progress" {progressStep} />
+  <ConvertBtcInProgress
+    slot="in_progress"
+    {progressStep}
+    transferToLedgerStep={!withdrawalAccount}
+  />
 </TransactionModal>

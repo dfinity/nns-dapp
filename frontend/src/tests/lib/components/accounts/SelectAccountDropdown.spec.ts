@@ -20,14 +20,11 @@ describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-    });
-    afterEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
     });
 
     const props = { rootCanisterId: OWN_CANISTER_ID };
     it("should render spinner", () => {
-      accountsStore.reset();
       const { getByTestId } = render(SelectAccountDropdown, { props });
 
       expect(getByTestId("spinner")).toBeInTheDocument();
@@ -43,7 +40,7 @@ describe("SelectAccountDropdown", () => {
     const hardwareWallets = [mockHardwareWalletAccount];
 
     beforeEach(() => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts,
         hardwareWallets,

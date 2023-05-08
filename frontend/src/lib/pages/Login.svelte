@@ -9,14 +9,10 @@
   import LoginLinks from "$lib/components/login/LoginLinks.svelte";
   import LoginTitle from "$lib/components/login/LoginTitle.svelte";
 
-  let signedIn = false;
-
   const redirectWhenSignedIn = async ({
     identity,
   }: AuthStoreData): Promise<void> => {
-    signedIn = isSignedIn(identity);
-
-    if (!signedIn) {
+    if (!isSignedIn(identity)) {
       return;
     }
 
