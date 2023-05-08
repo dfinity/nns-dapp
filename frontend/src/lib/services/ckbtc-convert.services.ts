@@ -1,6 +1,7 @@
-import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
+import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
+import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
@@ -11,9 +12,17 @@ import {
   MinterInsufficientFundsError,
   MinterMalformedAddressError,
   MinterTemporaryUnavailableError,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  fromNullable,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
+import { get } from "svelte/store";
 import { retrieveBtc as retrieveBtcAPI } from "../api/ckbtc-minter.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
@@ -48,7 +57,35 @@ export const convertCkBTCToBtc = async ({
 }> => {
   updateProgress(ConvertBtcStep.INITIALIZATION);
 
-  const account = await getWithdrawalAccount({ minterCanisterId });
+  const getWithdrawalAccount = async (): Promise<
+    WithdrawalAccount | undefined
+  > => {
+    const store = get(ckBTCWithdrawalAccountsStore);
+    const storedWithdrawalAccount = store[universeId.toText()];
+
+    // If a certified withdrawal account has already been loaded in store we can use it to improve performance instead of performing another update call to the backend.
+    if (
+      nonNullish(storedWithdrawalAccount) &&
+      // if account.principal set, then the subAccount is also set as both are set the same time in icrc-ledger.api.getIcrcAccount
+      nonNullish(storedWithdrawalAccount.account.principal) &&
+      storedWithdrawalAccount.certified
+    ) {
+      const {
+        account: { principal, subAccount },
+      } = storedWithdrawalAccount;
+
+      return {
+        owner: principal,
+        subaccount: isNullish(subAccount)
+          ? []
+          : toNullable(arrayOfNumberToUint8Array(subAccount)),
+      };
+    }
+
+    return getWithdrawalAccountServices({ minterCanisterId });
+  };
+
+  const account = await getWithdrawalAccount();
 
   if (isNullish(account)) {
     return { success: false };
