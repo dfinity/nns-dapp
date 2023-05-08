@@ -180,6 +180,9 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(
       expect(result.getByTestId("in-progress-warning")).not.toBeNull
     );
+
+    // In progress + transfer to ledger + sending BTC + reload
+    expect(result.container.querySelectorAll("div.step").length).toEqual(4);
   });
 
   it("should not render progress when transferring ckBTC", async () => {
@@ -428,6 +431,26 @@ describe("CkBTCTransactionModal", () => {
 
     it("should close modal on retrieve BTC error", async () => {
       await testRetrieveBTC({ success: false, eventName: "nnsClose" });
+    });
+
+    it("should render progress without step transfer", async () => {
+      jest
+        .spyOn(services, "convertCkBTCToBtc")
+        .mockResolvedValue({ success: true });
+
+      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
+
+      await testTransferTokens({
+        result,
+        destinationAddress: mockBTCAddressTestnet,
+      });
+
+      await waitFor(
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull
+      );
+
+      // In progress + sending BTC + reload
+      expect(result.container.querySelectorAll("div.step").length).toEqual(3);
     });
   });
 });
