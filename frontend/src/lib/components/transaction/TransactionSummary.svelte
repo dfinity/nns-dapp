@@ -2,7 +2,7 @@
   import type { Token } from "@dfinity/nns";
   import { TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { IconSouth } from "@dfinity/gix-components";
+  import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
@@ -37,25 +37,16 @@
 </script>
 
 <article class="container">
-  <div data-tid="transaction-summary-sending-amount">
-    <p class="label subtitle">{$i18n.accounts.sending_amount}</p>
-    <p>
-      <AmountDisplay
-        singleLine={showLedgerFee}
-        inline={!showLedgerFee}
-        detailed
-        amount={tokenAmount}
-      />
-    </p>
-  </div>
+  <KeyValuePair testId="transaction-summary-sending-amount">
+    <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
+    <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+  </KeyValuePair>
 
   {#if showLedgerFee}
-    <div data-tid="transaction-summary-fee">
-      <p class="label subtitle">{ledgerFeeLabel}</p>
-      <p>
-        <AmountDisplay singleLine detailed amount={transactionFee} />
-      </p>
-    </div>
+    <KeyValuePair testId="transaction-summary-fee">
+      <span class="label" slot="key">{ledgerFeeLabel}</span>
+      <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+    </KeyValuePair>
 
     <div class="deducted" data-tid="transaction-summary-total-deducted">
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
