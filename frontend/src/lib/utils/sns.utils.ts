@@ -196,8 +196,8 @@ export const getSwapCanisterAccount = ({
 };
 
 /**
- * Returns `undefined` if commitment is not loaded yet.
- * Returns `BigInt(0)` if commitment is loaded but user has no commitment or amount is not loaded
+ * Returns `undefined` if swapCommitment is not present yet.
+ * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not loaded
  * Returns commitment e8s if commitment is defined.
  */
 export const getCommitmentE8s = (
