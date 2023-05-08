@@ -63,7 +63,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should call top up neuron", async () => {

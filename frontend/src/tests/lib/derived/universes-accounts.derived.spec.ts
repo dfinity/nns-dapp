@@ -18,7 +18,7 @@ import { get } from "svelte/store";
 
 describe("universes-accounts", () => {
   it("should derive Nns accounts", () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: [],
@@ -61,7 +61,7 @@ describe("universes-accounts", () => {
   });
 
   it("should derive all accounts", () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: [],

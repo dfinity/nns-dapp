@@ -96,7 +96,7 @@ describe("StakeNeuronModal", () => {
     const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.set({
+      accountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -403,7 +403,7 @@ describe("StakeNeuronModal", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      accountsStore.set({
+      accountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -521,7 +521,7 @@ describe("StakeNeuronModal", () => {
   describe("when accounts are not loaded", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -546,7 +546,7 @@ describe("StakeNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       const now = Date.now();
