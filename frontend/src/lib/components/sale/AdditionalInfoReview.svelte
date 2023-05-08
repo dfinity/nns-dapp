@@ -8,7 +8,7 @@
   const toggleAccept = () => (accepted = !accepted);
 </script>
 
-<div class="additional-info-review">
+<div class="additional-info-review" data-tid="additional-info-review-component">
   <div class="warning">
     <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
     <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
