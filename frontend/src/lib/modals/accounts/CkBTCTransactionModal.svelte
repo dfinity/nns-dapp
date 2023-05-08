@@ -109,7 +109,7 @@
     const convert = withdrawalAccount ? retrieveBtc : convertCkBTCToBtc;
 
     const { success } = await convert({
-      source: sourceAccount,
+      ...(!withdrawalAccount && { source: sourceAccount }),
       destinationAddress,
       amount,
       universeId,
