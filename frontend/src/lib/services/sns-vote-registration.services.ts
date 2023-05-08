@@ -1,4 +1,5 @@
 import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
+import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   manageVotesRegistration,
@@ -12,6 +13,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   mapProposalInfo as mapSnsProposal,
@@ -228,9 +230,14 @@ const registerSnsNeuronsVote = async ({
       `Registering [${neurons.map(getSnsNeuronIdAsHexString)}] votes complete.`
     );
 
+    // shortened neuron ids for toast message
+    const neuronIdStrings = neurons
+      .map(getSnsNeuronIdAsHexString)
+      .map((id) => shortenWithMiddleEllipsis(id, SNS_NEURON_ID_DISPLAY_LENGTH));
+
     processRegisterVoteErrors({
       registerVoteResponses,
-      neuronIdStrings: neurons.map(String),
+      neuronIdStrings,
       proposalIdString: proposalId.id.toString(),
       proposalType: proposalType,
     });
