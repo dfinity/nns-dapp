@@ -25,6 +25,7 @@ import type { SelectedProposalStore } from "$lib/types/selected-proposal.context
 import type { SelectedSnsNeuronStore } from "$lib/types/sns-neuron-detail.context";
 import type { WalletStore } from "$lib/types/wallet.context";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import type { SnsProposalData } from "@dfinity/sns";
 import {
   derived,
   readable,
@@ -83,6 +84,12 @@ const transactionsStore = writable<Transaction[] | undefined>(undefined);
 export const debugTransactions = (transactions: Transaction[] | undefined) => {
   transactionsStore.set(transactions);
 };
+const snsProposalStore = writable<SnsProposalData | undefined>(undefined);
+export const debugSnsProposalStore = (
+  proposal: SnsProposalData | undefined
+) => {
+  snsProposalStore.set(proposal);
+};
 
 /**
  * Collects state of all available stores (also from context)
@@ -115,6 +122,7 @@ export const initDebugStore = () =>
       snsProjectsStore,
       snsFunctionsStore,
       transactionsFeesStore,
+      snsProposalStore,
     ],
     ([
       $busyStore,
@@ -141,6 +149,7 @@ export const initDebugStore = () =>
       $projectsStore,
       $snsFunctionsStore,
       $transactionsFeesStore,
+      $snsProposalStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -163,6 +172,7 @@ export const initDebugStore = () =>
       snsTransactions: $snsTransactionsStore,
       selectedSnsNeuron: $selectedSnsNeuronStore,
       transactions: $transactionsStore,
+      snsProposal: $snsProposalStore,
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,
       transactionsFees: $transactionsFeesStore,
