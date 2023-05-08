@@ -1,7 +1,7 @@
-import { fetchTransactionRate } from "$lib/rest/dashboard.rest";
+import { fetchTransactionRate } from "$lib/api/dashboard.api";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 
-describe("Dashboard Rest API", () => {
+describe("Dashboard API", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, "error").mockImplementation(() => undefined);
