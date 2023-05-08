@@ -71,6 +71,7 @@
     <div role="toolbar">
       <SignInGuard>
         {#if userCanParticipateToSwap}
+          <!-- TODO: Disable button until we have the commitment of the user -->
           {#if busy}
             <div class="loader" data-tid="connecting_sale_canister">
               <SpinnerText

@@ -93,6 +93,25 @@ describe("ProjectCardSwapInfo", () => {
     expect(getByText(icpValue, { exact: false })).toBeInTheDocument();
   });
 
+  it("should not render my commitment if `undefined`", () => {
+    const { queryByTestId } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          swapCommitment: {
+            rootCanisterId: mockSnsFullProject.rootCanisterId,
+            myCommitment: undefined,
+          },
+        },
+      },
+    });
+
+    expect(
+      queryByTestId("project-card-swap-info-component")
+    ).toBeInTheDocument();
+    expect(queryByTestId("commitment-token-value")).not.toBeInTheDocument();
+  });
+
   it("should render completed", () => {
     const { getByText } = render(ProjectCardSwapInfo, {
       props: {
