@@ -20,6 +20,7 @@
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSnsProposalStore } from "../derived/debug.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -37,6 +38,11 @@
   // TODO: Use proposal to render the component.
   let proposal: SnsProposalData | undefined;
   let updating = false;
+
+  const setProposal = (value: typeof proposal) => {
+    proposal = value;
+    debugSnsProposalStore(value);
+  };
 
   const goBack = async (
     universe: UniverseCanisterIdText | undefined
@@ -90,7 +96,7 @@
         if (snsProposalIdString(proposalData) !== proposalIdText) {
           return;
         }
-        proposal = proposalData;
+        setProposal(proposalData);
       },
       handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
       reloadForBallots,
@@ -134,7 +140,7 @@
       }
     } else {
       // Reset proposal to the initial state.
-      proposal = undefined;
+      setProposal(undefined);
     }
   };
 
