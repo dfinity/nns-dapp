@@ -56,6 +56,12 @@ jest.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+  return {
+    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Accounts", () => {
   beforeAll(() => {
     jest
