@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -35,12 +35,23 @@
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
+  let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
+
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
     mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    ...(withdrawalAccount && {
+      networkReadonly: true,
+      selectDestinationMethods: "manual",
+      showLedgerFee: false,
+    }),
   };
 
-  let selectedNetwork: TransactionNetwork | undefined = undefined;
+  let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
+    ? isUniverseCkTESTBTC(universeId)
+      ? TransactionNetwork.BTC_TESTNET
+      : TransactionNetwork.BTC_MAINNET
+    : undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
   let kytEstimatedFee: bigint | undefined | null = undefined;
 
