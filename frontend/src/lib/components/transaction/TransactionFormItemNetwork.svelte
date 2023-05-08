@@ -11,7 +11,10 @@
   export let networkReadonly: boolean | undefined = undefined;
 </script>
 
-<div class:placeholder={!notEmptyString(selectedNetwork)}>
+<div
+  class:placeholder={!notEmptyString(selectedNetwork)}
+  class:readonly={networkReadonly}
+>
   <p class="label">{$i18n.accounts.network}</p>
 
   {#if networkReadonly}
@@ -40,5 +43,9 @@
 
   p {
     margin: 0;
+  }
+
+  .readonly {
+    margin: var(--padding) 0 0;
   }
 </style>

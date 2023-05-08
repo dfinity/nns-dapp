@@ -68,6 +68,7 @@ export interface SnsSummary {
 
 export interface SnsSwapCommitment {
   rootCanisterId: RootCanisterId;
+  // sns swap canister doesn't return any `SnsSwapBuyerState` if user has no commitment
   myCommitment: SnsSwapBuyerState | undefined;
 }
 

@@ -11,6 +11,8 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
@@ -68,15 +70,48 @@ describe("ProjectCard", () => {
       ).toBeInTheDocument();
     });
 
-    it("should be highlighted", () => {
+    it("should be highlighted", async () => {
       const { container } = render(ProjectCard, {
         props: {
-          project: mockSnsFullProject,
+          project: {
+            ...mockSnsFullProject,
+            swapCommitment: {
+              rootCanisterId: mockSnsFullProject.rootCanisterId,
+              myCommitment: {
+                icp: [
+                  {
+                    transfer_start_timestamp_seconds: BigInt(123132),
+                    amount_e8s: BigInt(100_000_000),
+                    transfer_success_timestamp_seconds: BigInt(5443554),
+                  },
+                ],
+              },
+            },
+          },
         },
       });
 
-      const article = container.querySelector("article.highlighted");
-      expect(article).not.toBeNull();
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+
+      expect(await po.isHighlighted()).toBe(true);
+    });
+
+    it("should not be highlighted without commitment", async () => {
+      const { container } = render(ProjectCard, {
+        props: {
+          project: {
+            ...mockSnsFullProject,
+            swapCommitment: {
+              rootCanisterId: mockSnsFullProject.rootCanisterId,
+              myCommitment: undefined,
+            },
+          },
+        },
+      });
+
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+
+      expect(await po.isHighlighted()).toBe(false);
     });
 
     it("should display a spinner when the swapCommitment is not loaded", () => {

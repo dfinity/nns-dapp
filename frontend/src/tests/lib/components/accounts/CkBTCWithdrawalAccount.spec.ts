@@ -9,17 +9,23 @@ import { AppPath } from "$lib/constants/routes.constants";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
 import { authStore } from "$lib/stores/auth.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
+  mockCkBTCMainAccount,
   mockCkBTCToken,
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { TokenAmount } from "@dfinity/nns";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("CkBTCWithdrawalAccount", () => {
@@ -240,6 +246,54 @@ describe("CkBTCWithdrawalAccount", () => {
           ).not.toBeNull()
         );
       });
+    });
+  });
+
+  describe("action", () => {
+    beforeEach(() => {
+      ckBTCWithdrawalAccountsStore.reset();
+      icrcAccountsStore.reset();
+      tokensStore.reset();
+
+      ckBTCWithdrawalAccountsStore.set({
+        account: {
+          account: mockCkBTCWithdrawalAccount,
+          certified: true,
+        },
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkBTCMainAccount],
+          certified: true,
+        },
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      tokensStore.setTokens(mockTokens);
+    });
+
+    it("should open send modal", async () => {
+      const { getByTestId, container } = render(CkBTCAccountsTest, {
+        props: { testComponent: CkBTCWithdrawalAccount },
+      });
+
+      await waitFor(() =>
+        expect(
+          getByTestId("open-restart-convert-ckbtc-to-btc")?.getAttribute(
+            "disabled"
+          )
+        ).toBeNull()
+      );
+
+      fireEvent.click(
+        getByTestId("open-restart-convert-ckbtc-to-btc") as HTMLButtonElement
+      );
+
+      await waitFor(() =>
+        expect(container.querySelector("div.modal")).not.toBeNull()
+      );
     });
   });
 });
