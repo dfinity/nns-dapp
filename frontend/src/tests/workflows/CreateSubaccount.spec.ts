@@ -47,7 +47,7 @@ describe("Accounts", () => {
 
   it("should create a subaccount in NNS", async () => {
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],

@@ -33,7 +33,7 @@ describe("NnsAccounts", () => {
 
   describe("when there are accounts", () => {
     beforeEach(() => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [],
         hardwareWallets: [],
@@ -66,7 +66,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should render subaccount cards", () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [],
@@ -83,7 +83,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should render hardware wallet account cards", () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -103,7 +103,7 @@ describe("NnsAccounts", () => {
   describe("summary", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -120,7 +120,7 @@ describe("NnsAccounts", () => {
 
   describe("when no accounts", () => {
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -150,7 +150,7 @@ describe("NnsAccounts", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();
