@@ -21,7 +21,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy without message if neuron is not controlled by hardware wallet", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
     });
     const neuron = {
@@ -41,7 +41,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy with message if neuron controlled by hardware wallet", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });

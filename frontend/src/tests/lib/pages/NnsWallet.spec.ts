@@ -80,7 +80,7 @@ describe("NnsWallet", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       cancelPollAccounts();
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -124,7 +124,7 @@ describe("NnsWallet", () => {
   describe("accounts loaded", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should render nns project name", async () => {
@@ -225,7 +225,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Hardware Wallet)", () => {
     beforeEach(() => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -253,7 +253,7 @@ describe("NnsWallet", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();

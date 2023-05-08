@@ -414,7 +414,7 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       expect(get(accountsStore).main.balance).toEqual(mockMainAccount.balance);
@@ -445,7 +445,7 @@ describe("accounts-services", () => {
           }
           throw new Error("test");
         });
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -459,7 +459,7 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockRejectedValue(error);
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -657,7 +657,7 @@ describe("accounts-services", () => {
     });
 
     it("should sync destination balances after transfer ICP to own account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -851,18 +851,17 @@ describe("accounts-services", () => {
 
   describe("getAccountIdentity", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentity(
         mockMainAccount.identifier
       );
       expect(expectedIdentity).toBe(mockIdentity);
-      accountsStore.reset();
     });
 
     it("returns user identity if main account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -870,11 +869,10 @@ describe("accounts-services", () => {
         mockMainAccount.identifier
       );
       expect(expectedIdentity).toBe(mockIdentity);
-      accountsStore.reset();
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -884,24 +882,22 @@ describe("accounts-services", () => {
       );
       expect(expectedIdentity).toBe(mockIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
-      accountsStore.reset();
     });
   });
 
   describe("getAccountIdentityByPrincipal", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentityByPrincipal(
         mockMainAccount.principal?.toText() as string
       );
       expect(expectedIdentity).toBe(mockIdentity);
-      accountsStore.reset();
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -911,11 +907,10 @@ describe("accounts-services", () => {
       );
       expect(expectedIdentity).toBe(mockIdentity);
       expect(getLedgerIdentityProxy).toBeCalled();
-      accountsStore.reset();
     });
 
     it("returns null if no main account nor hardware wallet account", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -923,7 +918,6 @@ describe("accounts-services", () => {
         "gje2w-p7x7x-yuy72-bllam-x2itq-znokr-jnvf6-5dzn4-45jiy-5wvbo-uqe"
       );
       expect(expectedIdentity).toBeUndefined();
-      accountsStore.reset();
     });
   });
 
@@ -943,7 +937,7 @@ describe("accounts-services", () => {
     };
 
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();

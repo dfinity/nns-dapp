@@ -10,7 +10,7 @@ import { get } from "svelte/store";
 describe("accounts", () => {
   describe("nnsAccountsListStore", () => {
     it("returns nns accounts in an array", () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSnsMainAccount],
         hardwareWallets: [],

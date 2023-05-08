@@ -88,7 +88,7 @@ describe("Accounts", () => {
       accounts: [mockSnsMainAccount],
     });
 
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
   });
 
   it("should render NnsAccounts by default", () => {

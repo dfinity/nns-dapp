@@ -37,21 +37,9 @@ export interface AccountsStore extends Readable<AccountsStoreData> {
     strategy?: QueryAndUpdateStrategy | undefined
   ) => SingleMutationAccountsStore;
   resetForTesting: () => void;
-  // Temporary for backwards compatibility
-  // TODO: Remove.
-  set: (data: AccountsStoreData) => void;
-  // Temporary for backwards compatibility
-  // TODO: Remove.
-  setBalance: ({
-    accountIdentifier,
-    balanceE8s,
-  }: {
-    accountIdentifier: string;
-    balanceE8s: bigint;
-  }) => void;
-  // Temporary for backwards compatibility
-  // TODO: Remove.
-  reset: () => void;
+  // Set the store contents if you don't care about the queryAndUpdate race
+  // condition.
+  setForTesting: (data: AccountsStoreData) => void;
 }
 
 /**
@@ -124,35 +112,9 @@ const initAccountsStore = (): AccountsStore => {
     getSingleMutationAccountsStore,
     resetForTesting,
 
-    // Temporary for backwards compatibility
-    // TODO: Remove.
-    set(accounts: AccountsStoreData) {
+    setForTesting(accounts: AccountsStoreData) {
       const mutableStore = getSingleMutationAccountsStore();
       mutableStore.set(accounts);
-    },
-
-    // Temporary for backwards compatibility
-    // TODO: Remove.
-    setBalance({
-      accountIdentifier,
-      balanceE8s,
-    }: {
-      accountIdentifier: string;
-      balanceE8s: bigint;
-    }) {
-      const mutableStore = getSingleMutationAccountsStore();
-      mutableStore.setBalance({
-        accountIdentifier,
-        balanceE8s,
-        certified: true,
-      });
-    },
-
-    // Temporary for backwards compatibility
-    // TODO: Remove.
-    reset() {
-      const mutableStore = getSingleMutationAccountsStore();
-      mutableStore.set(initialAccounts);
     },
   };
 };

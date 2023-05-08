@@ -53,7 +53,7 @@ describe("NnsNeurons", () => {
 
     it("should open stake neuron modal", async () => {
       // To avoid that the modal requests the accounts
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
       const { queryByTestId, queryByText, getByTestId } =
         render(NnsNeuronsFooter);
 

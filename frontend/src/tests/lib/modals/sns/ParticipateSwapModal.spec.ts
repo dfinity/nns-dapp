@@ -117,8 +117,8 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are available", () => {
     beforeEach(() => {
-      accountsStore.reset();
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.resetForTesting();
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     const participate = async ({
@@ -253,7 +253,7 @@ describe("ParticipateSwapModal", () => {
     let queryAccountSpy: jest.SpyInstance;
     let queryAccountBalanceSpy: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -290,7 +290,7 @@ describe("ParticipateSwapModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       const now = Date.now();
