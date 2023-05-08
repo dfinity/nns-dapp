@@ -103,7 +103,7 @@ describe("ParticipateButton", () => {
 
       // When the modal appears, it will trigger `pollAccounts`
       // which trigger api calls if accounts are not loaded.
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
 
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,

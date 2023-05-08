@@ -209,7 +209,7 @@ describe("neurons-services", () => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
     neuronsStore.reset();
-    accountsStore.reset();
+    accountsStore.resetForTesting();
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
@@ -826,7 +826,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });

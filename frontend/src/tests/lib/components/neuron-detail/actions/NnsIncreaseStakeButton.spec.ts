@@ -29,7 +29,7 @@ describe("NnsIncreaseStakeButton", () => {
 
   it("opens Increase Neuron Stake Modal", async () => {
     // To avoid that the modal requests the accounts
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
     const { container } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
