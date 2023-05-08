@@ -13,8 +13,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let visible = false;
   let transferring = false;
@@ -67,13 +66,10 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore || ICPToken;
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
-  {#if signedIn}
+  {#if $authSignedInStore}
     <button
       role="menuitem"
       data-tid="get-icp-button"

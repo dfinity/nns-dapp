@@ -5,7 +5,7 @@ import type { Account } from "$lib/types/account";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, type IcrcBlockIndex } from "@dfinity/ledger";
 import { isNullish } from "@dfinity/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,10 +38,10 @@ export const transferTokens = async ({
     params: {
       identity: Identity;
     } & Omit<IcrcTransferParams, "transfer">
-  ) => Promise<void>;
+  ) => Promise<IcrcBlockIndex>;
   reloadAccounts: () => Promise<void>;
   reloadTransactions: () => Promise<void>;
-}): Promise<{ success: boolean }> => {
+}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -51,7 +51,7 @@ export const transferTokens = async ({
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
-    await transfer({
+    const blockIndex = await transfer({
       identity,
       to,
       fromSubAccount: source.subAccount,
@@ -61,7 +61,7 @@ export const transferTokens = async ({
 
     await Promise.all([reloadAccounts(), reloadTransactions()]);
 
-    return { success: true };
+    return { blockIndex };
   } catch (err) {
     toastsError(
       ledgerErrorToToastError({
@@ -70,6 +70,6 @@ export const transferTokens = async ({
       })
     );
 
-    return { success: false };
+    return { blockIndex: undefined };
   }
 };

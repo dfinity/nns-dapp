@@ -279,6 +279,7 @@ describe("sns-proposals services", () => {
             expect(proposal).toEqual(mockSnsProposal);
             done();
           },
+          reloadForBallots: false,
         });
       });
 
@@ -305,6 +306,7 @@ describe("sns-proposals services", () => {
             expect(queryProposalSpy).toBeCalledTimes(1);
             done();
           },
+          reloadForBallots: false,
         });
       });
 
@@ -325,6 +327,7 @@ describe("sns-proposals services", () => {
             expect(queryProposalSpy).toBeCalledTimes(1);
             done();
           },
+          reloadForBallots: false,
         });
       });
     });
@@ -354,7 +357,51 @@ describe("sns-proposals services", () => {
             expect(proposal).toEqual(mockSnsProposal);
             done();
           },
+          reloadForBallots: false,
         });
+      });
+
+      it("should ignore the proposal in store if it contains no ballots and the reloadForBallots flag is set", async () => {
+        const queryProposalSpy = jest
+          .spyOn(api, "queryProposal")
+          .mockResolvedValue(mockSnsProposal);
+        snsProposalsStore.setProposals({
+          rootCanisterId,
+          proposals: [
+            {
+              ...mockSnsProposal,
+              ballots: [],
+            },
+          ],
+          certified: true,
+          completed: true,
+        });
+        let dataCertified = false;
+        getSnsProposalById({
+          rootCanisterId,
+          proposalId,
+          reloadForBallots: true,
+          setProposal: ({ certified, proposal }) => {
+            if (certified) {
+              dataCertified = true;
+              expect(proposal).toEqual(mockSnsProposal);
+            }
+          },
+        });
+        await waitFor(() => expect(dataCertified).toBe(true));
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: false,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledWith({
+          identity: mockIdentity,
+          certified: true,
+          rootCanisterId,
+          proposalId,
+        });
+        expect(queryProposalSpy).toBeCalledTimes(2);
       });
 
       it("should not use the proposal in store if not certified and call api", async () => {
@@ -377,6 +424,7 @@ describe("sns-proposals services", () => {
               expect(proposal).toEqual(mockSnsProposal);
             }
           },
+          reloadForBallots: false,
         });
 
         await waitFor(() => expect(dataCertified).toBe(true));
@@ -408,6 +456,7 @@ describe("sns-proposals services", () => {
               dataCertified = true;
             }
           },
+          reloadForBallots: false,
         });
         await waitFor(() => expect(dataCertified).toBe(true));
         expect(queryProposalSpy).toBeCalledWith({
@@ -434,6 +483,7 @@ describe("sns-proposals services", () => {
           proposalId,
           setProposal: setProposalSpy,
           handleError: handleErrorSpy,
+          reloadForBallots: false,
         });
 
         await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));
@@ -448,6 +498,7 @@ describe("sns-proposals services", () => {
           proposalId,
           setProposal: setProposalSpy,
           handleError: handleErrorSpy,
+          reloadForBallots: false,
         });
 
         await waitFor(() => expect(handleErrorSpy).toBeCalledTimes(2));

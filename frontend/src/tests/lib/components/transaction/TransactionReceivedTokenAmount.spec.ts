@@ -50,7 +50,7 @@ describe("TransactionReceivedTokenAmount", () => {
     });
 
     expect(getByTestId(testId)?.textContent).toContain(
-      `≈${formatToken({ value: amount.toE8s(), detailed: true })}`
+      `${formatToken({ value: amount.toE8s(), detailed: true })}`
     );
   });
 });

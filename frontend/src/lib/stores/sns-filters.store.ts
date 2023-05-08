@@ -1,3 +1,4 @@
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import type { Filter } from "$lib/types/filters";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -5,7 +6,8 @@ import type {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { derived, writable, type Readable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
+import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
   topics: Filter<SnsNervousSystemFunction>[];
@@ -26,8 +28,22 @@ export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
     rootCanisterId: Principal;
     checkedDecisionStatus: SnsProposalDecisionStatus[];
   }) => void;
+  setRewardStatus: (data: {
+    rootCanisterId: Principal;
+    rewardStatus: Filter<SnsProposalRewardStatus>[];
+  }) => void;
+  setCheckRewardStatus: (data: {
+    rootCanisterId: Principal;
+    checkedRewardStatus: SnsProposalRewardStatus[];
+  }) => void;
   reset: () => void;
 }
+
+const defaultProjectData: ProjectFiltersStoreData = {
+  topics: [],
+  rewardStatus: [],
+  decisionStatus: [],
+};
 
 /**
  * A store that contains the filters of the SNS proposals for each project.
@@ -35,7 +51,10 @@ export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
  * TODO: persist to localstorage
  */
 export const initSnsFiltersStore = (): SnsFiltersStore => {
-  const { subscribe, set, update } = writable<SnsFiltersStoreData>({});
+  const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
+    key: StoreLocalStorageKey.SnsProposalFilters,
+    defaultValue: {},
+  });
 
   return {
     subscribe,
@@ -48,11 +67,8 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       decisionStatus: Filter<SnsProposalDecisionStatus>[];
     }) {
       update((currentState: SnsFiltersStoreData) => {
-        const projectFilters = currentState[rootCanisterId.toText()] || {
-          topics: [],
-          rewardStatus: [],
-          decisionStatus: [],
-        };
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
 
         return {
           ...currentState,
@@ -72,11 +88,8 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       checkedDecisionStatus: SnsProposalDecisionStatus[];
     }) {
       update((currentState: SnsFiltersStoreData) => {
-        const projectFilters = currentState[rootCanisterId.toText()] || {
-          topics: [],
-          rewardStatus: [],
-          decisionStatus: [],
-        };
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
 
         return {
           ...currentState,
@@ -88,6 +101,51 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
                 checked: checkedDecisionStatus.includes(decisionStatus.value),
               })
             ),
+          },
+        };
+      });
+    },
+
+    setRewardStatus({
+      rootCanisterId,
+      rewardStatus,
+    }: {
+      rootCanisterId: Principal;
+      rewardStatus: Filter<SnsProposalRewardStatus>[];
+    }) {
+      update((currentState: SnsFiltersStoreData) => {
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
+
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            ...projectFilters,
+            rewardStatus,
+          },
+        };
+      });
+    },
+
+    setCheckRewardStatus({
+      rootCanisterId,
+      checkedRewardStatus,
+    }: {
+      rootCanisterId: Principal;
+      checkedRewardStatus: SnsProposalRewardStatus[];
+    }) {
+      update((currentState: SnsFiltersStoreData) => {
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
+
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            ...projectFilters,
+            rewardStatus: projectFilters.rewardStatus.map((status) => ({
+              ...status,
+              checked: checkedRewardStatus.includes(status.value),
+            })),
           },
         };
       });

@@ -14,7 +14,22 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=w long=wasm desc="The location of the nns-dapp wasm." variable=DFX_WASM_PATH default="nns-dapp.wasm"
+clap.define short=u long=update-golden desc="Update the exports golden file" variable=UPDATE_GOLDEN nargs=0 default="false"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-diff <(sort rs/backend/nns-dapp-exports.txt) <(wasm-nm -je <(gunzip <"$DFX_WASM_PATH") | sort)
+GOLDEN_FILE="rs/backend/nns-dapp-exports.txt"
+
+if [ "$UPDATE_GOLDEN" = "true" ]; then
+  echo "Updating golden file"
+  wasm-nm -je <(gunzip <"$DFX_WASM_PATH") | sort >"$GOLDEN_FILE"
+  exit 0
+fi
+
+if diff <(sort "$GOLDEN_FILE") <(wasm-nm -je <(gunzip <"$DFX_WASM_PATH") | sort); then
+  echo "Exports match"
+else
+  echo "Exports do not match"
+  echo "If this looks correct, run '$0 --wasm $DFX_WASM_PATH --update-golden' to update the golden file"
+  exit 1
+fi

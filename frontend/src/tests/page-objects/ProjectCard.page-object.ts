@@ -9,4 +9,17 @@ export class ProjectCardPo extends BasePageObject {
       (el) => new ProjectCardPo(el)
     );
   }
+
+  static under(element: PageObjectElement): ProjectCardPo {
+    return new ProjectCardPo(element.byTestId(ProjectCardPo.TID));
+  }
+
+  getProjectName(): Promise<string> {
+    return this.getText("project-name");
+  }
+
+  async isHighlighted(): Promise<boolean> {
+    const classNames = await this.root.getAttribute("class");
+    return classNames.includes("highlighted");
+  }
 }

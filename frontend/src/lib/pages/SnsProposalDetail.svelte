@@ -1,12 +1,8 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
-  import { ENABLE_SNS_VOTING } from "$lib/stores/feature-flags.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
@@ -15,87 +11,147 @@
   import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
+  import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
+  import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
+  import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
+  let universeId: Principal;
+  $: universeId = Principal.fromText($pageStore.universe);
+
+  let universeIdText: string | undefined;
+  $: universeIdText = universeId.toText();
+
+  let neuronsReady = false;
+  $: neuronsReady =
+    nonNullish(universeIdText) &&
+    nonNullish($snsNeuronsStore[universeIdText]?.neurons);
+
   // TODO: Use proposal to render the component.
-  let proposal: SnsProposalData | "loading" | "error" = "loading";
+  let proposal: SnsProposalData | undefined;
+  let updating = false;
 
-  const isLoadedProposal = (
-    proposal: SnsProposalData | "loading" | "error"
-  ): proposal is SnsProposalData =>
-    proposal !== "loading" && proposal !== "error";
-
-  onMount(() => {
-    // We don't render this page if not enabled, but to be safe we redirect to the NNS proposals page as well.
-    if (!$ENABLE_SNS_VOTING) {
-      goto(buildProposalsUrl({ universe: OWN_CANISTER_ID.toText() }), {
-        replaceState: true,
-      });
-    }
-  });
-
+  const goBack = async (
+    universe: UniverseCanisterIdText | undefined
+  ): Promise<void> =>
+    nonNullish(universe)
+      ? goto(
+          buildProposalsUrl({
+            universe,
+          }),
+          {
+            replaceState: true,
+          }
+        )
+      : undefined;
   // By storing the canister id as a text, we avoid calling the block below if the store is updated with the same value.
-  let rootCanisterIdText: undefined | string;
-  $: rootCanisterIdText = $snsOnlyProjectStore?.toText();
-  let rootCanisterId: Principal | undefined;
-  $: rootCanisterId = nonNullish(rootCanisterIdText)
-    ? Principal.fromText(rootCanisterIdText)
+  let universeCanisterId: Principal | undefined;
+  $: universeCanisterId = nonNullish(universeIdText)
+    ? Principal.fromText(universeIdText)
     : undefined;
-  $: {
-    // TODO: Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+
+  let universeCanisterIdAtTimeOfRequest: string | undefined;
+  const reloadProposal = async () => {
+    if (
+      isNullish(proposalIdText) ||
+      isNullish(universeIdText) ||
+      isNullish(universeCanisterId)
+    ) {
+      return;
+    }
+
+    // We need this to be used in the handleError callback.
+    // Otherwise, TS doesn't believe that the value of `universeCanisterIdText` won't change.
+    universeCanisterIdAtTimeOfRequest = universeIdText;
+
+    const proposalId: SnsProposalId = {
+      id: BigInt(proposalIdText as string),
+    };
+    // No need to force getProposal when user has no sns neurons
+    const reloadForBallots =
+      neuronsReady && $sortedSnsUserNeuronsStore.length > 0;
+    return getSnsProposalById({
+      rootCanisterId: universeCanisterId as Principal,
+      proposalId,
+      setProposal: ({
+        proposal: proposalData,
+      }: {
+        proposal: SnsProposalData;
+      }) => {
+        // Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
+        // TODO(sns-voting): test this
+        if (snsProposalIdString(proposalData) !== proposalIdText) {
+          return;
+        }
+        proposal = proposalData;
+      },
+      handleError: () => goBack(universeCanisterIdAtTimeOfRequest),
+      reloadForBallots,
+    });
+  };
+
+  const update = async () => {
+    if (updating) {
+      return;
+    }
+
     if (
       nonNullish(proposalIdText) &&
-      nonNullish(rootCanisterIdText) &&
-      nonNullish(rootCanisterId)
+      nonNullish(universeIdText) &&
+      nonNullish(universeCanisterId)
     ) {
-      // We need this to be used in the handleError callback.
-      // Otherwise, TS doesn't believe that the value of `rootCanisterIdText` won't change.
-      const rootCanisterIdAtTimeOfRequest = rootCanisterIdText;
       try {
-        const proposalId: SnsProposalId = { id: BigInt(proposalIdText) };
-        proposal = "loading";
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: ({ proposal: proposalData }) => {
-            proposal = proposalData;
-          },
-          handleError: () => {
-            goto(
-              buildProposalsUrl({ universe: rootCanisterIdAtTimeOfRequest }),
-              {
-                replaceState: true,
-              }
-            );
-          },
-        });
+        updating = true;
+
+        await Promise.all([
+          // skip neurons call when not signedIn or when neurons are not ready
+          neuronsReady || !$authSignedInStore
+            ? undefined
+            : syncSnsNeurons(universeId),
+          //
+          !$authSignedInStore ? undefined : loadSnsParameters(universeId),
+          loadSnsNervousSystemFunctions(universeId),
+          reloadProposal(),
+        ]);
       } catch (error) {
-        proposal = "error";
         toastsError({
           labelKey: "error.wrong_proposal_id",
           substitutions: {
             $proposalId: proposalIdText,
           },
         });
-        goto(buildProposalsUrl({ universe: rootCanisterIdText }), {
-          replaceState: true,
-        });
+
+        await goBack(universeIdText);
+      } finally {
+        updating = false;
       }
     } else {
       // Reset proposal to the initial state.
-      proposal = "loading";
+      proposal = undefined;
     }
-  }
+  };
+
+  // The `update` function cares about the necessary data to be refetched.
+  $: universeIdText, proposalIdText, $snsNeuronsStore, update();
 </script>
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if isLoadedProposal(proposal) && nonNullish(rootCanisterId)}
+  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <div class="content-a">
-      <SnsProposalSystemInfoSection {proposal} {rootCanisterId} />
+      <SnsProposalSystemInfoSection
+        {proposal}
+        rootCanisterId={universeCanisterId}
+      />
     </div>
     <div class="content-b expand-content-b">
-      <SnsProposalVotingSection {proposal} />
+      <SnsProposalVotingSection {proposal} {reloadProposal} />
     </div>
     <div class="content-c proposal-data-section">
       <SnsProposalSummarySection {proposal} />

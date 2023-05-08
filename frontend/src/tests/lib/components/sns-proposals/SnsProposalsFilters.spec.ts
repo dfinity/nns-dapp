@@ -22,4 +22,15 @@ describe("SnsProposalsFilters", () => {
       expect(queryByTestId("filter-modal")).toBeInTheDocument()
     );
   });
+
+  it("should show filter modal when rewards filter is clicked", async () => {
+    const { queryByTestId } = render(SnsProposalsFilters);
+
+    const statusFilterButton = queryByTestId("filters-by-rewards");
+    statusFilterButton && fireEvent.click(statusFilterButton);
+
+    await waitFor(() =>
+      expect(queryByTestId("filter-modal")).toBeInTheDocument()
+    );
+  });
 });

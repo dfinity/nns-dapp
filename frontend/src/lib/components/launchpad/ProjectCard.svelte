@@ -10,6 +10,7 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let project: SnsFullProject;
 
@@ -30,6 +31,10 @@
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
+  let userHasParticipated: boolean;
+  $: userHasParticipated =
+    nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
+
   const showProject = async () =>
     await goto(
       `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
@@ -40,11 +45,11 @@
   testId="project-card-component"
   role="link"
   on:click={showProject}
-  theme={commitmentE8s !== undefined ? "highlighted" : undefined}
+  theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h3>{title}</h3>
+    <h3 data-tid="project-name">{title}</h3>
   </div>
 
   <p class="value description">{description}</p>

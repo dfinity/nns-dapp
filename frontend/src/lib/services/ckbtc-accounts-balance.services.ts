@@ -1,4 +1,5 @@
-import { getCkBTCAccounts, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -19,7 +20,7 @@ const loadCkBTCAccountsBalance = (
 ): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
-      getCkBTCAccounts({ identity, certified, canisterId: universeId }),
+      getCkBTCAccounts({ identity, certified, universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,

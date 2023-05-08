@@ -1,6 +1,6 @@
 export class CkBTCErrorKey extends Error {}
 
-export class CkBTCInfoKey {
+export class CkBTCSuccessKey {
   public readonly message: string;
 
   constructor(message: string) {

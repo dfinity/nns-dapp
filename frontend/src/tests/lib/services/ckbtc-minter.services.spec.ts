@@ -27,6 +27,7 @@ import {
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -168,7 +169,7 @@ describe("ckbtc-minter-services", () => {
       expect(result).toEqual({ success: false, err });
     });
 
-    it("should handle no new UTXOs info", async () => {
+    it("should handle no new UTXOs success", async () => {
       jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
@@ -179,8 +180,10 @@ describe("ckbtc-minter-services", () => {
 
       expect(result).toEqual({ success: true });
       expect(spyOnToastsShow).toHaveBeenCalledWith({
-        level: "info",
+        level: "success",
         labelKey: en.error__ckbtc.no_new_confirmed_btc,
+        duration: 4000,
+        substitutions: undefined,
       });
     });
   });
@@ -245,6 +248,30 @@ describe("ckbtc-minter-services", () => {
       expect(callback).toHaveBeenCalledWith(result);
       // Query + Update
       expect(callback).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("getWithdrawalAccount", () => {
+    it("should call get withdrawal account", async () => {
+      const result: WithdrawalAccount = {
+        owner: mockCkBTCMainAccount.principal,
+        subaccount: [],
+      };
+
+      const spyGetWithdrawal = jest
+        .spyOn(minterApi, "getWithdrawalAccount")
+        .mockResolvedValue(result);
+
+      await services.getWithdrawalAccount({
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      await waitFor(() =>
+        expect(spyGetWithdrawal).toBeCalledWith({
+          identity: mockIdentity,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
+        })
+      );
     });
   });
 });

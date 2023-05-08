@@ -1,5 +1,5 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -127,7 +127,7 @@ const initProposalsStore = () => {
  */
 const initProposalsFiltersStore = () => {
   const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
-    key: storeLocalStorageKey.ProposalFilters,
+    key: StoreLocalStorageKey.ProposalFilters,
     defaultValue: DEFAULT_PROPOSALS_FILTERS,
   });
 

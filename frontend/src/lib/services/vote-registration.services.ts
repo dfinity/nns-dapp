@@ -1,8 +1,4 @@
-import { governanceApiService } from "$lib/api-services/governance.api-service";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { i18n } from "$lib/stores/i18n";
-import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
-import { proposalsStore } from "$lib/stores/proposals.store";
 import {
   toastsError,
   toastsHide,
@@ -13,134 +9,79 @@ import {
   voteRegistrationStore,
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
-import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { updateNeuronsVote } from "$lib/utils/neuron.utils";
-import {
-  registerVoteErrorDetails,
-  updateProposalVote,
-} from "$lib/utils/proposals.utils";
-import { keyOf } from "$lib/utils/utils";
-import type { Identity } from "@dfinity/agent";
-import {
-  Topic,
-  Vote,
-  type NeuronId,
-  type ProposalId,
-  type ProposalInfo,
-} from "@dfinity/nns";
+import { registerVoteErrorDetails } from "$lib/utils/proposals.utils";
+import { Vote } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { assertNonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { loadProposal } from "./$public/proposals.services";
-import { getAuthenticatedIdentity } from "./auth.services";
-import { listNeurons } from "./neurons.services";
-
-/**
- * Create Makes multiple registerVote calls (1 per neuronId).
- *
- * In order to improve UX optimistic UI update is used:
- * after every successful neuron vote registration (`registerVote`) we mock the data (both proposal and voted neuron)and update the stores with optimistic values.
- */
-// TODO(sns-voting): add registerSnsVotes
-export const registerNnsVotes = async ({
-  neuronIds,
-  proposalInfo,
-  vote,
-  reloadProposalCallback: updateProposalContext,
-}: {
-  neuronIds: NeuronId[];
-  proposalInfo: ProposalInfo;
-  vote: Vote;
-  reloadProposalCallback: (proposalInfo: ProposalInfo) => void;
-}): Promise<void> => {
-  await registerVotes({
-    neuronIdStrings: neuronIds.map(String),
-    proposalIdString: `${proposalInfo.id}`,
-    proposalTopic: proposalInfo.topic,
-    vote,
-    registerVotes: async (toastId: symbol) => {
-      // make register vote calls (one per neuron)
-      await registerNnsNeuronsVote({
-        neuronIds,
-        proposalInfo,
-        vote,
-        updateProposalContext,
-        toastId,
-      });
-    },
-    updateProposals: async () => {
-      // reload and replace proposal and neurons (`update` call) to display the actual backend state
-      const updatedProposalInfo = await updateAfterNnsVoteRegistration(
-        proposalInfo.id as ProposalId
-      );
-
-      proposalsStore.replaceProposals([updatedProposalInfo]);
-      updateProposalContext(updatedProposalInfo);
-    },
-  });
-};
 
 /**
  * Reflects vote registration status with a toast messages
  * (regardless of neuron type nns/sns)
  */
-const registerVotes = async ({
+export const manageVotesRegistration = async ({
+  universeCanisterId,
   neuronIdStrings,
   proposalIdString,
-  proposalTopic,
+  proposalType,
   vote,
-  registerVotes,
-  updateProposals,
+  registerNeuronVotes,
+  postRegistration,
 }: {
+  universeCanisterId: UniverseCanisterId;
   neuronIdStrings: string[];
   proposalIdString: string;
-  proposalTopic: Topic;
-  vote: Vote;
-  registerVotes: (toastId: symbol) => Promise<void>;
-  updateProposals: () => Promise<void>;
+  proposalType: string;
+  vote: Vote | SnsVote;
+  registerNeuronVotes: (toastId: symbol) => Promise<void>;
+  postRegistration: () => Promise<void>;
 }): Promise<void> => {
   try {
     const toastId = createRegisterVotesToast({
       vote,
       proposalIdString,
-      proposalTopic,
+      proposalType,
       neuronIdStrings,
     });
     voteRegistrationStore.add({
       vote,
       proposalIdString,
       neuronIdStrings,
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
 
-    await registerVotes(toastId);
+    await registerNeuronVotes(toastId);
 
     voteRegistrationStore.updateStatus({
       proposalIdString,
       status: "post-update",
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
 
     // update the toast state (voting -> updating the data)
-    const { successfullyVotedNeuronIdStrings } =
-      nnsVoteRegistrationByProposal(proposalIdString);
+    const { successfullyVotedNeuronIdStrings } = voteRegistrationByProposal({
+      proposalIdString,
+      universeCanisterId,
+    });
     updateVoteRegistrationToastMessage({
       toastId,
       proposalIdString,
-      proposalTopic,
+      proposalType,
       neuronIdStrings,
       successfullyVotedNeuronIdStrings,
       registrationDone: true,
       vote,
     });
 
-    await updateProposals();
+    await postRegistration();
 
     // cleanup
     toastsHide(toastId);
     voteRegistrationStore.remove({
       proposalIdString,
-      canisterId: OWN_CANISTER_ID,
+      canisterId: universeCanisterId,
     });
   } catch (err: unknown) {
     console.error("vote unknown:", err);
@@ -152,15 +93,15 @@ const registerVotes = async ({
   }
 };
 
-const createRegisterVotesToast = ({
+export const createRegisterVotesToast = ({
   vote,
   proposalIdString,
-  proposalTopic,
+  proposalType,
   neuronIdStrings,
 }: {
-  vote: Vote;
+  vote: Vote | SnsVote;
   proposalIdString: string;
-  proposalTopic: Topic;
+  proposalType: string;
   neuronIdStrings: string[];
 }): symbol => {
   const $i18n = get(i18n);
@@ -182,17 +123,21 @@ const createRegisterVotesToast = ({
     spinner: true,
     substitutions: {
       $proposalId: proposalIdString,
-      $topic: keyOf({ obj: $i18n.topics, key: Topic[proposalTopic] }),
+      $proposalType: proposalType,
       $status: status,
     },
   });
 };
 
-const nnsVoteRegistrationByProposal = (
-  proposalIdString: string
-): VoteRegistrationStoreEntry => {
+export const voteRegistrationByProposal = ({
+  universeCanisterId,
+  proposalIdString,
+}: {
+  universeCanisterId: UniverseCanisterId;
+  proposalIdString: string;
+}): VoteRegistrationStoreEntry => {
   const registration = get(voteRegistrationStore).registrations[
-    OWN_CANISTER_ID.toText()
+    universeCanisterId.toText()
   ].find(({ proposalIdString: id }) => id === proposalIdString);
 
   assertNonNullish(registration);
@@ -200,78 +145,11 @@ const nnsVoteRegistrationByProposal = (
   return registration;
 };
 
-// TODO(sns-voting): create `snsNeuronRegistrationComplete`
-const nnsNeuronRegistrationComplete = ({
-  neuronId,
-  proposalId,
-  updateProposalContext,
-  toastId,
-}: {
-  neuronId: NeuronId;
-  proposalId: ProposalId;
-  updateProposalContext: (proposal: ProposalInfo) => void;
-  toastId: symbol;
-}) => {
-  const proposalIdString = `${proposalId}`;
-  const { vote, neuronIdStrings } =
-    nnsVoteRegistrationByProposal(proposalIdString);
-  const $definedNeuronsStore = get(definedNeuronsStore);
-  const originalNeuron = $definedNeuronsStore.find(
-    ({ neuronId: id }) => id === neuronId
-  );
-  const proposalInfo = get(proposalsStore).proposals.find(
-    ({ id }) => id === proposalId
-  );
-  assertNonNullish(proposalInfo, `Proposal (${proposalIdString}) not found`);
-
-  // TODO: remove after live testing. In theory it should be always defined here.
-  assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
-
-  voteRegistrationStore.addSuccessfullyVotedNeuronId({
-    proposalIdString,
-    neuronIdString: `${neuronId}`,
-    canisterId: OWN_CANISTER_ID,
-  });
-
-  // Optimistically update neuron vote state
-  const votingNeuron = updateNeuronsVote({
-    neuron: originalNeuron,
-    vote,
-    proposalId,
-  });
-  neuronsStore.replaceNeurons([votingNeuron]);
-
-  // Optimistically update proposal vote state
-  const votingProposal = updateProposalVote({
-    proposalInfo,
-    neuron: votingNeuron,
-    vote,
-  });
-  // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
-  proposalsStore.replaceProposals([votingProposal]);
-
-  // Update proposal context store
-  updateProposalContext(votingProposal);
-
-  updateVoteRegistrationToastMessage({
-    toastId,
-    proposalIdString: `${proposalInfo.id}`,
-    proposalTopic: proposalInfo.topic,
-    neuronIdStrings,
-    registrationDone: false,
-    // use the most actual value
-    successfullyVotedNeuronIdStrings:
-      nnsVoteRegistrationByProposal(proposalIdString)
-        .successfullyVotedNeuronIdStrings,
-    vote,
-  });
-};
-
 /** Reflects vote registration in a toast message */
-const updateVoteRegistrationToastMessage = ({
+export const updateVoteRegistrationToastMessage = ({
   toastId,
   proposalIdString,
-  proposalTopic,
+  proposalType,
   neuronIdStrings,
   successfullyVotedNeuronIdStrings,
   registrationDone,
@@ -279,11 +157,11 @@ const updateVoteRegistrationToastMessage = ({
 }: {
   toastId: symbol;
   proposalIdString: string;
-  proposalTopic: Topic;
+  proposalType: string;
   neuronIdStrings: string[];
   successfullyVotedNeuronIdStrings: string[];
   registrationDone: boolean;
-  vote: Vote;
+  vote: Vote | SnsVote;
 }) => {
   const $i18n = get(i18n);
   const totalNeurons = neuronIdStrings.length;
@@ -306,89 +184,23 @@ const updateVoteRegistrationToastMessage = ({
       spinner: true,
       substitutions: {
         $proposalId: proposalIdString,
-        $topic: keyOf({ obj: $i18n.topics, key: Topic[proposalTopic] }),
+        $proposalType: proposalType,
         $status: status,
       },
     },
   });
 };
 
-/**
- * Make governance api call per neuronId and handles update errors
- */
-const registerNnsNeuronsVote = async ({
-  neuronIds,
-  proposalInfo,
-  vote,
-  updateProposalContext,
-  toastId,
-}: {
-  neuronIds: NeuronId[];
-  proposalInfo: ProposalInfo;
-  vote: Vote;
-  updateProposalContext: (proposal: ProposalInfo) => void;
-  toastId: symbol;
-}) => {
-  const identity: Identity = await getAuthenticatedIdentity();
-  const { id, topic } = proposalInfo;
-  const proposalId = id as ProposalId;
-
-  try {
-    const requests = neuronIds.map(
-      (neuronId: NeuronId): Promise<void> =>
-        governanceApiService
-          .registerVote({
-            neuronId,
-            vote,
-            proposalId,
-            identity,
-          })
-          // call it only after successful registration
-          .then(() =>
-            nnsNeuronRegistrationComplete({
-              neuronId,
-              proposalId,
-              updateProposalContext,
-              toastId,
-            })
-          )
-      // )
-    );
-
-    logWithTimestamp(`Registering [${neuronIds.map(hashCode)}] votes call...`);
-
-    const registerVoteResponses = await Promise.allSettled(requests);
-
-    logWithTimestamp(
-      `Registering [${neuronIds.map(hashCode)}] votes complete.`
-    );
-
-    processRegisterVoteErrors({
-      registerVoteResponses,
-      neuronIdStrings: neuronIds.map(String),
-      proposalIdString: `${proposalId}`,
-      topic,
-    });
-  } catch (err: unknown) {
-    console.error("vote unknown:", err);
-
-    toastsError({
-      labelKey: "error.register_vote_unknown",
-      err,
-    });
-  }
-};
-
-const processRegisterVoteErrors = ({
+export const processRegisterVoteErrors = ({
   registerVoteResponses,
   neuronIdStrings,
   proposalIdString,
-  topic,
+  proposalType,
 }: {
   registerVoteResponses: PromiseSettledResult<void>[];
   neuronIdStrings: string[];
   proposalIdString: string;
-  topic: Topic;
+  proposalType: string;
 }) => {
   const rejectedResponses = registerVoteResponses.filter(
     (response: PromiseSettledResult<void>) => {
@@ -412,42 +224,15 @@ const processRegisterVoteErrors = ({
       responses: registerVoteResponses,
       neuronIdStrings,
     });
-    const $i18n = get(i18n);
 
     toastsShow({
       labelKey: "error.register_vote",
       level: "error",
       substitutions: {
         $proposalId: proposalIdString,
-        $topic: keyOf({ obj: $i18n.topics, key: Topic[topic] }),
+        $proposalType: proposalType,
       },
       detail: details.join(", "),
     });
   }
-};
-
-/**
- * Reload proposals and neurons
- * @param proposalId
- */
-const updateAfterNnsVoteRegistration = async (
-  proposalId: ProposalId
-): Promise<ProposalInfo> => {
-  const reloadProposal = async () =>
-    new Promise<ProposalInfo>((setProposal) =>
-      loadProposal({
-        proposalId,
-        setProposal,
-        // it will take longer but the query could contain not updated data (e.g. latestTally, votingPower on testnet)
-        strategy: "update",
-      })
-    );
-
-  return Promise.all([
-    listNeurons({
-      strategy: "update",
-    }),
-    reloadProposal(),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ]).then(([_, proposal]) => proposal);
 };

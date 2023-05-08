@@ -19,7 +19,7 @@ import { get, writable } from "svelte/store";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("WalletSummary", () => {
-  const renderWalletSummary = () =>
+  const renderWalletSummary = (detailedBalance?: boolean) =>
     render(ContextWrapperTest, {
       props: {
         contextKey: WALLET_CONTEXT_KEY,
@@ -30,6 +30,9 @@ describe("WalletSummary", () => {
           }),
         } as WalletContext,
         Component: WalletSummary,
+        props: {
+          detailedBalance,
+        },
       },
     });
 
@@ -47,7 +50,7 @@ describe("WalletSummary", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render a balance in ICP", () => {
+  it("should render a shortened balance in ICP", () => {
     const { getByText, queryByTestId } = renderWalletSummary();
 
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
@@ -56,6 +59,19 @@ describe("WalletSummary", () => {
       `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
+  });
+
+  it("should render a detailed balance in ICP", () => {
+    const { queryByTestId } = renderWalletSummary(true);
+
+    const icp: HTMLSpanElement | null = queryByTestId("token-value");
+
+    expect(icp?.innerHTML).toEqual(
+      `${formatToken({
+        value: mockMainAccount.balance.toE8s(),
+        detailed: true,
+      })}`
+    );
   });
 
   it("should contain a tooltip", () => {

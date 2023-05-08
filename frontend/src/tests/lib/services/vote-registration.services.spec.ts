@@ -6,7 +6,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as neuronsServices from "$lib/services/neurons.services";
-import { registerNnsVotes } from "$lib/services/vote-registration.services";
+import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -17,7 +17,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { GovernanceError, Topic, Vote, type ProposalInfo } from "@dfinity/nns";
+import { GovernanceError, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -143,13 +143,16 @@ describe("vote-registration-services", () => {
       });
 
       it("should update store with a new vote registration", (done) => {
+        let updateContextCalls = 0;
         registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
-            done();
+            updateContextCalls += 1;
+            if (updateContextCalls === neuronIds.length) {
+              done();
+            }
           },
         });
 
@@ -177,7 +180,7 @@ describe("vote-registration-services", () => {
           proposalInfo: proposal,
           vote: Vote.Yes,
           reloadProposalCallback: () => {
-            //
+            // do nothing
           },
         });
 
@@ -221,7 +224,7 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote adopt_in_progress toast", async () => {
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.Yes,
@@ -240,7 +243,7 @@ describe("vote-registration-services", () => {
       });
 
       it("should show the vote reject_in_progress toast", async () => {
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -261,7 +264,7 @@ describe("vote-registration-services", () => {
       it("should display voted neurons count", async () => {
         expect(spyOnToastsUpdate).toBeCalledTimes(0);
 
-        registerNnsVotes({
+        await registerNnsVotes({
           neuronIds,
           proposalInfo: proposal,
           vote: Vote.No,
@@ -270,9 +273,9 @@ describe("vote-registration-services", () => {
           },
         });
 
-        // initial message + update message (2 pro neuron)
+        // NO initial message, 1 per neuron complete + update message
         await waitFor(() =>
-          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length * 2)
+          expect(spyOnToastsUpdate).toHaveBeenCalledTimes(neuronIds.length + 1)
         );
 
         for (let i = 1; i <= neuronIds.length; i++) {
@@ -288,7 +291,7 @@ describe("vote-registration-services", () => {
                       $amount: `${neuronIds.length}`,
                     }
                   ),
-                  $topic: en.topics[Topic[proposal.topic]],
+                  $proposalType: "Motion",
                 },
               }),
             })

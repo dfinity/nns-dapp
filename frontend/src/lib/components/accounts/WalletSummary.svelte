@@ -18,6 +18,8 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
 
+  export let detailedBalance = false;
+
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let accountName: string;
@@ -73,7 +75,12 @@
         $token: tokenSymbol,
       })}
     >
-      <AmountDisplay copy amount={accountBalance} inline />
+      <AmountDisplay
+        copy
+        amount={accountBalance}
+        inline
+        detailed={detailedBalance}
+      />
     </Tooltip>
   </KeyValuePair>
 

@@ -9,14 +9,10 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
-import {
-  toastsError,
-  toastsShow,
-  toastsSuccess,
-} from "$lib/stores/toasts.store";
+import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
-import { CkBTCErrorKey, CkBTCInfoKey } from "$lib/types/ckbtc.errors";
+import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
@@ -27,9 +23,11 @@ import {
   MinterTemporaryUnavailableError,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -172,10 +170,9 @@ export const updateBalance = async ({
     const err = mapUpdateBalanceError(error);
 
     // Few errors returned by the minter are considered to be displayed as information for the user
-    if (err instanceof CkBTCInfoKey) {
-      toastsShow({
+    if (err instanceof CkBTCSuccessKey) {
+      toastsSuccess({
         labelKey: err.message,
-        level: "info",
       });
 
       return { success: true };
@@ -194,7 +191,7 @@ export const updateBalance = async ({
 
 const mapUpdateBalanceError = (
   err: unknown
-): CkBTCErrorKey | CkBTCInfoKey | unknown => {
+): CkBTCErrorKey | CkBTCSuccessKey | unknown => {
   const labels = get(i18n);
 
   if (err instanceof MinterTemporaryUnavailableError) {
@@ -208,7 +205,7 @@ const mapUpdateBalanceError = (
   }
 
   if (err instanceof MinterNoNewUtxosError) {
-    return new CkBTCInfoKey(labels.error__ckbtc.no_new_confirmed_btc);
+    return new CkBTCSuccessKey(labels.error__ckbtc.no_new_confirmed_btc);
   }
 
   if (err instanceof MinterGenericError) {
@@ -216,4 +213,30 @@ const mapUpdateBalanceError = (
   }
 
   return err;
+};
+
+export const getWithdrawalAccount = async ({
+  minterCanisterId,
+}: {
+  minterCanisterId: CanisterId;
+}): Promise<WithdrawalAccount | undefined> => {
+  const identity = await getAuthenticatedIdentity();
+
+  try {
+    const account = await getWithdrawalAccountAPI({
+      identity,
+      canisterId: minterCanisterId,
+    });
+
+    return account;
+  } catch (err: unknown) {
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__ckbtc.withdrawal_account",
+      })
+    );
+
+    return undefined;
+  }
 };

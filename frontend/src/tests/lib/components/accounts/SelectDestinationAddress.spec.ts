@@ -83,6 +83,32 @@ describe("SelectDestinationAddress", () => {
         expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
     });
+
+    it("should not render toggle and address input if selection methods is dropdown", () => {
+      const { container } = render(SelectDestinationAddress, {
+        props: {
+          rootCanisterId: OWN_CANISTER_ID,
+          selectMethods: "dropdown",
+        },
+      });
+
+      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(
+        container.querySelector("input[name='accounts-address']")
+      ).toBeNull();
+    });
+
+    it("should not render dropdown and toggle if selection methods is manual", () => {
+      const { container, queryByTestId } = render(SelectDestinationAddress, {
+        props: {
+          rootCanisterId: OWN_CANISTER_ID,
+          selectMethods: "manual",
+        },
+      });
+
+      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(queryByTestId("select-account-dropdown")).toBeNull();
+    });
   });
 
   describe("sns accounts", () => {

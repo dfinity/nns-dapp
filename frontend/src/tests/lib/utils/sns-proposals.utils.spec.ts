@@ -6,16 +6,29 @@ import {
   proposalActionFields,
   proposalOnlyActionKey,
   snsDecisionStatus,
+  snsNeuronToVotingNeuron,
+  snsProposalIdString,
+  snsProposalOpen,
   snsRewardStatus,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import {
+  mockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsAction, SnsProposalData } from "@dfinity/sns";
+import type {
+  SnsAction,
+  SnsNervousSystemParameters,
+  SnsNeuron,
+  SnsProposalData,
+} from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
@@ -133,7 +146,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
@@ -149,7 +162,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: true,
@@ -166,7 +179,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: false,
@@ -190,7 +203,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
@@ -425,6 +438,72 @@ describe("sns-proposals utils", () => {
         proposal: [],
       };
       expect(proposalActionFields(proposalWithoutProposal)).toHaveLength(0);
+    });
+  });
+
+  describe("snsProposalIdString", () => {
+    it("should stringify proposal id", () => {
+      const testId = 123987n;
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [
+          {
+            id: testId,
+          },
+        ],
+      };
+      expect(snsProposalIdString(testProposal)).toEqual(`${testId}`);
+    });
+  });
+
+  describe("snsProposalOpen", () => {
+    it("should return true when proposal is in open state", () => {
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: 0n,
+      };
+      expect(snsProposalOpen(testProposal)).toBe(true);
+    });
+
+    it("should return false when proposal is not in open state", () => {
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: 123n,
+      };
+      expect(snsProposalOpen(testProposal)).toBe(false);
+    });
+  });
+
+  describe("snsNeuronToVotingNeuron", () => {
+    it("should create VotingNeuron out of SnsNeuron", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
+        staked_maturity_e8s_equivalent: [],
+        maturity_e8s_equivalent: BigInt(0),
+        neuron_fees_e8s: 0n,
+        dissolve_state: [{ DissolveDelaySeconds: 100n }],
+        aging_since_timestamp_seconds: 0n,
+        voting_power_percentage_multiplier: 100n,
+        cached_neuron_stake_e8s: 100n,
+      };
+      const testParameters: SnsNervousSystemParameters = {
+        ...snsNervousSystemParametersMock,
+        max_dissolve_delay_seconds: [100n],
+        max_neuron_age_for_age_bonus: [100n],
+        max_dissolve_delay_bonus_percentage: [100n],
+        max_age_bonus_percentage: [25n],
+        neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
+      };
+      expect(
+        snsNeuronToVotingNeuron({
+          neuron: testNeuron,
+          snsParameters: testParameters,
+        })
+      ).toEqual({
+        neuronIdString: "010203",
+        votingPower: 250n,
+      });
     });
   });
 });

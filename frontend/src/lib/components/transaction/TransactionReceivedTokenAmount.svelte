@@ -18,11 +18,7 @@
   </p>
 
   <p class="no-margin" data-tid={testId} class:estimation>
-    {#if estimation}<span class="value">≈</span>{/if}<AmountDisplay
-      inline
-      detailed
-      {amount}
-    />
+    <AmountDisplay inline detailed {amount} />
   </p>
 </div>
 
@@ -32,6 +28,6 @@
   }
 
   .estimation {
-    padding: 0 0 var(--padding-0_5x);
+    padding: 0 0 var(--padding);
   }
 </style>

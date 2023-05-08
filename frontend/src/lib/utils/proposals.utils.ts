@@ -24,11 +24,13 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
+import type { SnsVote } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
 import { replacePlaceholders } from "./i18n.utils";
+import { toNnsVote } from "./sns-proposals.utils";
 import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
@@ -526,12 +528,12 @@ export const updateProposalVote = ({
 }: {
   proposalInfo: ProposalInfo;
   neuron: NeuronInfo;
-  vote: Vote;
+  vote: Vote | SnsVote;
 }): ProposalInfo => {
   const { votingPower, neuronId } = neuron;
   const votedBallot: Ballot = {
     neuronId,
-    vote,
+    vote: toNnsVote(vote),
     votingPower,
   };
 

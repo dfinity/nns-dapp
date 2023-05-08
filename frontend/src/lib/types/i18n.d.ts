@@ -192,6 +192,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   subAccount: string;
   hardwareWallet: string;
+  withdrawalAccount: string;
   select_source: string;
   select_destination: string;
   address: string;
@@ -924,13 +925,18 @@ interface I18nCkbtc {
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;
-  typically_twelve: string;
+  warning_transaction_failed: string;
+  warning_transaction_description: string;
+  checking_incomplete_btc_transfers: string;
+  all_btc_transfers_complete: string;
+  click_to_complete_btc_transfers: string;
 }
 
 interface I18nError__ckbtc {
   already_process: string;
   no_new_utxo: string;
   temporary_unavailable: string;
+  no_minter_defined: string;
   get_btc_address: string;
   get_btc_no_account: string;
   get_btc_no_universe: string;
@@ -1106,6 +1112,7 @@ interface I18nNns_functions {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18nNns_functions_description {
@@ -1148,6 +1155,7 @@ interface I18nNns_functions_description {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18n {

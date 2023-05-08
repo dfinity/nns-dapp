@@ -1,9 +1,9 @@
+import { fetchTransactionRate } from "$lib/api/dashboard.api";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import {
   SYNC_METRICS_CONFIG,
   SYNC_METRICS_TIMER_INTERVAL,
 } from "$lib/constants/metrics.constants";
-import { fetchTransactionRate } from "$lib/rest/dashboard.rest";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import type { MetricsSync } from "$lib/types/metrics";

@@ -4,7 +4,7 @@ import {
   type FeatureFlags,
   type FeatureKey,
 } from "$lib/constants/environment.constants";
-import { storeLocalStorageKey } from "$lib/constants/stores.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { derived, get, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
@@ -40,7 +40,7 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
  */
 const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
   const { subscribe, set, update } = writableStored<OverrideFeatureFlagsData>({
-    key: storeLocalStorageKey.FeatureFlags,
+    key: StoreLocalStorageKey.FeatureFlags,
     defaultValue: {},
   });
 

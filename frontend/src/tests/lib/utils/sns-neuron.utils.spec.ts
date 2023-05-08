@@ -20,6 +20,7 @@ import {
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronState,
+  getSnsNeuronVote,
   hasEnoughMaturityToStake,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
@@ -29,6 +30,7 @@ import {
   hasPermissions,
   hasStakedMaturity,
   hasValidStake,
+  ineligibleSnsNeurons,
   isCommunityFund,
   isEnoughAmountToSplit,
   isSnsNeuron,
@@ -40,6 +42,9 @@ import {
   snsNeuronVotingPower,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
+  votableSnsNeurons,
+  votedSnsNeuronDetails,
+  votedSnsNeurons,
   type SnsFolloweesByNeuron,
 } from "$lib/utils/sns-neuron.utils";
 import { bytesToHexString } from "$lib/utils/utils";
@@ -51,15 +56,18 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, Vote, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
+  SnsVote,
   neuronSubaccount,
   type SnsNervousSystemFunction,
   type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
@@ -1549,6 +1557,401 @@ describe("sns-neuron utils", () => {
       });
 
       expect(votingPower).toEqual(100);
+    });
+  });
+
+  describe("ineligibleSnsNeurons", () => {
+    it("should filter by created since proposal neurons", () => {
+      const testNeurons: SnsNeuron[] = [
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([1, 2, 3]),
+            },
+          ],
+          created_timestamp_seconds: 100n,
+        },
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([3, 2, 1]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+      ];
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal_creation_timestamp_seconds: 50n,
+        ballots: [
+          [
+            "010203",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+          [
+            "030201",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+        ],
+      };
+
+      const ineligibleNeurons = ineligibleSnsNeurons({
+        neurons: testNeurons,
+        proposal: testProposal,
+      });
+      expect(ineligibleNeurons.length).toEqual(1);
+      expect(ineligibleNeurons).toEqual([testNeurons[0]]);
+    });
+
+    it("should filter by ballots", () => {
+      const testNeurons: SnsNeuron[] = [
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([1, 2, 3]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([3, 2, 1]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+      ];
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal_creation_timestamp_seconds: 100n,
+        ballots: [
+          [
+            "010203",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+        ],
+      };
+
+      const ineligibleNeurons = ineligibleSnsNeurons({
+        neurons: testNeurons,
+        proposal: testProposal,
+      });
+      expect(ineligibleNeurons.length).toEqual(1);
+      expect(ineligibleNeurons).toEqual([testNeurons[1]]);
+    });
+  });
+
+  describe("votableSnsNeurons", () => {
+    it("should filter out ineligible neurons", () => {
+      const testNeurons: SnsNeuron[] = [
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([1, 2, 3]),
+            },
+          ],
+          // created after
+          created_timestamp_seconds: 100n,
+        },
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([3, 2, 1]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+      ];
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal_creation_timestamp_seconds: 50n,
+        ballots: [
+          [
+            "010203",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+          [
+            "030201",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+        ],
+      };
+
+      const resultNeurons = votableSnsNeurons({
+        neurons: testNeurons,
+        proposal: testProposal,
+      });
+      expect(resultNeurons.length).toEqual(1);
+      expect(resultNeurons).toEqual([testNeurons[1]]);
+    });
+
+    it("should filter out by voting state", () => {
+      const testNeurons: SnsNeuron[] = [
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([1, 2, 3]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+        // voted
+        {
+          ...mockSnsNeuron,
+          id: [
+            {
+              id: arrayOfNumberToUint8Array([3, 2, 1]),
+            },
+          ],
+          created_timestamp_seconds: 50n,
+        },
+      ];
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        proposal_creation_timestamp_seconds: 100n,
+        ballots: [
+          [
+            "010203",
+            {
+              vote: SnsVote.Unspecified,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+          [
+            "030201",
+            {
+              vote: SnsVote.Yes,
+              cast_timestamp_seconds: 0n,
+              voting_power: 321n,
+            },
+          ],
+        ],
+      };
+
+      const resultNeurons = votableSnsNeurons({
+        neurons: testNeurons,
+        proposal: testProposal,
+      });
+      expect(resultNeurons.length).toEqual(1);
+      expect(resultNeurons).toEqual([testNeurons[0]]);
+    });
+  });
+
+  describe("getSnsNeuronVote", () => {
+    const testProposal: SnsProposalData = {
+      ...mockSnsProposal,
+      proposal_creation_timestamp_seconds: 100n,
+      ballots: [
+        [
+          "010203",
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+      ],
+    };
+    const testVotedNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [
+        {
+          id: arrayOfNumberToUint8Array([1, 2, 3]),
+        },
+      ],
+    };
+    const testNotVotedNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [
+        {
+          id: arrayOfNumberToUint8Array([3, 2, 1]),
+        },
+      ],
+    };
+
+    it("should return an sns neuron vote", () => {
+      expect(
+        getSnsNeuronVote({
+          neuron: testVotedNeuron,
+          proposal: testProposal,
+        })
+      ).toEqual(SnsVote.Yes);
+    });
+
+    it("should return undefined when nothing found", () => {
+      expect(
+        getSnsNeuronVote({
+          neuron: testNotVotedNeuron,
+          proposal: testProposal,
+        })
+      ).toEqual(undefined);
+    });
+  });
+
+  describe("votedSnsNeurons", () => {
+    const testProposal: SnsProposalData = {
+      ...mockSnsProposal,
+      proposal_creation_timestamp_seconds: 100n,
+      ballots: [
+        [
+          "010203",
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+        [
+          "010101",
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+      ],
+    };
+    const testNeurons: SnsNeuron[] = [
+      {
+        ...mockSnsNeuron,
+        id: [
+          {
+            id: arrayOfNumberToUint8Array([1, 2, 3]),
+          },
+        ],
+      },
+      {
+        ...mockSnsNeuron,
+        id: [
+          {
+            id: arrayOfNumberToUint8Array([1, 1, 1]),
+          },
+        ],
+      },
+      // not voted
+      {
+        ...mockSnsNeuron,
+        id: [
+          {
+            id: arrayOfNumberToUint8Array([3, 2, 1]),
+          },
+        ],
+      },
+    ];
+
+    it("should return voted sns neurons", () => {
+      expect(
+        votedSnsNeurons({
+          neurons: testNeurons,
+          proposal: testProposal,
+        }).length
+      ).toEqual(2);
+
+      expect(
+        votedSnsNeurons({
+          neurons: testNeurons,
+          proposal: testProposal,
+        })
+      ).toEqual(testNeurons.slice(0, 2));
+    });
+  });
+
+  describe("votedSnsNeuronDetails", () => {
+    const testProposal: SnsProposalData = {
+      ...mockSnsProposal,
+      proposal_creation_timestamp_seconds: 100n,
+      ballots: [
+        [
+          "010203",
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+        [
+          "010101",
+          {
+            vote: SnsVote.No,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+      ],
+    };
+    const testVotedNeuronA: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [
+        {
+          id: arrayOfNumberToUint8Array([1, 2, 3]),
+        },
+      ],
+    };
+    const testVotedNeuronB: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [
+        {
+          id: arrayOfNumberToUint8Array([1, 1, 1]),
+        },
+      ],
+    };
+    const testNotVotedNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [
+        {
+          id: arrayOfNumberToUint8Array([3, 2, 1]),
+        },
+      ],
+    };
+
+    it("should return an sns neuron vote", () => {
+      expect(
+        votedSnsNeuronDetails({
+          neurons: [testVotedNeuronA, testVotedNeuronB, testNotVotedNeuron],
+          proposal: testProposal,
+          snsParameters: snsNervousSystemParametersMock,
+        })
+      ).toEqual([
+        {
+          idString: "010203",
+          votingPower: 0n,
+          vote: Vote.Yes,
+        },
+        {
+          idString: "010101",
+          votingPower: 0n,
+          vote: Vote.No,
+        },
+      ]);
     });
   });
 });

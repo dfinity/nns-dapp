@@ -4,11 +4,15 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
-import { votingPower } from "$lib/utils/neuron.utils";
+import {
+  votingPower,
+  type CompactNeuronInfo,
+  type IneligibleNeuronData,
+} from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -16,6 +20,7 @@ import {
   type SnsNervousSystemFunction,
   type SnsNervousSystemParameters,
   type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
 import {
   fromDefinedNullable,
@@ -683,3 +688,120 @@ export const snsNeuronVotingPower = ({
   // The voting power multiplier is applied against the total voting power of the neuron
   return vp * (Number(voting_power_percentage_multiplier) / 100);
 };
+
+export const ineligibleSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  const { ballots, proposal_creation_timestamp_seconds } = proposal;
+
+  return neurons.filter((neuron) => {
+    const neuronId = getSnsNeuronIdAsHexString(neuron);
+    const createdSinceProposal: boolean =
+      neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds;
+    // TODO(sns-voting): is this still correct, because it's possible to check against real short, but what to display if both are false and there is no ballot in proposal?
+    const dissolveTooShort: boolean =
+      ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
+      undefined;
+
+    return createdSinceProposal || dissolveTooShort;
+  });
+};
+
+export const votableSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  return neurons.filter(
+    (neuron) =>
+      // TODO(sns-voting): is hasPermissionToVote necessary when they are in ballots?
+      ineligibleSnsNeurons({
+        neurons: [neuron],
+        proposal,
+      }).length === 0 &&
+      proposal.ballots.find(
+        ([ballotNeuronId, { vote }]) =>
+          getSnsNeuronIdAsHexString(neuron) === ballotNeuronId &&
+          // neuron is not voted yet
+          vote === Vote.Unspecified
+      )
+  );
+};
+
+/** Returns the neurons that have voted on the proposal (based on proposal ballots) */
+export const votedSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  const votedNeuronIds = new Set(
+    proposal.ballots
+      // filter out the unspecified votes or the ballots that are not presented in ballots
+      .filter(([, { vote }]) => vote === Vote.Yes || vote === Vote.No)
+      .map(([neuronId]) => neuronId)
+  );
+  return neurons.filter((neuron) =>
+    votedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
+  );
+};
+
+export const votedSnsNeuronDetails = ({
+  neurons,
+  proposal,
+  snsParameters,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+  snsParameters: SnsNervousSystemParameters;
+}): CompactNeuronInfo[] =>
+  votedSnsNeurons({
+    neurons,
+    proposal,
+  })
+    .map((neuron) => ({
+      idString: getSnsNeuronIdAsHexString(neuron),
+      votingPower: BigInt(
+        snsNeuronVotingPower({
+          neuron,
+          snsParameters,
+        })
+      ),
+      vote: getSnsNeuronVote({ neuron, proposal }),
+    }))
+    // Exclude the cases where the vote was not found.
+    .filter(({ vote }) => vote !== undefined) as CompactNeuronInfo[];
+
+/** Returns neuron vote using proposal ballots. */
+export const getSnsNeuronVote = ({
+  neuron,
+  proposal,
+}: {
+  neuron: SnsNeuron;
+  proposal: SnsProposalData;
+}): Vote | undefined =>
+  proposal.ballots.find(
+    ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
+  )?.[1].vote;
+
+export const snsNeuronToIneligibleNeuronData = ({
+  neurons,
+  proposal: { proposal_creation_timestamp_seconds },
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): IneligibleNeuronData[] =>
+  neurons.map((neuron) => ({
+    neuronIdString: getSnsNeuronIdAsHexString(neuron),
+    reason:
+      neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds
+        ? "since"
+        : "short",
+  }));

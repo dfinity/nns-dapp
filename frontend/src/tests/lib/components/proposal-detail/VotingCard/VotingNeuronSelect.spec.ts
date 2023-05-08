@@ -11,8 +11,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
+import { render, waitFor } from "@testing-library/svelte";
 
 describe("VotingNeuronSelect", () => {
   const neuron1 = {
@@ -49,20 +48,8 @@ describe("VotingNeuronSelect", () => {
     );
   });
 
-  it("should render checkbox per neuron", () => {
-    const { container, getByText } = render(VotingNeuronSelect, {
-      proposalInfo,
-    });
-    expect(container.querySelectorAll('[type="checkbox"]')?.length).toBe(3);
-    neurons.forEach(({ neuronId }) =>
-      expect(
-        getByText(neuronId.toString(), { exact: false })
-      ).toBeInTheDocument()
-    );
-  });
-
   it("should display total voting power of ballots not of neurons", async () => {
-    const { queryByText } = render(VotingNeuronSelect, { proposalInfo });
+    const { queryByText } = render(VotingNeuronSelect);
     const ballotsVotingPower = formatVotingPower(
       ballots[0].votingPower + ballots[1].votingPower + ballots[2].votingPower
     );
@@ -70,27 +57,15 @@ describe("VotingNeuronSelect", () => {
   });
 
   it("should not display total voting power of neurons", async () => {
-    const { queryByText } = render(VotingNeuronSelect, { proposalInfo });
+    const { queryByText } = render(VotingNeuronSelect);
     const neuronsVotingPower = formatVotingPower(
       neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
     );
     expect(queryByText(neuronsVotingPower)).toBeNull();
   });
 
-  it("should toggle store state on click", async () => {
-    const { container } = render(VotingNeuronSelect, { proposalInfo });
-    const checkboxes = container.querySelectorAll('[type="checkbox"]');
-    fireEvent.click(checkboxes[0]);
-    fireEvent.click(checkboxes[0]);
-    fireEvent.click(checkboxes[1]);
-
-    expect(get(votingNeuronSelectStore).selectedIds.sort()).toEqual(
-      [neurons[0].neuronId, neurons[2].neuronId].map(String)
-    );
-  });
-
   it("should recalculate total voting power after selection", async () => {
-    const { getByText } = render(VotingNeuronSelect, { proposalInfo });
+    const { getByText } = render(VotingNeuronSelect);
 
     votingNeuronSelectStore.toggleSelection(`${neurons[1].neuronId}`);
     const total = formatVotingPower(
@@ -106,11 +81,7 @@ describe("VotingNeuronSelect", () => {
     });
 
     it("should display no neurons information", () => {
-      const { getByTestId } = render(VotingNeuronSelect, {
-        props: {
-          proposalInfo: mockProposalInfo,
-        },
-      });
+      const { getByTestId } = render(VotingNeuronSelect);
 
       expect(
         getByTestId("voting-collapsible-toolbar-neurons")?.textContent?.trim()
@@ -134,11 +105,7 @@ describe("VotingNeuronSelect", () => {
     );
 
     it("should display voting power", () => {
-      const { getByTestId } = render(VotingNeuronSelect, {
-        props: {
-          proposalInfo: mockProposalInfo,
-        },
-      });
+      const { getByTestId } = render(VotingNeuronSelect);
 
       expect(
         getByTestId("voting-collapsible-toolbar-voting-power")
@@ -146,11 +113,7 @@ describe("VotingNeuronSelect", () => {
     });
 
     it("should display selectable neurons for voting power", () => {
-      const { getByTestId } = render(VotingNeuronSelect, {
-        props: {
-          proposalInfo: mockProposalInfo,
-        },
-      });
+      const { getByTestId } = render(VotingNeuronSelect);
 
       expect(
         getByTestId("voting-collapsible-toolbar-neurons")

@@ -7,7 +7,10 @@ import {
   type SnsProposalsStore,
   type SnsProposalsStoreData,
 } from "$lib/stores/sns-proposals.store";
-import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
+import {
+  snsDecisionStatus,
+  snsRewardStatus,
+} from "$lib/utils/sns-proposals.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
@@ -32,9 +35,14 @@ export const snsFilteredProposalsStore = derived<
               projectSelectedFilters.decisionStatus
                 .map(({ value }) => value)
                 .includes(snsDecisionStatus(proposal));
-            // TODO: Filter by reward status
+
+            const rewardStatusMatch =
+              projectSelectedFilters.rewardStatus.length === 0 ||
+              projectSelectedFilters.rewardStatus
+                .map(({ value }) => value)
+                .includes(snsRewardStatus(proposal));
             // TODO: Filter by nervous functions
-            return statusMatch;
+            return statusMatch && rewardStatusMatch;
           }
         );
         return {

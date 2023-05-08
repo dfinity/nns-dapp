@@ -3,16 +3,13 @@
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   export let proposer: NeuronId | undefined;
 
   let modalOpen = false;
 
   // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
 </script>
 
 {#if proposer !== undefined}
@@ -22,7 +19,7 @@
     >
 
     <svelte:fragment slot="value">
-      {#if signedIn}
+      {#if $authSignedInStore}
         <button
           class="text"
           on:click|stopPropagation={() => (modalOpen = true)}

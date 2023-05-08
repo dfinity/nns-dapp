@@ -1,20 +1,8 @@
 <script lang="ts">
-  import VotingNeuronSelectList from "./VotingNeuronSelectList.svelte";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import IneligibleNeuronsCard from "../IneligibleNeuronsCard.svelte";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import MyVotes from "../MyVotes.svelte";
-
-  export let proposalInfo: ProposalInfo;
-  export let disabled: boolean;
 </script>
 
 <div class="neurons">
-  <VotingNeuronSelectList {disabled} />
-
-  <MyVotes {proposalInfo} />
-
-  <IneligibleNeuronsCard {proposalInfo} neurons={$definedNeuronsStore} />
+  <slot />
 </div>
 
 <style lang="scss">
