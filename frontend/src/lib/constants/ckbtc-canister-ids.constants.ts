@@ -5,6 +5,7 @@ const envVars = getEnvVars();
 
 // We fallback to hardcoded canister IDs because ckBTC is not deployed on every environment at the moment and, we do not want to introduce constants that can be undefined.
 // The feature flags should be set accordingly. The feature is active on mainnet, therefore the fallback values are the one to use on mainnet.
+// Source of the canister IDs: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/mainnet/canister_ids.json
 const MAINNET_CKBTC_LEDGER_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
 const MAINNET_CKBTC_INDEX_CANISTER_ID = "n5wcd-faaaa-aaaar-qaaea-cai";
 const MAINNET_CKBTC_MINTER_CANISTER_ID = "mqygn-kiaaa-aaaar-qaadq-cai";
