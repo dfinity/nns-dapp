@@ -18,16 +18,6 @@
   import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
   import type { Account } from "$lib/types/account";
 
-  const reloadAccount = async () => {
-    if (isNullish($selectedCkBTCUniverseIdStore)) {
-      return;
-    }
-
-    await loadCkBTCWithdrawalAccount({
-      universeId: $selectedCkBTCUniverseIdStore,
-    });
-  };
-
   const loadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
       return;
@@ -42,7 +32,9 @@
       return;
     }
 
-    await reloadAccount();
+    await loadCkBTCWithdrawalAccount({
+      universeId: $selectedCkBTCUniverseIdStore,
+    });
   };
 
   onMount(loadAccount);
