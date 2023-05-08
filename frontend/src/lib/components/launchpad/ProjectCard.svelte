@@ -10,6 +10,7 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let project: SnsFullProject;
 
@@ -32,7 +33,7 @@
 
   let userHasParticipated: boolean;
   $: userHasParticipated =
-    commitmentE8s !== undefined && commitmentE8s > BigInt(0);
+    nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
 
   const showProject = async () =>
     await goto(

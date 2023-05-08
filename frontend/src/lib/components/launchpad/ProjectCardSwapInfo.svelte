@@ -16,6 +16,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let project: SnsFullProject;
 
@@ -40,7 +41,7 @@
   let myCommitment: TokenAmount | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
-    if (commitmentE8s !== undefined && commitmentE8s > BigInt(0)) {
+    if (nonNullish(commitmentE8s) && commitmentE8s > BigInt(0)) {
       myCommitment = TokenAmount.fromE8s({
         amount: commitmentE8s,
         token: ICPToken,

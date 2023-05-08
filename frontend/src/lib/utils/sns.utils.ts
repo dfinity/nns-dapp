@@ -206,11 +206,8 @@ export const getCommitmentE8s = (
   if (isNullish(swapCommitment)) {
     return undefined;
   }
-  if (isNullish(swapCommitment?.myCommitment)) {
-    return BigInt(0);
-  }
   return (
-    fromNullable(swapCommitment?.myCommitment.icp ?? [])?.amount_e8s ??
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
     BigInt(0)
   );
 };
