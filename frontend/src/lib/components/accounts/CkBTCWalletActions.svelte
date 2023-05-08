@@ -16,10 +16,10 @@
 
 <div role="menubar">
   <button
-          class="secondary"
-          type="button"
-          on:click={updateBalance}
-          data-tid="manual-refresh-balance"
+    class="secondary"
+    type="button"
+    on:click={updateBalance}
+    data-tid="manual-refresh-balance"
   >
     {$i18n.ckbtc.refresh_balance}
   </button>

@@ -23,19 +23,19 @@
       return;
     }
 
-      emit<CkBTCWalletModal>({
-          message: "nnsCkBTCAccountsModal",
-          detail: {
-              type: "ckbtc-receive",
-              data: {
-                  account,
-                  reload,
-                  universeId: $selectedCkBTCUniverseIdStore,
-                  canisters,
-                  canSelectAccount,
-              },
-          },
-      });
+    emit<CkBTCWalletModal>({
+      message: "nnsCkBTCAccountsModal",
+      detail: {
+        type: "ckbtc-receive",
+        data: {
+          account,
+          reload,
+          universeId: $selectedCkBTCUniverseIdStore,
+          canisters,
+          canSelectAccount,
+        },
+      },
+    });
   };
 </script>
 

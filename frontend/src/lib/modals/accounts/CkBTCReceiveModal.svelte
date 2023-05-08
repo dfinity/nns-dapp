@@ -33,13 +33,7 @@
   let reload: (() => Promise<void>) | undefined;
   let canSelectAccount: boolean;
 
-  $: ({
-    account,
-    reload,
-    canisters,
-    universeId,
-    canSelectAccount,
-  } = data);
+  $: ({ account, reload, canisters, universeId, canSelectAccount } = data);
 
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
@@ -78,9 +72,7 @@
     : $i18n.ckbtc.title;
 
   let segmentLabel: string;
-  $: segmentLabel = ckTESTBTC
-    ? $i18n.ckbtc.test_title
-    : $i18n.ckbtc.title;
+  $: segmentLabel = ckTESTBTC ? $i18n.ckbtc.test_title : $i18n.ckbtc.title;
 
   // Avoid a UI glich by not showing the buttons until the QR Code is rendered
   let qrCodeRendered: boolean;
@@ -134,7 +126,7 @@
     <Segment bind:selectedSegmentId bind:this={segment}>
       <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
       <SegmentButton segmentId={bitcoinSegmentId}
-      >{bitcoinSegmentLabel}</SegmentButton
+        >{bitcoinSegmentLabel}</SegmentButton
       >
     </Segment>
   </div>
