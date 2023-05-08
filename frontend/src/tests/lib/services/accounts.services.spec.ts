@@ -72,7 +72,7 @@ describe("accounts-services", () => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest.clearAllMocks();
     toastsStore.reset();
-    accountsStore.reset();
+    accountsStore.resetForTesting();
   });
 
   describe("getOrCreateAccount", () => {
@@ -297,6 +297,115 @@ describe("accounts-services", () => {
         },
       ]);
     });
+
+    it("update response replaces query response", async () => {
+      const queryMainBalanceE8s = BigInt(10_000_000);
+      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
+      let resolveUpdateResponse;
+      const updateBalanceResponse = new Promise<bigint>((resolve) => {
+        resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
+      });
+
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockImplementation(({ certified }) =>
+          certified ? updateBalanceResponse : queryBalanceResponse
+        );
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const accountsWith = ({
+        mainBalanceE8s,
+        certified,
+      }: {
+        mainBalanceE8s: bigint;
+        certified: boolean;
+      }) => ({
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified,
+      });
+      await syncAccounts();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+      );
+
+      resolveUpdateResponse();
+      await runResolvedPromises();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: updateMainBalanceE8s, certified: true })
+      );
+    });
+
+    it("old update response does not replace newer response", async () => {
+      const queryMainBalanceE8s = BigInt(10_000_000);
+      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
+      let resolveUpdateResponse;
+      const updateBalanceResponse = new Promise<bigint>((resolve) => {
+        resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
+      });
+
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockImplementation(({ certified }) =>
+          certified ? updateBalanceResponse : queryBalanceResponse
+        );
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const accountsWith = ({
+        mainBalanceE8s,
+        certified,
+      }: {
+        mainBalanceE8s: bigint;
+        certified: boolean;
+      }) => ({
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified,
+      });
+      await syncAccounts();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+      );
+
+      const newerMainBalanceE8s = BigInt(30_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(newerMainBalanceE8s);
+      await syncAccounts();
+      await runResolvedPromises();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
+      );
+
+      resolveUpdateResponse();
+      await runResolvedPromises();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
+      );
+    });
   });
 
   describe("loadBalance", () => {
@@ -360,6 +469,66 @@ describe("accounts-services", () => {
         level: "error",
         text: expect.stringContaining(error.message),
       });
+    });
+
+    it("old update response does not replace newer response", async () => {
+      const queryMainBalanceE8s = BigInt(10_000_000);
+      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
+      let resolveUpdateResponse;
+      const updateBalanceResponse = new Promise<bigint>((resolve) => {
+        resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
+      });
+
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockImplementation(({ certified }) =>
+          certified ? updateBalanceResponse : queryBalanceResponse
+        );
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      const accountsWith = ({
+        mainBalanceE8s,
+        certified,
+      }: {
+        mainBalanceE8s: bigint;
+        certified?: boolean;
+      }) => ({
+        main: {
+          ...mockMainAccount,
+          balance: TokenAmount.fromE8s({
+            amount: mainBalanceE8s,
+            token: ICPToken,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [],
+        certified,
+      });
+      await syncAccounts();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+      );
+
+      const newerMainBalanceE8s = BigInt(30_000_000);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(newerMainBalanceE8s);
+      await loadBalance({ accountIdentifier: mockMainAccount.identifier });
+      await runResolvedPromises();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
+      );
+
+      resolveUpdateResponse();
+      await runResolvedPromises();
+
+      expect(get(accountsStore)).toEqual(
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
+      );
     });
   });
 
