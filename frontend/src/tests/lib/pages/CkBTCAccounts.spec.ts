@@ -18,6 +18,12 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+  return {
+    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("CkBTCAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
