@@ -18,6 +18,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtc,
+    type ConvertCkBTCToBtcParams,
     retrieveBtc,
   } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
@@ -106,16 +107,20 @@
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
-    const convert = withdrawalAccount ? retrieveBtc : convertCkBTCToBtc;
-
-    const { success } = await convert({
-      ...(!withdrawalAccount && { source: sourceAccount }),
+    const params: ConvertCkBTCToBtcParams = {
       destinationAddress,
       amount,
       universeId,
       canisters,
       updateProgress,
-    });
+    };
+
+    const { success } = withdrawalAccount
+      ? await retrieveBtc(params)
+      : await convertCkBTCToBtc({
+          source: sourceAccount,
+          ...params,
+        });
 
     if (success) {
       toastsSuccess({

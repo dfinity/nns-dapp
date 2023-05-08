@@ -22,7 +22,10 @@ import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
-export type ConvertCkBTCToBtcParams = IcrcTransferTokensUserParams & {
+export type ConvertCkBTCToBtcParams = Omit<
+  IcrcTransferTokensUserParams,
+  "source"
+> & {
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
   updateProgress: (step: ConvertBtcStep) => void;
@@ -43,7 +46,8 @@ export const convertCkBTCToBtc = async ({
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
-}: ConvertCkBTCToBtcParams): Promise<{
+}: ConvertCkBTCToBtcParams &
+  Pick<IcrcTransferTokensUserParams, "source">): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.INITIALIZATION);
@@ -104,7 +108,7 @@ export const retrieveBtc = async ({
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
-}: Omit<ConvertCkBTCToBtcParams, "source">): Promise<{
+}: ConvertCkBTCToBtcParams): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.INITIALIZATION);
