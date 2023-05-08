@@ -106,18 +106,53 @@ describe("CkBTCTransactionModal", () => {
       .spyOn(services, "convertCkBTCToBtc")
       .mockResolvedValue({ success });
 
-    const result = await renderTransactionModal();
+    await testTransfer({
+      eventName,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+    });
+
+    await waitFor(() => expect(spy).toBeCalled());
+  };
+
+  const testRetrieveBTC = async ({
+    success,
+    eventName,
+  }: {
+    success: boolean;
+    eventName: "nnsClose" | "nnsTransfer";
+  }) => {
+    const spy = jest
+      .spyOn(services, "retrieveBtc")
+      .mockResolvedValue({ success });
+
+    await testTransfer({
+      eventName,
+      selectedAccount: mockCkBTCWithdrawalAccount,
+    });
+
+    await waitFor(() => expect(spy).toBeCalled());
+  };
+
+  const testTransfer = async ({
+    eventName,
+    selectedAccount,
+    selectedNetwork,
+  }: {
+    eventName: "nnsClose" | "nnsTransfer";
+    selectedNetwork?: TransactionNetwork;
+    selectedAccount?: Account;
+  }) => {
+    const result = await renderTransactionModal(selectedAccount);
 
     const onEnd = jest.fn();
     result.component.$on(eventName, onEnd);
 
     await testTransferTokens({
       result,
-      selectedNetwork: TransactionNetwork.BTC_TESTNET,
       destinationAddress: mockBTCAddressTestnet,
+      selectedNetwork,
     });
 
-    await waitFor(() => expect(spy).toBeCalled());
     await waitFor(() => expect(onEnd).toBeCalled());
   };
 
@@ -145,6 +180,9 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(
       expect(result.getByTestId("in-progress-warning")).not.toBeNull
     );
+
+    // In progress + transfer to ledger + sending BTC + reload
+    expect(result.container.querySelectorAll("div.step").length).toEqual(4);
   });
 
   it("should not render progress when transferring ckBTC", async () => {
@@ -385,6 +423,34 @@ describe("CkBTCTransactionModal", () => {
           .getByTestId("transaction-from-account")
           ?.textContent.includes(mockCkBTCWithdrawalIdentifier)
       ).toBeTruthy();
+    });
+
+    it("should retrieve BTC", async () => {
+      await testRetrieveBTC({ success: true, eventName: "nnsTransfer" });
+    });
+
+    it("should close modal on retrieve BTC error", async () => {
+      await testRetrieveBTC({ success: false, eventName: "nnsClose" });
+    });
+
+    it("should render progress without step transfer", async () => {
+      jest
+        .spyOn(services, "convertCkBTCToBtc")
+        .mockResolvedValue({ success: true });
+
+      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
+
+      await testTransferTokens({
+        result,
+        destinationAddress: mockBTCAddressTestnet,
+      });
+
+      await waitFor(
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull
+      );
+
+      // In progress + sending BTC + reload
+      expect(result.container.querySelectorAll("div.step").length).toEqual(3);
     });
   });
 });

@@ -15,30 +15,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Tag main
-        id: tag_main
+      - name: Preflight checks
+        id: preflight
         run: |
-          set -x
-          : Log commit and existing tags
-          git rev-parse HEAD
-          git tag --points-at HEAD
-          : Add a tag if appropriate
-          if git tag --points-at HEAD | grep -E '\<nightly-'
+          tag_name="$(date +nightly-%Y-%m-%d)"
+          echo "tag_name=${tag_name}" >> "$GITHUB_OUTPUT"
+          if gh release view "${tag_name}"
+          then echo "Skipping as the release already exists"
+          elif git tag --points-at HEAD | grep -E '\<nightly-'
           then echo "Skipping as there is already a nightly tag on commit $(git rev-parse HEAD)"
-          else
-            tag_name="$(date +nightly-%Y-%m-%d)"
-            git tag "${tag_name}"
-            if git push origin "refs/tags/${tag_name}"
-            then echo "need_release=true" >> "$GITHUB_OUTPUT"
-            else echo "Skipping, as the tag already exists on another commit."
-            fi
+          else echo "need_release=true" >> "$GITHUB_OUTPUT"
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Set up docker buildx
-        if: steps.tag_main.outputs.need_release == 'true'
+        if: steps.preflight.outputs.need_release == 'true'
         uses: docker/setup-buildx-action@v2
       # Build and upload testnet assets
       - name: Build nns-dapp Docker image
-        if: steps.tag_main.outputs.need_release == 'true'
+        if: steps.preflight.outputs.need_release == 'true'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -46,10 +41,19 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           outputs: out
       - name: 'Record the git commit and any tags'
-        if: steps.tag_main.outputs.need_release == 'true'
+        if: steps.preflight.outputs.need_release == 'true'
         run: git log | head -n1 > out/commit.txt
+      - name: Tag commit
+        if: steps.preflight.outputs.need_release == 'true'
+        id: tag
+        run: |
+          git tag "${{steps.preflight.outputs.tag_name}}"
+          if git push origin "refs/tags/${{steps.preflight.outputs.tag_name}}"
+          then echo "success=true" >> "$GITHUB_OUTPUT"
+          else echo "Abort: Failed to push tag '${{steps.preflight.outputs.tag_name}}'.  It probably already exists, possibly on a different commit."
+          fi
       - name: Release
-        if: steps.tag_main.outputs.need_release == 'true'
+        if: (steps.preflight.outputs.need_release == 'true') && (steps.tag.outputs.success == 'true')
         uses: ./.github/actions/release_nns_dapp
         with:
           assets_dir: 'out'
