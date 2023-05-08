@@ -104,7 +104,6 @@
       ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
       : undefined;
 
-    // Button is not displayed if no universe
     if (isNullish($selectedCkBTCUniverseIdStore) || isNullish(canisters)) {
       toastsError({
         labelKey: "error__ckbtc.get_btc_no_universe",
