@@ -38,7 +38,6 @@
 
   onMount(() =>
     loadBtcAddress({
-      universeId,
       minterCanisterId,
       identifier: account.identifier,
     })

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { CanisterId } from "$lib/types/canister";
   import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
@@ -16,18 +14,16 @@
     });
 </script>
 
-{#if isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore)}
-  <div role="menubar">
-    <button
-      class="secondary"
-      type="button"
-      on:click={updateBalance}
-      data-tid="manual-refresh-balance"
-    >
-      {$i18n.ckbtc.refresh_balance}
-    </button>
-  </div>
-{/if}
+<div role="menubar">
+  <button
+          class="secondary"
+          type="button"
+          on:click={updateBalance}
+          data-tid="manual-refresh-balance"
+  >
+    {$i18n.ckbtc.refresh_balance}
+  </button>
+</div>
 
 <style lang="scss">
   @use "../../themes/mixins/section";

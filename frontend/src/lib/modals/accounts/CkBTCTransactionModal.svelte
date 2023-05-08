@@ -43,7 +43,7 @@
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
-    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    mustSelectNetwork: true,
     ...(withdrawalAccount && {
       networkReadonly: true,
       selectDestinationMethods: "manual",
