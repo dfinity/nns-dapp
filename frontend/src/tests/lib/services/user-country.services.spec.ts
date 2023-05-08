@@ -1,6 +1,6 @@
 import * as locationApi from "$lib/api/location.api";
-import { loadUserLocation } from "$lib/services/location.services";
-import { locationStore } from "$lib/stores/location.store";
+import { loadUserCountry } from "$lib/services/user-country.services";
+import { userCountryStore } from "$lib/stores/user-country.store";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { get } from "svelte/store";
 
@@ -15,14 +15,16 @@ describe("location services", () => {
 
   describe("loadUserLocation", () => {
     it("should set the location store to api response", async () => {
+      expect(get(userCountryStore)).toBeUndefined();
+
       const countryCode = "CH";
       jest
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
 
-      await loadUserLocation();
+      await loadUserCountry();
 
-      expect(get(locationStore)).toBe(countryCode);
+      expect(get(userCountryStore)).toBe(countryCode);
     });
 
     it("should not call api if location store is already set", async () => {
@@ -30,9 +32,9 @@ describe("location services", () => {
       const apiFn = jest
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
-      locationStore.set("CH");
+      userCountryStore.set("CH");
 
-      await loadUserLocation();
+      await loadUserCountry();
 
       expect(apiFn).not.toHaveBeenCalled();
     });
