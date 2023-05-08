@@ -46,7 +46,7 @@ restore_backup() {
   sh "$RESTORE_BACKUP_SCRIPT_FILE"
 }
 
-# Restore the backup if the script fails or exists successfully.
+# Restore the backup if the script fails or exits successfully.
 trap restore_backup EXIT
 
 CLEAN_ARG=""
