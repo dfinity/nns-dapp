@@ -38,8 +38,6 @@ fi
 
 BACKUP_DIR="$HOME/dfx-state-backup-$(date +%s)"
 
-TOP_DIR=$(git rev-parse --show-toplevel)
-
 RESTORE_BACKUP_SCRIPT_FILE="$BACKUP_DIR/restore.sh"
 
 restore_backup() {
