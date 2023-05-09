@@ -130,7 +130,12 @@
       ],
       "candid": "target/ic/ckbtc_minter.did",
       "wasm": "target/ic/ckbtc_minter.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
+        }
+      }
     },
     "ckbtc_index": {
       "build": [

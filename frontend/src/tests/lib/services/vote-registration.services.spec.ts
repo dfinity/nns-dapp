@@ -7,6 +7,7 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+import { processRegisterVoteErrors } from "$lib/services/vote-registration.services";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -534,6 +535,90 @@ describe("vote-registration-services", () => {
           level: "error",
         })
       );
+    });
+  });
+
+  describe("processRegisterVoteErrors", () => {
+    beforeEach(() => {
+      jest.spyOn(console, "error").mockImplementation(jest.fn);
+    });
+
+    afterAll(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should display an error", async () => {
+      const registerVoteResponses: PromiseSettledResult<void>[] = [
+        {
+          status: "rejected",
+          reason: new Error("test"),
+        },
+      ];
+      const neuronIdStrings = ["01"];
+      const proposalIdString = "56";
+      const proposalType = "Motion";
+
+      processRegisterVoteErrors({
+        registerVoteResponses,
+        neuronIdStrings,
+        proposalIdString,
+        proposalType,
+      });
+
+      expect(spyOnToastsShow).toBeCalledTimes(1);
+
+      expect(spyOnToastsShow).toBeCalledWith({
+        level: "error",
+        labelKey: "error.register_vote",
+        detail: "01: test",
+        substitutions: {
+          $proposalId: "56",
+          $proposalType: "Motion",
+        },
+      });
+    });
+
+    it("should display multiple errors", async () => {
+      const registerVoteResponses: PromiseSettledResult<void>[] = [
+        {
+          status: "fulfilled",
+          value: undefined,
+        },
+        {
+          status: "rejected",
+          reason: new Error("test"),
+        },
+        {
+          status: "fulfilled",
+          value: undefined,
+        },
+        {
+          status: "rejected",
+          reason: new Error("critical test"),
+        },
+      ];
+      const neuronIdStrings = ["01", "02", "03", "04"];
+      const proposalIdString = "56";
+      const proposalType = "Motion";
+
+      processRegisterVoteErrors({
+        registerVoteResponses,
+        neuronIdStrings,
+        proposalIdString,
+        proposalType,
+      });
+
+      expect(spyOnToastsShow).toBeCalledTimes(1);
+
+      expect(spyOnToastsShow).toBeCalledWith({
+        level: "error",
+        labelKey: "error.register_vote",
+        detail: "02: test, 04: critical test",
+        substitutions: {
+          $proposalId: "56",
+          $proposalType: "Motion",
+        },
+      });
     });
   });
 });

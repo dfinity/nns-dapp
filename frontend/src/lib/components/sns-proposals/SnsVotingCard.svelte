@@ -26,7 +26,7 @@
   } from "$lib/utils/sns-proposals.utils";
   import {
     getSnsNeuronIdAsHexString,
-    snsNeuronToIneligibleNeuronData,
+    snsNeuronsToIneligibleNeuronData,
     votableSnsNeurons,
     votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
@@ -143,7 +143,7 @@
 
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];
-  $: ineligibleNeurons = snsNeuronToIneligibleNeuronData({
+  $: ineligibleNeurons = snsNeuronsToIneligibleNeuronData({
     neurons: ineligibleSnsNeurons({
       neurons: $sortedSnsUserNeuronsStore,
       proposal,

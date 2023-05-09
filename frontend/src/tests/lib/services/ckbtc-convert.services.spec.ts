@@ -11,6 +11,7 @@ import {
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
+import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -22,6 +23,7 @@ import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
+  mockCkBTCWithdrawalAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
@@ -76,14 +78,16 @@ describe("ckbtc-convert-services", () => {
   });
 
   describe("convert flow", () => {
-    describe("withdrawal account succeed", () => {
-      const mockAccount = {
-        owner: mockPrincipal,
-        subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
-      };
+    const mockWithdrawalAccount = {
+      owner: mockPrincipal,
+      subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
+    };
 
+    describe("withdrawal account succeed", () => {
       const getWithdrawalAccountSpy =
-        minterCanisterMock.getWithdrawalAccount.mockResolvedValue(mockAccount);
+        minterCanisterMock.getWithdrawalAccount.mockResolvedValue(
+          mockWithdrawalAccount
+        );
 
       beforeAll(() => {
         jest
@@ -126,8 +130,8 @@ describe("ckbtc-convert-services", () => {
 
           const to = decodeIcrcAccount(
             encodeIcrcAccount({
-              owner: mockAccount.owner,
-              subaccount: mockAccount.subaccount[0],
+              owner: mockWithdrawalAccount.owner,
+              subaccount: mockWithdrawalAccount.subaccount[0],
             })
           );
 
@@ -266,6 +270,47 @@ describe("ckbtc-convert-services", () => {
 
           expect(blockIndexAddSpy).not.toBeCalled();
         });
+      });
+    });
+
+    describe("withdrawal account already loaded in store", () => {
+      const getWithdrawalAccountSpy =
+        minterCanisterMock.getWithdrawalAccount.mockResolvedValue(
+          mockWithdrawalAccount
+        );
+
+      beforeEach(() => ckBTCWithdrawalAccountsStore.reset);
+
+      it("should not call to get a withdrawal account", async () => {
+        const updateProgressSpy = jest.fn();
+
+        ckBTCWithdrawalAccountsStore.set({
+          account: {
+            account: mockCkBTCWithdrawalAccount,
+            certified: true,
+          },
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        });
+
+        await convert(updateProgressSpy);
+
+        expect(getWithdrawalAccountSpy).not.toBeCalledWith();
+      });
+
+      it("should get a withdrawal account if store value is not certified", async () => {
+        const updateProgressSpy = jest.fn();
+
+        ckBTCWithdrawalAccountsStore.set({
+          account: {
+            account: mockCkBTCWithdrawalAccount,
+            certified: false,
+          },
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        });
+
+        await convert(updateProgressSpy);
+
+        expect(getWithdrawalAccountSpy).toBeCalledWith();
       });
     });
 
