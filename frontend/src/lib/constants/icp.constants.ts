@@ -4,6 +4,8 @@ export const ONE_TRILLION = 1_000_000_000_000;
 
 export const ICP_DISPLAYED_DECIMALS = 2;
 
+export const ICP_DISPLAYED_HEIGHT_DECIMALS = 8;
+
 /**
  * TODO: remove and replace with Icrc "decimals"
  * @deprecated use decimals in IcrcTokenMetadata

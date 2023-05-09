@@ -10,7 +10,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
-import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -240,7 +240,15 @@ describe("TransactionModal", () => {
         ).includes(mockMainAccount.identifier)
       ).toBeTruthy();
       expect(
-        getByText(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S))
+        getByText(
+          formatToken({
+            value: TokenAmount.fromE8s({
+              amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+              token: ICPToken,
+            }).toE8s(),
+            detailed: "height_decimals",
+          })
+        )
       ).toBeInTheDocument();
     });
 
@@ -263,7 +271,15 @@ describe("TransactionModal", () => {
         ).includes(mockMainAccount.identifier)
       ).toBeTruthy();
       expect(
-        getByText(formattedTransactionFeeICP(Number(fee.toE8s())))
+        getByText(
+          formatToken({
+            value: TokenAmount.fromE8s({
+              amount: fee.toE8s(),
+              token: ICPToken,
+            }).toE8s(),
+            detailed: "height_decimals",
+          })
+        )
       ).toBeInTheDocument();
     });
 
