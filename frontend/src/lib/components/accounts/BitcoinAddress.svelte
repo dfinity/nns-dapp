@@ -42,30 +42,24 @@
       identifier: account.identifier,
     })
   );
-
-  // TODO: to be removed when ckBTC with minter is live.
-  let enabled = false;
-  $: enabled = isUniverseCkTESTBTC(universeId);
 </script>
 
-{#if enabled}
-  <p class="description">
-    {$i18n.ckbtc.incoming_bitcoin_network}
-    <a
-      data-tid="block-explorer-link"
-      href={btcAddressLoaded ? blockExplorerUrl : ""}
-      rel="noopener noreferrer external"
-      target="_blank"
-      aria-disabled={!btcAddressLoaded}
-      >{$i18n.ckbtc.block_explorer}
-      {#if !btcAddressLoaded}
-        <div class="spinner">
-          <Spinner size="tiny" inline />
-        </div>
-      {/if}
-    </a>.
-  </p>
-{/if}
+<p class="description">
+  {$i18n.ckbtc.incoming_bitcoin_network}
+  <a
+          data-tid="block-explorer-link"
+          href={btcAddressLoaded ? blockExplorerUrl : ""}
+          rel="noopener noreferrer external"
+          target="_blank"
+          aria-disabled={!btcAddressLoaded}
+  >{$i18n.ckbtc.block_explorer}
+    {#if !btcAddressLoaded}
+      <div class="spinner">
+        <Spinner size="tiny" inline />
+      </div>
+    {/if}
+  </a>.
+</p>
 
 <style lang="scss">
   div {
