@@ -791,7 +791,7 @@ export const getSnsNeuronVote = ({
     ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
   )?.[1].vote;
 
-export const snsNeuronToIneligibleNeuronData = ({
+export const snsNeuronsToIneligibleNeuronData = ({
   neurons,
   proposal: { proposal_creation_timestamp_seconds },
 }: {
