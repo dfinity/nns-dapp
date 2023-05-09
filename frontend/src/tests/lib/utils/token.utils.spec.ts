@@ -60,6 +60,48 @@ describe("token-utils", () => {
     ).toEqual(`2'000'000.00`);
   });
 
+  it("should format token detailed with height decimals", () => {
+    expect(
+      formatToken({ value: BigInt(0), detailed: "height_decimals" })
+    ).toEqual("0");
+    expect(
+      formatToken({ value: BigInt(1), detailed: "height_decimals" })
+    ).toEqual("0.00000001");
+    expect(
+      formatToken({ value: BigInt(10), detailed: "height_decimals" })
+    ).toEqual("0.00000010");
+    expect(
+      formatToken({ value: BigInt(100), detailed: "height_decimals" })
+    ).toEqual("0.00000100");
+    expect(
+      formatToken({ value: BigInt(100000000), detailed: "height_decimals" })
+    ).toEqual("1.00000000");
+    expect(
+      formatToken({ value: BigInt(1000000000), detailed: "height_decimals" })
+    ).toEqual("10.00000000");
+    expect(
+      formatToken({ value: BigInt(1010000000), detailed: "height_decimals" })
+    ).toEqual("10.10000000");
+    expect(
+      formatToken({ value: BigInt(1012300000), detailed: "height_decimals" })
+    ).toEqual("10.12300000");
+    expect(
+      formatToken({ value: BigInt(20000000000), detailed: "height_decimals" })
+    ).toEqual("200.00000000");
+    expect(
+      formatToken({ value: BigInt(20000000001), detailed: "height_decimals" })
+    ).toEqual("200.00000001");
+    expect(
+      formatToken({ value: BigInt(200000000000), detailed: "height_decimals" })
+    ).toEqual(`2'000.00000000`);
+    expect(
+      formatToken({
+        value: BigInt(200000000000000),
+        detailed: "height_decimals",
+      })
+    ).toEqual(`2'000'000.00000000`);
+  });
+
   describe("sumTokenAmounts", () => {
     it("should add amounts of token", () => {
       const icp0 = TokenAmount.fromString({
