@@ -42,6 +42,31 @@ describe("ProjectStatusSection", () => {
     expect(queryByTestId("sns-project-current-commitment")).toBeInTheDocument();
   });
 
+  it("should render user commitment", () => {
+    const { queryByTestId } = renderContextCmp({
+      summary: mockSnsFullProject.summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatusSection,
+    });
+    expect(
+      queryByTestId("sns-user-commitment")
+        .querySelector('[data-tid="token-value-label"]')
+        .textContent.trim()
+    ).toBe("25.00 ICP");
+  });
+
+  it("should not render user commitment if no commitment", () => {
+    const { queryByTestId } = renderContextCmp({
+      summary: mockSnsFullProject.summary,
+      swapCommitment: {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        myCommitment: undefined,
+      },
+      Component: ProjectStatusSection,
+    });
+    expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+  });
+
   it("should render project participate button", async () => {
     const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
     const { rootCanisterId } = summary;
