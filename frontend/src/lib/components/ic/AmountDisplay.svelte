@@ -12,7 +12,7 @@
   export let text = false;
   export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
-  export let detailed = false;
+  export let detailed: boolean | "height_decimals" = false;
 </script>
 
 <div
@@ -25,7 +25,10 @@
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
-  <span data-tid="token-value" class="value"
+  <span
+    data-tid="token-value"
+    class="value"
+    class:num={detailed === "height_decimals"}
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span>

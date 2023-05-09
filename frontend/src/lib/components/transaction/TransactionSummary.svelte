@@ -39,20 +39,34 @@
 <article class="container">
   <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
-    <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+    <AmountDisplay
+      slot="value"
+      singleLine
+      detailed="height_decimals"
+      amount={tokenAmount}
+    />
   </KeyValuePair>
 
   {#if showLedgerFee}
     <KeyValuePair testId="transaction-summary-fee">
       <span class="label" slot="key">{ledgerFeeLabel}</span>
-      <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+      <AmountDisplay
+        slot="value"
+        singleLine
+        detailed="height_decimals"
+        amount={transactionFee}
+      />
     </KeyValuePair>
 
     <div class="deducted" data-tid="transaction-summary-total-deducted">
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
       <p>
-        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
+        <AmountDisplay
+          inline
+          detailed="height_decimals"
+          amount={tokenTotalDeducted}
+        />
       </p>
     </div>
   {/if}
