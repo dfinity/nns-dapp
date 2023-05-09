@@ -12,7 +12,7 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
@@ -68,7 +68,7 @@
     </div>
 
     <div class="actions content-cell-details">
-      {#if myCommitmentIcp !== undefined}
+      {#if nonNullish(myCommitmentIcp) && myCommitmentIcp.toE8s() > BigInt(0)}
         <div>
           <KeyValuePair testId="sns-user-commitment">
             <ProjectUserCommitmentLabel
