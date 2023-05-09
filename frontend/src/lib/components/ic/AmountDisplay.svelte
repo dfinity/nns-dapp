@@ -28,7 +28,7 @@
   <span
     data-tid="token-value"
     class="value"
-    class:num={detailed === "height_decimals"}
+    class:tabular-num={detailed === "height_decimals"}
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
