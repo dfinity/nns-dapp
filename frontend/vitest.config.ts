@@ -21,6 +21,10 @@ export default defineConfig(
           replacement: resolve(__dirname, "src/tests"),
         },
         {
+          find: "$mocks",
+          replacement: resolve(__dirname, "__mocks__"),
+        },
+        {
           find: "@dfinity/gix-components",
           replacement: resolve(
             __dirname,
