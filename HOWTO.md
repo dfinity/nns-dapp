@@ -46,6 +46,26 @@ This means that we need to upgrade the candid files and related, and synchronize
 
 - Upgrade candid file.
 - Add the i18n label in `en.governance.json`.
+- Upgrade the IC dependencies in nns-dapp canister.
+
+#### How To Upgrade IC Dependencies
+
+The Internet Computer dependencies are in the [Cargo.toml](./rs/backend/Cargo.toml) of the backend project. They are the ones that point to `git = "https://github.com/dfinity/ic"`. For example:
+
+```
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+```
+
+Upgrading them means change the commit in `rev = ...`.
+
+Normally, upgrading the dependency of `ic-nns-governance` is enough. But sometimes this library depends on the others and you need to upgrade the others.
+
+**Which commit?**
+
+Ideally, you should update to the upcoming commit that the NNS team is planning on releasing. You need to ask the NNS Team about their upcoming release.
+
+Otherwise, you need to find the commit that added the new Action. Check the blame of the file in the IC repo or ask the NNS Team.
+
 
 ## New Proposal Topic
 

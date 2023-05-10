@@ -34,6 +34,8 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out
+      - name: Print the hash of all assets
+        run: find ${{ matrix.BUILD_NAME }}-out -type f | xargs sha256sum
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > ${{ matrix.BUILD_NAME }}-out/commit.txt
       - name: 'Upload ${{ matrix.BUILD_NAME }} wasm module'
