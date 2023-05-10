@@ -47,12 +47,12 @@
 <p class="description">
   {$i18n.ckbtc.incoming_bitcoin_network}
   <a
-          data-tid="block-explorer-link"
-          href={btcAddressLoaded ? blockExplorerUrl : ""}
-          rel="noopener noreferrer external"
-          target="_blank"
-          aria-disabled={!btcAddressLoaded}
-  >{$i18n.ckbtc.block_explorer}
+    data-tid="block-explorer-link"
+    href={btcAddressLoaded ? blockExplorerUrl : ""}
+    rel="noopener noreferrer external"
+    target="_blank"
+    aria-disabled={!btcAddressLoaded}
+    >{$i18n.ckbtc.block_explorer}
     {#if !btcAddressLoaded}
       <div class="spinner">
         <Spinner size="tiny" inline />
