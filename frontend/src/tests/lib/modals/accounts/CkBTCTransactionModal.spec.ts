@@ -33,7 +33,7 @@ import {
 } from "$tests/utils/transaction-modal.test.utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmount } from "@dfinity/nns";
-import { type RenderResult, fireEvent, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
