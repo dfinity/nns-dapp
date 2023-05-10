@@ -825,15 +825,19 @@ export const getSnsNeuronVote = ({
 
 export const snsNeuronsToIneligibleNeuronData = ({
   neurons,
-  proposal: { proposal_creation_timestamp_seconds },
+  proposal,
+  identity,
 }: {
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
+  identity: Identity;
 }): IneligibleNeuronData[] =>
   neurons.map((neuron) => ({
     neuronIdString: getSnsNeuronIdAsHexString(neuron),
     reason:
-      neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds
-        ? "since"
-        : "short",
+      snsNeuronsIneligibilityReasons({
+        neuron,
+        proposal,
+        identity,
+      }) ?? "unknown",
   }));

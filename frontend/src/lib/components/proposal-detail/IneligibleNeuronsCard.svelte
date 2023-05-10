@@ -6,7 +6,7 @@
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
+  import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
   export let minSnsDissolveDelaySeconds: bigint;

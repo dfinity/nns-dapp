@@ -840,7 +840,7 @@ export type NeuronIneligibilityReason = "since" | "short" | "no-permission";
  */
 export interface IneligibleNeuronData {
   neuronIdString: string;
-  reason: NeuronIneligibilityReason;
+  reason: NeuronIneligibilityReason | "unknown";
 }
 export const filterIneligibleNnsNeurons = ({
   neurons,

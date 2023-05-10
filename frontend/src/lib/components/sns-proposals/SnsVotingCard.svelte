@@ -160,6 +160,7 @@
           identity: $authStore.identity,
         }),
         proposal,
+        identity: $authStore.identity,
       })
     : [];
   let minSnsDissolveDelaySeconds: bigint;
