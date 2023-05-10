@@ -233,7 +233,7 @@
     "estimated_bitcoin_transaction_fee": "Estimated BTC Network Fee",
     "internetwork_fee_notice": "Inter-network Fee *",
     "estimated_internetwork_fee": "Estimated Inter-network Fee",
-    "estimation_notice": "* Estimated Fees.",
+    "estimation_notice": "* Estimated.",
     "receive_account": "Account",
     "sending_amount": "Sending Amount",
     "total_deducted": "Total Deducted",
