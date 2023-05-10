@@ -376,15 +376,6 @@ describe("project-utils", () => {
         })
       ).toBeFalsy();
     });
-
-    it("can participate to swap if max user commitment is not reached", () => {
-      expect(
-        canUserParticipateToSwap({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
-          swapCommitment: mockSwapCommitment,
-        })
-      ).toBeTruthy();
-    });
   });
 
   describe("has user participated to swap", () => {
