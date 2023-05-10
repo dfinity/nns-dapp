@@ -1,4 +1,5 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { getDenyList } from "$lib/getters/sns-summary";
 import type {
   SnsSummary,
   SnsSummarySwap,
@@ -182,10 +183,7 @@ export const userCountryIsNeeded = ({
   canUserParticipateToSwap({ summary, swapCommitment }) &&
   loggedIn &&
   nonNullish(summary) &&
-  // TODO: GIX-1541 Remove unncessary checking and casting of deny_list
-  "deny_list" in summary.swap &&
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  (summary.swap.deny_list as any).length > 0;
+  getDenyList(summary).length > 0;
 
 export const hasUserParticipatedToSwap = ({
   swapCommitment,

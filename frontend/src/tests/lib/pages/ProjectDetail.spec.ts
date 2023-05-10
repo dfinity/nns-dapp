@@ -295,8 +295,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         ).toMatch(formatToken({ value: userCommitment }));
       });
 
-      // TODO: GIX-1541 use this test to show that button is disabled if user is in a country that is not allowed to participate
-      it("should NOT load user's country", async () => {
+      it("should not load user's country if no deny list", async () => {
         jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
         jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),

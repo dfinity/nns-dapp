@@ -1,4 +1,5 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -274,6 +275,9 @@ describe("project-utils", () => {
   });
 
   describe("userCountryIsNeeded", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
     it("country not needed if no summary or swap information", () => {
       expect(
         userCountryIsNeeded({
@@ -281,28 +285,28 @@ describe("project-utils", () => {
           swapCommitment: undefined,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         userCountryIsNeeded({
           summary: null,
           swapCommitment: undefined,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         userCountryIsNeeded({
           summary: undefined,
           swapCommitment: null,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         userCountryIsNeeded({
           summary: null,
           swapCommitment: null,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("country not needed if sale is not open", () => {
@@ -312,7 +316,7 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         userCountryIsNeeded({
@@ -320,7 +324,7 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         userCountryIsNeeded({
@@ -328,7 +332,7 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         userCountryIsNeeded({
@@ -336,18 +340,19 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
-    // TODO: GIX-1541 Add a project with deny_list and test that returns true
-    it("country is NOT YET needed if sale is open and logged in", () => {
+    it("country is needed", () => {
+      // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDenyList").mockReturnValue(["US"]);
       expect(
         userCountryIsNeeded({
           summary: summaryForLifecycle(SnsSwapLifecycle.Open),
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(true);
     });
 
     it("country not needed if not logged in", () => {
@@ -357,7 +362,7 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
           loggedIn: false,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("country is not needed if max user commitment is reached", () => {
@@ -374,7 +379,7 @@ describe("project-utils", () => {
           },
           loggedIn: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
