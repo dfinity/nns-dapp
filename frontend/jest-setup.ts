@@ -8,6 +8,7 @@ import { TextDecoder, TextEncoder } from "util";
 import { vi } from "vitest";
 import { afterNavigate, goto } from "./__mocks__/$app/navigation";
 import { page } from "./__mocks__/$app/stores";
+import { browser, building } from "./__mocks__/$app/environment";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -72,8 +73,8 @@ configure({
 });
 
 vi.mock("$app/environment", () => ({
-  browser: false,
-  building: false,
+  browser,
+  building,
 }));
 
 vi.mock("$app/navigation", () => ({
