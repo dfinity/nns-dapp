@@ -12,6 +12,7 @@ import {
   filterProjectsStatus,
   hasUserParticipatedToSwap,
   projectRemainingAmount,
+  userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
 import {
@@ -258,6 +259,120 @@ describe("project-utils", () => {
               ],
             },
           },
+        })
+      ).toBeFalsy();
+    });
+
+    it("can participate to swap if max user commitment is not reached", () => {
+      expect(
+        canUserParticipateToSwap({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+        })
+      ).toBeTruthy();
+    });
+  });
+
+  describe("userCountryIsNeeded", () => {
+    it("country not needed if no summary or swap information", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+    });
+
+    it("country not needed if sale is not open", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+    });
+
+    // TODO: GIX-1541 Add a project with deny_list and test that returns true
+    it("country is NOT YET needed if sale is open and logged in", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBeFalsy();
+    });
+
+    it("country not needed if not logged in", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: false,
+        })
+      ).toBeFalsy();
+    });
+
+    it("country is not needed if max user commitment is reached", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: {
+            rootCanisterId: mockSwapCommitment.rootCanisterId,
+            myCommitment: {
+              icp: [
+                createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
+              ],
+            },
+          },
+          loggedIn: true,
         })
       ).toBeFalsy();
     });

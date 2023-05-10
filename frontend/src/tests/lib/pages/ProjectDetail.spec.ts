@@ -3,6 +3,7 @@
  */
 
 import * as ledgerApi from "$lib/api/ledger.api";
+import * as locationApi from "$lib/api/location.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
@@ -38,16 +39,19 @@ jest.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-swap-metrics.api");
 jest.mock("$lib/api/sns-sale.api");
 jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/location.api");
 
 const blockedApiPaths = [
   "$lib/api/sns.api",
   "$lib/api/sns-swap-metrics.api",
   "$lib/api/sns-sale.api",
   "$lib/api/ledger.api",
+  "$lib/api/location.api",
 ];
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
+  const countryCode = "CH";
   const newBalance = BigInt(1_000_000_000);
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
@@ -67,6 +71,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
     jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+
+    jest
+      .spyOn(locationApi, "queryUserCountryLocation")
+      .mockResolvedValue(countryCode);
 
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
@@ -285,6 +293,19 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             "[data-tid='token-value']"
           )?.innerHTML
         ).toMatch(formatToken({ value: userCommitment }));
+      });
+
+      // TODO: GIX-1541 use this test to show that button is disabled if user is in a country that is not allowed to participate
+      it("should NOT load user's country", async () => {
+        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          myCommitment: undefined,
+        } as SnsSwapCommitment);
+
+        render(ProjectDetail, props);
+
+        expect(locationApi.queryUserCountryLocation).not.toBeCalled();
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {

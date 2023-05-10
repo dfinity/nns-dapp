@@ -6,6 +6,7 @@ import type {
 } from "$lib/types/sns";
 import type { TokenAmount } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
@@ -157,6 +158,34 @@ export const canUserParticipateToSwap = ({
     !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
   );
 };
+
+/**
+ * Returns whether the location of the user is needed to participate to the swap.
+ *
+ * Some projects might restrict participation in the swap to users from specific countries.
+ *
+ * Yet, we don't need to get the location of all users, only those who can to participate to the swap:
+ *
+ * - Same logic as canUserParticipateToSwap
+ * - User is logged in (this logic is assumed in the previous function)
+ * - Project has a deny_list of countries (TODO: add new fields in the swap params)
+ */
+export const userCountryIsNeeded = ({
+  summary,
+  swapCommitment,
+  loggedIn,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+  loggedIn: boolean;
+}): boolean =>
+  canUserParticipateToSwap({ summary, swapCommitment }) &&
+  loggedIn &&
+  nonNullish(summary) &&
+  // TODO: GIX-1541 Remove unncessary checking and casting of deny_list
+  "deny_list" in summary.swap &&
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  (summary.swap.deny_list as any).length > 0;
 
 export const hasUserParticipatedToSwap = ({
   swapCommitment,
