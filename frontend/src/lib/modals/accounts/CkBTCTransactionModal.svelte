@@ -11,7 +11,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import type { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -50,6 +50,15 @@
       showLedgerFee: false,
     }),
   };
+
+  // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
+  let fee: TokenAmount;
+  $: fee = withdrawalAccount
+    ? TokenAmount.fromE8s({
+        amount: 0n,
+        token: transactionFee.token,
+      })
+    : transactionFee;
 
   let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
     ? isUniverseCkTESTBTC(universeId)
@@ -154,7 +163,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: transactionFee.toE8s(),
+      transactionFee: fee.toE8s(),
       bitcoinEstimatedFee,
       kytEstimatedFee,
     });
@@ -170,7 +179,7 @@
   on:nnsClose
   bind:currentStep
   {token}
-  {transactionFee}
+  transactionFee={fee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}
