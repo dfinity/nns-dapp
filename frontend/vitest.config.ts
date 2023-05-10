@@ -1,8 +1,23 @@
+import { sveltekit } from "@sveltejs/kit/vite";
+import { resolve } from "path";
 import { UserConfig } from "vite";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig(
   ({ mode }: UserConfig): UserConfig => ({
+    plugins: [sveltekit()],
+    resolve: {
+      alias: {
+        $lib: resolve(__dirname, "src/lib"),
+        $routes: resolve(__dirname, "src/routes"),
+        $mocks: resolve(__dirname, "src/__mocks__"),
+        $tests: resolve(__dirname, "src/tests"),
+        "@dfinity/gix-components": resolve(
+          __dirname,
+          "node_modules/@dfinity/gix-components"
+        ),
+      },
+    },
     test: {
       environment: "jsdom",
       exclude: [
@@ -16,6 +31,9 @@ export default defineConfig(
       globals: true,
       watch: false,
       setupFiles: ["./jest-setup.ts", "./jest-spy.ts"],
+      deps: {
+        inline: ["@dfinity/gix-components"],
+      },
     },
   })
 );
