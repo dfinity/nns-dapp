@@ -7,16 +7,32 @@ export default defineConfig(
   ({ mode }: UserConfig): UserConfig => ({
     plugins: [sveltekit()],
     resolve: {
-      alias: {
-        $lib: resolve(__dirname, "src/lib"),
-        $routes: resolve(__dirname, "src/routes"),
-        $mocks: resolve(__dirname, "src/__mocks__"),
-        $tests: resolve(__dirname, "src/tests"),
-        "@dfinity/gix-components": resolve(
-          __dirname,
-          "node_modules/@dfinity/gix-components"
-        ),
-      },
+      alias: [
+        {
+          find: "$lib",
+          replacement: resolve(__dirname, "src/lib"),
+        },
+        {
+          find: "$routes",
+          replacement: resolve(__dirname, "src/routes"),
+        },
+        {
+          find: "$tests",
+          replacement: resolve(__dirname, "src/tests"),
+        },
+        {
+          find: "@dfinity/gix-components",
+          replacement: resolve(
+              __dirname,
+              "node_modules/@dfinity/gix-components"
+          ),
+        },
+          // vitest issue https://github.com/vitest-dev/vitest/issues/2834#issuecomment-1425371719
+        {
+          find: /svelte\/ssr.mjs/,
+          replacement: "svelte/index.mjs",
+        }
+      ]
     },
     test: {
       environment: "jsdom",
