@@ -2,8 +2,8 @@
 
 ## Proposal XXX
 
-* Performance improvement (accounts).
-* Minor fixes.
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
 
 ## Proposal 121690
 
