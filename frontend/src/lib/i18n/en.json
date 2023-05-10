@@ -522,6 +522,7 @@
     "headline": "Ineligible Neurons",
     "text": "The following neurons had a dissolve delay of less than $minDissolveDelay at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
     "reason_since": "created after the proposal",
+    "reason_no_permission": "no voting permission",
     "reason_short": "dissolve delay < $minDissolveDelay"
   },
   "neuron_detail": {
