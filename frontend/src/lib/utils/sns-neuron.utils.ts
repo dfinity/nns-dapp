@@ -712,10 +712,10 @@ export const snsNeuronsIneligibilityReasons = ({
     return "no-permission";
   }
 
-  const dissolveTooShort: boolean =
+  const noBallot: boolean =
     ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
     undefined;
-  if (dissolveTooShort) {
+  if (noBallot) {
     return "short";
   }
 
