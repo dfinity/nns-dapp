@@ -57,21 +57,22 @@ describe("ProposalsFilterModal", () => {
     expect(() => getByText(en.topics.Unspecified)).toThrow();
   });
 
-  it("should forward close modal event", (done) => {
-    const { container, component } = render(ProposalsFilterModal, {
-      props,
-    });
+  it("should forward close modal event", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(ProposalsFilterModal, {
+        props,
+      });
 
-    component.$on("nnsClose", () => {
-      done();
-    });
+      component.$on("nnsClose", () => {
+        done();
+      });
 
-    const button: HTMLButtonElement | null = container.querySelector(
-      "button:first-of-type"
-    );
+      const button: HTMLButtonElement | null = container.querySelector(
+        "button:first-of-type"
+      );
 
-    button && fireEvent.click(button);
-  });
+      button && fireEvent.click(button);
+    }));
 
   it("should filter filters", async () => {
     const { queryAllByTestId, queryByTestId } = render(ProposalsFilterModal, {

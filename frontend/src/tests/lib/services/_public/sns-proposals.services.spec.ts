@@ -258,75 +258,78 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", (done) => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        snsProposalsStore.setProposals({
-          rootCanisterId,
-          proposals: [mockSnsProposal],
-          certified: true,
-          completed: true,
-        });
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: ({ proposal }) => {
-            expect(queryProposalSpy).not.toBeCalledTimes(1);
-            expect(proposal).toEqual(mockSnsProposal);
-            done();
-          },
-          reloadForBallots: false,
-        });
-      });
+      it("should use the proposal in store if certified and not call api", () =>
+        new Promise<void>((done) => {
+          const queryProposalSpy = vi
+            .spyOn(api, "queryProposal")
+            .mockResolvedValue(mockSnsProposal);
+          snsProposalsStore.setProposals({
+            rootCanisterId,
+            proposals: [mockSnsProposal],
+            certified: true,
+            completed: true,
+          });
+          getSnsProposalById({
+            rootCanisterId,
+            proposalId,
+            setProposal: ({ proposal }) => {
+              expect(queryProposalSpy).not.toBeCalledTimes(1);
+              expect(proposal).toEqual(mockSnsProposal);
+              done();
+            },
+            reloadForBallots: false,
+          });
+        }));
 
-      it("should not use the proposal in store if not certified and call api", (done) => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        snsProposalsStore.setProposals({
-          rootCanisterId,
-          proposals: [mockSnsProposal],
-          certified: false,
-          completed: true,
-        });
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: () => {
-            expect(queryProposalSpy).toBeCalledWith({
-              identity: new AnonymousIdentity(),
-              certified: false,
-              rootCanisterId,
-              proposalId,
-            });
-            expect(queryProposalSpy).toBeCalledTimes(1);
-            done();
-          },
-          reloadForBallots: false,
-        });
-      });
+      it("should not use the proposal in store if not certified and call api", () =>
+        new Promise<void>((done) => {
+          const queryProposalSpy = vi
+            .spyOn(api, "queryProposal")
+            .mockResolvedValue(mockSnsProposal);
+          snsProposalsStore.setProposals({
+            rootCanisterId,
+            proposals: [mockSnsProposal],
+            certified: false,
+            completed: true,
+          });
+          getSnsProposalById({
+            rootCanisterId,
+            proposalId,
+            setProposal: () => {
+              expect(queryProposalSpy).toBeCalledWith({
+                identity: new AnonymousIdentity(),
+                certified: false,
+                rootCanisterId,
+                proposalId,
+              });
+              expect(queryProposalSpy).toBeCalledTimes(1);
+              done();
+            },
+            reloadForBallots: false,
+          });
+        }));
 
-      it("should call api if store is empty", (done) => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: () => {
-            expect(queryProposalSpy).toBeCalledWith({
-              identity: new AnonymousIdentity(),
-              certified: false,
-              rootCanisterId,
-              proposalId,
-            });
-            expect(queryProposalSpy).toBeCalledTimes(1);
-            done();
-          },
-          reloadForBallots: false,
-        });
-      });
+      it("should call api if store is empty", () =>
+        new Promise<void>((done) => {
+          const queryProposalSpy = vi
+            .spyOn(api, "queryProposal")
+            .mockResolvedValue(mockSnsProposal);
+          getSnsProposalById({
+            rootCanisterId,
+            proposalId,
+            setProposal: () => {
+              expect(queryProposalSpy).toBeCalledWith({
+                identity: new AnonymousIdentity(),
+                certified: false,
+                rootCanisterId,
+                proposalId,
+              });
+              expect(queryProposalSpy).toBeCalledTimes(1);
+              done();
+            },
+            reloadForBallots: false,
+          });
+        }));
     });
 
     describe("logged in", () => {
@@ -336,27 +339,28 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", (done) => {
-        const queryProposalSpy = vi
-          .spyOn(api, "queryProposal")
-          .mockResolvedValue(mockSnsProposal);
-        snsProposalsStore.setProposals({
-          rootCanisterId,
-          proposals: [mockSnsProposal],
-          certified: true,
-          completed: true,
-        });
-        getSnsProposalById({
-          rootCanisterId,
-          proposalId,
-          setProposal: ({ proposal }) => {
-            expect(queryProposalSpy).not.toBeCalledTimes(1);
-            expect(proposal).toEqual(mockSnsProposal);
-            done();
-          },
-          reloadForBallots: false,
-        });
-      });
+      it("should use the proposal in store if certified and not call api", () =>
+        new Promise<void>((done) => {
+          const queryProposalSpy = vi
+            .spyOn(api, "queryProposal")
+            .mockResolvedValue(mockSnsProposal);
+          snsProposalsStore.setProposals({
+            rootCanisterId,
+            proposals: [mockSnsProposal],
+            certified: true,
+            completed: true,
+          });
+          getSnsProposalById({
+            rootCanisterId,
+            proposalId,
+            setProposal: ({ proposal }) => {
+              expect(queryProposalSpy).not.toBeCalledTimes(1);
+              expect(proposal).toEqual(mockSnsProposal);
+              done();
+            },
+            reloadForBallots: false,
+          });
+        }));
 
       it("should ignore the proposal in store if it contains no ballots and the reloadForBallots flag is set", async () => {
         const queryProposalSpy = vi

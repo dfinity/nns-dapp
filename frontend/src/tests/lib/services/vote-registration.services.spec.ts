@@ -140,37 +140,43 @@ describe("vote-registration-services", () => {
         spyOnToastsShow.mockClear();
       });
 
-      it("should update store with a new vote registration", (done) => {
-        let updateContextCalls = 0;
-        registerNnsVotes({
-          neuronIds,
-          proposalInfo: proposal,
-          vote: Vote.Yes,
-          reloadProposalCallback: () => {
-            updateContextCalls += 1;
-            if (updateContextCalls === neuronIds.length) {
-              done();
-            }
-          },
-        });
+      it("should update store with a new vote registration", () =>
+        new Promise<void>((done) => {
+          let updateContextCalls = 0;
+          registerNnsVotes({
+            neuronIds,
+            proposalInfo: proposal,
+            vote: Vote.Yes,
+            reloadProposalCallback: () => {
+              updateContextCalls += 1;
+              if (updateContextCalls === neuronIds.length) {
+                done();
+              }
+            },
+          });
 
-        expect(
-          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
-        ).toBeDefined();
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0]
+          ).toBeDefined();
 
-        expect(
-          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
-            .neuronIdStrings
-        ).toEqual(neuronIds.map(String));
-        expect(
-          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
-            .proposalIdString
-        ).toEqual(`${proposal.id}`);
-        expect(
-          get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
-            .vote
-        ).toEqual(Vote.Yes);
-      });
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0].neuronIdStrings
+          ).toEqual(neuronIds.map(String));
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0].proposalIdString
+          ).toEqual(`${proposal.id}`);
+          expect(
+            get(voteRegistrationStore).registrations[
+              OWN_CANISTER_ID.toText()
+            ][0].vote
+          ).toEqual(Vote.Yes);
+        }));
 
       it("should clear the store after registration", async () => {
         await registerNnsVotes({
