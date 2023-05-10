@@ -3,6 +3,7 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
+import { BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC } from "$lib/constants/bitcoin.constants";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
@@ -32,7 +33,8 @@ import {
 } from "$tests/utils/transaction-modal.test.utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmount } from "@dfinity/nns";
-import { waitFor } from "@testing-library/svelte";
+import { type RenderResult, fireEvent, waitFor } from "@testing-library/svelte";
+import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
@@ -348,6 +350,49 @@ describe("CkBTCTransactionModal", () => {
     });
   });
 
+  const testMax = async (result: RenderResult<SvelteComponent>) => {
+    const max = result.getByTestId("max-button");
+    max && fireEvent.click(max);
+
+    await tick();
+
+    const input: HTMLInputElement = result.container.querySelector(
+      "input[name='amount']"
+    );
+    expect(input?.value).toEqual(
+      `${
+        Number(mockCkBTCMainAccount.balance.toE8s() - mockCkBTCToken.fee) /
+        BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC
+      }`
+    );
+  };
+
+  it("should apply max minus fee for ckBTC transfer", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.ICP,
+      destinationAddress: mockCkBTCMainAccount.identifier,
+      amount: "0.002",
+    });
+
+    await testMax(result);
+  });
+
+  it("should apply max minus fee for ckBTC to BTC conversion", async () => {
+    const result = await renderTransactionModal();
+
+    await testTransferFormTokens({
+      result,
+      selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      destinationAddress: mockBTCAddressTestnet,
+      amount: "0.002",
+    });
+
+    await testMax(result);
+  });
+
   describe("withdrawal account", () => {
     it("should not render ledger fee on first step", async () => {
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
@@ -451,6 +496,31 @@ describe("CkBTCTransactionModal", () => {
 
       // In progress + sending BTC + reload
       expect(result.container.querySelectorAll("div.step").length).toEqual(3);
+    });
+
+    it("should apply max without deducting fee", async () => {
+      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
+
+      await testTransferFormTokens({
+        result,
+        destinationAddress: mockBTCAddressTestnet,
+        amount: "0.002",
+      });
+
+      const max = result.getByTestId("max-button");
+      max && fireEvent.click(max);
+
+      await tick();
+
+      const input: HTMLInputElement = result.container.querySelector(
+        "input[name='amount']"
+      );
+      expect(input?.value).toEqual(
+        `${
+          Number(mockCkBTCWithdrawalAccount.balance.toE8s()) /
+          BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC
+        }`
+      );
     });
   });
 });
