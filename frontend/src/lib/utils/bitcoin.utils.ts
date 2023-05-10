@@ -1,7 +1,7 @@
-import { BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC } from "$lib/constants/bitcoin.constants";
-
-const estimatedFee = (bitcoinEstimatedFee: bigint): number =>
-  Number(bitcoinEstimatedFee) / BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC;
+import { formatToken } from "$lib/utils/token.utils";
 
 export const formatEstimatedFee = (bitcoinEstimatedFee: bigint): string =>
-  `${estimatedFee(bitcoinEstimatedFee)}`;
+  formatToken({
+    value: bitcoinEstimatedFee,
+    detailed: "height_decimals",
+  });

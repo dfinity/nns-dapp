@@ -18,10 +18,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
-  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
@@ -34,17 +31,9 @@
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
   let reload: (() => Promise<void>) | undefined;
-  let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 
-  $: ({
-    account,
-    reload,
-    canisters,
-    universeId,
-    displayBtcAddress,
-    canSelectAccount,
-  } = data);
+  $: ({ account, reload, canisters, universeId, canSelectAccount } = data);
 
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
@@ -69,23 +58,21 @@
   $: logo = bitcoin ? BITCOIN_LOGO : ckTESTBTC ? CKTESTBTC_LOGO : CKBTC_LOGO;
 
   let bitcoinSegmentLabel: string;
-  $: bitcoinSegmentLabel = isUniverseCkTESTBTC(universeId)
+  $: bitcoinSegmentLabel = ckTESTBTC
     ? $i18n.ckbtc.test_bitcoin
     : $i18n.ckbtc.bitcoin;
 
   let tokenLabel: string;
   $: tokenLabel = bitcoin
-    ? isUniverseCkTESTBTC(universeId)
+    ? ckTESTBTC
       ? $i18n.ckbtc.test_bitcoin
       : $i18n.ckbtc.bitcoin
-    : isUniverseCkTESTBTC(universeId)
+    : ckTESTBTC
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
 
   let segmentLabel: string;
-  $: segmentLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.ckbtc.test_title
-    : $i18n.ckbtc.title;
+  $: segmentLabel = ckTESTBTC ? $i18n.ckbtc.test_title : $i18n.ckbtc.title;
 
   // Avoid a UI glich by not showing the buttons until the QR Code is rendered
   let qrCodeRendered: boolean;
@@ -102,12 +89,6 @@
 
     stopBusy("reload-receive-account");
   };
-
-  // TODO: to be removed when ckBTC with minter is live.
-  let token: TokensStoreUniverseData | undefined = undefined;
-  $: token = nonNullish($selectedCkBTCUniverseIdStore)
-    ? $ckBTCTokenStore[universeId.toText()]
-    : undefined;
 
   let title: string;
   $: title = replacePlaceholders($i18n.wallet.token_address, {
@@ -130,7 +111,6 @@
     }
 
     await loadBtcAddress({
-      universeId,
       minterCanisterId: canisters.minterCanisterId,
       identifier,
     });
@@ -142,16 +122,14 @@
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  {#if displayBtcAddress}
-    <div class="receive">
-      <Segment bind:selectedSegmentId bind:this={segment}>
-        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
-        <SegmentButton segmentId={bitcoinSegmentId}
-          >{bitcoinSegmentLabel}</SegmentButton
-        >
-      </Segment>
-    </div>
-  {/if}
+  <div class="receive">
+    <Segment bind:selectedSegmentId bind:this={segment}>
+      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
+      <SegmentButton segmentId={bitcoinSegmentId}
+        >{bitcoinSegmentLabel}</SegmentButton
+      >
+    </Segment>
+  </div>
 
   <ReceiveSelectAccountDropdown
     {account}
