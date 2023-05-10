@@ -60,7 +60,11 @@
     }
   };
 
-  $: onSnsFiltersChanged($snsFiltersStore);
+  // Fetch the proposals only on filters or project change.
+  // TODO(e2e): cover this with e2e tests.
+  $: $snsOnlyProjectStore,
+    $snsFiltersStore,
+    (() => onSnsFiltersChanged($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
