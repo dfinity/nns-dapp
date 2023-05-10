@@ -9,10 +9,6 @@
 </script>
 
 <div class="additional-info-review">
-  <div class="warning">
-    <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
-    <span>{$i18n.sns_project_detail.participate_swap_warning}</span>
-  </div>
   <Checkbox
     text="block"
     inputId="agree"
@@ -27,6 +23,7 @@
   .additional-info-review {
     display: flex;
     flex-direction: column;
+    --checkbox-label-order: 1;
 
     .warning {
       display: grid;
