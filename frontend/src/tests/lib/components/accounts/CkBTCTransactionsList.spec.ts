@@ -42,6 +42,30 @@ describe("CkBTCTransactionList", () => {
     expect(spy).toBeCalled();
   });
 
+  it("should call service to load transactions when account changes", () => {
+    const spy = jest.spyOn(services, "loadCkBTCAccountNextTransactions");
+
+    const { rerender } = render(CkBTCTransactionsList, {
+      props: {
+        account: mockCkBTCMainAccount,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+      },
+    });
+
+    expect(spy).toBeCalledTimes(1);
+
+    rerender({
+      props: {
+        account: mockCkBTCMainAccount,
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+      },
+    });
+
+    expect(spy).toBeCalledTimes(2);
+  });
+
   it("should render transactions from store", () => {
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
