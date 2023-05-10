@@ -24,6 +24,7 @@
   "include": [
     ".svelte-kit/ambient.d.ts",
     "./vite.config.ts",
+    "./vitest.config.ts",
     "./src/**/*.js",
     "./src/**/*.ts",
     "./src/**/*.svelte"

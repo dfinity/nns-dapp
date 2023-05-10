@@ -1,6 +1,6 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import { resolve } from "path";
-import { UserConfig } from "vite";
+import type { UserConfig } from "vite";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig(
@@ -23,16 +23,16 @@ export default defineConfig(
         {
           find: "@dfinity/gix-components",
           replacement: resolve(
-              __dirname,
-              "node_modules/@dfinity/gix-components"
+            __dirname,
+            "node_modules/@dfinity/gix-components"
           ),
         },
-          // vitest issue https://github.com/vitest-dev/vitest/issues/2834#issuecomment-1425371719
+        // vitest issue https://github.com/vitest-dev/vitest/issues/2834#issuecomment-1425371719
         {
           find: /svelte\/ssr.mjs/,
           replacement: "svelte/index.mjs",
-        }
-      ]
+        },
+      ],
     },
     test: {
       environment: "jsdom",
