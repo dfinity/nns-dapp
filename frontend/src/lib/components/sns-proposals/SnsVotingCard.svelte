@@ -44,6 +44,7 @@
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -66,11 +67,14 @@
     ).find(({ proposalIdString: id }) => proposalIdString === id);
   }
 
-  let votableNeurons: SnsNeuron[] = [];
-  $: votableNeurons = votableSnsNeurons({
-    proposal,
-    neurons: $sortedSnsUserNeuronsStore,
-  });
+  let votableNeurons: SnsNeuron[];
+  $: votableNeurons = nonNullish($authStore.identity)
+    ? votableSnsNeurons({
+        proposal,
+        neurons: $sortedSnsUserNeuronsStore,
+        identity: $authStore.identity,
+      })
+    : [];
 
   let visible = false;
   $: $snsOnlyProjectStore,
@@ -118,7 +122,11 @@
   $: votableNeurons, updateVotingNeuronSelectedStore();
 
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
-    if (nonNullish(universeIdText) && votableNeurons.length > 0) {
+    if (
+      nonNullish(universeIdText) &&
+      nonNullish(snsParameters) &&
+      votableNeurons.length > 0
+    ) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
         neurons: userSelectedNeurons(),
@@ -127,6 +135,7 @@
         updateProposalCallback: async (updatedProposal: SnsProposalData) => {
           proposal = updatedProposal;
         },
+        snsParameters,
       });
       await reloadProposal();
     }
@@ -143,13 +152,16 @@
 
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];
-  $: ineligibleNeurons = snsNeuronsToIneligibleNeuronData({
-    neurons: ineligibleSnsNeurons({
-      neurons: $sortedSnsUserNeuronsStore,
-      proposal,
-    }),
-    proposal,
-  });
+  $: ineligibleNeurons = nonNullish($authStore.identity)
+    ? snsNeuronsToIneligibleNeuronData({
+        neurons: ineligibleSnsNeurons({
+          neurons: $sortedSnsUserNeuronsStore,
+          proposal,
+          identity: $authStore.identity,
+        }),
+        proposal,
+      })
+    : [];
   let minSnsDissolveDelaySeconds: bigint;
   $: minSnsDissolveDelaySeconds =
     snsParameters === undefined
