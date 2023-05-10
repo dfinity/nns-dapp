@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
@@ -25,16 +21,15 @@ import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SnsNeuronMetaInfoCard", () => {
   beforeEach(() => {
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const renderSnsNeuronCmp = (
@@ -52,7 +47,7 @@ describe("SnsNeuronMetaInfoCard", () => {
           },
         ],
       },
-      reload: jest.fn(),
+      reload: vi.fn(),
       props: {
         parameters:
           snsNervousSystemParametersMock as SnsNervousSystemParameters,
@@ -98,7 +93,7 @@ describe("SnsNeuronMetaInfoCard", () => {
   //   const { getByTestId } = renderSelectedSnsNeuronContext({
   //     Component: SnsNeuronMetaInfoCard,
   //     neuron: mockSnsNeuron,
-  //     reload: jest.fn(),
+  //     reload: vi.fn(),
   //   });
   //
   //   expect(getByTestId("sns-neuron-age")?.textContent.trim()).toEqual(

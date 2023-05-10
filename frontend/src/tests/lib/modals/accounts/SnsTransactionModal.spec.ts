@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
@@ -24,10 +20,11 @@ import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import type { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    snsTransferTokens: jest.fn().mockResolvedValue({ success: true }),
+    snsTransferTokens: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -41,24 +38,22 @@ describe("SnsTransactionModal", () => {
     });
 
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   beforeEach(() => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-    jest
-      .spyOn(selectedUniverseIdStore, "subscribe")
-      .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
+    vi.spyOn(selectedUniverseIdStore, "subscribe").mockImplementation(
+      (run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
-      });
+      }
+    );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -20,16 +16,17 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi, type SpyInstance } from "vitest";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/ledger.api");
 
 describe("NnsAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
   };
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("when there are accounts", () => {
     beforeEach(() => {
@@ -102,7 +99,7 @@ describe("NnsAccounts", () => {
 
   describe("summary", () => {
     beforeAll(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
@@ -122,12 +119,12 @@ describe("NnsAccounts", () => {
     beforeEach(() => {
       accountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
     });
     it("should not render a token amount component nor zero", () => {
       const { container } = render(NnsAccounts, { props: { goToWallet } });
@@ -148,22 +145,22 @@ describe("NnsAccounts", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
       accountsStore.resetForTesting();
-      jest.clearAllTimers();
-      jest.clearAllMocks();
+      vi.clearAllTimers();
+      vi.clearAllMocks();
       cancelPollAccounts();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

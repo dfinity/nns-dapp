@@ -1,21 +1,18 @@
-/**
- * @jest-environment jsdom
- */
-
 import { addController } from "$lib/services/canisters.services";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 import AddControllerModal from "./AddControllerModalTest.svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    addController: jest.fn().mockResolvedValue({ success: true }),
+    addController: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("AddControllerModal", () => {
-  const reloadMock = jest.fn();
+  const reloadMock = vi.fn();
 
   const renderAddControllerModal = async (): Promise<
     RenderResult<SvelteComponent>
@@ -26,7 +23,7 @@ describe("AddControllerModal", () => {
     });
   };
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("should display modal", async () => {
     const { container } = await renderAddControllerModal();
@@ -62,7 +59,7 @@ describe("AddControllerModal", () => {
     );
     expect(confirmButton).not.toBeNull();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
     confirmButton && (await fireEvent.click(confirmButton));
 

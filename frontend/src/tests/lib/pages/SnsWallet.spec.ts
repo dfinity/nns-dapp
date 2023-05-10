@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -21,18 +17,19 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadSnsAccountTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadSnsAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -96,7 +93,7 @@ describe("SnsWallet", () => {
       page.mock({ data: { universe: rootCanisterIdText } });
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
@@ -155,7 +152,7 @@ describe("SnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spyLoadSnsAccountTransactions = jest.spyOn(
+      const spyLoadSnsAccountTransactions = vi.spyOn(
         services,
         "loadSnsAccountTransactions"
       );

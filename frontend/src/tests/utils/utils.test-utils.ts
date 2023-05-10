@@ -1,8 +1,9 @@
 import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
+import { vi } from "vitest";
 
 export const silentConsoleErrors = () =>
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
+  vi.spyOn(console, "error").mockImplementation(vi.fn);
 
 export const clickByTestId = async (
   queryByTestId: (matcher: string) => HTMLElement | null,

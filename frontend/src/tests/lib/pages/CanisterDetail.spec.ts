@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
@@ -12,6 +8,7 @@ import {
 import { canistersStore } from "$lib/stores/canisters.store";
 import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 const defaultReturn = Promise.resolve(mockCanisterDetails);
 let getCanisterDetailsReturn = defaultReturn;
@@ -19,11 +16,11 @@ const setGetCanisterDetailReturn = (value: Promise<CanisterDetails>) =>
   (getCanisterDetailsReturn = value);
 const resetGetCanisterDetailReturn = () =>
   (getCanisterDetailsReturn = defaultReturn);
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    listCanisters: jest.fn(),
+    listCanisters: vi.fn(),
     routePathCanisterId: () => mockCanister.canister_id.toText(),
-    getCanisterDetails: jest
+    getCanisterDetails: vi
       .fn()
       .mockImplementation(() => getCanisterDetailsReturn),
     getCanisterFromStore: () => mockCanister,

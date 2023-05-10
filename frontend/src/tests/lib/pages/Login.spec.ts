@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Login from "$lib/pages/Login.svelte";
@@ -13,13 +9,14 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("Login", () => {
   describe("Manual sign-in", () => {
     beforeAll(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mutableMockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mutableMockAuthStoreSubscribe
+      );
 
       authStoreMock.next({
         identity: undefined,
@@ -27,8 +24,8 @@ describe("Login", () => {
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
     });
 
     it("should not redirect to account", () => {
@@ -40,14 +37,14 @@ describe("Login", () => {
 
   describe("Auto sign-in", () => {
     beforeAll(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
     });
 
     it("should redirect to account", () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
 import { listKnownNeurons } from "$lib/services/known-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -13,11 +9,12 @@ import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn().mockResolvedValue(undefined),
+    listKnownNeurons: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -37,14 +34,12 @@ describe("NeuronFollowingCard", () => {
     },
   };
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should render texts", () => {

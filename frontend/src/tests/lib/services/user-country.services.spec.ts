@@ -3,14 +3,15 @@ import { loadUserCountry } from "$lib/services/user-country.services";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/location.api");
 
 describe("location services", () => {
   blockAllCallsTo(["$lib/api/location.api"]);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("loadUserLocation", () => {
@@ -18,9 +19,9 @@ describe("location services", () => {
       expect(get(userCountryStore)).toBeUndefined();
 
       const countryCode = "CH";
-      jest
-        .spyOn(locationApi, "queryUserCountryLocation")
-        .mockResolvedValue(countryCode);
+      vi.spyOn(locationApi, "queryUserCountryLocation").mockResolvedValue(
+        countryCode
+      );
 
       await loadUserCountry();
 
@@ -29,7 +30,7 @@ describe("location services", () => {
 
     it("should not call api if location store is already set", async () => {
       const countryCode = "CH";
-      const apiFn = jest
+      const apiFn = vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
       userCountryStore.set("CH");

@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "$lib/services/accounts.services";
@@ -10,26 +7,25 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-jest.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/accounts.services", () => {
   return {
-    addSubAccount: jest.fn().mockResolvedValue(undefined),
+    addSubAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
-    connectToHardwareWalletProxy: jest
-      .fn()
-      .mockImplementation(async (callback) =>
-        callback({
-          connectionState: LedgerConnectionState.CONNECTED,
-          ledgerIdentity: mockIdentity,
-        })
-      ),
-    registerHardwareWalletProxy: jest.fn().mockResolvedValue(undefined),
+    connectToHardwareWalletProxy: vi.fn().mockImplementation(async (callback) =>
+      callback({
+        connectionState: LedgerConnectionState.CONNECTED,
+        ledgerIdentity: mockIdentity,
+      })
+    ),
+    registerHardwareWalletProxy: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -235,7 +231,7 @@ describe("AddAccountModal", () => {
 
     const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     fireEvent.click(attach);

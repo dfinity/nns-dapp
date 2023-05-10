@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -30,51 +26,50 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import WalletTest from "../pages/AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/sns-accounts-balance.services", () => {
+vi.mock("$lib/services/sns-accounts-balance.services", () => {
   return {
-    uncertifiedLoadSnsAccountsBalances: jest.fn().mockResolvedValue(undefined),
+    uncertifiedLoadSnsAccountsBalances: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-accounts-balance.services", () => {
+vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   return {
-    uncertifiedLoadCkBTCAccountsBalance: jest.fn().mockResolvedValue(undefined),
+    uncertifiedLoadCkBTCAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
 describe("Accounts", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
-  jest
-    .spyOn(snsProjectsStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
 
     // Reset to default value
     page.mock({

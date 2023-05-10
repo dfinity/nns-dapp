@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/worker-cycles.services", () => ({
-  initCyclesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: vi.fn(() =>
     Promise.resolve({
       startCyclesTimer: () => {
         // Do nothing
@@ -30,7 +27,7 @@ describe("CanisterCard", () => {
   });
 
   it("is clickable", async () => {
-    const spyClick = jest.fn();
+    const spyClick = vi.fn();
     const { container, component } = render(CanisterCard, {
       props: { canister: mockCanister },
     });

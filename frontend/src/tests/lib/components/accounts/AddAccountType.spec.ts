@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
 import type { AccountType } from "$lib/types/add-account.context";
 import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";

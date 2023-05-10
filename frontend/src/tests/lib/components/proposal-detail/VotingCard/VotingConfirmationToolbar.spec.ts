@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
@@ -11,6 +7,7 @@ import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);
@@ -108,7 +105,7 @@ describe("VotingConfirmationToolbar", () => {
   it("should hide confirmation and dispatch on confirm", async () => {
     const { component, container } = render(VotingConfirmationToolbar);
     let calledVoteType: Vote = Vote.Unspecified;
-    const onConfirm = jest.fn((ev) => (calledVoteType = ev?.detail?.voteType));
+    const onConfirm = vi.fn((ev) => (calledVoteType = ev?.detail?.voteType));
     component.$on("nnsConfirm", onConfirm);
 
     await fireEvent.click(

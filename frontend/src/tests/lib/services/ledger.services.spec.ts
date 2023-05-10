@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import * as agent from "$lib/api/agent.api";
 import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
@@ -38,26 +35,25 @@ import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("ledger-services", () => {
   describe("connect hardware wallet", () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     describe("success", () => {
       const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
       beforeAll(() => {
-        jest
-          .spyOn(LedgerIdentity, "create")
-          .mockImplementation(
-            async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          );
+        vi.spyOn(LedgerIdentity, "create").mockImplementation(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        );
       });
 
       afterAll(() => {
-        jest.clearAllMocks();
-        jest.restoreAllMocks();
+        vi.clearAllMocks();
+        vi.restoreAllMocks();
       });
 
       it("should set connecting state before connecting", async () => {
@@ -88,7 +84,7 @@ describe("ledger-services", () => {
       });
 
       it("should display a toast for the error assuming the browser is not supported", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "toastsError");
+        const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
 
@@ -110,29 +106,29 @@ describe("ledger-services", () => {
     let spySyncAccounts;
 
     beforeAll(() => {
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+      vi.spyOn(NNSDappCanister, "create").mockImplementation(
+        (): NNSDappCanister => mockNNSDappCanister
+      );
 
-      spySyncAccounts = jest
+      spySyncAccounts = vi
         .spyOn(accountsServices, "syncAccounts")
-        .mockImplementation(jest.fn());
+        .mockImplementation(vi.fn());
 
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
       const mockCreateAgent = () => Promise.resolve(mock<HttpAgent>());
-      jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
+      vi.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockImplementation(() => Promise.resolve(mockGetIdentity()));
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+        () => Promise.resolve(mockGetIdentity())
+      );
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
     });
 
     describe("success", () => {
@@ -145,7 +141,7 @@ describe("ledger-services", () => {
 
     describe("error", () => {
       it("should throw an error if no name provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "toastsError");
+        const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({ name: undefined, ledgerIdentity });
 
@@ -158,7 +154,7 @@ describe("ledger-services", () => {
       });
 
       it("should throw an error if no ledger identity provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "toastsError");
+        const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({
           name: "test",
@@ -193,7 +189,7 @@ describe("ledger-services", () => {
     const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
     beforeAll(() =>
-      jest
+      vi
         .spyOn(LedgerIdentity, "create")
         .mockImplementation(
           async (): Promise<LedgerIdentity> => mockLedgerIdentity
@@ -201,8 +197,8 @@ describe("ledger-services", () => {
     );
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
     });
 
     it("should return ledger identity", async () => {
@@ -232,18 +228,16 @@ describe("ledger-services", () => {
     let spy;
 
     beforeAll(() => {
-      jest
-        .spyOn(LedgerIdentity, "create")
-        .mockImplementation(
-          async (): Promise<LedgerIdentity> => mockLedgerIdentity
-        );
+      vi.spyOn(LedgerIdentity, "create").mockImplementation(
+        async (): Promise<LedgerIdentity> => mockLedgerIdentity
+      );
 
-      spy = jest.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
+      spy = vi.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+      vi.clearAllMocks();
+      vi.restoreAllMocks();
     });
 
     describe("success", () => {
@@ -260,7 +254,7 @@ describe("ledger-services", () => {
           throw new LedgerErrorKey("error__ledger.unexpected_wallet");
         });
 
-        const spyToastError = jest.spyOn(toastsStore, "toastsError");
+        const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
         await showAddressAndPubKeyOnHardwareWallet();
 
@@ -279,14 +273,14 @@ describe("ledger-services", () => {
     const mockNeurons = [mockNeuron];
 
     beforeAll(() => {
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockImplementation(() => Promise.resolve(mockNeurons));
+      vi.spyOn(api, "queryNeurons").mockImplementation(() =>
+        Promise.resolve(mockNeurons)
+      );
     });
 
     describe("success", () => {
       beforeAll(() =>
-        jest
+        vi
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
@@ -302,7 +296,7 @@ describe("ledger-services", () => {
 
     describe("error", () => {
       beforeAll(() =>
-        jest
+        vi
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(async (): Promise<LedgerIdentity> => {
             throw new LedgerErrorKey("error__ledger.please_open");
@@ -310,7 +304,7 @@ describe("ledger-services", () => {
       );
 
       it("should not list neurons if ledger throw an error", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "toastsError");
+        const spyToastError = vi.spyOn(toastsStore, "toastsError");
 
         const { err } = await listNeuronsHardwareWallet();
 

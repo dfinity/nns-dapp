@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import ConfirmDisolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { render } from "@testing-library/svelte";

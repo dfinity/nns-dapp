@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -14,16 +10,17 @@ import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi, type SpyInstance } from "vitest";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    listCanisters: jest.fn(),
-    getIcpToCyclesExchangeRate: jest.fn(),
+    listCanisters: vi.fn(),
+    getIcpToCyclesExchangeRate: vi.fn(),
   };
 });
 
-jest.mock("$lib/services/worker-cycles.services", () => ({
-  initCyclesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: vi.fn(() =>
     Promise.resolve({
       startCyclesTimer: () => {
         // Do nothing
@@ -36,16 +33,16 @@ jest.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("Canisters", () => {
-  let authStoreMock: jest.SpyInstance;
+  let authStoreMock: SpyInstance;
 
   beforeEach(() => {
-    authStoreMock = jest
+    authStoreMock = vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
-    jest
-      .spyOn(canistersStore, "subscribe")
-      .mockImplementation(mockCanistersStoreSubscribe);
+    vi.spyOn(canistersStore, "subscribe").mockImplementation(
+      mockCanistersStoreSubscribe
+    );
   });
 
   it("should render ic", () => {

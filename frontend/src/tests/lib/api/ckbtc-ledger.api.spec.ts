@@ -10,18 +10,19 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   describe("getCkBTCAccount", () => {
     it("returns main account with balance and token metadata", async () => {

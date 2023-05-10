@@ -37,9 +37,10 @@ import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 const {
   addHotkey,
@@ -74,14 +75,14 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/accounts.services", () => {
   return {
-    loadBalance: jest.fn(),
-    transferICP: jest.fn().mockResolvedValue({ success: true }),
-    getAccountIdentityByPrincipal: jest
+    loadBalance: vi.fn(),
+    transferICP: vi.fn().mockResolvedValue({ success: true }),
+    getAccountIdentityByPrincipal: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
-    getAccountIdentity: jest
+    getAccountIdentity: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
   };
@@ -96,9 +97,9 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
-    getLedgerIdentityProxy: jest
+    getLedgerIdentityProxy: vi
       .fn()
       .mockImplementation(() => getLedgerIdentityImplementation()),
   };
@@ -131,83 +132,83 @@ describe("neurons-services", () => {
   };
   const newSpawnedNeuronId = BigInt(1234);
 
-  const spyStakeNeuron = jest
+  const spyStakeNeuron = vi
     .spyOn(api, "stakeNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron.neuronId));
 
-  const spyGetNeuron = jest
+  const spyGetNeuron = vi
     .spyOn(api, "queryNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyIncreaseDissolveDelay = jest
+  const spyIncreaseDissolveDelay = vi
     .spyOn(api, "increaseDissolveDelay")
     .mockImplementation(() => Promise.resolve());
 
-  const spyJoinCommunityFund = jest
+  const spyJoinCommunityFund = vi
     .spyOn(api, "joinCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
-  const spyAutoStakeMaturity = jest
+  const spyAutoStakeMaturity = vi
     .spyOn(api, "autoStakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
-  const spyLeaveCommunityFund = jest
+  const spyLeaveCommunityFund = vi
     .spyOn(api, "leaveCommunityFund")
     .mockImplementation(() => Promise.resolve());
 
-  const spyDisburse = jest
+  const spyDisburse = vi
     .spyOn(api, "disburse")
     .mockImplementation(() => Promise.resolve());
 
-  const spyMergeMaturity = jest
+  const spyMergeMaturity = vi
     .spyOn(api, "mergeMaturity")
     .mockImplementation(() => Promise.resolve());
 
-  const spyStakeMaturity = jest
+  const spyStakeMaturity = vi
     .spyOn(api, "stakeMaturity")
     .mockImplementation(() => Promise.resolve());
 
-  const spySpawnNeuron = jest
+  const spySpawnNeuron = vi
     .spyOn(api, "spawnNeuron")
     .mockImplementation(() => Promise.resolve(newSpawnedNeuronId));
 
-  const spyMergeNeurons = jest
+  const spyMergeNeurons = vi
     .spyOn(api, "mergeNeurons")
     .mockImplementation(() => Promise.resolve());
 
-  const spyAddHotkey = jest
+  const spyAddHotkey = vi
     .spyOn(api, "addHotkey")
     .mockImplementation(() => Promise.resolve());
 
-  const spyRemoveHotkey = jest
+  const spyRemoveHotkey = vi
     .spyOn(api, "removeHotkey")
     .mockImplementation(() => Promise.resolve());
 
-  const spySplitNeuron = jest
+  const spySplitNeuron = vi
     .spyOn(api, "splitNeuron")
     .mockImplementation(() => Promise.resolve(BigInt(11)));
 
-  const spyStartDissolving = jest
+  const spyStartDissolving = vi
     .spyOn(api, "startDissolving")
     .mockImplementation(() => Promise.resolve());
 
-  const spyStopDissolving = jest
+  const spyStopDissolving = vi
     .spyOn(api, "stopDissolving")
     .mockImplementation(() => Promise.resolve());
 
-  const spySetFollowees = jest
+  const spySetFollowees = vi
     .spyOn(api, "setFollowees")
     .mockImplementation(() => Promise.resolve());
 
-  const spyClaimOrRefresh = jest
+  const spyClaimOrRefresh = vi
     .spyOn(api, "claimOrRefreshNeuron")
     .mockImplementation(() => Promise.resolve(undefined));
 
   beforeEach(() => {
     spyGetNeuron.mockClear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     neuronsStore.reset();
     accountsStore.resetForTesting();
     resetIdentity();
@@ -250,9 +251,9 @@ describe("neurons-services", () => {
     it(`stakeNeuron return undefined if amount less than ${
       E8S_PER_ICP / E8S_PER_ICP
     } ICP`, async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: 0.1,
@@ -264,9 +265,9 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: NaN,
@@ -278,9 +279,9 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       // 10 ICPs
       const amount = 10;
@@ -313,7 +314,7 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = jest
+    const spyQueryNeurons = vi
       .spyOn(api, "queryNeurons")
       .mockResolvedValue(neurons);
 
@@ -916,8 +917,8 @@ describe("neurons-services", () => {
     });
 
     it("should display appropriate busy screen", async () => {
-      const spyBusyStart = jest.spyOn(busyStore, "startBusy");
-      const spyBusyStop = jest.spyOn(busyStore, "stopBusy");
+      const spyBusyStart = vi.spyOn(busyStore, "startBusy");
+      const spyBusyStop = vi.spyOn(busyStore, "stopBusy");
 
       await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
@@ -976,7 +977,7 @@ describe("neurons-services", () => {
 
     it("should update neuron and return success when user removes itself", async () => {
       spyGetNeuron.mockImplementation(
-        jest.fn().mockRejectedValue(new NotAuthorizedNeuronError())
+        vi.fn().mockRejectedValue(new NotAuthorizedNeuronError())
       );
       neuronsStore.pushNeurons({ neurons, certified: true });
 
@@ -1421,10 +1422,10 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockImplementation(vi.fn);
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        setNeuron: jest.fn(),
+        setNeuron: vi.fn(),
       });
       expect(spyGetNeuron).toBeCalled();
     });
@@ -1437,7 +1438,7 @@ describe("neurons-services", () => {
         fullNeuron: undefined,
       };
       spyGetNeuron.mockImplementation(() => Promise.resolve(publicInfoNeuron));
-      const setNeuronSpy = jest.fn();
+      const setNeuronSpy = vi.fn();
       await loadNeuron({
         neuronId,
         setNeuron: setNeuronSpy,

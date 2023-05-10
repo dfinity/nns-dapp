@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import en from "$tests/mocks/i18n.mock";
@@ -9,17 +5,18 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    toggleAutoStakeMaturity: jest.fn().mockResolvedValue({ success: true }),
+    toggleAutoStakeMaturity: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("NnsAutoStakeMaturity", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     toastsStore.reset();
   });
 

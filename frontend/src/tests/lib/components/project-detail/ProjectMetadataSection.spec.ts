@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectMetadataSection from "$lib/components/project-detail/ProjectMetadataSection.svelte";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,

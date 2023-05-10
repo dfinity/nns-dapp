@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
 import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
@@ -9,10 +5,11 @@ import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/$public/sns.services", () => {
   return {
-    loadProposalsSnsCF: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadProposalsSnsCF: vi.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
@@ -24,7 +21,7 @@ describe("Proposals", () => {
 
   beforeEach(snsProposalsStore.reset);
 
-  afterAll(jest.clearAllMocks);
+  afterAll(vi.clearAllMocks);
 
   it("should trigger loadProposalsSnsCF", () => {
     render(Proposals);

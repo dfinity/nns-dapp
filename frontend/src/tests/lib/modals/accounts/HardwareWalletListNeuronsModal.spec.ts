@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";

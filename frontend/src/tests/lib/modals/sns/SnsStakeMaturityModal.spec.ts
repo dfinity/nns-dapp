@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/sns-neurons.services";
 import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
@@ -11,15 +7,16 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    stakeMaturity: jest.fn().mockResolvedValue({ success: true }),
+    stakeMaturity: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("SnsStakeMaturityModal", () => {
-  const reloadNeuron = jest.fn();
+  const reloadNeuron = vi.fn();
 
   const renderSnsStakeMaturityModal = async (): Promise<
     RenderResult<SvelteComponent>

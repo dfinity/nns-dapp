@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -18,6 +15,7 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: NNS_UNIVERSE, selected: false };
@@ -126,16 +124,11 @@ describe("SelectUniverseCard", () => {
   });
 
   describe("project-balance", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(
-          [mockSubAccount],
-          [mockHardwareWalletAccount]
-        )
-      );
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should display balance if selected", () => {
       page.mock({

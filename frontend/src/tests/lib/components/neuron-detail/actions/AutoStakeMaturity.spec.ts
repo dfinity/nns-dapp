@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
 import { render } from "@testing-library/svelte";
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";

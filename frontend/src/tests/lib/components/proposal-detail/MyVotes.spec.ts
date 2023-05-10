@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";

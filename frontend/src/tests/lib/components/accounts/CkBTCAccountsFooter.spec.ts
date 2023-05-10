@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -13,25 +9,27 @@ import { mockTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 import CkBTCAccountsTest from "./CkBTCAccountsTest.svelte";
 
-jest.mock("$lib/api/ckbtc-minter.api", () => {
+vi.mock("$lib/api/ckbtc-minter.api", () => {
   return {
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", async () => {
   return {
-    ...jest.requireActual("$lib/services/ckbtc-minter.services"),
-    loadBtcAddress: jest.fn().mockImplementation(() => undefined),
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("$lib/services/ckbtc-minter.services")),
+    loadBtcAddress: vi.fn().mockImplementation(() => undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -44,7 +42,7 @@ describe("CkBTCAccountsFooter", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     icrcAccountsStore.reset();
     tokensStore.reset();
@@ -138,7 +136,7 @@ describe("CkBTCAccountsFooter", () => {
 
       await selectSegmentBTC(container);
 
-      const spy = jest.spyOn(services, "syncCkBTCAccounts");
+      const spy = vi.spyOn(services, "syncCkBTCAccounts");
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement

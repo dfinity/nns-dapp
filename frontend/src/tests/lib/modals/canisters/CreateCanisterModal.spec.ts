@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
@@ -21,29 +18,28 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
-    createCanister: jest
+    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(10_000)),
+    createCanister: vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
 describe("CreateCanisterModal", () => {
-  jest
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(accountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
 
   it("should display modal", () => {
     const { container } = render(CreateCanisterModal);
@@ -98,7 +94,7 @@ describe("CreateCanisterModal", () => {
       ).toBeInTheDocument()
     );
 
-    const done = jest.fn();
+    const done = vi.fn();
     component.$on("nnsClose", done);
 
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");

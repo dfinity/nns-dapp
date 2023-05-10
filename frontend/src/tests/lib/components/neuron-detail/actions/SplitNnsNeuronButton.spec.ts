@@ -1,16 +1,13 @@
-/**
- * @jest-environment jsdom
- */
-
 import SplitNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("SplitNeuronButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders split neuron message", () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountBadge from "$lib/components/accounts/AccountBadge.svelte";
 import {
   mockHardwareWalletAccount,

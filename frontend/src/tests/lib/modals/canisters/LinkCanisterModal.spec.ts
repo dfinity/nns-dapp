@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -14,26 +11,25 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    attachCanister: jest.fn().mockResolvedValue({ success: true }),
+    attachCanister: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
 describe("LinkCanisterModal", () => {
-  jest
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(accountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
   it("should display modal", () => {
     const { container } = render(LinkCanisterModal);
 
@@ -53,7 +49,7 @@ describe("LinkCanisterModal", () => {
         target: { value: "aaaaa-aa" },
       }));
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     await clickByTestId(queryByTestId, "attach-canister-button");

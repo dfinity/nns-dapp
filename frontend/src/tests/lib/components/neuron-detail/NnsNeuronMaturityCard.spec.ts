@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -23,7 +19,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
@@ -40,9 +36,7 @@ describe("NnsNeuronMaturityCard", () => {
   };
 
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   it("renders maturity title", () => {
@@ -204,7 +198,7 @@ describe("NnsNeuronMaturityCard", () => {
 
   describe("hw", () => {
     beforeAll(() =>
-      jest
+      vi
         .spyOn(accountsStore, "subscribe")
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
@@ -285,7 +279,7 @@ describe("NnsNeuronMaturityCard", () => {
       });
 
       const po = NnsNeuronMaturityCardPo.under(
-        new JestPageObjectElement(container)
+        new VitestPageObjectElement(container)
       );
 
       expect(await po.getLastDistributionMaturity()).toEqual("May 22, 1992");

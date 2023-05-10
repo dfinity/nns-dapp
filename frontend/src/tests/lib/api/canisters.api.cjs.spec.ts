@@ -3,8 +3,9 @@ import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canis
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
+import { vi } from "vitest";
 
-jest.mock("@dfinity/agent/lib/cjs/index", () => {
+vi.mock("@dfinity/agent/lib/cjs/index", () => {
   class MockHttpAgent {}
 
   const response: CanisterStatusResponse = {
@@ -29,7 +30,7 @@ jest.mock("@dfinity/agent/lib/cjs/index", () => {
 });
 
 describe("canisters-api.cjs", () => {
-  afterAll(() => jest.resetAllMocks());
+  afterAll(() => vi.resetAllMocks());
 
   describe("queryCanisterDetails", () => {
     it("should call IC Management Canister with canister id", async () => {

@@ -1,16 +1,14 @@
-/**
- * @jest-environment jsdom
- */
 import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
@@ -23,7 +21,7 @@ describe("SnsProposalPayloadSection", () => {
     await runResolvedPromises();
 
     return SnsProposalPayloadSectionPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
   };
 

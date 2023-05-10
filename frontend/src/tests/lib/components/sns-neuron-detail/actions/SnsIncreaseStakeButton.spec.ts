@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsIncreaseStakeButton from "$lib/components/sns-neuron-detail/actions/SnsIncreaseStakeButton.svelte";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
@@ -16,25 +12,26 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsIncreaseStakeButton", () => {
   beforeAll(() => {
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
 
-    jest
-      .spyOn(snsProjectSelectedStore, "subscribe")
-      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+      mockStoreSubscribe(mockSnsFullProject)
+    );
 
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should open increase stake neuron modal", async () => {

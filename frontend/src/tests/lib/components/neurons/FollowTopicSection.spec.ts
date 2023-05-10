@@ -1,8 +1,6 @@
-/**
- * @jest-environment jsdom
- */
 import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import FollowTopicsSectionTest from "./FollowTopicSectionTest.svelte";
 
 describe("FollowTopicsSection", () => {
@@ -40,7 +38,7 @@ describe("FollowTopicsSection", () => {
         count: 4,
       },
     });
-    const openSpy = jest.fn();
+    const openSpy = vi.fn();
     component.$on("nnsOpen", openSpy);
     const button = queryByTestId("open-new-followee-modal");
     button && fireEvent.click(button);

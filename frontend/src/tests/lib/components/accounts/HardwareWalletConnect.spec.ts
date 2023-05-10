@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletConnect from "$lib/components/accounts/HardwareWalletConnect.svelte";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import {
@@ -12,9 +8,10 @@ import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi, type Mock } from "vitest";
 import AddAccountTest from "./AddAccountTest.svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletConnect", () => {
   const props = { testComponent: HardwareWalletConnect };
@@ -25,7 +22,7 @@ describe("HardwareWalletConnect", () => {
       hardwareWalletName: undefined,
     });
 
-    (connectToHardwareWalletProxy as jest.Mock).mockImplementation(
+    (connectToHardwareWalletProxy as Mock).mockImplementation(
       async (callback) =>
         callback({
           connectionState: LedgerConnectionState.CONNECTED,
@@ -33,7 +30,7 @@ describe("HardwareWalletConnect", () => {
         })
     );
 
-    (registerHardwareWalletProxy as jest.Mock).mockImplementation(async () => {
+    (registerHardwareWalletProxy as Mock).mockImplementation(async () => {
       // Do nothing test
     });
   });
@@ -44,8 +41,8 @@ describe("HardwareWalletConnect", () => {
       hardwareWalletName: undefined,
     });
 
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render a connect action", () => {

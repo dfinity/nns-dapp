@@ -53,12 +53,10 @@ export const installImplAndBlockRest = ({
     }
     if (!hasMockFunction) {
       // The module didn't have any mocked functions so it wasn't actually mocked.
-      // jest.mock() can't be done here because jest does some magic to move all
+      // vi.mock() can't be done here because vi does some magic to move all
       // those calls to the top of test to make sure they happen before any
       // import.
-      throw new Error(
-        `You must add 'jest.mock("${modulePath}");' to your test.`
-      );
+      throw new Error(`You must add 'vi.mock("${modulePath}");' to your test.`);
     }
     for (const fn in implementedFunctions) {
       if (!module[fn]?.mock) {

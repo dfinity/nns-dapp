@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -21,6 +17,7 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { GovernanceError, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 // mock loadProposal
 let proposalInfoIdIndex = 0;
@@ -28,7 +25,7 @@ const proposalInfo = (): ProposalInfo => ({
   ...mockProposalInfo,
   id: BigInt(++proposalInfoIdIndex),
 });
-jest.mock("$lib/services/$public/proposals.services", () => {
+vi.mock("$lib/services/$public/proposals.services", () => {
   return {
     loadProposal: ({ setProposal }) => {
       setProposal(proposalInfo);
@@ -43,15 +40,15 @@ describe("vote-registration-services", () => {
     ...mockNeuron,
     neuronId,
   }));
-  const spyOnToastsUpdate = jest.spyOn(toastsStore, "toastsUpdate");
-  const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
-  const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyOnToastsUpdate = vi.spyOn(toastsStore, "toastsUpdate");
+  const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
   let proposal: ProposalInfo = proposalInfo();
 
   const mockRegisterVote = () => {
     return Promise.resolve();
   };
-  const spyRegisterVote = jest
+  const spyRegisterVote = vi
     .spyOn(governanceApi, "registerVote")
     .mockImplementation(mockRegisterVote);
 
@@ -81,12 +78,12 @@ describe("vote-registration-services", () => {
 
   describe("success voting", () => {
     beforeAll(() => {
-      jest
-        .spyOn(neuronsServices, "listNeurons")
-        .mockImplementation(() => Promise.resolve());
+      vi.spyOn(neuronsServices, "listNeurons").mockImplementation(() =>
+        Promise.resolve()
+      );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should call the api to register multiple votes", async () => {
       await registerNnsVotes({
@@ -104,7 +101,7 @@ describe("vote-registration-services", () => {
     });
 
     it("should not display errors on successful vote registration", async () => {
-      const spyToastError = jest.spyOn(toastsStore, "toastsError");
+      const spyToastError = vi.spyOn(toastsStore, "toastsError");
       await registerNnsVotes({
         neuronIds,
         proposalInfo: proposal,
@@ -118,20 +115,20 @@ describe("vote-registration-services", () => {
 
     describe("voting in progress", () => {
       beforeAll(() => {
-        jest
-          .spyOn(neuronsServices, "listNeurons")
-          .mockImplementation(() => Promise.resolve());
-        jest
-          .spyOn(proposalsApi, "queryProposal")
-          .mockImplementation(() => Promise.resolve(proposal));
+        vi.spyOn(neuronsServices, "listNeurons").mockImplementation(() =>
+          Promise.resolve()
+        );
+        vi.spyOn(proposalsApi, "queryProposal").mockImplementation(() =>
+          Promise.resolve(proposal)
+        );
 
-        jest
-          .spyOn(governanceApi, "registerVote")
-          .mockImplementation(() => waitForMilliseconds(10));
+        vi.spyOn(governanceApi, "registerVote").mockImplementation(() =>
+          waitForMilliseconds(10)
+        );
       });
 
       afterAll(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         voteRegistrationStore.reset();
         neuronsStore.reset();
@@ -197,7 +194,7 @@ describe("vote-registration-services", () => {
       it("should update successfullyVotedNeuronIdStrings in the store", async () => {
         voteRegistrationStore.reset();
 
-        const spyOnAddSuccessfullyVotedNeuronId = jest.spyOn(
+        const spyOnAddSuccessfullyVotedNeuronId = vi.spyOn(
           voteRegistrationStore,
           "addSuccessfullyVotedNeuronId"
         );
@@ -350,16 +347,16 @@ describe("vote-registration-services", () => {
       };
 
     beforeAll(() => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
+      vi.spyOn(governanceApi, "registerVote").mockImplementation(
+        mockRegisterVoteGovernanceAlreadyVotedError
+      );
 
-      jest
-        .spyOn(neuronsServices, "listNeurons")
-        .mockImplementation(() => Promise.resolve());
+      vi.spyOn(neuronsServices, "listNeurons").mockImplementation(() =>
+        Promise.resolve()
+      );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should ignore already voted error", async () => {
       await registerNnsVotes({
@@ -387,13 +384,13 @@ describe("vote-registration-services", () => {
     };
 
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockImplementation(vi.fn);
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
 
-      jest.spyOn(governanceApi, "registerVote").mockClear();
+      vi.spyOn(governanceApi, "registerVote").mockClear();
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
@@ -416,9 +413,9 @@ describe("vote-registration-services", () => {
     });
 
     it("should show error.register_vote on nns-js-based errors", async () => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteError);
+      vi.spyOn(governanceApi, "registerVote").mockImplementation(
+        mockRegisterVoteError
+      );
 
       await registerNnsVotes({
         neuronIds,
@@ -438,9 +435,9 @@ describe("vote-registration-services", () => {
     });
 
     it("should display proopsalId in error detail", async () => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteError);
+      vi.spyOn(governanceApi, "registerVote").mockImplementation(
+        mockRegisterVoteError
+      );
 
       await registerNnsVotes({
         neuronIds,
@@ -462,9 +459,9 @@ describe("vote-registration-services", () => {
     });
 
     it("should show reason per neuron Error in detail", async () => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteError);
+      vi.spyOn(governanceApi, "registerVote").mockImplementation(
+        mockRegisterVoteError
+      );
 
       await registerNnsVotes({
         neuronIds,
@@ -485,9 +482,9 @@ describe("vote-registration-services", () => {
     });
 
     it("should show reason per neuron GovernanceError in detail", async () => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteGovernanceError);
+      vi.spyOn(governanceApi, "registerVote").mockImplementation(
+        mockRegisterVoteGovernanceError
+      );
 
       await registerNnsVotes({
         neuronIds,
@@ -509,12 +506,12 @@ describe("vote-registration-services", () => {
 
   describe("identity errors", () => {
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockImplementation(vi.fn);
       setNoIdentity();
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
 
       resetIdentity();
     });
@@ -540,11 +537,11 @@ describe("vote-registration-services", () => {
 
   describe("processRegisterVoteErrors", () => {
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockImplementation(vi.fn);
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should display an error", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { ICPToken } from "@dfinity/nns";

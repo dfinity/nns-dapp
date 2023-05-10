@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
@@ -28,10 +24,11 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockResolvedValue({ success: true }),
+    stakeNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -52,24 +49,22 @@ describe("SnsStakeNeuronModal", () => {
     });
 
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   beforeEach(() => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-    jest
-      .spyOn(selectedUniverseIdStore, "subscribe")
-      .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
+    vi.spyOn(selectedUniverseIdStore, "subscribe").mockImplementation(
+      (run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
-      });
+      }
+    );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
 

@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @vi-environment jsdom
  */
 
 import { createSubAccount } from "$lib/api/accounts.api";
@@ -18,29 +18,28 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { vi, type SpyInstance } from "vitest";
 
-jest.mock("$lib/api/accounts.api", () => {
+vi.mock("$lib/api/accounts.api", () => {
   return {
-    createSubAccount: jest.fn().mockResolvedValue(undefined),
+    createSubAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/ledger.api");
 
-jest.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/nns-dapp.api");
 
 describe("Accounts", () => {
-  let queryAccountBalanceSpy: jest.SpyInstance;
-  let queryAccountSpy: jest.SpyInstance;
+  let queryAccountBalanceSpy: SpyInstance;
+  let queryAccountSpy: SpyInstance;
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
-    queryAccountBalanceSpy = jest
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    queryAccountBalanceSpy = vi
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(BigInt(0));
-    queryAccountSpy = jest
+    queryAccountSpy = vi
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
   });

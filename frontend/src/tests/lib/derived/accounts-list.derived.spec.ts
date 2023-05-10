@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";

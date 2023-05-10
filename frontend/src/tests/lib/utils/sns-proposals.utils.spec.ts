@@ -29,6 +29,7 @@ import {
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { vi } from "vitest";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
@@ -127,7 +128,7 @@ describe("sns-proposals utils", () => {
   describe("snsRewardStatus", () => {
     beforeEach(() => {
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
     it("should return SETTLED", () => {
       const proposal: SnsProposalData = {
@@ -193,7 +194,7 @@ describe("sns-proposals utils", () => {
   describe("mapProposalInfo", () => {
     beforeEach(() => {
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
     it("should add statuses with text and description", () => {
       const now = BigInt(nowInSeconds());

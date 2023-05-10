@@ -4,6 +4,7 @@ import { configure } from "@testing-library/svelte";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
+import { vi } from "vitest";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -21,7 +22,7 @@ global.TextEncoder = TextEncoder;
 ).IntersectionObserver = IntersectionObserverPassive;
 
 // Environment Variables Setup
-jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
+vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   getEnvVars: () => ({
     ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
     ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
@@ -49,7 +50,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   }),
 }));
 
-jest.mock("./src/lib/constants/mockable.constants.ts", () => ({
+vi.mock("./src/lib/constants/mockable.constants.ts", () => ({
   DEV: false,
   ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,

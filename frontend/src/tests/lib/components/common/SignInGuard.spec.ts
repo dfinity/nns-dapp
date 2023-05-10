@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { authStore } from "$lib/stores/auth.store";
 import {
   authStoreMock,
@@ -12,9 +8,9 @@ import { render } from "@testing-library/svelte";
 import SignInGuardTest from "./SignInGuardTest.svelte";
 
 describe("SignInGuard", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("not signed in", () => {
     beforeAll(() => {

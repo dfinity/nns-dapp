@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import {
@@ -32,13 +28,14 @@ import {
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("sns-proposals services", () => {
   beforeEach(() => {
     snsFiltersStore.reset();
     snsProposalsStore.reset();
     toastsStore.reset();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   const proposal1: SnsProposalData = {
     ...mockSnsProposal,
@@ -54,7 +51,7 @@ describe("sns-proposals services", () => {
   };
   const proposals = [proposal1, proposal2, proposal3];
   describe("loadSnsProposals", () => {
-    const queryProposalsSpy = jest
+    const queryProposalsSpy = vi
       .spyOn(api, "queryProposals")
       .mockResolvedValue(proposals);
 
@@ -62,10 +59,10 @@ describe("sns-proposals services", () => {
       beforeEach(() => {
         snsFiltersStore.reset();
         snsProposalsStore.reset();
-        jest.clearAllMocks();
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+        vi.clearAllMocks();
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreNoIdentitySubscribe
+        );
       });
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
@@ -169,10 +166,10 @@ describe("sns-proposals services", () => {
     describe("logged in", () => {
       beforeEach(() => {
         snsProposalsStore.reset();
-        jest.clearAllMocks();
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
+        vi.clearAllMocks();
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
       });
 
       it("should call queryProposals with user's identity", async () => {
@@ -199,14 +196,14 @@ describe("sns-proposals services", () => {
     const vote = SnsVote.Yes;
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     it("should call registerVote api", async () => {
-      const registerVoteApiSpy = jest
+      const registerVoteApiSpy = vi
         .spyOn(api, "registerVote")
         .mockResolvedValue(undefined);
       const result = await registerVote({
@@ -229,9 +226,9 @@ describe("sns-proposals services", () => {
     });
 
     it("should handle errors", async () => {
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-      jest.spyOn(api, "registerVote").mockRejectedValue(new Error());
-      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(api, "registerVote").mockRejectedValue(new Error());
+      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
       const result = await registerVote({
         rootCanisterId: mockPrincipal,
@@ -256,13 +253,13 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreNoIdentitySubscribe
+        );
       });
 
       it("should use the proposal in store if certified and not call api", (done) => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
@@ -284,7 +281,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should not use the proposal in store if not certified and call api", (done) => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
@@ -311,7 +308,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should call api if store is empty", (done) => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         getSnsProposalById({
@@ -334,13 +331,13 @@ describe("sns-proposals services", () => {
 
     describe("logged in", () => {
       beforeEach(() => {
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
       });
 
       it("should use the proposal in store if certified and not call api", (done) => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
@@ -362,7 +359,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should ignore the proposal in store if it contains no ballots and the reloadForBallots flag is set", async () => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
@@ -405,7 +402,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should not use the proposal in store if not certified and call api", async () => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         snsProposalsStore.setProposals({
@@ -444,7 +441,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should call api if store is empty", async () => {
-        const queryProposalSpy = jest
+        const queryProposalSpy = vi
           .spyOn(api, "queryProposal")
           .mockResolvedValue(mockSnsProposal);
         let dataCertified = false;
@@ -475,9 +472,9 @@ describe("sns-proposals services", () => {
       });
 
       it("should call handle error if api call fails", async () => {
-        jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
-        const handleErrorSpy = jest.fn();
-        const setProposalSpy = jest.fn();
+        vi.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
+        const handleErrorSpy = vi.fn();
+        const setProposalSpy = vi.fn();
         getSnsProposalById({
           rootCanisterId,
           proposalId,
@@ -490,9 +487,9 @@ describe("sns-proposals services", () => {
       });
 
       it("should show error if api call fails", async () => {
-        jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
-        const handleErrorSpy = jest.fn();
-        const setProposalSpy = jest.fn();
+        vi.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
+        const handleErrorSpy = vi.fn();
+        const setProposalSpy = vi.fn();
         getSnsProposalById({
           rootCanisterId,
           proposalId,

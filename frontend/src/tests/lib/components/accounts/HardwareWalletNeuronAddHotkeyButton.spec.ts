@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletNeuronAddHotkeyButton from "$lib/components/accounts/HardwareWalletNeuronAddHotkeyButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";

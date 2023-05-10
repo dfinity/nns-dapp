@@ -1,14 +1,11 @@
-/**
- * @jest-environment jsdom
- */
-
 import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("StakeMaturityButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders stake maturity cta", () => {

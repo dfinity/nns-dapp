@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountCard from "$lib/components/accounts/AccountCard.svelte";
 import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";

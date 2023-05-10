@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -20,12 +16,13 @@ import {
   type NeuronInfo,
 } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const neuronIds = [111, 222].map(BigInt);
 
@@ -51,7 +48,7 @@ describe("ProposalVotingSection", () => {
 
   afterAll(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   const proposalInfo = {

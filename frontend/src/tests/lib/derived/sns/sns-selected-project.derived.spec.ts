@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   snsCommittedProjectSelectedStore,

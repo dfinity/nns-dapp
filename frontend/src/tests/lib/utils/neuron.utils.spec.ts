@@ -85,11 +85,12 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("neuron-utils", () => {
-  beforeAll(() => jest.useFakeTimers().setSystemTime(Date.now()));
+  beforeAll(() => vi.useFakeTimers().setSystemTime(Date.now()));
 
-  afterAll(() => jest.useRealTimers());
+  afterAll(() => vi.useRealTimers());
 
   describe("votingPower", () => {
     const tokenStake = TokenAmount.fromString({
@@ -962,11 +963,11 @@ describe("neuron-utils", () => {
 
   describe("checkInvalidState", () => {
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     const stepName = "ok";
-    const spyOnInvalid = jest.fn();
+    const spyOnInvalid = vi.fn();
     const invalidStates: InvalidState<boolean>[] = [
       {
         stepName,

@@ -1,18 +1,15 @@
-/**
- * @jest-environment jsdom
- */
-
 import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -28,8 +25,8 @@ describe("TotalValueLocked", () => {
   beforeEach(() => metricsStore.set(undefined));
 
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   const tvl = {

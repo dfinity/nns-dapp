@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { secondsToDateTime } from "$lib/utils/date.utils";
@@ -13,14 +9,15 @@ import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("ProposalSystemInfoSection", () => {
   fakeSnsGovernanceApi.install();
@@ -40,12 +37,12 @@ describe("ProposalSystemInfoSection", () => {
     await runResolvedPromises();
 
     return SnsProposalSystemInfoSectionPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsFunctionsStore.reset();
     fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,

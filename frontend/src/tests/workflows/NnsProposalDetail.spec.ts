@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { queryProposal } from "$lib/api/proposals.api";
@@ -23,8 +19,9 @@ import { Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 const proposal = {
   ...mockProposalInfo,
@@ -40,15 +37,13 @@ const proposal = {
   ],
 };
 
-jest.mock("$lib/api/proposals.api", () => {
+vi.mock("$lib/api/proposals.api", () => {
   return {
-    queryProposal: jest
-      .fn()
-      .mockImplementation(() => Promise.resolve(proposal)),
+    queryProposal: vi.fn().mockImplementation(() => Promise.resolve(proposal)),
   };
 });
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
@@ -57,7 +52,7 @@ let resolveUncertifiedPromise;
 
 describe("Proposal detail page when not logged in user", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
     resolveCertifiedPromise = undefined;
@@ -66,9 +61,8 @@ describe("Proposal detail page when not logged in user", () => {
 
   describe("when logged in user", () => {
     beforeEach(() => {
-      jest
-        .spyOn(governanceApi, "queryNeurons")
-        .mockImplementation(async ({ certified }) => {
+      vi.spyOn(governanceApi, "queryNeurons").mockImplementation(
+        async ({ certified }) => {
           // Mock delay in one of both calls.
           // Otherwise there is a race condition that the onLoad of queryAndUpdate for query after certified has been called.
           // The problem seems to be that the `certifiedDone` is set in the finally.
@@ -81,10 +75,11 @@ describe("Proposal detail page when not logged in user", () => {
               resolveUncertifiedPromise = resolve;
             }
           });
-        });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+        }
+      );
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     it("should render proposal with certified data", async () => {
@@ -170,10 +165,10 @@ describe("Proposal detail page when not logged in user", () => {
 
   describe("when not logged in user", () => {
     beforeEach(() => {
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should render proposal with uncertified data", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Json from "$lib/components/common/Json.svelte";
 import { bytesToHexString, stringifyJson } from "$lib/utils/utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";

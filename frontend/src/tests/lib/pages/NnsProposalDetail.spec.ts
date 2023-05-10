@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
@@ -24,13 +20,14 @@ import {
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("ProposalDetail", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const mockGovernanceCanister: MockGovernanceCanister =
     new MockGovernanceCanister(mockProposals);
@@ -39,27 +36,25 @@ describe("ProposalDetail", () => {
 
   beforeEach(() => {
     silentConsoleErrors();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     resetNeuronsApiService();
-    jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
-    jest
-      .spyOn(proposalsStore, "subscribe")
-      .mockImplementation(mockEmptyProposalsStoreSubscribe);
+    vi.spyOn(proposalsStore, "subscribe").mockImplementation(
+      mockEmptyProposalsStoreSubscribe
+    );
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockReturnValue(mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockReturnValue(
+      mockGovernanceCanister
+    );
 
-    jest.spyOn(LedgerCanister, "create").mockReturnValue(mockLedgerCanister);
+    vi.spyOn(LedgerCanister, "create").mockReturnValue(mockLedgerCanister);
 
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
+    vi.spyOn(neuronsStore, "subscribe").mockImplementation(
+      buildMockNeuronsStoreSubscribe([], false)
+    );
   });
 
   const props = {

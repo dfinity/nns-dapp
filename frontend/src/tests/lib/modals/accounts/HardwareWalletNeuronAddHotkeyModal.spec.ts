@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
@@ -18,32 +14,33 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi, type Mock } from "vitest";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };
 
-  const spyAddHotkey = jest
+  const spyAddHotkey = vi
     .spyOn(api, "addHotkey")
     .mockImplementation(() => Promise.resolve());
 
-  const spyGetNeuron = jest
+  const spyGetNeuron = vi
     .spyOn(api, "queryNeuron")
     .mockImplementation(() => Promise.resolve(mockNeuron));
 
-  jest.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
   beforeAll(() => {
-    (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
+    (getLedgerIdentityProxy as Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity)
     );
   });
 
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should display modal", () => {

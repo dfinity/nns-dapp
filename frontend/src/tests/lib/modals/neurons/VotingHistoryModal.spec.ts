@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -11,6 +7,7 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("VotingHistoryModal", () => {
   const props = {
@@ -21,13 +18,11 @@ describe("VotingHistoryModal", () => {
     new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should display modal", () => {
@@ -55,13 +50,13 @@ describe("VotingHistoryModal", () => {
   });
 
   it("should close on error", async () => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => {
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => {
         throw new Error("test");
-      });
+      }
+    );
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     const { component } = render(VotingHistoryModal, {
       props,
     });

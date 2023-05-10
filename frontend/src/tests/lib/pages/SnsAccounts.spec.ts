@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
@@ -20,8 +16,9 @@ import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import type { ComponentProps } from "svelte/types/runtime";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-accounts.services");
+vi.mock("$lib/services/sns-accounts.services");
 
 describe("SnsAccounts", () => {
   const goToWallet = async () => {
@@ -66,9 +63,9 @@ describe("SnsAccounts", () => {
         certified: true,
       });
 
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+        mockStoreSubscribe(mockSnsFullProject)
+      );
 
       page.mock({ data: { universe: mockPrincipal.toText() } });
     });
@@ -106,12 +103,12 @@ describe("SnsAccounts", () => {
 
   describe("when no accounts", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsProjectAccountsStore, "subscribe")
-        .mockImplementation((run: Subscriber<undefined>): (() => void) => {
+      vi.spyOn(snsProjectAccountsStore, "subscribe").mockImplementation(
+        (run: Subscriber<undefined>): (() => void) => {
           run(undefined);
           return () => undefined;
-        });
+        }
+      );
     });
 
     it("should not render a token amount component nor zero", async () => {

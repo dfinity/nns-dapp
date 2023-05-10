@@ -5,31 +5,31 @@ import { fireEvent, waitFor } from "@testing-library/svelte";
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
  */
-export class JestPageObjectElement implements PageObjectElement {
+export class VitestPageObjectElement implements PageObjectElement {
   private element: Element | null;
   private readonly selector: string | undefined;
-  private readonly parent: JestPageObjectElement | undefined;
+  private readonly parent: VitestPageObjectElement | undefined;
 
   constructor(
     element: Element | null,
-    params?: { parent: JestPageObjectElement; selector: string }
+    params?: { parent: VitestPageObjectElement; selector: string }
   ) {
     this.element = element;
     this.selector = params?.selector;
     this.parent = params?.parent;
   }
 
-  querySelector(selector: string): JestPageObjectElement {
+  querySelector(selector: string): VitestPageObjectElement {
     const el = this.element && this.element.querySelector(selector);
-    return new JestPageObjectElement(el, { parent: this, selector });
+    return new VitestPageObjectElement(el, { parent: this, selector });
   }
 
-  async querySelectorAll(selector: string): Promise<JestPageObjectElement[]> {
+  async querySelectorAll(selector: string): Promise<VitestPageObjectElement[]> {
     if (isNullish(this.element)) {
       return [];
     }
     return Array.from(this.element.querySelectorAll(selector)).map(
-      (el) => new JestPageObjectElement(el)
+      (el) => new VitestPageObjectElement(el)
     );
   }
 
@@ -39,15 +39,15 @@ export class JestPageObjectElement implements PageObjectElement {
   }: {
     selector: string;
     count: number;
-  }): JestPageObjectElement[] {
+  }): VitestPageObjectElement[] {
     throw new Error("Not implemented");
   }
 
-  byTestId(tid: string): JestPageObjectElement {
+  byTestId(tid: string): VitestPageObjectElement {
     return this.querySelector(`[data-tid=${tid}]`);
   }
 
-  allByTestId(tid: string): Promise<JestPageObjectElement[]> {
+  allByTestId(tid: string): Promise<VitestPageObjectElement[]> {
     return this.querySelectorAll(`[data-tid=${tid}]`);
   }
 
@@ -57,7 +57,7 @@ export class JestPageObjectElement implements PageObjectElement {
   }: {
     tid: string;
     count: number;
-  }): JestPageObjectElement[] {
+  }): VitestPageObjectElement[] {
     throw new Error("Not implemented");
     // Not tested:
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });

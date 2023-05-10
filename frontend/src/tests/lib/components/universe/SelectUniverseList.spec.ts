@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectUniverseList from "$lib/components/universe/SelectUniverseList.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
@@ -12,6 +8,7 @@ import {
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SelectUniverseList", () => {
   const projects = [
@@ -29,9 +26,9 @@ describe("SelectUniverseList", () => {
     },
   ];
 
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe(projects));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe(projects)
+  );
 
   beforeEach(() => {
     page.mock({
@@ -40,7 +37,7 @@ describe("SelectUniverseList", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList);
@@ -64,7 +61,7 @@ describe("SelectUniverseList", () => {
   it("should trigger select project", async () => {
     const { component, getAllByTestId } = render(SelectUniverseList);
 
-    const onSelect = jest.fn();
+    const onSelect = vi.fn();
     component.$on("nnsSelectUniverse", onSelect);
 
     const cards = getAllByTestId("select-universe-card");

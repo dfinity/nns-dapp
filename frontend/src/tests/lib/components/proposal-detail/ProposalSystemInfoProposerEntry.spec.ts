@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -11,15 +7,16 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("ProposalMeta", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    vi.spyOn(console, "error").mockImplementation(vi.fn);
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const props = {
     proposer: mockProposalInfo.proposer,

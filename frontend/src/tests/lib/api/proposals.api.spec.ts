@@ -9,7 +9,8 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { GovernanceCanister } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
@@ -18,11 +19,11 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
+    spyListProposals = vi.spyOn(mockGovernanceCanister, "listProposals");
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -81,15 +82,12 @@ describe("proposals-api", () => {
   describe("queryProposalPayload", () => {
     const nnsDappMock = mock<NNSDappCanister>();
     nnsDappMock.getProposalPayload.mockResolvedValue({});
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-    afterAll(jest.clearAllMocks);
+    afterAll(vi.clearAllMocks);
 
     it("should call the canister to get proposal payload", async () => {
-      const spyGetProposalPayload = jest.spyOn(
-        nnsDappMock,
-        "getProposalPayload"
-      );
+      const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");
 
       await queryProposalPayload({
         proposalId: BigInt(0),

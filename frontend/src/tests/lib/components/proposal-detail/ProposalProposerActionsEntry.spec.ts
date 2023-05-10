@@ -1,10 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerActionsEntry", () => {
@@ -14,7 +10,7 @@ describe("ProposalProposerActionsEntry", () => {
     });
 
     return ProposalProposerActionsEntryPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
   };
 

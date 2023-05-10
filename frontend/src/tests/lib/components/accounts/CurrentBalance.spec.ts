@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";

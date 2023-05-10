@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -15,11 +11,12 @@ import {
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       accountsStore.resetForTesting();
     });
 

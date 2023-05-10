@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -30,13 +26,11 @@ describe("BallotSummary", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render proposal id", async () => {

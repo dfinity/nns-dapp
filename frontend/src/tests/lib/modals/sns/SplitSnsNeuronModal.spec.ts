@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/sns-neurons.services";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -11,16 +7,17 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    splitNeuron: jest.fn().mockResolvedValue({ success: true }),
+    splitNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("SplitSnsNeuronModal", () => {
   const token = { name: "SNS", symbol: "SNS" };
-  const reloadNeuronSpy = jest.fn().mockResolvedValue(undefined);
+  const reloadNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const renderSplitNeuronModal = () =>
     renderModal({
       component: SplitSnsNeuronModal,
@@ -34,7 +31,7 @@ describe("SplitSnsNeuronModal", () => {
       },
     });
 
-  afterAll(jest.clearAllMocks);
+  afterAll(vi.clearAllMocks);
 
   it("should display modal", async () => {
     const { container } = await renderSplitNeuronModal();

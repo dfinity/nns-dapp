@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -15,12 +11,13 @@ import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -37,8 +34,8 @@ describe("Warnings", () => {
     beforeEach(() => metricsStore.set(undefined));
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {
@@ -117,8 +114,8 @@ describe("Warnings", () => {
 
   describe("ConvertCkBTCToBtcWarning", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
 
       layoutWarningToastId.set(undefined);
       metricsStore.set(undefined);
@@ -129,7 +126,7 @@ describe("Warnings", () => {
 
     describe("signed in", () => {
       beforeEach(() =>
-        jest
+        vi
           .spyOn(authStore, "subscribe")
           .mockImplementation(mockAuthStoreSubscribe)
       );

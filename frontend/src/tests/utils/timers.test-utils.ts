@@ -1,4 +1,5 @@
 import { nonNullish } from "@dfinity/utils";
+import { vi } from "vitest";
 
 const originalTimeout = setTimeout;
 
@@ -17,9 +18,9 @@ export const advanceTime = async (millis?: number): Promise<void> => {
   // Make sure the timers are set before we advance time.
   await runResolvedPromises();
   if (nonNullish(millis)) {
-    jest.advanceTimersByTime(millis);
+    vi.advanceTimersByTime(millis);
   } else {
-    jest.runOnlyPendingTimers();
+    vi.runOnlyPendingTimers();
   }
   await runResolvedPromises();
 };

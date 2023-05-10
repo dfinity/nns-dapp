@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   startDissolving,
   stopDissolving,
@@ -13,18 +9,19 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import DissolveSnsNeuronButtonTest from "./DissolveSnsNeuronButtonTest.svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    startDissolving: jest.fn().mockResolvedValue(undefined),
-    stopDissolving: jest.fn().mockResolvedValue(undefined),
+    startDissolving: vi.fn().mockResolvedValue(undefined),
+    stopDissolving: vi.fn().mockResolvedValue(undefined),
   };
 });
 
 describe("DissolveSnsNeuronButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders start dissolve message when neuron is locked", () => {
@@ -104,7 +101,7 @@ describe("DissolveSnsNeuronButton", () => {
   });
 
   it("calls update the context store", async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
 
     const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {

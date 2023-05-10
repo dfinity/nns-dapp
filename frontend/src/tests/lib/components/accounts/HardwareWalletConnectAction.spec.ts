@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
@@ -10,13 +6,14 @@ import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi, type Mock } from "vitest";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render a small explanation text", () => {
@@ -29,7 +26,7 @@ describe("HardwareWalletConnectAction", () => {
 
   describe("connecting", () => {
     beforeAll(() => {
-      (connectToHardwareWalletProxy as jest.Mock).mockImplementation(
+      (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({ connectionState: LedgerConnectionState.CONNECTING })
       );
@@ -46,7 +43,7 @@ describe("HardwareWalletConnectAction", () => {
 
   describe("connected", () => {
     beforeAll(() => {
-      (connectToHardwareWalletProxy as jest.Mock).mockImplementation(
+      (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({
             connectionState: LedgerConnectionState.CONNECTED,
@@ -75,7 +72,7 @@ describe("HardwareWalletConnectAction", () => {
 
   describe("not connected", () => {
     beforeAll(() => {
-      (connectToHardwareWalletProxy as jest.Mock).mockImplementation(
+      (connectToHardwareWalletProxy as Mock).mockImplementation(
         async (callback) =>
           callback({
             connectionState: LedgerConnectionState.NOT_CONNECTED,

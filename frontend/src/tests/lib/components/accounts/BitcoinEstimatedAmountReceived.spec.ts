@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";

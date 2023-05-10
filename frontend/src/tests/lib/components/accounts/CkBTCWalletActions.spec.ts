@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/ckbtc-minter.api";
 import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 import {
@@ -12,10 +8,11 @@ import { AppPath } from "$lib/constants/routes.constants";
 import en from "$tests/mocks/i18n.mock";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/api/ckbtc-minter.api", () => ({
-  updateBalance: jest.fn().mockResolvedValue(undefined),
+vi.mock("$lib/api/ckbtc-minter.api", () => ({
+  updateBalance: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe("CkBTCWalletActions", () => {
@@ -41,7 +38,7 @@ describe("CkBTCWalletActions", () => {
   });
 
   it("should call update balance", async () => {
-    const spyUpdateBalance = jest.spyOn(api, "updateBalance");
+    const spyUpdateBalance = vi.spyOn(api, "updateBalance");
 
     const { getByTestId } = render(CkBTCWalletActions, { props });
 
@@ -53,7 +50,7 @@ describe("CkBTCWalletActions", () => {
   });
 
   it("should call reload", async () => {
-    const spyReload = jest.fn();
+    const spyReload = vi.fn();
 
     const { getByTestId } = render(CkBTCWalletActions, {
       props: {

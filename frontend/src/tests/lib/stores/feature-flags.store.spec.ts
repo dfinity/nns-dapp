@@ -84,9 +84,7 @@ describe("featureFlags store", () => {
 
     beforeEach(() => {
       recordedLogs.length = 0;
-      jest
-        .spyOn(console, "log")
-        .mockImplementation((s) => recordedLogs.push(s));
+      vi.spyOn(console, "log").mockImplementation((s) => recordedLogs.push(s));
     });
 
     it("should list features", () => {

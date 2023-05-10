@@ -2,7 +2,8 @@ import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {
   describe("addAccount", () => {
@@ -11,10 +12,10 @@ describe("nns-dapp api", () => {
     nnsDappCanister.addAccount.mockResolvedValue(undefined);
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation((): NNSDappCanister => nnsDappCanister);
+      vi.clearAllMocks();
+      vi.spyOn(NNSDappCanister, "create").mockImplementation(
+        (): NNSDappCanister => nnsDappCanister
+      );
     });
 
     it("get account details from nns-dapp canister", async () => {

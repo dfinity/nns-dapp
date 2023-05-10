@@ -31,9 +31,10 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { vi, type SpyInstance } from "vitest";
 
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/api/canisters.api");
+vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/canisters.api");
 const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
 
 describe("canisters-services", () => {
@@ -41,54 +42,54 @@ describe("canisters-services", () => {
 
   const newBalanceE8s = BigInt(100_000_000);
   const exchangeRate = BigInt(10_000);
-  let spyQueryCanisters: jest.SpyInstance;
-  let spyQueryAccountBalance: jest.SpyInstance;
-  let spyAttachCanister: jest.SpyInstance;
-  let spyDetachCanister: jest.SpyInstance;
-  let spyUpdateSettings: jest.SpyInstance;
-  let spyCreateCanister: jest.SpyInstance;
-  let spyTopUpCanister: jest.SpyInstance;
-  let spyQueryCanisterDetails: jest.SpyInstance;
-  let spyGetExchangeRate: jest.SpyInstance;
+  let spyQueryCanisters: SpyInstance;
+  let spyQueryAccountBalance: SpyInstance;
+  let spyAttachCanister: SpyInstance;
+  let spyDetachCanister: SpyInstance;
+  let spyUpdateSettings: SpyInstance;
+  let spyCreateCanister: SpyInstance;
+  let spyTopUpCanister: SpyInstance;
+  let spyQueryCanisterDetails: SpyInstance;
+  let spyGetExchangeRate: SpyInstance;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });
 
-    spyQueryCanisters = jest
+    spyQueryCanisters = vi
       .spyOn(api, "queryCanisters")
       .mockImplementation(() => Promise.resolve(mockCanisters));
-    spyQueryAccountBalance = jest
+    spyQueryAccountBalance = vi
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(newBalanceE8s);
-    spyAttachCanister = jest
+    spyAttachCanister = vi
       .spyOn(api, "attachCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyDetachCanister = jest
+    spyDetachCanister = vi
       .spyOn(api, "detachCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyUpdateSettings = jest
+    spyUpdateSettings = vi
       .spyOn(api, "updateSettings")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyCreateCanister = jest
+    spyCreateCanister = vi
       .spyOn(api, "createCanister")
       .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
 
-    spyTopUpCanister = jest
+    spyTopUpCanister = vi
       .spyOn(api, "topUpCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyQueryCanisterDetails = jest
+    spyQueryCanisterDetails = vi
       .spyOn(api, "queryCanisterDetails")
       .mockImplementation(() => Promise.resolve(mockCanisterDetails));
 
-    spyGetExchangeRate = jest
+    spyGetExchangeRate = vi
       .spyOn(api, "getIcpToCyclesExchangeRate")
       .mockImplementation(() => Promise.resolve(exchangeRate));
   });

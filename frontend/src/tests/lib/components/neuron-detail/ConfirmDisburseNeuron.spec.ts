@@ -1,17 +1,14 @@
-/**
- * @jest-environment jsdom
- */
-
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    disburse: jest.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    disburse: vi.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: vi.fn(),
   };
 });
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Identifier from "$lib/components/ui/Identifier.svelte";
 import { render } from "@testing-library/svelte";
 

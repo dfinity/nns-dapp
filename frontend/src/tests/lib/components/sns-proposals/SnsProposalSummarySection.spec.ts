@@ -1,15 +1,13 @@
-/**
- * @jest-environment jsdom
- */
 import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
@@ -21,7 +19,9 @@ describe("SnsProposalSummarySection", () => {
 
     await runResolvedPromises();
 
-    return ProposalSummarySectionPo.under(new JestPageObjectElement(container));
+    return ProposalSummarySectionPo.under(
+      new VitestPageObjectElement(container)
+    );
   };
 
   describe("when proposal is defined", () => {

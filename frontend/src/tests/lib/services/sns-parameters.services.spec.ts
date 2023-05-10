@@ -1,23 +1,20 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as services from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("sns-parameters-services", () => {
   describe("loadSnsParameters", () => {
     afterEach(() => {
       snsParametersStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should call api.nervousSystemParameters and load parameters in store", async () => {
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "nervousSystemParameters")
         .mockImplementation(() =>
           Promise.resolve(snsNervousSystemParametersMock)
@@ -38,7 +35,7 @@ describe("sns-parameters-services", () => {
         parameters: snsNervousSystemParametersMock,
         certified: true,
       });
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "nervousSystemParameters")
         .mockImplementation(() =>
           Promise.resolve(snsNervousSystemParametersMock)

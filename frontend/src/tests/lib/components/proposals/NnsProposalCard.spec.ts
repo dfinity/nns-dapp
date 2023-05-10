@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";

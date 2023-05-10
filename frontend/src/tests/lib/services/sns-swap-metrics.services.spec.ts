@@ -1,17 +1,14 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsSwapMetrics from "$lib/api/sns-swap-metrics.api";
 import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("sns-swap-metrics", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsSwapMetricsStore.reset();
   });
 
@@ -25,7 +22,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 # HELP sale_cf_participants_count`;
 
     it("should call querySnsSwapMetrics api and load metrics in the store", async () => {
-      const querySnsSwapMetricsSpy = jest
+      const querySnsSwapMetricsSpy = vi
         .spyOn(snsSwapMetrics, "querySnsSwapMetrics")
         .mockResolvedValue(rawMetricsText);
       await loadSnsSwapMetrics({
@@ -49,7 +46,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         metrics: { saleBuyerCount: 123 },
       });
 
-      const querySnsSwapMetricsSpy = jest
+      const querySnsSwapMetricsSpy = vi
         .spyOn(snsSwapMetrics, "querySnsSwapMetrics")
         .mockResolvedValue(rawMetricsText);
       await loadSnsSwapMetrics({
@@ -66,7 +63,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         rootCanisterId,
         metrics: { saleBuyerCount: 123 },
       });
-      const querySnsSwapMetricsSpy = jest
+      const querySnsSwapMetricsSpy = vi
         .spyOn(snsSwapMetrics, "querySnsSwapMetrics")
         .mockResolvedValue(rawMetricsText);
 

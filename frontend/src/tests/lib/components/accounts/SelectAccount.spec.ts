@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
@@ -12,6 +8,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SelectAccount", () => {
   beforeEach(() => {
@@ -27,9 +24,9 @@ describe("SelectAccount", () => {
   });
 
   it("should render list of accounts once loaded", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe()
+    );
 
     const { getByText } = render(SelectAccount);
 
@@ -37,16 +34,14 @@ describe("SelectAccount", () => {
       getByText(mockMainAccount.identifier, { exact: false })
     ).toBeInTheDocument();
 
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should not render hardware wallets when prop hideHardwareWalletAccounts is true", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+    );
 
     const { queryByText } = render(SelectAccount, {
       props: { hideHardwareWalletAccounts: true },
@@ -56,8 +51,8 @@ describe("SelectAccount", () => {
       queryByText(mockHardwareWalletAccount.name as string, { exact: false })
     ).toBeNull();
 
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render no title per default", () => {
@@ -136,9 +131,9 @@ describe("SelectAccount", () => {
   });
 
   it("should filter an account for a given identifier", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe()
+    );
 
     const { getByText } = render(SelectAccount, {
       props: {

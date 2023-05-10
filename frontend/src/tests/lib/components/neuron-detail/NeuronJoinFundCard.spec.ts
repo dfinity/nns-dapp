@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -25,15 +21,11 @@ describe("NeuronJoinFundCard", () => {
   };
 
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+    );
   });
 
   it("renders join community fund checkbox", () => {

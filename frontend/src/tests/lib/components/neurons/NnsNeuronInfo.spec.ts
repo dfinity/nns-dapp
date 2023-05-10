@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronInfo from "$lib/components/neurons/NnsNeuronInfo.svelte";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";

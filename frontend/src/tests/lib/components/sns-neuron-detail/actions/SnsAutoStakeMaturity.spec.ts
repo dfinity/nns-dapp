@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
@@ -12,21 +8,22 @@ import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    toggleAutoStakeMaturity: jest.fn().mockResolvedValue({ success: true }),
+    toggleAutoStakeMaturity: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("SnsAutoStakeMaturity", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     toastsStore.reset();
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
   });
 
   it("renders checkbox", () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
@@ -28,9 +24,10 @@ import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/services/sns-parameters.services");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/services/sns-parameters.services");
 
 const testIdentity = createMockIdentity(10023);
 
@@ -46,7 +43,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       },
     ],
   };
-  const reloadNeuron = jest.fn().mockResolvedValue(undefined);
+  const reloadNeuron = vi.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
   ): Promise<RenderResult<SvelteComponent>> => {
@@ -62,10 +59,10 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   };
 
   beforeEach(() => {
-    jest.resetAllMocks();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.resetAllMocks();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
 
     snsParametersStore.reset();
     snsParametersStore.setParameters({

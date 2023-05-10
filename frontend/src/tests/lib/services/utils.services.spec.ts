@@ -7,24 +7,25 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
     describe("not logged in user", () => {
       beforeEach(() => {
-        jest.clearAllMocks();
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+        vi.clearAllMocks();
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreNoIdentitySubscribe
+        );
       });
 
       it("should raise error if another strategy than 'query' is passed", async () => {
         const testResponse = "test";
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(() => Promise.resolve(testResponse));
-        const onLoad = jest.fn();
-        const onError = jest.fn();
+        const onLoad = vi.fn();
+        const onError = vi.fn();
 
         const call = () =>
           queryAndUpdate<number, unknown>({
@@ -41,17 +42,17 @@ describe("api-utils", () => {
 
     describe("logged in user", () => {
       beforeEach(() => {
-        jest.clearAllMocks();
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
+        vi.clearAllMocks();
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
       });
       it("should request twice", async () => {
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(() => Promise.resolve({ certified: true }));
-        const onLoad = jest.fn();
-        const onError = jest.fn();
+        const onLoad = vi.fn();
+        const onError = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -65,11 +66,11 @@ describe("api-utils", () => {
       });
 
       it("should work w/o await call", async () => {
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(() => Promise.resolve({ certified: true }));
-        const onLoad = jest.fn();
-        const onError = jest.fn();
+        const onLoad = vi.fn();
+        const onError = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -86,13 +87,13 @@ describe("api-utils", () => {
 
       it('should support "query_and_update" strategy', async () => {
         const requestCertified: boolean[] = [];
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) => {
             requestCertified.push(certified);
             return Promise.resolve();
           });
-        const onLoad = jest.fn();
+        const onLoad = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -104,13 +105,13 @@ describe("api-utils", () => {
 
       it('should support "query" strategy', async () => {
         const requestCertified: boolean[] = [];
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) => {
             requestCertified.push(certified);
             return Promise.resolve();
           });
-        const onLoad = jest.fn();
+        const onLoad = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -123,13 +124,13 @@ describe("api-utils", () => {
 
       it('should support "update" strategy', async () => {
         const requestCertified: boolean[] = [];
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) => {
             requestCertified.push(certified);
             return Promise.resolve();
           });
-        const onLoad = jest.fn();
+        const onLoad = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -141,11 +142,11 @@ describe("api-utils", () => {
       });
 
       it("should catch errors", async () => {
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(() => Promise.reject("test"));
-        const onLoad = jest.fn();
-        const onError = jest.fn();
+        const onLoad = vi.fn();
+        const onError = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -164,7 +165,7 @@ describe("api-utils", () => {
 
       it("should not call QUERY onLoad when UPDATE comes first", async () => {
         let queryDone = false;
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) =>
             certified
@@ -176,8 +177,8 @@ describe("api-utils", () => {
                   }, 1)
                 )
           );
-        const onLoad = jest.fn();
-        const onError = jest.fn();
+        const onLoad = vi.fn();
+        const onError = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,
@@ -195,7 +196,7 @@ describe("api-utils", () => {
       it("should resolve promise when the first response is done", async () => {
         let updateDone = false;
         let queryDone = false;
-        const request = jest
+        const request = vi
           .fn()
           .mockImplementation(({ certified }: { certified: boolean }) =>
             certified
@@ -212,7 +213,7 @@ describe("api-utils", () => {
                   }, 100);
                 })
           );
-        const onLoad = jest.fn();
+        const onLoad = vi.fn();
 
         expect(updateDone).toBeFalsy();
         expect(queryDone).toBeFalsy();
@@ -225,9 +226,9 @@ describe("api-utils", () => {
       });
 
       it("should log", async () => {
-        const log = jest.spyOn(devUtils, "logWithTimestamp");
-        const request = jest.fn().mockImplementation(() => Promise.resolve());
-        const onLoad = jest.fn();
+        const log = vi.spyOn(devUtils, "logWithTimestamp");
+        const request = vi.fn().mockImplementation(() => Promise.resolve());
+        const onLoad = vi.fn();
 
         await queryAndUpdate<number, unknown>({
           request,

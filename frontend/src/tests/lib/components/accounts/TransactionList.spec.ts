@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionList from "$lib/components/accounts/TransactionList.svelte";
 import {
   WALLET_CONTEXT_KEY,

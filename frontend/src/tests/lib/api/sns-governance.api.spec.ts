@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   addNeuronPermissions,
   autoStakeMaturity,
@@ -58,10 +54,11 @@ import {
   type SnsProposalId,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import mock from "jest-mock-extended/lib/Mock";
+import { vi, type Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/proxy/api.import.proxy");
-jest.mock("$lib/api/agent.api", () => {
+vi.mock("$lib/proxy/api.import.proxy");
+vi.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
@@ -70,49 +67,47 @@ jest.mock("$lib/api/agent.api", () => {
 describe("sns-api", () => {
   const ledgerCanisterMock = mock<LedgerCanister>();
   const proposals = [mockSnsProposal];
-  const queryNeuronsSpy = jest.fn().mockResolvedValue([mockSnsNeuron]);
-  const getNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const queryNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron);
-  const addNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
-  const removeNeuronPermissionsSpy = jest.fn().mockResolvedValue(undefined);
-  const disburseSpy = jest.fn().mockResolvedValue(undefined);
-  const splitNeuronSpy = jest.fn().mockResolvedValue(undefined);
-  const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
-  const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
-  const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
-  const getNeuronBalanceSpy = jest.fn().mockResolvedValue(undefined);
-  const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
-  const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
-  const setTopicFolloweesSpy = jest.fn().mockResolvedValue(undefined);
-  const stakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
-  const registerVoteSpy = jest.fn().mockResolvedValue(undefined);
-  const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
-  const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
-  const getProposalSpy = jest.fn().mockResolvedValue(mockSnsProposal);
+  const queryNeuronsSpy = vi.fn().mockResolvedValue([mockSnsNeuron]);
+  const getNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
+  const queryNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron);
+  const addNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
+  const removeNeuronPermissionsSpy = vi.fn().mockResolvedValue(undefined);
+  const disburseSpy = vi.fn().mockResolvedValue(undefined);
+  const splitNeuronSpy = vi.fn().mockResolvedValue(undefined);
+  const startDissolvingSpy = vi.fn().mockResolvedValue(undefined);
+  const stopDissolvingSpy = vi.fn().mockResolvedValue(undefined);
+  const increaseDissolveDelaySpy = vi.fn().mockResolvedValue(undefined);
+  const getNeuronBalanceSpy = vi.fn().mockResolvedValue(undefined);
+  const refreshNeuronSpy = vi.fn().mockResolvedValue(undefined);
+  const claimNeuronSpy = vi.fn().mockResolvedValue(undefined);
+  const setTopicFolloweesSpy = vi.fn().mockResolvedValue(undefined);
+  const stakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
+  const registerVoteSpy = vi.fn().mockResolvedValue(undefined);
+  const autoStakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
+  const listProposalsSpy = vi.fn().mockResolvedValue(proposals);
+  const getProposalSpy = vi.fn().mockResolvedValue(mockSnsProposal);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
   };
-  const getFunctionsSpy = jest
-    .fn()
-    .mockResolvedValue(nervousSystemFunctionsMock);
-  const nervousSystemParametersSpy = jest
+  const getFunctionsSpy = vi.fn().mockResolvedValue(nervousSystemFunctionsMock);
+  const nervousSystemParametersSpy = vi
     .fn()
     .mockResolvedValue(snsNervousSystemParametersMock);
 
   beforeAll(() => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
 
-    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
       }),
     });
 
-    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
@@ -148,8 +143,8 @@ describe("sns-api", () => {
   });
 
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should query sns neurons", async () => {

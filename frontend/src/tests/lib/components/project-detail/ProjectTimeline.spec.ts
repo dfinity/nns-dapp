@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectTimeline from "$lib/components/project-detail/ProjectTimeline.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -17,15 +13,16 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { vi } from "vitest";
 
 describe("ProjectTimeline", () => {
   const now = Date.now();
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   it("should render deadline if status Open", () => {

@@ -11,7 +11,7 @@ import {
 } from "$tests/mocks/canisters.mock";
 import type { ManagementCanisterRecord } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ManagementCanisterRecord) => {

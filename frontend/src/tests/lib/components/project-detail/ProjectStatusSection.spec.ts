@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -14,17 +10,16 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("ProjectStatusSection", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsTicketsStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const render = ({
@@ -39,7 +34,7 @@ describe("ProjectStatusSection", () => {
       swapCommitment,
       Component: ProjectStatusSection,
     });
-    return new ProjectStatusSectionPo(new JestPageObjectElement(container));
+    return new ProjectStatusSectionPo(new VitestPageObjectElement(container));
   };
 
   it("should render subtitle", () => {

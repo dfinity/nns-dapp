@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { page } from "$app/stores";
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { AppPath } from "$lib/constants/routes.constants";

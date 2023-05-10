@@ -1,25 +1,22 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletShowAction from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
 import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { vi, type Mock } from "vitest";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletShowActionButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   let spy;
 
   beforeAll(() => {
     spy = (
-      showAddressAndPubKeyOnHardwareWalletProxy as jest.Mock
+      showAddressAndPubKeyOnHardwareWalletProxy as Mock
     ).mockImplementation(async () => {
       // Do nothing test
     });

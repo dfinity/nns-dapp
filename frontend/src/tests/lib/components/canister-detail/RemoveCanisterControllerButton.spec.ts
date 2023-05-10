@@ -1,25 +1,22 @@
-/**
- * @jest-environment jsdom
- */
-
 import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    removeController: jest.fn().mockResolvedValue({ success: true }),
+    removeController: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("RemoveCanisterControllerButton", () => {
   const controller = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-  const reloadDetailsMock = jest.fn();
+  const reloadDetailsMock = vi.fn();
   const props = { controller, reloadDetails: reloadDetailsMock };
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("renders a button", () => {
     const { queryByTestId } = render(RemoveCanisterControllerButton, {

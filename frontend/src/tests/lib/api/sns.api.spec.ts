@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   increaseStakeNeuron,
   queryAllSnsMetadata,
@@ -40,10 +36,11 @@ import {
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import mock from "jest-mock-extended/lib/Mock";
+import { vi, type Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/proxy/api.import.proxy");
-jest.mock("$lib/api/agent.api", () => {
+vi.mock("$lib/proxy/api.import.proxy");
+vi.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<HttpAgent>()),
   };
@@ -68,28 +65,28 @@ describe("sns-api", () => {
     lifecycle: [SnsSwapLifecycle.Open],
     decentralization_sale_open_timestamp_seconds: [BigInt(1)],
   };
-  const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
+  const notifyParticipationSpy = vi.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(BigInt(100_000_000));
-  const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
-  const getDerivedStateSpy = jest.fn().mockResolvedValue(derivedState);
-  const getLifecycleSpy = jest.fn().mockResolvedValue(lifecycleResponse);
+  const getUserCommitmentSpy = vi.fn().mockResolvedValue(mockUserCommitment);
+  const getDerivedStateSpy = vi.fn().mockResolvedValue(derivedState);
+  const getLifecycleSpy = vi.fn().mockResolvedValue(lifecycleResponse);
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
-  const increaseStakeNeuronSpy = jest.fn();
+  const stakeNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron.id);
+  const increaseStakeNeuronSpy = vi.fn();
 
   beforeAll(() => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
 
-    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
       }),
     });
 
-    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
@@ -111,8 +108,8 @@ describe("sns-api", () => {
   });
 
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should query sns metadata", async () => {

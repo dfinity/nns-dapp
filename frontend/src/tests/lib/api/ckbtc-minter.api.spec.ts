@@ -11,18 +11,19 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(CkBTCMinterCanister, "create")
-      .mockImplementation(() => minterCanisterMock);
+    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+      () => minterCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   const params = {
     identity: mockIdentity,

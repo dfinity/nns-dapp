@@ -1,11 +1,9 @@
-/**
- * @jest-environment jsdom
- */
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("../../../../__mocks__/$app/environment", () => {
+vi.mock("../../../../__mocks__/$app/environment", () => {
   return {
     browser: true,
     prerender: false,
@@ -14,7 +12,7 @@ jest.mock("../../../../__mocks__/$app/environment", () => {
 
 describe("writableStored", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     localStorage.clear();
   });
 

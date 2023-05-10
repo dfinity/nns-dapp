@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { authStore } from "$lib/stores/auth.store";
 import CanistersPage from "$routes/(app)/(nns)/canisters/+page.svelte";
 import {
@@ -9,11 +5,12 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("Canisters page", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   beforeAll(() => {
     authStoreMock.next({
@@ -21,7 +18,7 @@ describe("Canisters page", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should render sign-in if not logged in", () => {
     const { getByTestId } = render(CanistersPage);

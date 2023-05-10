@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -24,11 +20,9 @@ describe("SelectDestinationAddress", () => {
     const subaccounts = [mockSubAccount, mockSubAccount2];
     const hardwareWallets = [mockHardwareWalletAccount];
 
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
-      );
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
+    );
 
     it("should render address input as default", () => {
       const { container } = render(SelectDestinationAddress, {
@@ -112,9 +106,9 @@ describe("SelectDestinationAddress", () => {
   });
 
   describe("sns accounts", () => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
 
     it("should render the sns account", async () => {
       const { container, queryByTestId } = render(SelectDestinationAddress, {

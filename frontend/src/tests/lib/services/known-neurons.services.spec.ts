@@ -10,7 +10,7 @@ import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
 import { get } from "svelte/store";
 
 describe("knownNeurons-services", () => {
-  const spyQueryKnownNeurons = jest
+  const spyQueryKnownNeurons = vi
     .spyOn(api, "queryKnownNeurons")
     .mockResolvedValue([mockKnownNeuron]);
 

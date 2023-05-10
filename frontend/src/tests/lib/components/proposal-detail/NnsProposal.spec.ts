@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as proposalsApi from "$lib/api/proposals.api";
 import {
   mockProposalInfo,
@@ -9,13 +5,14 @@ import {
 } from "$tests/mocks/proposal.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
-jest.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/nns-dapp.api");
 
 describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
@@ -34,7 +31,7 @@ describe("Proposal", () => {
     });
 
   beforeEach(() => {
-    jest.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
+    vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
   });
 
   it("should render a detail grid", async () => {

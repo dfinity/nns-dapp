@@ -8,14 +8,15 @@ import type { GetTransactionsResponse } from "$lib/canisters/nns-dapp/nns-dapp.t
 import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("accounts-api", () => {
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should call nnsDappCanister to create subaccount", async () => {
     const nnsDappMock = mock<NNSDappCanister>();
-    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
+    vi.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     await createSubAccount({ name: "test subaccount", identity: mockIdentity });
 
@@ -24,7 +25,7 @@ describe("accounts-api", () => {
 
   it("should call nnsDappCanister to rename subaccount", async () => {
     const nnsDappMock = mock<NNSDappCanister>();
-    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
+    vi.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     await renameSubAccount({
       newName: "test subaccount",
@@ -43,7 +44,7 @@ describe("accounts-api", () => {
     };
     const nnsDappMock = mock<NNSDappCanister>();
     nnsDappMock.getTransactions.mockResolvedValue(mockResponse);
-    jest.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
+    vi.spyOn(NNSDappCanister, "create").mockReturnValue(nnsDappMock);
 
     const response = await getTransactions({
       identity: mockIdentity,

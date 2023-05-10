@@ -1,18 +1,15 @@
-/**
- * @jest-environment jsdom
- */
-
 import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("DisburseButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders title", () => {

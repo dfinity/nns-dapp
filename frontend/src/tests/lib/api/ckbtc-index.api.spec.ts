@@ -2,18 +2,19 @@ import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-index api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   const params = {
     identity: mockIdentity,

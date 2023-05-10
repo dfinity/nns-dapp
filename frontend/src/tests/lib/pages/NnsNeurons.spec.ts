@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
@@ -13,12 +9,13 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
   });
@@ -38,12 +35,14 @@ describe("NnsNeurons", () => {
           spawnAtTimesSeconds: BigInt(12312313),
         },
       };
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockResolvedValue([mockNeuron, spawningNeuron, mockNeuron2]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        mockNeuron,
+        spawningNeuron,
+        mockNeuron2,
+      ]);
     });
 
     it("should render spawning neurons as disabled", async () => {
@@ -72,10 +71,10 @@ describe("NnsNeurons", () => {
 
   describe("no neurons", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should render an empty message", async () => {
@@ -89,10 +88,10 @@ describe("NnsNeurons", () => {
 
   describe("navigating", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should call query neurons twice when rendered", async () => {

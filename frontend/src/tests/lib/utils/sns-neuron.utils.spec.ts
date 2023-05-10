@@ -71,9 +71,11 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { vi } from "vitest";
 
-jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
-  ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),
+vi.mock("$lib/constants/sns-neurons.constants.ts", async () => ({
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  ...(await vi.importActual<any>("$lib/constants/sns-neurons.constants.ts")),
   MAX_NEURONS_SUBACCOUNTS: 10,
 }));
 

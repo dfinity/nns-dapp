@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -26,7 +22,7 @@ describe("AccountMenu", () => {
 
   describe("signed in", () => {
     beforeAll(() =>
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe)
     );

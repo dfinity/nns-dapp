@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";

@@ -1,9 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
 import { accountsStore } from "../../../../lib/stores/accounts.store";
 import type { Account } from "../../../../lib/types/account";
@@ -14,9 +11,9 @@ import {
 import { renderModal } from "../../../mocks/modal.mock";
 
 describe("ReceiveModal", () => {
-  const reloadSpy = jest.fn();
+  const reloadSpy = vi.fn();
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => vi.clearAllMocks());
 
   const qrCodeLabel = "test QR code";
   const logo = "logo";

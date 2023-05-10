@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/sns-neurons.services";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
@@ -9,15 +5,16 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    addHotkey: jest.fn().mockResolvedValue({ success: true }),
+    addHotkey: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("AddSnsHotkeyModal", () => {
-  const reload = jest.fn();
+  const reload = vi.fn();
 
   const renderAddSnsHotkeyModal = async (): Promise<
     RenderResult<SvelteComponent>
@@ -80,7 +77,7 @@ describe("AddSnsHotkeyModal", () => {
     const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addHotkey).toBeCalled();

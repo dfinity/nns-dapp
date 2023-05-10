@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import MaxButton from "$lib/components/common/MaxButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 

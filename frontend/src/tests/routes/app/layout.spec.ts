@@ -1,23 +1,20 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   initAppAuth,
   initAppPublicData,
 } from "$lib/services/$public/app.services";
 import App from "$routes/(app)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/$public/app.services", () => ({
-  initAppAuth: jest.fn(() => Promise.resolve()),
-  initAppPublicData: jest.fn(() => Promise.resolve()),
+vi.mock("$lib/services/$public/app.services", () => ({
+  initAppAuth: vi.fn(() => Promise.resolve()),
+  initAppPublicData: vi.fn(() => Promise.resolve()),
 }));
 
 describe("Layout", () => {
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should init the auth on mount", async () => {

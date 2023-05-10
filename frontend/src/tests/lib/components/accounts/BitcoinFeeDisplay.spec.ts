@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import BitcoinFeeDisplayTest from "$tests/lib/components/accounts/BitcoinFeeDisplayTest.svelte";

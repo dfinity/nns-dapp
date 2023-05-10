@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
 import { addFollowee } from "$lib/services/sns-neurons.services";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -11,15 +7,16 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    addFollowee: jest.fn().mockResolvedValue({ success: true }),
+    addFollowee: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("NewSnsFolloweeModal", () => {
-  const reload = jest.fn();
+  const reload = vi.fn();
   const functionId = BigInt(4);
 
   const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
@@ -57,7 +54,7 @@ describe("NewSnsFolloweeModal", () => {
     const buttonElement = queryByTestId("add-followee-button");
     expect(buttonElement).not.toBeNull();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addFollowee).toBeCalled();

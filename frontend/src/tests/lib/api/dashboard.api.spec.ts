@@ -1,10 +1,11 @@
 import { fetchTransactionRate } from "$lib/api/dashboard.api";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
+import { vi } from "vitest";
 
 describe("Dashboard API", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.resetAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("should fetch a transaction rate", async () => {
@@ -14,7 +15,7 @@ describe("Dashboard API", () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve(data),
         ok: true,
@@ -32,7 +33,7 @@ describe("Dashboard API", () => {
   it("should return null if return code invalid", async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
-    global.fetch = jest.fn(() =>
+    global.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
         status: 403,
@@ -49,7 +50,7 @@ describe("Dashboard API", () => {
   it("should return null if endpoint throws an exception", async () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore mock fetch
-    global.fetch = jest.fn(() => Promise.reject("An API error"));
+    global.fetch = vi.fn(() => Promise.reject("An API error"));
 
     const rate = await fetchTransactionRate();
 

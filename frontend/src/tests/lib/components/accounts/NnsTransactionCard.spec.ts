@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";

@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
@@ -8,10 +5,11 @@ import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
 import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/sns-aggregator.api");
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
@@ -19,20 +17,21 @@ describe("app-services", () => {
 
   beforeEach(() => {
     toastsStore.reset();
-    jest.clearAllMocks();
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+    vi.clearAllMocks();
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      (): LedgerCanister => mockLedgerCanister
+    );
 
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(
+      (): NNSDappCanister => mockNNSDappCanister
+    );
 
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    jest
-      .spyOn(aggregatorApi, "querySnsProjects")
-      .mockResolvedValue([aggregatorSnsMock, aggregatorSnsMock]);
+    vi.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([
+      aggregatorSnsMock,
+      aggregatorSnsMock,
+    ]);
   });
 
   it("should init Nns", async () => {

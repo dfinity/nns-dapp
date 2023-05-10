@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -12,15 +8,16 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("ProjectCard", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("signed in", () => {
     beforeAll(() =>
@@ -91,7 +88,7 @@ describe("ProjectCard", () => {
         },
       });
 
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      const po = ProjectCardPo.under(new VitestPageObjectElement(container));
 
       expect(await po.isHighlighted()).toBe(true);
     });
@@ -109,7 +106,7 @@ describe("ProjectCard", () => {
         },
       });
 
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      const po = ProjectCardPo.under(new VitestPageObjectElement(container));
 
       expect(await po.isHighlighted()).toBe(false);
     });

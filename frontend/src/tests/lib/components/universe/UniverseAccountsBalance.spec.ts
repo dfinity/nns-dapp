@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
@@ -33,6 +29,7 @@ import {
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {
@@ -40,16 +37,16 @@ describe("UniverseAccountsBalance", () => {
       data: { universe: mockSnsCanisterId.toText() },
     });
 
-    jest
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
-    jest
-      .spyOn(snsProjectsCommittedStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   // Not the same sns canister id to test that the balance is not displayed
   const universe: Universe = {
@@ -76,16 +73,11 @@ describe("UniverseAccountsBalance", () => {
   });
 
   describe("balance", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(
-          [mockSubAccount],
-          [mockHardwareWalletAccount]
-        )
-      );
+    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {

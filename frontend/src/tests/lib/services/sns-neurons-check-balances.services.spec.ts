@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as governanceApi from "$lib/api/sns-governance.api";
 import {
   checkSnsNeuronBalances,
@@ -17,6 +13,7 @@ import {
 import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("sns-neurons-check-balances-services", () => {
   beforeEach(() => {
@@ -29,9 +26,9 @@ describe("sns-neurons-check-balances-services", () => {
 
   describe("checkSnsNeuronBalances", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       snsNeuronsStore.reset();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should check balance and not refresh when balance matches stake", async () => {
@@ -44,10 +41,10 @@ describe("sns-neurons-check-balances-services", () => {
         ...mockSnsNeuron,
         id: [neuronId] as [SnsNeuronId],
       };
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementationOnce(() =>
           Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
@@ -77,10 +74,10 @@ describe("sns-neurons-check-balances-services", () => {
         ...neuron,
         cached_neuron_stake_e8s: stake,
       };
-      const spyNeuronQuery = jest
+      const spyNeuronQuery = vi
         .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementationOnce(() =>
           Promise.resolve(
@@ -88,7 +85,7 @@ describe("sns-neurons-check-balances-services", () => {
           )
         )
         .mockImplementation(() => Promise.resolve(BigInt(0)));
-      const spyRefreshNeuron = jest
+      const spyRefreshNeuron = vi
         .spyOn(governanceApi, "refreshNeuron")
         .mockImplementation(() => Promise.resolve(undefined));
       await checkSnsNeuronBalances({
@@ -118,13 +115,13 @@ describe("sns-neurons-check-balances-services", () => {
         ...neuron,
         cached_neuron_stake_e8s: BigInt(0),
       };
-      const spyNeuronQuery = jest
+      const spyNeuronQuery = vi
         .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(updatedNeuron));
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementation(() => Promise.resolve(BigInt(0)));
-      const spyRefreshNeuron = jest
+      const spyRefreshNeuron = vi
         .spyOn(governanceApi, "refreshNeuron")
         .mockImplementation(() => Promise.resolve(undefined));
       await checkSnsNeuronBalances({
@@ -143,7 +140,7 @@ describe("sns-neurons-check-balances-services", () => {
 
   describe("neuronNeedsRefresh", () => {
     it("should query the balance and return true when balance does not match stake", async () => {
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementation(() =>
           Promise.resolve(
@@ -160,7 +157,7 @@ describe("sns-neurons-check-balances-services", () => {
     });
 
     it("should query the balance and return false when balance matches stake", async () => {
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementation(() =>
           Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)

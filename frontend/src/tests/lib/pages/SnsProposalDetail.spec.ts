@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
@@ -10,14 +6,15 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
   fakeSnsGovernanceApi.install();
@@ -33,16 +30,16 @@ describe("SnsProposalDetail", () => {
 
     await runResolvedPromises();
 
-    return SnsProposalDetailPo.under(new JestPageObjectElement(container));
+    return SnsProposalDetailPo.under(new VitestPageObjectElement(container));
   };
 
   describe("not logged in", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -61,7 +58,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
+        new VitestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
     });
@@ -80,7 +77,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
+        new VitestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
       expect(await po.isContentLoaded()).toBe(false);

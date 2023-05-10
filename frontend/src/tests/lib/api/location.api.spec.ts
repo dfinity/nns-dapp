@@ -1,15 +1,16 @@
 import { queryUserCountryLocation } from "$lib/api/location.api";
+import { vi } from "vitest";
 
 describe("location api", () => {
   describe("queryUserCountryLocation", () => {
     beforeEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     describe("if GeoIP service works", () => {
       it("should return country code", async () => {
         const countryCode = "CH";
-        const mockFetch = jest.fn();
+        const mockFetch = vi.fn();
         mockFetch.mockReturnValueOnce(
           Promise.resolve({
             ok: true,
@@ -31,7 +32,7 @@ describe("location api", () => {
       it("should call IPLocation service and return country code", async () => {
         const countryCode = "CH";
         const ip = "1.1.1.1";
-        const mockFetch = jest.fn();
+        const mockFetch = vi.fn();
         mockFetch
           .mockReturnValueOnce(
             Promise.resolve({
@@ -66,7 +67,7 @@ describe("location api", () => {
 
     describe("if GeoIP and IPLocation services fail", () => {
       it("should raise error", async () => {
-        const mockFetch = jest.fn();
+        const mockFetch = vi.fn();
         mockFetch.mockReturnValue(
           Promise.resolve({
             ok: false,

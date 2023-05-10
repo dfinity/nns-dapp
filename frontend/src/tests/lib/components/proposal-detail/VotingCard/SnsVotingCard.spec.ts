@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -24,6 +20,7 @@ import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
 describe("SnsVotingCard", () => {
   const testBallots: [string, SnsBallot][] = [
@@ -71,10 +68,10 @@ describe("SnsVotingCard", () => {
       }),
     },
   ];
-  const spyRegisterVote = jest
+  const spyRegisterVote = vi
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
-  const spyOnReloadProposal = jest.fn();
+  const spyOnReloadProposal = vi.fn();
   const renderVotingCard = () =>
     render(SnsVotingCard, {
       props: {
@@ -85,9 +82,7 @@ describe("SnsVotingCard", () => {
 
   beforeEach(() => {
     snsNeuronsStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();

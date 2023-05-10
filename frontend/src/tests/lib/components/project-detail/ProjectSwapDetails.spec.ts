@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -13,8 +9,8 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { TokenAmount } from "@dfinity/nns";
 
 describe("ProjectSwapDetails", () => {
@@ -104,7 +100,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+    const po = ProjectSwapDetailsPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getTotalSupply()).toMatch(
       formatToken({ value: totalSupply })

@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
 import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 import AddAccountTest from "./AddAccountTest.svelte";
 
 describe("HardwareWalletName", () => {
@@ -62,7 +59,7 @@ describe("HardwareWalletName", () => {
   });
 
   it("should enter a wallet name", async () => {
-    const spyOnNext = jest.fn();
+    const spyOnNext = vi.fn();
 
     const { container } = render(AddAccountTest, {
       props: {
@@ -88,7 +85,7 @@ describe("HardwareWalletName", () => {
   });
 
   it("should display an error if wallet name is too short", async () => {
-    const spyOnNext = jest.fn();
+    const spyOnNext = vi.fn();
 
     const { container, getByText } = render(AddAccountTest, {
       props: {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -13,11 +9,12 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SelectUniverseNavList", () => {
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
     page.mock({
@@ -26,7 +23,7 @@ describe("SelectUniverseNavList", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should render universe cards as links", () => {
     const { getAllByRole } = render(SelectUniverseNavList);

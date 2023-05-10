@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";

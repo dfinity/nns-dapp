@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 import type { CyclesCallback } from "$lib/services/worker-cycles.services";
@@ -11,11 +7,12 @@ import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
 let cyclesCallback: CyclesCallback | undefined;
 
-jest.mock("$lib/services/worker-cycles.services", () => ({
-  initCyclesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: vi.fn(() =>
     Promise.resolve({
       startCyclesTimer: ({ callback }: { callback: CyclesCallback }) => {
         cyclesCallback = callback;
@@ -29,8 +26,8 @@ jest.mock("$lib/services/worker-cycles.services", () => ({
 
 describe("CanisterCardCycles", () => {
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   const props = { props: { canister: mockCanister } };

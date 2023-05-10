@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 import * as accountsServices from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -19,11 +15,12 @@ import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -81,7 +78,7 @@ describe("SnsAccountsFooter", () => {
 
     await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
 
-    const spy = jest.spyOn(accountsServices, "syncSnsAccounts");
+    const spy = vi.spyOn(accountsServices, "syncSnsAccounts");
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 

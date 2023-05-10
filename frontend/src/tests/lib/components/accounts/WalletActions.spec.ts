@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import WalletActions from "$lib/components/accounts/WalletActions.svelte";
 import {
   mockHardwareWalletAccount,

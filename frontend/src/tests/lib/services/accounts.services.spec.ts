@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @vi-environment jsdom
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
@@ -52,35 +52,36 @@ import {
 import { toastsStore } from "@dfinity/gix-components";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { vi, type SpyInstance } from "vitest";
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
-    getLedgerIdentityProxy: jest
+    getLedgerIdentityProxy: vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockIdentity)),
   };
 });
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/ledger.api");
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/ledger.api"];
 
 describe("accounts-services", () => {
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
-    jest.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.clearAllMocks();
     toastsStore.reset();
     accountsStore.resetForTesting();
   });
 
   describe("getOrCreateAccount", () => {
     it("should not call nnsdapp addAccount if getAccount already returns account", async () => {
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+      const addAccountSpy = vi.spyOn(nnsdappApi, "addAccount");
 
       await getOrCreateAccount({ identity: mockIdentity, certified: true });
 
@@ -91,8 +92,8 @@ describe("accounts-services", () => {
     it("should throw if getAccount fails with other error than AccountNotFoundError", async () => {
       const error = new Error("test");
 
-      jest.spyOn(nnsdappApi, "queryAccount").mockRejectedValueOnce(error);
-      const addAccountSpy = jest.spyOn(nnsdappApi, "addAccount");
+      vi.spyOn(nnsdappApi, "queryAccount").mockRejectedValueOnce(error);
+      const addAccountSpy = vi.spyOn(nnsdappApi, "addAccount");
 
       const call = () =>
         getOrCreateAccount({ identity: mockIdentity, certified: true });
@@ -102,11 +103,11 @@ describe("accounts-services", () => {
     });
 
     it("should addAccount if queryAccount throws AccountNotFoundError", async () => {
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValueOnce(new AccountNotFoundError("test"))
         .mockResolvedValue(mockAccountDetails);
-      const addAccountSpy = jest
+      const addAccountSpy = vi
         .spyOn(nnsdappApi, "addAccount")
         .mockResolvedValue(undefined);
 
@@ -118,10 +119,10 @@ describe("accounts-services", () => {
 
   describe("loadAccounts", () => {
     it("should call ledger and nnsdapp to get account and balance", async () => {
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
       const certified = true;
@@ -140,8 +141,8 @@ describe("accounts-services", () => {
         ...mockAccountDetails,
         sub_accounts: [mockSubAccountDetails],
       };
-      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
-      const queryAccountBalanceSpy = jest
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
 
@@ -166,8 +167,8 @@ describe("accounts-services", () => {
         ...mockAccountDetails,
         hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
       };
-      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
-      const queryAccountBalanceSpy = jest
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
 
@@ -191,10 +192,10 @@ describe("accounts-services", () => {
   describe("initAccounts", () => {
     it("should sync accounts", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       const mockAccounts = {
@@ -229,10 +230,8 @@ describe("accounts-services", () => {
     });
 
     it("should not show toast errors", async () => {
-      jest.spyOn(ledgerApi, "queryAccountBalance");
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockRejectedValue(new Error("test"));
+      vi.spyOn(ledgerApi, "queryAccountBalance");
+      vi.spyOn(nnsdappApi, "queryAccount").mockRejectedValue(new Error("test"));
 
       await initAccounts();
 
@@ -244,10 +243,10 @@ describe("accounts-services", () => {
   describe("syncAccounts", () => {
     it("should sync accounts", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
       const mockAccounts = {
@@ -283,10 +282,10 @@ describe("accounts-services", () => {
 
     it("should show toast on error", async () => {
       const errorTest = "test";
-      jest.spyOn(ledgerApi, "queryAccountBalance");
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockRejectedValue(new Error(errorTest));
+      vi.spyOn(ledgerApi, "queryAccountBalance");
+      vi.spyOn(nnsdappApi, "queryAccount").mockRejectedValue(
+        new Error(errorTest)
+      );
 
       await syncAccounts();
 
@@ -307,14 +306,13 @@ describe("accounts-services", () => {
         resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
       });
 
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockImplementation(({ certified }) =>
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
+        ({ certified }) =>
           certified ? updateBalanceResponse : queryBalanceResponse
-        );
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      );
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       const accountsWith = ({
         mainBalanceE8s,
         certified,
@@ -356,14 +354,13 @@ describe("accounts-services", () => {
         resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
       });
 
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockImplementation(({ certified }) =>
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
+        ({ certified }) =>
           certified ? updateBalanceResponse : queryBalanceResponse
-        );
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      );
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       const accountsWith = ({
         mainBalanceE8s,
         certified,
@@ -389,9 +386,9 @@ describe("accounts-services", () => {
       );
 
       const newerMainBalanceE8s = BigInt(30_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(newerMainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        newerMainBalanceE8s
+      );
       await syncAccounts();
       await runResolvedPromises();
 
@@ -411,7 +408,7 @@ describe("accounts-services", () => {
   describe("loadBalance", () => {
     it("should query account balance and load it in store", async () => {
       const newBalanceE8s = BigInt(10_000_000);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
       accountsStore.setForTesting({
@@ -437,7 +434,7 @@ describe("accounts-services", () => {
 
     it("should not show error if only query fails", async () => {
       const newBalanceE8s = BigInt(10_000_000);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockImplementation(async (args) => {
           if (args.certified) {
@@ -456,7 +453,7 @@ describe("accounts-services", () => {
 
     it("should show error if call fails", async () => {
       const error = new Error("Test");
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockRejectedValue(error);
       accountsStore.setForTesting({
@@ -480,14 +477,13 @@ describe("accounts-services", () => {
         resolveUpdateResponse = () => resolve(updateMainBalanceE8s);
       });
 
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockImplementation(({ certified }) =>
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
+        ({ certified }) =>
           certified ? updateBalanceResponse : queryBalanceResponse
-        );
-      jest
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      );
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       const accountsWith = ({
         mainBalanceE8s,
         certified,
@@ -513,9 +509,9 @@ describe("accounts-services", () => {
       );
 
       const newerMainBalanceE8s = BigInt(30_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(newerMainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        newerMainBalanceE8s
+      );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
       await runResolvedPromises();
 
@@ -535,17 +531,17 @@ describe("accounts-services", () => {
   describe("services", () => {
     const mainBalanceE8s = BigInt(10_000_000);
 
-    let queryAccountBalanceSpy: jest.SpyInstance;
-    let queryAccountSpy: jest.SpyInstance;
-    let spyCreateSubAccount: jest.SpyInstance;
+    let queryAccountBalanceSpy: SpyInstance;
+    let queryAccountSpy: SpyInstance;
+    let spyCreateSubAccount: SpyInstance;
     beforeEach(() => {
-      queryAccountBalanceSpy = jest
+      queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      queryAccountSpy = jest
+      queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      spyCreateSubAccount = jest
+      spyCreateSubAccount = vi
         .spyOn(accountsApi, "createSubAccount")
         .mockResolvedValue(undefined);
     });
@@ -599,7 +595,7 @@ describe("accounts-services", () => {
     });
 
     it("should not add subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -623,15 +619,13 @@ describe("accounts-services", () => {
       destinationAddress: mockSubAccount.identifier,
       amount: 1,
     };
-    let queryAccountBalanceSpy: jest.SpyInstance;
-    let spySendICP: jest.SpyInstance;
+    let queryAccountBalanceSpy: SpyInstance;
+    let spySendICP: SpyInstance;
     beforeEach(() => {
-      queryAccountBalanceSpy = jest
+      queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      spySendICP = jest
-        .spyOn(ledgerApi, "sendICP")
-        .mockResolvedValue(BigInt(20));
+      spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(20));
     });
 
     it("should transfer ICP", async () => {
@@ -691,17 +685,17 @@ describe("accounts-services", () => {
   });
 
   describe("rename", () => {
-    let queryAccountBalanceSpy: jest.SpyInstance;
-    let queryAccountSpy: jest.SpyInstance;
-    let spyRenameSubAccount: jest.SpyInstance;
+    let queryAccountBalanceSpy: SpyInstance;
+    let queryAccountSpy: SpyInstance;
+    let spyRenameSubAccount: SpyInstance;
     beforeEach(() => {
-      queryAccountBalanceSpy = jest
+      queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
-      queryAccountSpy = jest
+      queryAccountSpy = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      spyRenameSubAccount = jest
+      spyRenameSubAccount = vi
         .spyOn(accountsApi, "renameSubAccount")
         .mockImplementation(() => Promise.resolve());
     });
@@ -735,7 +729,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no identity", async () => {
-      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
       setNoIdentity();
 
@@ -756,7 +750,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if no selected account", async () => {
-      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -772,7 +766,7 @@ describe("accounts-services", () => {
     });
 
     it("should not rename subaccount if type is not subaccount", async () => {
-      const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+      const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
       await renameSubAccount({
         newName: "test subaccount",
@@ -789,13 +783,13 @@ describe("accounts-services", () => {
   });
 
   describe("getAccountTransactions", () => {
-    const onLoad = jest.fn();
+    const onLoad = vi.fn();
     const mockResponse = [mockSentToSubAccountTransaction];
     let spyGetTransactions;
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      spyGetTransactions = jest
+      vi.clearAllMocks();
+      spyGetTransactions = vi
         .spyOn(accountsApi, "getTransactions")
         .mockImplementation(() => Promise.resolve(mockResponse));
     });
@@ -824,7 +818,7 @@ describe("accounts-services", () => {
 
     describe("getAccountTransactions errors", () => {
       beforeEach(() => {
-        spyGetTransactions = jest
+        spyGetTransactions = vi
           .spyOn(accountsApi, "getTransactions")
           .mockImplementation(async () => {
             throw new Error("test");
@@ -832,7 +826,7 @@ describe("accounts-services", () => {
       });
 
       it("should display toast error", async () => {
-        const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
+        const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 
         await getAccountTransactions({
           accountIdentifier: "",
@@ -938,18 +932,18 @@ describe("accounts-services", () => {
 
     beforeEach(() => {
       accountsStore.resetForTesting();
-      jest.clearAllTimers();
-      jest.clearAllMocks();
+      vi.clearAllTimers();
+      vi.clearAllMocks();
       cancelPollAccounts();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     it("calls apis and sets accountsStore", async () => {
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
 
@@ -968,10 +962,10 @@ describe("accounts-services", () => {
     });
 
     it("calls apis with certified param used", async () => {
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
 
@@ -990,12 +984,12 @@ describe("accounts-services", () => {
     });
 
     it("polls if queryAccount fails", async () => {
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       const callsUntilSuccess = 4;
       const error = new Error("test");
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValueOnce(error)
         .mockRejectedValueOnce(error)
@@ -1025,11 +1019,11 @@ describe("accounts-services", () => {
     });
 
     it("stops polling when cancelPollAccounts is called", async () => {
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       const error = new Error("test");
-      const queryAccountSpy = jest
+      const queryAccountSpy = vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValue(error);
 

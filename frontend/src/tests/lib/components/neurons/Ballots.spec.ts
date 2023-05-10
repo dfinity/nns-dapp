@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -25,13 +21,11 @@ describe("Ballots", () => {
 
   beforeEach(() => {
     silentConsoleErrors();
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render multiple ballots", async () => {

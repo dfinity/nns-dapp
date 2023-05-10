@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -17,10 +13,11 @@ import {
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    listNeurons: jest.fn().mockResolvedValue(undefined),
+    listNeurons: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -40,15 +37,13 @@ describe("NnsNeurons", () => {
           spawnAtTimesSeconds: BigInt(12312313),
         },
       };
-      jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockNeuronsStoreSubscribe([
-            mockNeuron,
-            mockNeuron2,
-            spawningNeuron,
-          ])
-        );
+      vi.spyOn(neuronsStore, "subscribe").mockImplementation(
+        buildMockNeuronsStoreSubscribe([
+          mockNeuron,
+          mockNeuron2,
+          spawningNeuron,
+        ])
+      );
     });
 
     it("should open stake neuron modal", async () => {
@@ -99,9 +94,9 @@ describe("NnsNeurons", () => {
 
   describe("with less than two neurons", () => {
     beforeEach(() => {
-      jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+      vi.spyOn(neuronsStore, "subscribe").mockImplementation(
+        buildMockNeuronsStoreSubscribe([mockNeuron])
+      );
     });
     it("should have disabled Merge Neurons button", async () => {
       const { queryByTestId } = render(NnsNeuronsFooter);

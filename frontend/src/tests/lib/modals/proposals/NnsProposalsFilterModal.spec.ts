@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import ProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";

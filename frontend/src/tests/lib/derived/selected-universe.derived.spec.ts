@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
@@ -159,9 +156,9 @@ describe("selected universe derived stores", () => {
 
   describe("selectedUniverseStore", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
 
       overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
 

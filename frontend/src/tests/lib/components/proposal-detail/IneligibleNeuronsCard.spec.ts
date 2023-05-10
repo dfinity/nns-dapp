@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";

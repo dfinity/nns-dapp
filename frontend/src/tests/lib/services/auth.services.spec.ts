@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   displayAndCleanLogoutMsg,
   getCurrentIdentity,
@@ -19,7 +15,8 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;
@@ -27,7 +24,7 @@ describe("auth-services", () => {
   beforeAll(() => {
     Object.defineProperty(window, "location", {
       writable: true,
-      value: { reload: jest.fn(), href, search },
+      value: { reload: vi.fn(), href, search },
     });
   });
 
@@ -52,13 +49,13 @@ describe("auth-services", () => {
     const mockAuthClient = mock<AuthClient>();
 
     beforeAll(() =>
-      jest
+      vi
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
     );
 
     it("should call auth-client logout on logout", async () => {
-      const spy = jest.spyOn(mockAuthClient, "logout");
+      const spy = vi.spyOn(mockAuthClient, "logout");
 
       await logout({});
 
@@ -66,7 +63,7 @@ describe("auth-services", () => {
     });
 
     it("should reload browser", async () => {
-      const spy = jest.spyOn(window.location, "reload");
+      const spy = vi.spyOn(window.location, "reload");
 
       await logout({});
 
@@ -74,7 +71,7 @@ describe("auth-services", () => {
     });
 
     it("should add msg to url", async () => {
-      const spy = jest.spyOn(routeUtils, "replaceHistory");
+      const spy = vi.spyOn(routeUtils, "replaceHistory");
 
       await logout({ msg: { labelKey: "test.key", level: "warn" } });
 
@@ -84,7 +81,7 @@ describe("auth-services", () => {
     });
 
     it("should not add msg to url", async () => {
-      const spy = jest.spyOn(routeUtils, "replaceHistory");
+      const spy = vi.spyOn(routeUtils, "replaceHistory");
 
       await logout({});
 
@@ -94,7 +91,7 @@ describe("auth-services", () => {
     });
 
     it("should not display msg from url", async () => {
-      const spy = jest.spyOn(toastsStore, "show");
+      const spy = vi.spyOn(toastsStore, "show");
 
       await displayAndCleanLogoutMsg();
 
@@ -102,7 +99,7 @@ describe("auth-services", () => {
     });
 
     it("should display msg from url", async () => {
-      const spy = jest.spyOn(toastsStore, "show");
+      const spy = vi.spyOn(toastsStore, "show");
 
       const location = window.location;
 
@@ -124,7 +121,7 @@ describe("auth-services", () => {
     });
 
     it("should clean msg from url", async () => {
-      const spy = jest.spyOn(routeUtils, "replaceHistory");
+      const spy = vi.spyOn(routeUtils, "replaceHistory");
 
       const location = window.location;
 
@@ -146,7 +143,7 @@ describe("auth-services", () => {
     });
 
     it("should display a busy screen", async () => {
-      const spy = jest.spyOn(busyStore, "startBusy");
+      const spy = vi.spyOn(busyStore, "startBusy");
 
       await logout({});
 
@@ -157,11 +154,11 @@ describe("auth-services", () => {
   });
 
   describe("getCurrentIdentity", () => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should returns anonymous identity", () => {
       authStoreMock.next({

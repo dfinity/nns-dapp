@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronsFooter from "$lib/components/sns-neurons/SnsNeuronsFooter.svelte";
 import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
@@ -15,6 +11,7 @@ import {
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { NeuronState, TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SnsNeuron footer", () => {
   beforeEach(() => {
@@ -31,19 +28,13 @@ describe("SnsNeuron footer", () => {
         spawnAtTimesSeconds: BigInt(12312313),
       },
     };
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(
-        buildMockNeuronsStoreSubscribe([
-          mockNeuron,
-          mockNeuron2,
-          spawningNeuron,
-        ])
-      );
+    vi.spyOn(neuronsStore, "subscribe").mockImplementation(
+      buildMockNeuronsStoreSubscribe([mockNeuron, mockNeuron2, spawningNeuron])
+    );
   });
 
   it("should open the StakeSnsNeuronModal on click to stake SNS Neurons", async () => {
-    jest.spyOn(snsSelectedProjectNewTxData, "subscribe").mockImplementation(
+    vi.spyOn(snsSelectedProjectNewTxData, "subscribe").mockImplementation(
       mockStoreSubscribe({
         token: mockSnsFullProject.summary.token,
         rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -53,9 +44,9 @@ describe("SnsNeuron footer", () => {
         }),
       })
     );
-    jest
-      .spyOn(snsProjectSelectedStore, "subscribe")
-      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+      mockStoreSubscribe(mockSnsFullProject)
+    );
     const { queryByTestId } = render(SnsNeuronsFooter);
 
     const toolbarButton = queryByTestId("stake-sns-neuron-button");

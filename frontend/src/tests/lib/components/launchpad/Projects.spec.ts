@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Projects from "$lib/components/launchpad/Projects.svelte";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
@@ -11,6 +7,7 @@ import {
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("Projects", () => {
   beforeEach(() => {
@@ -18,7 +15,7 @@ describe("Projects", () => {
     snsSwapCommitmentsStore.reset();
   });
 
-  afterEach(jest.clearAllMocks);
+  afterEach(vi.clearAllMocks);
 
   it("should render 'Open' projects", () => {
     const principal = mockSnsSummaryList[0].rootCanisterId;

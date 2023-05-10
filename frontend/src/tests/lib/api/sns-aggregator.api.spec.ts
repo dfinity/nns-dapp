@@ -1,14 +1,15 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
 import aggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
+import { vi } from "vitest";
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
     afterEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
     it("should fetch json", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: true,
@@ -23,7 +24,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should convert response", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: true,

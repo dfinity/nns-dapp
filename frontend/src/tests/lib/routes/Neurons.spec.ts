@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
@@ -13,18 +9,19 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/governance.api");
-jest.mock("$lib/api/sns-aggregator.api");
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/api/sns-ledger.api");
-jest.mock("$lib/api/sns.api");
+vi.mock("$lib/api/governance.api");
+vi.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-ledger.api");
+vi.mock("$lib/api/sns.api");
 
 const testCommittedSnsCanisterId = Principal.fromHex("897654");
 const testOpenSnsCanisterId = Principal.fromHex("567812");
@@ -72,7 +69,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(new JestPageObjectElement(container));
+    const po = NeuronsPo.under(new VitestPageObjectElement(container));
 
     expect(await po.hasSnsNeuronsPo()).toBe(false);
     expect(await po.hasNnsNeuronsPo()).toBe(true);
@@ -93,7 +90,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(new JestPageObjectElement(container));
+    const po = NeuronsPo.under(new VitestPageObjectElement(container));
 
     expect(await po.hasNnsNeuronsPo()).toBe(false);
     expect(await po.hasSnsNeuronsPo()).toBe(true);
@@ -113,7 +110,7 @@ describe("Neurons", () => {
     });
 
     const { container } = render(Neurons);
-    const po = NeuronsPo.under(new JestPageObjectElement(container));
+    const po = NeuronsPo.under(new VitestPageObjectElement(container));
 
     expect(await po.hasNnsNeuronsPo()).toBe(false);
     expect(await po.hasSnsNeuronsPo()).toBe(false);

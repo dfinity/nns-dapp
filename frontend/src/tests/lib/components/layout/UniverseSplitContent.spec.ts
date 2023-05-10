@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -13,9 +9,9 @@ import {
 import { render } from "@testing-library/svelte";
 
 describe("UniverseSplitContent", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   beforeAll(() => layoutTitleStore.set("the header"));
 

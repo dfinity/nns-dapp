@@ -31,7 +31,8 @@ import {
   TokenAmount,
 } from "@dfinity/nns";
 import { principalToSubAccount } from "@dfinity/utils";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -40,32 +41,32 @@ describe("canisters-api", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
 
   afterAll(() => {
-    jest.resetAllMocks();
-    jest.clearAllTimers();
+    vi.resetAllMocks();
+    vi.clearAllTimers();
   });
 
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
 
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(
+      (): NNSDappCanister => mockNNSDappCanister
+    );
 
-    jest.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
+    vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
 
-    jest
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mockLedgerCanister);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => mockLedgerCanister
+    );
   });
 
   describe("queryCanisters", () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call the canister to list the canisters 🤪", async () => {
       await queryCanisters({ identity: mockIdentity, certified: true });
@@ -75,7 +76,7 @@ describe("canisters-api", () => {
   });
 
   describe("attachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call the nns dapp canister to attach the canister id", async () => {
       await attachCanister({
@@ -101,7 +102,7 @@ describe("canisters-api", () => {
   });
 
   describe("updateSettings", () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call the ic management canister to update settings", async () => {
       mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
@@ -132,7 +133,7 @@ describe("canisters-api", () => {
   });
 
   describe("detachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call the nns dapp canister to detach the canister id", async () => {
       await detachCanister({
@@ -175,11 +176,11 @@ describe("canisters-api", () => {
 
   describe("createCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
+      vi.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
@@ -278,11 +279,11 @@ describe("canisters-api", () => {
 
   describe("topUpCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
+      vi.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer and notify", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import FilterModal from "$lib/modals/common/FilterModal.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 import FilterModalTest from "./FilterModalTest.svelte";

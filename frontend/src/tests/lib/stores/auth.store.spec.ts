@@ -1,24 +1,21 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as utils from "$lib/api/agent.api";
 import { OLD_MAINNET_IDENTITY_SERVICE_URL } from "$lib/constants/identity.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
-import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("auth-store", () => {
   const mockAuthClient = mock<AuthClient>();
 
   beforeAll(() => {
-    jest
-      .spyOn(AuthClient, "create")
-      .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
+    vi.spyOn(AuthClient, "create").mockImplementation(
+      async (): Promise<AuthClient> => mockAuthClient
+    );
   });
 
   it("should check authenticated on sync", async () => {
-    const spy = jest.spyOn(mockAuthClient, "isAuthenticated");
+    const spy = vi.spyOn(mockAuthClient, "isAuthenticated");
 
     await authStore.sync();
 
@@ -65,7 +62,7 @@ describe("auth-store", () => {
   });
 
   it("should call auth-client logout on sign-out", async () => {
-    const spy = jest.spyOn(mockAuthClient, "logout");
+    const spy = vi.spyOn(mockAuthClient, "logout");
 
     await authStore.signOut();
 
@@ -73,7 +70,7 @@ describe("auth-store", () => {
   });
 
   it("should call reset agent on sign-out", async () => {
-    const spy = jest.spyOn(utils, "resetAgents");
+    const spy = vi.spyOn(utils, "resetAgents");
 
     await authStore.signOut();
 

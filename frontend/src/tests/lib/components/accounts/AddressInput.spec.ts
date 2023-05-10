@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddressInput from "$lib/components/accounts/AddressInput.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
@@ -9,6 +5,7 @@ import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { fireEvent, render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { mockBTCAddressMainnet } from "../../../mocks/ckbtc-accounts.mock";
 
 describe("AddressInput", () => {
@@ -49,7 +46,7 @@ describe("AddressInput", () => {
     it("should trigger the event on click on qr code scanner button", () => {
       const { getByTestId, component } = render(AddressInput, { props });
 
-      const openSpy = jest.fn();
+      const openSpy = vi.fn();
       component.$on("nnsOpenQRCodeReader", openSpy);
 
       const button = getByTestId(

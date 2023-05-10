@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -25,8 +21,9 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposals", () => {
   fakeSnsGovernanceApi.install();
@@ -41,7 +38,7 @@ describe("SnsProposals", () => {
   const rootCanisterId = mockPrincipal;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
     snsQueryStore.reset();
@@ -64,9 +61,9 @@ describe("SnsProposals", () => {
         name: functionName,
         id: functionId,
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     describe("Matching results", () => {
@@ -144,9 +141,9 @@ describe("SnsProposals", () => {
 
   describe("when not logged in", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -184,9 +181,9 @@ describe("SnsProposals", () => {
       }),
     ];
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       const functionId = BigInt(3);
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),

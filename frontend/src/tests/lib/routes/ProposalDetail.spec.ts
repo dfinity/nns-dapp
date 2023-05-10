@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
@@ -13,14 +9,13 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("ProposalDetail", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     // Reset to default value
     page.mock({
@@ -31,7 +26,7 @@ describe("ProposalDetail", () => {
     });
   });
 
-  afterAll(jest.clearAllMocks);
+  afterAll(vi.clearAllMocks);
 
   beforeEach(() => {
     snsQueryStore.reset();

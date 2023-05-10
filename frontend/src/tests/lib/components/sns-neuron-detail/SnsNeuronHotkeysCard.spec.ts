@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { removeHotkey } from "$lib/services/sns-neurons.services";
@@ -22,10 +18,11 @@ import {
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    removeHotkey: jest.fn().mockResolvedValue({ success: true }),
+    removeHotkey: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -57,7 +54,7 @@ describe("SnsNeuronHotkeysCard", () => {
     permissions: hotkeys.map(addHotkeyPermissions),
   };
 
-  const reload = jest.fn();
+  const reload = vi.fn();
   const renderCard = (neuron: SnsNeuron) =>
     renderSelectedSnsNeuronContext({
       reload,
@@ -76,15 +73,13 @@ describe("SnsNeuronHotkeysCard", () => {
     });
 
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest
-      .spyOn(snsParametersStore, "subscribe")
-      .mockImplementation(buildMockSnsParametersStore());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(snsParametersStore, "subscribe").mockImplementation(
+      buildMockSnsParametersStore()
+    );
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("renders hotkeys title", () => {
     const { queryByText } = renderCard(controlledNeuron);

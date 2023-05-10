@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";

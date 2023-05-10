@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -22,6 +18,7 @@ import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
+import { vi } from "vitest";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
@@ -57,20 +54,18 @@ describe("VotingCard", () => {
     });
 
   beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
+    vi.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
   });
 
   afterAll(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should be hidden if there is no not-voted-neurons", async () => {
@@ -113,18 +108,16 @@ describe("VotingCard", () => {
     let spyRegisterVote;
 
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
-      jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(
-          (): GovernanceCanister =>
-            mockGovernanceCanister as unknown as GovernanceCanister
-        );
-      spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
-      spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(
+        (): GovernanceCanister =>
+          mockGovernanceCanister as unknown as GovernanceCanister
+      );
+      spyRegisterVote = vi.spyOn(mockGovernanceCanister, "registerVote");
+      spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
 
       neuronsStore.setNeurons({ neurons, certified: true });
       renderVotingCard();

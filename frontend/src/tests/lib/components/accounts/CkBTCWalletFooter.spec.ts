@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -17,20 +13,21 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
 
-jest.mock("$lib/api/ckbtc-minter.api", () => {
+vi.mock("$lib/api/ckbtc-minter.api", () => {
   return {
-    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
+    getBTCAddress: vi.fn().mockImplementation(() => mockBTCAddressTestnet),
   };
 });
 
 describe("CkBTCWalletFooter", () => {
   beforeAll(() => {
-    jest
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
     page.mock({
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },

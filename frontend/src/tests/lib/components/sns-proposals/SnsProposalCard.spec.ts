@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
 import { SECONDS_IN_HOUR } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.svelte";
 import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -12,10 +8,11 @@ import {
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -28,10 +25,10 @@ describe("SnsTransactionList", () => {
       },
     });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadSnsAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadSnsAccountNextTransactions");
 
     renderSnsTransactionList(mockSnsMainAccount, mockPrincipal);
 
@@ -49,9 +46,9 @@ describe("SnsTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderSnsTransactionList(
       mockSnsMainAccount,

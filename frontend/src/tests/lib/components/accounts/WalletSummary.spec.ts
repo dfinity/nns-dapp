@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Settings from "$lib/routes/Settings.svelte";
 import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -15,9 +11,7 @@ import { get } from "svelte/store";
 
 describe("Settings", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should set title", async () => {

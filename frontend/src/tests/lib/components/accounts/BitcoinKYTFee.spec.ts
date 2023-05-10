@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -9,6 +5,7 @@ import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("BitcoinKYTFee", () => {
   let spyDepositFee;
@@ -22,7 +19,7 @@ describe("BitcoinKYTFee", () => {
     const result = 789n;
 
     beforeEach(() => {
-      spyDepositFee = jest
+      spyDepositFee = vi
         .spyOn(minterApi, "depositFee")
         .mockResolvedValue(result);
     });
@@ -54,9 +51,9 @@ describe("BitcoinKYTFee", () => {
 
   describe("has error", () => {
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-      spyDepositFee = jest
+      spyDepositFee = vi
         .spyOn(minterApi, "depositFee")
         .mockImplementation(async () => {
           throw new Error();
@@ -77,9 +74,9 @@ describe("BitcoinKYTFee", () => {
 
   describe("no selected network", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
 
-      spyDepositFee = jest.spyOn(minterApi, "depositFee").mockResolvedValue(0n);
+      spyDepositFee = vi.spyOn(minterApi, "depositFee").mockResolvedValue(0n);
     });
 
     it("should not display deposit fee", async () => {

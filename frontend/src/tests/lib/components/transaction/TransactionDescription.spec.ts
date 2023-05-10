@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";

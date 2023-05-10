@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
@@ -27,6 +23,7 @@ import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("ParticipateButton", () => {
   const { ticket: testTicket } = snsTicketMock({
@@ -34,9 +31,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("signed in", () => {
     beforeEach(() => {
@@ -44,7 +41,7 @@ describe("ParticipateButton", () => {
         identity: mockIdentity,
       });
       snsTicketsStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should render a text to increase participation", () => {

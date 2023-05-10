@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";

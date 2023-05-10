@@ -1,12 +1,9 @@
-/**
- * @jest-environment jsdom
- */
-
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import en from "$tests/mocks/i18n.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
@@ -15,7 +12,7 @@ describe("Followee", () => {
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 
-  beforeEach(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
+  beforeEach(() => vi.spyOn(console, "error").mockImplementation(vi.fn));
 
   it("should render neuronId", () => {
     const { getByText } = render(FolloweeTest, {

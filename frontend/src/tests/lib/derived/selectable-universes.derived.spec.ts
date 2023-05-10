@@ -9,6 +9,7 @@ import {
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe("selectable universes derived stores", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should return Nns, ckBTC and ckTESTBTC (flag for test is true) per default", () => {
     const store = get(selectableUniversesStore);
@@ -45,12 +46,12 @@ describe("selectable universes derived stores", () => {
 
   describe("with projects", () => {
     beforeAll(() =>
-      jest
+      vi
         .spyOn(snsProjectsCommittedStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]))
     );
 
-    afterAll(jest.clearAllMocks);
+    afterAll(vi.clearAllMocks);
 
     it("should return Nns, ckBTC, ckTESTBTC (flag for test is true) and another project", () => {
       const store = get(selectableUniversesStore);

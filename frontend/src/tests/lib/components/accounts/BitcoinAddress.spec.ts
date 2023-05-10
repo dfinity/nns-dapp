@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
 import { BITCOIN_BLOCK_EXPLORER_TESTNET_URL } from "$lib/constants/bitcoin.constants";
@@ -19,6 +15,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
 describe("BitcoinAddress", () => {
@@ -36,7 +33,7 @@ describe("BitcoinAddress", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     bitcoinAddressStore.reset();
   });
 
@@ -44,7 +41,7 @@ describe("BitcoinAddress", () => {
     let spyGetAddress;
 
     beforeEach(() => {
-      spyGetAddress = jest
+      spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
     });
@@ -96,7 +93,7 @@ describe("BitcoinAddress", () => {
     });
 
     it("should not load bitcoin address on mount if already loaded", async () => {
-      const spyGetAddress = jest
+      const spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 

@@ -1,15 +1,12 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as tvlApi from "$lib/api/tvl.api.cjs";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("tvl services", () => {
   beforeEach(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
+    vi.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   const result = {
@@ -18,9 +15,7 @@ describe("tvl services", () => {
   };
 
   it("should get tvl", async () => {
-    const spyQueryTVL = jest
-      .spyOn(tvlApi, "queryTVL")
-      .mockResolvedValue(result);
+    const spyQueryTVL = vi.spyOn(tvlApi, "queryTVL").mockResolvedValue(result);
 
     await queryTVL();
 
@@ -33,7 +28,7 @@ describe("tvl services", () => {
   });
 
   it("should not bubble error but return undefined", async () => {
-    jest.spyOn(tvlApi, "queryTVL").mockImplementation(async () => {
+    vi.spyOn(tvlApi, "queryTVL").mockImplementation(async () => {
       throw new Error("test");
     });
 

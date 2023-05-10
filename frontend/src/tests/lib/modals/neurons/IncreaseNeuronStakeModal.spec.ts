@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
@@ -17,12 +13,13 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    topUpNeuron: jest.fn().mockResolvedValue({ success: true }),
+    topUpNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
@@ -36,20 +33,18 @@ describe("IncreaseNeuronStakeModal", () => {
     });
 
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   describe("when accounts store is empty", () => {
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       const { queryByTestId } = await renderTransactionModal();
 
       expect(queryByTestId("select-account-dropdown")).not.toBeInTheDocument();

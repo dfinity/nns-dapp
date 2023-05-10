@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/ckbtc-minter.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
@@ -32,15 +28,16 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/api/ckbtc-minter.api");
+vi.mock("$lib/api/ckbtc-minter.api");
 
 describe("BtcCkBTCReceiveModal", () => {
-  const reloadSpy = jest.fn();
+  const reloadSpy = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const renderReceiveModal = ({
@@ -68,7 +65,7 @@ describe("BtcCkBTCReceiveModal", () => {
     let spyGetAddress;
 
     beforeEach(() => {
-      spyGetAddress = jest
+      spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
     });
@@ -90,7 +87,7 @@ describe("BtcCkBTCReceiveModal", () => {
       beforeEach(() => {
         bitcoinAddressStore.reset();
 
-        jest.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
+        vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
       });
 
       it("should render spinner while loading BTC address", async () => {
@@ -112,7 +109,7 @@ describe("BtcCkBTCReceiveModal", () => {
           btcAddress: mockBTCAddressTestnet,
         });
 
-        jest.spyOn(api, "depositFee").mockResolvedValue(789n);
+        vi.spyOn(api, "depositFee").mockResolvedValue(789n);
       });
 
       it("should render BTC address", async () => {
@@ -249,9 +246,9 @@ describe("BtcCkBTCReceiveModal", () => {
 
   describe("without btc", () => {
     beforeAll(() => {
-      jest
-        .spyOn(tokensStore, "subscribe")
-        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe(mockUniversesTokens)
+      );
 
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
@@ -15,10 +11,11 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -32,10 +29,10 @@ describe("CkBTCTransactionList", () => {
       },
     });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadCkBTCAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
 
     renderCkBTCTransactionList();
 
@@ -53,9 +50,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderCkBTCTransactionList();
 
@@ -78,9 +75,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { getByTestId } = renderCkBTCTransactionList();
 
@@ -105,9 +102,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { getByTestId } = renderCkBTCTransactionList();
 

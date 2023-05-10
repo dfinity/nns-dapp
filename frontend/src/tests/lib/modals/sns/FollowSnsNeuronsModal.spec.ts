@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -12,13 +8,14 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { render, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
 describe("FollowSnsNeuronsModal", () => {
   const neuron = {
     ...mockSnsNeuron,
   };
   const rootCanisterId = mockPrincipal;
-  const reload = jest.fn();
+  const reload = vi.fn();
 
   const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({

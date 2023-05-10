@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   snsProjectsAdoptedStore,
   snsProjectsCommittedStore,
@@ -20,24 +16,25 @@ import {
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/$public/sns.services", () => {
   return {
-    loadProposalsSnsCF: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadProposalsSnsCF: vi.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
-jest.mock("$lib/services/sns.services", () => {
+vi.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapCommitments: vi.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
 describe("Launchpad", () => {
   describe("signed in", () => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
     beforeAll(() =>
       authStoreMock.next({
@@ -45,15 +42,15 @@ describe("Launchpad", () => {
       })
     );
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should render titles", () => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-      jest
-        .spyOn(snsProjectsAdoptedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
+      vi.spyOn(snsProjectsAdoptedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
       const { getByText } = render(Launchpad);
 
       // TBU
@@ -72,9 +69,9 @@ describe("Launchpad", () => {
     });
 
     it("should not render upcoming projects title if no committed projects", () => {
-      jest
-        .spyOn(snsProjectsAdoptedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([]));
+      vi.spyOn(snsProjectsAdoptedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([])
+      );
 
       const { queryByText } = render(Launchpad);
 
@@ -87,9 +84,9 @@ describe("Launchpad", () => {
     });
 
     it("should not render committed project title if no committed projects", () => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([])
+      );
 
       const { queryByText } = render(Launchpad);
 
@@ -103,9 +100,9 @@ describe("Launchpad", () => {
   });
 
   describe("not logged in", () => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
     beforeAll(() =>
       authStoreMock.next({

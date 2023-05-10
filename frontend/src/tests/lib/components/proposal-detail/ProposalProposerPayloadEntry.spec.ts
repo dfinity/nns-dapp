@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import { simplifyJson } from "../common/Json.spec";

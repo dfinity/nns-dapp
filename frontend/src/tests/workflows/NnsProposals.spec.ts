@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { queryProposals } from "$lib/api/proposals.api";
@@ -20,6 +16,7 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
+import { vi } from "vitest";
 
 const proposal = {
   ...mockProposalInfo,
@@ -28,29 +25,29 @@ const proposal = {
   status: DEFAULT_PROPOSALS_FILTERS.status[0],
 };
 
-jest.mock("$lib/api/proposals.api", () => {
+vi.mock("$lib/api/proposals.api", () => {
   return {
-    queryProposals: jest
+    queryProposals: vi
       .fn()
       .mockImplementation(() => Promise.resolve([proposal])),
   };
 });
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NnsProposals", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     neuronsStore.reset();
     resetNeuronsApiService();
   });
 
   describe("when signed in user", () => {
     beforeEach(() => {
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     it("should list proposals certified and uncertified", async () => {
@@ -95,14 +92,14 @@ describe("NnsProposals", () => {
 
   describe("when not signed in user", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation((run: Subscriber<AuthStoreData>): (() => void) => {
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        (run: Subscriber<AuthStoreData>): (() => void) => {
           run({ identity: undefined });
 
           return () => undefined;
-        });
-      jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
+        }
+      );
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should list uncertified proposals", async () => {

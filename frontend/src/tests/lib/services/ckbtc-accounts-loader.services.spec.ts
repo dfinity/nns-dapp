@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -20,13 +16,14 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("ckbtc-accounts-loader-services", () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("getCkBTCAccounts", () => {
     it("should call get CkBTC account", async () => {
-      const spyGetCkBTCAccount = jest
+      const spyGetCkBTCAccount = vi
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCMainAccount);
 
@@ -61,7 +58,7 @@ describe("ckbtc-accounts-loader-services", () => {
     }) as TokenAmount;
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
 
       ckBTCWithdrawalAccountsStore.reset();
     });
@@ -90,7 +87,7 @@ describe("ckbtc-accounts-loader-services", () => {
       let spyGetCkBTCAccount;
 
       beforeEach(() => {
-        spyGetCkBTCAccount = jest
+        spyGetCkBTCAccount = vi
           .spyOn(ledgerApi, "getCkBTCAccount")
           .mockResolvedValue({
             ...mockCkBTCWithdrawalAccount,
@@ -140,7 +137,7 @@ describe("ckbtc-accounts-loader-services", () => {
         let spyGetWithdrawalAccount;
 
         beforeEach(() => {
-          spyGetWithdrawalAccount = jest
+          spyGetWithdrawalAccount = vi
             .spyOn(minterServices, "getWithdrawalAccount")
             .mockResolvedValue({
               owner: mockCkBTCWithdrawalIcrcAccount.owner,
@@ -180,9 +177,9 @@ describe("ckbtc-accounts-loader-services", () => {
 
       describe("withdrawal error", () => {
         beforeEach(() => {
-          jest
-            .spyOn(minterServices, "getWithdrawalAccount")
-            .mockRejectedValue(new Error());
+          vi.spyOn(minterServices, "getWithdrawalAccount").mockRejectedValue(
+            new Error()
+          );
         });
 
         it("should not call get account", async () => {
@@ -199,10 +196,10 @@ describe("ckbtc-accounts-loader-services", () => {
       let spyOnToastsError;
 
       beforeEach(() => {
-        jest.spyOn(console, "error").mockImplementation(() => undefined);
-        jest.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+        vi.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
 
-        spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+        spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
       });
 
       it("should bubble error for query call", async () => {

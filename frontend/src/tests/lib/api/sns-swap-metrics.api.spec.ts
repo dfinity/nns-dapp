@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import { querySnsSwapMetrics } from "$lib/api/sns-swap-metrics.api";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { vi } from "vitest";
 
 describe("sns-swap-metrics.api", () => {
   it("should query raw metrics with swapCanisterId", async () => {
-    const mockFetch = jest.fn();
+    const mockFetch = vi.fn();
     mockFetch.mockReturnValueOnce(
       Promise.resolve({
         ok: true,

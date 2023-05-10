@@ -10,21 +10,22 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { vi } from "vitest";
 
-jest.mock("$lib/proxy/api.import.proxy");
+vi.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);
-const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
+const balanceSpy = vi.fn().mockResolvedValue(mainBalance);
 const fee = BigInt(10_000);
-const transactionFeeSpy = jest.fn().mockResolvedValue(fee);
-const transferSpy = jest.fn().mockResolvedValue(BigInt(10));
+const transactionFeeSpy = vi.fn().mockResolvedValue(fee);
+const transferSpy = vi.fn().mockResolvedValue(BigInt(10));
 
 let metadataReturn = mockQueryTokenResponse;
 const setMetadataError = () => (metadataReturn = []);
 const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
-const metadataSpy = jest
+const metadataSpy = vi
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
-jest.mock("$lib/api/sns-wrapper.api", () => {
+vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
       balance: balanceSpy,

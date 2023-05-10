@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
@@ -13,20 +9,21 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 // Used when NeuronFollowingCard is mounted
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn().mockResolvedValue(undefined),
+    listKnownNeurons: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NeuronDetail", () => {
   const neuronId = BigInt(314);
@@ -47,8 +44,8 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
-    jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
-    jest.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
+    vi.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
+    vi.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
   });
 
   it("should query neurons", async () => {
@@ -132,7 +129,7 @@ describe("NeuronDetail", () => {
 
     await runResolvedPromises();
 
-    const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+    const po = NnsNeuronDetailPo.under(new VitestPageObjectElement(container));
 
     expect(await po.getMaturityCardPo().getLastDistributionMaturity()).toEqual(
       "May 22, 1992"

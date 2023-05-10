@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as directives from "$lib/directives/intersection.directives";
 import {
   IntersectionObserverActive,
@@ -9,6 +5,7 @@ import {
   mockIntersectionObserverIsIntersecting,
 } from "$tests/mocks/infinitescroll.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {
@@ -25,13 +22,13 @@ describe("IntersectionDirectives", () => {
 
   beforeEach(
     () =>
-      (spy = jest
+      (spy = vi
         .spyOn(directives, "dispatchIntersecting")
         .mockImplementation(
           ({ intersecting }) => (testIntersecting = intersecting)
         ))
   );
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("should trigger an intersect event", () => {
     render(IntersectionTest);

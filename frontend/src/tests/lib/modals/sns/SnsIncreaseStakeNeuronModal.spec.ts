@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
@@ -32,28 +28,29 @@ import {
   type RenderResult,
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    increaseStakeNeuron: jest.fn().mockResolvedValue({ success: true }),
+    increaseStakeNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/stores/busy.store", () => {
+vi.mock("$lib/stores/busy.store", () => {
   return {
-    startBusy: jest.fn(),
-    stopBusy: jest.fn(),
+    startBusy: vi.fn(),
+    stopBusy: vi.fn(),
   };
 });
 
 describe("SnsIncreaseStakeNeuronModal", () => {
-  const reloadNeuron = jest.fn();
+  const reloadNeuron = vi.fn();
 
   const props = {
     neuronId: mockSnsNeuron.id,
@@ -99,17 +96,17 @@ describe("SnsIncreaseStakeNeuronModal", () => {
 
   describe("accounts and params are loaded", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+      vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+        mockSnsAccountsStoreSubscribe(mockPrincipal)
+      );
 
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+        mockStoreSubscribe(mockSnsFullProject)
+      );
 
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+      vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+        mockSnsSelectedTransactionFeeStoreSubscribe()
+      );
     });
 
     it("should display modal", async () => {
@@ -134,9 +131,9 @@ describe("SnsIncreaseStakeNeuronModal", () => {
 
     describe("user has signed-in", () => {
       beforeAll(() => {
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
       });
 
       it("should call increaseStakeNeuron service on confirm click", async () => {

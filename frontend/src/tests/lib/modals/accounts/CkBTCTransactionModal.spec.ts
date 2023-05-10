@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -34,14 +30,15 @@ import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    ckBTCTransferTokens: jest.fn().mockResolvedValue({ success: true }),
+    ckBTCTransferTokens: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/services/ckbtc-convert.services");
+vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
   const renderTransactionModal = (selectedAccount?: Account) =>
@@ -60,9 +57,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icrcAccountsStore.set({
       accounts: {
@@ -77,11 +72,12 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest
-      .spyOn(minterApi, "estimateFee")
-      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
+    vi.spyOn(minterApi, "estimateFee").mockResolvedValue({
+      minter_fee: 123n,
+      bitcoin_fee: 456n,
+    });
 
-    jest.spyOn(minterApi, "depositFee").mockResolvedValue(789n);
+    vi.spyOn(minterApi, "depositFee").mockResolvedValue(789n);
   });
 
   it("should transfer tokens", async () => {
@@ -102,7 +98,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "convertCkBTCToBtc")
       .mockResolvedValue({ success });
 
@@ -121,7 +117,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "retrieveBtc")
       .mockResolvedValue({ success });
 
@@ -144,7 +140,7 @@ describe("CkBTCTransactionModal", () => {
   }) => {
     const result = await renderTransactionModal(selectedAccount);
 
-    const onEnd = jest.fn();
+    const onEnd = vi.fn();
     result.component.$on(eventName, onEnd);
 
     await testTransferTokens({
@@ -165,9 +161,9 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
-    jest
-      .spyOn(services, "convertCkBTCToBtc")
-      .mockResolvedValue({ success: true });
+    vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+      success: true,
+    });
 
     const result = await renderTransactionModal();
 
@@ -434,9 +430,9 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress without step transfer", async () => {
-      jest
-        .spyOn(services, "convertCkBTCToBtc")
-        .mockResolvedValue({ success: true });
+      vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+        success: true,
+      });
 
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
@@ -22,15 +18,14 @@ import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SnsNeuronCard", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
   });
 
   const defaultProps = {
@@ -58,7 +53,7 @@ describe("SnsNeuronCard", () => {
   });
 
   it("is clickable", async () => {
-    const spyClick = jest.fn();
+    const spyClick = vi.fn();
     const { container, component } = render(SnsNeuronCard, {
       props: {
         neuron: mockSnsNeuron,

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { pageStore } from "$lib/derived/page.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
@@ -14,11 +10,12 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SelectUniverseModal", () => {
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeAll(() => {
     page.mock({
@@ -26,7 +23,7 @@ describe("SelectUniverseModal", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   it("should render title", async () => {
     const { getByTestId } = await renderModal({

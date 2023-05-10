@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
@@ -17,11 +13,9 @@ describe("DestinationAddress", () => {
     identifier: `test-subaccount2-identifier`,
   };
 
-  jest
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
-    );
+  vi.spyOn(accountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
+  );
 
   it("should render an input to enter an address", () => {
     const { container } = render(DestinationAddress);

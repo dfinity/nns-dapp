@@ -3,6 +3,7 @@ import {
   markdownToHTML,
   targetBlankLinkRenderer,
 } from "$lib/utils/html.utils";
+import { vi } from "vitest";
 
 describe("markdown.utils", () => {
   describe("targetBlankLinkRenderer", () => {
@@ -102,13 +103,9 @@ describe("markdown.utils", () => {
       marked.Renderer = function () {
         return {};
       };
-      jest.mock(
-        "/assets/libs/marked.min.js",
-        () => ({
-          marked,
-        }),
-        { virtual: true }
-      );
+      vi.mock("/assets/libs/marked.min.js", () => ({
+        marked,
+      }));
     });
 
     it("should call markedjs/marked", async () => {

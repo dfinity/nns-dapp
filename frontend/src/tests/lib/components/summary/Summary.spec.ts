@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Summary from "$lib/components/summary/Summary.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -15,6 +11,7 @@ import {
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("Summary", () => {
   it("should render a logo", () => {
@@ -24,13 +21,13 @@ describe("Summary", () => {
 
   describe("no universe", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+        mockStoreSubscribe(mockSnsFullProject)
+      );
 
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
     });
 
     it("should render internet computer if none", () => {
@@ -50,16 +47,16 @@ describe("Summary", () => {
 
   describe("nns", () => {
     beforeEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     beforeAll(() =>
-      jest
+      vi
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(undefined))
     );
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render internet computer", () => {
       const { container } = render(Summary);
@@ -72,9 +69,9 @@ describe("Summary", () => {
 
   describe("sns", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
 
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -82,7 +79,7 @@ describe("Summary", () => {
       });
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render project", () => {
       const { container } = render(Summary);
@@ -102,7 +99,7 @@ describe("Summary", () => {
       });
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render ckBTC", () => {
       const { container } = render(Summary);
