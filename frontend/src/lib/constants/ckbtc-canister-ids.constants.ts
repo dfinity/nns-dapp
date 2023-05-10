@@ -16,8 +16,10 @@ export const CKBTC_LEDGER_CANISTER_ID = Principal.fromText(
 export const CKBTC_INDEX_CANISTER_ID = Principal.fromText(
   envVars.ckbtcIndexCanisterId ?? MAINNET_CKBTC_INDEX_CANISTER_ID
 );
+
+// TODO: add an environment variable envVars.ckbtcMinterCanisterId
 export const CKBTC_MINTER_CANISTER_ID = Principal.fromText(
-  envVars.ckbtcIndexCanisterId ?? MAINNET_CKBTC_MINTER_CANISTER_ID
+  MAINNET_CKBTC_MINTER_CANISTER_ID
 );
 
 // TODO: to be remove - ckBTCTest on mainnet
