@@ -708,15 +708,15 @@ export const snsNeuronsIneligibilityReasons = ({
     return "since";
   }
 
+  if (!hasPermissionToVote({ neuron, identity })) {
+    return "no-permission";
+  }
+
   const dissolveTooShort: boolean =
     ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
     undefined;
   if (dissolveTooShort) {
     return "short";
-  }
-
-  if (!hasPermissionToVote({ neuron, identity })) {
-    return "no-permission";
   }
 
   return undefined;

@@ -40,6 +40,7 @@ import {
   neuronCanBeSplit,
   nextMemo,
   snsNeuronVotingPower,
+  snsNeuronsIneligibilityReasons,
   snsNeuronsToIneligibleNeuronData,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
@@ -1610,6 +1611,63 @@ describe("sns-neuron utils", () => {
       });
 
       expect(votingPower).toEqual(100);
+    });
+  });
+
+  describe("snsNeuronsIneligibilityReasons", () => {
+    const testProposal: SnsProposalData = {
+      ...mockSnsProposal,
+      proposal_creation_timestamp_seconds: 50n,
+      ballots: [
+        [
+          "010203",
+          {
+            vote: SnsVote.Unspecified,
+            cast_timestamp_seconds: 0n,
+            voting_power: 321n,
+          },
+        ],
+      ],
+    };
+
+    it("should return reason 'since' when neuron was created after proposal", () => {
+      expect(
+        snsNeuronsIneligibilityReasons({
+          neuron: {
+            ...testSnsNeuronA,
+            created_timestamp_seconds: 100n,
+          },
+          proposal: testProposal,
+          identity: mockIdentity,
+        })
+      ).toEqual("since");
+    });
+
+    it("should return reason 'no-permission' when neuron is not allowed to vote", () => {
+      expect(
+        snsNeuronsIneligibilityReasons({
+          neuron: {
+            ...testSnsNeuronA,
+            created_timestamp_seconds: 50n,
+            permissions: [],
+          },
+          proposal: testProposal,
+          identity: mockIdentity,
+        })
+      ).toEqual("no-permission");
+    });
+
+    it("should return reason 'short' when neuron has too short dissolve delay", () => {
+      expect(
+        snsNeuronsIneligibilityReasons({
+          neuron: {
+            ...testSnsNeuronA,
+            created_timestamp_seconds: 50n,
+          },
+          proposal: { ...testProposal, ballots: [] },
+          identity: mockIdentity,
+        })
+      ).toEqual("short");
     });
   });
 
