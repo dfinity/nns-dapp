@@ -3,8 +3,8 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import { BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC } from "$lib/constants/bitcoin.constants";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
@@ -362,7 +362,7 @@ describe("CkBTCTransactionModal", () => {
     expect(input?.value).toEqual(
       `${
         Number(mockCkBTCMainAccount.balance.toE8s() - mockCkBTCToken.fee) /
-        BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC
+        E8S_PER_ICP
       }`
     );
   };
@@ -516,10 +516,7 @@ describe("CkBTCTransactionModal", () => {
         "input[name='amount']"
       );
       expect(input?.value).toEqual(
-        `${
-          Number(mockCkBTCWithdrawalAccount.balance.toE8s()) /
-          BITCOIN_ESTIMATED_FEE_TO_FORMATTED_BTC
-        }`
+        `${Number(mockCkBTCWithdrawalAccount.balance.toE8s()) / E8S_PER_ICP}`
       );
     });
   });
