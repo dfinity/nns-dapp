@@ -10,7 +10,10 @@
   import { createEventDispatcher } from "svelte";
   import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
   import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
-  import { addNeuronPermissions } from "$lib/api/sns-governance.api";
+  import {
+    addNeuronPermissions,
+    removeNeuronPermissions,
+  } from "$lib/api/sns-governance.api";
   import { getCurrentIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { enumValues } from "$lib/utils/enum.utils";
@@ -19,14 +22,16 @@
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
+  export let mode: "add" | "remove";
 
+  let modeLabel = mode === "add" ? "Add" : "Remove";
   const steps: WizardSteps = [
     {
-      name: "AddPrincipal",
-      title: "Add Principal",
+      name: `Principal`,
+      title: `${modeLabel} Principal`,
     },
     {
-      name: "AddPermissions",
+      name: `Permissions`,
       title: "Select Permissions",
     },
   ];
@@ -56,7 +61,9 @@
     try {
       const identity = await getCurrentIdentity();
       startBusy({ initiator: "dev-add-sns-neuron-permissions" });
-      await addNeuronPermissions({
+      const action =
+        mode === "add" ? addNeuronPermissions : removeNeuronPermissions;
+      await action({
         permissions: selectablePermissions
           .filter((p) => p.checked)
           .map((p) => p.permission),
@@ -82,7 +89,7 @@
     >{`${currentStep?.title} - TESTNET ONLY`}</svelte:fragment
   >
 
-  {#if currentStep?.name === "AddPrincipal"}
+  {#if currentStep?.name === "Principal"}
     <AddPrincipal
       bind:principal
       on:nnsSelectPrincipal={() => modal.next()}
@@ -93,7 +100,7 @@
     </AddPrincipal>
   {/if}
 
-  {#if currentStep?.name === "AddPermissions"}
+  {#if currentStep?.name === "Permissions"}
     <p>{`Select permissions for ${principal?.toText()}`}</p>
     {#each selectablePermissions as { checked, permission }}
       <Checkbox
