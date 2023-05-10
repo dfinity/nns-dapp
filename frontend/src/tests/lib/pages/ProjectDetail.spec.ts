@@ -10,6 +10,7 @@ import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -305,6 +306,20 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         render(ProjectDetail, props);
 
         expect(locationApi.queryUserCountryLocation).not.toBeCalled();
+      });
+
+      it("should load user's country if no deny list", async () => {
+        // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
+        jest.spyOn(summaryGetters, "getDenyList").mockReturnValue(["US"]);
+        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          myCommitment: undefined,
+        } as SnsSwapCommitment);
+
+        render(ProjectDetail, props);
+
+        expect(locationApi.queryUserCountryLocation).toBeCalled();
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
