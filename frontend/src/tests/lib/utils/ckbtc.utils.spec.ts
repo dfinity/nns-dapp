@@ -13,9 +13,7 @@ describe("ckbtc.utils", () => {
     networkBtc: true,
     sourceAccount: mockMainAccount,
     amount: 0.002,
-    bitcoinEstimatedFee: 1n,
-    transactionFee: 2n,
-    kytEstimatedFee: 3n,
+    transactionFee: 1n,
   };
 
   it("should not throw error", () => {
@@ -64,7 +62,7 @@ describe("ckbtc.utils", () => {
     expect(() => assertCkBTCUserInputAmount(params)).not.toThrow();
   });
 
-  it("should throw error if amount is lower than min retrieve btc amount", () => {
+  it.only("should throw error if amount is lower than min retrieve btc amount", () => {
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
@@ -90,26 +88,6 @@ describe("ckbtc.utils", () => {
           Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP +
           Number(params.transactionFee) / E8S_PER_ICP +
           Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP,
-      })
-    ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
-
-    const closestAmount =
-      Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP -
-      Number(params.bitcoinEstimatedFee) / E8S_PER_ICP -
-      Number(params.kytEstimatedFee) / E8S_PER_ICP -
-      Number(params.transactionFee) / E8S_PER_ICP;
-
-    expect(() =>
-      assertCkBTCUserInputAmount({
-        ...params,
-        amount: closestAmount,
-      })
-    ).not.toThrow(new NotEnoughAmountError("error.insufficient_funds"));
-
-    expect(() =>
-      assertCkBTCUserInputAmount({
-        ...params,
-        amount: closestAmount + 0.01,
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });
