@@ -155,8 +155,6 @@
       sourceAccount: selectedAccount,
       amount,
       transactionFee: transactionFee.toE8s(),
-      bitcoinEstimatedFee,
-      kytEstimatedFee,
     });
 
     return undefined;
