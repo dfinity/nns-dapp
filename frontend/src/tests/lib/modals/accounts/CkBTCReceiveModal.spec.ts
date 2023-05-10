@@ -149,8 +149,7 @@ describe("BtcCkBTCReceiveModal", () => {
         );
       });
 
-      // TODO: to be activated when ckBTC with minter is live
-      it.skip("should render a bitcoin description", async () => {
+      it("should render a bitcoin description", async () => {
         const { getByText, container } = await renderReceiveModal({
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         });
@@ -186,8 +185,7 @@ describe("BtcCkBTCReceiveModal", () => {
         await waitFor(() => expect(getByText(title)).toBeInTheDocument());
       });
 
-      // TODO: to be activated when ckBTC with minter is live
-      it.skip("should render a bitcoin logo", async () => {
+      it("should render a bitcoin logo", async () => {
         const { getByTestId, container } = await renderReceiveModal({
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         });
