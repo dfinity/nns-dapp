@@ -7,6 +7,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
   export let minSnsDissolveDelaySeconds: bigint;
@@ -24,13 +25,16 @@
     }
   );
   const reasonText = ({ reason }: IneligibleNeuronData) =>
-    ((
-      {
-        since: $i18n.proposal_detail__ineligible.reason_since,
-        "no-permission": $i18n.proposal_detail__ineligible.reason_no_permission,
-        short: reasonShort,
-      } as Record<NeuronIneligibilityReason, string>
-    )[reason]);
+    nonNullish(reason)
+      ? (
+          {
+            since: $i18n.proposal_detail__ineligible.reason_since,
+            "no-permission":
+              $i18n.proposal_detail__ineligible.reason_no_permission,
+            short: reasonShort,
+          } as Record<NeuronIneligibilityReason, string>
+        )[reason]
+      : "unknown";
 </script>
 
 {#if visible}

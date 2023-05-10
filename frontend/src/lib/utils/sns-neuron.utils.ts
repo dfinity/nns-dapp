@@ -834,10 +834,9 @@ export const snsNeuronsToIneligibleNeuronData = ({
 }): IneligibleNeuronData[] =>
   neurons.map((neuron) => ({
     neuronIdString: getSnsNeuronIdAsHexString(neuron),
-    reason:
-      snsNeuronsIneligibilityReasons({
-        neuron,
-        proposal,
-        identity,
-      }) ?? "unknown",
+    reason: snsNeuronsIneligibilityReasons({
+      neuron,
+      proposal,
+      identity,
+    }),
   }));
