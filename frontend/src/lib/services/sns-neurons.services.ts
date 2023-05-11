@@ -76,6 +76,7 @@ export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
   return queryAndUpdate<SnsNeuron[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
         rootCanisterId,
