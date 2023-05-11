@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122267
 
 * Receive BTC.
 * Convert ckBTC to BTC.
