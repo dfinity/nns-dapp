@@ -133,7 +133,7 @@
   };
 
   let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: if (nonNullish(snsParameters) && votableNeurons.length > 0) {
+  $: if (nonNullish(snsParameters) && $sortedSnsUserNeuronsStore.length > 0) {
     neuronsVotedForProposal = votedSnsNeuronDetails({
       neurons: $sortedSnsUserNeuronsStore,
       proposal,
