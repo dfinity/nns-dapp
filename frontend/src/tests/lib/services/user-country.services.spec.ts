@@ -24,7 +24,7 @@ describe("location services", () => {
 
       await loadUserCountry();
 
-      expect(get(userCountryStore)).toBe(countryCode);
+      expect(get(userCountryStore)).toEqual({ isoCode: countryCode });
     });
 
     it("should not call api if location store is already set", async () => {
@@ -32,7 +32,7 @@ describe("location services", () => {
       const apiFn = jest
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
-      userCountryStore.set("CH");
+      userCountryStore.set({ isoCode: countryCode });
 
       await loadUserCountry();
 
