@@ -26,8 +26,8 @@ clean_config() {
 		{
 		  "API_HOST": "https://icp-api.io",
 		  "CKBTC_INDEX_CANISTER_ID": "n5wcd-faaaa-aaaar-qaaea-cai",
-		  "CKBTC_MINTER_CANISTER_ID": "mqygn-kiaaa-aaaar-qaadq-cai",
 		  "CKBTC_LEDGER_CANISTER_ID": "mxzaz-hqaaa-aaaar-qaada-cai",
+		  "CKBTC_MINTER_CANISTER_ID": "mqygn-kiaaa-aaaar-qaadq-cai",
 		  "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
 		  "DFX_NETWORK": "mainnet",
 		  "FEATURE_FLAGS": {
