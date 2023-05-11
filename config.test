@@ -98,6 +98,7 @@ clean_config() {
 		    record{ 0="API_HOST"; 1="https://icp-api.io" };
 		    record{ 0="CKBTC_INDEX_CANISTER_ID"; 1="n5wcd-faaaa-aaaar-qaaea-cai" };
 		    record{ 0="CKBTC_LEDGER_CANISTER_ID"; 1="mxzaz-hqaaa-aaaar-qaada-cai" };
+		    record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="mqygn-kiaaa-aaaar-qaadq-cai" };
 		    record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
 		    record{ 0="DFX_NETWORK"; 1="mainnet" };
 		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}" };
