@@ -112,6 +112,14 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 
 The topic descriptions can be found in [governance.proto](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
 
+### Upgrade dependencies: Ledger ICP App
+
+One dependency for the topics is the [Ledger](https://www.ledger.com/) App developed by [Zondax](https://github.com/Zondax).
+
+When there is a new topic we need to open an issue in the [Ledger ICP repo](https://github.com/Zondax/ledger-icp).
+
+We need to specify the number of the new proposal and the title that should be shown in the screen. The title should be the same as the label in `en.governance.json` from the point above.
+
 ## New or changes in `nnsFunction`
 
 There are several steps to adding a new NNS function. They are described in
