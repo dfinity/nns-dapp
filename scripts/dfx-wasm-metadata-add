@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+	cat <<-EOF
+
+	Adds the git commit and API .did to canister wasm custom sections.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=commit desc="The commit; defaults to the current HEAD." variable=DFX_CANISTER_COMMIT
+clap.define short=N long=canister_name desc="The name of the canister (optional)" variable=DFX_CANISTER_NAME
+clap.define short=w long=wasm desc="The path to the wasm file (defaults to the path in dfx.json)" variable=DFX_CANISTER_WASM
+clap.define short=d long=did desc="The path to the interface definition (.did) file (defaults to the path in dfx.json)" variable=DFX_CANISTER_DID
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+test -z "$DFX_CANISTER_NAME" || export DFX_CANISTER_NAME
+
+: "Find the wasm file"
+test -n "${DFX_CANISTER_WASM:-}" || DFX_CANISTER_WASM="$(jq -r '.canisters[env.DFX_CANISTER_NAME].wasm // ""')"
+test -n "${DFX_CANISTER_WASM:-}" || {
+  echo "ERROR: Unable to determine the path to the wasm file."
+  echo "       Please either:"
+  echo "         Use --wasm PATH_TO_WASM"
+  echo "         or use --canister_name NAME and ensure that the wasm is specified in dfx.json"
+  exit 1
+} >&2
+test -e "${DFX_CANISTER_WASM}" || {
+  echo "ERROR: There should be a wasm file at: '$DFX_CANISTER_WASM'"
+  exit 1
+} >&2
+
+: "Find the candid file"
+test -n "${DFX_CANISTER_DID:-}" || DFX_CANISTER_DID="$(jq -r '.canisters[env.DFX_CANISTER_NAME].candid // ""')"
+test -n "${DFX_CANISTER_DID:-}" || {
+  echo "ERROR: Unable to determine the path to the candid file."
+  echo "       Please either:"
+  echo "         Use --wasm PATH_TO_WASM"
+  echo "         or use --canister_name NAME and ensure that the candid is specified in dfx.json"
+  exit 1
+} >&2
+test -e "${DFX_CANISTER_DID}" || {
+  echo "ERROR: There should be a candid file at: '$DFX_CANISTER_DID'"
+  exit 1
+} >&2
+
+: "Find the commit"
+test -n "${DFX_CANISTER_COMMIT:-}" || DFX_CANISTER_COMMIT="$(git rev-parse HEAD)"
+
+: Determine whether the wasm is zipped
+IS_ZIPPED="$( file "$DFX_CANISTER_WASM" | grep -q gzip ; echo $? )"
+
+UNZIPPED="${DFX_CANISTER_WASM}.unzipped"
+if (( IS_ZIPPED == 0 ))
+then gunzip < "${DFX_CANISTER_WASM}" > "$UNZIPPED"
+else cat < "${DFX_CANISTER_WASM}" > "$UNZIPPED"
+fi
+
+WITH_COMMIT="${DFX_CANISTER_WASM}.with_commit"
+ic-wasm "$UNZIPPED" -o "$WITH_COMMIT" metadata git_commit_id -d"$DFX_CANISTER_COMMIT" -v public
+rm "$UNZIPPED"
+
+WITH_DID="${DFX_CANISTER_WASM}.with_did"
+ic-wasm "$WITH_COMMIT" -o "$WITH_DID" metadata candid:service -f "$DFX_CANISTER_DID" -v public
+rm "$WITH_COMMIT"
+
+ZIPPED="${DFX_CANISTER_WASM}.gz"
+if (( IS_ZIPPED == 0 ))
+then gzip < "${WITH_DID}" > "$ZIPPED"
+else cat < "${WITH_DID}" > "$ZIPPED"
+fi
+mv "$ZIPPED" "$DFX_CANISTER_WASM"
