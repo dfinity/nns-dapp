@@ -22,6 +22,8 @@
     display: flex;
     flex-direction: column;
     --checkbox-label-order: 1;
+    --padding: var(--padding-2x);
+    --checkbox-padding: var(--padding) 0;
 
     :global(label) {
       order: 1;
