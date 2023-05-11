@@ -27,6 +27,20 @@ describe("location services", () => {
       expect(get(userCountryStore)).toEqual({ isoCode: countryCode });
     });
 
+    it("should set the location store to error if api fails", async () => {
+      expect(get(userCountryStore)).toBe("not loaded");
+
+      jest
+        .spyOn(locationApi, "queryUserCountryLocation")
+        .mockRejectedValue(new Error("test"));
+
+      await loadUserCountry();
+
+      expect(get(userCountryStore)).toEqual(
+        new Error("Error loading user country")
+      );
+    });
+
     it("should not call api if location store is already set", async () => {
       const countryCode = "CH";
       const apiFn = jest
