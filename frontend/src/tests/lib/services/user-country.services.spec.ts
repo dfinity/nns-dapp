@@ -38,5 +38,17 @@ describe("location services", () => {
 
       expect(apiFn).not.toHaveBeenCalled();
     });
+
+    it("should not call api if location store has an error", async () => {
+      const countryCode = "CH";
+      const apiFn = jest
+        .spyOn(locationApi, "queryUserCountryLocation")
+        .mockResolvedValue(countryCode);
+      userCountryStore.set(new Error("test"));
+
+      await loadUserCountry();
+
+      expect(apiFn).not.toHaveBeenCalled();
+    });
   });
 });
