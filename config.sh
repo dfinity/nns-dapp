@@ -105,6 +105,9 @@ local_deployment_data="$(
   CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
   export CKBTC_INDEX_CANISTER_ID
   test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
+  CKBTC_MINTER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_minter 2>/dev/null || true)"
+  export CKBTC_MINTER_CANISTER_ID
+  test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
@@ -130,6 +133,7 @@ local_deployment_data="$(
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
+    CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
@@ -174,6 +178,7 @@ host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
+ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
@@ -192,6 +197,7 @@ VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
 VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
@@ -217,6 +223,8 @@ export SNS_AGGREGATOR_URL
 
 CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
 export CKBTC_LEDGER_CANISTER_ID
+CKBTC_MINTER_CANISTER_ID="${ckbtcMinterCanisterId:-}"
+export CKBTC_MINTER_CANISTER_ID
 CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
 export CKBTC_INDEX_CANISTER_ID
 
