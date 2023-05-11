@@ -674,7 +674,6 @@ interface I18nSns_project_detail {
   status_completed: string;
   completed: string;
   sale_end: string;
-  max_left: string;
   max_user_commitment_reached: string;
   getting_sns_open_ticket: string;
   sign_in: string;
