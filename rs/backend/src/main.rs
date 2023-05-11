@@ -316,7 +316,7 @@ pub fn add_assets_tar_xz() {
                 "assets.tar.xz with hash {hash_str} needs to be whitelisted before it can be uploaded"
             ));
         }
-        insert_tar_xz(&asset_bytes);
+        insert_tar_xz(asset_bytes);
     })
 }
 

@@ -362,14 +362,18 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
 /// Note: Used both in init and post_upgrade
 pub fn init_assets() {
     let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
-    insert_tar_xz(&compressed);
+    insert_tar_xz(compressed);
 }
 
 /// Adds an xz compressed tarball of assets to the state.
 ///
 /// - Adds the files to `state.assets`.
 /// - Signs the given path and all alternate paths for the given asset.
-pub fn insert_tar_xz(compressed: &[u8]) {
+///
+/// Note: The vec is mutated during decompression, so pass by reference is inefficient
+///       as it would force the data to be copied into a new vector, even when the
+///       original is no longer needed.
+pub fn insert_tar_xz(compressed: Vec<u8>) {
     dfn_core::api::print("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();
