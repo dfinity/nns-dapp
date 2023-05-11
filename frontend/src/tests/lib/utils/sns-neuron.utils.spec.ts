@@ -129,6 +129,7 @@ const testVotedNeuronA: SnsNeuron = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
     },
   ],
+  permissions: permissionsWithTypeVote,
 };
 const testVotedNeuronB: SnsNeuron = {
   ...mockSnsNeuron,
@@ -137,6 +138,7 @@ const testVotedNeuronB: SnsNeuron = {
       id: arrayOfNumberToUint8Array([1, 1, 1]),
     },
   ],
+  permissions: permissionsWithTypeVote,
 };
 const testNotVotedNeuron: SnsNeuron = {
   ...mockSnsNeuron,
@@ -145,6 +147,7 @@ const testNotVotedNeuron: SnsNeuron = {
       id: arrayOfNumberToUint8Array([3, 2, 1]),
     },
   ],
+  permissions: permissionsWithTypeVote,
 };
 
 describe("sns-neuron utils", () => {
@@ -2081,6 +2084,7 @@ describe("sns-neuron utils", () => {
         snsNeuronsToIneligibleNeuronData({
           neurons: [testVotedNeuronA],
           proposal: testProposal,
+          identity: mockIdentity,
         })
       ).toEqual([
         expect.objectContaining({
@@ -2107,6 +2111,7 @@ describe("sns-neuron utils", () => {
             },
           ],
           proposal: testProposal,
+          identity: mockIdentity,
         })
       ).toEqual([
         {
