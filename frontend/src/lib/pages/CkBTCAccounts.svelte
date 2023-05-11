@@ -10,7 +10,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -44,10 +43,6 @@
   $: accounts = nonNullish($selectedCkBTCUniverseIdStore)
     ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
     : [];
-
-  // TODO: to be removed when ckBTC with minter is live.
-  let ckTESTBTC = false;
-  $: ckTESTBTC = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
@@ -63,8 +58,6 @@
       >
     {/each}
 
-    {#if ckTESTBTC}
-      <CkBTCWithdrawalAccount />
-    {/if}
+    <CkBTCWithdrawalAccount />
   {/if}
 </div>

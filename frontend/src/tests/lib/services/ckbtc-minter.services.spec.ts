@@ -50,7 +50,6 @@ describe("ckbtc-minter-services", () => {
       expect(store[mockCkBTCMainAccount.identifier]).toBeUndefined();
 
       await services.loadBtcAddress({
-        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
         minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
         identifier: mockCkBTCMainAccount.identifier,
       });

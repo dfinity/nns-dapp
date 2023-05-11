@@ -38,7 +38,7 @@ export const getSortedTransactionsFromStore = ({
   account: Account;
 }): IcrcTransactionData[] =>
   mapToSelfTransaction(
-    store[canisterId.toText()]?.[account.identifier].transactions ?? []
+    store[canisterId.toText()]?.[account.identifier]?.transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
@@ -209,4 +209,4 @@ export const isIcrcTransactionsCompleted = ({
   canisterId: UniverseCanisterId;
   account: Account;
 }): boolean =>
-  Boolean(store[canisterId.toText()]?.[account.identifier].completed);
+  Boolean(store[canisterId.toText()]?.[account.identifier]?.completed);

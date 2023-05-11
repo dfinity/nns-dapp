@@ -13,9 +13,7 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
-import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
-import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -36,18 +34,11 @@ const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
 
 export const loadBtcAddress = async ({
   minterCanisterId,
-  universeId,
   identifier,
 }: {
   minterCanisterId: CanisterId;
-  universeId: UniverseCanisterId;
   identifier: AccountIdentifierText;
 }) => {
-  // TODO: to be removed when ckBTC with minter is live.
-  if (!isUniverseCkTESTBTC(universeId)) {
-    return;
-  }
-
   const store = get(bitcoinAddressStore);
   const btcAddressLoaded = nonNullish(store[identifier]);
 
