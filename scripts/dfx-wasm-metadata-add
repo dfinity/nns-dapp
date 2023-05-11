@@ -4,7 +4,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
-	cat <<-EOF
+  cat <<-EOF
 
 	Adds the git commit and API .did to canister wasm custom sections.
 	EOF
@@ -54,12 +54,16 @@ test -e "${DFX_CANISTER_DID}" || {
 test -n "${DFX_CANISTER_COMMIT:-}" || DFX_CANISTER_COMMIT="$(git rev-parse HEAD)"
 
 : Determine whether the wasm is zipped
-IS_ZIPPED="$( file "$DFX_CANISTER_WASM" | grep -q gzip ; echo $? )"
+IS_ZIPPED="$(
+  file "$DFX_CANISTER_WASM" | grep -q gzip
+  echo $?
+)"
 
 UNZIPPED="${DFX_CANISTER_WASM}.unzipped"
-if (( IS_ZIPPED == 0 ))
-then gunzip < "${DFX_CANISTER_WASM}" > "$UNZIPPED"
-else cat < "${DFX_CANISTER_WASM}" > "$UNZIPPED"
+if ((IS_ZIPPED == 0)); then
+  gunzip <"${DFX_CANISTER_WASM}" >"$UNZIPPED"
+else
+  cat <"${DFX_CANISTER_WASM}" >"$UNZIPPED"
 fi
 
 WITH_COMMIT="${DFX_CANISTER_WASM}.with_commit"
@@ -71,8 +75,9 @@ ic-wasm "$WITH_COMMIT" -o "$WITH_DID" metadata candid:service -f "$DFX_CANISTER_
 rm "$WITH_COMMIT"
 
 ZIPPED="${DFX_CANISTER_WASM}.gz"
-if (( IS_ZIPPED == 0 ))
-then gzip < "${WITH_DID}" > "$ZIPPED"
-else cat < "${WITH_DID}" > "$ZIPPED"
+if ((IS_ZIPPED == 0)); then
+  gzip <"${WITH_DID}" >"$ZIPPED"
+else
+  cat <"${WITH_DID}" >"$ZIPPED"
 fi
 mv "$ZIPPED" "$DFX_CANISTER_WASM"
