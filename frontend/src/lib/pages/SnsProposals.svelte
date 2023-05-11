@@ -49,7 +49,7 @@
 
   $: onSnsProjectChanged($snsOnlyProjectStore);
 
-  const onSnsFiltersChanged = async (filters: SnsFiltersStoreData) => {
+  const fetchProposals = async (filters: SnsFiltersStoreData) => {
     // First call will have `filters` as `undefined`.
     // Once we have the initial filters, we load the proposals.
     if (
@@ -60,7 +60,11 @@
     }
   };
 
-  $: onSnsFiltersChanged($snsFiltersStore);
+  // Fetch the proposals only on filters or project change.
+  // TODO(e2e): cover this with e2e tests.
+  $: $snsOnlyProjectStore,
+    $snsFiltersStore,
+    (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
