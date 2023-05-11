@@ -11,9 +11,13 @@ describe("location services", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   describe("loadUserLocation", () => {
+    beforeEach(() => {
+      userCountryStore.set("not loaded");
+    });
     it("should set the location store to api response", async () => {
       expect(get(userCountryStore)).toBe("not loaded");
 
