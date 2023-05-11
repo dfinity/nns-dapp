@@ -27,11 +27,11 @@
   let modeLabel = mode === "add" ? "Add" : "Remove";
   const steps: WizardSteps = [
     {
-      name: `Principal`,
+      name: "Principal",
       title: `${modeLabel} Principal`,
     },
     {
-      name: `Permissions`,
+      name: "Permissions",
       title: "Select Permissions",
     },
   ];
