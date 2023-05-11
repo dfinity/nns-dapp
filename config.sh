@@ -105,6 +105,9 @@ local_deployment_data="$(
   CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
   export CKBTC_INDEX_CANISTER_ID
   test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
+  CKBTC_MINTER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_minter 2>/dev/null || true)"
+  export CKBTC_MINTER_CANISTER_ID
+  test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"

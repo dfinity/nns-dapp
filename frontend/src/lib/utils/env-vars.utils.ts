@@ -7,6 +7,7 @@ type EnvironmentVars = {
   // Environments without ckBTC canisters are valid
   ckbtcIndexCanisterId?: string;
   ckbtcLedgerCanisterId?: string;
+  ckbtcMinterCanisterId?: string;
   cyclesMintingCanisterId: string;
   dfxNetwork: string;
   featureFlags: string;
@@ -89,6 +90,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     ckbtcLedgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CKBTC_LEDGER_CANISTER_ID
+    ),
+    ckbtcMinterCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKBTC_MINTER_CANISTER_ID
     ),
     cyclesMintingCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID
