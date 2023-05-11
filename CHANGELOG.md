@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal 122210
+
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
+
 ## Proposal 121690
 
 * Add BitcoinSetConfig proposal payload support.
