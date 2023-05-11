@@ -310,7 +310,7 @@ pub fn add_assets_tar_xz() {
     over(candid_one, |asset_bytes: Vec<u8>| {
         let hash_bytes = hash_bytes(&asset_bytes);
         let hash_str = hex::encode(hash_bytes);
-        let whitelist = vec!["933c135529499e2ed6b911feb8e8824068dc545298b61b93ae813358b306e7a6"];
+        let whitelist = vec!["acaa46b184297235544a729a405572286137ef1ee33a854de1e20fa30024a2bb", "0f9c5e58fdc75f403f7872c6db955147e7a638f07d9c0fcf25d6995813eda257"];
         if !whitelist.contains(&hash_str.as_str()) {
             dfn_core::api::trap_with(&format!(
                 "assets.tar.xz with hash {hash_str} needs to be whitelisted before it can be uploaded"
