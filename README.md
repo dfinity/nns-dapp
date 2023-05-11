@@ -7,6 +7,9 @@ The [NNS front-end Dapp](https://nns.internetcomputer.org/) is a dapp that provi
 - Participate in the governance of the IC
 - Create and top up canisters
 
+The [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/) is a back-end canister that provides fast, certified data about SNS canisters.  It supports the NNS front-end dapp
+under situations of high load.
+
 ## Official build
 
 The official build should ideally be reproducible, so that independent parties
