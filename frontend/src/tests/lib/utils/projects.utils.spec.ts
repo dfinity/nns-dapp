@@ -277,8 +277,11 @@ describe("project-utils", () => {
   describe("userCountryIsNeeded", () => {
     beforeEach(() => {
       jest.clearAllMocks();
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
     });
-    it("country not needed if no summary or swap information", () => {
+
+    it("country not needed", () => {
       expect(
         userCountryIsNeeded({
           summary: undefined,
@@ -344,8 +347,6 @@ describe("project-utils", () => {
     });
 
     it("country is needed", () => {
-      // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
       expect(
         userCountryIsNeeded({
           summary: summaryForLifecycle(SnsSwapLifecycle.Open),
@@ -353,6 +354,18 @@ describe("project-utils", () => {
           loggedIn: true,
         })
       ).toBe(true);
+    });
+
+    it("country not needed if empty list of denied countries", () => {
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
     });
 
     it("country not needed if not logged in", () => {

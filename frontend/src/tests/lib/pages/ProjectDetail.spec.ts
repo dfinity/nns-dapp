@@ -296,32 +296,32 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         ).toMatch(formatToken({ value: userCommitment }));
       });
 
-      it("should not load user's country if no deny list", async () => {
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          myCommitment: undefined,
-        } as SnsSwapCommitment);
+      describe("no open ticket and no commitment", () => {
+        beforeEach(() => {
+          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: undefined,
+          } as SnsSwapCommitment);
+        });
 
-        render(ProjectDetail, props);
+        it("should not load user's country if no deny list", async () => {
+          // TODO: GIX-1545 Create a summary without deny list
+          render(ProjectDetail, props);
 
-        expect(locationApi.queryUserCountryLocation).not.toBeCalled();
-      });
+          expect(locationApi.queryUserCountryLocation).not.toBeCalled();
+        });
 
-      it("should load user's country if non-empty deny list", async () => {
-        // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
-        jest
-          .spyOn(summaryGetters, "getDeniedCountries")
-          .mockReturnValue(["US"]);
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          myCommitment: undefined,
-        } as SnsSwapCommitment);
+        it("should load user's country if non-empty deny list", async () => {
+          // TODO: GIX-1545 Remove mock and create a summary with deny list
+          jest
+            .spyOn(summaryGetters, "getDeniedCountries")
+            .mockReturnValue(["US"]);
 
-        render(ProjectDetail, props);
+          render(ProjectDetail, props);
 
-        expect(locationApi.queryUserCountryLocation).toBeCalled();
+          expect(locationApi.queryUserCountryLocation).toBeCalled();
+        });
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
