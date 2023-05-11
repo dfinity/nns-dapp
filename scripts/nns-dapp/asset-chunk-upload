@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=chunk desc="The asset chunk to upload" variable=CHUNK_TAR_XZ
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+echo "( blob \"$(cat "$CHUNK_TAR_XZ" | xxd -p | sed 's/../\\&/g' | tr -d "\n")\" )" > ,asset-arg
+dfx canister call nns-dapp add_assets_tar_xz --argument-file ,asset-arg --network "$DFX_NETWORK"
