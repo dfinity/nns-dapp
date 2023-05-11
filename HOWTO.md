@@ -118,7 +118,7 @@ One dependency for the topics is the [Ledger](https://www.ledger.com/) App devel
 
 When there is a new topic we need to open an issue in the [Ledger ICP repo](https://github.com/Zondax/ledger-icp).
 
-We need to specify the number of the new proposal and the title that should be shown in the screen. The title should be the same as the label in `en.governance.json` from the point above.
+We need to specify the number of the new topic and the title that should be shown in the screen. The title should be the same as the label in `en.governance.json` from the point above.
 
 ## New or changes in `nnsFunction`
 
