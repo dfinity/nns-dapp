@@ -20,7 +20,9 @@ runs:
         cd "${{ inputs.assets_dir }}"
         daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
         cp nns-dapp.wasm "$daily_build_name"
-        artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
+        cp rs/backend/nns-dapp.did .
+        cp rs/sns_aggregator/sns_aggregator.did .
+        artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name" nns-dapp.did sns_aggregator.did)
         ls -l "${artefacts[@]}"
         for tag in $(git tag --points-at HEAD) ; do
           : Creates or updates a release for the tag
