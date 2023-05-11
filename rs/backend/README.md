@@ -20,8 +20,8 @@ acaa46b184297235544a729a405572286137ef1ee33a854de1e20fa30024a2bb  out/chunks/ass
 ```
 * Note that the docker build output includes a small wasm with no assets:
 ```
-$ ls -lH out/nns-dapp_noassets.wasm 
--rw-r--r-- 1 max max 837333 Mai 11 06:31 out/nns-dapp_noassets.wasm
+$ ls -lh out/nns-dapp_noassets.wasm 
+-rw-r--r-- 1 max max 818K Mai 11 06:31 out/nns-dapp_noassets.wasm
 ```
 * Deploy the nns-dapp with the small wasm:
 ```
