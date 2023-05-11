@@ -667,7 +667,6 @@ interface I18nSns_project_detail {
   status_pending: string;
   status_unspecified: string;
   participate_swap_description: string;
-  participate_swap_warning: string;
   understand_agree: string;
   participate_success: string;
   participate: string;

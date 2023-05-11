@@ -27,6 +27,7 @@ clean_config() {
 		  "API_HOST": "https://icp-api.io",
 		  "CKBTC_INDEX_CANISTER_ID": "n5wcd-faaaa-aaaar-qaaea-cai",
 		  "CKBTC_LEDGER_CANISTER_ID": "mxzaz-hqaaa-aaaar-qaada-cai",
+		  "CKBTC_MINTER_CANISTER_ID": "mqygn-kiaaa-aaaar-qaadq-cai",
 		  "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
 		  "DFX_NETWORK": "mainnet",
 		  "FEATURE_FLAGS": {
@@ -78,6 +79,7 @@ clean_config() {
 		VITE_IDENTITY_SERVICE_URL=https://identity.internetcomputer.org/
 		VITE_AGGREGATOR_CANISTER_URL=https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io
 		VITE_CKBTC_LEDGER_CANISTER_ID=mxzaz-hqaaa-aaaar-qaada-cai
+		VITE_CKBTC_MINTER_CANISTER_ID=mqygn-kiaaa-aaaar-qaadq-cai
 		VITE_CKBTC_INDEX_CANISTER_ID=n5wcd-faaaa-aaaar-qaaea-cai
 		EOF
     )
@@ -96,6 +98,7 @@ clean_config() {
 		    record{ 0="API_HOST"; 1="https://icp-api.io" };
 		    record{ 0="CKBTC_INDEX_CANISTER_ID"; 1="n5wcd-faaaa-aaaar-qaaea-cai" };
 		    record{ 0="CKBTC_LEDGER_CANISTER_ID"; 1="mxzaz-hqaaa-aaaar-qaada-cai" };
+		    record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="mqygn-kiaaa-aaaar-qaadq-cai" };
 		    record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
 		    record{ 0="DFX_NETWORK"; 1="mainnet" };
 		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}" };
