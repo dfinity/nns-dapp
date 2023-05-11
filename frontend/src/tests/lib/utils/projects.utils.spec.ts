@@ -345,7 +345,7 @@ describe("project-utils", () => {
 
     it("country is needed", () => {
       // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDenyList").mockReturnValue(["US"]);
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
       expect(
         userCountryIsNeeded({
           summary: summaryForLifecycle(SnsSwapLifecycle.Open),

@@ -1,5 +1,5 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import { getDenyList } from "$lib/getters/sns-summary";
+import { getDeniedCountries } from "$lib/getters/sns-summary";
 import type {
   SnsSummary,
   SnsSummarySwap,
@@ -183,7 +183,7 @@ export const userCountryIsNeeded = ({
   canUserParticipateToSwap({ summary, swapCommitment }) &&
   loggedIn &&
   nonNullish(summary) &&
-  getDenyList(summary).length > 0;
+  getDeniedCountries(summary).length > 0;
 
 export const hasUserParticipatedToSwap = ({
   swapCommitment,

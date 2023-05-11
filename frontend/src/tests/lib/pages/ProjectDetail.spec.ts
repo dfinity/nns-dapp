@@ -308,9 +308,11 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         expect(locationApi.queryUserCountryLocation).not.toBeCalled();
       });
 
-      it("should load user's country if no deny list", async () => {
+      it("should load user's country if non-empty deny list", async () => {
         // TODO: TODO: GIX-1545 Remove mock and create a summary with deny list
-        jest.spyOn(summaryGetters, "getDenyList").mockReturnValue(["US"]);
+        jest
+          .spyOn(summaryGetters, "getDeniedCountries")
+          .mockReturnValue(["US"]);
         jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
         jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),
