@@ -1,10 +1,13 @@
 import { queryUserCountryLocation } from "$lib/api/location.api";
-import { userCountryStore } from "$lib/stores/user-country.store";
+import {
+  isUserCountryLoadedStore,
+  userCountryStore,
+} from "$lib/stores/user-country.store";
 import { get } from "svelte/store";
 
 export const loadUserCountry = async () => {
   try {
-    if (get(userCountryStore) !== undefined) {
+    if (get(isUserCountryLoadedStore)) {
       return;
     }
     const countryCode = await queryUserCountryLocation();

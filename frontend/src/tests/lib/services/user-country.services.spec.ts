@@ -15,7 +15,7 @@ describe("location services", () => {
 
   describe("loadUserLocation", () => {
     it("should set the location store to api response", async () => {
-      expect(get(userCountryStore)).toBeUndefined();
+      expect(get(userCountryStore)).toBe("not loaded");
 
       const countryCode = "CH";
       jest

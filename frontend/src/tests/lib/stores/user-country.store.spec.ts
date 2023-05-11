@@ -1,13 +1,13 @@
 import {
   isUserCountryErrorStore,
-  isUserCountryLoadingStore,
+  isUserCountryLoadedStore,
   userCountryStore,
 } from "$lib/stores/user-country.store";
 import { get } from "svelte/store";
 
 describe("userCountryStore", () => {
   beforeEach(() => {
-    userCountryStore.set(undefined);
+    userCountryStore.set("not loaded");
   });
 
   describe("userCountryStore", () => {
@@ -22,28 +22,28 @@ describe("userCountryStore", () => {
     });
   });
 
-  describe("isUserCountryLoadingStore", () => {
+  describe("isUserCountryLoadedStore", () => {
     beforeEach(() => {
-      userCountryStore.set(undefined);
+      userCountryStore.set("not loaded");
     });
 
-    it("should return true when the location is undefined", () => {
-      userCountryStore.set(undefined);
-      expect(get(isUserCountryLoadingStore)).toBe(true);
+    it("should return false when the location is 'not loaded'", () => {
+      userCountryStore.set("not loaded");
+      expect(get(isUserCountryLoadedStore)).toBe(false);
     });
 
-    it("should return false when the location is not undefined", () => {
+    it("should return true when the location is loaded", () => {
       userCountryStore.set({ isoCode: "CH" });
-      expect(get(isUserCountryLoadingStore)).toEqual(false);
+      expect(get(isUserCountryLoadedStore)).toEqual(true);
 
       userCountryStore.set(new Error("Error"));
-      expect(get(isUserCountryLoadingStore)).toEqual(false);
+      expect(get(isUserCountryLoadedStore)).toEqual(true);
     });
   });
 
   describe("isUserCountryErrorStore", () => {
     beforeEach(() => {
-      userCountryStore.set(undefined);
+      userCountryStore.set("not loaded");
     });
 
     it("should return true when the location is an error", () => {
@@ -55,7 +55,7 @@ describe("userCountryStore", () => {
       userCountryStore.set({ isoCode: "CH" });
       expect(get(isUserCountryErrorStore)).toEqual(false);
 
-      userCountryStore.set(undefined);
+      userCountryStore.set("not loaded");
       expect(get(isUserCountryErrorStore)).toEqual(false);
     });
   });
