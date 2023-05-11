@@ -19,6 +19,7 @@ import { render } from "@testing-library/svelte";
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
     loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
