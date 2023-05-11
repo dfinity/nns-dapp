@@ -20,6 +20,22 @@
   export let placeholderLabelKey: string;
   export let showInfo = true;
   export let testId: string | undefined = undefined;
+
+  // replace exponent format (1e-4) w/ plain (0.0001)
+  const fixExponentFormat = (): void => {
+    // number to toLocaleString doesn't support decimals for values >= ~1e16
+    const asString = Number(value).toLocaleString("en", {
+      useGrouping: false,
+      maximumFractionDigits: 8,
+    });
+
+    if (!isNaN(Number(asString))) {
+      value = asString;
+    }
+  };
+  $: if (`${value}`.includes("e")) {
+    fixExponentFormat();
+  }
 </script>
 
 <div class="wrapper" data-tid={testId} class:error>
