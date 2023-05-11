@@ -40,7 +40,9 @@
 
     loading = true;
 
-    // We want to reload all transactions of the account
+    // We want to reload all transactions of the account from scratch.
+    // That way the skeletons will be displayed again which provides the user a visual feedback about the fact that all transactions are realoded.
+    // This is handy because the reload notably happens the "update balance" process - i.e. happens after the "busy spinner" has fade away.
     icrcTransactionsStore.resetAccount({
       universeId,
       accountIdentifier: account.identifier,
