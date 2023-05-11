@@ -8,7 +8,7 @@
   import { i18n } from "$lib/stores/i18n";
 
   export let conditionsToAccept: string | undefined = undefined;
-  export let areConditionsAccepted: boolean = false;
+  export let areConditionsAccepted = false;
 
   export let userHasParticipated: boolean;
   export let minCommitment: TokenAmount;
