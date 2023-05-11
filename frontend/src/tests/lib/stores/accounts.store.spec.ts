@@ -57,7 +57,7 @@ describe("accountsStore", () => {
 
   it("should set certified data", () => {
     const { certified: initialCertified } = get(accountsStore);
-    expect(initialCertified).toBeFalsy();
+    expect(initialCertified).toBe(undefined);
 
     accountsStoreSet({
       main: mockMainAccount,

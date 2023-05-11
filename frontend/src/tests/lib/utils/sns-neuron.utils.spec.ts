@@ -1060,7 +1060,7 @@ describe("sns-neuron utils", () => {
 
     it("returns false for NeuronInfo (nnsNeuron)", () => {
       const neuron: NeuronInfo = { ...mockNeuron };
-      expect(isSnsNeuron(neuron)).toBeFalsy();
+      expect(isSnsNeuron(neuron)).toBe(false);
     });
   });
 
@@ -1098,7 +1098,7 @@ describe("sns-neuron utils", () => {
         cached_neuron_stake_e8s: BigInt(0),
         maturity_e8s_equivalent: BigInt(0),
       };
-      expect(hasValidStake(neuron)).toBeFalsy();
+      expect(hasValidStake(neuron)).toBe(false);
     });
   });
 
@@ -1131,7 +1131,7 @@ describe("sns-neuron utils", () => {
           fee: 100n,
           neuronMinimumStake: 1000n,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -1161,7 +1161,7 @@ describe("sns-neuron utils", () => {
           fee: 100n,
           neuronMinimumStake: 1000n,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -1247,12 +1247,12 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
 
-      expect(hasEnoughMaturityToStake(neuron)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasEnoughMaturityToStake(null)).toBeFalsy();
-      expect(hasEnoughMaturityToStake(undefined)).toBeFalsy();
+      expect(hasEnoughMaturityToStake(null)).toBe(false);
+      expect(hasEnoughMaturityToStake(undefined)).toBe(false);
     });
   });
 
@@ -1278,12 +1278,12 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         staked_maturity_e8s_equivalent: [] as [] | [bigint],
       };
-      expect(hasStakedMaturity(neuron)).toBeFalsy();
+      expect(hasStakedMaturity(neuron)).toBe(false);
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasStakedMaturity(null)).toBeFalsy();
-      expect(hasStakedMaturity(undefined)).toBeFalsy();
+      expect(hasStakedMaturity(null)).toBe(false);
+      expect(hasStakedMaturity(undefined)).toBe(false);
     });
   });
 
@@ -1324,7 +1324,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         source_nns_neuron_id: [],
       };
-      expect(isCommunityFund(neuron)).toBeFalsy();
+      expect(isCommunityFund(neuron)).toBe(false);
     });
   });
 
@@ -1351,7 +1351,7 @@ describe("sns-neuron utils", () => {
           neuron,
           balanceE8s: BigInt(2),
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 

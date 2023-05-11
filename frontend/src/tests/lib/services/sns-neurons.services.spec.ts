@@ -642,7 +642,7 @@ describe("sns-neurons-services", () => {
         account: mockSnsMainAccount,
       });
 
-      expect(success).toBeFalsy();
+      expect(success).toBe(false);
       expect(spyStake).not.toBeCalled();
     });
   });
@@ -1087,7 +1087,7 @@ describe("sns-neurons-services", () => {
       });
 
       expect(toastsError).toBeCalled();
-      expect(success).toBeFalsy();
+      expect(success).toBe(false);
       expect(spySplitNeuron).not.toBeCalled();
     });
   });
