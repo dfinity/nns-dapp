@@ -359,14 +359,19 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
 
 /// Adds the files bundled in the wasm to the state.
 ///
-/// - Adds the files to `state.assets`.
-/// - Signs the given path and all alternate paths for the given asset.
-///
 /// Note: Used both in init and post_upgrade
 pub fn init_assets() {
+    let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
+    insert_tar_xz(&compressed);
+}
+
+/// Adds an xz compressed tarball of assets to the state.
+///
+/// - Adds the files to `state.assets`.
+/// - Signs the given path and all alternate paths for the given asset.
+pub fn insert_tar_xz(compressed: &[u8]) {
     dfn_core::api::print("Inserting assets...");
     let mut num_assets = 0;
-    let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());

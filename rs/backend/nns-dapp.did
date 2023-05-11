@@ -251,4 +251,5 @@ service: (opt Config) -> {
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
+    add_assets_tar_xz: (asset: blob) -> ();
 }

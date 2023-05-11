@@ -5,7 +5,7 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
-use crate::assets::{hash_bytes, insert_asset, Asset};
+use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
@@ -299,6 +299,24 @@ pub fn add_stable_asset() {
                 dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
             }
         }
+    })
+}
+
+/// Add assets to be served by the canister.
+///
+/// Only a whitelist of assets are accepted.
+#[export_name = "canister_update add_assets_tar_xz"]
+pub fn add_assets_tar_xz() {
+    over(candid_one, |asset_bytes: Vec<u8>| {
+        let hash_bytes = hash_bytes(&asset_bytes);
+        let hash_str = hex::encode(hash_bytes);
+        let whitelist = vec!["933c135529499e2ed6b911feb8e8824068dc545298b61b93ae813358b306e7a6"];
+        if !whitelist.contains(&hash_str.as_str()) {
+            dfn_core::api::trap_with(&format!(
+                "assets.tar.xz with hash {hash_str} needs to be whitelisted before it can be uploaded"
+            ));
+        }
+        insert_tar_xz(&asset_bytes);
     })
 }
 
