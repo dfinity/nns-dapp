@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal 122267
+
+* Receive BTC.
+* Convert ckBTC to BTC.
+* Minor bugfixes.
+
 ## Proposal 122210
 
 * Performance optimization (accounts).
