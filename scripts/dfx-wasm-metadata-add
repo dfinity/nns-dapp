@@ -23,7 +23,7 @@ source "$(clap.build)"
 test -z "$DFX_CANISTER_NAME" || export DFX_CANISTER_NAME
 
 : "Find the wasm file"
-test -n "${DFX_CANISTER_WASM:-}" || DFX_CANISTER_WASM="$(jq -r '.canisters[env.DFX_CANISTER_NAME].wasm // ""')"
+test -n "${DFX_CANISTER_WASM:-}" || DFX_CANISTER_WASM="$(jq -r '.canisters[env.DFX_CANISTER_NAME].wasm // ""' dfx.json)"
 test -n "${DFX_CANISTER_WASM:-}" || {
   echo "ERROR: Unable to determine the path to the wasm file."
   echo "       Please either:"
@@ -37,7 +37,7 @@ test -e "${DFX_CANISTER_WASM}" || {
 } >&2
 
 : "Find the candid file"
-test -n "${DFX_CANISTER_DID:-}" || DFX_CANISTER_DID="$(jq -r '.canisters[env.DFX_CANISTER_NAME].candid // ""')"
+test -n "${DFX_CANISTER_DID:-}" || DFX_CANISTER_DID="$(jq -r '.canisters[env.DFX_CANISTER_NAME].candid // ""' dfx.json)"
 test -n "${DFX_CANISTER_DID:-}" || {
   echo "ERROR: Unable to determine the path to the candid file."
   echo "       Please either:"
