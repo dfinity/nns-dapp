@@ -67,7 +67,7 @@ else
 fi
 
 WITH_COMMIT="${DFX_CANISTER_WASM}.with_commit"
-ic-wasm "$UNZIPPED" -o "$WITH_COMMIT" metadata git_commit_id -d"$DFX_CANISTER_COMMIT" -v public
+ic-wasm "$UNZIPPED" -o "$WITH_COMMIT" metadata git_commit_id -d "$DFX_CANISTER_COMMIT" -v public
 rm "$UNZIPPED"
 
 WITH_DID="${DFX_CANISTER_WASM}.with_did"
