@@ -1,5 +1,10 @@
 # Changelog
 
+## Proposal XXX
+
+* UI improvements.
+* Minor bugfixes.
+
 ## Proposal 122267
 
 * Receive BTC.
