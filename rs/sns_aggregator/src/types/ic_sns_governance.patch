@@ -8,6 +8,7 @@ index 85a991cff..c1812a9a5 100644
  
 +
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct GenericNervousSystemFunction {
    pub  validator_canister_id: Option<candid::Principal>,
 @@ -21,7 +22,7 @@ pub struct GenericNervousSystemFunction {
  
