@@ -83,6 +83,13 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Check that metadata is present
+        run: |
+          set +x
+          for canister in nns-dapp sns_aggregator ; do
+            dfx canister metadata --network ic nns-dapp git_commit_id | tee /dev/stderr | grep -E '[a-fA-F0-9]{64}'
+            dfx canister metadata --network ic nns-dapp candid:service | tee /dev/stderr | grep service
+          done
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
