@@ -44,7 +44,7 @@ cd "$GIT_ROOT"
 
 rm -f "${PATCH_PATH}"
 scripts/did2rs.sh "$CANISTER_NAME"
-git diff -R "${RUST_PATH}" >"${PATCH_PATH}"
+git -c core.abbrev=9 diff -R "${RUST_PATH}" >"${PATCH_PATH}"
 if test -s "${PATCH_PATH}"; then
   git add "${PATCH_PATH}"
 else
