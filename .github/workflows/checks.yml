@@ -201,8 +201,23 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check config script
         run: bash -x ./config.test
+  sns-aggregator-patches:
+    name: SNS aggregator patches
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Recreate and compare patches
+        run: scripts/mk_nns_patch.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
