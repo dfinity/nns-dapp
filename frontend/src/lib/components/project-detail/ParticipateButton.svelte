@@ -60,11 +60,6 @@
     ticketsStore: $snsTicketsStore,
   }));
 
-  $: {
-    console.log("status", status);
-    console.log(loadingUserCountry);
-  }
-
   let loadingUserCountry: boolean;
   $: loadingUserCountry =
     userCountryIsNeeded({
