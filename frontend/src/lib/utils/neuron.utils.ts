@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
@@ -30,6 +31,7 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
+  RewardEvent,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -43,7 +45,7 @@ import {
   type ProposalInfo,
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { SvelteComponent } from "svelte";
 import {
   getAccountByPrincipal,
@@ -878,4 +880,3 @@ export const maturityLastDistribution = ({
       BigInt(SECONDS_IN_DAY)
   );
 };
-
