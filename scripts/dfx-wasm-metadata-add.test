@@ -18,19 +18,19 @@ clap.define short=o long=offline desc="Don't test deployed canisters" variable=O
 source "$(clap.build)"
 
 check_commit() {
-    stdin="$(cat)"
-    echo "$stdin" | grep -qE '[a-fA-F0-9]{40}' || {
-      echo "ERROR: The $canister git_commit_id metadata should include a git commit."
-      echo "  ACTUAL: '$stdin'"
-      exit 1
-    }
+  stdin="$(cat)"
+  echo "$stdin" | grep -qE '[a-fA-F0-9]{40}' || {
+    echo "ERROR: The $canister git_commit_id metadata should include a git commit."
+    echo "  ACTUAL: '$stdin'"
+    exit 1
+  }
 }
-check_service(){
-    stdin="$(cat)"
-    echo "$stdin" | grep -qw service || {
-      echo "ERROR: The $canister candid:service metadata should contain a service definition."
-      exit 1
-    }
+check_service() {
+  stdin="$(cat)"
+  echo "$stdin" | grep -qw service || {
+    echo "ERROR: The $canister candid:service metadata should contain a service definition."
+    exit 1
+  }
 }
 
 (
@@ -38,26 +38,27 @@ check_service(){
   for canister in nns-dapp sns_aggregator; do
     wasm="$(c="$canister" jq -r '.canisters[env.c].wasm' dfx.json)"
     test -e "$wasm" || {
-       echo "ERROR: Please build the wasms before running this test."
-       exit 1
+      echo "ERROR: Please build the wasms before running this test."
+      exit 1
     }
-    gunzip < "$wasm" > "$wasm.unzipped"
+    gunzip <"$wasm" >"$wasm.unzipped"
     ic-wasm "$wasm.unzipped" metadata git_commit_id | check_commit
     ic-wasm "$wasm.unzipped" metadata candid:service | check_service
+    rm "$wasm.unzipped"
   done
 )
 
 [[ "${OFFLINE:-}" == "true" ]] ||
-(
-  echo "It should be possible to query metadata from the sns_aggregator and nns-dapp canisters"
-  for canister in nns-dapp sns_aggregator; do
-    dfx canister status "$canister" || {
-      echo "ERROR: Please deploy the $canister to the local network before running this test"
-      exit 1
-    }
-    dfx canister metadata "$canister" git_commit_id | check_commit
-    dfx canister metadata "$canister" candid:service | check_service
-  done
-)
+  (
+    echo "It should be possible to query metadata from the sns_aggregator and nns-dapp canisters"
+    for canister in nns-dapp sns_aggregator; do
+      dfx canister status "$canister" || {
+        echo "ERROR: Please deploy the $canister to the local network before running this test"
+        exit 1
+      }
+      dfx canister metadata "$canister" git_commit_id | check_commit
+      dfx canister metadata "$canister" candid:service | check_service
+    done
+  )
 
 echo "$(basename "$0") PASSED"
