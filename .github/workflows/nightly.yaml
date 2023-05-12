@@ -40,6 +40,8 @@ jobs:
           file: Dockerfile
           cache-from: type=gha,scope=cached-stage
           outputs: out
+          build-args:
+            COMMIT: ${{ github.sha }}
       - name: 'Record the git commit and any tags'
         if: steps.preflight.outputs.need_release == 'true'
         run: git log | head -n1 > out/commit.txt

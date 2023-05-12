@@ -30,6 +30,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+            COMMIT=${{ github.sha }}
           no-cache: ${{ inputs.no_cache || false }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
