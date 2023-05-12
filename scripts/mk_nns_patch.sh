@@ -35,7 +35,6 @@ if [[ -z "${1:-}" ]]; then
   exit 0
 fi
 
-
 CANISTER_NAME="$1"
 
 RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
