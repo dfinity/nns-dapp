@@ -31,7 +31,6 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
-  RewardEvent,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -43,6 +42,7 @@ import {
   type NeuronInfo,
   type ProposalId,
   type ProposalInfo,
+  type RewardEvent,
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
