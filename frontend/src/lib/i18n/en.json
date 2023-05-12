@@ -659,7 +659,7 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "connecting_sale_canister": "Connecting to swap canister"
+    "connecting_sale_canister": "Retrieving swap required information"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
