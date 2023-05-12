@@ -160,8 +160,24 @@ describe("SnsVotingCard", () => {
             id: [3],
             state: NeuronState.Locked,
           }),
-          // to avoid: cannot be converted to a BigInt because it is not an integer
-          voting_power_percentage_multiplier: 100n,
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByText } = renderVotingCard();
+    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+  });
+
+  it("should display my votes also when all neurons were voted (#2501)", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Locked,
+          }),
         },
       ],
       certified: true,

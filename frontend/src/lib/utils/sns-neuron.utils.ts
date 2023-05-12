@@ -686,7 +686,9 @@ export const snsNeuronVotingPower = ({
   );
 
   // The voting power multiplier is applied against the total voting power of the neuron
-  return vp * (Number(voting_power_percentage_multiplier) / 100);
+  // Rounding to avoid RangeError when converting to BigInt
+  // (voting power is similar to e8s therefore rounding should not decrease accuracy)
+  return Math.round(vp * (Number(voting_power_percentage_multiplier) / 100));
 };
 
 export const ineligibleSnsNeurons = ({
