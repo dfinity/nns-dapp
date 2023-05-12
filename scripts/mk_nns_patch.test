@@ -11,7 +11,7 @@ fi
 
 scripts/mk_nns_patch.sh
 
-if ! git diff --exit-code; then
+if ! git diff --staged --exit-code; then
   echo "FAILED: Patch files should be updated to reflect current differences."
   echo "Run 'scripts/mk_nns_patch.sh' to update patch files."
   git reset --hard HEAD
