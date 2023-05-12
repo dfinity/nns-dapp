@@ -9,7 +9,10 @@ import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
@@ -19,7 +22,8 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { NeuronState, Vote } from "@dfinity/nns";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
-import { SnsVote, type SnsBallot } from "@dfinity/sns";
+import { SnsNeuronPermissionType, SnsVote, type SnsBallot } from "@dfinity/sns";
+import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
@@ -57,18 +61,29 @@ describe("SnsVotingCard", () => {
     ballots: testBallots,
     proposal_creation_timestamp_seconds: BigInt(Date.now()),
   };
+  const permissionsWithTypeVote = [
+    {
+      principal: [mockIdentity.getPrincipal()],
+      permission_type: Int32Array.from([
+        SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+      ]),
+    } as NeuronPermission,
+  ];
+
   const testNeurons: SnsNeuron[] = [
     {
       ...createMockSnsNeuron({
         id: [1],
         state: NeuronState.Locked,
       }),
+      permissions: permissionsWithTypeVote,
     },
     {
       ...createMockSnsNeuron({
         id: [2],
         state: NeuronState.Locked,
       }),
+      permissions: permissionsWithTypeVote,
     },
   ];
   const spyRegisterVote = jest

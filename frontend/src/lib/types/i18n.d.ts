@@ -544,6 +544,7 @@ interface I18nProposal_detail__ineligible {
   headline: string;
   text: string;
   reason_since: string;
+  reason_no_permission: string;
   reason_short: string;
 }
 

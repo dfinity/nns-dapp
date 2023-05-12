@@ -17,8 +17,11 @@
 
   let neuron: SnsNeuron | undefined | null = $store.neuron;
 
-  const openModal = async () => {
+  const openAddPermissionsModal = async () => {
     openSnsNeuronModal({ type: "dev-add-permissions" });
+  };
+  const openRemovePermissionsModal = async () => {
+    openSnsNeuronModal({ type: "dev-remove-permissions" });
   };
 </script>
 
@@ -41,7 +44,13 @@
   {/each}
 
   <div>
-    <button on:click={openModal} class="primary">Add Permissions</button>
+    <button on:click={openAddPermissionsModal} class="primary"
+      >Add Permissions</button
+    >
+    &nbsp;
+    <button on:click={openRemovePermissionsModal} class="primary"
+      >Remove Permissions</button
+    >
   </div>
 </CardInfo>
 
