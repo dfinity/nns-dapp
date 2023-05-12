@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TOP_DIR="$(git rev-parse --show-toplevel)"
+cd "$TOP_DIR"
+
+if [ "$(git status --porcelain)" != "" ]; then
+  echo "$0 should only be run on a clean branch."
+  exit 1
+fi
+
+scripts/mk_nns_patch.sh
+
+if [ "$(git status --porcelain)" != "" ]; then
+  echo "FAILED: Patch files should be updated to reflect current differences."
+  echo "Run 'scripts/mk_nns_patch.sh' to update patch files."
+  git reset --hard HEAD
+  exit 1
+fi
+
+echo "SUCCESS: Patch files are unchanged."
