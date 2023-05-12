@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Verifies that the git commit and service definition are available from deployed canisters.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+(
+  echo "It should be possible to query metadata from the sns_aggregator and nns-dapp canisters"
+  for canister in nns-dapp sns_aggregator; do
+    dfx canister status "$canister" || {
+      echo "ERROR: Please deploy the $canister to the local network before running this test"
+      exit 1
+    }
+    dfx canister metadata "$canister" git_commit_id | tee /dev/stderr | grep -E '[a-fA-F0-9]{64}' || {
+      echo "ERROR: The $canister git_commit_id metadata should include a git commit."
+      exit 1
+    }
+    dfx canister metadata "$canister" candid:service | tee /dev/stderr | grep service: || {
+      echo "ERROR: This "
+    }
+  done
+
+  for canister in nns-dapp sns_aggregator; do
+  done
+)
