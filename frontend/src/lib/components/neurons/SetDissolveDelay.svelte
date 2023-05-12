@@ -11,6 +11,7 @@
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState, TokenAmount } from "@dfinity/nns";
+  import { SECONDS_IN_DAY } from "$lib/constants/constants";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
@@ -41,31 +42,27 @@
 
   let disableUpdate: boolean;
   $: disableUpdate =
-    delayInDays < secondsToDays(minProjectDelayInSeconds) ||
-    delayInDays <= minDelayInDays ||
-    delayInDays > maxDelayInDays;
+    delayInSeconds < minProjectDelayInSeconds ||
+    delayInSeconds <= minDelayInSeconds ||
+    delayInSeconds > maxDelayInSeconds;
 
-  const updateDelays = () => {
-    if (delayInDays < minDelayInDays) {
-      delayInDays = minDelayInDays;
+  const keepDelaysInBounds = () => {
+    if (delayInSeconds < minDelayInSeconds) {
+      delayInSeconds = minDelayInSeconds;
     }
 
-    if (delayInDays > maxDelayInDays) {
-      delayInDays = maxDelayInDays;
+    if (delayInSeconds > maxDelayInSeconds) {
+      delayInSeconds = maxDelayInSeconds;
     }
-
-    delayInSeconds = daysToSeconds(delayInDays);
   };
   const setMin = () => {
-    delayInDays = Math.max(
-      minDelayInDays + 1,
-      secondsToDays(minProjectDelayInSeconds)
+    delayInSeconds = Math.max(
+      minDelayInSeconds + SECONDS_IN_DAY,
+      minProjectDelayInSeconds
     );
-    updateDelays();
   };
   const setMax = () => {
-    delayInDays = maxDelayInDays;
-    updateDelays();
+    delayInSeconds = maxDelayInSeconds;
   };
   const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
@@ -83,7 +80,7 @@
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
-<div class="wrapper" data-tid="set-dissolve-delay">
+<div class="wrapper" data-tid="set-dissolve-delay-component">
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
     <slot name="neuron-id" />
@@ -136,9 +133,9 @@
       <InputRange
         ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
         min={0}
-        max={maxDelayInDays}
-        bind:value={delayInDays}
-        handleInput={updateDelays}
+        max={maxDelayInSeconds}
+        bind:value={delayInSeconds}
+        handleInput={keepDelaysInBounds}
       />
       <div class="details">
         <div>
