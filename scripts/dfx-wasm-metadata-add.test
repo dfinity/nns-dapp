@@ -28,10 +28,7 @@ source "$(clap.build)"
       exit 1
     }
     dfx canister metadata "$canister" candid:service | tee /dev/stderr | grep service: || {
-      echo "ERROR: This "
+      echo "ERROR: The $canister candid:service metadata should contain a service definition."
     }
-  done
-
-  for canister in nns-dapp sns_aggregator; do
   done
 )
