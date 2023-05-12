@@ -358,17 +358,17 @@ describe("sns-utils", () => {
 
     it("returns false on unknown error", () => {
       const error = new Error("Fake the swap has already reached its target");
-      expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(error)).toBe(false);
     });
 
     it("returns false on not error argument", () => {
-      expect(isInternalRefreshBuyerTokensError(null)).toBeFalsy();
-      expect(isInternalRefreshBuyerTokensError(undefined)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(null)).toBe(false);
+      expect(isInternalRefreshBuyerTokensError(undefined)).toBe(false);
       expect(
         isInternalRefreshBuyerTokensError(
           "The swap has already reached its target"
         )
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -393,17 +393,17 @@ sale_participants_count ${saleBuyerCount} 1677707139456
 
     it("returns false on unknown error", () => {
       const error = new Error("Fake the swap has already reached its target");
-      expect(isInternalRefreshBuyerTokensError(error)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(error)).toBe(false);
     });
 
     it("returns false on not error argument", () => {
-      expect(isInternalRefreshBuyerTokensError(null)).toBeFalsy();
-      expect(isInternalRefreshBuyerTokensError(undefined)).toBeFalsy();
+      expect(isInternalRefreshBuyerTokensError(null)).toBe(false);
+      expect(isInternalRefreshBuyerTokensError(undefined)).toBe(false);
       expect(
         isInternalRefreshBuyerTokensError(
           "The swap has already reached its target"
         )
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 });

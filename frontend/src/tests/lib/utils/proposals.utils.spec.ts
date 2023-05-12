@@ -127,7 +127,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -139,7 +139,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -151,7 +151,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -163,7 +163,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -183,7 +183,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -203,7 +203,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -215,7 +215,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -227,7 +227,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -242,7 +242,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: undefined,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should hide proposal", () => {
@@ -405,7 +405,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should ignore ballots neuronIds that are not in neurons", () => {
@@ -601,7 +601,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasMatchingProposals({
@@ -623,7 +623,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasMatchingProposals({
@@ -645,7 +645,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -1038,13 +1038,13 @@ describe("proposals-utils", () => {
           proposalsA: proposals,
           proposalsB: proposals.slice(1),
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         proposalsHaveSameIds({
           proposalsA: generateMockProposals(20).slice(10),
           proposalsB: proposals,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -1208,7 +1208,7 @@ describe("proposals-utils", () => {
           ...mockProposalInfo,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be open for votes short period", () => {
@@ -1232,7 +1232,7 @@ describe("proposals-utils", () => {
           topic: Topic.ManageNeuron,
           proposalTimestampSeconds: BigInt(Math.round(nowSeconds - 3600 * 13)),
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be open for votes quiet threshold", () => {
@@ -1278,7 +1278,7 @@ describe("proposals-utils", () => {
             Math.round(nowSeconds - 3600 * 24 * 5)
           ),
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 

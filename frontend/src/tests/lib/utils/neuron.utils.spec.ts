@@ -285,13 +285,13 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: fullNeuronWithoutEnoughStake,
       };
-      expect(hasValidStake(neuronWithoutEnoughStake)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutEnoughStake)).toBe(false);
 
       const neuronWithoutFullNeuron = {
         ...mockNeuron,
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
-      expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutFullNeuron)).toBe(false);
     });
   });
 

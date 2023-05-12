@@ -44,7 +44,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -54,7 +54,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -64,7 +64,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -74,7 +74,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -84,7 +84,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
     });
   });
 

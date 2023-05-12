@@ -34,13 +34,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         showTransactionFee({
           type: AccountTransactionType.Mint,
           isReceive: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be false for sent Mint and Burn", () => {
@@ -49,13 +49,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Mint,
           isReceive: false,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         showTransactionFee({
           type: AccountTransactionType.Burn,
           isReceive: false,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be true for Sent", () => {
@@ -213,7 +213,7 @@ describe("transactions-utils", () => {
         .e8s as bigint;
 
       expect(type).toBe(transactionType(mockSentToSubAccountTransaction));
-      expect(isReceive).toBeFalsy();
+      expect(isReceive).toBe(false);
       expect(isSend).toBeTruthy();
       expect(from).toBe(mockMainAccount.identifier);
       expect(to).toBe(mockSubAccount.identifier);
@@ -248,7 +248,7 @@ describe("transactions-utils", () => {
       expect(type).toBe(
         transactionType(mockReceivedFromMainAccountTransaction)
       );
-      expect(isSend).toBeFalsy();
+      expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
       expect(from).toBe(mockMainAccount.identifier);
       expect(to).toBe(mockSubAccount.identifier);
@@ -287,7 +287,7 @@ describe("transactions-utils", () => {
           fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
         }).toE8s()
       );
-      expect(isSend).toBeFalsy();
+      expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
     });
   });
@@ -381,8 +381,8 @@ describe("transactions-utils", () => {
     });
 
     it("should not be network Btc", () => {
-      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
-      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
     });
   });
 });

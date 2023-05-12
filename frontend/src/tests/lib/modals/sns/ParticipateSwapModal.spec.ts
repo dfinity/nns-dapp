@@ -98,7 +98,7 @@ describe("ParticipateSwapModal", () => {
     const input = container.querySelector("input[name='amount']");
     input && fireEvent.input(input, { target: { value: icpAmount } });
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);
@@ -131,7 +131,7 @@ describe("ParticipateSwapModal", () => {
       const acceptInput = container.querySelector("[type='checkbox']");
       acceptInput && (await fireEvent.click(acceptInput));
       await waitFor(() =>
-        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(confirmButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(confirmButton);
@@ -172,7 +172,7 @@ describe("ParticipateSwapModal", () => {
       const acceptInput = container.querySelector("[type='checkbox']");
       acceptInput && (await fireEvent.click(acceptInput));
       await waitFor(() =>
-        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(confirmButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(confirmButton);
@@ -200,7 +200,7 @@ describe("ParticipateSwapModal", () => {
         const acceptInput = container.querySelector("[type='checkbox']");
         acceptInput && (await fireEvent.click(acceptInput));
         await waitFor(() =>
-          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+          expect(confirmButton?.hasAttribute("disabled")).toBe(false)
         );
 
         fireEvent.click(confirmButton);
@@ -223,7 +223,7 @@ describe("ParticipateSwapModal", () => {
         const acceptInput = container.querySelector("[type='checkbox']");
         acceptInput && (await fireEvent.click(acceptInput));
         await waitFor(() =>
-          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+          expect(confirmButton?.hasAttribute("disabled")).toBe(false)
         );
 
         fireEvent.click(confirmButton);
@@ -243,7 +243,7 @@ describe("ParticipateSwapModal", () => {
         const input = container.querySelector("input[name='amount']");
         input && (await fireEvent.input(input, { target: { value: "10" } }));
 
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy();
+        expect(participateButton?.hasAttribute("disabled")).toBe(false);
       });
     });
   });

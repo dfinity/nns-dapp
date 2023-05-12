@@ -112,7 +112,7 @@ describe("utils", () => {
     });
 
     it("should return false if undefined", () => {
-      expect(isDefined(undefined)).toBeFalsy();
+      expect(isDefined(undefined)).toBe(false);
     });
   });
 
