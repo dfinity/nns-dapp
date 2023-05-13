@@ -48,7 +48,7 @@ describe("CkBTCWalletActions", () => {
   });
 
   it("should not render a menubar", () => {
-    const { getByTestId, container } = render(CkBTCWalletActions, {
+    const { getByTestId } = render(CkBTCWalletActions, {
       props: {
         ...props,
         inline: true,
