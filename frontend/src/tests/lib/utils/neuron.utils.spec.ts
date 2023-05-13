@@ -1,4 +1,5 @@
 import {
+  SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
@@ -48,6 +49,7 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
+  maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
   neuronCanBeSplit,
@@ -72,6 +74,7 @@ import {
   mockNeuronControlled,
   mockNeuronNotControlled,
 } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -83,6 +86,7 @@ import {
   type BallotInfo,
   type NeuronInfo,
   type ProposalInfo,
+  type RewardEvent,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -1963,6 +1967,32 @@ describe("neuron-utils", () => {
           reason: "short",
         },
       ] as IneligibleNeuronData[]);
+    });
+  });
+
+  describe("maturityLastDistribution", () => {
+    it("should return last distribution timestamp w/o rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        distributed_e8s_equivalent: 100n,
+        total_available_e8s_equivalent: 100n,
+      } as RewardEvent;
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(12234455555n);
+    });
+
+    it("should return last distribution timestamp after 3 rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        distributed_e8s_equivalent: 100n,
+        total_available_e8s_equivalent: 200n,
+        rounds_since_last_distribution: [3n],
+      } as RewardEvent;
+      const threeDays = BigInt(3 * SECONDS_IN_DAY);
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(
+        12234455555n - threeDays
+      );
     });
   });
 });

@@ -15,6 +15,7 @@
     isNeuronControllable,
     formattedStakedMaturity,
     formattedTotalMaturity,
+    maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
   import { accountsStore } from "$lib/stores/accounts.store";
   import Separator from "$lib/components/ui/Separator.svelte";
@@ -67,8 +68,9 @@
             <span slot="value"
               >{secondsToDate(
                 Number(
-                  $nnsLatestRewardEventStore.rewardEvent
-                    .actual_timestamp_seconds
+                  maturityLastDistribution(
+                    $nnsLatestRewardEventStore.rewardEvent
+                  )
                 )
               )}</span
             >
