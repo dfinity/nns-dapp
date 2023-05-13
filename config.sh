@@ -74,13 +74,22 @@ local_deployment_data="$(
   export CANISTER_ID
   test -n "${CANISTER_ID:-}" || unset CANISTER_ID
 
+  : "Get the own canister URL"
+  OWN_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
+  export OWN_CANISTER_URL
+  test -n "$OWN_CANISTER_URL" || {
+    echo "ERROR: Unable to depermine OWN_CANISTER_URL"
+    exit 1
+  } >&2
+
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
-  IDENTITY_SERVICE_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
-  )"
+  IDENTITY_SERVICE_URL="$(dfx-canister-url --network "$DFX_NETWORK" internet_identity)"
   export IDENTITY_SERVICE_URL
-  test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
+  test -n "${IDENTITY_SERVICE_URL:-}" || {
+    echo "ERROR: Unable to deterine internet_identity URL"
+    exit 1
+  } >&2
 
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
@@ -109,9 +118,21 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
-  : "Get the governance canister ID - it should be defined"
+  : "Get the governance canister ID and URL - they should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
+  GOVERNANCE_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-governance)"
+  export GOVERNANCE_CANISTER_URL
+
+  : "Get the ledger canister ID and URL - they should be defined"
+  LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
+  export LEDGER_CANISTER_ID
+  LEDGER_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-ledger)"
+  export LEDGER_CANISTER_URL
+
+  : "Get the ledger canister URL - it should be defined"
+  LEDGER_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-ledger)"
+  export LEDGER_CANISTER_URL
 
   : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
@@ -130,6 +151,7 @@ local_deployment_data="$(
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
+    OWN_CANISTER_URL: env.OWN_CANISTER_URL,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
@@ -138,7 +160,10 @@ local_deployment_data="$(
     ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
-    GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
+    GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID,
+    GOVERNANCE_CANISTER_URL: env.GOVERNANCE_CANISTER_URL,
+    LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
+    LEDGER_CANISTER_URL: env.LEDGER_CANISTER_URL
     } | del(..|select(. == null))'
 )"
 
@@ -155,11 +180,7 @@ json=$(HOST=$(api_host) jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
-  .HOST=env.HOST |
-  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
-  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+  .HOST=env.HOST
 ' dfx.json <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")

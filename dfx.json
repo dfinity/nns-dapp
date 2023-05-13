@@ -6,10 +6,30 @@
       "candid": "target/ic/governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "url": {
+        "ic": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io",
+	"mainnet": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io"
+      },
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "__default": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+        }
+      }
+    },
+    "nns-ledger": {
+      "type": "custom",
+      "candid": "target/ic/ic-icrc1-ledger.did",
+      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "url": {
+        "ic": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io",
+	"mainnet": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io"
+      },
+      "remote": {
+        "id": {
+          "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "__default": "ryjl3-tyaaa-aaaaa-aaaba-cai"
         }
       }
     },
@@ -35,8 +55,8 @@
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "url": {
-        "ic": "https://identity.internetcomputer.org",
-        "mainnet": "https://identity.internetcomputer.org"
+        "ic": "https://identity.internetcomputer.org/",
+        "mainnet": "https://identity.internetcomputer.org/"
       },
       "remote": {
         "id": {
@@ -684,7 +704,6 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
-        "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
