@@ -18,6 +18,10 @@
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
       "build": "./build.sh",
+      "url": {
+        "ic": "https://nns.ic0.app",
+        "mainnet": "https://nns.ic0.app"
+      },
       "remote": {
         "id": {
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
@@ -30,6 +34,10 @@
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "url": {
+        "ic": "https://identity.internetcomputer.org",
+        "mainnet": "https://identity.internetcomputer.org"
+      },
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -107,6 +115,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "ic": "3r4gx-wqaaa-aaaaq-aaaia-cai",
           "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
         }
       }
