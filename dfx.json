@@ -33,6 +33,18 @@
         }
       }
     },
+    "nns-cycles-minting": {
+      "build": "",
+      "candid": "candid/nns-cycles-minting.did",
+      "remote": {
+        "id": {
+          "mainnet": "rkp4c-7iaaa-aaaaa-aaaca-cai",
+          "__default": "rkp4c-7iaaa-aaaaa-aaaca-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": ""
+    },
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
@@ -703,7 +715,6 @@
     "network": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,

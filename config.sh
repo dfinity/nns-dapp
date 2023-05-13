@@ -130,9 +130,9 @@ local_deployment_data="$(
   LEDGER_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-ledger)"
   export LEDGER_CANISTER_URL
 
-  : "Get the ledger canister URL - it should be defined"
-  LEDGER_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-ledger)"
-  export LEDGER_CANISTER_URL
+  : "Get the minter canister ID - it should be defined"
+  CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
+  export CYCLES_MINTING_CANISTER_ID
 
   : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
@@ -163,7 +163,8 @@ local_deployment_data="$(
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID,
     GOVERNANCE_CANISTER_URL: env.GOVERNANCE_CANISTER_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
-    LEDGER_CANISTER_URL: env.LEDGER_CANISTER_URL
+    LEDGER_CANISTER_URL: env.LEDGER_CANISTER_URL,
+    CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID
     } | del(..|select(. == null))'
 )"
 
