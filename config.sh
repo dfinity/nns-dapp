@@ -101,11 +101,8 @@ local_deployment_data="$(
 
   : "Try to find the SNS aggregator URL"
   : "- may be deployed locally"
-  SNS_AGGREGATOR_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
-  )"
+  SNS_AGGREGATOR_URL="$(dfx-canister-url --network "$DFX_NETWORK" sns_aggregator)"
   export SNS_AGGREGATOR_URL
-  test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
 
   : "Try to find the ckBTC canister IDs"
   CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"

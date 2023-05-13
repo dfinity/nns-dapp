@@ -145,6 +145,10 @@
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
       "type": "custom",
+      "url": {
+        "ic": "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io",
+        "mainnet": "https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io"
+      },
       "remote": {
         "id": {
           "ic": "3r4gx-wqaaa-aaaaq-aaaia-cai",
