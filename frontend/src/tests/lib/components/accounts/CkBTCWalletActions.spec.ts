@@ -40,6 +40,25 @@ describe("CkBTCWalletActions", () => {
     expect(button?.textContent).toEqual(en.ckbtc.refresh_balance);
   });
 
+  it("should render a menubar", () => {
+    const { getByTestId } = render(CkBTCWalletActions, { props });
+    expect(
+      getByTestId("manual-refresh-balance-container")?.getAttribute("role")
+    ).toEqual("menubar");
+  });
+
+  it("should not render a menubar", () => {
+    const { getByTestId, container } = render(CkBTCWalletActions, {
+      props: {
+        ...props,
+        inline: true,
+      },
+    });
+    expect(
+      getByTestId("manual-refresh-balance-container")?.hasAttribute("role")
+    ).toEqual(false);
+  });
+
   it("should call update balance", async () => {
     const spyUpdateBalance = jest.spyOn(api, "updateBalance");
 

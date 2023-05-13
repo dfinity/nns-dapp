@@ -14,10 +14,12 @@
   } from "$lib/constants/bitcoin.constants";
   import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
+  export let reload: () => Promise<void>;
 
   let identifier: AccountIdentifierText;
   $: ({ identifier } = account);
@@ -45,7 +47,11 @@
 </script>
 
 <p class="description">
-  {$i18n.ckbtc.incoming_bitcoin_network}
+  {$i18n.ckbtc.incoming_bitcoin_network_part_1}
+
+  <CkBTCWalletActions inline {minterCanisterId} {reload} />
+
+  {$i18n.ckbtc.incoming_bitcoin_network_part_2}
   <a
     data-tid="block-explorer-link"
     href={btcAddressLoaded ? blockExplorerUrl : ""}
