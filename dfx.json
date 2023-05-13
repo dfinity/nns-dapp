@@ -19,8 +19,8 @@
       "wasm": "nns-dapp.wasm",
       "build": "./build.sh",
       "url": {
-        "ic": "https://nns.ic0.app",
-        "mainnet": "https://nns.ic0.app"
+        "ic": "https://nns.internetcomputer.org",
+        "mainnet": "https://nns.internetcomputer.org"
       },
       "remote": {
         "id": {
@@ -179,8 +179,6 @@
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
-        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
-        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
