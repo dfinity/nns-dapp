@@ -100,7 +100,7 @@
     },
     "sns_aggregator": {
       "build": [
-        "./scripts/docker-build"
+        "./build-sns-aggregator.sh"
       ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm",
