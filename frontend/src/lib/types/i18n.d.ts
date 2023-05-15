@@ -920,7 +920,8 @@ interface I18nCkbtc {
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;
-  incoming_bitcoin_network: string;
+  incoming_bitcoin_network_part_1: string;
+  incoming_bitcoin_network_part_2: string;
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;

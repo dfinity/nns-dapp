@@ -659,7 +659,7 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "connecting_sale_canister": "Connecting to swap canister"
+    "connecting_sale_canister": "Retrieving swap required information"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
@@ -872,7 +872,8 @@
     "about_thirty_minutes": "Typically 30-60min",
     "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
     "loading_address": "Loading the address",
-    "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on a",
+    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require 12 confirmations. Then click",
+    "incoming_bitcoin_network_part_2": "to update your ckBTC balance. Check status on a",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
     "confirmations": "Confirmations",

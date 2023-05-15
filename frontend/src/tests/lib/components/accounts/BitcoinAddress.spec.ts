@@ -33,6 +33,7 @@ describe("BitcoinAddress", () => {
     account: mockCkBTCMainAccount,
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+    reload: jest.fn(),
   };
 
   beforeEach(() => {
@@ -115,7 +116,10 @@ describe("BitcoinAddress", () => {
       const { getByText } = render(BitcoinAddress, { props });
 
       expect(
-        getByText(en.ckbtc.incoming_bitcoin_network, { exact: false })
+        getByText(en.ckbtc.incoming_bitcoin_network_part_1, { exact: false })
+      ).toBeInTheDocument();
+      expect(
+        getByText(en.ckbtc.incoming_bitcoin_network_part_2, { exact: false })
       ).toBeInTheDocument();
     });
 
@@ -131,6 +135,13 @@ describe("BitcoinAddress", () => {
       expect(link?.getAttribute("target")).toEqual("_blank");
       expect(link?.getAttribute("rel")).toContain("noopener");
       expect(link?.getAttribute("rel")).toContain("noreferrer");
+    });
+
+    it("should display a call to action to refresh balance", () => {
+      const { getByTestId } = render(BitcoinAddress, { props });
+
+      const action = getByTestId("manual-refresh-balance");
+      expect(action).not.toBeNull();
     });
   });
 });

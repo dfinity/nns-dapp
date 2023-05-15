@@ -175,6 +175,7 @@
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             minterCanisterId={canisters.minterCanisterId}
+            reload={reloadAccount}
           />
 
           <CkBTCTransactionsList
