@@ -1081,7 +1081,7 @@ describe("neurons-services", () => {
     it("should update neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       await services.splitNeuron({
-        neuronId: controlledNeuron.neuronId,
+        neuron: controlledNeuron,
         amount: 2.2,
       });
 
@@ -1096,7 +1096,7 @@ describe("neurons-services", () => {
       const amountWithFee =
         Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
       await services.splitNeuron({
-        neuronId: controlledNeuron.neuronId,
+        neuron: controlledNeuron,
         amount,
       });
 
@@ -1112,7 +1112,7 @@ describe("neurons-services", () => {
       setNoIdentity();
 
       await services.splitNeuron({
-        neuronId: controlledNeuron.neuronId,
+        neuron: controlledNeuron,
         amount: 2.2,
       });
 
@@ -1120,21 +1120,48 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).not.toHaveBeenCalled();
     });
 
-    it("should not update neuron if not controlled by user", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
+    it("should not split neuron if lower HW version than required", async () => {
+      const version: ResponseVersion = {
+        testMode: false,
+        major: 2,
+        minor: 2,
+        patch: 1,
+        deviceLocked: false,
+        targetId: "test",
+        returnCode: LedgerError.NoErrors,
+      };
+      const smallerVersionIdentity = new MockLedgerIdentity({ version });
+      setAccountIdentity(smallerVersionIdentity);
+      const hwAccount = {
+        ...mockHardwareWalletAccount,
+        principal: smallerVersionIdentity.getPrincipal(),
+      };
+      accountsStore.setForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [hwAccount],
       });
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: smallerVersionIdentity.getPrincipal().toText(),
+        },
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
 
       await services.splitNeuron({
-        neuronId: notControlledNeuron.neuronId,
+        neuron,
         amount: 2.2,
       });
 
-      expectToastError(en.error.not_authorized_neuron_action);
+      expectToastError(
+        replacePlaceholders(en.error__ledger.version_not_supported, {
+          $minVersion: "2.3.0",
+          $currentVersion: "2.2.1",
+        })
+      );
       expect(spySplitNeuron).not.toHaveBeenCalled();
-
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
   });
 
