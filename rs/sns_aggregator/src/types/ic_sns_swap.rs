@@ -16,6 +16,7 @@ pub struct Init {
   pub  sns_root_canister_id: String,
   pub  fallback_controller_principal_ids: Vec<String>,
   pub  neuron_minimum_stake_e8s: Option<u64>,
+  pub  confirmation_text: Option<String>,
   pub  nns_governance_canister_id: String,
   pub  transaction_fee_e8s: Option<u64>,
   pub  icp_ledger_canister_id: String,
@@ -106,8 +107,10 @@ pub struct GetBuyerStateRequest { principal_id: Option<candid::Principal> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransferableAmount {
+  pub  transfer_fee_paid_e8s: Option<u64>,
   pub  transfer_start_timestamp_seconds: u64,
   pub  amount_e8s: u64,
+  pub  amount_transferred_e8s: Option<u64>,
   pub  transfer_success_timestamp_seconds: u64,
 }
 

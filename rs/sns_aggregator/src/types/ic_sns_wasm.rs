@@ -76,6 +76,7 @@ pub struct SnsInitPayload {
   pub  token_symbol: Option<String>,
   pub  final_reward_rate_basis_points: Option<u64>,
   pub  neuron_minimum_stake_e8s: Option<u64>,
+  pub  confirmation_text: Option<String>,
   pub  logo: Option<String>,
   pub  name: Option<String>,
   pub  initial_voting_period_seconds: Option<u64>,
