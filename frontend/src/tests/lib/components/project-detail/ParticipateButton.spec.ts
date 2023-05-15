@@ -183,6 +183,24 @@ describe("ParticipateButton", () => {
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
+    it("should not display spinner while loading location if project has restricted countries and user location is loaded", async () => {
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+      userCountryStore.set({ isoCode: "US" });
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(queryByTestId("connecting_sale_canister")).toBeNull();
+      expect(
+        queryByTestId("sns-project-participate-button")
+      ).toBeInTheDocument();
+    });
+
     it("should enable button if user has not committed max already", async () => {
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
 

@@ -54,8 +54,8 @@
     : undefined;
 
   // TODO: Receive this as props
-  let status: TicketStatus = "unknown";
-  $: ({ status } = hasOpenTicketInProcess({
+  let ticketStatus: TicketStatus = "unknown";
+  $: ({ status: ticketStatus } = hasOpenTicketInProcess({
     rootCanisterId,
     ticketsStore: $snsTicketsStore,
   }));
@@ -69,7 +69,7 @@
     }) && !$isUserCountryLoadedStore;
 
   let busy = true;
-  $: busy = status !== "none" || loadingUserCountry;
+  $: busy = ticketStatus !== "none" || loadingUserCountry;
 
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
