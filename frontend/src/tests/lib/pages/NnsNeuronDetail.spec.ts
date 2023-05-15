@@ -36,6 +36,7 @@ describe("NeuronDetail", () => {
   };
   const rewardEvent = {
     ...mockRewardEvent,
+    rounds_since_last_distribution: [3n] as [bigint],
     actual_timestamp_seconds: BigInt(
       new Date("1992-05-22T21:00:00").getTime() / 1000
     ),
@@ -135,7 +136,7 @@ describe("NeuronDetail", () => {
     const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
 
     expect(await po.getMaturityCardPo().getLastDistributionMaturity()).toEqual(
-      "May 22, 1992"
+      "May 19, 1992"
     );
   });
 });

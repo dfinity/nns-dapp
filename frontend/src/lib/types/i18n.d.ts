@@ -544,6 +544,7 @@ interface I18nProposal_detail__ineligible {
   headline: string;
   text: string;
   reason_since: string;
+  reason_no_permission: string;
   reason_short: string;
 }
 
@@ -674,7 +675,6 @@ interface I18nSns_project_detail {
   status_completed: string;
   completed: string;
   sale_end: string;
-  max_left: string;
   max_user_commitment_reached: string;
   getting_sns_open_ticket: string;
   sign_in: string;
@@ -920,7 +920,8 @@ interface I18nCkbtc {
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;
-  incoming_bitcoin_network: string;
+  incoming_bitcoin_network_part_1: string;
+  incoming_bitcoin_network_part_2: string;
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;

@@ -5,6 +5,7 @@
 
   export let minterCanisterId: CanisterId;
   export let reload: () => Promise<void>;
+  export let inline = false;
 
   // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
   const updateBalance = async () =>
@@ -14,9 +15,13 @@
     });
 </script>
 
-<div role="menubar">
+<div
+  role={!inline ? "menubar" : undefined}
+  class:inline
+  data-tid="manual-refresh-balance-container"
+>
   <button
-    class="secondary"
+    class={inline ? "text" : "secondary"}
     type="button"
     on:click={updateBalance}
     data-tid="manual-refresh-balance"
@@ -28,7 +33,16 @@
 <style lang="scss">
   @use "../../themes/mixins/section";
 
-  div {
+  [role="menubar"] {
     @include section.actions;
+  }
+
+  .inline {
+    display: inline-block;
+  }
+
+  .text {
+    text-decoration: underline;
+    padding: 0;
   }
 </style>

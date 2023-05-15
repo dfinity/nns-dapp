@@ -59,7 +59,7 @@ describe("IcpTransactionModal", () => {
     const toggle = container.querySelector("input[id='toggle']");
     toggle && fireEvent.click(toggle);
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);

@@ -16,7 +16,6 @@ import {
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { secondsToDays } from "$lib/utils/date.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
   mockAccountDetails,
@@ -238,7 +237,7 @@ describe("StakeNeuronModal", () => {
       const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
       inputRange &&
         (await fireEvent.input(inputRange, {
-          target: { value: secondsToDays(FIVE_MONTHS) },
+          target: { value: FIVE_MONTHS },
         }));
 
       const updateDelayButton = container.querySelector(
@@ -327,7 +326,7 @@ describe("StakeNeuronModal", () => {
       const ONE_YEAR = 60 * 60 * 24 * 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
-          target: { value: secondsToDays(ONE_YEAR) },
+          target: { value: ONE_YEAR },
         }));
 
       const goToConfirmDelayButton = container.querySelector(
@@ -489,7 +488,7 @@ describe("StakeNeuronModal", () => {
       const ONE_YEAR = 60 * 60 * 24 * 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
-          target: { value: secondsToDays(ONE_YEAR) },
+          target: { value: ONE_YEAR },
         }));
 
       const goToConfirmDelayButton = container.querySelector(

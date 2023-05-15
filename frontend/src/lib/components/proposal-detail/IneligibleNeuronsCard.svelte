@@ -6,6 +6,8 @@
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
   export let minSnsDissolveDelaySeconds: bigint;
@@ -13,7 +15,6 @@
   let visible = false;
   $: visible = ineligibleNeurons.length > 0;
 
-  const reasonSince = $i18n.proposal_detail__ineligible.reason_since;
   let reasonShort: string;
   $: reasonShort = replacePlaceholders(
     $i18n.proposal_detail__ineligible.reason_short,
@@ -23,6 +24,17 @@
       ),
     }
   );
+  const reasonText = ({ reason }: IneligibleNeuronData) =>
+    nonNullish(reason)
+      ? (
+          {
+            since: $i18n.proposal_detail__ineligible.reason_since,
+            "no-permission":
+              $i18n.proposal_detail__ineligible.reason_no_permission,
+            short: reasonShort,
+          } as Record<NeuronIneligibilityReason, string>
+        )[reason]
+      : "unknown";
 </script>
 
 {#if visible}
@@ -41,9 +53,7 @@
           {shortenWithMiddleEllipsis(
             neuron.neuronIdString,
             SNS_NEURON_ID_DISPLAY_LENGTH
-          )}<small
-            >{neuron.reason === "since" ? reasonSince : reasonShort}</small
-          >
+          )}<small>{reasonText(neuron)}</small>
         </li>
       {/each}
     </ul>
