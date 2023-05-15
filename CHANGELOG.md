@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122282
 
 * UI improvements.
 * Minor bugfixes.
