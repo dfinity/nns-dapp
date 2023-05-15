@@ -49,10 +49,7 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
   // D004: User can participate in a sale
-  // TODO: The commitment amount should not be visible if it is 0.
-  // Change to:
-  // expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-  expect(await projectDetail.getCommitmentAmount()).toBe("0");
+  expect(await projectDetail.hasCommitmentAmount()).toBe(false);
   await projectDetail.participate({ amount: 5 });
   expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
 
