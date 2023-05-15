@@ -183,7 +183,7 @@ describe("ParticipateButton", () => {
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
-    it("should not display spinner while loading location if project has restricted countries and user location is loaded", async () => {
+    it("should not display spinner if project has restricted countries, user location is loaded and user has no open ticket", async () => {
       // TODO: GIX-1545 Remove mock and create a summary with deny list
       jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
       userCountryStore.set({ isoCode: "US" });
