@@ -44,6 +44,8 @@
       identifier: account.identifier,
     })
   );
+
+  // TODO: incoming_bitcoin_network_part_1 comes before incoming_bitcoin_network_part_2. It would be more worth creating a component or directive that can replace placeholders of the i18n with Svelte components
 </script>
 
 <p class="description">
