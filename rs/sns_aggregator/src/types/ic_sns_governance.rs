@@ -54,6 +54,12 @@ pub struct GovernanceCachedMetrics {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct MaturityModulation {
+  pub  current_basis_points: Option<i32>,
+  pub  updated_at_timestamp_seconds: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronId { id: Vec<u8> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -93,6 +99,7 @@ pub struct NervousSystemParameters {
   pub  max_age_bonus_percentage: Option<u64>,
   pub  neuron_grantable_permissions: Option<NeuronPermissionList>,
   pub  voting_rewards_parameters: Option<VotingRewardsParameters>,
+  pub  maturity_modulation_disabled: Option<bool>,
   pub  max_number_of_principals_per_neuron: Option<u64>,
 }
 
@@ -111,6 +118,7 @@ pub struct ProposalId { id: u64 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RewardEvent {
+  pub  rounds_since_last_distribution: Option<u64>,
   pub  actual_timestamp_seconds: u64,
   pub  end_timestamp_seconds: Option<u64>,
   pub  distributed_e8s_equivalent: u64,
@@ -153,6 +161,7 @@ pub struct TransferSnsTreasuryFunds {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpgradeSnsControlledCanister {
   pub  new_canister_wasm: Vec<u8>,
+  pub  mode: Option<i32>,
   pub  canister_id: Option<candid::Principal>,
   pub  canister_upgrade_arg: Option<Vec<u8>>,
 }
@@ -373,6 +382,7 @@ pub struct Governance {
   pub  root_canister_id: Option<candid::Principal>,
   pub  id_to_nervous_system_functions: Vec<(u64,NervousSystemFunction,)>,
   pub  metrics: Option<GovernanceCachedMetrics>,
+  pub  maturity_modulation: Option<MaturityModulation>,
   pub  mode: i32,
   pub  parameters: Option<NervousSystemParameters>,
   pub  is_finalizing_disburse_maturity: Option<bool>,
@@ -418,6 +428,20 @@ pub struct ClaimSwapNeuronsResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct fail_stuck_upgrade_in_progress_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct fail_stuck_upgrade_in_progress_ret0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct get_maturity_modulation_arg0 {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetMaturityModulationResponse {
+  pub  maturity_modulation: Option<MaturityModulation>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct get_metadata_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
@@ -457,7 +481,6 @@ pub enum CanisterStatusType { stopped, stopping, running }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefiniteCanisterSettingsArgs {
-  pub  controller: candid::Principal,
   pub  freezing_threshold: candid::Nat,
   pub  controllers: Vec<candid::Principal>,
   pub  memory_allocation: candid::Nat,
@@ -466,10 +489,7 @@ pub struct DefiniteCanisterSettingsArgs {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResultV2 {
-  pub  controller: candid::Principal,
   pub  status: CanisterStatusType,
-  pub  freezing_threshold: candid::Nat,
-  pub  balance: Vec<(Vec<u8>,candid::Nat,)>,
   pub  memory_size: candid::Nat,
   pub  cycles: candid::Nat,
   pub  settings: DefiniteCanisterSettingsArgs,
@@ -596,8 +616,23 @@ impl SERVICE{
   ) -> CallResult<(ClaimSwapNeuronsResponse,)> {
     ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
   }
+  pub async fn fail_stuck_upgrade_in_progress(
+    &self,
+    arg0: fail_stuck_upgrade_in_progress_arg0,
+  ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
+    ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
+  }
   pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
     ic_cdk::call(self.0, "get_build_metadata", ()).await
+  }
+  pub async fn get_latest_reward_event(&self) -> CallResult<(RewardEvent,)> {
+    ic_cdk::call(self.0, "get_latest_reward_event", ()).await
+  }
+  pub async fn get_maturity_modulation(
+    &self,
+    arg0: get_maturity_modulation_arg0,
+  ) -> CallResult<(GetMaturityModulationResponse,)> {
+    ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
   }
   pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<
     (GetMetadataResponse,)
