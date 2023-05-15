@@ -862,21 +862,21 @@ export const filterIneligibleNnsNeurons = ({
         : "short",
   }));
 
+/// Returns timestamp in seconds of last maturity distribution event
 export const maturityLastDistribution = ({
-  distributed_e8s_equivalent,
-  total_available_e8s_equivalent,
   actual_timestamp_seconds,
   rounds_since_last_distribution,
+  settled_proposals,
 }: RewardEvent): bigint => {
-  // Rewards were distributed that round, so the timestamp is correct
-  if (distributed_e8s_equivalent === total_available_e8s_equivalent) {
+  // Rewards were distributed that round (the most recent reward event was not a rollover), so the timestamp is correct
+  if (settled_proposals.length > 0) {
     return actual_timestamp_seconds;
   }
 
   // When there was a reward event, but no rewards were distributed (because of a rollover)
   return (
     actual_timestamp_seconds -
-    (fromNullable(rounds_since_last_distribution) ?? 0n) *
+    (fromNullable(rounds_since_last_distribution) ?? 1n) *
       BigInt(SECONDS_IN_DAY)
   );
 };
