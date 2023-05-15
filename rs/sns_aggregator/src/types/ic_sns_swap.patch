@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 857000679..321ccf5ea 100644
+index bab509dc1..4fe931d81 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -4,14 +4,14 @@
@@ -19,7 +19,7 @@ index 857000679..321ccf5ea 100644
  pub struct Init {
    pub  sns_root_canister_id: String,
    pub  fallback_controller_principal_ids: Vec<String>,
-@@ -74,7 +74,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -75,7 +75,7 @@ pub struct SettleCommunityFundParticipationResult {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -28,7 +28,7 @@ index 857000679..321ccf5ea 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SetModeCallResult { possibility: Option<Possibility_2> }
-@@ -207,13 +207,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
+@@ -210,13 +210,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_sale_parameters_arg0 {}
  
@@ -44,7 +44,7 @@ index 857000679..321ccf5ea 100644
  pub struct Params {
    pub  min_participant_icp_e8s: u64,
    pub  neuron_basket_construction_parameters: Option<
-@@ -284,10 +284,10 @@ pub struct Swap {
+@@ -287,10 +287,10 @@ pub struct Swap {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
