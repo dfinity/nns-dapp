@@ -60,9 +60,11 @@
       minDelayInSeconds + SECONDS_IN_DAY,
       minProjectDelayInSeconds
     );
+    keepDelaysInBounds();
   };
   const setMax = () => {
     delayInSeconds = maxDelayInSeconds;
+    keepDelaysInBounds();
   };
   const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
