@@ -8,10 +8,8 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
-    isNeuronControllableByUser,
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
   import {
     Html,
     KeyValuePairInfo,
@@ -27,12 +25,6 @@
   import { onIntersection } from "$lib/directives/intersection.directives";
 
   export let neuron: NeuronInfo;
-
-  let isControlledByUser: boolean;
-  $: isControlledByUser = isNeuronControllableByUser({
-    neuron,
-    mainAccount: $accountsStore.main,
-  });
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -98,9 +90,7 @@
 </div>
 
 <div class="buttons">
-  {#if isControlledByUser}
-    <SplitNnsNeuronButton {neuron} />
-  {/if}
+  <SplitNnsNeuronButton {neuron} />
 </div>
 
 <Separator />
