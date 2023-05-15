@@ -41,7 +41,6 @@ clean_config() {
 		  "HOST": "https://icp-api.io",
 		  "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
 		  "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
-		  "LEDGER_CANISTER_URL": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io",
 		  "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
 		  "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
 		  "ROBOTS": "<meta name=\"robots\" content=\"noindex, nofollow\" />",
@@ -68,7 +67,6 @@ clean_config() {
 		VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
 		VITE_TVL_CANISTER_ID=ewh3f-3qaaa-aaaap-aazjq-cai
 		VITE_LEDGER_CANISTER_ID=ryjl3-tyaaa-aaaaa-aaaba-cai
-		VITE_LEDGER_CANISTER_URL=https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io
 		VITE_OWN_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
 		VITE_OWN_CANISTER_URL=https://nns.internetcomputer.org
 		VITE_FETCH_ROOT_KEY=false
@@ -105,7 +103,6 @@ clean_config() {
 		    record{ 0="HOST"; 1="https://icp-api.io" };
 		    record{ 0="IDENTITY_SERVICE_URL"; 1="https://identity.internetcomputer.org/" };
 		    record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
-		    record{ 0="LEDGER_CANISTER_URL"; 1="https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io" };
 		    record{ 0="OWN_CANISTER_ID"; 1="qoctq-giaaa-aaaaa-aaaea-cai" };
 		    record{ 0="OWN_CANISTER_URL"; 1="https://nns.internetcomputer.org" };
 		    record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
