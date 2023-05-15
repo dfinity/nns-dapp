@@ -28,7 +28,7 @@ describe("DisburseButton", () => {
 
   it("opens disburse nns neuron modal", async () => {
     // To avoid that the modal requests the accounts
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
     const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,

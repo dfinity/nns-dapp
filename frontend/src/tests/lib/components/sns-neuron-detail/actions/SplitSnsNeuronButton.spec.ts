@@ -52,7 +52,7 @@ describe("SplitSnsNeuronButton", () => {
 
     const button = getByTestId("split-neuron-button");
     expect(button).toBeInTheDocument();
-    expect(button.hasAttribute("disabled")).toBeFalsy();
+    expect(button.hasAttribute("disabled")).toBe(false);
   });
 
   it("should open split neuron modal", async () => {

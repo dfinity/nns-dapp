@@ -1,4 +1,5 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -12,6 +13,7 @@ import {
   filterProjectsStatus,
   hasUserParticipatedToSwap,
   projectRemainingAmount,
+  userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
 import {
@@ -195,16 +197,16 @@ describe("project-utils", () => {
           summary: undefined,
           swapCommitment: undefined,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: null, swapCommitment: undefined })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: undefined, swapCommitment: null })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: null, swapCommitment: null })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("cannot participate to swap if sale is not open", () => {
@@ -213,28 +215,28 @@ describe("project-utils", () => {
           summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("can participate to swap if sale is open", () => {
@@ -259,7 +261,7 @@ describe("project-utils", () => {
             },
           },
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("can participate to swap if max user commitment is not reached", () => {
@@ -269,6 +271,128 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
         })
       ).toBeTruthy();
+    });
+  });
+
+  describe("userCountryIsNeeded", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+    });
+
+    it("country not needed", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country not needed if sale is not open", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country is needed", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(true);
+    });
+
+    it("country not needed if empty list of denied countries", () => {
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country not needed if not logged in", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: false,
+        })
+      ).toBe(false);
+    });
+
+    it("country is not needed if max user commitment is reached", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          swapCommitment: {
+            rootCanisterId: mockSwapCommitment.rootCanisterId,
+            myCommitment: {
+              icp: [
+                createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
+              ],
+            },
+          },
+          loggedIn: true,
+        })
+      ).toBe(false);
     });
   });
 
@@ -285,19 +409,19 @@ describe("project-utils", () => {
         hasUserParticipatedToSwap({
           swapCommitment: undefined,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
           swapCommitment: null,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
           swapCommitment: mockSnsSwapCommitment(principal(3)),
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
@@ -308,7 +432,7 @@ describe("project-utils", () => {
             },
           },
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 

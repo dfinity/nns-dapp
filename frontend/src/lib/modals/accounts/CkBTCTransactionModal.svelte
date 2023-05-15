@@ -11,13 +11,14 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import type { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtc,
+    type ConvertCkBTCToBtcParams,
     retrieveBtc,
   } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
@@ -42,13 +43,22 @@
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
-    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    mustSelectNetwork: true,
     ...(withdrawalAccount && {
       networkReadonly: true,
       selectDestinationMethods: "manual",
       showLedgerFee: false,
     }),
   };
+
+  // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
+  let fee: TokenAmount;
+  $: fee = withdrawalAccount
+    ? TokenAmount.fromE8s({
+        amount: 0n,
+        token: transactionFee.token,
+      })
+    : transactionFee;
 
   let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
     ? isUniverseCkTESTBTC(universeId)
@@ -106,16 +116,20 @@
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
-    const convert = withdrawalAccount ? retrieveBtc : convertCkBTCToBtc;
-
-    const { success } = await convert({
-      source: sourceAccount,
+    const params: ConvertCkBTCToBtcParams = {
       destinationAddress,
       amount,
       universeId,
       canisters,
       updateProgress,
-    });
+    };
+
+    const { success } = withdrawalAccount
+      ? await retrieveBtc(params)
+      : await convertCkBTCToBtc({
+          source: sourceAccount,
+          ...params,
+        });
 
     if (success) {
       toastsSuccess({
@@ -149,9 +163,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: transactionFee.toE8s(),
-      bitcoinEstimatedFee,
-      kytEstimatedFee,
+      transactionFee: fee.toE8s(),
     });
 
     return undefined;
@@ -165,7 +177,7 @@
   on:nnsClose
   bind:currentStep
   {token}
-  {transactionFee}
+  transactionFee={fee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}

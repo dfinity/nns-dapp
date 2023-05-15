@@ -63,7 +63,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should call top up neuron", async () => {
@@ -81,7 +81,7 @@ describe("IncreaseNeuronStakeModal", () => {
       const input = container.querySelector("input[name='amount']");
       input && fireEvent.input(input, { target: { value: icpAmount } });
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);

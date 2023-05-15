@@ -1,5 +1,26 @@
 # Changelog
 
+## Proposal 122282
+
+* UI improvements.
+* Minor bugfixes.
+
+## Proposal 122267
+
+* Receive BTC.
+* Convert ckBTC to BTC.
+* Minor bugfixes.
+
+## Proposal 122210
+
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
+
+## Proposal 121690
+
+* Add BitcoinSetConfig proposal payload support.
+* Minor fixes and UI improvements.
+
 ## Proposal 120468
 * UI fixes.
 * Testing improvements.

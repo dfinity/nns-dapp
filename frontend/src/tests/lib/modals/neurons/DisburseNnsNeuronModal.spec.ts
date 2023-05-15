@@ -53,7 +53,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -143,7 +143,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts store is empty", () => {
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
     });
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
@@ -167,7 +167,7 @@ describe("DisburseNnsNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       const now = Date.now();

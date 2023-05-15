@@ -14,10 +14,12 @@
   } from "$lib/constants/bitcoin.constants";
   import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
+  export let reload: () => Promise<void>;
 
   let identifier: AccountIdentifierText;
   $: ({ identifier } = account);
@@ -38,15 +40,20 @@
 
   onMount(() =>
     loadBtcAddress({
-      universeId,
       minterCanisterId,
       identifier: account.identifier,
     })
   );
+
+  // TODO: incoming_bitcoin_network_part_1 comes before incoming_bitcoin_network_part_2. It would be more worth creating a component or directive that can replace placeholders of the i18n with Svelte components
 </script>
 
 <p class="description">
-  {$i18n.ckbtc.incoming_bitcoin_network}
+  {$i18n.ckbtc.incoming_bitcoin_network_part_1}
+
+  <CkBTCWalletActions inline {minterCanisterId} {reload} />
+
+  {$i18n.ckbtc.incoming_bitcoin_network_part_2}
   <a
     data-tid="block-explorer-link"
     href={btcAddressLoaded ? blockExplorerUrl : ""}
@@ -82,5 +89,9 @@
   .spinner {
     display: inline-block;
     width: 0.8rem;
+  }
+
+  .description {
+    margin-bottom: var(--padding-2x);
   }
 </style>

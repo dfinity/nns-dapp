@@ -11,6 +11,7 @@
   import {
     canUserParticipateToSwap,
     hasUserParticipatedToSwap,
+    userCountryIsNeeded,
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -22,6 +23,8 @@
   import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
   import type { TicketStatus } from "$lib/types/sale";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isUserCountryLoadedStore } from "$lib/stores/user-country.store";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -52,14 +55,22 @@
     : undefined;
 
   // TODO: Receive this as props
-  let status: TicketStatus = "unknown";
-  $: ({ status } = hasOpenTicketInProcess({
+  let ticketStatus: TicketStatus = "unknown";
+  $: ({ status: ticketStatus } = hasOpenTicketInProcess({
     rootCanisterId,
     ticketsStore: $snsTicketsStore,
   }));
 
+  let loadingUserCountry: boolean;
+  $: loadingUserCountry =
+    userCountryIsNeeded({
+      summary: $projectDetailStore?.summary,
+      swapCommitment: $projectDetailStore?.swapCommitment,
+      loggedIn: $authSignedInStore,
+    }) && !$isUserCountryLoadedStore;
+
   let busy = true;
-  $: busy = status !== "none";
+  $: busy = ticketStatus !== "none" || loadingUserCountry;
 
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({

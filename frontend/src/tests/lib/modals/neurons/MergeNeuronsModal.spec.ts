@@ -56,7 +56,7 @@ describe("MergeNeuronsModal", () => {
     neurons: NeuronInfo[],
     hardwareWalletAccounts: Account[] = []
   ): Promise<RenderResult<SvelteComponent>> => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: hardwareWalletAccounts,
     });
@@ -83,7 +83,7 @@ describe("MergeNeuronsModal", () => {
 
     afterEach(() => {
       jest.clearAllMocks();
-      accountsStore.reset();
+      accountsStore.resetForTesting();
     });
 
     it("renders title", async () => {

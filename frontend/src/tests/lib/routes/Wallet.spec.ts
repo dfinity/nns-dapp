@@ -31,6 +31,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
     loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -43,7 +44,7 @@ describe("Wallet", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       })
     );
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
   });
 
   beforeAll(() =>

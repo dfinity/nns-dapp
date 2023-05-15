@@ -1,4 +1,5 @@
 import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
+import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   manageVotesRegistration,
@@ -12,13 +13,18 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import {
+  getSnsNeuronIdAsHexString,
+  snsNeuronVotingPower,
+} from "$lib/utils/sns-neuron.utils";
 import {
   mapProposalInfo as mapSnsProposal,
   toSnsVote,
 } from "$lib/utils/sns-proposals.utils";
 import type {
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuron,
   SnsProposalData,
   SnsVote,
@@ -39,12 +45,14 @@ export const registerSnsVotes = async ({
   proposal,
   vote,
   updateProposalCallback: updateProposalContext,
+  snsParameters,
 }: {
   universeCanisterId: UniverseCanisterId;
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
   vote: SnsVote;
   updateProposalCallback: (proposal: SnsProposalData) => void;
+  snsParameters: SnsNervousSystemParameters;
 }): Promise<void> => {
   const nsFunctions: SnsNervousSystemFunction[] =
     get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
@@ -66,6 +74,7 @@ export const registerSnsVotes = async ({
         vote,
         updateProposalContext,
         toastId,
+        snsParameters,
       });
     },
     postRegistration: async () => {
@@ -73,6 +82,7 @@ export const registerSnsVotes = async ({
         proposal,
         neurons,
         vote,
+        snsParameters,
       });
 
       // replace proposal in the store to make sns proposal filtering work (not yet implemented)
@@ -134,23 +144,33 @@ const proposalAfterVote = ({
   proposal,
   neurons,
   vote,
+  snsParameters,
 }: {
   proposal: SnsProposalData;
   neurons: SnsNeuron[];
   vote: SnsVote;
+  snsParameters: SnsNervousSystemParameters;
 }): SnsProposalData => {
-  const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
-  const optimisticBallots: Array<[string, Ballot]> = Array.from(
-    votedNeuronsIds
-  ).map((id) => [
-    id,
+  // replace ballots of just voted neurons with optimistic ones
+  const optimisticBallots: Array<[string, Ballot]> = neurons.map((neuron) => [
+    // neuron id
+    getSnsNeuronIdAsHexString(neuron),
+    // optimistic ballot
     {
       vote,
       cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
-      // TODO(sns-voting): get voting power if needed
-      voting_power: 0n,
+      voting_power: BigInt(
+        Math.round(
+          snsNeuronVotingPower({
+            neuron,
+            snsParameters,
+          })
+        )
+      ),
     } as Ballot,
   ]);
+  const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
+
   return {
     ...proposal,
     ballots: [
@@ -172,6 +192,7 @@ const registerSnsNeuronsVote = async ({
   vote,
   updateProposalContext,
   toastId,
+  snsParameters,
 }: {
   universeCanisterId: UniverseCanisterId;
   neurons: SnsNeuron[];
@@ -179,6 +200,7 @@ const registerSnsNeuronsVote = async ({
   vote: SnsVote;
   updateProposalContext: (proposal: SnsProposalData) => void;
   toastId: symbol;
+  snsParameters: SnsNervousSystemParameters;
 }) => {
   const identity = await getSnsNeuronIdentity();
   const proposalId = fromDefinedNullable(proposal.id);
@@ -213,6 +235,7 @@ const registerSnsNeuronsVote = async ({
               proposal,
               neurons: successfulVotedNeurons,
               vote: toSnsVote(vote),
+              snsParameters,
             });
             await updateProposalContext(optimisticProposal);
           })
@@ -228,9 +251,14 @@ const registerSnsNeuronsVote = async ({
       `Registering [${neurons.map(getSnsNeuronIdAsHexString)}] votes complete.`
     );
 
+    // shortened neuron ids for toast message
+    const neuronIdStrings = neurons
+      .map(getSnsNeuronIdAsHexString)
+      .map((id) => shortenWithMiddleEllipsis(id, SNS_NEURON_ID_DISPLAY_LENGTH));
+
     processRegisterVoteErrors({
       registerVoteResponses,
-      neuronIdStrings: neurons.map(String),
+      neuronIdStrings,
       proposalIdString: proposalId.id.toString(),
       proposalType: proposalType,
     });

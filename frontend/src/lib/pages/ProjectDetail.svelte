@@ -43,6 +43,8 @@
   import { browser } from "$app/environment";
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { userCountryIsNeeded } from "$lib/utils/projects.utils";
+  import { loadUserCountry } from "$lib/services/user-country.services";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -159,6 +161,16 @@
         $projectDetailStore.swapCommitment = undefined;
       },
     });
+  }
+
+  let shouldLoadUserCountry = false;
+  $: shouldLoadUserCountry = userCountryIsNeeded({
+    summary: $projectDetailStore?.summary,
+    swapCommitment: $projectDetailStore?.swapCommitment,
+    loggedIn: $authSignedInStore,
+  });
+  $: if (shouldLoadUserCountry) {
+    loadUserCountry();
   }
 
   let unsubscribeWatchCommitment: () => void | undefined;

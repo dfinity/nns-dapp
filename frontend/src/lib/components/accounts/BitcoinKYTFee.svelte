@@ -37,7 +37,7 @@
   </p>
 
   <p class="no-margin" data-tid="kyt-estimated-fee">
-    <span class="value">{formatEstimatedFee(kytFee)}</span>
+    <span class="value tabular-num">{formatEstimatedFee(kytFee)}</span>
     <span class="label">{$i18n.ckbtc.btc}</span>
   </p>
 {/if}

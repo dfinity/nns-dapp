@@ -11,7 +11,6 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
@@ -83,11 +82,6 @@
       }
     : undefined;
 
-  let params: SnsParams;
-  $: ({
-    swap: { params },
-  } = summary);
-
   let currentStep: WizardStep | undefined;
   let title: string | undefined;
   $: title =
@@ -98,23 +92,6 @@
       : currentStep?.name === "Progress"
       ? $i18n.sns_sale.participation_in_progress
       : $i18n.accounts.review_transaction;
-
-  let maxCommitment: TokenAmount;
-  $: maxCommitment = TokenAmount.fromE8s({
-    amount: currentUserMaxCommitment({
-      summary,
-      swapCommitment,
-    }),
-    token: ICPToken,
-  });
-
-  let minCommitment: TokenAmount;
-  $: minCommitment = TokenAmount.fromE8s({
-    amount: userHasParticipatedToSwap
-      ? BigInt(0)
-      : params.min_participant_icp_e8s,
-    token: ICPToken,
-  });
 
   let accepted: boolean;
 
@@ -215,11 +192,7 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
-      <AdditionalInfoForm
-        {minCommitment}
-        {maxCommitment}
-        userHasParticipated={userHasParticipatedToSwap}
-      />
+      <AdditionalInfoForm />
     </div>
     <div class="additional-info" slot="additional-info-review">
       <AdditionalInfoReview bind:accepted />

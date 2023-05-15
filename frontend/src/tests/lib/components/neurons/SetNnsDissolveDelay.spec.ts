@@ -14,6 +14,6 @@ describe("SetNnsDissolveDelay", () => {
         delayInSeconds: 0,
       },
     });
-    expect(getByTestId("set-dissolve-delay")).toBeInTheDocument();
+    expect(getByTestId("set-dissolve-delay-component")).toBeInTheDocument();
   });
 });

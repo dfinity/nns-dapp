@@ -60,7 +60,7 @@ describe("NnsAutoStakeMaturity", () => {
       return;
     }
 
-    expect(inputElement.checked).toBeFalsy();
+    expect(inputElement.checked).toBe(false);
   };
 
   it("renders checked if auto stake already on", () => testCheckBox(true));

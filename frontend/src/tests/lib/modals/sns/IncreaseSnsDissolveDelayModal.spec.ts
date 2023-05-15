@@ -111,7 +111,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: Math.round(secondsToDays(SECONDS_IN_YEAR * 2)) },
+        target: { value: SECONDS_IN_YEAR * 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(

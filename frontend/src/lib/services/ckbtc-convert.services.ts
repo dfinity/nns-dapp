@@ -1,6 +1,7 @@
-import { getWithdrawalAccount } from "$lib/services/ckbtc-minter.services";
+import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
+import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
@@ -11,9 +12,17 @@ import {
   MinterInsufficientFundsError,
   MinterMalformedAddressError,
   MinterTemporaryUnavailableError,
+  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  fromNullable,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
+import { get } from "svelte/store";
 import { retrieveBtc as retrieveBtcAPI } from "../api/ckbtc-minter.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
@@ -22,7 +31,10 @@ import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
-export type ConvertCkBTCToBtcParams = IcrcTransferTokensUserParams & {
+export type ConvertCkBTCToBtcParams = Omit<
+  IcrcTransferTokensUserParams,
+  "source"
+> & {
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
   updateProgress: (step: ConvertBtcStep) => void;
@@ -43,12 +55,41 @@ export const convertCkBTCToBtc = async ({
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
-}: ConvertCkBTCToBtcParams): Promise<{
+}: ConvertCkBTCToBtcParams &
+  Pick<IcrcTransferTokensUserParams, "source">): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.INITIALIZATION);
 
-  const account = await getWithdrawalAccount({ minterCanisterId });
+  const getWithdrawalAccount = async (): Promise<
+    WithdrawalAccount | undefined
+  > => {
+    const store = get(ckBTCWithdrawalAccountsStore);
+    const storedWithdrawalAccount = store[universeId.toText()];
+
+    // If a certified withdrawal account has already been loaded in store we can use it to improve performance instead of performing another update call to the backend.
+    if (
+      nonNullish(storedWithdrawalAccount) &&
+      // if account.principal set, then the subAccount is also set as both are set the same time in icrc-ledger.api.getIcrcAccount
+      nonNullish(storedWithdrawalAccount.account.principal) &&
+      storedWithdrawalAccount.certified
+    ) {
+      const {
+        account: { principal, subAccount },
+      } = storedWithdrawalAccount;
+
+      return {
+        owner: principal,
+        subaccount: isNullish(subAccount)
+          ? []
+          : toNullable(arrayOfNumberToUint8Array(subAccount)),
+      };
+    }
+
+    return getWithdrawalAccountServices({ minterCanisterId });
+  };
+
+  const account = await getWithdrawalAccount();
 
   if (isNullish(account)) {
     return { success: false };
@@ -101,7 +142,6 @@ export const convertCkBTCToBtc = async ({
 export const retrieveBtc = async ({
   destinationAddress,
   amount,
-  source,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
@@ -113,7 +153,6 @@ export const retrieveBtc = async ({
   return await retrieveBtcAndReload({
     destinationAddress,
     amount,
-    source,
     universeId,
     canisters: { minterCanisterId, indexCanisterId },
     updateProgress,
@@ -128,12 +167,13 @@ const retrieveBtcAndReload = async ({
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
   blockIndex,
-}: IcrcTransferTokensUserParams & {
-  universeId: UniverseCanisterId;
-  canisters: CkBTCAdditionalCanisters;
-  updateProgress: (step: ConvertBtcStep) => void;
-  blockIndex?: bigint;
-}): Promise<{
+}: Omit<IcrcTransferTokensUserParams, "source"> &
+  Partial<Pick<IcrcTransferTokensUserParams, "source">> & {
+    universeId: UniverseCanisterId;
+    canisters: CkBTCAdditionalCanisters;
+    updateProgress: (step: ConvertBtcStep) => void;
+    blockIndex?: bigint;
+  }): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.SEND_BTC);
@@ -160,14 +200,18 @@ const retrieveBtcAndReload = async ({
     updateProgress(ConvertBtcStep.RELOAD);
 
     // Reload:
-    // - the transactions of the account for which the transfer was executed
+    // - if provided, the transactions of the account for which the transfer was executed
     // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
     await Promise.all([
-      loadCkBTCAccountTransactions({
-        account: source,
-        canisterId: universeId,
-        indexCanisterId,
-      }),
+      ...(nonNullish(source)
+        ? [
+            loadCkBTCAccountTransactions({
+              account: source,
+              canisterId: universeId,
+              indexCanisterId,
+            }),
+          ]
+        : []),
       loadCkBTCWithdrawalAccount({
         universeId,
       }),

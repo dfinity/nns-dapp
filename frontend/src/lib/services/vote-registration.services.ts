@@ -10,6 +10,7 @@ import {
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { registerVoteErrorDetails } from "$lib/utils/proposals.utils";
 import { Vote } from "@dfinity/nns";
@@ -202,27 +203,32 @@ export const processRegisterVoteErrors = ({
   proposalIdString: string;
   proposalType: string;
 }) => {
-  const rejectedResponses = registerVoteResponses.filter(
-    (response: PromiseSettledResult<void>) => {
+  const rejectedResponses: PromiseSettledResult<void>[] = [];
+  const rejectedNeuronIdStrings: string[] = [];
+  registerVoteResponses.forEach(
+    (response: PromiseSettledResult<void>, index: number) => {
       const { status } = response;
+      const message: string | undefined =
+        "reason" in response ? errorToString(response?.reason) : undefined;
 
       // We ignore the error "Neuron already voted on proposal." - i.e. we consider it as a valid response
       // 1. the error truly means the neuron has already voted.
       // 2. if user has for example two neurons with one neuron (B) following another neuron (A). Then if user select both A and B to cast a vote, A will first vote for itself and then vote for the followee B. Then Promise.allSettled above process next neuron B and try to vote again but this vote won't succeed, because it has already been registered by A.
       // TODO(L2-465): discuss with Governance team to either turn the error into a valid response (or warning) with comment or to throw a unique identifier for this particular error.
       const hasAlreadyVoted: boolean =
-        "reason" in response &&
-        response.reason?.detail?.error_message ===
-          "Neuron already voted on proposal.";
+        message === "Neuron already voted on proposal.";
 
-      return status === "rejected" && !hasAlreadyVoted;
+      if (status === "rejected" && !hasAlreadyVoted) {
+        rejectedResponses.push(response);
+        rejectedNeuronIdStrings.push(neuronIdStrings[index]);
+      }
     }
   );
 
   if (rejectedResponses.length > 0) {
     const details: string[] = registerVoteErrorDetails({
-      responses: registerVoteResponses,
-      neuronIdStrings,
+      responses: rejectedResponses,
+      neuronIdStrings: rejectedNeuronIdStrings,
     });
 
     toastsShow({

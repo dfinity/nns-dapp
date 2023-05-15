@@ -3,12 +3,14 @@
  */
 
 import * as ledgerApi from "$lib/api/ledger.api";
+import * as locationApi from "$lib/api/location.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -38,16 +40,19 @@ jest.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-swap-metrics.api");
 jest.mock("$lib/api/sns-sale.api");
 jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/location.api");
 
 const blockedApiPaths = [
   "$lib/api/sns.api",
   "$lib/api/sns-swap-metrics.api",
   "$lib/api/sns-sale.api",
   "$lib/api/ledger.api",
+  "$lib/api/location.api",
 ];
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
+  const countryCode = "CH";
   const newBalance = BigInt(1_000_000_000);
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
@@ -67,6 +72,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
     jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+
+    jest
+      .spyOn(locationApi, "queryUserCountryLocation")
+      .mockResolvedValue(countryCode);
 
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
@@ -285,6 +294,34 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             "[data-tid='token-value']"
           )?.innerHTML
         ).toMatch(formatToken({ value: userCommitment }));
+      });
+
+      describe("no open ticket and no commitment", () => {
+        beforeEach(() => {
+          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: undefined,
+          } as SnsSwapCommitment);
+        });
+
+        it("should not load user's country if no deny list", async () => {
+          // TODO: GIX-1545 Create a summary without deny list
+          render(ProjectDetail, props);
+
+          expect(locationApi.queryUserCountryLocation).not.toBeCalled();
+        });
+
+        it("should load user's country if non-empty deny list", async () => {
+          // TODO: GIX-1545 Remove mock and create a summary with deny list
+          jest
+            .spyOn(summaryGetters, "getDeniedCountries")
+            .mockReturnValue(["US"]);
+
+          render(ProjectDetail, props);
+
+          expect(locationApi.queryUserCountryLocation).toBeCalled();
+        });
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {

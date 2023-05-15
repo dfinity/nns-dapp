@@ -48,7 +48,9 @@
   </p>
 
   <p class="no-margin" data-tid="bitcoin-estimated-fee">
-    <span class="value">{formatEstimatedFee(bitcoinEstimatedFee)}</span>
+    <span class="value tabular-num"
+      >{formatEstimatedFee(bitcoinEstimatedFee)}</span
+    >
     <span class="label">{$i18n.ckbtc.btc}</span>
   </p>
 {/if}

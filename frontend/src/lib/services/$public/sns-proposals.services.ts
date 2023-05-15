@@ -124,19 +124,6 @@ export const registerVoteDemo = async ({
       rootCanisterId,
     });
 
-    const $snsProposalsStore = get(snsProposalsStore);
-
-    console.log(
-      "Proposal after voting:",
-      (
-        $snsProposalsStore[rootCanisterId.toText()]
-          ?.proposals as SnsProposalData[]
-      )?.find(
-        ({ id }) =>
-          fromDefinedNullable(id).id === fromDefinedNullable(proposal.id).id
-      )
-    );
-
     toastsSuccess({
       labelKey: `${registrations} votes were successfully registered`,
     });

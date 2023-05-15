@@ -18,7 +18,7 @@
   </p>
 
   <p class="no-margin" data-tid={testId} class:estimation>
-    <AmountDisplay inline detailed {amount} />
+    <AmountDisplay inline detailed="height_decimals" {amount} />
   </p>
 </div>
 
@@ -28,6 +28,6 @@
   }
 
   .estimation {
-    padding: 0 0 var(--padding);
+    padding: 0 0 var(--padding-0_5x);
   }
 </style>

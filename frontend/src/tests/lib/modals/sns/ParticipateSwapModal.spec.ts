@@ -98,7 +98,7 @@ describe("ParticipateSwapModal", () => {
     const input = container.querySelector("input[name='amount']");
     input && fireEvent.input(input, { target: { value: icpAmount } });
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);
@@ -117,8 +117,8 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are available", () => {
     beforeEach(() => {
-      accountsStore.reset();
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.resetForTesting();
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     const participate = async ({
@@ -131,7 +131,7 @@ describe("ParticipateSwapModal", () => {
       const acceptInput = container.querySelector("[type='checkbox']");
       acceptInput && (await fireEvent.click(acceptInput));
       await waitFor(() =>
-        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(confirmButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(confirmButton);
@@ -172,7 +172,7 @@ describe("ParticipateSwapModal", () => {
       const acceptInput = container.querySelector("[type='checkbox']");
       acceptInput && (await fireEvent.click(acceptInput));
       await waitFor(() =>
-        expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(confirmButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(confirmButton);
@@ -200,7 +200,7 @@ describe("ParticipateSwapModal", () => {
         const acceptInput = container.querySelector("[type='checkbox']");
         acceptInput && (await fireEvent.click(acceptInput));
         await waitFor(() =>
-          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+          expect(confirmButton?.hasAttribute("disabled")).toBe(false)
         );
 
         fireEvent.click(confirmButton);
@@ -223,7 +223,7 @@ describe("ParticipateSwapModal", () => {
         const acceptInput = container.querySelector("[type='checkbox']");
         acceptInput && (await fireEvent.click(acceptInput));
         await waitFor(() =>
-          expect(confirmButton?.hasAttribute("disabled")).toBeFalsy()
+          expect(confirmButton?.hasAttribute("disabled")).toBe(false)
         );
 
         fireEvent.click(confirmButton);
@@ -243,7 +243,7 @@ describe("ParticipateSwapModal", () => {
         const input = container.querySelector("input[name='amount']");
         input && (await fireEvent.input(input, { target: { value: "10" } }));
 
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy();
+        expect(participateButton?.hasAttribute("disabled")).toBe(false);
       });
     });
   });
@@ -253,7 +253,7 @@ describe("ParticipateSwapModal", () => {
     let queryAccountSpy: jest.SpyInstance;
     let queryAccountBalanceSpy: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -290,7 +290,7 @@ describe("ParticipateSwapModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       const now = Date.now();

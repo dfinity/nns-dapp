@@ -47,7 +47,7 @@
     startBusy({ initiator: "split-neuron" });
 
     const id = await splitNeuron({
-      neuronId: neuron.neuronId,
+      neuron,
       amount,
     });
     if (id !== undefined) {

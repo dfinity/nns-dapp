@@ -144,7 +144,7 @@ describe("sns-api", () => {
     jest.clearAllMocks();
 
     snsTicketsStore.reset();
-    accountsStore.reset();
+    accountsStore.resetForTesting();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
@@ -935,7 +935,7 @@ describe("sns-api", () => {
       jest.useFakeTimers().setSystemTime(now);
     });
     it("should call postprocess and APIs", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
@@ -962,7 +962,7 @@ describe("sns-api", () => {
     });
 
     it("should update account's balance in the store", async () => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
@@ -990,7 +990,7 @@ describe("sns-api", () => {
         owner: mockIdentity.getPrincipal(),
         subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
       });
-      accountsStore.set({
+      accountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });

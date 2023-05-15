@@ -56,6 +56,12 @@ jest.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+  return {
+    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Accounts", () => {
   beforeAll(() => {
     jest
@@ -88,7 +94,7 @@ describe("Accounts", () => {
       accounts: [mockSnsMainAccount],
     });
 
-    accountsStore.set(mockAccountsStoreData);
+    accountsStore.setForTesting(mockAccountsStoreData);
   });
 
   it("should render NnsAccounts by default", () => {

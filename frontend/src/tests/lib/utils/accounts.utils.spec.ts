@@ -162,14 +162,14 @@ describe("accounts-utils", () => {
             network: undefined,
             rootCanisterId: OWN_CANISTER_ID,
           })
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
           invalidAddress({
             address: mockAddressInputValid,
             network: TransactionNetwork.ICP,
             rootCanisterId: OWN_CANISTER_ID,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return false for Icrc accounts", () => {
@@ -179,14 +179,14 @@ describe("accounts-utils", () => {
             network: undefined,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
           invalidAddress({
             address: subaccountString,
             network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return false for BTC", () => {
@@ -196,7 +196,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_TESTNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should not be a valid ICP address", () => {
@@ -254,7 +254,7 @@ describe("accounts-utils", () => {
       });
 
       it("should be a valid ICP address", () => {
-        expect(invalidIcpAddress(mockAddressInputValid)).toBeFalsy();
+        expect(invalidIcpAddress(mockAddressInputValid)).toBe(false);
       });
 
       it("should return false for sns accounts", () => {
@@ -274,7 +274,7 @@ describe("accounts-utils", () => {
       });
 
       it("should return false for sns accounts", () => {
-        expect(invalidIcrcAddress(subaccountString)).toBeFalsy();
+        expect(invalidIcrcAddress(subaccountString)).toBe(false);
       });
     });
 
@@ -286,7 +286,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_TESTNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
 
         expect(
           invalidAddress({
@@ -294,7 +294,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_MAINNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return invalid for BTC", () => {
@@ -356,7 +356,7 @@ describe("accounts-utils", () => {
     });
 
     it("should not be an empty address", () => {
-      expect(emptyAddress("test")).toBeFalsy();
+      expect(emptyAddress("test")).toBe(false);
     });
   });
 
@@ -382,12 +382,12 @@ describe("accounts-utils", () => {
     });
 
     it("returns false if type no hardware wallet", () => {
-      expect(isAccountHardwareWallet(mockMainAccount)).toBeFalsy();
-      expect(isAccountHardwareWallet(mockSubAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockMainAccount)).toBe(false);
+      expect(isAccountHardwareWallet(mockSubAccount)).toBe(false);
     });
 
     it("returns false if no account", () => {
-      expect(isAccountHardwareWallet(undefined)).toBeFalsy();
+      expect(isAccountHardwareWallet(undefined)).toBe(false);
     });
   });
 
@@ -649,6 +649,6 @@ describe("accounts-utils", () => {
     it("should have accounts", () =>
       expect(hasAccounts([mockMainAccount])).toBeTruthy());
 
-    it("should not have accounts", () => expect(hasAccounts([])).toBeFalsy());
+    it("should not have accounts", () => expect(hasAccounts([])).toBe(false));
   });
 });

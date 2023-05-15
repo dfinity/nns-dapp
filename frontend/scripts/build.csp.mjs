@@ -206,6 +206,9 @@ const cspConnectSrc = () => {
     "https://identity.ic0.app",
     // We still allow users to access the app with the old URL
     "https://nns.ic0.app",
+    // Location services
+    "https://api.geoiplookup.net",
+    "https://api.iplocation.net",
     "${{OWN_CANISTER_URL}}",
     "${{HOST}}",
     "${{GOVERNANCE_CANISTER_URL}}",
@@ -214,6 +217,8 @@ const cspConnectSrc = () => {
     // TODO: solve with a worker
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
+    // Used for the metrics of Sonic launch.
+    "https://24scz-zyaaa-aaaaq-aaapq-cai.raw.ic0.app",
   ];
 
   if (isAggregatorCanisterUrlDefined) {

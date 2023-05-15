@@ -53,7 +53,7 @@ describe("sns.store", () => {
       const $snsProposalsStore = get(snsProposalsStore);
 
       expect($snsProposalsStore?.proposals).toEqual(proposals);
-      expect($snsProposalsStore?.certified).toBeFalsy();
+      expect($snsProposalsStore?.certified).toBe(false);
     });
 
     it("should filter open proposals", () => {
