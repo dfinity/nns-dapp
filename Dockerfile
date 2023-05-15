@@ -89,6 +89,8 @@ RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-a
 
 # Title: Gets the mainnet config, used for builds
 # Args: None.  This is fixed and studiously avoids depending on variables such as DFX_NETWORK.
+# Note: This MUST NOT be used as an input for the frontend or wasm.
+#       The mainnet config is compiled in and may be overridden using deploy args.
 FROM builder AS mainnet_configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh /build/
@@ -97,8 +99,6 @@ RUN mkdir -p frontend
 ENV DFX_NETWORK=mainnet
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-arg-${DFX_NETWORK}.bin
-COPY .git .git
-RUN git rev-parse HEAD > /config/git_commit
 
 # Title: Image to build the nns-dapp frontend.
 FROM builder AS build_frontend
@@ -142,8 +142,8 @@ RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
-COPY --from=mainnet_configurator /config/git_commit /config/git_commit
-RUN scripts/dfx-wasm-metadata-add --commit "$(cat /config/git_commit)" --canister_name nns-dapp --verbose
+ARG COMMIT
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
@@ -168,8 +168,8 @@ COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
-COPY --from=mainnet_configurator /config/git_commit /config/git_commit
-RUN scripts/dfx-wasm-metadata-add --commit "$(cat /config/git_commit)" --canister_name sns_aggregator --verbose
+ARG COMMIT
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
