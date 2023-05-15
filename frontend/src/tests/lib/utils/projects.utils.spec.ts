@@ -12,10 +12,12 @@ import {
   filterCommittedProjects,
   filterProjectsStatus,
   hasUserParticipatedToSwap,
+  participateButtonStatus,
   projectRemainingAmount,
   userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createTransferableAmount,
   mockSnsFullProject,
@@ -27,7 +29,7 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 
 describe("project-utils", () => {
   describe("filter", () => {
@@ -957,6 +959,222 @@ describe("project-utils", () => {
         amountE8s: participationE8s,
       });
       expect(expected).toBe(false);
+    });
+  });
+
+  describe.only("participateButtonStatus", () => {
+    const summary: SnsSummary = {
+      ...mockSnsFullProject.summary,
+    };
+
+    const notOpenSummary: SnsSummary = {
+      ...mockSnsFullProject.summary,
+      swap: {
+        ...mockSnsFullProject.summary.swap,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    };
+
+    const userNoCommitment: SnsSwapCommitment = {
+      rootCanisterId: mockSnsFullProject.rootCanisterId,
+      myCommitment: undefined,
+    };
+
+    const testTicket: SnsSwapTicket = {
+      creation_time: BigInt(nowInSeconds()),
+      ticket_id: 123n,
+      account: [
+        {
+          owner: [mockPrincipal],
+          subaccount: [],
+        },
+      ],
+      amount_icp_e8s: BigInt(1000_000_000),
+    };
+
+    it("returns 'logged-out' if user is not logged in", () => {
+      const expected = participateButtonStatus({
+        loggedIn: false,
+        summary,
+        swapCommitment: userNoCommitment,
+        userCountry: undefined,
+        ticket: null,
+      });
+      expect(expected).toBe("logged-out");
+    });
+
+    it("returns 'loading' if summary or swap are still fetching", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: undefined,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: null,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: null,
+          swapCommitment: userNoCommitment,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: undefined,
+          swapCommitment: userNoCommitment,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("loading");
+    });
+
+    it("returns 'loading' if ticket is still fetching or it's open", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: "CH",
+          ticket: undefined,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: "CH",
+          ticket: testTicket,
+        })
+      ).toBe("loading");
+    });
+
+    it("returns 'disabled-no-open' if project is not open", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: notOpenSummary,
+          swapCommitment: userNoCommitment,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("disabled-no-open");
+    });
+
+    it("returns 'disabled-max-participation' if user already participated with max amount", () => {
+      const userMaxCommitment: SnsSwapCommitment = {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        myCommitment: {
+          icp: [
+            createTransferableAmount(
+              summary.swap.params.max_participant_icp_e8s + BigInt(1)
+            ),
+          ],
+        },
+      };
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userMaxCommitment,
+          userCountry: "CH",
+          ticket: null,
+        })
+      ).toBe("disabled-max-participation");
+    });
+
+    it("returns 'enabled' if there are no restricted countries", () => {
+      // TODO: GIX-1545 Remove mock and create a summary with empty deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: undefined,
+          ticket: null,
+        })
+      ).toBe("enabled");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: new Error("Failed to get user country"),
+          ticket: null,
+        })
+      ).toBe("enabled");
+    });
+
+    describe("when project has a restricted countries list", () => {
+      beforeEach(() => {
+        // TODO: GIX-1545 Remove mock and create a summary with deny list
+        jest
+          .spyOn(summaryGetters, "getDeniedCountries")
+          .mockReturnValue(["CH"]);
+      });
+
+      it("returns 'disabled-no-eligible' if user is in a restricted country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary,
+            swapCommitment: userNoCommitment,
+            userCountry: "CH",
+            ticket: null,
+          })
+        ).toBe("disabled-no-eligible");
+      });
+
+      it("returns 'loading' if no user country but restricted list is not empty", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary,
+            swapCommitment: userNoCommitment,
+            userCountry: undefined,
+            ticket: null,
+          })
+        ).toBe("loading");
+      });
+
+      it("returns 'enabled' if it fails to get the user country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary,
+            swapCommitment: userNoCommitment,
+            userCountry: new Error("Failed to get user country"),
+            ticket: null,
+          })
+        ).toBe("enabled");
+      });
+
+      it("returns 'enabled' if user is NOT in a restricted country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary,
+            swapCommitment: userNoCommitment,
+            userCountry: "SP",
+            ticket: null,
+          })
+        ).toBe("enabled");
+      });
     });
   });
 });
