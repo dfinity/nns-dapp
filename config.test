@@ -38,7 +38,6 @@ clean_config() {
 		  },
 		  "FETCH_ROOT_KEY": false,
 		  "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-		  "GOVERNANCE_CANISTER_URL": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io",
 		  "HOST": "https://icp-api.io",
 		  "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
 		  "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -67,7 +66,6 @@ clean_config() {
 		VITE_CYCLES_MINTING_CANISTER_ID=rkp4c-7iaaa-aaaaa-aaaca-cai
 		VITE_WASM_CANISTER_ID=qaa6y-5yaaa-aaaaa-aaafa-cai
 		VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
-		VITE_GOVERNANCE_CANISTER_URL=https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io
 		VITE_TVL_CANISTER_ID=ewh3f-3qaaa-aaaap-aazjq-cai
 		VITE_LEDGER_CANISTER_ID=ryjl3-tyaaa-aaaaa-aaaba-cai
 		VITE_LEDGER_CANISTER_URL=https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io
@@ -104,7 +102,6 @@ clean_config() {
 		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}" };
 		    record{ 0="FETCH_ROOT_KEY"; 1="false" };
 		    record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
-		    record{ 0="GOVERNANCE_CANISTER_URL"; 1="https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io" };
 		    record{ 0="HOST"; 1="https://icp-api.io" };
 		    record{ 0="IDENTITY_SERVICE_URL"; 1="https://identity.internetcomputer.org/" };
 		    record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
