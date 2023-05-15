@@ -217,6 +217,8 @@ const cspConnectSrc = () => {
     // TODO: solve with a worker
     // Used for the metrics of OC launch
     "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
+    // Used for the metrics of Sonic launch.
+    "https://24scz-zyaaa-aaaaq-aaapq-cai.raw.ic0.app",
   ];
 
   if (isAggregatorCanisterUrlDefined) {
