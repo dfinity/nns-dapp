@@ -22,24 +22,24 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
 # Note: Here we play a bit with the idea of storing config in files, one file per parameter.
 FROM base as tool_versions
 SHELL ["bash", "-c"]
-RUN mkdir -p config
+RUN mkdir -p /config
 COPY dfx.json dfx.json
 ENV NODE_VERSION=16.17.1
-RUN jq -r .dfx dfx.json > config/dfx_version
-RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
-RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
-RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
-RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
-RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
+RUN jq -r .dfx dfx.json > /config/dfx_version
+RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > /config/node_version
+RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > /config/didc_version
+RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > /config/optimizer_version
+RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > /config/wasm_nm_version
+RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > /config/ic_wasm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
 SHELL ["bash", "-c"]
 # Get tool versions
-COPY --from=tool_versions /config/*_version config/
+COPY --from=tool_versions //config/*_version /config/
 # Install node
 RUN npm install -g n
-RUN n "$(cat config/node_version)"
+RUN n "$(cat /config/node_version)"
 RUN node --version
 RUN npm --version
 # Install Rust and Cargo in /opt
@@ -52,7 +52,7 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
 # Install IC CDK optimizer
-RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
+RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat /config/optimizer_version)/ic-cdk-optimizer-$(cat /config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat /config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
@@ -67,12 +67,12 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+RUN DFX_VERSION="$(cat /config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
-RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
+RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat /config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
-RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
-RUN cargo install "ic-wasm@$(cat config/ic_wasm_version)"
+RUN cargo install "wasm-nm@$(cat /config/wasm_nm_version)" && command -v wasm-nm
+RUN cargo install "ic-wasm@$(cat /config/ic_wasm_version)"
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.
