@@ -213,8 +213,6 @@
     "mainnet": {
       "config": {
         "FETCH_ROOT_KEY": false,
-        "API_HOST": "https://icp-api.io",
-        "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,

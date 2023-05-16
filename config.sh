@@ -28,42 +28,6 @@ ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 JSON_OUT="deployment-config.json"
 CANDID_ARGS_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
 
-first_not_null() {
-  for x in "$@"; do
-    if [ "$x" != "null" ]; then
-      echo "$x"
-      return
-    fi
-  done
-  echo "null"
-}
-
-static_host() {
-  first_not_null \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json)" \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
-}
-
-api_host() {
-  first_not_null \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
-}
-
-# Gets the static content URL for a canister based on its ID.
-# Uses the STATIC_HOST to create the URL, which is appropriate to fetch static content.
-canister_static_url_from_id() {
-  : "If we have a canister ID, insert it into HOST as a subdomain."
-  test -z "${1:-}" || { static_host | sed -E "s,^(https?://)?,&${1}.,g"; }
-}
-
-# Gets the api URL for a canister based on its ID.
-# Uses the API_HOST to create the URL, which is appropriate for Candid API calls.
-canister_api_url_from_id() {
-  : "If we have a canister ID, insert it into HOST as a subdomain."
-  test -z "${1:-}" || { api_host | sed -E "s,^(https?://)?,&${1}.,g"; }
-}
-
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
