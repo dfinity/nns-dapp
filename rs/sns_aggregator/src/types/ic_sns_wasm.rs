@@ -68,6 +68,9 @@ pub enum InitialTokenDistribution {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Countries { iso_codes: Vec<String> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsInitPayload {
   pub  url: Option<String>,
   pub  max_dissolve_delay_seconds: Option<u64>,
@@ -91,6 +94,7 @@ pub struct SnsInitPayload {
   pub  reward_rate_transition_duration_seconds: Option<u64>,
   pub  token_name: Option<String>,
   pub  proposal_reject_cost_e8s: Option<u64>,
+  pub  restricted_countries: Option<Countries>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
