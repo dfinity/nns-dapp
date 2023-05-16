@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index a8b595640..ab7f0122d 100644
+index a8b595640..0bb086fa1 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -4,7 +4,7 @@
+@@ -4,17 +4,17 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -11,8 +11,11 @@ index a8b595640..ab7f0122d 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
-@@ -14,7 +14,7 @@ use ic_cdk::api::call::CallResult;
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
+ // use ic_cdk::api::call::CallResult;
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Countries { iso_codes: Vec<String> }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
