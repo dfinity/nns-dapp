@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXX
+
+* Improve participation UX.
+* Fix number formatting on max button click.
+* Minor fixes and UI improvements.
+
 ## Proposal 122282
 
 * UI improvements.
