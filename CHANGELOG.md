@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXX
+
+* Improve participation UX.
+* Simplifications to reduce stress on the system during upcoming SNS swaps.
+* Fix metrics API.
+* Fix number formatting on max button click.
+* Minor fixes and UI improvements.
+
 ## Proposal 122282
 
 * UI improvements.
