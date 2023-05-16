@@ -4,7 +4,7 @@
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
@@ -14,7 +14,7 @@ use ic_cdk::api::call::CallResult;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Countries { iso_codes: Vec<String> }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Init {
   pub  sns_root_canister_id: String,
   pub  fallback_controller_principal_ids: Vec<String>,
@@ -302,8 +302,8 @@ pub struct DerivedState {
   pub  cf_neuron_count: Option<u64>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct GetStateResponse { swap: Option<Swap>, derived: Option<DerivedState> }
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ListCommunityFundParticipantsRequest {
