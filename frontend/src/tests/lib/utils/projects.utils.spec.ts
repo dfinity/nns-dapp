@@ -1063,7 +1063,7 @@ describe("project-utils", () => {
       ).toBe("loading");
     });
 
-    it("returns 'disabled-no-open' if project is not open", () => {
+    it("returns 'disabled-not-open' if project is not open", () => {
       expect(
         participateButtonStatus({
           loggedIn: true,
@@ -1072,7 +1072,7 @@ describe("project-utils", () => {
           userCountry: "CH",
           ticket: null,
         })
-      ).toBe("disabled-no-open");
+      ).toBe("disabled-not-open");
     });
 
     it("returns 'disabled-max-participation' if user already participated with max amount", () => {
@@ -1128,7 +1128,7 @@ describe("project-utils", () => {
           .mockReturnValue(["CH"]);
       });
 
-      it("returns 'disabled-no-eligible' if user is in a restricted country", () => {
+      it("returns 'disabled-not-eligible' if user is in a restricted country", () => {
         expect(
           participateButtonStatus({
             loggedIn: true,
@@ -1137,7 +1137,7 @@ describe("project-utils", () => {
             userCountry: "CH",
             ticket: null,
           })
-        ).toBe("disabled-no-eligible");
+        ).toBe("disabled-not-eligible");
       });
 
       it("returns 'loading' if no user country but restricted list is not empty", () => {
