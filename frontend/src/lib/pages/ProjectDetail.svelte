@@ -33,7 +33,6 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import {
-    cancelPollGetOpenTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
@@ -273,7 +272,8 @@
 
     // TODO: Improve cancellatoin of actions onDestroy
     // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
-    cancelPollGetOpenTicket();
+    // TODO: Reenable https://dfinity.atlassian.net/browse/GIX-1574
+    // cancelPollGetOpenTicket();
 
     // Hide toasts when moving away from the page
     hidePollingToast();
