@@ -962,7 +962,7 @@ describe("project-utils", () => {
     });
   });
 
-  describe.only("participateButtonStatus", () => {
+  describe("participateButtonStatus", () => {
     const summary: SnsSummary = {
       ...mockSnsFullProject.summary,
     };

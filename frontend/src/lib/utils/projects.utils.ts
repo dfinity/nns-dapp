@@ -266,8 +266,8 @@ export const validParticipation = ({
 
 type ParticipationButtonStatus =
   | "disabled-max-participation"
-  | "disabled-no-eligible"
-  | "disabled-no-open"
+  | "disabled-not-eligible"
+  | "disabled-not-open"
   | "enabled"
   | "loading"
   | "logged-out";
@@ -275,13 +275,13 @@ type ParticipationButtonStatus =
 /**
  * Returns the status of the Participate Button.
  *
- * There are 4 possible statuses:
+ * There are 6 possible statuses:
  * - logged-out: the user is not logged in.
  * - loading: the status is not yet known. Any of the resources is stil being fetched.
  * - disabled-no-open: the project is not open.
- * - disabled-max-participation: the user has already participated to the swap with the maximum per user and cannot participate again.
- * - disabled-no-eligible: the user is not eligible to participate to the swap. E.g. user location in the restricted countries list.
- * - enabled: the user can participate to the swap.
+ * - disabled-max-participation: the user has already participated in the swap with the maximum per user and cannot participate again.
+ * - disabled-no-eligible: the user is not eligible to participate in the swap. E.g. user location in the restricted countries list.
+ * - enabled: the user can participate in the swap.
  *
  * logged-out:
  * - The user is not logged in.
@@ -293,22 +293,22 @@ type ParticipationButtonStatus =
  * disabled-max-participation:
  * - The user has already participated to the swap with the maximum per user.
  *
- * disabled-no-eligible:
+ * disabled-not-eligible:
  * - The user is in a restricted country.
  *
- * disabled-no-open:
+ * disabled-not-open:
  * - The project is not open.
  *
  * enabled:
  * - None of the above.
  *
  * @param {Object} params
- * @param {SnsSummary | null | undefined} params.summary
- * @param {SnsSwapCommitment | null | undefined} params.swapCommitment
- * @param {SnsSwapTicket | null | undefined} params.ticket
- * @param {boolean} params.loggedIn
- * @param {CountryCode | undefined | Error} params.userCountry
- * @returns {ParticipationButtonStatus}
+ * @param {SnsSummary | null | undefined} params.summary SNS Summary
+ * @param {SnsSwapCommitment | null | undefined} params.swapCommitment User's swap commitment
+ * @param {SnsSwapTicket | null | undefined} params.ticket The open ticket of the user. The meaning of the types is the same as in ticketsStore.
+ * @param {boolean} params.loggedIn Whether the user is logged in or not.
+ * @param {CountryCode | undefined | Error} params.userCountry The location of the user. The meaning of the types is the same as in userCountryStore.
+ * @returns {ParticipationButtonStatus} A string representing the status of the button.
  */
 export const participateButtonStatus = ({
   summary,
@@ -333,7 +333,7 @@ export const participateButtonStatus = ({
   }
 
   if (!isProjectOpen(summary)) {
-    return "disabled-no-open";
+    return "disabled-not-open";
   }
 
   // If `ticket` is undefined, it means that the ticket is still being fetched.
@@ -351,7 +351,8 @@ export const participateButtonStatus = ({
     return "disabled-max-participation";
   }
 
-  if (getDeniedCountries(summary).length > 0) {
+  const projectDeniedCountries = getDeniedCountries(summary);
+  if (projectDeniedCountries.length > 0) {
     // We tried to get the user country but it failed.
     // We don't want to block the user from participating.
     if (userCountry instanceof Error) {
@@ -362,8 +363,8 @@ export const participateButtonStatus = ({
       return "loading";
     }
 
-    if (getDeniedCountries(summary).includes(userCountry)) {
-      return "disabled-no-eligible";
+    if (projectDeniedCountries.includes(userCountry)) {
+      return "disabled-not-eligible";
     }
   }
 
