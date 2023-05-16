@@ -36,7 +36,9 @@ for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
 done
 
 if [[ "$failed_output" != "" ]]; then
-  echo "Failed on some canisters:"
-  echo "$failed_output"
+  {
+    echo "Failed on some canisters:"
+    echo "$failed_output"
+  } >&2
   exit 1
 fi
