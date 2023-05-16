@@ -211,8 +211,6 @@ const cspConnectSrc = () => {
     "https://api.iplocation.net",
     "${{OWN_CANISTER_URL}}",
     "${{HOST}}",
-    "${{GOVERNANCE_CANISTER_URL}}",
-    "${{LEDGER_CANISTER_URL}}",
     "${{SNS_AGGREGATOR_URL}}",
     // TODO: solve with a worker
     // Used for the metrics of OC launch
