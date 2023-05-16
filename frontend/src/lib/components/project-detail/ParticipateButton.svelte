@@ -14,6 +14,7 @@
     userCountryIsNeeded,
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import type { Principal } from "@dfinity/principal";
@@ -77,51 +78,53 @@
   });
 </script>
 
-{#if lifecycle === SnsSwapLifecycle.Open}
-  <BottomSheet>
-    <div role="toolbar">
-      <SignInGuard>
-        {#if userCanParticipateToSwap}
-          <!-- TODO: Disable button until we have the commitment of the user -->
-          {#if busy}
-            <div class="loader" data-tid="connecting_sale_canister">
-              <SpinnerText
-                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+<TestIdWrapper testId="participate-button-component">
+  {#if lifecycle === SnsSwapLifecycle.Open}
+    <BottomSheet>
+      <div role="toolbar">
+        <SignInGuard>
+          {#if userCanParticipateToSwap}
+            <!-- TODO: Disable button until we have the commitment of the user -->
+            {#if busy}
+              <div class="loader" data-tid="connecting_sale_canister">
+                <SpinnerText
+                  >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+                >
+              </div>
+            {:else}
+              <button
+                disabled={busy}
+                on:click={openModal}
+                class="primary participate"
+                data-tid="sns-project-participate-button"
               >
-            </div>
+                {userHasParticipatedToSwap
+                  ? $i18n.sns_project_detail.increase_participation
+                  : $i18n.sns_project_detail.participate}
+              </button>
+            {/if}
           {:else}
-            <button
-              disabled={busy}
-              on:click={openModal}
-              class="primary participate"
-              data-tid="sns-project-participate-button"
+            <Tooltip
+              id="sns-project-participate-button-tooltip"
+              text={$i18n.sns_project_detail.max_user_commitment_reached}
             >
-              {userHasParticipatedToSwap
-                ? $i18n.sns_project_detail.increase_participation
-                : $i18n.sns_project_detail.participate}
-            </button>
+              <button
+                class="primary"
+                data-tid="sns-project-participate-button"
+                disabled>{$i18n.sns_project_detail.participate}</button
+              >
+            </Tooltip>
           {/if}
-        {:else}
-          <Tooltip
-            id="sns-project-participate-button-tooltip"
-            text={$i18n.sns_project_detail.max_user_commitment_reached}
-          >
-            <button
-              class="primary"
-              data-tid="sns-project-participate-button"
-              disabled>{$i18n.sns_project_detail.participate}</button
-            >
-          </Tooltip>
-        {/if}
-        <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
-      </SignInGuard>
-    </div>
-  </BottomSheet>
-{/if}
+          <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
+        </SignInGuard>
+      </div>
+    </BottomSheet>
+  {/if}
 
-{#if showModal}
-  <ParticipateSwapModal on:nnsClose={closeModal} />
-{/if}
+  {#if showModal}
+    <ParticipateSwapModal on:nnsClose={closeModal} />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

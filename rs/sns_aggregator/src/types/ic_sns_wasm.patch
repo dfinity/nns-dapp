@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index b895247fa..5cbd6c17e 100644
+index 3c6424bb1..e0e932720 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 @@ -4,7 +4,7 @@
@@ -11,7 +11,7 @@ index b895247fa..5cbd6c17e 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
-@@ -168,7 +168,7 @@ pub struct InsertUpgradePathEntriesResponse { error: Option<SnsWasmError> }
+@@ -169,7 +169,7 @@ pub struct InsertUpgradePathEntriesResponse { error: Option<SnsWasmError> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_deployed_snses_arg0 {}
  
@@ -20,7 +20,7 @@ index b895247fa..5cbd6c17e 100644
  pub struct DeployedSns {
    pub  root_canister_id: Option<candid::Principal>,
    pub  governance_canister_id: Option<candid::Principal>,
-@@ -178,7 +178,7 @@ pub struct DeployedSns {
+@@ -179,7 +179,7 @@ pub struct DeployedSns {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

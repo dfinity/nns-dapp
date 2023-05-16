@@ -30,10 +30,14 @@ pub struct CanisterIdRecord { canister_id: candid::Principal }
 pub enum CanisterStatusType { stopped, stopping, running }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DefiniteCanisterSettings { controllers: Vec<candid::Principal> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResult {
   pub  controller: candid::Principal,
   pub  status: CanisterStatusType,
   pub  memory_size: candid::Nat,
+  pub  settings: DefiniteCanisterSettings,
   pub  module_hash: Option<Vec<u8>>,
 }
 
@@ -41,11 +45,7 @@ pub struct CanisterStatusResult {
 pub struct GetSnsCanistersSummaryRequest { update_canister_list: Option<bool> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum CanisterStatusType_1 { stopped, stopping, running }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefiniteCanisterSettingsArgs {
-  pub  controller: candid::Principal,
   pub  freezing_threshold: candid::Nat,
   pub  controllers: Vec<candid::Principal>,
   pub  memory_allocation: candid::Nat,
@@ -54,10 +54,7 @@ pub struct DefiniteCanisterSettingsArgs {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResultV2 {
-  pub  controller: candid::Principal,
-  pub  status: CanisterStatusType_1,
-  pub  freezing_threshold: candid::Nat,
-  pub  balance: Vec<(Vec<u8>,candid::Nat,)>,
+  pub  status: CanisterStatusType,
   pub  memory_size: candid::Nat,
   pub  cycles: candid::Nat,
   pub  settings: DefiniteCanisterSettingsArgs,

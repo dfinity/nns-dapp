@@ -175,6 +175,7 @@
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
 {#if nonNullish(transactionInit)}
   <TransactionModal
+    testId="participate-swap-modal-component"
     rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
     bind:this={modal}

@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index d362af863..dc244c613 100644
+index e429d5ccc..7afe0c605 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -4,7 +4,7 @@
@@ -11,7 +11,7 @@ index d362af863..dc244c613 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
-@@ -85,7 +85,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -82,7 +82,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_sns_canisters_arg0 {}
  

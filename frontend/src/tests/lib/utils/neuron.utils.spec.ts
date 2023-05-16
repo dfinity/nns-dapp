@@ -1975,8 +1975,11 @@ describe("neuron-utils", () => {
       const testRewardEvent = {
         ...mockRewardEvent,
         actual_timestamp_seconds: 12234455555n,
-        distributed_e8s_equivalent: 100n,
-        total_available_e8s_equivalent: 100n,
+        settled_proposals: [
+          {
+            id: 0n,
+          },
+        ],
       } as RewardEvent;
       expect(maturityLastDistribution(testRewardEvent)).toEqual(12234455555n);
     });
@@ -1985,9 +1988,8 @@ describe("neuron-utils", () => {
       const testRewardEvent = {
         ...mockRewardEvent,
         actual_timestamp_seconds: 12234455555n,
-        distributed_e8s_equivalent: 100n,
-        total_available_e8s_equivalent: 200n,
         rounds_since_last_distribution: [3n],
+        settled_proposals: [],
       } as RewardEvent;
       const threeDays = BigInt(3 * SECONDS_IN_DAY);
       expect(maturityLastDistribution(testRewardEvent)).toEqual(
