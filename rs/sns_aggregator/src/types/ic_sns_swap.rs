@@ -11,7 +11,7 @@ use ic_cdk::api::call::CallResult;
 // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Countries { iso_codes: Vec<String> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]

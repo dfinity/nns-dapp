@@ -81,14 +81,14 @@ pub type Block = Box<Value>;
 pub struct BlockRange { blocks: Vec<Block> }
 
 pub type QueryBlockArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponse_archived_blocks_inner {
   pub  callback: QueryBlockArchiveFn,
   pub  start: BlockIndex,
   pub  length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponse {
   pub  certificate: Option<Vec<u8>>,
   pub  first_index: BlockIndex,
@@ -143,14 +143,14 @@ pub struct Transaction {
 pub struct TransactionRange { transactions: Vec<Transaction> }
 
 pub type QueryArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponse_archived_transactions_inner {
   pub  callback: QueryArchiveFn,
   pub  start: TxIndex,
   pub  length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponse {
   pub  first_index: TxIndex,
   pub  log_length: candid::Nat,
