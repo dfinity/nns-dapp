@@ -216,9 +216,9 @@ const cspConnectSrc = () => {
     "${{SNS_AGGREGATOR_URL}}",
     // TODO: solve with a worker
     // Used for the metrics of OC launch
-    "https://2hx64-daaaa-aaaaq-aaana-cai.raw.ic0.app",
+    "https://2hx64-daaaa-aaaaq-aaana-cai.raw.icp0.io",
     // Used for the metrics of Sonic launch.
-    "https://24scz-zyaaa-aaaaq-aaapq-cai.raw.ic0.app",
+    "https://7hi6i-7iaaa-aaaaq-aaaqq-cai.raw.icp0.io",
   ];
 
   if (isAggregatorCanisterUrlDefined) {
