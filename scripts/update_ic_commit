@@ -45,7 +45,7 @@ source "$(clap.build)"
   did_curl sns_root /rs/sns/root/canister/root.did
   did_curl sns_swap /rs/sns/swap/canister/swap.did
   did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
-  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/icrc1.did
+  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
 }
 
 : "Derive Rust types from candid interfaces"
