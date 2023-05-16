@@ -10,7 +10,7 @@ export const querySnsSwapMetrics = async ({
 
   try {
     // TODO: switch to a metrics canister. Otherwise not testable on testnet.
-    const url = `https://${swapCanisterId.toText()}.raw.ic0.app/metrics`;
+    const url = `https://${swapCanisterId.toText()}.raw.ic0.io/metrics`;
     const response = await fetch(url);
 
     if (!response.ok) {
