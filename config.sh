@@ -109,6 +109,12 @@ local_deployment_data="$(
   # shellcheck disable=SC2090 # We still want the backslash.
   export ROBOTS
 
+  : "Define the API host"
+  # TODO: When getting an API url, the canister should probably be optional.
+  # TODO: A canister custom URL should probably not override the API URL.
+  API_HOST="$(dfx-canister-url --network "${DFX_NETWORK/mainnet/ic}" --type api nns-governance)"
+  export API_HOST
+
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
@@ -123,6 +129,7 @@ local_deployment_data="$(
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID,
     GOVERNANCE_CANISTER_URL: env.GOVERNANCE_CANISTER_URL,
+    HOST: env.API_HOST,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     LEDGER_CANISTER_URL: env.LEDGER_CANISTER_URL,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID
@@ -138,13 +145,9 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-json=$(HOST=$(api_host) jq -s --sort-keys '
+json=$(jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
-  .DFX_NETWORK = env.DFX_NETWORK |
-  . as $config |
-  .HOST=env.HOST |
-  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+  .DFX_NETWORK = env.DFX_NETWORK
 ' dfx.json <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")

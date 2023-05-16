@@ -6,10 +6,6 @@
       "candid": "target/ic/governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
-      "url": {
-        "ic": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io",
-	"mainnet": "https://rrkah-fqaaa-aaaaa-aaaaq-cai.icp-api.io"
-      },
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -22,10 +18,6 @@
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
-      "url": {
-        "ic": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io",
-	"mainnet": "https://ryjl3-tyaaa-aaaaa-aaaba-cai.icp-api.io"
-      },
       "remote": {
         "id": {
           "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
