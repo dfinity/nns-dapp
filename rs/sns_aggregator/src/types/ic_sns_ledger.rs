@@ -12,19 +12,28 @@ use ic_cdk::api::call::CallResult;
 // use ic_cdk::api::call::CallResult;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Value { Int(candid::Int), Nat(candid::Nat), Blob(Vec<u8>), Text(String) }
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct UpgradeArgs {
-  pub  token_symbol: Option<String>,
-  pub  transfer_fee: Option<u64>,
-  pub  metadata: Option<Vec<(String,Value,)>>,
-  pub  token_name: Option<String>,
+pub enum MetadataValue {
+  Int(candid::Int),
+  Nat(candid::Nat),
+  Blob(Vec<u8>),
+  Text(String),
 }
 
 pub type Subaccount = Vec<u8>;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum ChangeFeeCollector { SetTo(Account), Unset }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct UpgradeArgs {
+  pub  token_symbol: Option<String>,
+  pub  transfer_fee: Option<u64>,
+  pub  metadata: Option<Vec<(String,MetadataValue,)>>,
+  pub  change_fee_collector: Option<ChangeFeeCollector>,
+  pub  token_name: Option<String>,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InitArgs_archive_options {
@@ -40,15 +49,116 @@ pub struct InitArgs_archive_options {
 pub struct InitArgs {
   pub  token_symbol: String,
   pub  transfer_fee: u64,
-  pub  metadata: Vec<(String,Value,)>,
+  pub  metadata: Vec<(String,MetadataValue,)>,
   pub  minting_account: Account,
   pub  initial_balances: Vec<(Account,u64,)>,
+  pub  fee_collector_account: Option<Account>,
   pub  archive_options: InitArgs_archive_options,
   pub  token_name: String,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum LedgerArg { Upgrade(Option<UpgradeArgs>), Init(InitArgs) }
+
+pub type BlockIndex = candid::Nat;
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetBlocksArgs { start: BlockIndex, length: candid::Nat }
+
+pub type Map = Vec<(String,Box<Value>,)>;
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum Value {
+  Int(candid::Int),
+  Map(Map),
+  Nat(candid::Nat),
+  Nat64(u64),
+  Blob(Vec<u8>),
+  Text(String),
+  Array(Vec<Box<Value>>),
+}
+
+pub type Block = Box<Value>;
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct BlockRange { blocks: Vec<Block> }
+
+pub type QueryBlockArchiveFn = candid::Func;
+#[derive(CandidType, Deserialize)]
+pub struct GetBlocksResponse_archived_blocks_inner {
+  pub  callback: QueryBlockArchiveFn,
+  pub  start: BlockIndex,
+  pub  length: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct GetBlocksResponse {
+  pub  certificate: Option<Vec<u8>>,
+  pub  first_index: BlockIndex,
+  pub  blocks: Vec<Block>,
+  pub  chain_length: u64,
+  pub  archived_blocks: Vec<GetBlocksResponse_archived_blocks_inner>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DataCertificate { certificate: Option<Vec<u8>>, hash_tree: Vec<u8> }
+
+pub type TxIndex = candid::Nat;
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetTransactionsRequest { start: TxIndex, length: candid::Nat }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Transaction_burn_inner {
+  pub  from: Account,
+  pub  memo: Option<Vec<u8>>,
+  pub  created_at_time: Option<u64>,
+  pub  amount: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Transaction_mint_inner {
+  pub  to: Account,
+  pub  memo: Option<Vec<u8>>,
+  pub  created_at_time: Option<u64>,
+  pub  amount: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Transaction_transfer_inner {
+  pub  to: Account,
+  pub  fee: Option<candid::Nat>,
+  pub  from: Account,
+  pub  memo: Option<Vec<u8>>,
+  pub  created_at_time: Option<u64>,
+  pub  amount: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Transaction {
+  pub  burn: Option<Transaction_burn_inner>,
+  pub  kind: String,
+  pub  mint: Option<Transaction_mint_inner>,
+  pub  timestamp: u64,
+  pub  transfer: Option<Transaction_transfer_inner>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct TransactionRange { transactions: Vec<Transaction> }
+
+pub type QueryArchiveFn = candid::Func;
+#[derive(CandidType, Deserialize)]
+pub struct GetTransactionsResponse_archived_transactions_inner {
+  pub  callback: QueryArchiveFn,
+  pub  start: TxIndex,
+  pub  length: candid::Nat,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct GetTransactionsResponse {
+  pub  first_index: TxIndex,
+  pub  log_length: candid::Nat,
+  pub  transactions: Vec<Transaction>,
+  pub  archived_transactions: Vec<
+    GetTransactionsResponse_archived_transactions_inner
+  >,
+}
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -65,7 +175,6 @@ pub struct TransferArg {
   pub  amount: Tokens,
 }
 
-pub type BlockIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum TransferError {
   GenericError{ message: String, error_code: candid::Nat },
@@ -83,6 +192,18 @@ pub enum TransferResult { Ok(BlockIndex), Err(TransferError) }
 
 pub struct SERVICE(candid::Principal);
 impl SERVICE{
+  pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<
+    (GetBlocksResponse,)
+  > { ic_cdk::call(self.0, "get_blocks", (arg0,)).await }
+  pub async fn get_data_certificate(&self) -> CallResult<(DataCertificate,)> {
+    ic_cdk::call(self.0, "get_data_certificate", ()).await
+  }
+  pub async fn get_transactions(
+    &self,
+    arg0: GetTransactionsRequest,
+  ) -> CallResult<(GetTransactionsResponse,)> {
+    ic_cdk::call(self.0, "get_transactions", (arg0,)).await
+  }
   pub async fn icrc1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
     ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
   }
@@ -92,9 +213,9 @@ impl SERVICE{
   pub async fn icrc1_fee(&self) -> CallResult<(Tokens,)> {
     ic_cdk::call(self.0, "icrc1_fee", ()).await
   }
-  pub async fn icrc1_metadata(&self) -> CallResult<(Vec<(String,Value,)>,)> {
-    ic_cdk::call(self.0, "icrc1_metadata", ()).await
-  }
+  pub async fn icrc1_metadata(&self) -> CallResult<
+    (Vec<(String,MetadataValue,)>,)
+  > { ic_cdk::call(self.0, "icrc1_metadata", ()).await }
   pub async fn icrc1_minting_account(&self) -> CallResult<(Option<Account>,)> {
     ic_cdk::call(self.0, "icrc1_minting_account", ()).await
   }

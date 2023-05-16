@@ -12,6 +12,14 @@ test("Test SNS participation", async ({ page, context }) => {
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
+  // Get some ICP to participate in the sale.
+  await appPo
+    .getAccountsPo()
+    .getNnsAccountsPo()
+    .getMainAccountCardPo()
+    .waitFor();
+  await appPo.getTokens(20);
+
   await appPo.goToLaunchpad();
 
   // D001: User can see the list of open sales
@@ -41,7 +49,9 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
   // D004: User can participate in a sale
-  // TODO
+  expect(await projectDetail.hasCommitmentAmount()).toBe(false);
+  await projectDetail.participate({ amount: 5 });
+  expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
 
   // D005: User can increase the participation in a sale
   // TODO

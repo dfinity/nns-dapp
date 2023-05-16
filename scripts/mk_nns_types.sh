@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 ##########################
 # Hjelpe meg!
@@ -20,6 +20,7 @@ print_help() {
 
 cd "$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
+failed_output=""
 for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
   export CANISTER_NAME
   DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
@@ -27,5 +28,17 @@ for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
     cd "$GIT_ROOT"
     cp "$(jq '.canisters[env.CANISTER_NAME].candid' dfx.json)" "$DID_PATH"
   )
-  ./did2rs.sh "${CANISTER_NAME}"
+  if output=$(./did2rs.sh "${CANISTER_NAME}"); then
+    echo "$output"
+  else
+    failed_output="${failed_output}${output}"
+  fi
 done
+
+if [[ "$failed_output" != "" ]]; then
+  {
+    echo "Failed on some canisters:"
+    echo "$failed_output"
+  } >&2
+  exit 1
+fi

@@ -6,7 +6,7 @@
   const toggleAccept = () => (accepted = !accepted);
 </script>
 
-<div class="additional-info-review">
+<div class="additional-info-review" data-tid="additional-info-review-component">
   <Checkbox
     text="block"
     inputId="agree"

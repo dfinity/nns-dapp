@@ -1,10 +1,10 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 14ebf6f6..7c74fb10 100644
+index e429d5ccc..7afe0c605 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -2,7 +2,7 @@
- #![allow(clippy::all)]
+@@ -4,7 +4,7 @@
  #![allow(non_camel_case_types)]
+ #![allow(dead_code)]
  
 -use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 +use crate::types::{CandidType, Deserialize, Serialize};

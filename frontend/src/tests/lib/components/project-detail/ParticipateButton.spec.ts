@@ -3,9 +3,11 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import {
@@ -45,6 +47,9 @@ describe("ParticipateButton", () => {
       });
       snsTicketsStore.reset();
       jest.clearAllMocks();
+      // TODO: GIX-1545 Remove mock and create a summary accordingly
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
+      userCountryStore.set("not loaded");
     });
 
     it("should render a text to increase participation", () => {
@@ -161,6 +166,39 @@ describe("ParticipateButton", () => {
       expect(container.querySelector("svg.small")).toBeInTheDocument();
       expect(getByTestId("connecting_sale_canister")).not.toBeNull();
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
+    });
+
+    it("should display spinner while loading location if project has restricted countries and user has no ticket", async () => {
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const { queryByTestId, getByTestId, container } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(container.querySelector("svg.small")).toBeInTheDocument();
+      expect(getByTestId("connecting_sale_canister")).not.toBeNull();
+      expect(queryByTestId("sns-project-participate-button")).toBeNull();
+    });
+
+    it("should not display spinner if project has restricted countries, user location is loaded and user has no open ticket", async () => {
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+      userCountryStore.set({ isoCode: "US" });
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      expect(queryByTestId("connecting_sale_canister")).toBeNull();
+      expect(
+        queryByTestId("sns-project-participate-button")
+      ).toBeInTheDocument();
     });
 
     it("should enable button if user has not committed max already", async () => {
