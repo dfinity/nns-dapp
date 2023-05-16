@@ -33,7 +33,6 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import {
-    cancelPollGetOpenTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
