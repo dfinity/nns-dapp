@@ -17,9 +17,10 @@ clap.define short=o long=offline desc="Don't test deployed canisters" variable=O
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+COMMIT="$(git rev-parse HEAD)"
 check_commit() {
   stdin="$(cat)"
-  echo "$stdin" | grep -qE '[a-fA-F0-9]{40}' || {
+  echo "$stdin" | grep -qw "$COMMIT" || {
     echo "ERROR: The $canister git_commit_id metadata should include a git commit."
     echo "  ACTUAL: '$stdin'"
     exit 1

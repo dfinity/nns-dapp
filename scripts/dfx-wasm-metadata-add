@@ -41,7 +41,7 @@ test -n "${DFX_CANISTER_DID:-}" || DFX_CANISTER_DID="$(jq -r '.canisters[env.DFX
 test -n "${DFX_CANISTER_DID:-}" || {
   echo "ERROR: Unable to determine the path to the candid file."
   echo "       Please either:"
-  echo "         Use --wasm PATH_TO_WASM"
+  echo "         Use --did PATH_TO_CANDID"
   echo "         or use --canister_name NAME and ensure that the candid is specified in dfx.json"
   exit 1
 } >&2
