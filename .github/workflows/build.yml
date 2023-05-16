@@ -87,7 +87,7 @@ jobs:
       - name: Install ic-wasm
         run: cargo install "ic-wasm@$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
       - name: Check that metadata is present
-        run: scripts/dfx-wasm-metadata-add.test
+        run: scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
