@@ -276,12 +276,12 @@ type ParticipationButtonStatus =
  * Returns the status of the Participate Button.
  *
  * There are 6 possible statuses:
- * - logged-out: the user is not logged in.
- * - loading: the status is not yet known. Any of the resources is stil being fetched.
- * - disabled-not-open: the project is not open.
- * - disabled-max-participation: the user has already participated in the swap with the maximum per user and cannot participate again.
- * - disabled-not-eligible: the user is not eligible to participate in the swap. E.g. user location in the restricted countries list.
- * - enabled: the user can participate in the swap.
+ * - logged-out
+ * - loading
+ * - disabled-not-open
+ * - disabled-max-participation
+ * - disabled-not-eligible
+ * - enabled
  *
  * logged-out:
  * - The user is not logged in.
