@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import { BottomSheet } from "@dfinity/gix-components";
@@ -9,9 +9,9 @@
   } from "$lib/types/project-detail.context";
   import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
   import {
-    canUserParticipateToSwap,
     hasUserParticipatedToSwap,
-    userCountryIsNeeded,
+    type ParticipationButtonStatus,
+    participateButtonStatus,
   } from "$lib/utils/projects.utils";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -20,11 +20,9 @@
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-  import { hasOpenTicketInProcess } from "$lib/utils/sns.utils";
-  import type { TicketStatus } from "$lib/types/sale";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { isUserCountryLoadedStore } from "$lib/stores/user-country.store";
+  import { userCountryStore } from "$lib/stores/user-country.store";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -43,38 +41,27 @@
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 
-  let userCanParticipateToSwap = false;
-  $: userCanParticipateToSwap = canUserParticipateToSwap({
-    summary: $projectDetailStore.summary,
-    swapCommitment: $projectDetailStore.swapCommitment,
-  });
-
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = nonNullish($projectDetailStore?.summary?.rootCanisterId)
     ? $projectDetailStore?.summary?.rootCanisterId
     : undefined;
 
-  // TODO: Receive this as props
-  let ticketStatus: TicketStatus = "unknown";
-  $: ({ status: ticketStatus } = hasOpenTicketInProcess({
-    rootCanisterId,
-    ticketsStore: $snsTicketsStore,
-  }));
-
-  let loadingUserCountry: boolean;
-  $: loadingUserCountry =
-    userCountryIsNeeded({
-      summary: $projectDetailStore?.summary,
-      swapCommitment: $projectDetailStore?.swapCommitment,
-      loggedIn: $authSignedInStore,
-    }) && !$isUserCountryLoadedStore;
-
-  let busy = true;
-  $: busy = ticketStatus !== "none" || loadingUserCountry;
-
   let userHasParticipatedToSwap = false;
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment: $projectDetailStore.swapCommitment,
+  });
+
+  // TODO: Receive this as props
+  let ticket: SnsSwapTicket | undefined | null = undefined;
+  $: ticket = $snsTicketsStore[rootCanisterId?.toText() ?? ""]?.ticket;
+
+  let buttonStatus: ParticipationButtonStatus = "logged-out";
+  $: buttonStatus = participateButtonStatus({
+    summary: $projectDetailStore.summary,
+    swapCommitment: $projectDetailStore.swapCommitment,
+    loggedIn: $authSignedInStore,
+    userCountry: $userCountryStore,
+    ticket,
   });
 </script>
 
@@ -83,27 +70,15 @@
     <BottomSheet>
       <div role="toolbar">
         <SignInGuard>
-          {#if userCanParticipateToSwap}
-            <!-- TODO: Disable button until we have the commitment of the user -->
-            {#if busy}
-              <div class="loader" data-tid="connecting_sale_canister">
-                <SpinnerText
-                  >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
-                >
-              </div>
-            {:else}
-              <button
-                disabled={busy}
-                on:click={openModal}
-                class="primary participate"
-                data-tid="sns-project-participate-button"
+          <!-- "logged-out" is handled by SignInGuard -->
+          <!-- "disabled-not-open" is handled by the if above and not rendering the button -->
+          {#if buttonStatus === "loading"}
+            <div class="loader" data-tid="connecting_sale_canister">
+              <SpinnerText
+                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
               >
-                {userHasParticipatedToSwap
-                  ? $i18n.sns_project_detail.increase_participation
-                  : $i18n.sns_project_detail.participate}
-              </button>
-            {/if}
-          {:else}
+            </div>
+          {:else if buttonStatus === "disabled-max-participation"}
             <Tooltip
               id="sns-project-participate-button-tooltip"
               text={$i18n.sns_project_detail.max_user_commitment_reached}
@@ -114,6 +89,17 @@
                 disabled>{$i18n.sns_project_detail.participate}</button
               >
             </Tooltip>
+            <!-- TODO: GIX-1553 Add disabled-not-eligible -->
+          {:else}
+            <button
+              on:click={openModal}
+              class="primary participate"
+              data-tid="sns-project-participate-button"
+            >
+              {userHasParticipatedToSwap
+                ? $i18n.sns_project_detail.increase_participation
+                : $i18n.sns_project_detail.participate}
+            </button>
           {/if}
           <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
         </SignInGuard>
