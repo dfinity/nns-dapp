@@ -8,7 +8,7 @@ import {
 import type { UniverseCanisterId } from "$lib/types/universe";
 
 /**
- * To load the withdrawal account we use QUERY+UPDATE strategy. As there is not QUERY option provided by the canister we fake a static result instead.
+ * To load the withdrawal account we use QUERY+UPDATE strategy. Because the withdrawal account can only be fetched with an UPDATE call at the moment, we fake a static QUERY call.
  * That way we can display a spinner information in the UI while the account is loading.
  */
 export const loadCkBTCWithdrawalAccount = async ({
