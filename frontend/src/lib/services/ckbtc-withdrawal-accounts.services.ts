@@ -7,13 +7,16 @@ import {
 } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 
+/**
+ * To load the withdrawal account we use QUERY+UPDATE strategy. As there is not QUERY option provided by the canister we fake a static result instead.
+ * That way we can display a spinner information in the UI while the account is loading.
+ */
 export const loadCkBTCWithdrawalAccount = async ({
   universeId,
 }: {
   universeId: UniverseCanisterId;
 }): Promise<void> => {
   return queryAndUpdate<CkBTCBTCWithdrawalAccount, unknown>({
-    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getCkBTCWithdrawalAccount({ identity, certified, universeId }),
     onLoad: ({ response: account, certified }) =>
