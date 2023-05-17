@@ -157,8 +157,6 @@ export const updateBalance = async ({
       new Promise((resolve) => setTimeout(resolve, time));
     await delay(deferReload ? 4000 : 0);
 
-    await reload?.();
-
     toastsSuccess({
       labelKey: "ckbtc.ckbtc_balance_updated",
     });
@@ -183,6 +181,9 @@ export const updateBalance = async ({
 
     return { success: false, err };
   } finally {
+    // We reload in any case because the user might hit "Refresh balance" in the UI thinking the feature is meant to relad the account and transactions, not confirming the BTC -> ckBTC
+    await reload?.();
+
     stopBusy("update-ckbtc-balance");
   }
 };
