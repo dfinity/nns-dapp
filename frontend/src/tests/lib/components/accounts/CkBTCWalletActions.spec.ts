@@ -29,6 +29,7 @@ describe("CkBTCWalletActions", () => {
   const props = {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     reload: () => Promise.resolve(),
+    deferReload: false,
   };
 
   it("should render action", () => {
