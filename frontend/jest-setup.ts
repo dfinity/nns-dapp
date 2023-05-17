@@ -7,6 +7,7 @@ import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+import { mockedConstants } from "./src/tests/utils/mockable-constants.test-utils";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -49,14 +50,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   }),
 }));
 
-jest.mock("./src/lib/constants/mockable.constants.ts", () => ({
-  DEV: false,
-  ENABLE_METRICS: false,
-  FORCE_CALL_STRATEGY: undefined,
-  IS_TEST_ENV: true,
-  QR_CODE_RENDERED_DEFAULT_STATE: true,
-  ENABLE_QR_CODE_READER: false,
-}));
+jest.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 
 global.localStorage = localStorageMock;
 
