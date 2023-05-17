@@ -137,9 +137,11 @@ export const depositFee = async ({
 export const updateBalance = async ({
   minterCanisterId,
   reload,
+  deferReload = false,
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
+  deferReload?: boolean;
 }): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
   startBusy({
     initiator: "update-ckbtc-balance",
@@ -149,6 +151,11 @@ export const updateBalance = async ({
 
   try {
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
+
+    // Workaround. Ultimately we want to poll to update balance and list of transactions
+    const delay = (time: number) =>
+      new Promise((resolve) => setTimeout(resolve, time));
+    await delay(deferReload ? 4000 : 0);
 
     await reload?.();
 
