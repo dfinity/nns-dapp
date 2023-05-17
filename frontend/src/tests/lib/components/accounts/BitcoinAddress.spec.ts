@@ -12,7 +12,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -34,6 +34,7 @@ describe("BitcoinAddress", () => {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     reload: jest.fn(),
+    indexCanisterId: mockPrincipal,
   };
 
   beforeEach(() => {
