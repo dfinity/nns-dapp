@@ -161,10 +161,13 @@
 
         <WalletSummary detailedBalance />
 
-        {#if nonNullish(canisters)}
+        {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
           <CkBTCWalletActions
-            reload={reloadAccount}
             minterCanisterId={canisters.minterCanisterId}
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+            indexCanisterId={canisters.indexCanisterId}
+            reload={reloadAccount}
           />
         {/if}
 
@@ -175,6 +178,7 @@
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             minterCanisterId={canisters.minterCanisterId}
+            indexCanisterId={canisters.indexCanisterId}
             reload={reloadAccount}
           />
 

@@ -20,6 +20,7 @@
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let reload: () => Promise<void>;
+  export let indexCanisterId: CanisterId;
 
   let identifier: AccountIdentifierText;
   $: ({ identifier } = account);
@@ -51,7 +52,14 @@
 <p class="description">
   {$i18n.ckbtc.incoming_bitcoin_network_part_1}
 
-  <CkBTCWalletActions inline {minterCanisterId} {reload} />
+  <CkBTCWalletActions
+    inline
+    {minterCanisterId}
+    {account}
+    {universeId}
+    {indexCanisterId}
+    {reload}
+  />
 
   {$i18n.ckbtc.incoming_bitcoin_network_part_2}
   <a
