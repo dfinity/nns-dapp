@@ -93,8 +93,8 @@ describe("CkBTCWalletActions", () => {
 
     await fireEvent.click(button as HTMLButtonElement);
 
-    // wait for 6 seconds
-    await advanceTime(6000);
+    // wait for 4 seconds
+    await advanceTime(4000);
 
     await waitFor(() => expect(spyReload).toHaveBeenCalled());
   });

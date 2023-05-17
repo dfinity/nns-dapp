@@ -152,9 +152,10 @@ export const updateBalance = async ({
   try {
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
 
+    // Workaround. Ultimately we want to poll to update balance and list of transactions
     const delay = (time: number) =>
       new Promise((resolve) => setTimeout(resolve, time));
-    await delay(deferReload ? 6000 : 0);
+    await delay(deferReload ? 4000 : 0);
 
     await reload?.();
 
