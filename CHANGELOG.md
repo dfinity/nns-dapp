@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122355
 
 * Improve participation UX.
 * Simplifications to reduce stress on the system during upcoming SNS swaps.
