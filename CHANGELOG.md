@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122512
 
 * Feat reload account and transactions regardless of ckBTC update balance success or error.
 
