@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as ckbtcIndexApi from "$lib/api/ckbtc-index.api";
 import * as api from "$lib/api/ckbtc-minter.api";
 import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 import {
@@ -9,7 +10,10 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -26,9 +30,14 @@ describe("CkBTCWalletActions", () => {
     });
   });
 
+  beforeEach(() => jest.clearAllMocks());
+
   const props = {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     reload: () => Promise.resolve(),
+    indexCanisterId: mockPrincipal,
+    universeId: mockPrincipal,
+    account: mockCkBTCMainAccount,
   };
 
   it("should render action", () => {
@@ -59,16 +68,26 @@ describe("CkBTCWalletActions", () => {
     ).toEqual(false);
   });
 
-  it("should call update balance", async () => {
+  it("should call update balance and get transactions", async () => {
     const spyUpdateBalance = jest.spyOn(api, "updateBalance");
+    const spyUpdateTransactions = jest
+      .spyOn(ckbtcIndexApi, "getCkBTCTransactions")
+      .mockResolvedValue({
+        oldestTxId: BigInt(1234),
+        transactions: [mockIcrcTransactionWithId],
+      });
 
     const { getByTestId } = render(CkBTCWalletActions, { props });
 
     const button = getByTestId("manual-refresh-balance");
 
-    fireEvent.click(button as HTMLButtonElement);
+    expect(spyUpdateBalance).not.toHaveBeenCalled();
+    expect(spyUpdateTransactions).not.toHaveBeenCalled();
+
+    await fireEvent.click(button as HTMLButtonElement);
 
     await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+    await waitFor(() => expect(spyUpdateTransactions).toHaveBeenCalled());
   });
 
   it("should call reload", async () => {
