@@ -4,6 +4,11 @@
 
 * Feat reload account and transactions regardless of ckBTC update balance success or error.
 
+## Proposal 122509
+
+* Fix ckBTC transfer status visibility.
+* Improve ckBTC transactions reload.
+
 ## Proposal 122355
 
 * Improve participation UX.
