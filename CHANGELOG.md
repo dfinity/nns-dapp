@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXX
+
+* Feat reload account and transactions regardless of ckBTC update balance success or error.
+
 ## Proposal 122355
 
 * Improve participation UX.
