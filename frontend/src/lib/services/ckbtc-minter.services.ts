@@ -137,9 +137,11 @@ export const depositFee = async ({
 export const updateBalance = async ({
   minterCanisterId,
   reload,
+  deferReload = false
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
+  deferReload?: boolean;
 }): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
   startBusy({
     initiator: "update-ckbtc-balance",
@@ -149,6 +151,9 @@ export const updateBalance = async ({
 
   try {
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
+
+    const delay = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+    await delay(deferReload ? 6000 : 0);
 
     await reload?.();
 
