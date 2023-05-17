@@ -7,13 +7,19 @@ import {
 } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 
+/**
+ * To load the withdrawal account we use QUERY+UPDATE strategy. Because the withdrawal account can only be fetched with an UPDATE call at the moment, we fake a static QUERY call.
+ * That way we can display a spinner information in the UI while the account is loading.
+ *
+ * We use `queryAndUpdate` because it integrates thighly with the dapp core and also in case a QUERY call would be made available in the future.
+ */
 export const loadCkBTCWithdrawalAccount = async ({
   universeId,
 }: {
   universeId: UniverseCanisterId;
 }): Promise<void> => {
   return queryAndUpdate<CkBTCBTCWithdrawalAccount, unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: "query_and_update",
     request: ({ certified, identity }) =>
       getCkBTCWithdrawalAccount({ identity, certified, universeId }),
     onLoad: ({ response: account, certified }) =>

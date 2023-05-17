@@ -1,6 +1,5 @@
 import { getCkBTCAccount } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
@@ -84,11 +83,7 @@ export const getCkBTCWithdrawalAccount = async ({
 
   // We have to load the withdrawal account with an update call.
   // If we never have loaded it, we return a empty account as result of the not certified (query) call to indicate we are about to load the data.
-  if (
-    FORCE_CALL_STRATEGY !== "query" &&
-    !certified &&
-    isNullish(storedWithdrawalAccount?.account.identifier)
-  ) {
+  if (!certified && isNullish(storedWithdrawalAccount?.account.identifier)) {
     return {
       type: "withdrawalAccount",
     };
