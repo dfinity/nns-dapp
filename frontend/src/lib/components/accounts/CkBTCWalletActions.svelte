@@ -8,14 +8,13 @@
   export let inline = false;
 
   // Exposed for test purpose - i.e. we do not test with a delayed call
-  export let deferReload = true;
 
   // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
   const updateBalance = async () =>
     await updateBalanceService({
       minterCanisterId,
       reload,
-      deferReload,
+      deferReload: true,
     });
 </script>
 
