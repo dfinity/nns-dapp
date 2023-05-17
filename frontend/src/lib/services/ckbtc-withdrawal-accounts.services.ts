@@ -17,6 +17,7 @@ export const loadCkBTCWithdrawalAccount = async ({
   universeId: UniverseCanisterId;
 }): Promise<void> => {
   return queryAndUpdate<CkBTCBTCWithdrawalAccount, unknown>({
+    strategy: "query_and_update",
     request: ({ certified, identity }) =>
       getCkBTCWithdrawalAccount({ identity, certified, universeId }),
     onLoad: ({ response: account, certified }) =>
