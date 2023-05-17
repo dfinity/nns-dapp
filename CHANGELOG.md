@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122509
 
 * Fix ckBTC transfer status visibility.
 * Improve ckBTC transactions reload.
