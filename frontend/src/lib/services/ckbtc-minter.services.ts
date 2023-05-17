@@ -137,7 +137,7 @@ export const depositFee = async ({
 export const updateBalance = async ({
   minterCanisterId,
   reload,
-  deferReload = false
+  deferReload = false,
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
@@ -152,7 +152,8 @@ export const updateBalance = async ({
   try {
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
 
-    const delay = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+    const delay = (time: number) =>
+      new Promise((resolve) => setTimeout(resolve, time));
     await delay(deferReload ? 6000 : 0);
 
     await reload?.();

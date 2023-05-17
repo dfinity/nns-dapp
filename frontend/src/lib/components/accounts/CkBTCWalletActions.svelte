@@ -12,7 +12,7 @@
     await updateBalanceService({
       minterCanisterId,
       reload,
-      deferReload: true
+      deferReload: true,
     });
 </script>
 
