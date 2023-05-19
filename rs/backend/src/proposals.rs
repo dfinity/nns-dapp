@@ -110,13 +110,17 @@ fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
         IDLType::PrimT(PrimType::Null)
     };
 
-    let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
-    let options = Idl2JsonOptions {
-        bytes_as: Some(BytesFormat::Hex),
-        long_bytes_as: None,
-    };
-    let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
-    serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+    match Decode!(arg, IDLValue) {
+        Ok(idl_value) => {
+            let options = Idl2JsonOptions {
+                bytes_as: Some(BytesFormat::Hex),
+                long_bytes_as: None,
+            };
+            let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
+            serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+        }
+        Err(_) => "[]".to_owned()
+    }
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
