@@ -414,93 +414,118 @@ adstas patrios, nescio quam coepit!
 
 const url = "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only"
 
-export const makeDummyProposals = async ({ neuronId, canister, swapCanisterId }) => {
+export const makeDummyProposals = async ({
+ neuronId,
+ canister,
+ swapCanisterId,
+}) => {
   try {
+    console.log("Making dummy proposals...")
+
     // Used only on testnet
-    // We do one by one, in case one fails, we don't do the others.
-    const request1 = makeMotionDummyProposalRequest({
-      title:
-          "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
-      neuronId,
-      url,
-      summary: DEMO_SUMMARY,
+    const requests = [
+      {
+        request: makeMotionDummyProposalRequest({
+          title:
+            "Test proposal title - Lower all prices! (update subnet trq4oi-xbazd-zui8u-o55wc-ehun7-932tw-8qpqs-nittd-nbpq6-4aabt-1ur to replica version gffdb82z637e374yd3b8f48a831cbed889d35397)",
+          neuronId,
+          url,
+          summary: DEMO_SUMMARY,
+        }),
+        log: "Motion Proposal...",
+      }, {
+        request: makeNetworkEconomicsDummyProposalRequest({
+          neuronId,
+          title: "Increase minimum neuron stake",
+          url,
+          summary: "Increase minimum neuron stake",
+        }),
+        log: "Netowrk Economics Proposal...",
+      }, {
+        request: makeRewardNodeProviderDummyProposal({
+          neuronId,
+          url,
+          title: "Reward for Node Provider 'ABC'",
+          summary: "Reward for Node Provider 'ABC'",
+        }),
+        log: "Rewards Node Provide Proposal...",
+      }, {
+        request: makeExecuteNnsFunctionDummyProposalRequest({
+          neuronId,
+          title: "Add node(s) to subnet 10",
+          url,
+          summary: "Add node(s) to subnet 10",
+          nnsFunction: 2,
+          payload: addNodeToSubnetPayload,
+        }),
+        log: "Execute NNS Function Proposal...",
+      }, {
+        request: makeExecuteNnsFunctionDummyProposalRequest({
+          neuronId,
+          title: "Update configuration of subnet: tdb26-",
+          url: "",
+          summary:
+            "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+          nnsFunction: 7,
+          payload: updateSubnetConfigPayload,
+        }),
+        log: "Execute NNS Function Proposal...",
+      }, {
+        request: makeExecuteNnsFunctionDummyProposalRequest({
+          neuronId,
+          title:
+            "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          url,
+          summary:
+            "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
+          nnsFunction: 11,
+          payload: updateSubnetPayload,
+        }),
+        log: "Execute NNS Function Proposal...",
+      }, {
+        request: makeExecuteNnsFunctionDummyProposalRequest({
+          neuronId,
+          title: "Initialize datacenter records",
+          url: "",
+          summary:
+            "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
+          nnsFunction: 21,
+          payload: addOrRemoveDataCentersPayload,
+        }),
+        log: "Execute NNS Function Proposal...",
+      }, {
+        request: makeExecuteNnsFunctionDummyProposalRequest({
+          neuronId,
+          title: "Exchange Rate Proposal Tests",
+          url: "",
+          summary: "Test proposal for exchange rate.",
+          nnsFunction: 10,
+          payload: exchageRatePayload,
+        }),
+        log: "Execute NNS Function Proposal...",
+      },
+    ];
+
+    // Make proposals
+    const responses = await Promise.allSettled(
+      requests.map(({ request }) => canister.makeProposal(request))
+    );
+    // Log errors
+    responses.forEach((response, index) => {
+      if (response.status === "rejected") {
+        console.error(`Failed to make proposal "${requests[index].log}":`);
+        console.log(response.reason?.detail ?? response.reason)
+      }
     });
-    console.log("Motion Proposal...");
-    await canister.makeProposal(request1);
-    const request2 = makeNetworkEconomicsDummyProposalRequest({
-      neuronId,
-      title: "Increase minimum neuron stake",
-      url,
-      summary: "Increase minimum neuron stake",
-    });
-    console.log("Netowrk Economics Proposal...");
-    await canister.makeProposal(request2);
-    const request3 = makeRewardNodeProviderDummyProposal({
-      neuronId,
-      url,
-      title: "Reward for Node Provider 'ABC'",
-      summary: "Reward for Node Provider 'ABC'",
-    });
-    console.log("Rewards Node Provide Proposal...");
-    await canister.makeProposal(request3);
-    const request4 = makeExecuteNnsFunctionDummyProposalRequest({
-      neuronId,
-      title: "Add node(s) to subnet 10",
-      url,
-      summary: "Add node(s) to subnet 10",
-      nnsFunction: 2,
-      payload: addNodeToSubnetPayload,
-    });
-    console.log("Execute NNS Function Proposal...");
-    await canister.makeProposal(request4);
-    const request5 = makeExecuteNnsFunctionDummyProposalRequest({
-      neuronId,
-      title: "Update configuration of subnet: tdb26-",
-      url: "",
-      summary:
-          "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
-      nnsFunction: 7,
-      payload: updateSubnetConfigPayload,
-    });
-    console.log("Execute NNS Function Proposal...");
-    await canister.makeProposal(request5);
-    const request6 = makeExecuteNnsFunctionDummyProposalRequest({
-      neuronId,
-      title:
-          "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-      url,
-      summary:
-          "Update subnet shefu-t3kr5-t5q3w-mqmdq-jabyv-vyvtf-cyyey-3kmo4-toyln-emubw-4qe to version 3eaf8541c389badbd6cd50fff31e158505f4487d",
-      nnsFunction: 11,
-      payload: updateSubnetPayload,
-    });
-    console.log("Execute NNS Function Proposal...");
-    await canister.makeProposal(request6);
-    const request7 = makeExecuteNnsFunctionDummyProposalRequest({
-      neuronId,
-      title: "Initialize datacenter records",
-      url: "",
-      summary:
-          "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
-      nnsFunction: 21,
-      payload: addOrRemoveDataCentersPayload,
-    });
-    console.log("Execute NNS Function Proposal...");
-    await canister.makeProposal(request7);
-    const request8 = makeExecuteNnsFunctionDummyProposalRequest({
-      neuronId,
-      title: "Exchange Rate Proposal Tests",
-      url: "",
-      summary:
-          "Test proposal for exchange rate.",
-      nnsFunction: 10,
-      payload: exchageRatePayload,
-    });
-    console.log("Execute NNS Function Proposal...");
-    await canister.makeProposal(request8);
-    console.log("Finished making dummy proposals");
+    // Log success rate
+    console.log(
+      "Finished making dummy proposals: ",
+      responses.filter((response) => response.status === "fulfilled").length,
+      " of ",
+      requests.length
+    );
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 };
