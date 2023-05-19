@@ -18,18 +18,11 @@ import {
   mockCkBTCWithdrawalIcrcAccount,
   mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import {
-  mockedConstants,
-  resetMockedConstants,
-} from "$tests/utils/mockable-constants.test-utils";
 import { TokenAmount } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ckbtc-accounts-loader-services", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    resetMockedConstants();
-  });
+  afterEach(() => jest.clearAllMocks());
 
   describe("getCkBTCAccounts", () => {
     it("should call get CkBTC account", async () => {
@@ -164,26 +157,6 @@ describe("ckbtc-accounts-loader-services", () => {
           expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
             identity: params.identity,
             certified: true,
-            canisterId: params.universeId,
-            ...mockCkBTCWithdrawalIcrcAccount,
-            type: "withdrawalAccount",
-          });
-        });
-
-        it("should return withdrawal account with forced query calls", async () => {
-          mockedConstants.FORCE_CALL_STRATEGY = "query";
-
-          const result = await getCkBTCWithdrawalAccount({
-            ...params,
-            certified: false,
-          });
-
-          expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-          expect(result.balance.toE8s()).toEqual(mockAccountBalance.toE8s());
-
-          expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
-            identity: params.identity,
-            certified: false,
             canisterId: params.universeId,
             ...mockCkBTCWithdrawalIcrcAccount,
             type: "withdrawalAccount",

@@ -33,7 +33,7 @@ export const loadCkBTCWithdrawalAccount = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified) {
         return;
       }
 
