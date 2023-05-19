@@ -89,12 +89,15 @@ export class JestPageObjectElement implements PageObjectElement {
     });
   }
 
-  waitForAbsent(timeout?: number): Promise<void> {
+  waitForAbsent(): Promise<void> {
     return waitFor(
       async () => {
-        expect(await this.isPresent()).toBe(false);
+        return expect(await this.isPresent()).toBe(false);
       },
-      { timeout }
+      // TODO: Needed for the swap participation flow. Remove.
+      // To remove we need to use different describes in ProjectDetail.spec.ts
+      // Describes that mock timers and describes that don't.
+      { timeout: 5_000 }
     );
   }
 
@@ -109,10 +112,12 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async click(): Promise<void> {
+    await this.waitFor();
     await fireEvent.click(this.element);
   }
 
   async typeText(text: string): Promise<void> {
+    await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
     await fireEvent.input(this.element, { target: { value: text } });

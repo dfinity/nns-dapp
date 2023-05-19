@@ -50,8 +50,9 @@ test("Test SNS participation", async ({ page, context }) => {
 
   // D004: User can participate in a sale
   expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-  await projectDetail.participate({ amount: 5 });
-  expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
+  const formattedAmountICP = "5.00";
+  await projectDetail.participate({ amount: Number(formattedAmountICP) });
+  expect(await projectDetail.getCommitmentAmount()).toBe(formattedAmountICP);
 
   // D005: User can increase the participation in a sale
   // TODO

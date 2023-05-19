@@ -12,13 +12,9 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
 
   async participate({ amount }: { amount: number }): Promise<void> {
     const formPo = this.getTransactionFormPo();
-    // Needed for Jest
-    await formPo.waitFor();
     await formPo.enterAmount(amount);
     await formPo.clickContinue();
     const review = this.getTransactionReviewPo();
-    // Needed for Jest
-    await review.waitFor();
     await review.clickCheckbox();
     await review.clickSend();
   }

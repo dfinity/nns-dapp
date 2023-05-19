@@ -349,7 +349,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           subAccounts: [],
           hardwareWallets: [],
         });
-        const amountICP = 5;
+        const formattedAmountICP = "5.00";
+        const amountICP = Number(formattedAmountICP);
         const amountE8s = numberToE8s(amountICP);
         const finalCommitment = {
           icp: [
@@ -398,7 +399,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         expect(await projectDetail.hasCommitmentAmount()).toBe(false);
         await projectDetail.participate({ amount: amountICP });
-        expect(await projectDetail.getCommitmentAmount()).toBe("5.00");
+        expect(await projectDetail.getCommitmentAmount()).toBe(
+          formattedAmountICP
+        );
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
