@@ -78,7 +78,11 @@
             "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
           ],
           "transaction_fee_e8s": 1000,
-          "neuron_minimum_stake_e8s": 1000000
+          "neuron_minimum_stake_e8s": 1000000,
+          "confirmation_text": "I agree",
+          "restricted_countries" : {
+            "iso_codes": ["US"]
+          }
         },
         "params": {
           "min_participants": 1,
@@ -98,7 +102,10 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 314100000000,
-        "sns_tokens_per_icp": 1.0
+        "sns_tokens_per_icp": 1.0,
+        "cf_participant_count": 100,
+        "direct_participant_count": 300,
+        "cf_neuron_count": 200
       }
     },
     "icrc1_metadata": [
