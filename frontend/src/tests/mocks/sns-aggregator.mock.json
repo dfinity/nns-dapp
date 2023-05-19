@@ -80,7 +80,7 @@
           "transaction_fee_e8s": 1000,
           "neuron_minimum_stake_e8s": 1000000,
           "confirmation_text": "I agree",
-          "restricted_countries" : {
+          "restricted_countries": {
             "iso_codes": ["US"]
           }
         },
