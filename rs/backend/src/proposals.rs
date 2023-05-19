@@ -119,7 +119,7 @@ fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
             let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
-        Err(_) => "[]".to_owned()
+        Err(_) => "[]".to_owned(),
     }
 }
 
