@@ -116,6 +116,9 @@ describe("sns-services", () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
         certified: true,
@@ -160,6 +163,9 @@ describe("sns-services", () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [1],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const spy = jest
         .spyOn(api, "querySnsDerivedState")
@@ -194,6 +200,9 @@ describe("sns-services", () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
         certified: true,

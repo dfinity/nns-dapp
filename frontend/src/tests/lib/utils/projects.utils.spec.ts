@@ -449,6 +449,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: BigInt(0),
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -476,6 +479,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: userCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -510,6 +516,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -540,6 +549,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -573,6 +585,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: projectCommitment,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -599,6 +614,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -736,6 +754,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentE8s,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -770,6 +791,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentProjectParticipation,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -810,6 +834,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -920,6 +947,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -945,6 +975,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,

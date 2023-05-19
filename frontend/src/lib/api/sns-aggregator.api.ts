@@ -74,6 +74,10 @@ type CachedNervousFunctionDto = {
   function_type: SnsFunctionType;
 };
 
+type CachedCountriesDto = {
+  iso_codes: string[];
+};
+
 type CachedSnsSwapDto = {
   lifecycle: number;
   decentralization_sale_open_timestamp_seconds?: number;
@@ -87,6 +91,8 @@ type CachedSnsSwapDto = {
     fallback_controller_principal_ids: string[];
     transaction_fee_e8s: number;
     neuron_minimum_stake_e8s: number;
+    confirmation_text?: string | undefined;
+    restricted_countries?: CachedCountriesDto | undefined;
   };
   params: {
     min_participants: number;
@@ -108,6 +114,9 @@ type CachedSnsSwapDto = {
 type CachedSnsSwapDerivedDto = {
   buyer_total_icp_e8s: number;
   sns_tokens_per_icp: number;
+  cf_participant_count: number | undefined;
+  direct_participant_count: number | undefined;
+  cf_neuron_count: number | undefined;
 };
 
 type CachedSnsTokenMetadataDto = [
@@ -203,6 +212,8 @@ const convertSwap = ({
         transaction_fee_e8s: toNullable(
           convertOptionalNumToBigInt(init.transaction_fee_e8s)
         ),
+        confirmation_text: toNullable(init.confirmation_text),
+        restricted_countries: toNullable(init.restricted_countries),
       })
     : [],
   params: nonNullish(params)
@@ -231,9 +242,21 @@ const convertSwap = ({
 const convertDerived = ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s,
+  cf_participant_count,
+  direct_participant_count,
+  cf_neuron_count,
 }: CachedSnsSwapDerivedDto): SnsSwapDerivedState => ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s: BigInt(buyer_total_icp_e8s),
+  cf_participant_count: nonNullish(cf_participant_count)
+    ? toNullable(BigInt(cf_participant_count))
+    : [],
+  direct_participant_count: nonNullish(direct_participant_count)
+    ? toNullable(BigInt(direct_participant_count))
+    : [],
+  cf_neuron_count: nonNullish(cf_neuron_count)
+    ? toNullable(BigInt(cf_neuron_count))
+    : [],
 });
 
 const convertIcrc1Metadata = (
