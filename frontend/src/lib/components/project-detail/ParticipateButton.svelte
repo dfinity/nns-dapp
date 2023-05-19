@@ -91,6 +91,7 @@
             </Tooltip>
             <!-- TODO: GIX-1553 Add disabled-not-eligible -->
           {:else}
+            <!-- This is the "enabled" and "disabled-not-eligible" case -->
             <button
               on:click={openModal}
               class="primary participate"
