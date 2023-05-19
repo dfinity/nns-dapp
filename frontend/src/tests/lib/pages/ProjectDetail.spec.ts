@@ -80,6 +80,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
       buyer_total_icp_e8s: [BigInt(200_000_000)],
+      cf_participant_count: [],
+      direct_participant_count: [],
+      cf_neuron_count: [],
     });
 
     jest
@@ -279,6 +282,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 transfer_start_timestamp_seconds: BigInt(123444),
                 amount_e8s: userCommitment,
                 transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_fee_paid_e8s: [],
+                amount_transferred_e8s: [],
               },
             ],
           },
@@ -387,6 +392,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 transfer_start_timestamp_seconds: BigInt(123444),
                 amount_e8s: userCommitment,
                 transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_fee_paid_e8s: [],
+                amount_transferred_e8s: [],
               },
             ],
           },
