@@ -518,12 +518,17 @@ export const makeDummyProposals = async ({
       }
     });
     // Log success rate
+    const successCount = responses.filter((response) => response.status === "fulfilled").length;
     console.log(
       "Finished making dummy proposals: ",
-      responses.filter((response) => response.status === "fulfilled").length,
+      successCount,
       " of ",
       requests.length
     );
+
+    if (successCount !== requests.length) {
+      throw new Error(`Only ${successCount} of ${requests.length} proposals were created.`);
+    }
   } catch (e) {
     console.error(e);
     throw e;
