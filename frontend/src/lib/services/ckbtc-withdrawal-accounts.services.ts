@@ -1,4 +1,3 @@
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import {

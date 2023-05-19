@@ -1,7 +1,3 @@
-import {
-  mockedConstants,
-  resetMockedConstants,
-} from "$tests/utils/mockable-constants.test-utils";
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
@@ -11,6 +7,10 @@ import {
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockedConstants,
+  resetMockedConstants,
+} from "$tests/utils/mockable-constants.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
