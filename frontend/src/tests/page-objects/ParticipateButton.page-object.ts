@@ -17,6 +17,7 @@ export class ParticipateButtonPo extends BasePageObject {
     await this.getButton().click();
     const modal = this.getParticipateSwapModalPo();
     await modal.participate({ amount });
-    await modal.waitForAbsent();
+    // Needed to pass the test in Jest environment
+    await modal.waitForAbsent(5_000);
   }
 }

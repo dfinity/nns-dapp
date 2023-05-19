@@ -89,10 +89,13 @@ export class JestPageObjectElement implements PageObjectElement {
     });
   }
 
-  waitForAbsent(): Promise<void> {
-    return waitFor(async () => {
-      expect(await this.isPresent()).toBe(false);
-    });
+  waitForAbsent(timeout?: number): Promise<void> {
+    return waitFor(
+      async () => {
+        expect(await this.isPresent()).toBe(false);
+      },
+      { timeout }
+    );
   }
 
   // Resolves to null if the element is not present.
