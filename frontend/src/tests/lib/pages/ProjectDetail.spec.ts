@@ -350,7 +350,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           hardwareWallets: [],
         });
         const formattedAmountICP = "5.00";
-        const amountICP = Number(formattedAmountICP);
+        const amountICP = 5;
         const amountE8s = numberToE8s(amountICP);
         const finalCommitment = {
           icp: [
