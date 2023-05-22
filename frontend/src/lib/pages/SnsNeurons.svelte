@@ -15,7 +15,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { SnsSummary } from "$lib/types/sns";
