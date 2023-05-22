@@ -146,6 +146,7 @@ export const snsNervousSystemParametersMock: SnsNervousSystemParameters = {
     },
   ],
   max_number_of_principals_per_neuron: [5n],
+  maturity_modulation_disabled: [false],
 };
 
 export const buildMockSnsParametersStore =

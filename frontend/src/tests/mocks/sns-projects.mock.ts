@@ -54,6 +54,8 @@ export const createTransferableAmount = (
   transfer_start_timestamp_seconds: BigInt(0),
   amount_e8s: amount,
   transfer_success_timestamp_seconds: BigInt(0),
+  transfer_fee_paid_e8s: [],
+  amount_transferred_e8s: [],
 });
 export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
   icp: [createTransferableAmount(amount)],
@@ -126,6 +128,9 @@ export const mockQuerySwap: SnsSwap = {
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
   sns_tokens_per_icp: 1,
+  cf_participant_count: [BigInt(100)],
+  direct_participant_count: [BigInt(300)],
+  cf_neuron_count: [BigInt(200)],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {

@@ -1,6 +1,6 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import { getDeniedCountries } from "$lib/getters/sns-summary";
-import type { CountryCode } from "$lib/types/location";
+import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
   SnsSummarySwap,
@@ -264,7 +264,7 @@ export const validParticipation = ({
   return { valid: true };
 };
 
-type ParticipationButtonStatus =
+export type ParticipationButtonStatus =
   | "disabled-max-participation"
   | "disabled-not-eligible"
   | "disabled-not-open"
@@ -321,7 +321,7 @@ export const participateButtonStatus = ({
   swapCommitment: SnsSwapCommitment | undefined | null;
   loggedIn: boolean;
   ticket: SnsSwapTicket | undefined | null;
-  userCountry: CountryCode | undefined | Error;
+  userCountry: Country | Error | "not loaded";
 }): ParticipationButtonStatus => {
   if (!loggedIn) {
     return "logged-out";
@@ -359,11 +359,11 @@ export const participateButtonStatus = ({
       return "enabled";
     }
 
-    if (userCountry === undefined) {
+    if (userCountry === "not loaded") {
       return "loading";
     }
 
-    if (projectDeniedCountries.includes(userCountry)) {
+    if (projectDeniedCountries.includes(userCountry.isoCode)) {
       return "disabled-not-eligible";
     }
   }

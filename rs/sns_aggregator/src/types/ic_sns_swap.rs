@@ -12,6 +12,9 @@ use ic_cdk::api::call::CallResult;
 // use ic_cdk::api::call::CallResult;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct Countries { iso_codes: Vec<String> }
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Init {
   pub  sns_root_canister_id: String,
   pub  fallback_controller_principal_ids: Vec<String>,
@@ -22,6 +25,7 @@ pub struct Init {
   pub  icp_ledger_canister_id: String,
   pub  sns_ledger_canister_id: String,
   pub  sns_governance_canister_id: String,
+  pub  restricted_countries: Option<Countries>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -161,6 +165,9 @@ pub struct get_derived_state_arg0 {}
 pub struct GetDerivedStateResponse {
   pub  sns_tokens_per_icp: Option<f64>,
   pub  buyer_total_icp_e8s: Option<u64>,
+  pub  cf_participant_count: Option<u64>,
+  pub  direct_participant_count: Option<u64>,
+  pub  cf_neuron_count: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -287,7 +294,13 @@ pub struct Swap {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: u64 }
+pub struct DerivedState {
+  pub  sns_tokens_per_icp: f32,
+  pub  buyer_total_icp_e8s: u64,
+  pub  cf_participant_count: Option<u64>,
+  pub  direct_participant_count: Option<u64>,
+  pub  cf_neuron_count: Option<u64>,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
@@ -357,7 +370,10 @@ pub struct OpenRequest {
 pub struct open_ret0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct RefreshBuyerTokensRequest { buyer: String }
+pub struct RefreshBuyerTokensRequest {
+  pub  confirmation_text: Option<String>,
+  pub  buyer: String,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RefreshBuyerTokensResponse {

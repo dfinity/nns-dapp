@@ -156,8 +156,6 @@ json=$(HOST=$(api_host) jq -s --sort-keys '
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST |
-  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
-  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data"))
@@ -166,10 +164,8 @@ dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
 wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
 governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
-governanceCanisterUrl=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_URL")
 tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
-ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
 ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
@@ -185,10 +181,8 @@ echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
 VITE_WASM_CANISTER_ID=$wasmCanisterId
 VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
-VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
 VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
-VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
 VITE_OWN_CANISTER_ID=$ownCanisterId
 VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
@@ -230,16 +224,12 @@ export CKBTC_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
-GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
-export GOVERNANCE_CANISTER_URL
 
 TVL_CANISTER_ID="$tvlCanisterId"
 export TVL_CANISTER_ID
 
 LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
-LEDGER_CANISTER_URL="$ledgerCanisterUrl"
-export LEDGER_CANISTER_URL
 
 OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID

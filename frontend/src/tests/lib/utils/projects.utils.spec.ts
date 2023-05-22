@@ -449,6 +449,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: BigInt(0),
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -476,6 +479,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: userCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -510,6 +516,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -540,6 +549,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -573,6 +585,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: projectCommitment,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -599,6 +614,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -736,6 +754,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentE8s,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -770,6 +791,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentProjectParticipation,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -810,6 +834,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -920,6 +947,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -945,6 +975,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -997,7 +1030,7 @@ describe("project-utils", () => {
         loggedIn: false,
         summary,
         swapCommitment: userNoCommitment,
-        userCountry: undefined,
+        userCountry: "not loaded",
         ticket: null,
       });
       expect(expected).toBe("logged-out");
@@ -1009,7 +1042,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: undefined,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("loading");
@@ -1018,7 +1051,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: null,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("loading");
@@ -1027,7 +1060,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary: null,
           swapCommitment: userNoCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("loading");
@@ -1036,7 +1069,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary: undefined,
           swapCommitment: userNoCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("loading");
@@ -1048,7 +1081,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: userNoCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: undefined,
         })
       ).toBe("loading");
@@ -1057,7 +1090,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: userNoCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: testTicket,
         })
       ).toBe("loading");
@@ -1069,7 +1102,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary: notOpenSummary,
           swapCommitment: userNoCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("disabled-not-open");
@@ -1091,7 +1124,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: userMaxCommitment,
-          userCountry: "CH",
+          userCountry: { isoCode: "CH" },
           ticket: null,
         })
       ).toBe("disabled-max-participation");
@@ -1105,7 +1138,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary,
           swapCommitment: userNoCommitment,
-          userCountry: undefined,
+          userCountry: "not loaded",
           ticket: null,
         })
       ).toBe("enabled");
@@ -1134,7 +1167,7 @@ describe("project-utils", () => {
             loggedIn: true,
             summary,
             swapCommitment: userNoCommitment,
-            userCountry: "CH",
+            userCountry: { isoCode: "CH" },
             ticket: null,
           })
         ).toBe("disabled-not-eligible");
@@ -1146,7 +1179,7 @@ describe("project-utils", () => {
             loggedIn: true,
             summary,
             swapCommitment: userNoCommitment,
-            userCountry: undefined,
+            userCountry: "not loaded",
             ticket: null,
           })
         ).toBe("loading");
@@ -1170,7 +1203,7 @@ describe("project-utils", () => {
             loggedIn: true,
             summary,
             swapCommitment: userNoCommitment,
-            userCountry: "SP",
+            userCountry: { isoCode: "SP" },
             ticket: null,
           })
         ).toBe("enabled");

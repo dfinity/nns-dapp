@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 66418e9ff..92c48c6f4 100644
+index d1acc5d98..25b9ba676 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -11,6 +11,7 @@ use ic_cdk::api::call::CallResult;
@@ -72,7 +72,7 @@ index 66418e9ff..92c48c6f4 100644
  pub struct GetMetadataResponse {
    pub  url: Option<String>,
    pub  logo: Option<String>,
-@@ -513,7 +514,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -517,7 +518,7 @@ pub struct GetSnsInitializationParametersResponse {
    pub  sns_initialization_parameters: String,
  }
  
@@ -81,7 +81,7 @@ index 66418e9ff..92c48c6f4 100644
  pub struct ListNervousSystemFunctionsResponse {
    pub  reserved_ids: Vec<u64>,
    pub  functions: Vec<NervousSystemFunction>,
-@@ -585,17 +586,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
+@@ -589,17 +590,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
  pub enum Command_1 {
    Error(GovernanceError),
    Split(SplitResponse),
