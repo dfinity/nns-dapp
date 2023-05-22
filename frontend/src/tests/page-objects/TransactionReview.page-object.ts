@@ -1,4 +1,5 @@
 import { AdditionalInfoReviewPo } from "$tests/page-objects/AdditionalInfoReview.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,12 +14,28 @@ export class TransactionReviewPo extends BasePageObject {
     return AdditionalInfoReviewPo.under(this.root);
   }
 
+  getSendButtonPo(): ButtonPo {
+    return this.getButton("transaction-button-execute");
+  }
+
   getDestinationAddress(): Promise<string> {
     return this.getText("destination");
   }
 
+  getSendingAmount(): Promise<string> {
+    return this.getText("transaction-summary-sending-amount");
+  }
+
+  getReceivedAmount(): Promise<string> {
+    return this.getText("transaction-summary-total-received");
+  }
+
+  async isSendButtonEnabled(): Promise<boolean> {
+    return !(await this.getSendButtonPo().isDisabled());
+  }
+
   clickSend(): Promise<void> {
-    return this.getButton("transaction-button-execute").click();
+    return this.getSendButtonPo().click();
   }
 
   clickCheckbox(): Promise<void> {
