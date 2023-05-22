@@ -1,5 +1,7 @@
 import type { CountryCode } from "$lib/types/location";
 import type { SnsSummary } from "$lib/types/sns";
+import { fromNullable } from "@dfinity/utils";
 
-// TODO: GIX-1545 Implement this function
-export const getDeniedCountries = (_summary: SnsSummary): CountryCode[] => [];
+export const getDeniedCountries = (_summary: SnsSummary): CountryCode[] =>
+  fromNullable(fromNullable(_summary.swap.init)?.restricted_countries ?? [])
+    ?.iso_codes ?? [];

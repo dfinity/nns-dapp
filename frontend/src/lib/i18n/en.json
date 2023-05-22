@@ -650,6 +650,7 @@
     "completed": "Completed",
     "sale_end": "Swap End",
     "max_user_commitment_reached": "Maximum commitment reached",
+    "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
     "sign_in": "Sign in to participate"
   },
