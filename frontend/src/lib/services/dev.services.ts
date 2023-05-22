@@ -1,4 +1,8 @@
-import { acquireICPTs, acquireSnsTokens } from "$lib/api/dev.api";
+import {
+  acquireICPTs,
+  acquireSnsTokens,
+  getTestAccountBalance,
+} from "$lib/api/dev.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -10,6 +14,8 @@ import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { syncAccounts } from "./accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
+
+export const getTestBalance = getTestAccountBalance;
 
 export const getICPs = async (icps: number) => {
   const { main }: AccountsStoreData = get(accountsStore);
