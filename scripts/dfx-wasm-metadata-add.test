@@ -6,7 +6,11 @@ PATH="$SOURCE_DIR:$PATH"
 print_help() {
   cat <<-EOF
 
-	Verifies that the git commit and service definition are available from deployed canisters.
+	Verifies that the git commit and service definition are available in wasms and from
+	deployed canisters.
+
+	This test requires that the canisters are deployed to localhost.  It neither starts,
+	stops, nor in any other way modifies the local network.
 	EOF
 }
 
