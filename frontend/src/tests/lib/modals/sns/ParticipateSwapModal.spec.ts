@@ -101,7 +101,7 @@ describe("ParticipateSwapModal", () => {
     await form.clickContinue();
 
     const review = po.getTransactionReviewPo();
-    await review.waitFor();
+    expect(await review.isPresent()).toBe(true);
 
     expect(await review.getSendingAmount()).toContain(icpAmountFormatted);
     expect(await review.getReceivedAmount()).toContain(icpAmountFormatted);
