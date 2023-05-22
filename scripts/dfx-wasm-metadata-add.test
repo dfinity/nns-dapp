@@ -65,6 +65,8 @@ check_service() {
         echo "ERROR: Please deploy the $canister to the local network before running this test"
         exit 1
       }
+      : "Make sure that the correct wasm is deployed."
+      dfx-canister-check-wasm-hash --canister "$canister"
       dfx canister metadata "$canister" git_commit_id | check_commit
       dfx canister metadata "$canister" candid:service | check_service
     done
