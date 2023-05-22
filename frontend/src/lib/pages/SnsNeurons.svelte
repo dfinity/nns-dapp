@@ -33,11 +33,6 @@
   ): Promise<void> => {
     if (selectedProjectCanisterId !== undefined) {
       loading = true;
-
-      // params.minimum_stake_amount needs for checking neurons balance (checkNeuronsSubaccounts)
-      // TODO(GIX-1197): extract that logic in a service and have a test that check that loadSnsParameters is indeed called before the calls?
-      await loadSnsParameters(selectedProjectCanisterId);
-
       await Promise.all([
         syncSnsNeurons(selectedProjectCanisterId),
         syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
