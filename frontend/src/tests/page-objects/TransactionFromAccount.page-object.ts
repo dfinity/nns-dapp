@@ -1,6 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { DropdownPo } from "$tests/page-objects/Dropdown.page-object";
-import { TogglePo } from "$tests/page-objects/Toggle.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class TransactionFromAccountPo extends BasePageObject {
