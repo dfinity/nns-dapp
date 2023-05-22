@@ -141,7 +141,8 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
       - name: Run the ic_commit code generator
@@ -164,7 +165,8 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
       - name: Install dfx
@@ -211,7 +213,8 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
       - name: Recreate and compare patches

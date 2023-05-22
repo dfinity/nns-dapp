@@ -251,11 +251,15 @@ install_idl2json() {
 }
 
 install_didc_linux() {
-  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+  local version
+  version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+  curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
 }
 install_didc_darwin() {
+  local version
+  version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
   tempfile="$(mktemp ,didc-XXXXXXXX)"
-  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-macos >"$tempfile"
+  curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-macos" >"$tempfile"
   install -m 755 "$tempfile" "$USER_BIN/didc"
   rm "$tempfile"
 }
