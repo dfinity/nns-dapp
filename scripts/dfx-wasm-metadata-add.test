@@ -23,6 +23,8 @@ source "$(clap.build)"
 
 COMMIT="$(git rev-parse HEAD)"
 check_commit() {
+  set -x
+  local stdin
   stdin="$(cat)"
   echo "$stdin" | grep -qw "$COMMIT" || {
     echo "ERROR: The $canister git_commit_id metadata should include a git commit."
@@ -32,6 +34,7 @@ check_commit() {
   }
 }
 check_service() {
+  local stdin
   stdin="$(cat)"
   echo "$stdin" | grep -qw service || {
     echo "ERROR: The $canister candid:service metadata should contain a service definition."
