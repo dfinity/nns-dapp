@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ProgressSteps, type ProgressStep } from "@dfinity/gix-components";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconWarning } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
 
@@ -34,15 +35,17 @@
   $: progressStep, updateSteps();
 </script>
 
-<div class="warning" data-tid="in-progress-warning">
-  <div class="icon">
-    <IconWarning size={ICON_SIZE_LARGE} />
+<TestIdWrapper testId="in-progress-component">
+  <div class="warning" data-tid="in-progress-warning">
+    <div class="icon">
+      <IconWarning size={ICON_SIZE_LARGE} />
+    </div>
+    <p class="value">{$i18n.core.this_may_take_a_few_minutes}</p>
+    <p class="description">{$i18n.core.do_not_close}</p>
   </div>
-  <p class="value">{$i18n.core.this_may_take_a_few_minutes}</p>
-  <p class="description">{$i18n.core.do_not_close}</p>
-</div>
 
-<ProgressSteps steps={dynamicSteps} />
+  <ProgressSteps steps={dynamicSteps} />
+</TestIdWrapper>
 
 <style lang="scss">
   .warning {

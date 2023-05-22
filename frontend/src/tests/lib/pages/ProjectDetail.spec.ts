@@ -4,6 +4,7 @@
 
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as locationApi from "$lib/api/location.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
@@ -13,12 +14,17 @@ import { pageStore } from "$lib/derived/page.derived";
 import * as summaryGetters from "$lib/getters/sns-summary";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import {
+  mockAccountDetails,
+  mockMainAccount,
+} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
@@ -26,6 +32,8 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -36,6 +44,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-swap-metrics.api");
 jest.mock("$lib/api/sns-sale.api");
@@ -53,7 +62,7 @@ const blockedApiPaths = [
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
   const countryCode = "CH";
-  const newBalance = BigInt(1_000_000_000);
+  const newBalance = BigInt(10_000_000_000);
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
 # TYPE sale_buyer_count gauge
@@ -71,6 +80,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     jest.useFakeTimers().setSystemTime(now);
 
     jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
+
+    jest
+      .spyOn(nnsDappApi, "queryAccount")
+      .mockResolvedValue(mockAccountDetails);
     jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
     jest
@@ -80,6 +93,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
       buyer_total_icp_e8s: [BigInt(200_000_000)],
+      cf_participant_count: [],
+      direct_participant_count: [],
+      cf_neuron_count: [],
     });
 
     jest
@@ -266,7 +282,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
         jest
           .spyOn(ledgerApi, "queryAccountBalance")
-          .mockResolvedValue(BigInt(10_000_000));
+          .mockResolvedValue(BigInt(1_000_000_000));
       });
 
       it("should show user's commitment", async () => {
@@ -279,6 +295,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 transfer_start_timestamp_seconds: BigInt(123444),
                 amount_e8s: userCommitment,
                 transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_fee_paid_e8s: [],
+                amount_transferred_e8s: [],
               },
             ],
           },
@@ -322,6 +340,68 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           expect(locationApi.queryUserCountryLocation).toBeCalled();
         });
+      });
+
+      it("should participate with user interaction if there is no open ticket.", async () => {
+        // Do not rely on the `loadAccounts` from the modal.
+        accountsStore.setForTesting({
+          main: mockMainAccount,
+          subAccounts: [],
+          hardwareWallets: [],
+        });
+        const formattedAmountICP = "5.00";
+        const amountICP = 5;
+        const amountE8s = numberToE8s(amountICP);
+        const finalCommitment = {
+          icp: [
+            {
+              transfer_start_timestamp_seconds: BigInt(123444),
+              amount_e8s: amountE8s,
+              transfer_success_timestamp_seconds: BigInt(123445),
+            },
+          ],
+        };
+        jest
+          .spyOn(snsApi, "querySnsSwapCommitment")
+          // Query call
+          .mockResolvedValueOnce({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: undefined,
+          } as SnsSwapCommitment)
+          // Update call
+          .mockResolvedValueOnce({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: undefined,
+          } as SnsSwapCommitment)
+          .mockResolvedValue({
+            rootCanisterId: Principal.fromText(rootCanisterId),
+            myCommitment: finalCommitment,
+          } as SnsSwapCommitment);
+        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+        jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
+          ...testTicket,
+          amount_icp_e8s: amountE8s,
+        });
+
+        const { container } = render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        const projectDetail = ProjectDetailPo.under(
+          new JestPageObjectElement(container)
+        );
+
+        await waitFor(async () =>
+          expect(await projectDetail.getStatus()).toBe(
+            "Accepting Participation"
+          )
+        );
+
+        expect(await projectDetail.hasCommitmentAmount()).toBe(false);
+        await projectDetail.participate({ amount: amountICP });
+        expect(await projectDetail.getCommitmentAmount()).toBe(
+          formattedAmountICP
+        );
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
@@ -387,6 +467,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 transfer_start_timestamp_seconds: BigInt(123444),
                 amount_e8s: userCommitment,
                 transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_fee_paid_e8s: [],
+                amount_transferred_e8s: [],
               },
             ],
           },

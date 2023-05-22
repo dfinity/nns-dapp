@@ -1,4 +1,8 @@
 // These are constants that can have a different value during tests but which are not set with the arguments passed to the canister.
+// Tests can override these constants by setting them on the mockedConstants
+// object in frontend/src/tests/utils/mockable-constants.test-utils.ts
+// Their default values during unit tests are defined in jest-setup.ts.
+
 export const DEV = import.meta.env.DEV;
 
 // Disable TVL or transaction rate warning locally because that information is not crucial when we develop

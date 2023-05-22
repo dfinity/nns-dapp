@@ -1,3 +1,4 @@
+import { InProgressPo } from "$tests/page-objects/InProgress.page-object";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,6 +9,14 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
     return new ParticipateSwapModalPo(
       element.byTestId(ParticipateSwapModalPo.TID)
     );
+  }
+
+  getInProgressPo(): InProgressPo {
+    return InProgressPo.under(this.root);
+  }
+
+  isSaleInProgress(): Promise<boolean> {
+    return this.getInProgressPo().isPresent();
   }
 
   async participate({ amount }: { amount: number }): Promise<void> {

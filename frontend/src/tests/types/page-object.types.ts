@@ -23,7 +23,7 @@ export interface PageObjectElement {
   }): PageObjectElement[];
   isPresent(): Promise<boolean>;
   waitFor(): Promise<void>;
-  waitForAbsent(): Promise<void>;
+  waitForAbsent(timeout?: number): Promise<void>;
   getText(): Promise<string | null>;
   getAttribute(attribute: string): Promise<string | null>;
   click(): Promise<void>;

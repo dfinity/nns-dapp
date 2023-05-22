@@ -7,12 +7,17 @@ import {
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockedConstants,
+  resetMockedConstants,
+} from "$tests/utils/mockable-constants.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-withdrawal-accounts.services", () => {
   describe("loadCkBTCWithdrawalAccount", () => {
     beforeEach(() => {
+      resetMockedConstants();
       jest.clearAllMocks();
       ckBTCWithdrawalAccountsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
@@ -26,6 +31,30 @@ describe("ckbtc-withdrawal-accounts.services", () => {
       });
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
+      const spyGetCkBTCAccount = jest
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockResolvedValue(mockCkBTCWithdrawalAccount);
+
+      await loadCkBTCWithdrawalAccount({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      await tick();
+
+      expect(spyGetCkBTCAccount).toHaveBeenCalled();
+
+      expect(spyGetWithdrawalAccount).toHaveBeenCalled();
+
+      const store = get(ckBTCWithdrawalAccountsStore);
+
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).not.toBeUndefined();
+      expect(
+        store[CKBTC_UNIVERSE_CANISTER_ID.toText()].account.identifier
+      ).toEqual(mockCkBTCWithdrawalAccount.identifier);
+    });
+
+    it("should not be affected by FORCE_CALL_STRATEGY", async () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
       const spyGetCkBTCAccount = jest
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);

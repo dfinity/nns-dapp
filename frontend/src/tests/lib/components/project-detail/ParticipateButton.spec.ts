@@ -26,6 +26,8 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
@@ -156,6 +158,22 @@ describe("ParticipateButton", () => {
       expect(queryByTestId("sns-project-participate-button")).toBeNull();
     });
 
+    it("should display a spinner while fetching user commitment", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+
+      const { queryByTestId, getByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: undefined,
+        Component: ParticipateButton,
+      });
+
+      await waitFor(() =>
+        expect(getByTestId("connecting_sale_canister")).not.toBeNull()
+      );
+
+      expect(queryByTestId("sns-project-participate-button")).toBeNull();
+    });
+
     it("should display spinner and hide button when there is loading ticket", async () => {
       const { queryByTestId, getByTestId, container } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
@@ -217,10 +235,30 @@ describe("ParticipateButton", () => {
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
     });
 
-    it("should disable button if user has committed max already", () => {
-      const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
+    it("should enable button if from a non-restricted country", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["CH"]);
+      userCountryStore.set({ isoCode: "US" });
 
       const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+
+      await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
+    });
+
+    it("should disable button if user has committed max already", async () => {
+      const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
+      snsTicketsStore.setNoTicket(mock.rootCanisterId);
+
+      const { queryByTestId, container } = renderContextCmp({
         summary: summaryForLifecycle(SnsSwapLifecycle.Open),
         swapCommitment: {
           rootCanisterId: mock.rootCanisterId,
@@ -237,6 +275,39 @@ describe("ParticipateButton", () => {
         "sns-project-participate-button"
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
+
+      const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
+      expect(await tooltipPo.getText()).toBe("Maximum commitment reached");
+    });
+
+    it("should disable button if user is from a restricted country", async () => {
+      const userCountry = "CH";
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest
+        .spyOn(summaryGetters, "getDeniedCountries")
+        .mockReturnValue([userCountry]);
+      userCountryStore.set({ isoCode: userCountry });
+      const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
+      snsTicketsStore.setNoTicket(mock.rootCanisterId);
+
+      const { queryByTestId, container } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: {
+          rootCanisterId: mock.rootCanisterId,
+          myCommitment: undefined,
+        },
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+      expect(button.getAttribute("disabled")).not.toBeNull();
+
+      const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
+      expect(await tooltipPo.getText()).toBe(
+        "You are not eligible to participate in this swap."
+      );
     });
   });
 
