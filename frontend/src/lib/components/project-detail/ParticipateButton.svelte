@@ -89,9 +89,19 @@
                 disabled>{$i18n.sns_project_detail.participate}</button
               >
             </Tooltip>
-            <!-- TODO: GIX-1553 Add disabled-not-eligible -->
+          {:else if buttonStatus === "disabled-not-eligible"}
+            <Tooltip
+              id="sns-project-participate-button-tooltip"
+              text={$i18n.sns_project_detail.not_eligible_to_participate}
+            >
+              <button
+                class="primary"
+                data-tid="sns-project-participate-button"
+                disabled>{$i18n.sns_project_detail.participate}</button
+              >
+            </Tooltip>
           {:else}
-            <!-- This is the "enabled" and "disabled-not-eligible" case -->
+            <!-- This is the "enabled" case only -->
             <button
               on:click={openModal}
               class="primary participate"

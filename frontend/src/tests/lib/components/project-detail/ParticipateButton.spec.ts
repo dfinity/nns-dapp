@@ -235,6 +235,25 @@ describe("ParticipateButton", () => {
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
     });
 
+    it("should enable button if from a non-restricted country", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["CH"]);
+      userCountryStore.set({ isoCode: "US" });
+
+      const { queryByTestId } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+
+      await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
+    });
+
     it("should disable button if user has committed max already", async () => {
       const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
       snsTicketsStore.setNoTicket(mock.rootCanisterId);
@@ -259,6 +278,36 @@ describe("ParticipateButton", () => {
 
       const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
       expect(await tooltipPo.getText()).toBe("Maximum commitment reached");
+    });
+
+    it("should disable button if user is from a restricted country", async () => {
+      const userCountry = "CH";
+      // TODO: GIX-1545 Remove mock and create a summary with deny list
+      jest
+        .spyOn(summaryGetters, "getDeniedCountries")
+        .mockReturnValue([userCountry]);
+      userCountryStore.set({ isoCode: userCountry });
+      const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
+      snsTicketsStore.setNoTicket(mock.rootCanisterId);
+
+      const { queryByTestId, container } = renderContextCmp({
+        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        swapCommitment: {
+          rootCanisterId: mock.rootCanisterId,
+          myCommitment: undefined,
+        },
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+      expect(button.getAttribute("disabled")).not.toBeNull();
+
+      const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
+      expect(await tooltipPo.getText()).toBe(
+        "You are not eligible to participate in this swap."
+      );
     });
   });
 
