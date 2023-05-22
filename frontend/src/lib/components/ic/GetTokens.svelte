@@ -40,7 +40,7 @@
       // Default to transfer ICPs if the test account's balance of the selected universe is 0.
       if (
         selectedProjectId.toText() === OWN_CANISTER_ID.toText() ||
-        tokenBalanceE8s === BigInt(0)
+        tokenBalanceE8s === 0n
       ) {
         await getICPs(inputValue);
       } else {
@@ -72,17 +72,16 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 
   // Check the balance of the test account in that universe.
-  let tokenBalanceE8s = BigInt(0);
+  let tokenBalanceE8s = 0n;
   $: selectedProjectId,
     (async () => {
       tokenBalanceE8s = await getTestBalance(selectedProjectId);
-      console.log("getting balance", tokenBalanceE8s);
     })();
 
   // If the test account balance is 0, don't show a button that won't work. Show the ICP token instead.
   let token: Token;
   $: token =
-    (tokenBalanceE8s === BigInt(0) ? ICPToken : $snsTokenSymbolSelectedStore) ??
+    (tokenBalanceE8s === 0n ? ICPToken : $snsTokenSymbolSelectedStore) ??
     ICPToken;
 </script>
 
