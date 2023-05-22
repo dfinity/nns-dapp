@@ -48,8 +48,11 @@ import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-import { SnsNervousSystemParameters } from "@dfinity/sns";
+import type {
+  SnsNervousSystemParameters,
+  SnsNeuron,
+  SnsNeuronId,
+} from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
@@ -83,11 +86,11 @@ export const syncSnsNeurons = async (
   const snsParameters = () =>
     get(snsParametersStore)?.[rootCanisterId.toText()]
       ?.parameters as SnsNervousSystemParameters;
-  // Load SNS parameters if not already loaded
-  const snsParametersDone = isNullish(snsParameters())
+  // Load SNS parameters if not in store
+  const snsParametersRequest = isNullish(snsParameters())
     ? loadSnsParameters(rootCanisterId)
     : Promise.resolve();
-  const syncSnsNeuronsDone = queryAndUpdate<SnsNeuron[], unknown>({
+  const syncSnsNeuronsRequest = queryAndUpdate<SnsNeuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
@@ -104,7 +107,7 @@ export const syncSnsNeurons = async (
 
       if (certified) {
         // be sure that the parameters are loaded
-        await snsParametersDone;
+        await snsParametersRequest;
         const neuronMinimumStake = fromNullable(
           snsParameters()?.neuron_minimum_stake_e8s
         );
@@ -137,7 +140,7 @@ export const syncSnsNeurons = async (
     logMessage: "Syncing Sns Neurons",
   });
 
-  return Promise.all([snsParametersDone, syncSnsNeuronsDone]).then();
+  return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
 export const loadNeurons = async ({
