@@ -101,7 +101,7 @@
               >
             </Tooltip>
           {:else}
-            <!-- This is the "enabled" and "disabled-not-eligible" case -->
+            <!-- This is the "enabled" case only -->
             <button
               on:click={openModal}
               class="primary participate"
