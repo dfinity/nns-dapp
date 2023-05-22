@@ -170,6 +170,7 @@ COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm sns_aggregator_dev.wasm
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
