@@ -458,7 +458,10 @@ export const pollAccounts = async (certified = true) => {
   // Skip if accounts are already loaded and certified
   // `certified` might be `undefined` if not yet loaded.
   // Therefore, we compare with `true`.
-  if (accounts.certified === true) {
+  if (
+    accounts.certified === true ||
+    (accounts.certified === false && FORCE_CALL_STRATEGY === "query")
+  ) {
     return;
   }
 

@@ -249,7 +249,10 @@ export const loadProposal = async ({
     console.error(erroneusResponse);
 
     const skipUpdateErrorHandling =
-      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
+      silentUpdateErrorMessages === true &&
+      (erroneusResponse.certified === true ||
+        (erroneusResponse.certified === false &&
+          FORCE_CALL_STRATEGY === "query"));
 
     if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);

@@ -17,7 +17,11 @@ export const loadSnsParameters = async (
 ): Promise<void> => {
   const storeData = get(snsParametersStore);
   // Do not load if already loaded and certified
-  if (storeData[rootCanisterId.toText()]?.certified === true) {
+  if (
+    storeData[rootCanisterId.toText()]?.certified === true ||
+    (storeData[rootCanisterId.toText()]?.certified === false &&
+      FORCE_CALL_STRATEGY === "query")
+  ) {
     return;
   }
   await queryAndUpdate<SnsNervousSystemParameters, unknown>({
