@@ -419,7 +419,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("when restricted countries and user is from another country", async () => {
-          jest.spyOn(console, "error").mockImplementation(() => undefined);
           const response = snsResponseFor({
             principal: Principal.fromText(rootCanisterId),
             lifecycle: SnsSwapLifecycle.Open,
