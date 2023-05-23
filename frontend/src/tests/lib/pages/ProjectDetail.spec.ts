@@ -17,6 +17,7 @@ import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -64,7 +65,8 @@ const blockedApiPaths = [
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
-  const countryCode = "CH";
+  const userCountryCode = "CH";
+  const notUserCountryCode = "US";
   const newBalance = BigInt(10_000_000_000);
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
@@ -77,6 +79,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsQueryStore.reset();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
+    userCountryStore.set("not loaded");
 
     jest.clearAllTimers();
     const now = Date.now();
@@ -91,7 +94,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     jest
       .spyOn(locationApi, "queryUserCountryLocation")
-      .mockResolvedValue(countryCode);
+      .mockResolvedValue(userCountryCode);
 
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
@@ -349,13 +352,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
       });
 
-      it("should participate with user interaction if there is no open ticket.", async () => {
-        // Do not rely on the `loadAccounts` from the modal.
-        accountsStore.setForTesting({
-          main: mockMainAccount,
-          subAccounts: [],
-          hardwareWallets: [],
-        });
+      describe("successful participation", () => {
         const formattedAmountICP = "5.00";
         const amountICP = 5;
         const amountE8s = numberToE8s(amountICP);
@@ -368,47 +365,128 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             },
           ],
         };
-        jest
-          .spyOn(snsApi, "querySnsSwapCommitment")
-          // Query call
-          .mockResolvedValueOnce({
-            rootCanisterId: Principal.fromText(rootCanisterId),
-            myCommitment: undefined,
-          } as SnsSwapCommitment)
-          // Update call
-          .mockResolvedValueOnce({
-            rootCanisterId: Principal.fromText(rootCanisterId),
-            myCommitment: undefined,
-          } as SnsSwapCommitment)
-          .mockResolvedValue({
-            rootCanisterId: Principal.fromText(rootCanisterId),
-            myCommitment: finalCommitment,
-          } as SnsSwapCommitment);
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-        jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
-          ...testTicket,
-          amount_icp_e8s: amountE8s,
+
+        beforeEach(() => {
+          // Do not rely on the `loadAccounts` from the modal.
+          accountsStore.setForTesting({
+            main: mockMainAccount,
+            subAccounts: [],
+            hardwareWallets: [],
+          });
+          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
+            ...testTicket,
+            amount_icp_e8s: amountE8s,
+          });
+          jest
+            .spyOn(snsApi, "querySnsSwapCommitment")
+            // Query call
+            .mockResolvedValueOnce({
+              rootCanisterId: Principal.fromText(rootCanisterId),
+              myCommitment: undefined,
+            } as SnsSwapCommitment)
+            // Update call
+            .mockResolvedValueOnce({
+              rootCanisterId: Principal.fromText(rootCanisterId),
+              myCommitment: undefined,
+            } as SnsSwapCommitment)
+            .mockResolvedValue({
+              rootCanisterId: Principal.fromText(rootCanisterId),
+              myCommitment: finalCommitment,
+            } as SnsSwapCommitment);
         });
 
-        const { container } = render(ProjectDetail, props);
+        it("when no restricted countries", async () => {
+          const { container } = render(ProjectDetail, props);
 
-        await runResolvedPromises();
+          await runResolvedPromises();
 
-        const projectDetail = ProjectDetailPo.under(
-          new JestPageObjectElement(container)
-        );
+          const projectDetail = ProjectDetailPo.under(
+            new JestPageObjectElement(container)
+          );
 
-        await waitFor(async () =>
-          expect(await projectDetail.getStatus()).toBe(
-            "Accepting Participation"
-          )
-        );
+          await waitFor(async () =>
+            expect(
+              await projectDetail.getParticipateButton().isDisabled()
+            ).toBe(false)
+          );
 
-        expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-        await projectDetail.participate({ amount: amountICP });
-        expect(await projectDetail.getCommitmentAmount()).toBe(
-          formattedAmountICP
-        );
+          expect(await projectDetail.hasCommitmentAmount()).toBe(false);
+          await projectDetail.participate({ amount: amountICP });
+          expect(await projectDetail.getCommitmentAmount()).toBe(
+            formattedAmountICP
+          );
+        });
+
+        it("when restricted countries and user is from another country", async () => {
+          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          const response = snsResponseFor({
+            principal: Principal.fromText(rootCanisterId),
+            lifecycle: SnsSwapLifecycle.Open,
+            certified: true,
+            restrictedCountries: [notUserCountryCode],
+          });
+          snsQueryStore.setData(response);
+
+          const { container } = render(ProjectDetail, props);
+
+          await runResolvedPromises();
+
+          const projectDetail = ProjectDetailPo.under(
+            new JestPageObjectElement(container)
+          );
+
+          await waitFor(
+            async () =>
+              expect(
+                await projectDetail.getParticipateButton().isDisabled()
+              ).toBe(false),
+            { timeout: 5000 }
+          );
+
+          expect(await projectDetail.hasCommitmentAmount()).toBe(false);
+          await projectDetail.participate({ amount: amountICP });
+          expect(await projectDetail.getCommitmentAmount()).toBe(
+            formattedAmountICP
+          );
+        });
+
+        it("when restricted countries and getting location fails", async () => {
+          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          jest
+            .spyOn(locationApi, "queryUserCountryLocation")
+            .mockRejectedValue(new Error("Failed to get user location"));
+
+          const response = snsResponseFor({
+            principal: Principal.fromText(rootCanisterId),
+            lifecycle: SnsSwapLifecycle.Open,
+            certified: true,
+            restrictedCountries: ["US"],
+          });
+          snsQueryStore.setData(response);
+
+          const { container } = render(ProjectDetail, props);
+
+          await runResolvedPromises();
+
+          const projectDetail = ProjectDetailPo.under(
+            new JestPageObjectElement(container)
+          );
+
+          await waitFor(
+            async () =>
+              expect(
+                await projectDetail.getParticipateButton().isDisabled()
+              ).toBe(false),
+            { timeout: 5000 }
+          );
+
+          expect(await projectDetail.hasCommitmentAmount()).toBe(false);
+          await projectDetail.participate({ amount: amountICP });
+          expect(await projectDetail.getCommitmentAmount()).toBe(
+            formattedAmountICP
+          );
+        });
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
