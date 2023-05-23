@@ -27,7 +27,10 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  createSummary,
+  mockSnsFullProject,
+} from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
@@ -58,6 +61,11 @@ jest.mock("$lib/services/sns-sale.services", () => ({
   initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
 }));
 
+type SwapModalParams = {
+  swapCommitment?: SnsSwapCommitment | undefined;
+  confirmationText?: string | undefined;
+};
+
 describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
@@ -68,26 +76,31 @@ describe("ParticipateSwapModal", () => {
   });
 
   const reload = jest.fn();
-  const renderSwapModal = (
-    swapCommitment: SnsSwapCommitment | undefined = undefined
-  ) =>
+  const renderSwapModal = ({
+    swapCommitment,
+    confirmationText,
+  }: SwapModalParams = {}) =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
       contextKey: PROJECT_DETAIL_CONTEXT_KEY,
       contextValue: {
         store: writable<ProjectDetailStore>({
-          summary: mockSnsFullProject.summary,
+          summary: createSummary({ confirmationText }),
           swapCommitment,
         }),
         reload,
       } as ProjectDetailContext,
     });
 
+  const renderSwapModalPo = async (params: SwapModalParams = {}) => {
+    const { container } = await renderSwapModal(params);
+    return new ParticipateSwapModalPo(new JestPageObjectElement(container));
+  };
+
   const renderEnter10ICPAndNext = async (
     swapCommitment: SnsSwapCommitment | undefined = undefined
   ): Promise<ParticipateSwapModalPo> => {
-    const { container } = await renderSwapModal(swapCommitment);
-    const po = new ParticipateSwapModalPo(new JestPageObjectElement(container));
+    const po = await renderSwapModalPo({ swapCommitment });
 
     const form = po.getTransactionFormPo();
     expect(await form.isPresent()).toBe(true);
@@ -145,6 +158,21 @@ describe("ParticipateSwapModal", () => {
       await participate(po);
 
       expect(await po.isSaleInProgress()).toBe(true);
+    });
+
+    it("should display confirmation text when present in the summary", async () => {
+      const confirmationText = "I confirm the text";
+      const po = await renderSwapModalPo({ confirmationText });
+      const info = po.getAdditionalInfoFormPo();
+      expect(await info.hasConditions()).toBe(true);
+      expect(await info.getConditions()).toBe(confirmationText);
+    });
+
+    it("should not display confirmation text when not present in the summary", async () => {
+      const confirmationText = undefined;
+      const po = await renderSwapModalPo({ confirmationText });
+      const info = po.getAdditionalInfoFormPo();
+      expect(await info.hasConditions()).toBe(false);
     });
   });
 
@@ -207,10 +235,7 @@ describe("ParticipateSwapModal", () => {
       });
 
       it("should have disabled button if no swap commitment is present", async () => {
-        const { container } = await renderSwapModal();
-        const po = new ParticipateSwapModalPo(
-          new JestPageObjectElement(container)
-        );
+        const po = await renderSwapModalPo();
         const form = po.getTransactionFormPo();
 
         expect(await form.isPresent()).toBe(true);
@@ -238,10 +263,7 @@ describe("ParticipateSwapModal", () => {
         .mockResolvedValue(mockAccountDetails);
     });
     it("loads accounts and renders account selector", async () => {
-      const { container } = await renderSwapModal();
-      const po = new ParticipateSwapModalPo(
-        new JestPageObjectElement(container)
-      );
+      const po = await renderSwapModalPo();
 
       const fromAccount = po
         .getTransactionFormPo()
