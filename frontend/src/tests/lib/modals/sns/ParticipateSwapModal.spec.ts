@@ -174,6 +174,26 @@ describe("ParticipateSwapModal", () => {
       const info = po.getAdditionalInfoFormPo();
       expect(await info.hasConditions()).toBe(false);
     });
+
+    it("should disable continue until conditions are accepted", async () => {
+      const confirmationText = "I confirm the text";
+      const po = await renderSwapModalPo({ confirmationText });
+      const info = po.getAdditionalInfoFormPo();
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(10);
+      expect(await form.isContinueButtonEnabled()).toBe(false);
+      expect(await info.toggleConditionsAccepted());
+      expect(await form.isContinueButtonEnabled()).toBe(true);
+    });
+
+    it("should not disable continue if confirmation text is absent", async () => {
+      const confirmationText = undefined;
+      const po = await renderSwapModalPo({ confirmationText });
+      const info = po.getAdditionalInfoFormPo();
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(10);
+      expect(await form.isContinueButtonEnabled()).toBe(true);
+    });
   });
 
   describe("when user has participated", () => {
