@@ -1,6 +1,6 @@
 //! Tests for the argument parsing code.
 use anyhow::{Context, Result};
-use candid::parser::types::{IDLType, PrimType, IDLTypes};
+use candid::parser::types::{IDLType, IDLTypes, PrimType};
 use candid::IDLProg;
 use std::str::FromStr;
 
@@ -91,7 +91,7 @@ fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
     let prog = IDLProg::from_str(&did).context("Failed to parse canister did file.")?;
     let service = prog.actor.context("Could not find service in did file.")?;
     if let IDLType::ClassT(args, _) = service {
-        Ok(IDLTypes{args})
+        Ok(IDLTypes { args })
     } else {
         anyhow::bail!("Could not get arg for service")
     }
@@ -99,8 +99,8 @@ fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
 #[test]
 fn arg_types_from_did_should_be_correct() {
     let ok_test_vectors = vec![
-      ("service : (opt opt nat8, nat16) -> {}", "(opt opt nat8, nat16)"),
-      ("service : (opt opt nat8) -> {}", "(opt opt nat8)"),
+        ("service : (opt opt nat8, nat16) -> {}", "(opt opt nat8, nat16)"),
+        ("service : (opt opt nat8) -> {}", "(opt opt nat8)"),
     ];
     for (did, arg) in ok_test_vectors {
         let actual_arg = arg_types_from_did(did).expect("Failed to get arg");

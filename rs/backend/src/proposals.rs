@@ -106,7 +106,7 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     } else {
         vec![]
     };
-    IDLTypes{args}
+    IDLTypes { args }
 }
 
 fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
@@ -114,7 +114,11 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
         return "[]".to_owned();
     }
     // We support only one argument, for the time being.
-    let idl_type = arg_types.args.get(0).cloned().unwrap_or_else(|| IDLType::PrimT(PrimType::Null));
+    let idl_type = arg_types
+        .args
+        .get(0)
+        .cloned()
+        .unwrap_or_else(|| IDLType::PrimT(PrimType::Null));
 
     match Decode!(arg, IDLValue) {
         Ok(idl_value) => {
@@ -213,6 +217,7 @@ fn debug<T: Debug>(value: T) -> String {
 }
 
 mod def {
+    use crate::proposals::canister_arg_types;
     use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
@@ -223,7 +228,6 @@ mod def {
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
-    use crate::proposals::canister_arg_types;
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
