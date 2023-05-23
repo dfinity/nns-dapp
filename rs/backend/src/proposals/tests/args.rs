@@ -1,7 +1,9 @@
 //! Tests for the argument parsing code.
-use anyhow::{Context, Result};
-use candid::parser::types::{IDLType, IDLTypes, PrimType};
-use candid::IDLProg;
+use anyhow::{Context};
+use candid::parser::types::{IDLType, IDLTypes};
+use fn_error_context::context;
+use crate::proposals::decode_arg;
+use candid::{IDLProg, IDLArgs};
 use std::str::FromStr;
 
 /// Sample argument and expected corresponding output.
@@ -22,7 +24,10 @@ struct TestVector {
     ///
     /// Note: We may want to always return a str, or a str and a list of warnings.
     ///       E.g. if the arg does not match the schema, we might show the arg with a warning.
-    json: Result<&'static str, &'static str>,
+    #[allow(unused)]
+    json: &'static str,
+    /// The actual current response, not the one we desire.
+    status_quo: &'static str,
 }
 
 /// The arg parsing behaviour we would like.
@@ -31,55 +36,64 @@ const TEST_VECTORS: [TestVector; 9] = [
         name: "No argument",
         did: "service : () -> {}",
         args: "()",
-        json: Ok("[]"),
+        json: "[]",
+        status_quo: "[]",
     },
     TestVector {
         name: "Optional argument omitted",
         did: "service : (opt nat8) -> {}",
         args: "()",
-        json: Ok("[null]"),
+        json: "[null]",
+        status_quo: "[]",
     },
     TestVector {
         name: "Optional argument given as none",
         did: "service : (opt nat8) -> {}",
-        args: "(none)",
-        json: Ok("[null]"),
+        args: "(null)",
+        json: "[null]",
+        status_quo: "null",
     },
     TestVector {
         name: "Optional argument provided",
         did: "service : (opt nat8) -> {}",
         args: "(opt 9)",
-        json: Ok("[9]"),
+        json: "[9]",
+        status_quo: "[\"9\"]",
     },
     TestVector {
         name: "Wrong argument type provided",
         did: "service : (opt nat8) -> {}",
         args: "(9)",
-        json: Ok("[9]"),
+        json: "[9]",
+        status_quo: "\"9\"",
     },
     TestVector {
         name: "Too many arguments provided",
         did: "service : (opt nat8) -> {}",
         args: "(opt 9, 11)",
-        json: Ok("[9, 11]"),
+        json: "[9, 11]",
+        status_quo: "[\"9\"]",
     },
     TestVector {
         name: "Argument with multiple values",
         did: "service : (opt nat8, nat16) -> {}",
         args: "(opt 8, 10)",
-        json: Ok("[8, 10]"),
+        json: "[8, 10]",
+        status_quo: "[\"8\"]",
     },
     TestVector {
         name: "Argument with multiple values v2",
         did: "service : (opt nat8, nat16) -> {}",
-        args: "(none, 10)",
-        json: Ok("[null, 10]"),
+        args: "(null, 10)",
+        json: "[null, 10]",
+        status_quo: "null",
     },
     TestVector {
         name: "Argument with multiple values v3",
         did: "service : (opt opt nat8, nat16) -> {}",
-        args: "(opt none, 10)",
-        json: Ok("[null, 10]"),
+        args: "(opt null, 10)",
+        json: "[null, 10]",
+        status_quo: "[null]",
     },
     // TODO: Names in types are supported
     // TODO: Decide how to handle the case when the type and data don't match
@@ -87,6 +101,9 @@ const TEST_VECTORS: [TestVector; 9] = [
     // TODO: Decide what we want to show when the type itself is invalid
 ];
 
+/// Extract the args field from a did types file.
+/// 
+/// TODO: Move into idl2json
 fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
     let prog = IDLProg::from_str(&did).context("Failed to parse canister did file.")?;
     let service = prog.actor.context("Could not find service in did file.")?;
@@ -110,15 +127,21 @@ fn arg_types_from_did_should_be_correct() {
     }
 }
 
-/*
 #[test]
 fn args_should_be_parsed() {
-    for TestVector { name, did, arg, json } in TEST_VECTORS {
-        let did: IDLType = IDLType::from_str(did);
-        let args: IDLArgs = IDLArgs::from_str(args);
-        let expected = json;
-        let actual = decode_args(args, did); // Note: This does NOT match the current code.
-        assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
-    }
+   for test_vector in TEST_VECTORS {
+    arg_should_be_parsed(&test_vector).with_context(|| format!("Test vector '{}' failed", test_vector.name)).unwrap();
+   }
 }
-*/
+
+#[context("Test vector '{}' failed", test_vector.name)]
+fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
+    let TestVector { name, did, args, status_quo, .. } = *test_vector.clone();
+        let did: IDLTypes = arg_types_from_did(did).context("Test error: Failed to get args from candid interface description.")?;
+        let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
+        let args_bytes = args_parsed.to_bytes().context("Failed to convert args to bytes")?;
+        let expected = status_quo;
+        let actual = decode_arg(&args_bytes, did); // Note: This does NOT match the current code.
+        assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
+        Ok(())
+}

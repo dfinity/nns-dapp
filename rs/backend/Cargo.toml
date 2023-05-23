@@ -56,3 +56,4 @@ regex = "1.7.1"
 [dev-dependencies]
 maplit = "1.0.2"
 anyhow = "1.0.68"
+fn-error-context = "0.2.0"
