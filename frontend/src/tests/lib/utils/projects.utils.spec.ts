@@ -1,5 +1,4 @@
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -19,6 +18,7 @@ import {
 } from "$lib/utils/projects.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
+  createSummary,
   createTransferableAmount,
   mockSnsFullProject,
   mockSnsParams,
@@ -32,6 +32,15 @@ import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 
 describe("project-utils", () => {
+  const summaryUsRestricted: SnsSummary = createSummary({
+    lifecycle: SnsSwapLifecycle.Open,
+    restrictedCountries: ["US"],
+  });
+  const summaryNoRestricted: SnsSummary = createSummary({
+    lifecycle: SnsSwapLifecycle.Open,
+    restrictedCountries: [],
+  });
+
   describe("filter", () => {
     it("should filter by status", () => {
       expect(
@@ -279,8 +288,6 @@ describe("project-utils", () => {
   describe("userCountryIsNeeded", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
     });
 
     it("country not needed", () => {
@@ -317,7 +324,10 @@ describe("project-utils", () => {
     it("country not needed if sale is not open", () => {
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Unspecified,
+            restrictedCountries: ["US"],
+          }),
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -325,7 +335,10 @@ describe("project-utils", () => {
 
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Pending,
+            restrictedCountries: ["US"],
+          }),
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -333,7 +346,10 @@ describe("project-utils", () => {
 
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Committed,
+            restrictedCountries: ["US"],
+          }),
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -341,7 +357,10 @@ describe("project-utils", () => {
 
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Aborted,
+            restrictedCountries: ["US"],
+          }),
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -351,7 +370,7 @@ describe("project-utils", () => {
     it("country is needed", () => {
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          summary: summaryUsRestricted,
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -359,11 +378,9 @@ describe("project-utils", () => {
     });
 
     it("country not needed if empty list of denied countries", () => {
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          summary: summaryNoRestricted,
           swapCommitment: mockSwapCommitment,
           loggedIn: true,
         })
@@ -373,7 +390,7 @@ describe("project-utils", () => {
     it("country not needed if not logged in", () => {
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          summary: summaryUsRestricted,
           swapCommitment: mockSwapCommitment,
           loggedIn: false,
         })
@@ -383,7 +400,7 @@ describe("project-utils", () => {
     it("country is not needed if max user commitment is reached", () => {
       expect(
         userCountryIsNeeded({
-          summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+          summary: summaryUsRestricted,
           swapCommitment: {
             rootCanisterId: mockSwapCommitment.rootCanisterId,
             myCommitment: {
@@ -1131,12 +1148,10 @@ describe("project-utils", () => {
     });
 
     it("returns 'enabled' if there are no restricted countries", () => {
-      // TODO: GIX-1545 Remove mock and create a summary with empty deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
       expect(
         participateButtonStatus({
           loggedIn: true,
-          summary,
+          summary: summaryNoRestricted,
           swapCommitment: userNoCommitment,
           userCountry: "not loaded",
           ticket: null,
@@ -1154,20 +1169,13 @@ describe("project-utils", () => {
     });
 
     describe("when project has a restricted countries list", () => {
-      beforeEach(() => {
-        // TODO: GIX-1545 Remove mock and create a summary with deny list
-        jest
-          .spyOn(summaryGetters, "getDeniedCountries")
-          .mockReturnValue(["CH"]);
-      });
-
       it("returns 'disabled-not-eligible' if user is in a restricted country", () => {
         expect(
           participateButtonStatus({
             loggedIn: true,
-            summary,
+            summary: summaryUsRestricted,
             swapCommitment: userNoCommitment,
-            userCountry: { isoCode: "CH" },
+            userCountry: { isoCode: "US" },
             ticket: null,
           })
         ).toBe("disabled-not-eligible");
@@ -1177,7 +1185,7 @@ describe("project-utils", () => {
         expect(
           participateButtonStatus({
             loggedIn: true,
-            summary,
+            summary: summaryUsRestricted,
             swapCommitment: userNoCommitment,
             userCountry: "not loaded",
             ticket: null,
@@ -1189,7 +1197,7 @@ describe("project-utils", () => {
         expect(
           participateButtonStatus({
             loggedIn: true,
-            summary,
+            summary: summaryUsRestricted,
             swapCommitment: userNoCommitment,
             userCountry: new Error("Failed to get user country"),
             ticket: null,
@@ -1201,7 +1209,7 @@ describe("project-utils", () => {
         expect(
           participateButtonStatus({
             loggedIn: true,
-            summary,
+            summary: summaryUsRestricted,
             swapCommitment: userNoCommitment,
             userCountry: { isoCode: "SP" },
             ticket: null,

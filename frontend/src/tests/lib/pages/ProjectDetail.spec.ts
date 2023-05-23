@@ -11,7 +11,6 @@ import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import * as summaryGetters from "$lib/getters/sns-summary";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -30,7 +29,11 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import {
+  snsResponseFor,
+  snsResponsesForLifecycle,
+} from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -324,20 +327,24 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("should not load user's country if no deny list", async () => {
-          // TODO: GIX-1545 Create a summary without deny list
           render(ProjectDetail, props);
 
           expect(locationApi.queryUserCountryLocation).not.toBeCalled();
         });
 
         it("should load user's country if non-empty deny list", async () => {
-          // TODO: GIX-1545 Remove mock and create a summary with deny list
-          jest
-            .spyOn(summaryGetters, "getDeniedCountries")
-            .mockReturnValue(["US"]);
+          const rootCanisterId = principal(1);
+          const response = snsResponseFor({
+            principal: rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Open,
+            certified: true,
+            restrictedCountries: ["US"],
+          });
+          snsQueryStore.setData(response);
 
-          render(ProjectDetail, props);
+          render(ProjectDetail, { rootCanisterId: rootCanisterId.toText() });
 
+          // TODO: Use fake for locationApi and test that button is disabled initially and enabled after location is loaded.
           expect(locationApi.queryUserCountryLocation).toBeCalled();
         });
       });

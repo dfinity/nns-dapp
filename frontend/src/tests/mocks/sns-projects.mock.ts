@@ -20,8 +20,10 @@ import {
   type SnsSwap,
   type SnsSwapBuyerState,
   type SnsSwapDerivedState,
+  type SnsSwapInit,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =
@@ -96,6 +98,24 @@ export const mockSnsParams: SnsParams = {
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
   sale_delay_seconds: [],
+};
+
+export const mockInit: SnsSwapInit = {
+  sns_root_canister_id:
+    "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe",
+  fallback_controller_principal_ids: [],
+  neuron_minimum_stake_e8s: [100_000_000n],
+  confirmation_text: [],
+  nns_governance_canister_id:
+    "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
+  transaction_fee_e8s: [10_000n],
+  icp_ledger_canister_id:
+    "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe",
+  sns_ledger_canister_id:
+    "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae",
+  sns_governance_canister_id:
+    "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
+  restricted_countries: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -237,6 +257,29 @@ export const summaryForLifecycle = (
     lifecycle,
   },
 });
+
+export const createSummary = ({
+  lifecycle,
+  restrictedCountries,
+}: {
+  lifecycle: SnsSwapLifecycle;
+  restrictedCountries: string[] | undefined;
+}): SnsSummary => {
+  const init: SnsSwapInit = {
+    ...mockInit,
+    restricted_countries: nonNullish(restrictedCountries)
+      ? [{ iso_codes: restrictedCountries }]
+      : [],
+  };
+  const summary = summaryForLifecycle(lifecycle);
+  return {
+    ...summary,
+    swap: {
+      ...summary.swap,
+      init: [init],
+    },
+  };
+};
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   url: [`https://my.url/`],
