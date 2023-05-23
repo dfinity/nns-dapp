@@ -36,6 +36,7 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import {
+  createSummary,
   mockProjectSubscribe,
   mockQueryMetadataResponse,
   mockQueryTokenResponse,
@@ -43,7 +44,6 @@ import {
   mockSnsToken,
   mockSwap,
 } from "$tests/mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import {
   deployedSnsMock,
   governanceCanisterIdMock,
@@ -72,10 +72,9 @@ import {
   NewSaleTicketResponseErrorType,
   SnsSwapCanister,
   SnsSwapGetOpenTicketError,
-  SnsSwapLifecycle,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 
@@ -94,6 +93,26 @@ jest.mock("$lib/api/ledger.api");
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
+
+const setUpMockSnsProjectStore = ({
+  rootCanisterId,
+  confirmationText,
+}: {
+  rootCanisterId: Principal;
+  confirmationText?: string | undefined;
+}) => {
+  jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([
+      {
+        ...mockSnsFullProject,
+        summary: createSummary({
+          confirmationText,
+        }),
+        rootCanisterId,
+      },
+    ])
+  );
+};
 
 describe("sns-api", () => {
   const mockQuerySwap = {
@@ -152,22 +171,9 @@ describe("sns-api", () => {
     snsQueryStore.reset();
     spyOnQueryBalance.mockResolvedValue(newBalanceE8s);
 
-    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
-      mockProjectSubscribe([
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: testSnsTicket.rootCanisterId,
-        },
-      ])
-    );
+    setUpMockSnsProjectStore({ rootCanisterId: testSnsTicket.rootCanisterId });
 
     spyOnSendICP.mockResolvedValue(13n);
-
-    snsQueryStore.setData(
-      snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Committed],
-      })
-    );
 
     const fee = mockSnsToken.fee;
     transactionsFeesStore.setFee({
@@ -847,6 +853,60 @@ describe("sns-api", () => {
       expect(updateProgressSpy).not.toBeCalled();
       expect(ticketFromStore().ticket).toEqual(null);
     });
+
+    it("should pass confirmation_text to notifyParticipation", async () => {
+      const confirmationText = "I still agree";
+      setUpMockSnsProjectStore({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        confirmationText,
+      });
+
+      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      await restoreSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledWith(
+        expect.objectContaining({
+          confirmation_text: toNullable(confirmationText),
+        })
+      );
+    });
+
+    it("should pass empty confirmation_text when absent", async () => {
+      const confirmationText = undefined;
+      setUpMockSnsProjectStore({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        confirmationText,
+      });
+
+      snsSwapCanister.getOpenTicket.mockResolvedValue(testSnsTicket.ticket);
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const updateProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      await restoreSnsSaleParticipation({
+        rootCanisterId: rootCanisterIdMock,
+        swapCanisterId: swapCanisterIdMock,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: updateProgressSpy,
+      });
+
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledWith(
+        expect.objectContaining({
+          confirmation_text: toNullable(confirmationText),
+        })
+      );
+    });
   });
 
   describe("initiateSnsSaleParticipation", () => {
@@ -1064,6 +1124,62 @@ describe("sns-api", () => {
 
       // All steps called
       expect(upgradeProgressSpy).toBeCalledTimes(4);
+    });
+
+    it("should pass confirmation_text to notifyParticipation", async () => {
+      const confirmationText = "I agree";
+      setUpMockSnsProjectStore({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        confirmationText,
+      });
+
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        swapCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
+      });
+
+      await runResolvedPromises();
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledWith(
+        expect.objectContaining({
+          confirmation_text: toNullable(confirmationText),
+        })
+      );
+    });
+
+    it("should pass empty confirmation_text when absent", async () => {
+      const confirmationText = undefined;
+      setUpMockSnsProjectStore({
+        rootCanisterId: testSnsTicket.rootCanisterId,
+        confirmationText,
+      });
+
+      const postprocessSpy = jest.fn().mockResolvedValue(undefined);
+      const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
+
+      participateInSnsSale({
+        rootCanisterId: testRootCanisterId,
+        swapCanisterId,
+        userCommitment: 0n,
+        postprocess: postprocessSpy,
+        updateProgress: upgradeProgressSpy,
+        ticket: testTicket,
+      });
+
+      await runResolvedPromises();
+      expect(spyOnNotifyParticipation).toBeCalledTimes(1);
+      expect(spyOnNotifyParticipation).toBeCalledWith(
+        expect.objectContaining({
+          confirmation_text: toNullable(confirmationText),
+        })
+      );
     });
 
     it("should show error if known error is thrown", async () => {
