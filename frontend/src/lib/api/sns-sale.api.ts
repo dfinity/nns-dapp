@@ -90,12 +90,12 @@ export const notifyParticipation = async ({
   identity,
   rootCanisterId,
   buyer,
-  confirmation_text,
+  confirmationText,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   buyer: Principal;
-  confirmation_text?: string | undefined;
+  confirmationText: string | undefined;
 }): Promise<SnsRefreshBuyerTokensResponse> => {
   logWithTimestamp(`[sale] notifyParticipation call...`);
 
@@ -107,7 +107,7 @@ export const notifyParticipation = async ({
 
   const response = await notifyParticipationApi({
     buyer: buyer.toText(),
-    confirmation_text: toNullable(confirmation_text),
+    confirmation_text: toNullable(confirmationText),
   });
 
   logWithTimestamp(`[sale] notifyParticipation complete.`);
