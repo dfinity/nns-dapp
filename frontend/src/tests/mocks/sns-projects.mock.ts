@@ -23,7 +23,7 @@ import {
   type SnsSwapInit,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =
@@ -259,14 +259,17 @@ export const summaryForLifecycle = (
 });
 
 export const createSummary = ({
-  lifecycle,
-  restrictedCountries,
+  lifecycle = SnsSwapLifecycle.Open,
+  confirmationText = undefined,
+  restrictedCountries = undefined,
 }: {
-  lifecycle: SnsSwapLifecycle;
-  restrictedCountries: string[] | undefined;
+  lifecycle?: SnsSwapLifecycle;
+  confirmationText?: string | undefined;
+  restrictedCountries?: string[] | undefined;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
+    confirmation_text: toNullable(confirmationText),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
       : [],

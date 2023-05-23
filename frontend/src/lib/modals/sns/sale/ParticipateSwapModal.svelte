@@ -7,6 +7,7 @@
     onDestroy,
     onMount,
   } from "svelte";
+  import { getConditionsToAccept } from "$lib/getters/sns-summary";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -64,6 +65,9 @@
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment,
   });
+
+  let conditionsToAccept: string | undefined;
+  $: conditionsToAccept = getConditionsToAccept(summary);
 
   let destinationAddress: string | undefined;
   $: (async () => {
@@ -192,7 +196,7 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
-      <AdditionalInfoForm />
+      <AdditionalInfoForm {conditionsToAccept} />
     </div>
     <div class="additional-info" slot="additional-info-review">
       <AdditionalInfoReview bind:accepted />
