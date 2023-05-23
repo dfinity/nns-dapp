@@ -31,7 +31,7 @@ struct TestVector {
 }
 
 /// The arg parsing behaviour we would like.
-const TEST_VECTORS: [TestVector; 9] = [
+const TEST_VECTORS: [TestVector; 10] = [
     TestVector {
         name: "No argument",
         did: "service : () -> {}",
@@ -96,6 +96,20 @@ const TEST_VECTORS: [TestVector; 9] = [
         status_quo: "[null]",
     },
     // TODO: Names in types are supported
+    TestVector {
+        name: "Argument with multiple values v3",
+        did: "
+        type Config = record {
+            update_interval_ms : nat64;
+            fast_interval_ms : nat64;
+          };
+          
+        service : (opt Config) -> {}",
+        args: "(opt record{update_interval_ms = 999; fast_interval_ms = 100;})",
+        json: "[{\"update_interval_ms\": 999, \"fast_interval_ms\": 100}]",
+        status_quo: "[{\"2_344_481_514\":\"999\",\"3_143_647_229\":\"100\"}]",
+    },
+    // TODO: Check serialization when arguments are provided with annotation.
     // TODO: Decide how to handle the case when the type and data don't match
     // TODO: Handle args that are not valid candid
     // TODO: Decide what we want to show when the type itself is invalid
