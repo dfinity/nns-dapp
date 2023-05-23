@@ -3,7 +3,6 @@ use crate::proposals::decode_arg;
 use anyhow::Context;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{IDLArgs, IDLProg};
-use fn_error_context::context;
 use std::str::FromStr;
 
 /// Sample argument and expected corresponding output.
@@ -150,7 +149,6 @@ fn args_should_be_parsed() {
     }
 }
 
-#[context("Test vector '{}' failed", test_vector.name)]
 fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
     let TestVector {
         name,
