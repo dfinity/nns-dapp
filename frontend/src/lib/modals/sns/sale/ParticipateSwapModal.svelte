@@ -66,7 +66,7 @@
     swapCommitment,
   });
 
-  let areSwapConditionsAccepted: boolean = false;
+  let areSwapConditionsAccepted = false;
   let conditionsToAccept: string | undefined;
   $: conditionsToAccept = getConditionsToAccept(summary);
 

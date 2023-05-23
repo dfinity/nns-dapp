@@ -189,7 +189,6 @@ describe("ParticipateSwapModal", () => {
     it("should not disable continue if confirmation text is absent", async () => {
       const confirmationText = undefined;
       const po = await renderSwapModalPo({ confirmationText });
-      const info = po.getAdditionalInfoFormPo();
       const form = po.getTransactionFormPo();
       await form.enterAmount(10);
       expect(await form.isContinueButtonEnabled()).toBe(true);
