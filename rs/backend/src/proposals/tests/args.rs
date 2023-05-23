@@ -1,9 +1,9 @@
 //! Tests for the argument parsing code.
-use anyhow::{Context};
-use candid::parser::types::{IDLType, IDLTypes};
-use fn_error_context::context;
 use crate::proposals::decode_arg;
-use candid::{IDLProg, IDLArgs};
+use anyhow::Context;
+use candid::parser::types::{IDLType, IDLTypes};
+use candid::{IDLArgs, IDLProg};
+use fn_error_context::context;
 use std::str::FromStr;
 
 /// Sample argument and expected corresponding output.
@@ -116,7 +116,7 @@ const TEST_VECTORS: [TestVector; 10] = [
 ];
 
 /// Extract the args field from a did types file.
-/// 
+///
 /// TODO: Move into idl2json
 fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
     let prog = IDLProg::from_str(&did).context("Failed to parse canister did file.")?;
@@ -143,19 +143,28 @@ fn arg_types_from_did_should_be_correct() {
 
 #[test]
 fn args_should_be_parsed() {
-   for test_vector in TEST_VECTORS {
-    arg_should_be_parsed(&test_vector).with_context(|| format!("Test vector '{}' failed", test_vector.name)).unwrap();
-   }
+    for test_vector in TEST_VECTORS {
+        arg_should_be_parsed(&test_vector)
+            .with_context(|| format!("Test vector '{}' failed", test_vector.name))
+            .unwrap();
+    }
 }
 
 #[context("Test vector '{}' failed", test_vector.name)]
 fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
-    let TestVector { name, did, args, status_quo, .. } = *test_vector.clone();
-        let did: IDLTypes = arg_types_from_did(did).context("Test error: Failed to get args from candid interface description.")?;
-        let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
-        let args_bytes = args_parsed.to_bytes().context("Failed to convert args to bytes")?;
-        let expected = status_quo;
-        let actual = decode_arg(&args_bytes, did); // Note: This does NOT match the current code.
-        assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
-        Ok(())
+    let TestVector {
+        name,
+        did,
+        args,
+        status_quo,
+        ..
+    } = *test_vector.clone();
+    let did: IDLTypes =
+        arg_types_from_did(did).context("Test error: Failed to get args from candid interface description.")?;
+    let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
+    let args_bytes = args_parsed.to_bytes().context("Failed to convert args to bytes")?;
+    let expected = status_quo;
+    let actual = decode_arg(&args_bytes, did); // Note: This does NOT match the current code.
+    assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
+    Ok(())
 }
