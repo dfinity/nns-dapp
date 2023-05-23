@@ -119,7 +119,7 @@ const TEST_VECTORS: [TestVector; 10] = [
 ///
 /// TODO: Move into idl2json
 fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
-    let prog = IDLProg::from_str(&did).context("Failed to parse canister did file.")?;
+    let prog = IDLProg::from_str(did).context("Failed to parse canister did file.")?;
     let service = prog.actor.context("Could not find service in did file.")?;
     if let IDLType::ClassT(args, _) = service {
         Ok(IDLTypes { args })
@@ -158,7 +158,7 @@ fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
         args,
         status_quo,
         ..
-    } = *test_vector.clone();
+    } = *test_vector;
     let did: IDLTypes =
         arg_types_from_did(did).context("Test error: Failed to get args from candid interface description.")?;
     let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
