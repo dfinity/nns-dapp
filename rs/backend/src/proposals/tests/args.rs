@@ -1,4 +1,8 @@
 //! Tests for the argument parsing code.
+use anyhow::{Context, Result};
+use candid::parser::types::{IDLType, PrimType, IDLTypes};
+use candid::IDLProg;
+use std::str::FromStr;
 
 /// Sample argument and expected corresponding output.
 struct TestVector {
@@ -22,60 +26,60 @@ struct TestVector {
 }
 
 /// The arg parsing behaviour we would like.
-const test_vectors: [TestVector; 6] = [
+const TEST_VECTORS: [TestVector; 9] = [
     TestVector {
         name: "No argument",
         did: "service : () -> {}",
         args: "()",
-        json: "[]",
+        json: Ok("[]"),
     },
     TestVector {
         name: "Optional argument omitted",
         did: "service : (opt nat8) -> {}",
         args: "()",
-        json: "[null]",
+        json: Ok("[null]"),
     },
     TestVector {
         name: "Optional argument given as none",
         did: "service : (opt nat8) -> {}",
         args: "(none)",
-        json: "[null]",
+        json: Ok("[null]"),
     },
     TestVector {
         name: "Optional argument provided",
         did: "service : (opt nat8) -> {}",
         args: "(opt 9)",
-        json: "[9]",
+        json: Ok("[9]"),
     },
     TestVector {
         name: "Wrong argument type provided",
         did: "service : (opt nat8) -> {}",
         args: "(9)",
-        json: "[9]",
+        json: Ok("[9]"),
     },
     TestVector {
         name: "Too many arguments provided",
         did: "service : (opt nat8) -> {}",
         args: "(opt 9, 11)",
-        json: "[9, 11]",
+        json: Ok("[9, 11]"),
     },
     TestVector {
         name: "Argument with multiple values",
         did: "service : (opt nat8, nat16) -> {}",
         args: "(opt 8, 10)",
-        json: "[8, 10]",
+        json: Ok("[8, 10]"),
     },
     TestVector {
         name: "Argument with multiple values v2",
         did: "service : (opt nat8, nat16) -> {}",
         args: "(none, 10)",
-        json: "[null, 10]",
+        json: Ok("[null, 10]"),
     },
     TestVector {
         name: "Argument with multiple values v3",
         did: "service : (opt opt nat8, nat16) -> {}",
         args: "(opt none, 10)",
-        json: "[null, 10]",
+        json: Ok("[null, 10]"),
     },
     // TODO: Names in types are supported
     // TODO: Decide how to handle the case when the type and data don't match
@@ -83,9 +87,33 @@ const test_vectors: [TestVector; 6] = [
     // TODO: Decide what we want to show when the type itself is invalid
 ];
 
+fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
+    let prog = IDLProg::from_str(&did).context("Failed to parse canister did file.")?;
+    let service = prog.actor.context("Could not find service in did file.")?;
+    if let IDLType::ClassT(args, _) = service {
+        Ok(IDLTypes{args})
+    } else {
+        anyhow::bail!("Could not get arg for service")
+    }
+}
+#[test]
+fn arg_types_from_did_should_be_correct() {
+    let ok_test_vectors = vec![
+      ("service : (opt opt nat8, nat16) -> {}", "(opt opt nat8, nat16)"),
+      ("service : (opt opt nat8) -> {}", "(opt opt nat8)"),
+    ];
+    for (did, arg) in ok_test_vectors {
+        let actual_arg = arg_types_from_did(did).expect("Failed to get arg");
+        let expected_arg = IDLTypes::from_str(arg).expect("Test error: Failed to parse expected arg type.");
+        // IDLArgs does not implement Eq, so this is used as a poor alternative:
+        assert_eq!(format!("{expected_arg:?}"), format!("{actual_arg:?}"));
+    }
+}
+
+/*
 #[test]
 fn args_should_be_parsed() {
-    for TestVector { name, did, arg, json } in test_vectors {
+    for TestVector { name, did, arg, json } in TEST_VECTORS {
         let did: IDLType = IDLType::from_str(did);
         let args: IDLArgs = IDLArgs::from_str(args);
         let expected = json;
@@ -93,3 +121,4 @@ fn args_should_be_parsed() {
         assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
     }
 }
+*/
