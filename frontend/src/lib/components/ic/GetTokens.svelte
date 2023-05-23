@@ -76,7 +76,7 @@
   let tokenBalanceE8s = 0n;
   $: selectedProjectId,
     (async () => {
-      // This was executed at build time and it depends on `window` to convert string to AccountIdentifier.
+      // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
       if (isBrowser) {
         tokenBalanceE8s = await getTestBalance(selectedProjectId);
       }
