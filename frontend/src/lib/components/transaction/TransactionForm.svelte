@@ -32,6 +32,7 @@
   export let canSelectSource: boolean;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
+  export let disableContinue = false;
   export let token: Token;
   export let transactionFee: TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
@@ -66,6 +67,7 @@
 
   let disableButton: boolean;
   $: disableButton =
+    disableContinue ||
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||

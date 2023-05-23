@@ -66,8 +66,13 @@
     swapCommitment,
   });
 
+  let areSwapConditionsAccepted = false;
   let conditionsToAccept: string | undefined;
   $: conditionsToAccept = getConditionsToAccept(summary);
+
+  let disableContinue = true;
+  $: disableContinue =
+    nonNullish(conditionsToAccept) && !areSwapConditionsAccepted;
 
   let destinationAddress: string | undefined;
   $: (async () => {
@@ -187,6 +192,7 @@
     on:nnsSubmit={participate}
     {validateAmount}
     {transactionInit}
+    {disableContinue}
     disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
@@ -196,7 +202,10 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
-      <AdditionalInfoForm {conditionsToAccept} />
+      <AdditionalInfoForm
+        {conditionsToAccept}
+        bind:areConditionsAccepted={areSwapConditionsAccepted}
+      />
     </div>
     <div class="additional-info" slot="additional-info-review">
       <AdditionalInfoReview bind:accepted />
