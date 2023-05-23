@@ -29,8 +29,11 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
-import { mockInit } from "$tests/mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import {
+  snsResponseFor,
+  snsResponsesForLifecycle,
+} from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -330,26 +333,16 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("should load user's country if non-empty deny list", async () => {
-          const responses = snsResponsesForLifecycle({
-            lifecycles: [SnsSwapLifecycle.Open],
+          const rootCanisterId = principal(1);
+          const response = snsResponseFor({
+            principal: rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Open,
             certified: true,
+            restrictedCountries: ["US"],
           });
-          const swap = responses[1][0].swap[0];
-          responses[1][0].swap = [
-            {
-              ...swap,
-              init: [
-                {
-                  ...mockInit,
-                  restricted_countries: [{ iso_codes: ["US"] }],
-                },
-              ],
-            },
-          ];
-          const rootCanisterId = responses[0][0].rootCanisterId;
-          snsQueryStore.setData(responses);
+          snsQueryStore.setData(response);
 
-          render(ProjectDetail, { rootCanisterId });
+          render(ProjectDetail, { rootCanisterId: rootCanisterId.toText() });
 
           // TODO: Use fake for locationApi and test that button is disabled initially and enabled after location is loaded.
           expect(locationApi.queryUserCountryLocation).toBeCalled();
