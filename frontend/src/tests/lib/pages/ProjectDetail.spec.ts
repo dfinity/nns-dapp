@@ -396,7 +396,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             } as SnsSwapCommitment);
         });
 
-        it("when no restricted countries", async () => {
+        const participateInSwap = async () => {
           const { container } = render(ProjectDetail, props);
 
           await runResolvedPromises();
@@ -416,6 +416,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
+        };
+
+        it("when no restricted countries", async () => {
+          await participateInSwap();
         });
 
         it("when restricted countries and user is from another country", async () => {
@@ -427,27 +431,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           });
           snsQueryStore.setData(response);
 
-          const { container } = render(ProjectDetail, props);
-
-          await runResolvedPromises();
-
-          const projectDetail = ProjectDetailPo.under(
-            new JestPageObjectElement(container)
-          );
-
-          await waitFor(
-            async () =>
-              expect(
-                await projectDetail.getParticipateButton().isDisabled()
-              ).toBe(false),
-            { timeout: 5000 }
-          );
-
-          expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({ amount: amountICP });
-          expect(await projectDetail.getCommitmentAmount()).toBe(
-            formattedAmountICP
-          );
+          await participateInSwap();
         });
 
         it("when restricted countries and getting location fails", async () => {
@@ -463,28 +447,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             restrictedCountries: ["US"],
           });
           snsQueryStore.setData(response);
-
-          const { container } = render(ProjectDetail, props);
-
-          await runResolvedPromises();
-
-          const projectDetail = ProjectDetailPo.under(
-            new JestPageObjectElement(container)
-          );
-
-          await waitFor(
-            async () =>
-              expect(
-                await projectDetail.getParticipateButton().isDisabled()
-              ).toBe(false),
-            { timeout: 5000 }
-          );
-
-          expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({ amount: amountICP });
-          expect(await projectDetail.getCommitmentAmount()).toBe(
-            formattedAmountICP
-          );
+          await participateInSwap();
         });
       });
 
