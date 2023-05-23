@@ -258,6 +258,27 @@ describe("ParticipateButton", () => {
       await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
     });
 
+    it("should enable button if there was an error fetching the country of the user", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: ["CH"],
+      });
+      userCountryStore.set(new Error("Error loading country"));
+
+      const { queryByTestId } = renderContextCmp({
+        summary,
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+
+      await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
+    });
+
     it("should disable button if user has committed max already", async () => {
       const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
       snsTicketsStore.setNoTicket(mock.rootCanisterId);
