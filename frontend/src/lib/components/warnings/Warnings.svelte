@@ -4,9 +4,11 @@
   import Metrics from "$lib/components/metrics/Metrics.svelte";
   import { Toasts } from "@dfinity/gix-components";
   import ConvertCkBTCToBtcWarning from "$lib/components/warnings/ConvertCkBTCToBtcWarning.svelte";
+  import DemoWarning from "$lib/components/warnings/DemoWarning.svelte";
 
   export let bringToastsForward = false;
   export let ckBTCWarnings = false;
+  export let demoWarning = false;
 </script>
 
 {#if ENABLE_METRICS}
@@ -21,6 +23,10 @@
 
 {#if ckBTCWarnings}
   <ConvertCkBTCToBtcWarning />
+{/if}
+
+{#if demoWarning}
+  <DemoWarning />
 {/if}
 
 <style lang="scss">
