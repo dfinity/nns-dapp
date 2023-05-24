@@ -360,13 +360,14 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           const projectDetail = await renderProjectDetail();
 
+          await runResolvedPromises();
           expect(await projectDetail.getParticipateButton().isPresent()).toBe(
             false
           );
 
           fakeLocationApi.resume();
-          await runResolvedPromises();
 
+          await runResolvedPromises();
           expect(await projectDetail.getParticipateButton().isPresent()).toBe(
             true
           );
