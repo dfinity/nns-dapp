@@ -1,4 +1,3 @@
-import { AdditionalInfoReviewPo } from "$tests/page-objects/AdditionalInfoReview.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -8,10 +7,6 @@ export class TransactionReviewPo extends BasePageObject {
 
   static under(element: PageObjectElement): TransactionReviewPo {
     return new TransactionReviewPo(element.byTestId(TransactionReviewPo.TID));
-  }
-
-  getAdditionalInfoReviewPo(): AdditionalInfoReviewPo {
-    return AdditionalInfoReviewPo.under(this.root);
   }
 
   getSendButtonPo(): ButtonPo {
@@ -36,9 +31,5 @@ export class TransactionReviewPo extends BasePageObject {
 
   clickSend(): Promise<void> {
     return this.getSendButtonPo().click();
-  }
-
-  clickCheckbox(): Promise<void> {
-    return this.getAdditionalInfoReviewPo().clickCheckbox();
   }
 }
