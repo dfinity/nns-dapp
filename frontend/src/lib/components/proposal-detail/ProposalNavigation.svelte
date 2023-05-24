@@ -1,85 +1,49 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import {
-    filteredProposals,
-    uiProposals,
-  } from "$lib/derived/proposals.derived";
-  import { onDestroy } from "svelte";
+  import { uiProposals } from "$lib/derived/proposals.derived";
+  import { createEventDispatcher, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
 
-  export let proposalInfo: ProposalInfo | undefined;
+  export let proposalIdString: string | undefined;
+  export let proposalIds: string[] | undefined;
 
-  const next = async () => {
-    // Type safety check only
-    if (nextProposal === undefined || nextProposal.id === undefined) {
-      return;
-    }
+  const dispatcher = createEventDispatcher();
 
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: nextProposal.id,
-      })
-    );
-  };
+  const next = () => dispatcher("nnsNavigation", nextIdString);
+  const previous = () => dispatcher("nnsNavigation", previousIdString);
 
-  const previous = async () => {
-    // Type safety check only
-    if (previousProposal === undefined || previousProposal.id === undefined) {
-      return;
-    }
-
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: previousProposal.id,
-      })
-    );
-  };
-
-  let previousProposal: ProposalInfo | undefined;
-  let nextProposal: ProposalInfo | undefined;
+  let previousIdString: string | undefined;
+  let nextIdString: string | undefined;
 
   const reset = () => {
-    nextProposal = undefined;
-    previousProposal = undefined;
+    nextIdString = undefined;
+    previousIdString = undefined;
   };
 
-  $: proposalInfo,
+  $: proposalIdString,
+    proposalIds,
     (() => {
-      if (proposalInfo === undefined) {
+      const index =
+        proposalIdString === undefined
+          ? undefined
+          : proposalIdString && proposalIds?.indexOf(proposalIdString);
+
+      if (proposalIds === undefined || index === undefined || index < 0) {
         reset();
         return;
       }
 
-      // TODO: replace [...array].reverse().find() with findLast() once Firefox >= v104 is widely adopted - https://caniuse.com/?search=findlast
-      previousProposal = [...$filteredProposals.proposals]
-        .reverse()
-        .find(
-          ({ id }) =>
-            proposalInfo?.id !== undefined &&
-            id !== undefined &&
-            id > proposalInfo.id
-        );
-      nextProposal = $filteredProposals.proposals.find(
-        ({ id }) =>
-          proposalInfo?.id !== undefined &&
-          id !== undefined &&
-          id < proposalInfo.id
-      );
+      previousIdString = proposalIds[index - 1];
+      nextIdString = proposalIds[index + 1];
     })();
 
   onDestroy(reset);
 
   let lastProposal: boolean;
   $: lastProposal =
-    proposalInfo !== undefined &&
-    nextProposal === undefined &&
-    previousProposal === undefined;
+    proposalIdString !== undefined &&
+    nextIdString === undefined &&
+    previousIdString === undefined;
 </script>
 
 {#if $uiProposals.proposals.length > 0 && !lastProposal}
@@ -89,9 +53,10 @@
       type="button"
       aria-label={$i18n.proposal_detail.newer}
       on:click={previous}
-      class:hidden={proposalInfo !== undefined &&
-        previousProposal === undefined}
-      disabled={proposalInfo !== undefined && previousProposal === undefined}
+      class:hidden={proposalIdString !== undefined &&
+        previousIdString === undefined}
+      disabled={proposalIdString !== undefined &&
+        previousIdString === undefined}
       data-tid="proposal-nav-previous"
     >
       <IconWest />
@@ -103,8 +68,9 @@
       type="button"
       aria-label={$i18n.proposal_detail.older}
       on:click={next}
-      class:hidden={proposalInfo !== undefined && nextProposal === undefined}
-      disabled={proposalInfo !== undefined && nextProposal === undefined}
+      class:hidden={proposalIdString !== undefined &&
+        nextIdString === undefined}
+      disabled={proposalIdString !== undefined && nextIdString === undefined}
       data-tid="proposal-nav-next"
     >
       {$i18n.proposal_detail.older_short}
