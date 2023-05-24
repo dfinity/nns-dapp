@@ -11,13 +11,30 @@
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
+  import { filteredProposals } from "$lib/derived/proposals.derived";
+  import { goto } from "$app/navigation";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
+
+  const navigate = async ({ detail: proposalId }) => {
+    await goto(
+      buildProposalUrl({
+        universe: $pageStore.universe,
+        proposalId,
+      })
+    );
+  };
 </script>
 
-<ProposalNavigation proposalInfo={$store.proposal} />
+<ProposalNavigation
+  proposalIdString={`${$store?.proposal?.id}`}
+  proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
+  on:nnsNavigation={navigate}
+/>
 
 {#if $store?.proposal !== undefined}
   <div class="content-grid" data-tid="proposal-details-grid">
