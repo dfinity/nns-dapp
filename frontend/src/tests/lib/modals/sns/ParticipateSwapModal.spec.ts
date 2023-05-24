@@ -194,7 +194,7 @@ describe("ParticipateSwapModal", () => {
       expect(await form.isContinueButtonEnabled()).toBe(true);
     });
 
-    describe("when user has participated", () => {
+    describe("when user has existing swap commitment", () => {
       it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
         const po = await renderEnter10ICPAndNext(
           mockSnsFullProject.swapCommitment
