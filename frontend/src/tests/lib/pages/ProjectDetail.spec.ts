@@ -3,7 +3,6 @@
  */
 
 import * as ledgerApi from "$lib/api/ledger.api";
-import * as locationApi from "$lib/api/location.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
@@ -21,6 +20,7 @@ import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
   mockAccountDetails,
   mockMainAccount,
@@ -30,7 +30,6 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   snsResponseFor,
   snsResponsesForLifecycle,
@@ -65,6 +64,8 @@ const blockedApiPaths = [
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
+  fakeLocationApi.install();
+
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
   const newBalance = BigInt(10_000_000_000);
@@ -92,9 +93,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       .mockResolvedValue(mockAccountDetails);
     jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
-    jest
-      .spyOn(locationApi, "queryUserCountryLocation")
-      .mockResolvedValue(userCountryCode);
+    fakeLocationApi.setCountryCode(userCountryCode);
 
     jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
@@ -329,26 +328,52 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           } as SnsSwapCommitment);
         });
 
-        it("should not load user's country if no deny list", async () => {
-          render(ProjectDetail, props);
+        const renderProjectDetail = async (): Promise<ProjectDetailPo> => {
+          const { container } = render(ProjectDetail, props);
 
-          expect(locationApi.queryUserCountryLocation).not.toBeCalled();
+          await runResolvedPromises();
+
+          return ProjectDetailPo.under(new JestPageObjectElement(container));
+        };
+
+        it("should enable button without loading user's country if no deny list", async () => {
+          const projectDetail = await renderProjectDetail();
+
+          expect(await projectDetail.getParticipateButton().isPresent()).toBe(
+            true
+          );
+
+          expect(get(userCountryStore)).toBe("not loaded");
         });
 
-        it("should load user's country if non-empty deny list", async () => {
-          const rootCanisterId = principal(1);
+        it("should show enabled button after getting user country", async () => {
           const response = snsResponseFor({
-            principal: rootCanisterId,
+            principal: Principal.fromText(rootCanisterId),
             lifecycle: SnsSwapLifecycle.Open,
             certified: true,
             restrictedCountries: ["US"],
           });
           snsQueryStore.setData(response);
+          fakeLocationApi.setCountryCode("CH");
 
-          render(ProjectDetail, { rootCanisterId: rootCanisterId.toText() });
+          fakeLocationApi.pause();
 
-          // TODO: Use fake for locationApi and test that button is disabled initially and enabled after location is loaded.
-          expect(locationApi.queryUserCountryLocation).toBeCalled();
+          const projectDetail = await renderProjectDetail();
+
+          await runResolvedPromises();
+          expect(await projectDetail.getParticipateButton().isPresent()).toBe(
+            false
+          );
+
+          fakeLocationApi.resume();
+
+          await runResolvedPromises();
+          expect(await projectDetail.getParticipateButton().isPresent()).toBe(
+            true
+          );
+          expect(await projectDetail.getParticipateButton().isDisabled()).toBe(
+            false
+          );
         });
       });
 
@@ -436,9 +461,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         it("when restricted countries and getting location fails", async () => {
           jest.spyOn(console, "error").mockImplementation(() => undefined);
-          jest
-            .spyOn(locationApi, "queryUserCountryLocation")
-            .mockRejectedValue(new Error("Failed to get user location"));
+          fakeLocationApi.setCountryCode(
+            new Error("Failed to get user location")
+          );
 
           const response = snsResponseFor({
             principal: Principal.fromText(rootCanisterId),
