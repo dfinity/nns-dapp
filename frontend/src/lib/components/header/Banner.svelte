@@ -1,7 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconClose } from "@dfinity/gix-components";
-  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import {
+    DFX_NETWORK,
+    IS_TESTNET,
+  } from "$lib/constants/environment.constants";
   import { DEV } from "$lib/constants/mockable.constants";
   import { browser } from "$app/environment";
 
@@ -12,7 +15,7 @@
     : false;
 
   const testnet = IS_TESTNET;
-  const localEnv = DEV;
+  const localEnv = DEV || DFX_NETWORK === "local";
   const banner = testnet && !localEnv;
 
   const close = () => {
