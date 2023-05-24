@@ -1,5 +1,11 @@
 # Changelog
 
+## Proposal XXX
+
+* Swap conditions.
+* Parameters loading optimization.
+* Minor bugfixes.
+
 ## Proposal 122512
 
 * Feat reload account and transactions regardless of ckBTC update balance success or error.
