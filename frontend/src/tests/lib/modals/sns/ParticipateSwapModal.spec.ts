@@ -138,7 +138,7 @@ describe("ParticipateSwapModal", () => {
       const review = po.getTransactionReviewPo();
       expect(await review.isSendButtonEnabled()).toBe(false);
 
-      await review.clickCheckbox();
+      await po.getAdditionalInfoReviewPo().clickCheckbox();
       expect(await review.isSendButtonEnabled()).toBe(true);
 
       await sendAndExpectParticipation(review);
@@ -206,7 +206,7 @@ describe("ParticipateSwapModal", () => {
       const review = po.getTransactionReviewPo();
       expect(await review.isSendButtonEnabled()).toBe(false);
 
-      await review.clickCheckbox();
+      await po.getAdditionalInfoReviewPo().clickCheckbox();
       expect(await review.isSendButtonEnabled()).toBe(true);
 
       await sendAndExpectParticipation(review);
@@ -229,7 +229,7 @@ describe("ParticipateSwapModal", () => {
         const review = po.getTransactionReviewPo();
         expect(await review.isSendButtonEnabled()).toBe(false);
 
-        await review.clickCheckbox();
+        await po.getAdditionalInfoReviewPo().clickCheckbox();
         expect(await review.isSendButtonEnabled()).toBe(true);
 
         await sendAndExpectParticipation(review);
@@ -247,7 +247,7 @@ describe("ParticipateSwapModal", () => {
         const review = po.getTransactionReviewPo();
         expect(await review.isSendButtonEnabled()).toBe(false);
 
-        await review.clickCheckbox();
+        await po.getAdditionalInfoReviewPo().clickCheckbox();
         expect(await review.isSendButtonEnabled()).toBe(true);
 
         await sendAndExpectParticipation(review);
