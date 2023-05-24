@@ -28,9 +28,9 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
+  createBuyersState,
   createSummary,
   mockSwapCommitment,
-  createBuyersState,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
@@ -197,12 +197,10 @@ describe("ParticipateSwapModal", () => {
 
     describe("when user has non-zero swap commitment", () => {
       it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
-        const po = await renderEnter10ICPAndNext(
-          {
-            ...mockSwapCommitment,
-            myCommitment: createBuyersState(BigInt(25 * 100000000)),
-          }
-        );
+        const po = await renderEnter10ICPAndNext({
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(BigInt(25 * 100000000)),
+        });
 
         const review = po.getTransactionReviewPo();
         expect(await review.isSendButtonEnabled()).toBe(false);
