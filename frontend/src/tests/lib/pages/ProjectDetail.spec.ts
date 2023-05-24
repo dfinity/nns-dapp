@@ -339,10 +339,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         it("should enable button without loading user's country if no deny list", async () => {
           const projectDetail = await renderProjectDetail();
 
-          await waitFor(async () =>
-            expect(await projectDetail.getParticipateButton().isPresent()).toBe(
-              true
-            )
+          expect(await projectDetail.getParticipateButton().isPresent()).toBe(
+            true
           );
 
           expect(get(userCountryStore)).toBe("not loaded");
@@ -367,11 +365,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           fakeLocationApi.resume();
+          await runResolvedPromises();
 
-          await waitFor(async () =>
-            expect(await projectDetail.getParticipateButton().isPresent()).toBe(
-              true
-            )
+          expect(await projectDetail.getParticipateButton().isPresent()).toBe(
+            true
           );
           expect(await projectDetail.getParticipateButton().isDisabled()).toBe(
             false
