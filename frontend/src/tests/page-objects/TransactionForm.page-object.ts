@@ -49,6 +49,7 @@ export class TransactionFormPo extends BasePageObject {
   }): Promise<void> {
     await this.getSelectDestinationAddressPo().selectAccount(accountName);
     await this.enterAmount(amount);
+    await this.getAdditionalInfoFormPo().toggleConditionsAccepted();
     await this.clickContinue();
   }
 }
