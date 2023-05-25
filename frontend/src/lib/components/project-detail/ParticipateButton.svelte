@@ -82,6 +82,7 @@
             <Tooltip
               id="sns-project-participate-button-tooltip"
               text={$i18n.sns_project_detail.max_user_commitment_reached}
+              top={true}
             >
               <button
                 class="primary"
@@ -93,6 +94,7 @@
             <Tooltip
               id="sns-project-participate-button-tooltip"
               text={$i18n.sns_project_detail.not_eligible_to_participate}
+              top={true}
             >
               <button
                 class="primary"
