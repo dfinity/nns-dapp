@@ -1,6 +1,5 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { uiProposals } from "$lib/derived/proposals.derived";
   import { createEventDispatcher, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
 
@@ -26,7 +25,7 @@
       const index =
         proposalIdString === undefined
           ? undefined
-          : proposalIdString && proposalIds?.indexOf(proposalIdString);
+          : proposalIds?.indexOf(proposalIdString);
 
       if (proposalIds === undefined || index === undefined || index < 0) {
         reset();
@@ -39,14 +38,14 @@
 
   onDestroy(reset);
 
-  let lastProposal: boolean;
-  $: lastProposal =
+  let singleProposal: boolean;
+  $: singleProposal =
     proposalIdString !== undefined &&
     nextIdString === undefined &&
     previousIdString === undefined;
 </script>
 
-{#if $uiProposals.proposals.length > 0 && !lastProposal}
+{#if proposalIdString && !singleProposal}
   <div role="toolbar">
     <button
       class="ghost"

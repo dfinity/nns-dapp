@@ -2,65 +2,53 @@
  * @jest-environment jsdom
  */
 
-import { page } from "$app/stores";
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-import { AppPath } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/derived/page.derived";
-import { proposalsStore } from "$lib/stores/proposals.store";
-import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { fireEvent } from "@testing-library/dom";
-import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
+import { fireEvent, render } from "@testing-library/svelte";
 
 describe("ProposalNavigation", () => {
-  const props = { proposalInfo: mockProposals[0] };
-
   describe("not rendered", () => {
-    it("should not render buttons if no proposal", () => {
-      proposalsStore.setProposals({ proposals: [], certified: true });
-
+    it("should not render buttons if no proposalIdString", () => {
       const { getByTestId } = render(ProposalNavigation, {
-        props,
+        props: {
+          proposalIdString: undefined,
+          proposalIds: ["1"],
+        },
       });
 
       expect(() => getByTestId("proposal-nav-previous")).toThrow();
       expect(() => getByTestId("proposal-nav-next")).toThrow();
-
-      proposalsStore.setProposals({ proposals: [], certified: undefined });
     });
 
-    it("should not render buttons if very last proposal", () => {
-      proposalsStore.setProposals({
-        proposals: [mockProposals[0]],
-        certified: true,
-      });
-
+    it("should not render buttons if no proposalIds", () => {
       const { getByTestId } = render(ProposalNavigation, {
-        props,
+        props: {
+          proposalIdString: "1",
+          proposalIds: undefined,
+        },
       });
 
       expect(() => getByTestId("proposal-nav-previous")).toThrow();
       expect(() => getByTestId("proposal-nav-next")).toThrow();
+    });
 
-      proposalsStore.setProposals({ proposals: [], certified: undefined });
+    it("should not render buttons if no proposalIdString in proposalIds", () => {
+      const { getByTestId } = render(ProposalNavigation, {
+        props: {
+          proposalIdString: "1",
+          proposalIds: ["0"],
+        },
+      });
+
+      expect(() => getByTestId("proposal-nav-previous")).toThrow();
+      expect(() => getByTestId("proposal-nav-next")).toThrow();
     });
   });
 
   describe("display", () => {
-    const propsPrevious = { proposalInfo: mockProposals[0] };
-    const propsNext = { proposalInfo: mockProposals[1] };
-
-    beforeAll(() =>
-      proposalsStore.setProposals({ proposals: mockProposals, certified: true })
-    );
-
-    afterAll(() =>
-      proposalsStore.setProposals({ proposals: [], certified: undefined })
-    );
-
-    it("should render buttons", () => {
+    it("should render buttons", async () => {
       const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+        proposalIdString: "1",
+        proposalIds: ["0", "1", "2"],
       });
 
       expect(getByTestId("proposal-nav-previous")).not.toBeNull();
@@ -69,90 +57,72 @@ describe("ProposalNavigation", () => {
 
     it("should hide previous", () => {
       const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+        proposalIdString: "1",
+        proposalIds: ["1", "2"],
       });
 
       expect(
         getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).toBeTruthy();
+      ).toBe(true);
+      expect(
+        getByTestId("proposal-nav-next")?.classList.contains("hidden")
+      ).toBe(false);
     });
 
     it("should display next", () => {
       const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+        proposalIdString: "1",
+        proposalIds: ["0", "1"],
       });
-
-      expect(
-        getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).not.toBeTruthy();
-    });
-
-    it("should hide previous", () => {
-      const { getByTestId } = render(ProposalNavigation, { props: propsNext });
 
       expect(
         getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).not.toBeTruthy();
-    });
-
-    it("should display next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: propsNext,
-      });
-
+      ).toBe(false);
       expect(
         getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).toBeTruthy();
+      ).toBe(true);
     });
   });
 
   describe("action", () => {
-    const props = { proposalInfo: mockProposals[1] };
-    const proposalId = BigInt(202);
-
-    beforeAll(() =>
-      proposalsStore.setProposals({
-        proposals: [...mockProposals, { ...mockProposals[0], id: proposalId }],
-        certified: true,
-      })
-    );
-
-    afterAll(() =>
-      proposalsStore.setProposals({ proposals: [], certified: undefined })
-    );
-
-    it("should go to next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
+    it("should emmit next click", async () => {
+      const nnsNavigationSpy = jest.fn();
+      const { getByTestId, component } = render(ProposalNavigation, {
+        proposalIdString: "1",
+        proposalIds: ["0", "1", "2"],
       });
 
+      component.$on("nnsNavigation", nnsNavigationSpy);
       const btn = getByTestId("proposal-nav-next") as HTMLButtonElement;
+
       fireEvent.click(btn);
 
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Proposal);
-
-      const {
-        data: { proposal },
-      } = get(page);
-      expect(proposal).toEqual(`${proposalId}`);
+      expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
+      expect(nnsNavigationSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: "2",
+        })
+      );
     });
 
-    it("should go to previous", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
+    it("should emmit previous click", async () => {
+      const nnsNavigationSpy = jest.fn();
+      const { getByTestId, component } = render(ProposalNavigation, {
+        proposalIdString: "1",
+        proposalIds: ["0", "1", "2"],
       });
 
+      component.$on("nnsNavigation", nnsNavigationSpy);
       const btn = getByTestId("proposal-nav-previous") as HTMLButtonElement;
+
       fireEvent.click(btn);
 
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Proposal);
-
-      const {
-        data: { proposal },
-      } = get(page);
-      expect(proposal).toEqual(`${mockProposals[0].id}`);
+      expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
+      expect(nnsNavigationSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: "0",
+        })
+      );
     });
   });
 });
