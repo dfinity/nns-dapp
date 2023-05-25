@@ -13,10 +13,13 @@ export class ParticipateButtonPo extends BasePageObject {
     return ParticipateSwapModalPo.under(this.root);
   }
 
-  async participate({ amount }: { amount: number }): Promise<void> {
+  async participate(params: {
+    amount: number;
+    acceptConditions: boolean;
+  }): Promise<void> {
     await this.getButton().click();
     const modal = this.getParticipateSwapModalPo();
-    await modal.participate({ amount });
+    await modal.participate(params);
     await modal.waitForAbsent();
   }
 }

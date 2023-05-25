@@ -29,8 +29,11 @@ export class ProjectStatusSectionPo extends BasePageObject {
     return this.getProjectStatusPo().getStatus();
   }
 
-  participate({ amount }: { amount: number }): Promise<void> {
-    return this.getParticipateButtonPo().participate({ amount });
+  participate(params: {
+    amount: number;
+    acceptConditions: boolean;
+  }): Promise<void> {
+    return this.getParticipateButtonPo().participate(params);
   }
 
   getCommitmentAmount(): Promise<string> {
