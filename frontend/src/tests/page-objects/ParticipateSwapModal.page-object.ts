@@ -31,10 +31,10 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
 
   async participate({
     amount,
-    acceptConditions = false,
+    acceptConditions,
   }: {
     amount: number;
-    acceptConditions?: boolean | undefined;
+    acceptConditions: boolean;
   }): Promise<void> {
     const formPo = this.getTransactionFormPo();
     await formPo.enterAmount(amount);
