@@ -103,7 +103,7 @@ The `dfx` version installed locally should match the one defined in [dfx.json](h
 
 ## Dependencies
 
-It's essential to keep your dependencies up-to-date to benefit from the latest features, bug fixes, and security patches.
+It's essential to keep our dependencies up-to-date to benefit from the latest features, bug fixes, and security patches.
 
 In this guide, we will walk you through the process of checking for newer dependencies and updating them for your frontend dapp using the [npm-check-updates](https://github.com/raineorshine/npm-check-updates) tool.
 
@@ -111,7 +111,7 @@ In this guide, we will walk you through the process of checking for newer depend
 
 First, make sure you have Node.js and npm (Node Package Manager) installed on your system. If not, you can download and install them from the official Node.js website (https://nodejs.org).
 
-To install the npm-check-updates tool, open your terminal and run the following command:
+To install the `npm-check-updates` tool, open your terminal and run the following command:
 
 ```bash
 npm install -g npm-check-updates
