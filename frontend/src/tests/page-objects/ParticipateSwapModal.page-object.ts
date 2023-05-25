@@ -39,7 +39,7 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
     const formPo = this.getTransactionFormPo();
     await formPo.enterAmount(amount);
     const info = this.getAdditionalInfoFormPo();
-    if (await info.hasConditions()) {
+    if (acceptConditions) {
       await info.toggleConditionsAccepted();
     }
     await formPo.clickContinue();
