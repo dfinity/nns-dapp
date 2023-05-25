@@ -10,7 +10,7 @@ if [ ! -d "$DIR" ]; then
 fi
 
 for ((n = 0; n < 100; n++)); do
-  npm run build && find frontend/public -type f -exec sha256sum {} \; >"$DIR/sha256-batch${n}.txt"
+  npm run build && find public -type f -exec sha256sum {} \; >"$DIR/sha256-batch${n}.txt"
 
   if ((n > 0)); then
     previous=$((n - 1))
