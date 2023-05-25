@@ -138,10 +138,7 @@
     &.top {
       bottom: unset;
       top: calc(-1 * var(--padding));
-      transform: translate(
-        var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
-        -100%
-      );
+      transform: translate(-50%, -100%);
     }
 
     pointer-events: none;

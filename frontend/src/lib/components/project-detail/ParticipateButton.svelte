@@ -82,6 +82,7 @@
             <Tooltip
               id="sns-project-participate-button-tooltip"
               text={$i18n.sns_project_detail.max_user_commitment_reached}
+              top={true}
             >
               <button
                 class="primary"
@@ -93,6 +94,7 @@
             <Tooltip
               id="sns-project-participate-button-tooltip"
               text={$i18n.sns_project_detail.not_eligible_to_participate}
+              top={true}
             >
               <button
                 class="primary"
@@ -139,6 +141,12 @@
     align-items: stretch;
     justify-content: center;
     padding: var(--padding-2x);
+
+    // To make the button inside the tooltip work the same way as the button w/o a tooltip
+    :global(.tooltip-target) {
+      display: flex;
+      flex-direction: column;
+    }
 
     @include media.min-width(medium) {
       align-items: center;
