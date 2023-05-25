@@ -29,9 +29,19 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
     return this.getInProgressPo().isPresent();
   }
 
-  async participate({ amount }: { amount: number }): Promise<void> {
+  async participate({
+    amount,
+    acceptConditions,
+  }: {
+    amount: number;
+    acceptConditions: boolean;
+  }): Promise<void> {
     const formPo = this.getTransactionFormPo();
     await formPo.enterAmount(amount);
+    const info = this.getAdditionalInfoFormPo();
+    if (acceptConditions) {
+      await info.toggleConditionsAccepted();
+    }
     await formPo.clickContinue();
     await this.getAdditionalInfoReviewPo().clickCheckbox();
     await this.getTransactionReviewPo().clickSend();

@@ -437,7 +437,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({ amount: amountICP });
+          await projectDetail.participate({
+            amount: amountICP,
+            acceptConditions: false,
+          });
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
