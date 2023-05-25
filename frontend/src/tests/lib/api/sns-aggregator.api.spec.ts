@@ -1,6 +1,6 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
-import aggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
+import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
@@ -9,11 +9,11 @@ describe("sns-aggregator api", () => {
     });
     it("should fetch json once if less than 10 SNSes", async () => {
       const mockFetch = jest.fn();
-      const [_first, ...rest] = aggregatedSnses;
+      const [_first, ...nineSnses] = tenAggregatedSnses;
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve(rest),
+          json: () => Promise.resolve(nineSnses),
         })
       );
       global.fetch = mockFetch;
@@ -30,13 +30,13 @@ describe("sns-aggregator api", () => {
         .mockReturnValueOnce(
           Promise.resolve({
             ok: true,
-            json: () => Promise.resolve(aggregatedSnses),
+            json: () => Promise.resolve(tenAggregatedSnses),
           })
         )
         .mockReturnValueOnce(
           Promise.resolve({
             ok: true,
-            json: () => Promise.resolve([aggregatedSnses[0]]),
+            json: () => Promise.resolve([tenAggregatedSnses[0]]),
           })
         );
       global.fetch = mockFetch;
@@ -52,16 +52,16 @@ describe("sns-aggregator api", () => {
 
     it("should convert response", async () => {
       const mockFetch = jest.fn();
-      const [first, ..._rest] = aggregatedSnses;
       mockFetch.mockReturnValue(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([first]),
+          json: () => Promise.resolve([tenAggregatedSnses[0]]),
         })
       );
       global.fetch = mockFetch;
       const snses = await querySnsProjects();
       const sns = snses.find(({ index }) => index === aggregatorSnsMock.index);
+      // TODO: Make clear that aggregatorSnsMock is the first in the list of aggregated SNSes
       expect(sns).toEqual(aggregatorSnsMock);
     });
   });
