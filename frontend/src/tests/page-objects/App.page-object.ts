@@ -55,7 +55,7 @@ export class AppPo extends BasePageObject {
     return this.getButton("menu-toggle");
   }
 
-  getBusyScreenPo(): ButtonPo {
+  getBusyScreenPo(): BusyScreenPo {
     return BusyScreenPo.under(this.root);
   }
 
