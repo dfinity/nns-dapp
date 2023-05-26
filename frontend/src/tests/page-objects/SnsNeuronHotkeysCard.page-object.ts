@@ -9,4 +9,8 @@ export class SnsNeuronHotkeysCardPo extends BasePageObject {
       element.byTestId(SnsNeuronHotkeysCardPo.TID)
     );
   }
+
+  clickAddHotkey(): Promise<void> {
+    return this.click("add-hotkey-button");
+  }
 }
