@@ -133,8 +133,8 @@
       {:else}
         <ul>
           {#each hotkeys as hotkey (hotkey)}
-            <li>
-              <Value>{hotkey}</Value>
+            <li data-tid="hotkey-row">
+              <Value testId="hotkey-principal">{hotkey}</Value>
               {#if canManageHotkeys}
                 <button
                   class="text"
