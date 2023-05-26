@@ -6,6 +6,7 @@ let resolvePreviousStep = () => {
 let previousStep = undefined;
 
 export const step = async (description: string) => {
+  // We won't resolve the last step but Playwright doesn't mind.
   resolvePreviousStep();
   await previousStep;
   previousStep = test.step(description, () => {
