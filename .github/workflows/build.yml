@@ -36,8 +36,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+          # Version from 2023-05-24 with longer retries to install dfx
+          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
