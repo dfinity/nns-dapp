@@ -1,4 +1,4 @@
-import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+import { isBrowser } from "$lib/utils/env.utils";
 import { isNullish } from "@dfinity/utils";
 
 const localDevelopment = import.meta.env.DEV;

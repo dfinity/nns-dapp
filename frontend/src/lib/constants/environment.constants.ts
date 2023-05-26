@@ -1,6 +1,5 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { addRawToUrl, isLocalhost } from "$lib/utils/env.utils";
-import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+import { addRawToUrl, isBrowser, isLocalhost } from "$lib/utils/env.utils";
 
 const envVars = getEnvVars();
 

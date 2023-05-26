@@ -17,7 +17,7 @@
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+  import { browser } from "$app/environment";
 
   let visible = false;
   let transferring = false;
@@ -77,7 +77,7 @@
   $: selectedProjectId,
     (async () => {
       // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
-      if (isBrowser) {
+      if (browser) {
         tokenBalanceE8s = await getTestBalance(selectedProjectId);
       }
     })();
