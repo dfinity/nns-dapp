@@ -33,8 +33,12 @@ test("Test accounts requirements", async ({ page, context }) => {
   await expect(page.getByTestId("account-card")).toHaveCount(2);
 
   // AU001: The user MUST be able to see a list of all their accounts
-  const accountNames = await nnsAccountsPo.getAccountNames();
-  expect(accountNames).toEqual([mainAccountName, subAccountName]);
+  const accountNames = async () => await nnsAccountsPo.getAccountNames();
+  expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
+
+  // The linked account should still be present after refresh
+  page.reload();
+  expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // Get some ICP to be able to transfer
   await appPo.getTokens(20);
