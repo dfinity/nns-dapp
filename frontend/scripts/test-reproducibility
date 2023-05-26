@@ -10,7 +10,11 @@ if [ ! -d "$DIR" ]; then
 fi
 
 for ((n = 0; n < 100; n++)); do
-  npm run build && find public -type f -exec sha256sum {} \; >"$DIR/sha256-batch${n}.txt"
+  npm run build && find public -type f -exec sha256sum {} \; | awk '{print $2 " " $1}' | sort >"$DIR/sha256-batch${n}.txt"
+
+  # Save results for manual comparison
+  rm -r "$DIR/public-batch${n}" 2>/dev/null
+  mv public "$DIR/public-batch${n}"
 
   if ((n > 0)); then
     previous=$((n - 1))
