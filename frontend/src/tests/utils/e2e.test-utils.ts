@@ -1,6 +1,6 @@
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
-let resolvePreviousStep: () => {
+let resolvePreviousStep = () => {
   /* this function will be replaced at each step */
 };
 let previousStep = undefined;
