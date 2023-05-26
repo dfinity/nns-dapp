@@ -61,6 +61,9 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(await neuronDetail.getStake()).toBe(formattedStake);
 
   // SN003: User can add a hotkey
+  const hotkeyPrincipal =
+    "dskxv-lqp33-5g7ev-qesdj-fwwkb-3eze4-6tlur-42rxy-n4gag-6t4a3-tae";
+  await neuronDetail.addHotkey(hotkeyPrincipal);
 
   // SN004: User can remove a hotkey
 
