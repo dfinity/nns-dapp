@@ -38,10 +38,10 @@ jobs:
         run: find ${{ matrix.BUILD_NAME }}-out -type f | xargs sha256sum
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > ${{ matrix.BUILD_NAME }}-out/commit.txt
-      - name: 'Upload ${{ matrix.BUILD_NAME }} wasm module'
+      - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
         uses: actions/upload-artifact@v3
         with:
-          name: NNS ${{ matrix.BUILD_NAME }} wasm module and arguments
+          name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
             ${{ matrix.BUILD_NAME }}-out/commit.txt
             ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
@@ -49,6 +49,13 @@ jobs:
             ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
             ${{ matrix.BUILD_NAME }}-out/frontend-config.sh
             ${{ matrix.BUILD_NAME }}-out/deployment-config.json
+      - name: 'Upload ${{ matrix.BUILD_NAME }} sns_aggregator'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator for ${{ matrix.BUILD_NAME }}
+          path: |
+            ${{ matrix.BUILD_NAME }}-out/sns_aggregator.wasm
+            ${{ matrix.BUILD_NAME }}-out/sns_aggregator_dev.wasm
       - name: Release
         uses: ./.github/actions/release_nns_dapp
         with:
