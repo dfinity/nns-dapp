@@ -49,7 +49,7 @@ jobs:
             ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
             ${{ matrix.BUILD_NAME }}-out/frontend-config.sh
             ${{ matrix.BUILD_NAME }}-out/deployment-config.json
-      - name: 'Upload ${{ matrix.BUILD_NAME }} sns_aggregator'
+      - name: 'Upload ${{ matrix.BUILD_NAME }} sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
