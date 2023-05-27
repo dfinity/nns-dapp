@@ -28,6 +28,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=local
+            COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
@@ -83,6 +84,10 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Install ic-wasm
+        run: cargo install "ic-wasm@$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+      - name: Check that metadata is present
+        run: scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
