@@ -47,6 +47,7 @@ jobs:
           path: sns_aggregator.wasm
           retention-days: 3
   test:
+    needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
