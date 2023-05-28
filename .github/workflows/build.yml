@@ -15,7 +15,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    timeout-minutes: 60
+    timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
@@ -32,6 +32,34 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
+      - name: Rename nns-dapp.wasm for upload
+        run: cp nns-dapp.wasm nns-dapp_local.wasm
+      - name: 'Upload nns-dapp_local wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp_local
+          path: nns-dapp_local.wasm
+          retention-days: 3
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
+  test:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    steps:
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+          path: nns-dapp_local.wasm
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
@@ -119,14 +147,6 @@ jobs:
           then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
-      - name: Rename nns-dapp.wasm for upload
-        run: cp nns-dapp.wasm nns-dapp_local.wasm
-      - name: 'Upload nns-dapp_local wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: nns-dapp_local
-          path: nns-dapp_local.wasm
-          retention-days: 3
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -230,7 +250,7 @@ jobs:
         run: |
           rm -rf screenshots
   build-pass:
-    needs: ["build"]
+    needs: ["build", "test"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
