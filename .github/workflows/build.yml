@@ -58,7 +58,9 @@ jobs:
         with:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
-      - name: Get nns-dapp_local
+      - name: Rename nns-dapp.wasm for use
+        run: cp nns-dapp_local.wasm nns-dapp.wasm
+      - name: Get sns_aggregator
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator
