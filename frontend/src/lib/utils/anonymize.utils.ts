@@ -117,12 +117,12 @@ export const anonymizeAccount = async (
     return account as undefined | null;
   }
 
-  const { identifier, principal, balance, name, type, subAccount } = account;
+  const { identifier, principal, balanceE8s, name, type, subAccount } = account;
 
   return {
     identifier: await cutAndAnonymize(identifier),
     principal: anonymiseAvailability(principal),
-    balance: await anonymizeICP(balance),
+    balanceE8s,
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),
@@ -430,7 +430,7 @@ export const anonymizeTransaction = async ({
       type,
       from: from !== undefined ? undefined : await cutAndAnonymize(from),
       to: to !== undefined ? undefined : await cutAndAnonymize(to),
-      displayAmount: await anonymizeICP(displayAmount),
+      displayAmount,
       date,
     },
   };

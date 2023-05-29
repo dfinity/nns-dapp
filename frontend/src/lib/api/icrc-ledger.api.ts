@@ -15,7 +15,6 @@ import {
   type IcrcBlockIndex,
   type TransferParams,
 } from "@dfinity/ledger";
-import { TokenAmount } from "@dfinity/nns";
 import type { QueryParams } from "@dfinity/utils";
 import {
   arrayOfNumberToUint8Array,
@@ -61,10 +60,7 @@ export const getIcrcAccount = async ({
     ...(nonNullish(subaccount) && {
       subAccount: uint8ArrayToArrayOfNumber(subaccount),
     }),
-    balance: TokenAmount.fromE8s({
-      amount: balanceE8s,
-      token: projectToken,
-    }),
+    balanceE8s,
     type,
   };
 };

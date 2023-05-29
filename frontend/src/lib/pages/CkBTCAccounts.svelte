@@ -10,6 +10,8 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
+  import { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -43,6 +45,11 @@
   $: accounts = nonNullish($selectedCkBTCUniverseIdStore)
     ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
     : [];
+
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
@@ -54,7 +61,8 @@
         role="link"
         on:click={() => goToWallet(account)}
         hash
-        {account}>{account.name ?? $i18n.accounts.main}</AccountCard
+        {account}
+        {token}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}
 

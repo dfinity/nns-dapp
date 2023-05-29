@@ -48,16 +48,14 @@
   let loading = false;
   $: loading =
     nonNullish(account) &&
-    (isNullish(account.balance) || isNullish(account.identifier));
+    (isNullish(account.balanceE8s) || isNullish(account.identifier));
 
-  let accountBalance: TokenAmount;
-  $: accountBalance =
-    account?.balance ??
-    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
+  let accountBalance: bigint;
+  $: accountBalance = account?.balanceE8s ?? 0n;
 
   let detailedAccountBalance: string;
   $: detailedAccountBalance = formatToken({
-    value: accountBalance.toE8s(),
+    value: accountBalance,
     detailed: true,
   });
 
@@ -66,7 +64,7 @@
     loading,
     (() => {
       transfersToBeCompleted =
-        loading || isNullish(account) ? undefined : accountBalance.toE8s() > 0n;
+        loading || isNullish(account) ? undefined : accountBalance > 0n;
     })();
 
   // Important: We do not explicitely use Svelte transition because according our test, use these here leads to breaking the routing.

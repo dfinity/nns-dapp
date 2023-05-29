@@ -11,7 +11,6 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
@@ -148,10 +147,7 @@ export const mapIcrcTransaction = ({
       isSend,
       from: txInfo.from,
       to: txInfo.to,
-      displayAmount: TokenAmount.fromE8s({
-        amount: txInfo.amount + feeApplied,
-        token: account.balance.token,
-      }),
+      displayAmount: account.balanceE8s,
       date: new Date(timestampMilliseconds),
     };
   } catch (err) {

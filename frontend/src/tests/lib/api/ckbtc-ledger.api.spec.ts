@@ -42,7 +42,7 @@ describe("ckbtc-ledger api", () => {
 
       expect(account).not.toBeUndefined();
 
-      expect(account?.balance.toE8s()).toEqual(BigInt(10_000_000));
+      expect(account?.balanceE8s).toEqual(BigInt(10_000_000));
 
       expect(balanceSpy).toBeCalled();
       expect(metadataSpy).toBeCalled();

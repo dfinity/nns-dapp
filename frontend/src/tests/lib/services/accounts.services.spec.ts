@@ -417,7 +417,9 @@ describe("accounts-services", () => {
       accountsStore.setForTesting({
         main: mockMainAccount,
       });
-      expect(get(accountsStore).main.balance).toEqual(mockMainAccount.balance);
+      expect(get(accountsStore).main.balanceE8s).toEqual(
+        mockMainAccount.balanceE8s
+      );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
 
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -432,7 +434,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should not show error if only query fails", async () => {

@@ -5,10 +5,13 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
+  import type { Token } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
   export let selectedAccount: Account | undefined = undefined;
+  export let token: Token;
 </script>
 
 <div class="select-account" data-tid="transaction-from-account">
@@ -28,7 +31,13 @@
     <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
     <svelte:fragment slot="value">
       {#if selectedAccount !== undefined}
-        <AmountDisplay singleLine amount={selectedAccount?.balance} />
+        <AmountDisplay
+          singleLine
+          amount={TokenAmount.fromE8s({
+            amount: selectedAccount?.balanceE8s,
+            token,
+          })}
+        />
       {/if}
     </svelte:fragment>
   </KeyValuePair>

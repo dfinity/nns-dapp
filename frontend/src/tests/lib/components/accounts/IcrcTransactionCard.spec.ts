@@ -17,6 +17,7 @@ import {
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
+  mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
@@ -66,7 +67,7 @@ describe("IcrcTransactionCard", () => {
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.receive, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });
@@ -78,7 +79,7 @@ describe("IcrcTransactionCard", () => {
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.send, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });
@@ -100,7 +101,7 @@ describe("IcrcTransactionCard", () => {
     );
 
     const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });

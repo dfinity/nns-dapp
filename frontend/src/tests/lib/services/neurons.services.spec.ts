@@ -34,7 +34,7 @@ import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, LedgerCanister, TokenAmount, Topic } from "@dfinity/nns";
+import { LedgerCanister, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
@@ -288,10 +288,7 @@ describe("neurons-services", () => {
         amount,
         account: {
           ...mockMainAccount,
-          balance: TokenAmount.fromString({
-            amount: String(amount - 1),
-            token: ICPToken,
-          }) as TokenAmount,
+          balanceE8s: BigInt(amount - 1),
         },
       });
 

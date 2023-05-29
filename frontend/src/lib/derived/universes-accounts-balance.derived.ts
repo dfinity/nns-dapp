@@ -8,11 +8,10 @@ import {
 } from "$lib/stores/sns-accounts.store";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
-import type { TokenAmount } from "@dfinity/nns";
 import { derived } from "svelte/store";
 
 export interface UniverseAccountsBalance {
-  balance: TokenAmount | undefined;
+  balanceE8s: bigint | undefined;
   certified: boolean;
 }
 

@@ -87,7 +87,7 @@ describe("ckbtc.utils", () => {
         amount:
           Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP +
           Number(params.transactionFee) / E8S_PER_ICP +
-          Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP,
+          Number(params.sourceAccount.balanceE8s) / E8S_PER_ICP,
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });

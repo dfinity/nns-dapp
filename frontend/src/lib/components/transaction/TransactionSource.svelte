@@ -24,7 +24,7 @@
     slot="value"
     singleLine
     detailed="height_decimals"
-    amount={account.balance}
+    amount={account.balanceE8s}
   />
 </KeyValuePair>
 

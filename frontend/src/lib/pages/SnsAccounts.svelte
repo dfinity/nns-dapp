@@ -7,6 +7,9 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { Account } from "$lib/types/account";
+  import { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { nonNullish } from "@dfinity/utils";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -23,6 +26,11 @@
   };
 
   $: syncSnsAccountsForProject($snsOnlyProjectStore);
+
+  let token: IcrcTokenMetadata | undefined;
+  $: token = nonNullish($snsOnlyProjectStore)
+    ? $tokensStore[$snsOnlyProjectStore]?.token
+    : undefined;
 </script>
 
 <div class="card-grid" data-tid="sns-accounts-body">
@@ -34,7 +42,8 @@
         role="link"
         on:click={() => goToWallet(account)}
         hash
-        {account}>{account.name ?? $i18n.accounts.main}</AccountCard
+        {account}
+        {token}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}
   {/if}

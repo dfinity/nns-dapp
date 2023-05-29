@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { ICPToken, Token, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -19,6 +19,7 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
 
   export let detailedBalance = false;
+  export let token: Token | undefined;
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
@@ -28,19 +29,23 @@
     mainName: $i18n.accounts.main,
   });
 
-  let accountBalance: TokenAmount;
-  $: accountBalance =
-    $store.account?.balance ??
-    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
+  let accountBalance: bigint;
+  $: accountBalance = $store.account?.balanceE8s ?? 0n;
+
+  let accountBalanceToken: TokenAmount;
+  $: accountBalanceToken = TokenAmount.fromE8s({
+    amount: accountBalance,
+    token: token ?? ICPToken,
+  }) as TokenAmount;
 
   let detailedICP: string;
   $: detailedICP = formatToken({
-    value: accountBalance.toE8s(),
+    value: accountBalance,
     detailed: true,
   });
 
   let tokenSymbol: string;
-  $: tokenSymbol = accountBalance.token.symbol;
+  $: tokenSymbol = token?.symbol ?? "";
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -50,9 +55,9 @@
     layoutTitleStore.set(
       intersecting
         ? $i18n.wallet.title
-        : `${accountName} – ${formatToken({ value: accountBalance.toE8s() })} ${
-            accountBalance.token.symbol
-          }`
+        : `${accountName} – ${formatToken({
+            value: accountBalance,
+          })} ${tokenSymbol}`
     );
   };
 </script>
@@ -77,7 +82,7 @@
     >
       <AmountDisplay
         copy
-        amount={accountBalance}
+        amount={accountBalanceToken}
         inline
         detailed={detailedBalance}
       />

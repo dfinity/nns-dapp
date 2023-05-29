@@ -303,7 +303,7 @@ describe("StakeNeuronModal", () => {
         accountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {

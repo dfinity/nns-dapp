@@ -9,7 +9,7 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("CurrentBalance", () => {
-  const props = { balance: mockMainAccount.balance };
+  const props = { balance: mockMainAccount.balanceE8s };
 
   it("should render a title", () => {
     const { getByText } = render(CurrentBalance, { props });
@@ -25,7 +25,7 @@ describe("CurrentBalance", () => {
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balanceE8s })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });

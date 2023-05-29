@@ -5,6 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   export let disableSelection = false;
   export let filterIdentifier: string | undefined = undefined;
@@ -51,7 +52,8 @@
       <AccountCard
         role="button"
         on:click={() => mainAccount && chooseAccount(mainAccount)}
-        account={mainAccount}>{$i18n.accounts.main}</AccountCard
+        account={mainAccount}
+        token={ICPToken}>{$i18n.accounts.main}</AccountCard
       >
     {/if}
 

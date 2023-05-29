@@ -14,10 +14,12 @@ export const mockCkBTCMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balance: TokenAmount.fromString({
-    amount: "4445566.987",
-    token: mockCkBTCToken,
-  }) as TokenAmount,
+  balanceE8s: (
+    TokenAmount.fromString({
+      amount: "4445566.987",
+      token: mockCkBTCToken,
+    }) as TokenAmount
+  ).toE8s(),
   principal: mockPrincipal,
   type: "main",
 };
@@ -30,10 +32,12 @@ export const mockCkBTCWithdrawalIcrcAccount = decodeIcrcAccount(
 
 export const mockCkBTCWithdrawalAccount: Account = {
   identifier: mockCkBTCWithdrawalIdentifier,
-  balance: TokenAmount.fromString({
-    amount: "987.111",
-    token: mockCkBTCToken,
-  }) as TokenAmount,
+  balanceE8s: (
+    TokenAmount.fromString({
+      amount: "987.111",
+      token: mockCkBTCToken,
+    }) as TokenAmount
+  ).toE8s(),
   principal: mockCkBTCWithdrawalIcrcAccount.owner,
   type: "withdrawalAccount",
 };
