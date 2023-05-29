@@ -40,11 +40,13 @@ jobs:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
           retention-days: 3
-      - name: 'Upload sns_aggregator_dev wasm module'
+      - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
-          name: sns_aggregator_dev
-          path: sns_aggregator_dev.wasm
+          name: sns_aggregator
+          path: |
+            sns_aggregator.wasm
+            sns_aggregator_dev.wasm
           retention-days: 3
   test:
     needs: build
@@ -59,10 +61,10 @@ jobs:
           name: nns-dapp_local
       - name: Rename nns-dapp.wasm for use
         run: cp nns-dapp_local.wasm nns-dapp.wasm
-      - name: Get sns_aggregator_dev
+      - name: Get sns_aggregator
         uses: actions/download-artifact@v3
         with:
-          name: sns_aggregator_dev
+          name: sns_aggregator
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
