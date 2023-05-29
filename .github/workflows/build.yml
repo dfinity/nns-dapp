@@ -28,6 +28,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=local
+            COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
@@ -36,8 +37,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+          # Version from 2023-05-24 with longer retries to install dfx
+          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -48,7 +49,7 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-04-27/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
           dfx-snapshot-restore --snapshot state.tar.xz --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
@@ -83,6 +84,10 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Install ic-wasm
+        run: cargo install "ic-wasm@$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+      - name: Check that metadata is present
+        run: scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
