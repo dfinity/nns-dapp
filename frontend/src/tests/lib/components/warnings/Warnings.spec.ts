@@ -32,6 +32,11 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
   ),
 }));
 
+jest.mock("$lib/constants/environment.constants.ts", () => ({
+  ...jest.requireActual("$lib/constants/environment.constants.ts"),
+  IS_RC_MAINNET: true,
+}));
+
 describe("Warnings", () => {
   describe("TransactionRateWarning", () => {
     beforeEach(() => metricsStore.set(undefined));
@@ -191,6 +196,59 @@ describe("Warnings", () => {
         await waitFor(() => {
           expect(container.querySelector(".toast")).toBeNull();
         });
+      });
+    });
+  });
+
+  describe("TestEnvironmentWarning", () => {
+    describe("not signed in", () => {
+      it("should not render test environment warning", async () => {
+        const { getByTestId } = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitFor(expect(() => getByTestId("test-env-warning")).toThrow);
+      });
+    });
+
+    describe("signed in", () => {
+      beforeAll(() =>
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe)
+      );
+
+      it("should render test environment warning", async () => {
+        const { getByTestId } = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitFor(() =>
+          expect(getByTestId("test-env-warning")).not.toBeNull()
+        );
+      });
+
+      it("should close test environment warning", async () => {
+        const { getByTestId } = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitFor(() =>
+          expect(getByTestId("test-env-warning-ack")).not.toBeNull()
+        );
+
+        const button = getByTestId("test-env-warning-ack");
+        fireEvent.click(button);
+
+        await waitFor(
+          () => expect(() => getByTestId("test-env-warning")).toThrow
+        );
       });
     });
   });

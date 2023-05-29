@@ -11,7 +11,7 @@
   const close = () => (acknowledged = true);
 </script>
 
-<Modal bind:visible role="alert" on:nnsClose={close}>
+<Modal bind:visible role="alert" on:nnsClose={close} testId="test-env-warning">
   <div class="title" slot="title"><IconWarning /> Warning</div>
 
   <p>Welcome to the Testing Environment.</p>
@@ -29,7 +29,7 @@
   </p>
 
   <div class="custom-toolbar">
-    <button class="primary" on:click={close}
+    <button class="primary" on:click={close} data-tid="test-env-warning-ack"
       >I understand and want to continue</button
     >
   </div>
