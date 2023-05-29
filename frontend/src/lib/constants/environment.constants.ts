@@ -1,5 +1,5 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { addRawToUrl, isLocalhost } from "$lib/utils/env.utils";
+import { addRawToUrl,isLocalhost } from "$lib/utils/env.utils";
 import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
 
 const envVars = getEnvVars();
@@ -64,3 +64,7 @@ export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
+
+// TODO: display test environment warning on mainnet according configuration
+// DFX_NETWORK === new_environment_to_be_configured
+export const IS_RC_MAINNET = false;

@@ -1,9 +1,10 @@
 <script lang="ts">
   import { IconWarning, Modal } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { IS_RC_MAINNET } from "$lib/constants/environment.constants";
 
   let visible = false;
-  $: visible = $authSignedInStore && !acknowledged;
+  $: visible = $authSignedInStore && !acknowledged && IS_RC_MAINNET;
 
   let acknowledged = false;
 
