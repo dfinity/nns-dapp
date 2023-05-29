@@ -129,6 +129,10 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
+  test_env_welcome: string;
+  test_env_note: string;
+  test_env_request: string;
+  test_env_confirm: string;
 }
 
 interface I18nNavigation {
