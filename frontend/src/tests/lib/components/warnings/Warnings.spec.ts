@@ -13,8 +13,8 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
+import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import { SvelteComponent, tick } from "svelte";
 import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
@@ -232,19 +232,43 @@ describe("Warnings", () => {
         );
       });
 
-      it("should close test environment warning", async () => {
-        const { getByTestId } = render(Warnings, {
-          props: {
-            testEnvironmentWarning: true,
-          },
-        });
-
+      const waitAndClose = async ({
+        getByTestId,
+      }: RenderResult<SvelteComponent>) => {
         await waitFor(() =>
           expect(getByTestId("test-env-warning-ack")).not.toBeNull()
         );
 
         const button = getByTestId("test-env-warning-ack");
         fireEvent.click(button);
+
+        await waitFor(
+          () => expect(() => getByTestId("test-env-warning")).toThrow
+        );
+      };
+
+      it("should close test environment warning", async () => {
+        const result = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitAndClose(result);
+      });
+
+      it("should not reopen environment warning", async () => {
+        const result = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitAndClose(result);
+
+        const { rerender, getByTestId } = result;
+
+        rerender(Warnings);
 
         await waitFor(
           () => expect(() => getByTestId("test-env-warning")).toThrow
