@@ -11,8 +11,8 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
-import {mockSnsToken} from "$tests/mocks/sns-projects.mock";
 
 jest.mock("$lib/services/sns-transactions.services", () => {
   return {
