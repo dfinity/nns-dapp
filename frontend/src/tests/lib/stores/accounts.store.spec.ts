@@ -193,12 +193,12 @@ describe("accountsStore", () => {
       const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
         main: {
           ...mockMainAccount,
-          balance: mainBalance,
+          balanceE8s: mainBalance,
         },
         subAccounts: [
           {
             ...mockSubAccount,
-            balance: subBalance,
+            balanceE8s: subBalance,
           },
         ],
         certified,

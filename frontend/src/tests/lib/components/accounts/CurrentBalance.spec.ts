@@ -6,10 +6,16 @@ import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("CurrentBalance", () => {
-  const props = { balance: mockMainAccount.balanceE8s };
+  const props = {
+    balance: TokenAmount.fromE8s({
+      amount: mockMainAccount.balanceE8s,
+      token: ICPToken,
+    }),
+  };
 
   it("should render a title", () => {
     const { getByText } = render(CurrentBalance, { props });
