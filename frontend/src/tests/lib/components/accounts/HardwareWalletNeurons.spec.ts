@@ -7,7 +7,7 @@ import { formatToken } from "$lib/utils/token.utils";
 import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { Neuron } from "@dfinity/nns/dist/types/types/governance_converters";
+import type { Neuron } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import HardwareWalletNeuronsTest from "./HardwareWalletNeuronsTest.svelte";
 
