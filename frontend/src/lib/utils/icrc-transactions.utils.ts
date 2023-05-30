@@ -147,7 +147,7 @@ export const mapIcrcTransaction = ({
       isSend,
       from: txInfo.from,
       to: txInfo.to,
-      displayAmount: account.balanceE8s,
+      displayAmount: txInfo.amount + feeApplied,
       date: new Date(timestampMilliseconds),
     };
   } catch (err) {
