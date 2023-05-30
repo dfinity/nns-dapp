@@ -7,10 +7,14 @@ import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { ICPToken, type Token } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("AccountCard", () => {
-  const props: { account: Account } = { account: mockMainAccount };
+  const props: { account: Account; token: Token } = {
+    account: mockMainAccount,
+    token: ICPToken,
+  };
 
   it("should render an account identifier", () => {
     const { getByText } = render(AccountCard, {
