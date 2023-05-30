@@ -8,12 +8,15 @@ import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import CkBTCTransactionsListTest from "$tests/lib/components/accounts/CkBTCTransactionsListTest.svelte";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionBurn,
   mockIcrcTransactionMint,
-  mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
+  mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
@@ -31,6 +34,7 @@ describe("CkBTCTransactionList", () => {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+        token: mockCkBTCToken,
       },
     });
 

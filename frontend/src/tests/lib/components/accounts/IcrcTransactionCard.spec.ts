@@ -16,7 +16,7 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
-  mockSnsFullProject,
+  mockSnsFullProject, mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
@@ -33,6 +33,7 @@ describe("IcrcTransactionCard", () => {
         transactionWithId,
         toSelfTransaction: false,
         governanceCanisterId,
+        token: mockSnsToken,
       },
     });
 

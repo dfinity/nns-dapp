@@ -14,6 +14,7 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { ICPToken } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get, writable } from "svelte/store";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
@@ -32,6 +33,7 @@ describe("WalletSummary", () => {
         Component: WalletSummary,
         props: {
           detailedBalance,
+          token: ICPToken,
         },
       },
     });
