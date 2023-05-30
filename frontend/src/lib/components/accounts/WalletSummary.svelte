@@ -17,6 +17,7 @@
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { nonNullish } from "@dfinity/utils";
 
   export let detailedBalance = false;
   export let token: Token | undefined;
@@ -34,14 +35,16 @@
     $store.account?.balance ??
     (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
 
-  let accountBalanceToken: TokenAmount;
-  $: accountBalanceToken = TokenAmount.fromE8s({
-    amount: accountBalance.toE8s(),
-    token: token ?? ICPToken,
-  }) as TokenAmount;
+  let accountBalanceToken: TokenAmount | undefined;
+  $: accountBalanceToken = nonNullish(token)
+    ? (TokenAmount.fromE8s({
+        amount: accountBalance.toE8s(),
+        token,
+      }) as TokenAmount)
+    : undefined;
 
-  let detailedICP: string;
-  $: detailedICP = formatToken({
+  let detailedAccountBalance: string;
+  $: detailedAccountBalance = formatToken({
     value: accountBalance.toE8s(),
     detailed: true,
   });
@@ -74,21 +77,24 @@
     >
       {accountName}
     </h3>
-    <Tooltip
-      slot="value"
-      id="wallet-detailed-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_detail, {
-        $amount: detailedICP,
-        $token: tokenSymbol,
-      })}
-    >
-      <AmountDisplay
-        copy
-        amount={accountBalanceToken}
-        inline
-        detailed={detailedBalance}
-      />
-    </Tooltip>
+    <svelte:fragment slot="value">
+      {#if nonNullish(accountBalanceToken)}
+        <Tooltip
+          id="wallet-detailed-icp"
+          text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+            $amount: detailedAccountBalance,
+            $token: tokenSymbol,
+          })}
+        >
+          <AmountDisplay
+            copy
+            amount={accountBalanceToken}
+            inline
+            detailed={detailedBalance}
+          />
+        </Tooltip>
+      {/if}
+    </svelte:fragment>
   </KeyValuePair>
 
   <KeyValuePair>
