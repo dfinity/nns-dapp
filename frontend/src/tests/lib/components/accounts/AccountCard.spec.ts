@@ -63,4 +63,15 @@ describe("AccountCard", () => {
 
     expect(article?.getAttribute("role")).toEqual("link");
   });
+
+  it("should render no amount if token is unlikely undefined", () => {
+    const { getByTestId } = render(AccountCard, {
+      props: {
+        ...props,
+        token: undefined,
+      },
+    });
+
+    expect(() => getByTestId("token-value-label")).toThrow();
+  });
 });
