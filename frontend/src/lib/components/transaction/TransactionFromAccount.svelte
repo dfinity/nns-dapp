@@ -6,11 +6,14 @@
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import type { Token } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/nns";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
   export let selectedAccount: Account | undefined = undefined;
-  export let token: Token;
+  // TODO: use token when selectedAccount?.balance will be replaced with E8s value.
+  // TODO: const should be come let and default value should be removed. Currently here to make linter happy until above is solved.
+  export const token: Token = ICPToken;
 </script>
 
 <div class="select-account" data-tid="transaction-from-account">
