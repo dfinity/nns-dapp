@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122614
 
 * Swap conditions.
 * Parameters loading optimisation.
