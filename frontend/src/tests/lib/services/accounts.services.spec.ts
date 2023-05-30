@@ -200,10 +200,10 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -253,10 +253,10 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -324,10 +324,10 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -373,10 +373,10 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -499,10 +499,10 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -556,10 +556,10 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
+          balanceE8s: TokenAmount.fromE8s({
             amount: mainBalanceE8s,
             token: ICPToken,
-          }),
+          }).toE8s(),
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -928,10 +928,10 @@ describe("accounts-services", () => {
     const mockAccounts = {
       main: {
         ...mockMainAccount,
-        balance: TokenAmount.fromE8s({
+        balanceE8s: TokenAmount.fromE8s({
           amount: mainBalanceE8s,
           token: ICPToken,
-        }),
+        }).toE8s(),
       },
       subAccounts: [],
       hardwareWallets: [],

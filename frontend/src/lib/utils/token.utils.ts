@@ -84,7 +84,7 @@ export const formattedTransactionFee = (fee: TokenAmount): string =>
  * Calculates the maximum amount for a transaction.
  *
  * @param {Object} params
- * @param {bigint | undefined} params.balanceE8s The balance of the account in E8S.
+ * @param {bigint | undefined} params.balance The balance of the account in E8S.
  * @param {bigint | undefined} params.fee The fee of the transaction in E8S.
  * @param {bigint | undefined}params.maxAmount The maximum amount of the transaction not counting the fees.
  * @returns {number} The maximum amount for the transaction.
