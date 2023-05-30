@@ -61,7 +61,7 @@
       <AccountCard
         role="button"
         on:click={() => chooseAccount(subAccount)}
-        account={subAccount}>{subAccount.name}</AccountCard
+        account={subAccount} token={ICPToken}>{subAccount.name}</AccountCard
       >
     {/each}
 
@@ -70,7 +70,7 @@
         <AccountCard
           role="button"
           on:click={() => chooseAccount(hardwareWalletAccount)}
-          account={hardwareWalletAccount}
+          account={hardwareWalletAccount} token={ICPToken}
           >{hardwareWalletAccount.name}</AccountCard
         >
       {/each}
