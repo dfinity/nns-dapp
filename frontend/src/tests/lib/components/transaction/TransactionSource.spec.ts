@@ -6,12 +6,15 @@ import TransactionSource from "$lib/components/transaction/TransactionSource.sve
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { ICPToken } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionSource", () => {
+  const props = { account: mockMainAccount, token: ICPToken };
+
   it("should render info texts", () => {
     const { getByText } = render(TransactionSource, {
-      props: { account: mockMainAccount },
+      props,
     });
 
     expect(getByText(en.accounts.from, { exact: false })).toBeInTheDocument();
@@ -20,7 +23,7 @@ describe("TransactionSource", () => {
 
   it("should render balance", () => {
     const { getByTestId } = render(TransactionSource, {
-      props: { account: mockMainAccount },
+      props,
     });
 
     expect(getByTestId("token-value")?.textContent ?? "").toEqual(
@@ -33,7 +36,7 @@ describe("TransactionSource", () => {
 
   it("should render identifier", () => {
     const { getByTestId } = render(TransactionSource, {
-      props: { account: mockMainAccount },
+      props,
     });
 
     expect(
@@ -50,7 +53,10 @@ describe("TransactionSource", () => {
     };
 
     const { getByTestId } = render(TransactionSource, {
-      props: { account },
+      props: {
+        ...props,
+        account,
+      },
     });
 
     expect(

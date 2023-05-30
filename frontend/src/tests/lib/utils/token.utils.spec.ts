@@ -104,34 +104,48 @@ describe("token-utils", () => {
 
   describe("sumTokenAmounts", () => {
     it("should add amounts of token", () => {
-      const icp0 = (TokenAmount.fromString({
-        amount: "0",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp1 = (TokenAmount.fromString({
-        amount: "1",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp15 = (TokenAmount.fromString({
-        amount: "1.5",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp2 = (TokenAmount.fromString({
-        amount: "2",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp3 = (TokenAmount.fromString({
-        amount: "3",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp35 = (TokenAmount.fromString({
-        amount: "3.5",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
-      const icp6 = (TokenAmount.fromString({
-        amount: "6",
-        token: ICPToken,
-      }) as TokenAmount).toE8s();
+      const icp0 = (
+        TokenAmount.fromString({
+          amount: "0",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp1 = (
+        TokenAmount.fromString({
+          amount: "1",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp15 = (
+        TokenAmount.fromString({
+          amount: "1.5",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp2 = (
+        TokenAmount.fromString({
+          amount: "2",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp3 = (
+        TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp35 = (
+        TokenAmount.fromString({
+          amount: "3.5",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
+      const icp6 = (
+        TokenAmount.fromString({
+          amount: "6",
+          token: ICPToken,
+        }) as TokenAmount
+      ).toE8s();
 
       expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
       expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);
