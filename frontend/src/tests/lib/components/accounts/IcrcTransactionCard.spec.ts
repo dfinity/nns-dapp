@@ -34,6 +34,7 @@ describe("IcrcTransactionCard", () => {
         transactionWithId,
         toSelfTransaction: false,
         governanceCanisterId,
+        token: mockSnsToken,
       },
     });
 

@@ -33,6 +33,7 @@ describe("WalletSummary", () => {
         Component: WalletSummary,
         props: {
           detailedBalance,
+          token: ICPToken,
         },
       },
     });
