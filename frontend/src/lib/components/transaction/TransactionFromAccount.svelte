@@ -12,8 +12,8 @@
   export let canSelectSource: boolean;
   export let selectedAccount: Account | undefined = undefined;
   // TODO: use token when selectedAccount?.balance will be replaced with E8s value.
-  // TODO: const should be come let and default value should be removed. Currently here to make linter happy until above is solved.
-  export const token: Token = ICPToken;
+  // svelte-ignore unused-export-let
+  export let token: Token = ICPToken;
 </script>
 
 <div class="select-account" data-tid="transaction-from-account">
