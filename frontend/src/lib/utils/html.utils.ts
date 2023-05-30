@@ -57,7 +57,7 @@ export const renderer = (marked: Marked): Renderer => {
  */
 export const markdownToHTML = async (text: string): Promise<string> => {
   const url = "/assets/libs/marked.min.js";
-  const { marked }: { marked: Marked } = await import(url);
+  const { marked }: { marked: Marked } = await import(/* @vite-ignore */ url);
   return marked(text, {
     renderer: renderer(marked),
   });
