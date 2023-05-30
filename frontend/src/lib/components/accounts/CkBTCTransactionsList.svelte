@@ -15,8 +15,6 @@
   import type { CanisterId } from "$lib/types/canister";
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
-  import { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let indexCanisterId: CanisterId;

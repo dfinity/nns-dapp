@@ -7,7 +7,7 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { Account } from "$lib/types/account";
-  import { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { nonNullish } from "@dfinity/utils";
   import { tokensStore } from "$lib/stores/tokens.store";
 
@@ -29,7 +29,7 @@
 
   let token: IcrcTokenMetadata | undefined;
   $: token = nonNullish($snsOnlyProjectStore)
-    ? $tokensStore[$snsOnlyProjectStore]?.token
+    ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
 </script>
 

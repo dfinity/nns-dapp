@@ -118,7 +118,7 @@
 
   let token: IcrcTokenMetadata | undefined;
   $: token = nonNullish($snsOnlyProjectStore)
-    ? $tokensStore[$snsOnlyProjectStore]?.token
+    ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
 </script>
 

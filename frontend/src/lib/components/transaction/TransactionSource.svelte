@@ -3,7 +3,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
-  import { Token, TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
 
   export let account: Account;
   export let token: Token;

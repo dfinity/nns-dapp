@@ -10,7 +10,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
-  import { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 
   export let goToWallet: (account: Account) => Promise<void>;
@@ -62,7 +62,7 @@
         on:click={() => goToWallet(account)}
         hash
         {account}
-        {token}>{account.name ?? $i18n.accounts.main}</AccountCard
+        token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
       >
     {/each}
 

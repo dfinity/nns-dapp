@@ -35,7 +35,7 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
-  import { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -165,7 +165,7 @@
       {#if loaded}
         <Summary />
 
-        <WalletSummary detailedBalance {token} />
+        <WalletSummary detailedBalance token={token?.token} />
 
         {#if nonNullish(canisters)}
           <CkBTCWalletActions
@@ -188,7 +188,7 @@
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             indexCanisterId={canisters.indexCanisterId}
-            {token}
+            token={token?.token}
           />
         {/if}
       {:else}

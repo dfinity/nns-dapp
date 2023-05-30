@@ -7,7 +7,6 @@
     type CkBTCBTCWithdrawalAccount,
     ckBTCWithdrawalAccountsStore,
   } from "$lib/stores/ckbtc-withdrawal-accounts.store";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { Spinner, IconClock, IconCheck } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

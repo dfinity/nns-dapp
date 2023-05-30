@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, Token, TokenAmount } from "@dfinity/nns";
+  import { ICPToken, type Token, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
