@@ -4,6 +4,7 @@
 
 import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+import type { Account } from "$lib/types/account";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
@@ -20,21 +21,30 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
+import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { Token } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionCard", () => {
-  const renderTransactionCard = (
+  const renderTransactionCard = ({
     account,
     transactionWithId,
-    governanceCanisterId = undefined
-  ) =>
+    governanceCanisterId = undefined,
+    token,
+  }: {
+    account: Account;
+    transactionWithId: IcrcTransactionWithId;
+    governanceCanisterId?: Principal;
+    token: Token | undefined;
+  }) =>
     render(IcrcTransactionCard, {
       props: {
         account,
         transactionWithId,
         toSelfTransaction: false,
         governanceCanisterId,
-        token: mockSnsToken,
+        token,
       },
     });
 
@@ -62,10 +72,11 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("renders received headline", () => {
-    const { getByText } = renderTransactionCard(
-      mockSnsSubAccount,
-      transactionFromMainToSubaccount
-    );
+    const { getByText } = renderTransactionCard({
+      account: mockSnsSubAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+    });
 
     const expectedText = replacePlaceholders(en.transaction_names.receive, {
       $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
@@ -74,10 +85,11 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("renders sent headline", () => {
-    const { getByText } = renderTransactionCard(
-      mockSnsMainAccount,
-      transactionFromMainToSubaccount
-    );
+    const { getByText } = renderTransactionCard({
+      account: mockSnsMainAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+    });
 
     const expectedText = replacePlaceholders(en.transaction_names.send, {
       $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
@@ -95,11 +107,12 @@ describe("IcrcTransactionCard", () => {
       from,
     });
     stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
-    const { getByText } = renderTransactionCard(
-      mockSnsMainAccount,
-      stakeNeuronTransaction,
-      mockSnsFullProject.summary.governanceCanisterId
-    );
+    const { getByText } = renderTransactionCard({
+      account: mockSnsMainAccount,
+      transactionWithId: stakeNeuronTransaction,
+      governanceCanisterId: mockSnsFullProject.summary.governanceCanisterId,
+      token: mockSnsToken,
+    });
 
     const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {
       $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
@@ -110,7 +123,11 @@ describe("IcrcTransactionCard", () => {
   it("renders transaction Token symbol with - sign", () => {
     const account = mockSnsMainAccount;
     const transaction = transactionFromMainToSubaccount;
-    const { getByTestId } = renderTransactionCard(account, transaction);
+    const { getByTestId } = renderTransactionCard({
+      account,
+      transactionWithId: transaction,
+      token: mockSnsToken,
+    });
 
     const fee = transaction.transaction.transfer[0]?.fee[0];
     const amount = transaction.transaction.transfer[0]?.amount;
@@ -125,7 +142,11 @@ describe("IcrcTransactionCard", () => {
   it("renders transaction Tokens with + sign", () => {
     const account = mockSnsSubAccount;
     const transaction = transactionFromMainToSubaccount;
-    const { getByTestId } = renderTransactionCard(account, transaction);
+    const { getByTestId } = renderTransactionCard({
+      account,
+      transactionWithId: transaction,
+      token: mockSnsToken,
+    });
 
     const amount = transaction.transaction.transfer[0]?.amount;
     expect(getByTestId("token-value")?.textContent).toBe(
@@ -134,10 +155,11 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("displays transaction date and time", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockSnsMainAccount,
-      transactionFromMainToSubaccount
-    );
+    const { getByTestId } = renderTransactionCard({
+      account: mockSnsMainAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+    });
 
     const div = getByTestId("transaction-date");
 
@@ -146,10 +168,11 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("displays identifier for received", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockSnsSubAccount,
-      transactionFromMainToSubaccount
-    );
+    const { getByTestId } = renderTransactionCard({
+      account: mockSnsSubAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+    });
     const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockSnsMainAccount.identifier);
@@ -157,10 +180,11 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("displays identifier for sent for main sns account", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockSnsMainAccount,
-      transactionFromMainToSubaccount
-    );
+    const { getByTestId } = renderTransactionCard({
+      account: mockSnsMainAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+    });
     const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockSnsMainAccount.identifier);
@@ -168,12 +192,23 @@ describe("IcrcTransactionCard", () => {
   });
 
   it("displays identifier for sent for sub sns account", () => {
-    const { getByTestId } = renderTransactionCard(
-      mockSnsMainAccount,
-      transactionToMainFromSubaccount
-    );
+    const { getByTestId } = renderTransactionCard({
+      account: mockSnsMainAccount,
+      transactionWithId: transactionToMainFromSubaccount,
+      token: mockSnsToken,
+    });
     const identifier = getByTestId("identifier")?.textContent;
 
     expect(identifier).toContain(mockSnsSubAccount.identifier);
+  });
+
+  it("renders no transaction card if token is unlikely undefined", () => {
+    const { getByTestId } = renderTransactionCard({
+      account: mockSnsSubAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: undefined,
+    });
+
+    expect(() => getByTestId("transaction-card")).toThrow();
   });
 });
