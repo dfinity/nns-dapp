@@ -20,7 +20,11 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
 
-  const navigate = async ({ detail: proposalId }: { detail: string }) => {
+  const navigateToProposal = async ({
+    detail: proposalId,
+  }: {
+    detail: string;
+  }) => {
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
@@ -33,7 +37,7 @@
 <ProposalNavigation
   proposalIdString={`${$store?.proposal?.id}`}
   proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
-  on:nnsNavigation={navigate}
+  on:nnsNavigation={navigateToProposal}
 />
 
 {#if $store?.proposal !== undefined}

@@ -160,7 +160,11 @@
     $snsFilteredProposalsStore[universeIdText ?? ""]?.proposals
   )?.map(snsProposalIdString);
 
-  const navigate = async ({ detail: proposalId }: { detail: string }) => {
+  const navigateToProposal = async ({
+    detail: proposalId,
+  }: {
+    detail: string;
+  }) => {
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
@@ -174,7 +178,7 @@
   <ProposalNavigation
     proposalIdString={proposalIdText}
     proposalIds={sortedProposalIdStrings}
-    on:nnsNavigation={navigate}
+    on:nnsNavigation={navigateToProposal}
   />
 {/if}
 
