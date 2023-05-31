@@ -30,29 +30,14 @@ export const getIcrcAccount = async ({
   certified,
   type,
   getBalance,
-  getMetadata: ledgerMetadata,
 }: {
   type: AccountType;
   getBalance: (params: BalanceParams) => Promise<IcrcTokens>;
-  /**
-   * TODO: integrate ckBTC fee
-   * @deprecated metadata should not be called here and token should not be interpreted per account because it is the same token for all accounts
-   */
-  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
 } & IcrcAccount &
   QueryParams): Promise<Account> => {
   const account = { owner, subaccount };
 
-  const [balanceE8s, metadata] = await Promise.all([
-    getBalance({ ...account, certified }),
-    ledgerMetadata({ certified }),
-  ]);
-
-  const projectToken = mapOptionalToken(metadata);
-
-  if (projectToken === undefined) {
-    throw new LedgerErrorKey("error.icrc_token_load");
-  }
+  const balanceE8s = await getBalance({ ...account, certified });
 
   return {
     identifier: encodeIcrcAccount(account),
