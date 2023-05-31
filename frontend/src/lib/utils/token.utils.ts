@@ -57,6 +57,7 @@ export const formatToken = ({
     .replace(/,/g, "'");
 };
 
+// TODO: rename as it sum amount and not tokens anymore
 export const sumTokenAmounts = (...amountTokens: bigint[]): bigint =>
   amountTokens.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
 
