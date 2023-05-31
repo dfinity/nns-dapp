@@ -84,8 +84,32 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Determine ic-wasm version
+        id: ic-wasm-version
+        run: |
+          echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
+          echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
+      - name: Cache ic-wasm
+        id: cache-ic-wasm
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}
+          key: ${{ runner.os }}-${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}-ic-wasm
       - name: Install ic-wasm
-        run: cargo install "ic-wasm@$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+        if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
+        run: |
+          cargo install "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
+          command -v ic-wasm || {
+            echo "ERROR: Failed to install ic-wasm"
+            exit 1
+          }>&2
+          [[ "$( command -v ic-wasm )" == ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }} ]] || {
+            echo "ERROR: ic-wasm was installed at an unexpected location."
+            echo "EXPECTED: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}"
+            echo "ACTUAL:   $( command -v ic-wasm )"
+            echo "Please align fact and expectation."
+            exit 1
+          } >&2
       - name: Check that metadata is present
         run: scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
