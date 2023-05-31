@@ -12,7 +12,7 @@
   const close = () => (acknowledged = true);
 </script>
 
-<Modal bind:visible role="alert" on:nnsClose={close} testId="test-env-warning">
+<Modal bind:visible role="alert" on:nnsClose={close} testId="test-env-warning" disablePointerEvents={true}>
   <div class="title" slot="title"><IconWarning /> Warning</div>
 
   <p>{$i18n.warning.test_env_welcome}</p>
