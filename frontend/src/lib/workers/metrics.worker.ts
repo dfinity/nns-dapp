@@ -7,14 +7,9 @@ import {
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import type { MetricsSync } from "$lib/types/metrics";
-import type {
-  PostMessage,
-  PostMessageDataRequest,
-} from "$lib/types/post-messages";
+import type { PostMessage } from "$lib/types/post-messages";
 
-onmessage = async ({
-  data,
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+onmessage = async ({ data }: MessageEvent<PostMessage<never>>) => {
   const { msg } = data;
 
   switch (msg) {

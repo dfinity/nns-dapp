@@ -6,7 +6,6 @@
   } from "$lib/services/worker-cycles.services";
   import { onDestroy } from "svelte";
   import type { CanisterSync } from "$lib/types/canister";
-  import type { PostMessageDataResponse } from "$lib/types/post-messages";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { SkeletonText } from "@dfinity/gix-components";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -15,6 +14,7 @@
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
   import { i18n } from "$lib/stores/i18n";
+  import type {PostMessageDataResponseMetrics} from "$lib/types/post-message.canister";
 
   export let canister: CanisterDetails;
 
@@ -46,7 +46,7 @@
   let canisterSync: CanisterSync | undefined = undefined;
   // Multiple workers that sync canister information can be appended to a view.
   // postMessage being broadcasted, we filter the information that matches this canister.
-  const syncCanisterCallback = ({ canister: data }: PostMessageDataResponse) =>
+  const syncCanisterCallback = ({ canister: data }: PostMessageDataResponseMetrics) =>
     (canisterSync =
       data?.id === canister.canister_id.toText() ? data : undefined);
 </script>
