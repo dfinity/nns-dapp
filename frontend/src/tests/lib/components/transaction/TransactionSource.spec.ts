@@ -28,7 +28,7 @@ describe("TransactionSource", () => {
 
     expect(getByTestId("token-value")?.textContent ?? "").toEqual(
       `${formatToken({
-        value: mockMainAccount.balance.toE8s(),
+        value: mockMainAccount.balanceE8s,
         detailed: "height_decimals",
       })}`
     );

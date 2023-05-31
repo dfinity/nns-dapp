@@ -7,9 +7,9 @@ import { writable, type Readable } from "svelte/store";
 
 export type CkBTCBTCWithdrawalAccount = Omit<
   Account,
-  "balance" | "identifier"
+  "balanceE8s" | "identifier"
 > &
-  Partial<Pick<Account, "balance" | "identifier">>;
+  Partial<Pick<Account, "balanceE8s" | "identifier">>;
 
 export interface CkBTCBTCWithdrawalAccountData {
   account: CkBTCBTCWithdrawalAccount;

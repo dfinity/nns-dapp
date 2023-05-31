@@ -79,7 +79,7 @@ describe("IcrcTransactionCard", () => {
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.receive, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });
@@ -92,7 +92,7 @@ describe("IcrcTransactionCard", () => {
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.send, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });
@@ -115,7 +115,7 @@ describe("IcrcTransactionCard", () => {
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.stakeNeuron, {
-      $tokenSymbol: mockSnsSubAccount.balance.token.symbol,
+      $tokenSymbol: mockSnsToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
   });

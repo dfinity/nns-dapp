@@ -25,15 +25,11 @@ import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
-import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
 
-const expectedBalanceAfterTransfer = TokenAmount.fromE8s({
-  amount: BigInt(11_111),
-  token: mockCkBTCToken,
-});
+const expectedBalanceAfterTransfer = 11_111n;
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -45,7 +41,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
           accounts: [
             {
               ...mockCkBTCMainAccount,
-              balance: expectedBalanceAfterTransfer,
+              balanceE8s: expectedBalanceAfterTransfer,
             },
           ],
           certified: true,
@@ -168,7 +164,7 @@ describe("CkBTCWallet", () => {
 
       expect(icp?.innerHTML).toEqual(
         `${formatToken({
-          value: mockCkBTCMainAccount.balance.toE8s(),
+          value: mockCkBTCMainAccount.balanceE8s,
           detailed: true,
         })}`
       );
@@ -183,7 +179,7 @@ describe("CkBTCWallet", () => {
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
         `${formatToken({
-          value: mockCkBTCMainAccount.balance.toE8s(),
+          value: mockCkBTCMainAccount.balanceE8s,
           detailed: true,
         })} ${mockCkBTCToken.symbol}`
       );
@@ -220,7 +216,7 @@ describe("CkBTCWallet", () => {
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
           `${formatToken({
-            value: mockCkBTCMainAccount.balance.toE8s(),
+            value: mockCkBTCMainAccount.balanceE8s,
             detailed: true,
           })}`
         )
@@ -244,7 +240,7 @@ describe("CkBTCWallet", () => {
       // Account should have been updated and sum should be reflected
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: expectedBalanceAfterTransfer.toE8s() })}`
+          `${formatToken({ value: expectedBalanceAfterTransfer })}`
         )
       );
     });

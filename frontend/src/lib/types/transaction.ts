@@ -1,5 +1,4 @@
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
-import type { TokenAmount } from "@dfinity/nns";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -74,7 +73,7 @@ export interface Transaction {
   from: string | undefined;
   // Account string representation
   to: string | undefined;
-  displayAmount: TokenAmount;
+  displayAmount: bigint;
   date: Date;
 }
 

@@ -192,7 +192,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data.isSend).toBe(true);
       const txData = transactionFromMainToSubaccount.transaction.transfer[0];
-      expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
+      expect(data.displayAmount).toBe(txData.amount + txData.fee[0]);
     });
   });
 

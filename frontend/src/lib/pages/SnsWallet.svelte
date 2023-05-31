@@ -27,8 +27,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { tokensStore } from "$lib/stores/tokens.store";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   let showModal: "send" | undefined = undefined;
 

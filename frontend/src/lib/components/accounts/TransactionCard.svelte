@@ -3,7 +3,7 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token, TokenAmount } from "@dfinity/nns";
+  import type { Token } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
@@ -12,6 +12,7 @@
     AccountTransactionType,
   } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/nns";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -23,7 +24,7 @@
   let isSend: boolean;
   let from: string | undefined;
   let to: string | undefined;
-  let displayAmount: TokenAmount;
+  let displayAmount: bigint;
   let date: Date;
   $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
 
@@ -64,7 +65,7 @@
 
       <AmountDisplay
         slot="value"
-        amount={displayAmount}
+        amount={TokenAmount.fromE8s({ amount: displayAmount, token })}
         sign={isReceive || toSelfTransaction ? "+" : "-"}
         detailed
         inline
