@@ -9,6 +9,7 @@ import {
   numberToE8s,
   sumTokenAmounts,
 } from "$lib/utils/token.utils";
+import { amountFromString } from "$tests/utils/utils.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("token-utils", () => {
@@ -104,48 +105,13 @@ describe("token-utils", () => {
 
   describe("sumTokenAmounts", () => {
     it("should add amounts of token", () => {
-      const icp0 = (
-        TokenAmount.fromString({
-          amount: "0",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp1 = (
-        TokenAmount.fromString({
-          amount: "1",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp15 = (
-        TokenAmount.fromString({
-          amount: "1.5",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp2 = (
-        TokenAmount.fromString({
-          amount: "2",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp3 = (
-        TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp35 = (
-        TokenAmount.fromString({
-          amount: "3.5",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
-      const icp6 = (
-        TokenAmount.fromString({
-          amount: "6",
-          token: ICPToken,
-        }) as TokenAmount
-      ).toE8s();
+      const icp0 = amountFromString("0");
+      const icp1 = amountFromString("1");
+      const icp15 = amountFromString("1.5");
+      const icp2 = amountFromString("2");
+      const icp3 = amountFromString("3");
+      const icp35 = amountFromString("3.5");
+      const icp6 = amountFromString("6");
 
       expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
       expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);

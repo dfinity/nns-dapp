@@ -32,16 +32,18 @@ export const mockReceivedFromMainAccountTransaction = {
   },
 } as NnsTransaction;
 
+const displayAmount = TokenAmount.fromNumber({
+  amount: 110000000,
+  token: ICPToken,
+}).toE8s();
+
 export const mockTransactionReceiveDataFromMain: Transaction = {
   type: AccountTransactionType.Send,
   isReceive: true,
   isSend: false,
   from: "aaaaa-aa",
   to: "bbbbb-bb",
-  displayAmount: TokenAmount.fromNumber({
-    amount: 110000000,
-    token: ICPToken,
-  }).toE8s(),
+  displayAmount,
   date: new Date("03-14-2021"),
 };
 
@@ -51,9 +53,6 @@ export const mockTransactionSendDataFromMain: Transaction = {
   isSend: true,
   from: "aaaaa-aa",
   to: "bbbbb-bb",
-  displayAmount: TokenAmount.fromNumber({
-    amount: 110000000,
-    token: ICPToken,
-  }).toE8s(),
+  displayAmount,
   date: new Date("03-14-2021"),
 };
