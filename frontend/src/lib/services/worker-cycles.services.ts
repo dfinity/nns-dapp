@@ -1,7 +1,7 @@
-import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.canister";
+import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 
-export type CyclesCallback = (data: PostMessageDataResponseMetrics) => void;
+export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
 export const initCyclesWorker = async () => {
   const CyclesWorker = await import("$lib/workers/cycles.worker?worker");
@@ -11,7 +11,7 @@ export const initCyclesWorker = async () => {
 
   cyclesWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessage<PostMessageDataResponseMetrics>>) => {
+  }: MessageEvent<PostMessage<PostMessageDataResponseCycles>>) => {
     const { msg } = data;
 
     switch (msg) {

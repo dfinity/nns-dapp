@@ -1,7 +1,7 @@
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import type { PostMessage } from "$lib/types/post-messages";
-import type { PostMessageDataResponseMetrics } from "$lib/types/post-messsage.auth";
+import type { PostMessageDataResponseAuth } from "$lib/types/post-messsage.auth";
 import { logout } from "./auth.services";
 
 export const initAuthWorker = async () => {
@@ -10,7 +10,7 @@ export const initAuthWorker = async () => {
 
   authWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessage<PostMessageDataResponseMetrics>>) => {
+  }: MessageEvent<PostMessage<PostMessageDataResponseAuth>>) => {
     const { msg, data: value } = data;
 
     switch (msg) {

@@ -14,7 +14,7 @@
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
   import { i18n } from "$lib/stores/i18n";
-  import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.canister";
+  import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
 
   export let canister: CanisterDetails;
 
@@ -48,7 +48,7 @@
   // postMessage being broadcasted, we filter the information that matches this canister.
   const syncCanisterCallback = ({
     canister: data,
-  }: PostMessageDataResponseMetrics) =>
+  }: PostMessageDataResponseCycles) =>
     (canisterSync =
       data.id === canister.canister_id.toText() ? data : undefined);
 </script>

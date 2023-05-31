@@ -2,14 +2,14 @@ import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
-import type { PostMessageDataCyclesRequest } from "$lib/types/post-message.canister";
+import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 import { createAuthClient } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 
 onmessage = async ({
   data: dataMsg,
-}: MessageEvent<PostMessage<PostMessageDataCyclesRequest>>) => {
+}: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
   const { msg, data } = dataMsg;
 
   switch (msg) {
@@ -39,7 +39,7 @@ const loadIdentity = async (): Promise<Identity | undefined> => {
 const startCyclesTimer = async ({
   data: { canisterId },
 }: {
-  data: PostMessageDataCyclesRequest;
+  data: PostMessageDataRequestCycles;
 }) => {
   // This worker has already been started
   if (timer !== undefined) {
