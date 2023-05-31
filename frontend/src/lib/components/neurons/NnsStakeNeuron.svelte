@@ -16,6 +16,7 @@
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { ICPToken } from "@dfinity/nns";
 
   export let account: Account | undefined;
   let amount: number;
@@ -72,6 +73,7 @@
     bind:selectedAccount={account}
     canSelectSource={true}
     rootCanisterId={OWN_CANISTER_ID}
+    token={ICPToken}
   />
 
   <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />

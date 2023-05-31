@@ -8,13 +8,21 @@ import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSnsToken,
+} from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import {
+  mockTokensSubscribe,
+  mockUniversesTokens,
+} from "$tests/mocks/tokens.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -47,11 +55,17 @@ describe("SnsAccounts", () => {
   const hasAmountRendered = (container: HTMLElement): boolean =>
     nonNullish(container.querySelector(".value"));
 
+  beforeAll(() => {
+    jest
+      .spyOn(tokensStore, "subscribe")
+      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+  });
+
   beforeEach(() => {
     snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
-        principal: mockPrincipal,
+        principal: mockSnsFullProject.rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       })
     );
@@ -61,7 +75,7 @@ describe("SnsAccounts", () => {
     beforeEach(() => {
       snsAccountsStore.reset();
       snsAccountsStore.setAccounts({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
         accounts: [mockSnsMainAccount],
         certified: true,
       });
@@ -70,7 +84,9 @@ describe("SnsAccounts", () => {
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
-      page.mock({ data: { universe: mockPrincipal.toText() } });
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      });
     });
 
     it("should load accounts and transaction fee", () => {
@@ -84,6 +100,20 @@ describe("SnsAccounts", () => {
       expect(getByText(en.accounts.main)).toBeInTheDocument();
     });
 
+    it("should render balance in card", async () => {
+      const { container } = await renderAndFinishLoading({ goToWallet });
+
+      const cardTitleRow = container.querySelector(
+        'article > div[data-tid="token-value-label"]'
+      );
+
+      expect(cardTitleRow?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockSnsMainAccount.balance.toE8s(),
+        })} ${mockSnsToken.symbol}`
+      );
+    });
+
     it("should render account cards", async () => {
       const { getAllByTestId } = await renderAndFinishLoading({ goToWallet });
 
@@ -94,7 +124,7 @@ describe("SnsAccounts", () => {
       render(SnsAccounts, { goToWallet });
 
       expect(syncSnsAccounts).toHaveBeenCalledWith({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
       });
     });
 
