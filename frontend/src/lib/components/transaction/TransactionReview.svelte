@@ -35,7 +35,7 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <TransactionSource account={sourceAccount} />
+    <TransactionSource account={sourceAccount} {token} />
 
     <TransactionSummary {amount} {token} {transactionFee} {showLedgerFee}>
       <slot name="received-amount" slot="received-amount" />

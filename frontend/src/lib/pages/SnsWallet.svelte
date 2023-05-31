@@ -27,6 +27,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   let showModal: "send" | undefined = undefined;
 
@@ -113,6 +115,11 @@
       });
     }
   };
+
+  let token: IcrcTokenMetadata | undefined;
+  $: token = nonNullish($snsOnlyProjectStore)
+    ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
+    : undefined;
 </script>
 
 <Island>
@@ -121,13 +128,14 @@
       {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
         <Summary />
 
-        <WalletSummary />
+        <WalletSummary {token} />
 
         <Separator />
 
         <SnsTransactionsList
           rootCanisterId={$snsOnlyProjectStore}
           account={$selectedAccountStore.account}
+          {token}
         />
       {:else}
         <Spinner />

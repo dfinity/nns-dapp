@@ -125,6 +125,7 @@
     bind:selectedAccount
     {canSelectSource}
     {rootCanisterId}
+    {token}
   />
 
   {#if canSelectDestination}

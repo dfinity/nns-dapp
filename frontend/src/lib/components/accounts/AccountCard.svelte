@@ -4,12 +4,15 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
-  import type { TokenAmount } from "@dfinity/nns";
   import AccountBadge from "./AccountBadge.svelte";
+  import type { Token } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/nns";
 
   export let account: Account;
   export let hash = false;
   export let role: "button" | "link" | undefined = undefined;
+  export let token: Token | undefined;
 
   let identifier: string;
   let balance: TokenAmount;
@@ -23,7 +26,15 @@
     <AccountBadge {account} />
   </div>
 
-  <AmountDisplay title amount={balance} />
+  {#if nonNullish(token)}
+    <AmountDisplay
+      title
+      amount={TokenAmount.fromE8s({
+        amount: balance.toE8s(),
+        token,
+      })}
+    />
+  {/if}
 
   {#if hash}
     <IdentifierHash {identifier} />
