@@ -34,7 +34,7 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
 
 jest.mock("$lib/constants/environment.constants.ts", () => ({
   ...jest.requireActual("$lib/constants/environment.constants.ts"),
-  IS_RC_MAINNET: true,
+  IS_TEST_MAINNET: true,
 }));
 
 describe("Warnings", () => {
