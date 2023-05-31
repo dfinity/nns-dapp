@@ -1,11 +1,11 @@
 {
-  "name": "Network Nervous System frontend dapp",
-  "short_name": "NNS",
+  "name": "NNS Dapp",
+  "short_name": "NNS Dapp",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#352652",
   "background_color": "#352652",
-  "description": "Asset Management and Voting for the Network Nervous System",
+  "description": "Dapp for Staking Neurons + Voting On-Chain",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
   "icons": [

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -13,13 +13,13 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-describe("SelectAccount", () => {
+describe("NnsSelectAccount", () => {
   beforeEach(() => {
     accountsStore.resetForTesting();
   });
 
   it("should render a skeleton-card until accounts loaded", () => {
-    const { container } = render(SelectAccount);
+    const { container } = render(NnsSelectAccount);
 
     expect(
       container.querySelector('[data-tid="skeleton-card"]')
@@ -31,7 +31,7 @@ describe("SelectAccount", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
 
-    const { getByText } = render(SelectAccount);
+    const { getByText } = render(NnsSelectAccount);
 
     expect(
       getByText(mockMainAccount.identifier, { exact: false })
@@ -48,7 +48,7 @@ describe("SelectAccount", () => {
         mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
       );
 
-    const { queryByText } = render(SelectAccount, {
+    const { queryByText } = render(NnsSelectAccount, {
       props: { hideHardwareWalletAccounts: true },
     });
 
@@ -61,7 +61,7 @@ describe("SelectAccount", () => {
   });
 
   it("should render no title per default", () => {
-    const { queryByText } = render(SelectAccount);
+    const { queryByText } = render(NnsSelectAccount);
 
     expect(queryByText(en.accounts.my_accounts)).not.toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe("SelectAccount", () => {
       hardwareWallets: undefined,
     });
 
-    const { queryByText } = render(SelectAccount, {
+    const { queryByText } = render(NnsSelectAccount, {
       props: {
         displayTitle: true,
       },
@@ -91,7 +91,7 @@ describe("SelectAccount", () => {
       hardwareWallets: [mockSubAccount],
     });
 
-    const { queryByText } = render(SelectAccount, {
+    const { queryByText } = render(NnsSelectAccount, {
       props: {
         displayTitle: true,
       },
@@ -109,7 +109,7 @@ describe("SelectAccount", () => {
       hardwareWallets: [mockSubAccount],
     });
 
-    const { queryByText } = render(SelectAccount, {
+    const { queryByText } = render(NnsSelectAccount, {
       props: {
         displayTitle: true,
         hideHardwareWalletAccounts: true,
@@ -126,7 +126,7 @@ describe("SelectAccount", () => {
       hardwareWallets: undefined,
     });
 
-    const { queryByText } = render(SelectAccount, {
+    const { queryByText } = render(NnsSelectAccount, {
       props: {
         displayTitle: true,
       },
@@ -140,7 +140,7 @@ describe("SelectAccount", () => {
       .spyOn(accountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
 
-    const { getByText } = render(SelectAccount, {
+    const { getByText } = render(NnsSelectAccount, {
       props: {
         filterIdentifier: mockMainAccount.identifier,
       },

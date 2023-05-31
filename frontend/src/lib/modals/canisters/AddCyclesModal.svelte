@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
@@ -112,7 +112,7 @@
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
-      <SelectAccount
+      <NnsSelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />

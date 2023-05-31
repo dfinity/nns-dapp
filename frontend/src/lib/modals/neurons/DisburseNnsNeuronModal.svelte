@@ -7,7 +7,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+  import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -101,7 +101,7 @@
     ></svelte:fragment
   >
   {#if currentStep?.name === "SelectDestination"}
-    <DestinationAddress on:nnsAddress={onSelectAddress} />
+    <NnsDestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
   {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron

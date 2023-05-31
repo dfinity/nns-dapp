@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -11,7 +11,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { render } from "@testing-library/svelte";
 
-describe("DestinationAddress", () => {
+describe("NnsDestinationAddress", () => {
   const mockSubAccount2 = {
     ...mockSubAccount,
     identifier: `test-subaccount2-identifier`,
@@ -24,14 +24,14 @@ describe("DestinationAddress", () => {
     );
 
   it("should render an input to enter an address", () => {
-    const { container } = render(DestinationAddress);
+    const { container } = render(NnsDestinationAddress);
 
     expect(container.querySelector("input")).not.toBeNull();
     expect(container.querySelector("form")).not.toBeNull();
   });
 
   it("should render a list of accounts", () => {
-    const { getByText } = render(DestinationAddress);
+    const { getByText } = render(NnsDestinationAddress);
 
     expect(
       getByText(mockSubAccount.identifier, { exact: false })
@@ -43,7 +43,7 @@ describe("DestinationAddress", () => {
   });
 
   it("should filter selected account", () => {
-    const { getByText } = render(DestinationAddress, {
+    const { getByText } = render(NnsDestinationAddress, {
       props: {
         filterIdentifier: mockMainAccount.identifier,
       },
