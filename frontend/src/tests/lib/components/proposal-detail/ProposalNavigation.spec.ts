@@ -55,34 +55,34 @@ describe("ProposalNavigation", () => {
       expect(await getNextButtonPo().isPresent()).toBe(true);
     });
 
-    it("should display both buttons", async () => {
-      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
+    it("should enable both buttons", async () => {
+      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1", "2"],
       });
 
-      expect(await isNextButtonHidden()).toBe(false);
-      expect(await isPreviousButtonHidden()).toBe(false);
+      expect(await getNextButtonPo().isDisabled()).toBe(false);
+      expect(await getPreviousButtonPo().isDisabled()).toBe(false);
     });
 
-    it("should hide previous when it's selected", async () => {
-      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
+    it("should disable previous button when it's selected", async () => {
+      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["1", "2"],
       });
 
-      expect(await isNextButtonHidden()).toBe(false);
-      expect(await isPreviousButtonHidden()).toBe(true);
+      expect(await getNextButtonPo().isDisabled()).toBe(false);
+      expect(await getPreviousButtonPo().isDisabled()).toBe(true);
     });
 
-    it("should hide next when it's selected", async () => {
-      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
+    it("should disable next when it's selected", async () => {
+      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1"],
       });
 
-      expect(await isPreviousButtonHidden()).toBe(false);
-      expect(await isNextButtonHidden()).toBe(true);
+      expect(await getNextButtonPo().isDisabled()).toBe(true);
+      expect(await getPreviousButtonPo().isDisabled()).toBe(true);
     });
   });
 

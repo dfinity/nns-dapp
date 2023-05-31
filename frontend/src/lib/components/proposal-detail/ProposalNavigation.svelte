@@ -59,7 +59,6 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.newer}
-      aria-hidden={prevDisabled ? true : undefined}
       on:click={previous}
       class:hidden={prevDisabled}
       disabled={prevDisabled}
@@ -73,7 +72,6 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.older}
-      aria-hidden={nextDisabled ? true : undefined}
       on:click={next}
       class:hidden={nextDisabled}
       disabled={nextDisabled}
