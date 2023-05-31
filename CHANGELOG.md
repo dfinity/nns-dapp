@@ -1,5 +1,12 @@
 # Changelog
 
+## XXX
+
+* Improve loading state UX.
+* Update (fav)icons.
+* Upgrade libraries.
+* Minor fixes and text changes.
+
 ## Proposal 122614
 
 * Swap conditions.
