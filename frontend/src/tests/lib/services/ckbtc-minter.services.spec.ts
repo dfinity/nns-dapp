@@ -103,6 +103,24 @@ describe("ckbtc-minter-services", () => {
       await waitFor(() => expect(spyReload).toBeCalled());
     });
 
+    it("should reload after update balance even if update balance is on error", async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterAlreadyProcessingError();
+      });
+
+      const spyReload = jest.fn();
+
+      const err = new ApiErrorKey(en.error__ckbtc.already_process);
+
+      const result = await services.updateBalance({
+        ...params,
+        reload: spyReload,
+      });
+
+      await waitFor(() => expect(spyReload).toBeCalled());
+      expect(result).toEqual({ success: false, err });
+    });
+
     it("should start and stop busy", async () => {
       const startBusySpy = jest
         .spyOn(busyStore, "startBusy")

@@ -7,11 +7,11 @@
     onDestroy,
     onMount,
   } from "svelte";
+  import { getConditionsToAccept } from "$lib/getters/sns-summary";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsParams } from "@dfinity/sns";
   import {
     currentUserMaxCommitment,
     hasUserParticipatedToSwap,
@@ -66,6 +66,14 @@
     swapCommitment,
   });
 
+  let areSwapConditionsAccepted = false;
+  let conditionsToAccept: string | undefined;
+  $: conditionsToAccept = getConditionsToAccept(summary);
+
+  let disableContinue = true;
+  $: disableContinue =
+    nonNullish(conditionsToAccept) && !areSwapConditionsAccepted;
+
   let destinationAddress: string | undefined;
   $: (async () => {
     destinationAddress =
@@ -83,11 +91,6 @@
       }
     : undefined;
 
-  let params: SnsParams;
-  $: ({
-    swap: { params },
-  } = summary);
-
   let currentStep: WizardStep | undefined;
   let title: string | undefined;
   $: title =
@@ -98,23 +101,6 @@
       : currentStep?.name === "Progress"
       ? $i18n.sns_sale.participation_in_progress
       : $i18n.accounts.review_transaction;
-
-  let maxCommitment: TokenAmount;
-  $: maxCommitment = TokenAmount.fromE8s({
-    amount: currentUserMaxCommitment({
-      summary,
-      swapCommitment,
-    }),
-    token: ICPToken,
-  });
-
-  let minCommitment: TokenAmount;
-  $: minCommitment = TokenAmount.fromE8s({
-    amount: userHasParticipatedToSwap
-      ? BigInt(0)
-      : params.min_participant_icp_e8s,
-    token: ICPToken,
-  });
 
   let accepted: boolean;
 
@@ -198,6 +184,7 @@
 <!-- Edge case. If it's not defined, button to open this modal is not shown -->
 {#if nonNullish(transactionInit)}
   <TransactionModal
+    testId="participate-swap-modal-component"
     rootCanisterId={OWN_CANISTER_ID}
     bind:currentStep
     bind:this={modal}
@@ -205,6 +192,7 @@
     on:nnsSubmit={participate}
     {validateAmount}
     {transactionInit}
+    {disableContinue}
     disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
@@ -215,9 +203,8 @@
     >
     <div class="additional-info" slot="additional-info-form">
       <AdditionalInfoForm
-        {minCommitment}
-        {maxCommitment}
-        userHasParticipated={userHasParticipatedToSwap}
+        {conditionsToAccept}
+        bind:areConditionsAccepted={areSwapConditionsAccepted}
       />
     </div>
     <div class="additional-info" slot="additional-info-review">

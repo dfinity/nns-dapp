@@ -690,11 +690,12 @@
       "config": {
         "NODE_VERSION": "18.14.2",
         "WASM_NM_VERSION": "0.2.0",
+        "IC_WASM_VERSION": "0.3.6",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IDL2JSON_VERSION": "0.8.5",
         "OPTIMIZER_VERSION": "0.3.6",
         "DIDC_VERSION": "2022-11-17",
-        "IC_COMMIT": "aebee24076c67a57ff638d9eb9fe4a1d7561850d"
+        "IC_COMMIT": "26b480f775222265f4369bc485d502a140f15564"
       },
       "packtool": ""
     }

@@ -127,7 +127,7 @@ describe("TransactionModal", () => {
     toggle && fireEvent.click(toggle);
 
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);
@@ -203,7 +203,7 @@ describe("TransactionModal", () => {
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
     });
 
@@ -355,7 +355,7 @@ describe("TransactionModal", () => {
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);
@@ -471,7 +471,7 @@ describe("TransactionModal", () => {
         fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);

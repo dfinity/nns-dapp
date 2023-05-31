@@ -6,19 +6,24 @@ import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsLis
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import CkBTCTransactionsListTest from "$tests/lib/components/accounts/CkBTCTransactionsListTest.svelte";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionBurn,
   mockIcrcTransactionMint,
-  mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
+  mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
     loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -29,6 +34,7 @@ describe("CkBTCTransactionList", () => {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+        token: mockCkBTCToken,
       },
     });
 
@@ -42,10 +48,11 @@ describe("CkBTCTransactionList", () => {
     expect(spy).toBeCalled();
   });
 
-  it("should call service to load transactions when account changes", () => {
+  it("should call service to load transactions when account changes", async () => {
     const spy = jest.spyOn(services, "loadCkBTCAccountNextTransactions");
+    const spyReload = jest.spyOn(services, "loadCkBTCAccountTransactions");
 
-    const { rerender } = render(CkBTCTransactionsList, {
+    const { component } = render(CkBTCTransactionsListTest, {
       props: {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -54,16 +61,12 @@ describe("CkBTCTransactionList", () => {
     });
 
     expect(spy).toBeCalledTimes(1);
+    expect(spyReload).toBeCalledTimes(0);
 
-    rerender({
-      props: {
-        account: mockCkBTCMainAccount,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
-      },
-    });
+    component.reloadAccount();
 
-    expect(spy).toBeCalledTimes(2);
+    expect(spy).toBeCalledTimes(1);
+    await waitFor(() => expect(spyReload).toBeCalledTimes(1));
   });
 
   it("should render transactions from store", () => {

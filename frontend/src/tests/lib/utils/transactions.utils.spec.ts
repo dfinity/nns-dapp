@@ -24,7 +24,7 @@ import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/nns";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {
@@ -34,13 +34,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         showTransactionFee({
           type: AccountTransactionType.Mint,
           isReceive: true,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be false for sent Mint and Burn", () => {
@@ -49,13 +49,13 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Mint,
           isReceive: false,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         showTransactionFee({
           type: AccountTransactionType.Burn,
           isReceive: false,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should be true for Sent", () => {
@@ -213,16 +213,16 @@ describe("transactions-utils", () => {
         .e8s as bigint;
 
       expect(type).toBe(transactionType(mockSentToSubAccountTransaction));
-      expect(isReceive).toBeFalsy();
+      expect(isReceive).toBe(false);
       expect(isSend).toBeTruthy();
       expect(from).toBe(mockMainAccount.identifier);
       expect(to).toBe(mockSubAccount.identifier);
-      expect(displayAmount.toE8s()).toBe(
+      expect(displayAmount).toBe(
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
-          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
-        }).toE8s()
+          amount,
+          fee,
+        })
       );
       expect(+date).toBe(
         Number(
@@ -248,16 +248,16 @@ describe("transactions-utils", () => {
       expect(type).toBe(
         transactionType(mockReceivedFromMainAccountTransaction)
       );
-      expect(isSend).toBeFalsy();
+      expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
       expect(from).toBe(mockMainAccount.identifier);
       expect(to).toBe(mockSubAccount.identifier);
-      expect(displayAmount.toE8s()).toBe(
+      expect(displayAmount).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
-          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
-        }).toE8s()
+          amount,
+          fee,
+        })
       );
       expect(+date).toBe(
         Number(
@@ -280,14 +280,14 @@ describe("transactions-utils", () => {
       const fee = (mockSentToSubAccountTransaction.transfer as any)?.Send?.fee
         .e8s as bigint;
 
-      expect(displayAmount.toE8s()).toBe(
+      expect(displayAmount).toBe(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount, token: ICPToken }),
-          fee: TokenAmount.fromE8s({ amount: fee, token: ICPToken }),
-        }).toE8s()
+          amount,
+          fee,
+        })
       );
-      expect(isSend).toBeFalsy();
+      expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
     });
   });
@@ -297,9 +297,9 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
-          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
-        }).toE8s()
+          amount: 222n,
+          fee: 333n,
+        })
       ).toBe(BigInt(222 + 333));
     });
 
@@ -307,9 +307,9 @@ describe("transactions-utils", () => {
       expect(
         transactionDisplayAmount({
           useFee: false,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
-          fee: TokenAmount.fromE8s({ amount: BigInt(333), token: ICPToken }),
-        }).toE8s()
+          amount: 222n,
+          fee: 333n,
+        })
       ).toBe(BigInt(222));
     });
 
@@ -317,7 +317,7 @@ describe("transactions-utils", () => {
       expect(() =>
         transactionDisplayAmount({
           useFee: true,
-          amount: TokenAmount.fromE8s({ amount: BigInt(222), token: ICPToken }),
+          amount: BigInt(222),
           fee: undefined,
         })
       ).toThrow();
@@ -381,8 +381,8 @@ describe("transactions-utils", () => {
     });
 
     it("should not be network Btc", () => {
-      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
-      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBeFalsy();
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
+      expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
     });
   });
 });

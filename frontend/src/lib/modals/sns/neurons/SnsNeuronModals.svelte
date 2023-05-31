@@ -161,6 +161,17 @@
           {neuronId}
           {reloadNeuron}
           on:nnsClose={close}
+          mode="add"
+        />
+      {/if}
+
+      {#if type === "dev-remove-permissions" && IS_TESTNET}
+        <AddPermissionsModal
+          {rootCanisterId}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+          mode="remove"
         />
       {/if}
     {/if}

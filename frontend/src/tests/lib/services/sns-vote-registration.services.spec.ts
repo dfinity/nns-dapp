@@ -10,7 +10,10 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsProposalData } from "@dfinity/sns";
@@ -68,6 +71,7 @@ describe("sns-vote-registration-services", () => {
       proposal,
       vote,
       updateProposalCallback: reloadProposalCallback,
+      snsParameters: snsNervousSystemParametersMock,
     });
 
   beforeEach(() => {

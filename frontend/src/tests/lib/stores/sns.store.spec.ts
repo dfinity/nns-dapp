@@ -53,7 +53,7 @@ describe("sns.store", () => {
       const $snsProposalsStore = get(snsProposalsStore);
 
       expect($snsProposalsStore?.proposals).toEqual(proposals);
-      expect($snsProposalsStore?.certified).toBeFalsy();
+      expect($snsProposalsStore?.certified).toBe(false);
     });
 
     it("should filter open proposals", () => {
@@ -279,6 +279,9 @@ describe("sns.store", () => {
       const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [updatedSnsTokensPerIcp],
         buyer_total_icp_e8s: [updatedBuyerTotalIcps],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
 
       const initStore = get(snsQueryStore);
@@ -314,6 +317,9 @@ describe("sns.store", () => {
       const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [],
         buyer_total_icp_e8s: [updatedBuyerTotalIcps],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
 
       const initStore = get(snsQueryStore);
@@ -349,6 +355,9 @@ describe("sns.store", () => {
       const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [updatedSnsTokensPerIcp],
         buyer_total_icp_e8s: [],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
 
       const initStore = get(snsQueryStore);

@@ -522,6 +522,7 @@
     "headline": "Ineligible Neurons",
     "text": "The following neurons had a dissolve delay of less than $minDissolveDelay at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
     "reason_since": "created after the proposal",
+    "reason_no_permission": "no voting permission",
     "reason_short": "dissolve delay < $minDissolveDelay"
   },
   "neuron_detail": {
@@ -641,16 +642,15 @@
     "status_pending": "Upcoming swap",
     "status_unspecified": "Unspecified",
     "participate_swap_description": "Participate in decentralization swap",
-    "participate_swap_warning": "Your participation cannot be withdrawn by you. If the swap is not successful, your commitment will be automatically transferred back to your main ICP account.",
-    "understand_agree": "I understand and want to proceed.",
+    "understand_agree": "I understand that I cannot withdraw or edit my commitment after I select \"Send Now,\" and that my commitment may be returned to my main ICP account if the swap is unsuccessful for any reason.",
     "participate_success": "Your participation has been successfully committed.",
     "participate": "Participate",
     "increase_participation": "Increase Participation",
     "status_completed": "Status",
     "completed": "Completed",
     "sale_end": "Swap End",
-    "max_left": "max left",
     "max_user_commitment_reached": "Maximum commitment reached",
+    "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
     "sign_in": "Sign in to participate"
   },
@@ -660,7 +660,7 @@
     "step_transfer": "Confirming ICP transfer",
     "step_notify": "Confirming participation",
     "step_reload": "Refreshing UI Balances",
-    "connecting_sale_canister": "Connecting to swap canister"
+    "connecting_sale_canister": "Retrieving swap required information"
   },
   "sns_neuron_detail": {
     "header": "Neuron",
@@ -873,7 +873,8 @@
     "about_thirty_minutes": "Typically 30-60min",
     "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
     "loading_address": "Loading the address",
-    "incoming_bitcoin_network": "Incoming Bitcoin network transactions require 12 confirmations. Check status on a",
+    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require 12 confirmations. Then click",
+    "incoming_bitcoin_network_part_2": "to update your ckBTC balance. Check status on a",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
     "confirmations": "Confirmations",

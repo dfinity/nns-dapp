@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -17,8 +17,10 @@
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { nonNullish } from "@dfinity/utils";
 
   export let detailedBalance = false;
+  export let token: Token | undefined;
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
@@ -28,19 +30,25 @@
     mainName: $i18n.accounts.main,
   });
 
-  let accountBalance: TokenAmount;
-  $: accountBalance =
-    $store.account?.balance ??
-    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
+  let accountBalance: bigint;
+  $: accountBalance = $store.account?.balanceE8s ?? 0n;
 
-  let detailedICP: string;
-  $: detailedICP = formatToken({
-    value: accountBalance.toE8s(),
+  let accountBalanceToken: TokenAmount | undefined;
+  $: accountBalanceToken = nonNullish(token)
+    ? (TokenAmount.fromE8s({
+        amount: accountBalance,
+        token,
+      }) as TokenAmount)
+    : undefined;
+
+  let detailedAccountBalance: string;
+  $: detailedAccountBalance = formatToken({
+    value: accountBalance,
     detailed: true,
   });
 
   let tokenSymbol: string;
-  $: tokenSymbol = accountBalance.token.symbol;
+  $: tokenSymbol = token?.symbol ?? "";
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -50,9 +58,9 @@
     layoutTitleStore.set(
       intersecting
         ? $i18n.wallet.title
-        : `${accountName} – ${formatToken({ value: accountBalance.toE8s() })} ${
-            accountBalance.token.symbol
-          }`
+        : `${accountName} – ${formatToken({
+            value: accountBalance,
+          })} ${tokenSymbol}`
     );
   };
 </script>
@@ -67,21 +75,24 @@
     >
       {accountName}
     </h3>
-    <Tooltip
-      slot="value"
-      id="wallet-detailed-icp"
-      text={replacePlaceholders($i18n.accounts.current_balance_detail, {
-        $amount: detailedICP,
-        $token: tokenSymbol,
-      })}
-    >
-      <AmountDisplay
-        copy
-        amount={accountBalance}
-        inline
-        detailed={detailedBalance}
-      />
-    </Tooltip>
+    <svelte:fragment slot="value">
+      {#if nonNullish(accountBalanceToken)}
+        <Tooltip
+          id="wallet-detailed-icp"
+          text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+            $amount: detailedAccountBalance,
+            $token: tokenSymbol,
+          })}
+        >
+          <AmountDisplay
+            copy
+            amount={accountBalanceToken}
+            inline
+            detailed={detailedBalance}
+          />
+        </Tooltip>
+      {/if}
+    </svelte:fragment>
   </KeyValuePair>
 
   <KeyValuePair>

@@ -17,8 +17,8 @@ export class SimpleBasePageObject {
     return this.root.waitFor();
   }
 
-  waitForAbsent(): Promise<void> {
-    return this.root.waitForAbsent();
+  waitForAbsent(timeout?: number): Promise<void> {
+    return this.root.waitForAbsent(timeout);
   }
 
   click(tid: string | undefined = undefined): Promise<void> {

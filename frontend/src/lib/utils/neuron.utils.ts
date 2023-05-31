@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
@@ -41,9 +42,10 @@ import {
   type NeuronInfo,
   type ProposalId,
   type ProposalInfo,
+  type RewardEvent,
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { SvelteComponent } from "svelte";
 import {
   getAccountByPrincipal,
@@ -830,6 +832,9 @@ export const validTopUpAmount = ({
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
   BigInt(Math.min(Number(ageSeconds), SECONDS_IN_FOUR_YEARS));
 
+/** NNS neuron can be ineligible only for two reasons: "since" and "short" */
+export type NeuronIneligibilityReason = "since" | "short" | "no-permission";
+
 /**
  * Represents an entry in the list of ineligible neurons.
  * - 'short': the neuron is too young to vote
@@ -837,7 +842,7 @@ export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
  */
 export interface IneligibleNeuronData {
   neuronIdString: string;
-  reason: "since" | "short";
+  reason: NeuronIneligibilityReason | undefined;
 }
 export const filterIneligibleNnsNeurons = ({
   neurons,
@@ -856,3 +861,22 @@ export const filterIneligibleNnsNeurons = ({
         ? "since"
         : "short",
   }));
+
+/// Returns timestamp in seconds of last maturity distribution event
+export const maturityLastDistribution = ({
+  actual_timestamp_seconds,
+  rounds_since_last_distribution,
+  settled_proposals,
+}: RewardEvent): bigint => {
+  // Rewards were distributed that round (the most recent reward event was not a rollover), so the timestamp is correct
+  if (settled_proposals.length > 0) {
+    return actual_timestamp_seconds;
+  }
+
+  // When there was a reward event, but no rewards were distributed (because of a rollover)
+  return (
+    actual_timestamp_seconds -
+    (fromNullable(rounds_since_last_distribution) ?? 1n) *
+      BigInt(SECONDS_IN_DAY)
+  );
+};

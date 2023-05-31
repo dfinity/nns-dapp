@@ -206,6 +206,9 @@ const initSnsQueryStore = (): SnsQueryStore => {
       const newDerivedState: SnsSwapDerivedState = {
         sns_tokens_per_icp,
         buyer_total_icp_e8s,
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       update((data: SnsQueryStoreData) => ({
         metadata: data?.metadata ?? [],

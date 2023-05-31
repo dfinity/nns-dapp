@@ -141,7 +141,8 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
       - name: Run the ic_commit code generator
@@ -164,7 +165,8 @@ jobs:
           USER_BIN="$HOME/.local/bin"
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
-          curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
       - name: Install dfx
@@ -190,8 +192,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+          # Version from 2023-05-24 with longer retries to install dfx
+          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -201,8 +203,24 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check config script
         run: bash -x ./config.test
+  sns-aggregator-patches:
+    name: SNS aggregator patches
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Recreate and compare patches
+        run: scripts/mk_nns_patch.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

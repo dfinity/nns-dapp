@@ -105,6 +105,8 @@ export const aggregatorSnsMock: CachedSns = {
           ],
           transaction_fee_e8s: [BigInt(1000)],
           neuron_minimum_stake_e8s: [BigInt(1000000)],
+          confirmation_text: ["I agree"],
+          restricted_countries: [{ iso_codes: ["US"] }],
         },
       ],
       neuron_recipes: [],
@@ -135,6 +137,9 @@ export const aggregatorSnsMock: CachedSns = {
     derived: {
       buyer_total_icp_e8s: BigInt(314100000000),
       sns_tokens_per_icp: 1.0,
+      cf_participant_count: [BigInt(100)],
+      direct_participant_count: [BigInt(300)],
+      cf_neuron_count: [BigInt(200)],
     },
   },
   icrc1_metadata: [

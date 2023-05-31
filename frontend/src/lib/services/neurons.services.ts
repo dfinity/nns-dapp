@@ -2,11 +2,12 @@ import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import {
   CANDID_PARSER_VERSION,
   MIN_VERSION_STAKE_MATURITY_WORKAROUND,
-} from "$lib/constants/neurons.constants";
+  SNS_SUPPORT_VERSION,
+} from "$lib/constants/ledger-app.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -554,16 +555,23 @@ export const removeHotkey = async ({
 };
 
 export const splitNeuron = async ({
-  neuronId,
+  neuron,
   amount,
 }: {
-  neuronId: NeuronId;
+  neuron: NeuronInfo;
   amount: number;
 }): Promise<NeuronId | undefined> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
+      neuron.neuronId
     );
+    const accounts = get(accountsStore);
+    if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
+      await assertLedgerVersion({
+        identity,
+        minVersion: SNS_SUPPORT_VERSION,
+      });
+    }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
     const amountE8s = numberToE8s(amount) + feeE8s;
@@ -573,14 +581,14 @@ export const splitNeuron = async ({
     }
 
     await governanceApiService.splitNeuron({
-      neuronId,
+      neuronId: neuron.neuronId,
       identity,
       amount: amountE8s,
     });
 
     await listNeurons();
 
-    return neuronId;
+    return neuron.neuronId;
   } catch (err) {
     toastsShow(mapNeuronErrorToToastMessage(err));
     return undefined;

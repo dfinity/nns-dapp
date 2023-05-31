@@ -1,5 +1,45 @@
 # Changelog
 
+## Proposal 122614
+
+* Swap conditions.
+* Parameters loading optimisation.
+* Libraries loading optimisation.
+* Minor bugfixes and improvements.
+
+## Proposal 122512
+
+* Feat reload account and transactions regardless of ckBTC update balance success or error.
+
+## Proposal 122509
+
+* Fix ckBTC transfer status visibility.
+* Improve ckBTC transactions reload.
+
+## Proposal 122355
+
+* Improve participation UX.
+* Simplifications to reduce stress on the system during upcoming SNS swaps.
+* Fix metrics API.
+* Fix number formatting on max button click.
+* Minor fixes and UI improvements.
+
+## Proposal 122282
+
+* UI improvements.
+* Minor bugfixes.
+
+## Proposal 122267
+
+* Receive BTC.
+* Convert ckBTC to BTC.
+* Minor bugfixes.
+
+## Proposal 122210
+
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
+
 ## Proposal 121690
 
 * Add BitcoinSetConfig proposal payload support.

@@ -19,10 +19,23 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  SnsSwapLifecycle,
+  type SnsNeuron,
+} from "@dfinity/sns";
+import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+const permissionsWithTypeVote = [
+  {
+    principal: [mockIdentity.getPrincipal()],
+    permission_type: Int32Array.from([
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+    ]),
+  } as NeuronPermission,
+];
 describe("SnsNeuronCard", () => {
   beforeAll(() => {
     jest
@@ -161,6 +174,7 @@ describe("SnsNeuronCard", () => {
               WhenDissolvedTimestampSeconds: BigInt(ONE_YEAR_FROM_NOW),
             },
           ],
+          permissions: permissionsWithTypeVote,
         },
         ...defaultProps,
       },
