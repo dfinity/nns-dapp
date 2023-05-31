@@ -275,7 +275,7 @@ jobs:
         run: |
           rm -rf screenshots
   build-pass:
-    needs: ["build", "test"]
+    needs: ["build", "test-playwright-e2e", "test-rest"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
