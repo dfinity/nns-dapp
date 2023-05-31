@@ -12,6 +12,9 @@ inputs:
   sns_aggregator:
     description: "The name of the sns_aggregator wasm to install"
     required: false
+defaults:
+  run:
+    shell: bash -euxlo pipefail {0}
 runs:
   using: "composite"
   steps:
