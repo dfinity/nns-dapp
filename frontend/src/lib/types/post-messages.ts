@@ -14,7 +14,7 @@ export type PostMessageResponse =
 
 export type PostMessageData = object;
 
-export interface PostMessage<T extends PostMessageData | never> {
+export interface PostMessage<T extends PostMessageData> {
   msg: PostMessageRequest | PostMessageResponse;
   data: T;
 }
