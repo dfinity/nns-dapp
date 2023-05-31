@@ -1,5 +1,5 @@
+import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 import type { PostMessage } from "$lib/types/post-messages";
-import type {PostMessageDataResponseMetrics} from "$lib/types/post-message.metrics";
 
 export type MetricsCallback = (data: PostMessageDataResponseMetrics) => void;
 

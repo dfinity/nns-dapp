@@ -1,6 +1,5 @@
-import type { PostMessageDataResponse } from "$lib/types/post-messages";
+import type { PostMessageData } from "$lib/types/post-messages";
 
-export interface PostMessageDataResponseMetrics
-  extends PostMessageDataResponse {
+export interface PostMessageDataResponseMetrics extends PostMessageData {
   authRemainingTime: number;
 }

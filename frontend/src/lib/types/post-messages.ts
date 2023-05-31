@@ -12,12 +12,9 @@ export type PostMessageResponse =
   | "nnsSyncCanister"
   | "nnsDelegationRemainingTime";
 
-export type PostMessageDataRequest = object;
-export type PostMessageDataResponse = object;
+export type PostMessageData = object;
 
-export interface PostMessage<
-  T extends PostMessageDataResponse | PostMessageDataRequest
-> {
+export interface PostMessage<T extends PostMessageData | never> {
   msg: PostMessageRequest | PostMessageResponse;
   data: T;
 }

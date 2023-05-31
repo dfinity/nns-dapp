@@ -14,7 +14,7 @@
     formatCyclesToTCycles,
   } from "$lib/utils/canisters.utils";
   import { i18n } from "$lib/stores/i18n";
-  import type {PostMessageDataResponseMetrics} from "$lib/types/post-message.canister";
+  import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.canister";
 
   export let canister: CanisterDetails;
 
@@ -46,9 +46,11 @@
   let canisterSync: CanisterSync | undefined = undefined;
   // Multiple workers that sync canister information can be appended to a view.
   // postMessage being broadcasted, we filter the information that matches this canister.
-  const syncCanisterCallback = ({ canister: data }: PostMessageDataResponseMetrics) =>
+  const syncCanisterCallback = ({
+    canister: data,
+  }: PostMessageDataResponseMetrics) =>
     (canisterSync =
-      data?.id === canister.canister_id.toText() ? data : undefined);
+      data.id === canister.canister_id.toText() ? data : undefined);
 </script>
 
 <div>

@@ -2,10 +2,10 @@ import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
+import type { PostMessageDataCyclesRequest } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 import { createAuthClient } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
-import type {PostMessageDataCyclesRequest} from "$lib/types/post-message.canister";
 
 onmessage = async ({
   data: dataMsg,
