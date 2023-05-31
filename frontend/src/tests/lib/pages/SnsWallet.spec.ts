@@ -8,14 +8,18 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { mockTokensSubscribe } from "$tests/mocks/tokens.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -86,6 +90,17 @@ describe("SnsWallet", () => {
   });
 
   describe("accounts loaded", () => {
+    beforeAll(() => {
+      jest.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe({
+          [rootCanisterIdText]: {
+            token: mockSnsToken,
+            certified: true,
+          },
+        })
+      );
+    });
+
     beforeEach(() => {
       snsAccountsStore.setAccounts({
         rootCanisterId,
@@ -120,6 +135,20 @@ describe("SnsWallet", () => {
       );
       await waitFor(() =>
         expect(queryByTestId("transactions-list")).toBeInTheDocument()
+      );
+    });
+
+    it("should render a balance with token", async () => {
+      const { getByTestId } = render(SnsWallet, props);
+
+      await waitFor(() =>
+        expect(getByTestId("token-value-label")).not.toBeNull()
+      );
+
+      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockSnsMainAccount.balance.toE8s(),
+        })} ${mockSnsToken.symbol}`
       );
     });
 

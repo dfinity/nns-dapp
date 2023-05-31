@@ -7,6 +7,7 @@
   import type { Principal } from "@dfinity/principal";
   import type { Token } from "@dfinity/nns";
   import { TokenAmount } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
@@ -30,11 +31,11 @@
     <!-- svelte:fragment needed to avoid warnings -->
     <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
     <svelte:fragment slot="value">
-      {#if selectedAccount !== undefined}
+      {#if nonNullish(selectedAccount)}
         <AmountDisplay
           singleLine
           amount={TokenAmount.fromE8s({
-            amount: selectedAccount?.balanceE8s,
+            amount: selectedAccount.balanceE8s,
             token,
           })}
         />

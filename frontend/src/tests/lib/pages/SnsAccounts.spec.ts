@@ -9,11 +9,15 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockSnsToken,
+} from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import {
   mockTokensSubscribe,
@@ -94,6 +98,20 @@ describe("SnsAccounts", () => {
     it("should render a main Account", async () => {
       const { getByText } = await renderAndFinishLoading({ goToWallet });
       expect(getByText(en.accounts.main)).toBeInTheDocument();
+    });
+
+    it("should render balance in card", async () => {
+      const { container } = await renderAndFinishLoading({ goToWallet });
+
+      const cardTitleRow = container.querySelector(
+        'article > div[data-tid="token-value-label"]'
+      );
+
+      expect(cardTitleRow?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockSnsMainAccount.balanceE8s,
+        })} ${mockSnsToken.symbol}`
+      );
     });
 
     it("should render account cards", async () => {
