@@ -83,7 +83,7 @@ describe("CkBTCAccounts", () => {
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
         `${formatToken({
-          value: mockCkBTCMainAccount.balance.toE8s(),
+          value: mockCkBTCMainAccount.balanceE8s,
         })} ${mockCkBTCToken.symbol}`
       );
     });
