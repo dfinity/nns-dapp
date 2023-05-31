@@ -18,13 +18,11 @@ import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
-  mockCkBTCToken,
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
-import { TokenAmount } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
@@ -142,10 +140,7 @@ describe("CkBTCWithdrawalAccount", () => {
   });
 
   describe("messages", () => {
-    const balanceZero = TokenAmount.fromString({
-      amount: "0",
-      token: mockCkBTCToken,
-    }) as TokenAmount;
+    const balanceZero = 0n;
 
     describe("with balance", () => {
       beforeEach(() => {
@@ -162,7 +157,7 @@ describe("CkBTCWithdrawalAccount", () => {
         const { getByText } = render(CkBTCWithdrawalAccount);
 
         const balance = formatToken({
-          value: mockCkBTCWithdrawalAccount.balance.toE8s(),
+          value: mockCkBTCWithdrawalAccount.balanceE8s,
           detailed: true,
         });
 
@@ -195,7 +190,7 @@ describe("CkBTCWithdrawalAccount", () => {
           account: {
             account: {
               ...mockCkBTCWithdrawalAccount,
-              balance: balanceZero,
+              balanceE8s: balanceZero,
             },
             certified: true,
           },
@@ -221,7 +216,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
         jest.spyOn(ledgerApi, "getCkBTCAccount").mockResolvedValue({
           ...mockCkBTCWithdrawalAccount,
-          balance: balanceZero,
+          balanceE8s: balanceZero,
         });
       });
 

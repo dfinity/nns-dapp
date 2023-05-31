@@ -59,7 +59,7 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: selectedAccount?.balance.toE8s(),
+    balance: selectedAccount?.balanceE8s,
     fee: transactionFee.toE8s(),
     maxAmount,
   });
@@ -125,6 +125,7 @@
     bind:selectedAccount
     {canSelectSource}
     {rootCanisterId}
+    {token}
   />
 
   {#if canSelectDestination}

@@ -24,6 +24,7 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=local
+            COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./out
@@ -32,8 +33,8 @@ jobs:
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+          # Version from 2023-05-24 with longer retries to install dfx
+          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
       - name: Add SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH

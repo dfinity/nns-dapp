@@ -5,6 +5,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   export let amount: number;
   export let account: Account;
@@ -44,7 +45,7 @@
     {/if}
   </p>
   <div>
-    <TransactionSource {account} />
+    <TransactionSource {account} token={ICPToken} />
   </div>
   <slot />
 
