@@ -174,6 +174,21 @@ describe("CkBTCWallet", () => {
       );
     });
 
+    it("should render a balance with token in summary", async () => {
+      const { getByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(getByTestId("token-value-label")).not.toBeNull()
+      );
+
+      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balance.toE8s(),
+          detailed: true,
+        })} ${mockCkBTCToken.symbol}`
+      );
+    });
+
     const modalProps = {
       ...props,
       testComponent: CkBTCWallet,
