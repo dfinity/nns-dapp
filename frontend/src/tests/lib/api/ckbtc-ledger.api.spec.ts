@@ -24,7 +24,7 @@ describe("ckbtc-ledger api", () => {
   afterAll(() => jest.clearAllMocks());
 
   describe("getCkBTCAccount", () => {
-    it("returns main account with balance and token metadata", async () => {
+    it("returns main account with balance", async () => {
       const balance = BigInt(10_000_000);
 
       const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
@@ -44,7 +44,7 @@ describe("ckbtc-ledger api", () => {
       expect(balanceSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no balance", () => {
       ledgerCanisterMock.balance.mockImplementation(() =>
         Promise.reject(new Error())
       );

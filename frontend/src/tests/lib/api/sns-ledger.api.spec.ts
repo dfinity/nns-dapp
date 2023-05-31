@@ -70,7 +70,7 @@ describe("sns-ledger api", () => {
       expect(balanceSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no balance", () => {
       setBalanceError();
 
       const call = () =>
@@ -129,7 +129,7 @@ describe("sns-ledger api", () => {
       expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no token metadata", () => {
       setMetadataError();
       const call = () =>
         getSnsToken({
