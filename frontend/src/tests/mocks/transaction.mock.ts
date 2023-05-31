@@ -1,7 +1,6 @@
 import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Transaction } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { mockMainAccount, mockSubAccount } from "./accounts.store.mock";
 
 export const mockSentToSubAccountTransaction = {
