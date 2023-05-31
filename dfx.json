@@ -20,7 +20,6 @@
       "build": "./build.sh",
       "remote": {
         "id": {
-          "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
@@ -166,6 +165,25 @@
   },
   "networks": {
     "mainnet": {
+      "config": {
+        "FETCH_ROOT_KEY": false,
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
+        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://icp-api.io/"
+      ],
+      "type": "persistent"
+    },
+    "app": {
       "config": {
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",
