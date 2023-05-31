@@ -3,99 +3,99 @@
  */
 
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-import { fireEvent, render } from "@testing-library/svelte";
+import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "@testing-library/svelte";
 
 describe("ProposalNavigation", () => {
+  const renderComponent = (props) => {
+    const { container, component } = render(ProposalNavigation, { props });
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+    return { ...po, component };
+  };
+
   describe("not rendered", () => {
-    it("should not render buttons if no proposalIdString", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: {
-          proposalIdString: undefined,
-          proposalIds: ["1"],
-        },
+    it("should not render the component if no proposalIdString", async () => {
+      // TODO: is it ok to use "root" here?
+      const { root } = renderComponent({
+        proposalIdString: undefined,
+        proposalIds: ["1"],
       });
 
-      expect(() => getByTestId("proposal-nav-previous")).toThrow();
-      expect(() => getByTestId("proposal-nav-next")).toThrow();
+      expect(await root.isPresent()).toBe(false);
     });
 
-    it("should not render buttons if no proposalIds", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: {
-          proposalIdString: "1",
-          proposalIds: undefined,
-        },
+    it("should not render buttons if no proposalIds", async () => {
+      const { root } = renderComponent({
+        proposalIdString: "1",
+        proposalIds: undefined,
       });
 
-      expect(() => getByTestId("proposal-nav-previous")).toThrow();
-      expect(() => getByTestId("proposal-nav-next")).toThrow();
+      expect(await root.isPresent()).toBe(false);
     });
 
-    it("should not render buttons if no proposalIdString in proposalIds", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: {
-          proposalIdString: "1",
-          proposalIds: ["0"],
-        },
+    it("should not render buttons if no proposalIdString in proposalIds", async () => {
+      const { root } = renderComponent({
+        proposalIdString: "1",
+        proposalIds: ["0"],
       });
 
-      expect(() => getByTestId("proposal-nav-previous")).toThrow();
-      expect(() => getByTestId("proposal-nav-next")).toThrow();
+      expect(await root.isPresent()).toBe(false);
     });
   });
 
   describe("display", () => {
     it("should render buttons", async () => {
-      const { getByTestId } = render(ProposalNavigation, {
+      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1", "2"],
       });
 
-      expect(getByTestId("proposal-nav-previous")).not.toBeNull();
-      expect(getByTestId("proposal-nav-next")).not.toBeNull();
+      expect(await getPreviousButtonPo().isPresent()).toBe(true);
+      expect(await getNextButtonPo().isPresent()).toBe(true);
     });
 
-    it("should hide previous", () => {
-      const { getByTestId } = render(ProposalNavigation, {
+    it("should display both buttons", async () => {
+      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
+        proposalIdString: "1",
+        proposalIds: ["0", "1", "2"],
+      });
+
+      expect(await isNextButtonHidden()).toBe(false);
+      expect(await isPreviousButtonHidden()).toBe(false);
+    });
+
+    it("should hide previous when it's selected", async () => {
+      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["1", "2"],
       });
 
-      expect(
-        getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).toBe(true);
-      expect(
-        getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).toBe(false);
+      expect(await isNextButtonHidden()).toBe(false);
+      expect(await isPreviousButtonHidden()).toBe(true);
     });
 
-    it("should display next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
+    it("should hide next when it's selected", async () => {
+      const { isPreviousButtonHidden, isNextButtonHidden } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1"],
       });
 
-      expect(
-        getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).toBe(false);
-      expect(
-        getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).toBe(true);
+      expect(await isPreviousButtonHidden()).toBe(false);
+      expect(await isNextButtonHidden()).toBe(true);
     });
   });
 
   describe("action", () => {
     it("should emmit next click", async () => {
-      const nnsNavigationSpy = jest.fn();
-      const { getByTestId, component } = render(ProposalNavigation, {
+      const { clickNextProposal, component } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1", "2"],
       });
-
+      const nnsNavigationSpy = jest.fn();
       component.$on("nnsNavigation", nnsNavigationSpy);
-      const btn = getByTestId("proposal-nav-next") as HTMLButtonElement;
 
-      fireEvent.click(btn);
+      await clickNextProposal();
 
       expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
       expect(nnsNavigationSpy).toHaveBeenCalledWith(
@@ -106,16 +106,14 @@ describe("ProposalNavigation", () => {
     });
 
     it("should emmit previous click", async () => {
-      const nnsNavigationSpy = jest.fn();
-      const { getByTestId, component } = render(ProposalNavigation, {
+      const { clickPreviousProposal, component } = renderComponent({
         proposalIdString: "1",
         proposalIds: ["0", "1", "2"],
       });
-
+      const nnsNavigationSpy = jest.fn();
       component.$on("nnsNavigation", nnsNavigationSpy);
-      const btn = getByTestId("proposal-nav-previous") as HTMLButtonElement;
 
-      fireEvent.click(btn);
+      await clickPreviousProposal();
 
       expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
       expect(nnsNavigationSpy).toHaveBeenCalledWith(
