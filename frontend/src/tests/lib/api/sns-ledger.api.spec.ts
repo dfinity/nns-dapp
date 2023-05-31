@@ -41,6 +41,11 @@ jest.mock("$lib/api/sns-wrapper.api", () => {
 });
 
 describe("sns-ledger api", () => {
+  beforeEach(() => {
+    setMetadataSuccess();
+    setBalanceSuccess();
+  });
+
   describe("getSnsAccounts", () => {
     beforeEach(() => {
       setMetadataSuccess();
