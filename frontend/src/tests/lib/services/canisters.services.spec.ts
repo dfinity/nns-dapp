@@ -29,7 +29,6 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 jest.mock("$lib/api/ledger.api");
@@ -370,10 +369,7 @@ describe("canisters-services", () => {
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 5,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 500000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -388,10 +384,7 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 2,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -406,10 +399,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 2,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -444,10 +434,7 @@ describe("canisters-services", () => {
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 5,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 500000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -462,10 +449,7 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 2,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -480,10 +464,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromNumber({
-          amount: 2,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
