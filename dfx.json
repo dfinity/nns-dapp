@@ -682,7 +682,8 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": false
         }
       }
     },
