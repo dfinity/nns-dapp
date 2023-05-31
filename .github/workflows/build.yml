@@ -76,21 +76,15 @@ jobs:
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
+          # Version from 2023-05-24 with longer retries to install dfx
+          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          nns_dapp_wasm: 'nns-dapp.wasm'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install nns-dapp and sns_aggregator
-        run: |
-          echo "Create the nns-dapp install argument:"
-          export DFX_NETWORK=local
-          ./config.sh
-          echo "Install:"
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
-          dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-          # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
-          dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest

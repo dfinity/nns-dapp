@@ -20,8 +20,7 @@ runs:
       with:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
-        # Version from 2023-05-24 with longer retries to install dfx
-        ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+        ref: ${{ inputs.snsdemo_ref }}
     - name: Add snsdemo scripts to the path
       shell: bash
       run: |
@@ -38,3 +37,17 @@ runs:
         dfx-snapshot-restore --snapshot state.tar.xz --verbose
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck
+    - name: Install nns-dapp
+      if: ${{ inputs.nns_dapp_wasm }}
+      run: |
+        echo "Create the nns-dapp install argument:"
+        export DFX_NETWORK=local
+        ./config.sh
+        echo "Install:"
+        dfx canister install nns-dapp --wasm ${{ inputs.nnd_dapp_wasm }} --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
+    - name: Install sns_aggregator
+      if: ${{ inputs.sns_aggregator_wasm }}
+      run: |
+        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
+        # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
+        dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
