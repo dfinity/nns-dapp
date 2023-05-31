@@ -27,14 +27,12 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   mockBTCAddressMainnet,
@@ -504,10 +502,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: TokenAmount.fromE8s({
-              amount: amountE8s,
-              token: ICPToken,
-            }),
+            balanceE8s: amountE8s,
           },
           amountE8s: amountE8s + BigInt(10_000),
         });
@@ -520,10 +515,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: TokenAmount.fromE8s({
-              amount: amountE8s,
-              token: ICPToken,
-            }),
+            balanceE8s: amountE8s,
           },
           amountE8s: amountE8s - BigInt(10_000),
         });
@@ -579,69 +571,52 @@ describe("accounts-utils", () => {
   describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
+        mockMainAccount.balanceE8s +
+        mockSubAccount.balanceE8s +
+        mockHardwareWalletAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [mockHardwareWalletAccount],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
 
-      totalBalance =
-        mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
+      totalBalance = mockMainAccount.balanceE8s + mockSubAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balance.toE8s();
+      totalBalance = mockMainAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [],
           hardwareWallets: [],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
-    });
-
-    it("should sum ICP", () => {
-      expect(
-        sumNnsAccounts({
-          main: mockMainAccount,
-          subAccounts: [],
-          hardwareWallets: [],
-        }).token.name
-      ).toEqual(en.core.ic);
     });
   });
 
   describe("sumAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockSnsMainAccount.balance.toE8s() + mockSnsSubAccount.balance.toE8s();
+        mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s;
 
-      expect(
-        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).toE8s()
-      ).toEqual(totalBalance);
+      expect(sumAccounts([mockSnsMainAccount, mockSnsSubAccount])).toEqual(
+        totalBalance
+      );
 
-      totalBalance = mockSnsMainAccount.balance.toE8s();
+      totalBalance = mockSnsMainAccount.balanceE8s;
 
-      expect(sumAccounts([mockSnsMainAccount]).toE8s()).toEqual(totalBalance);
-    });
-
-    it("should sum ICP", () => {
-      expect(
-        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).token.name
-      ).toEqual(mockSnsMainAccount.balance.token.name);
+      expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
     });
   });
 

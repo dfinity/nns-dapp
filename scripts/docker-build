@@ -73,11 +73,15 @@ for file in "${assets[@]}"; do
   rm -f "$file"
 done
 
+COMMIT="$(git rev-parse HEAD)"
+[ -z "$(git status --untracked-files=no --porcelain)" ] || COMMIT="${COMMIT}-dirty"
+
 set -x
 DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
+  --build-arg COMMIT="$COMMIT" \
   -t "$image_name" \
   -o "$OUTDIR" . \
   "${@+${@}}"

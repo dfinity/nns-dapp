@@ -57,7 +57,8 @@ export const renderer = (marked: Marked): Renderer => {
  */
 export const markdownToHTML = async (text: string): Promise<string> => {
   const url = "/assets/libs/marked.min.js";
-  const { marked }: { marked: Marked } = await import(url);
+  // The dynamic import cannot be analyzed by Vite. As it is intended, we use the /* @vite-ignore */ comment inside the import() call to suppress this warning.
+  const { marked }: { marked: Marked } = await import(/* @vite-ignore */ url);
   return marked(text, {
     renderer: renderer(marked),
   });

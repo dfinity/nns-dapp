@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import StakeNeuron from "$lib/components/neurons/StakeNeuron.svelte";
+  import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
   import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
@@ -170,7 +170,7 @@
     >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
   >
   {#if currentStep?.name === "StakeNeuron"}
-    <StakeNeuron
+    <NnsStakeNeuron
       bind:account={selectedAccount}
       on:nnsNeuronCreated={onNeuronCreated}
       on:nnsClose

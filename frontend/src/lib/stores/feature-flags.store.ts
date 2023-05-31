@@ -33,6 +33,7 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_SNS_AGGREGATOR",
   "TEST_FLAG_EDITABLE",
   "ENABLE_CKTESTBTC",
+  "ENABLE_SNS_VOTING",
 ];
 
 /**

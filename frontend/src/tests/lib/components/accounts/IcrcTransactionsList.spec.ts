@@ -12,6 +12,7 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("IcrcTransactionList", () => {
@@ -32,6 +33,7 @@ describe("IcrcTransactionList", () => {
         transactions,
         loading,
         completed,
+        token: mockSnsToken,
       },
     });
 

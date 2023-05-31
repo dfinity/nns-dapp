@@ -11,9 +11,11 @@
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
   } from "$lib/utils/icrc-transactions.utils";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let account: Account;
   export let rootCanisterId: Principal;
+  export let token: IcrcTokenMetadata | undefined;
 
   let loading = true;
 
@@ -65,4 +67,5 @@
   {loading}
   {governanceCanisterId}
   {completed}
+  {token}
 />
