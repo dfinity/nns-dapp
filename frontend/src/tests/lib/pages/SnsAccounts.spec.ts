@@ -110,7 +110,7 @@ describe("SnsAccounts", () => {
       expect(cardTitleRow?.textContent.trim()).toEqual(
         `${formatToken({
           value: mockSnsMainAccount.balance.toE8s(),
-        })} ${mockSnsToken}`
+        })} ${mockSnsToken.symbol}`
       );
     });
 
