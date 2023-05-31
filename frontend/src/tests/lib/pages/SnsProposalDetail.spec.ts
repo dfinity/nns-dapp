@@ -4,16 +4,23 @@
 
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  buildMockSnsProposalsStoreSubscribe,
+  createSnsProposal,
+} from "$tests/mocks/sns-proposals.mock";
+import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -153,6 +160,48 @@ describe("SnsProposalDetail", () => {
       await waitFor(() => {
         const { path } = get(pageStore);
         return expect(path).toEqual(AppPath.Proposals);
+      });
+    });
+
+    describe("proposal navigation", () => {
+      beforeEach(() => {
+        jest.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
+          buildMockSnsProposalsStoreSubscribe({
+            universeIdText: rootCanisterId.toText(),
+            proposals: [
+              createSnsProposal({
+                proposalId: 1n,
+                status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+              }),
+              createSnsProposal({
+                proposalId: 2n,
+                status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+              }),
+              createSnsProposal({
+                proposalId: 3n,
+                status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+              }),
+            ],
+          })
+        );
+      });
+
+      it("should display proposal navigation", async () => {
+        const { container } = render(SnsProposalDetail, {
+          props: {
+            proposalIdText: "2",
+          },
+        });
+
+        const { root, getNextButtonPo, getPreviousButtonPo } =
+          ProposalNavigationPo.under(new JestPageObjectElement(container));
+
+        expect(await root.isPresent()).toBe(true);
+        expect(await getNextButtonPo().isPresent()).toBe(true);
+        expect(await getPreviousButtonPo().isPresent()).toBe(true);
+
+        expect(await getNextButtonPo().isDisabled()).toBe(false);
+        expect(await getPreviousButtonPo().isDisabled()).toBe(false);
       });
     });
   });

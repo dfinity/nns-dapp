@@ -38,9 +38,9 @@
   };
 </script>
 
-{#if nonNullish($store?.proposal?.id)}
+{#if nonNullish($store.proposal?.id)}
   <ProposalNavigation
-    proposalIdString={`${$store.proposal.id}`}
+    proposalIdString={`${$store.proposal?.id}`}
     proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
     on:nnsNavigation={navigateToProposal}
   />
