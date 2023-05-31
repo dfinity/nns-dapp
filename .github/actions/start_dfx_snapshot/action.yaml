@@ -39,6 +39,7 @@ runs:
         dfx-sns-demo-healthcheck
     - name: Install nns-dapp
       if: ${{ inputs.nns_dapp_wasm }}
+      shell: bash
       run: |
         echo "Create the nns-dapp install argument:"
         export DFX_NETWORK=local
@@ -47,6 +48,7 @@ runs:
         dfx canister install nns-dapp --wasm ${{ inputs.nnd_dapp_wasm }} --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
+      shell: bash
       run: |
         dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
         # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
