@@ -33,7 +33,7 @@ describe("icrc-ledger api", () => {
       expect(balanceSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no balance", () => {
       const balanceSpy = async () => {
         throw new Error();
       };
