@@ -185,7 +185,10 @@ jobs:
             exit 1
           } >&2
       - name: Check that metadata is present
-        run: scripts/dfx-wasm-metadata-add.test --verbose
+        run: |
+          # dfx-wasm-metadata-add.test expects nns-dapp.wasm
+          cp nns-dapp_local.wasm nns-dapp.wasm
+          scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
