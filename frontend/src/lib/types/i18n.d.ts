@@ -133,6 +133,7 @@ interface I18nWarning {
   test_env_note: string;
   test_env_request: string;
   test_env_confirm: string;
+  test_env_title: string;
 }
 
 interface I18nNavigation {
