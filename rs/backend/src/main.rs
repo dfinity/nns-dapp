@@ -310,7 +310,9 @@ pub fn add_assets_tar_xz() {
     over(candid_one, |asset_bytes: Vec<u8>| {
         let hash_bytes = hash_bytes(&asset_bytes);
         let hash_str = hex::encode(hash_bytes);
-        may_upload(&ic_cdk::caller(), &hash_str).expect("Permission to upload asset denied");
+        let caller = ic_cdk::caller();
+        let is_controller = ic_cdk::api::is_controller(&caller);
+        may_upload(&caller, is_controller, &hash_str).expect("Permission to upload asset denied");
         insert_tar_xz(asset_bytes);
     })
 }
@@ -319,15 +321,15 @@ pub fn add_assets_tar_xz() {
 ///
 /// - A controller may upload an asset.
 /// - TODO: A set of whitelisted users may upload a set of whitelisted assets.
-fn may_upload(caller: &ic_cdk::export::Principal, _hex_sha256: &str) -> Result<(), String> {
+fn may_upload(caller: &ic_cdk::export::Principal, is_controller: bool, _hex_sha256: &str) -> Result<(), String> {
     let mut reason = "Permission denied:  ".to_string();
-    if ic_cdk::api::is_controller(&caller) {
+    if is_controller {
         return Ok(());
     } else {
         reason += &format!("  Caller '{}' is not a controller.", caller);
     }
     // TODO: Check against whitelisted principals & hashes.
-    return Err(reason);
+    Err(reason)
 }
 
 #[derive(CandidType)]
