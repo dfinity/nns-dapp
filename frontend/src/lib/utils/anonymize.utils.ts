@@ -14,7 +14,6 @@ import type {
 } from "$lib/types/sns";
 import type { IcrcTransaction } from "@dfinity/ledger";
 import {
-  TokenAmount,
   type Ballot,
   type Followees,
   type KnownNeuron,
@@ -63,18 +62,6 @@ export const anonymizeAmount = async (
     ? undefined
     : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
 
-export const anonymizeICP = async (
-  tokens: TokenAmount | undefined
-): Promise<TokenAmount | undefined> =>
-  tokens === undefined
-    ? undefined
-    : tokens.toE8s() === BigInt(0)
-    ? TokenAmount.fromE8s({ amount: BigInt(0), token: tokens.token })
-    : TokenAmount.fromE8s({
-        amount: (await anonymizeAmount(tokens.toE8s())) as bigint,
-        token: tokens.token,
-      });
-
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
 ): Promise<{ [key in keyof Required<Ballot>]: unknown } | undefined | null> => {
@@ -122,7 +109,7 @@ export const anonymizeAccount = async (
   return {
     identifier: await cutAndAnonymize(identifier),
     principal: anonymiseAvailability(principal),
-    balanceE8s,
+    balanceE8s: await anonymizeAmount(balanceE8s),
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),
@@ -430,7 +417,7 @@ export const anonymizeTransaction = async ({
       type,
       from: from !== undefined ? undefined : await cutAndAnonymize(from),
       to: to !== undefined ? undefined : await cutAndAnonymize(to),
-      displayAmount,
+      displayAmount: await anonymizeAmount(displayAmount),
       date,
     },
   };
