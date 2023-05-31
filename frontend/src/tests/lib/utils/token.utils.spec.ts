@@ -9,7 +9,6 @@ import {
   numberToE8s,
   sumTokenAmounts,
 } from "$lib/utils/token.utils";
-import { amountFromString } from "$tests/utils/utils.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 
 describe("token-utils", () => {
@@ -105,13 +104,13 @@ describe("token-utils", () => {
 
   describe("sumTokenAmounts", () => {
     it("should add amounts of token", () => {
-      const icp0 = amountFromString("0");
-      const icp1 = amountFromString("1");
-      const icp15 = amountFromString("1.5");
-      const icp2 = amountFromString("2");
-      const icp3 = amountFromString("3");
-      const icp35 = amountFromString("3.5");
-      const icp6 = amountFromString("6");
+      const icp0 = 0n;
+      const icp1 = 100000000n;
+      const icp15 = 150000000n;
+      const icp2 = 200000000n;
+      const icp3 = 300000000n;
+      const icp35 = 350000000n;
+      const icp6 = 600000000n;
 
       expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
       expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);

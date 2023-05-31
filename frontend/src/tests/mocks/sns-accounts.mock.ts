@@ -2,7 +2,6 @@ import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
-import { amountFromString } from "$tests/utils/utils.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
@@ -17,7 +16,7 @@ export const mockSnsMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: amountFromString("8901567.1234"),
+  balanceE8s: 890156712340000n,
   principal: mockPrincipal,
   type: "main",
 };
@@ -27,7 +26,7 @@ export const mockSnsSubAccount: Account = {
     owner: mockPrincipal,
     subaccount: Uint8Array.from(mockSubAccountArray),
   }),
-  balanceE8s: amountFromString("5671234.0189"),
+  balanceE8s: 567123401890000n,
   subAccount: mockSubAccountArray,
   name: "test subaccount",
   type: "subAccount",

@@ -1,4 +1,3 @@
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
@@ -26,12 +25,3 @@ export const assertNonNullish = <T>(
   dfinityAssertNonNullish(value, message);
   return value;
 };
-
-// The token is not relevant here as we only aim to parse the string and gets its bigint value. That's why we can use ICPToken regardless.
-export const amountFromString = (amount: string): bigint =>
-  (
-    TokenAmount.fromString({
-      amount,
-      token: ICPToken,
-    }) as TokenAmount
-  ).toE8s();
