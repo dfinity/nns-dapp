@@ -157,10 +157,10 @@
 
   let sortedProposalIdStrings: string[] | undefined;
   $: sortedProposalIdStrings = sortSnsProposalsById(
-    $snsFilteredProposalsStore[universeIdText]?.proposals
+    $snsFilteredProposalsStore[universeIdText ?? ""]?.proposals
   )?.map(snsProposalIdString);
 
-  const navigate = async ({ detail: proposalId }) => {
+  const navigate = async ({ detail: proposalId }: { detail: string }) => {
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
@@ -170,11 +170,13 @@
   };
 </script>
 
-<ProposalNavigation
-  proposalIdString={proposalIdText}
-  proposalIds={sortedProposalIdStrings}
-  on:nnsNavigation={navigate}
-/>
+{#if nonNullish(proposalIdText)}
+  <ProposalNavigation
+    proposalIdString={proposalIdText}
+    proposalIds={sortedProposalIdStrings}
+    on:nnsNavigation={navigate}
+  />
+{/if}
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
   {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}

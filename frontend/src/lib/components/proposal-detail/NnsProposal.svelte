@@ -20,7 +20,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
 
-  const navigate = async ({ detail: proposalId }) => {
+  const navigate = async ({ detail: proposalId }: { detail: string }) => {
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
