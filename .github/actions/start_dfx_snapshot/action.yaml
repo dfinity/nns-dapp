@@ -50,6 +50,6 @@ runs:
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
       run: |
-        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
+        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
         # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
         dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
