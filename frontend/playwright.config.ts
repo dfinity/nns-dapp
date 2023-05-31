@@ -48,11 +48,10 @@ export default defineConfig({
       name: "Google Chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome" },
     },
-    // TODO: Enable Firefox when flakiness is fixed.
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'], channel: "firefox" },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'], channel: "firefox" },
+    },
     // {
     //   name: "chromium",
     //   use: { ...devices["Desktop Chrome"] },
