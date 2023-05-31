@@ -24,7 +24,7 @@ export default defineConfig({
   /* Let's not enable retries until we actually need them */
   retries: 0,
   /* Number of tests that can be run in parallel. */
-  workers: process.env.CI ? 3 : undefined,
+  workers: process.env.CI ? 3 : 20,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
