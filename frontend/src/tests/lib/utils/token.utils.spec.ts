@@ -7,7 +7,7 @@ import {
   formatToken,
   getMaxTransactionAmount,
   numberToE8s,
-  sumTokenAmounts,
+  sumAmountE8s,
 } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 
@@ -102,8 +102,8 @@ describe("token-utils", () => {
     ).toEqual(`2'000'000.00000000`);
   });
 
-  describe("sumTokenAmounts", () => {
-    it("should add amounts of token", () => {
+  describe("sumAmountE8s", () => {
+    it("should sum amounts of E8s values", () => {
       const icp0 = 0n;
       const icp1 = 100000000n;
       const icp15 = 150000000n;
@@ -112,10 +112,10 @@ describe("token-utils", () => {
       const icp35 = 350000000n;
       const icp6 = 600000000n;
 
-      expect(sumTokenAmounts(icp0, icp1)).toEqual(icp1);
-      expect(sumTokenAmounts(icp1, icp2)).toEqual(icp3);
-      expect(sumTokenAmounts(icp1, icp2, icp3)).toEqual(icp6);
-      expect(sumTokenAmounts(icp15, icp2)).toEqual(icp35);
+      expect(sumAmountE8s(icp0, icp1)).toEqual(icp1);
+      expect(sumAmountE8s(icp1, icp2)).toEqual(icp3);
+      expect(sumAmountE8s(icp1, icp2, icp3)).toEqual(icp6);
+      expect(sumAmountE8s(icp15, icp2)).toEqual(icp35);
     });
   });
 
