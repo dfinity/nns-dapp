@@ -50,7 +50,6 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/ledger.services.proxy", () => {
@@ -200,10 +199,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -253,10 +249,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -324,10 +317,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -373,10 +363,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -499,10 +486,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -556,10 +540,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }).toE8s(),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -928,10 +909,7 @@ describe("accounts-services", () => {
     const mockAccounts = {
       main: {
         ...mockMainAccount,
-        balanceE8s: TokenAmount.fromE8s({
-          amount: mainBalanceE8s,
-          token: ICPToken,
-        }).toE8s(),
+        balanceE8s: mainBalanceE8s,
       },
       subAccounts: [],
       hardwareWallets: [],
