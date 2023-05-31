@@ -63,12 +63,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_local
-      - name: Rename nns-dapp.wasm for use
-        run: cp nns-dapp_local.wasm nns-dapp.wasm
-      - name: Get sns_aggregator
-        uses: actions/download-artifact@v3
-        with:
-          name: sns_aggregator
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@v3
         with:
@@ -79,7 +73,7 @@ jobs:
           # Version from 2023-05-24 with longer retries to install dfx
           snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
-          nns_dapp_wasm: 'nns-dapp.wasm'
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
       - name: Generate .env configuration for Playwright end-to-end tests
         run: |
@@ -123,8 +117,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_local
-      - name: Rename nns-dapp.wasm for use
-        run: cp nns-dapp_local.wasm nns-dapp.wasm
       - name: Get sns_aggregator
         uses: actions/download-artifact@v3
         with:
@@ -139,7 +131,7 @@ jobs:
           # Version from 2023-05-24 with longer retries to install dfx
           snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
-          nns_dapp_wasm: 'nns-dapp.wasm'
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
       - name: Add go and SNS scripts to the path
         run: |
@@ -198,7 +190,7 @@ jobs:
         run: |
           git fetch --depth 1 origin tag prod
           if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Release
@@ -238,7 +230,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp_local.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."

@@ -3,6 +3,9 @@ description: |
   Start a local replica running against a given snapshot.
   Optionally installs nns-dapp and sns_aggregator.
 inputs:
+  snsdemo_ref:
+    description: "The commit at which to use the snsdemo scripts"
+    required: true
   snapshot_url:
     description: "The URL of the snapshot to download and install"
     required: true
