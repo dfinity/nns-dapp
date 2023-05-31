@@ -74,9 +74,10 @@ jobs:
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
+      - uses: actions/checkout@v3
         uses: ./.github/action/start_dfx_snapshot
         with:
-         snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
