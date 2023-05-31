@@ -89,11 +89,11 @@ describe("Proposal", () => {
         createMockProposalsStoreSubscribe(generateMockProposals(10))
       );
 
-    const { container, queryByTestId } = renderProposalModern(5n);
-    const { isPresent, getNextButtonPo, getPreviousButtonPo } =
-      ProposalNavigationPo.under(new JestPageObjectElement(container));
+    const { container } = renderProposalModern(5n);
+    const { getNextButtonPo, getPreviousButtonPo } = ProposalNavigationPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    // expect(await isPresent()).toBe(true);
     expect(await getNextButtonPo().isPresent()).toBe(true);
     expect(await getPreviousButtonPo().isPresent()).toBe(true);
   });
