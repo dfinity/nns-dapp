@@ -13,13 +13,13 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { IcrcTransaction } from "@dfinity/ledger";
-import {
-  type Ballot,
-  type Followees,
-  type KnownNeuron,
-  type Neuron,
-  type NeuronInfo,
-  type ProposalInfo,
+import type {
+  Ballot,
+  Followees,
+  KnownNeuron,
+  Neuron,
+  NeuronInfo,
+  ProposalInfo,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
