@@ -1,0 +1,37 @@
+name: 'Start dfx snapshot'
+description: |
+  Start a local replica running against a given snapshot.
+  Optionally installs nns-dapp and sns_aggregator.
+inputs:
+  snapshot_url:
+    description: "The URL of the snapshot to download and install"
+    required: true
+  nns_dapp_wasm:
+    description: "The name of the nns-dapp wasm to install"
+    required: false
+  sns_aggregator:
+    description: "The name of the sns_aggregator wasm to install"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Get SNS scripts
+      uses: actions/checkout@v3
+      with:
+        repository: 'dfinity/snsdemo'
+        path: 'snsdemo'
+        # Version from 2023-05-24 with longer retries to install dfx
+        ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+    - name: Add snsdemo scripts to the path
+      run: |
+        echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+    - name: Install SNS script dependencies
+      run: |
+        dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+        dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+    - name: Get test environment
+      run: |
+        curl -fL --retry 5 ${{ inputs.snapshot_url }} > state.tar.xz
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose
+        dfx identity use snsdemo8
+        dfx-sns-demo-healthcheck

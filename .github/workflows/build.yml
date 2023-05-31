@@ -44,14 +44,18 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator
-          path: |
-            sns_aggregator.wasm
-            sns_aggregator_dev.wasm
+          path: sns_aggregator.wasm
+          retention-days: 3
+      - name: 'Upload sns_aggregator_dev wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: sns_aggregator_dev.wasm
           retention-days: 3
   test:
     needs: build
     runs-on: ubuntu-20.04
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
@@ -65,27 +69,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator
-      - name: Get SNS scripts
-        uses: actions/checkout@v3
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          # Version from 2023-05-24 with longer retries to install dfx
-          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/action/start_dfx_snapshot
+        with:
+         snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-      - name: Get test environment
-        run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
-          dfx-snapshot-restore --snapshot state.tar.xz --verbose
-          dfx identity use snsdemo8
-          dfx-sns-demo-healthcheck
       - name: Install nns-dapp and sns_aggregator
         run: |
           echo "Create the nns-dapp install argument:"
