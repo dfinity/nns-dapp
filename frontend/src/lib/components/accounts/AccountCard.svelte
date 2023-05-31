@@ -15,9 +15,9 @@
   export let token: Token | undefined;
 
   let identifier: string;
-  let balance: TokenAmount;
+  let balanceE8s: bigint;
 
-  $: ({ identifier, balance } = account);
+  $: ({ identifier, balanceE8s } = account);
 </script>
 
 <Card on:click {role} testId="account-card">
@@ -30,7 +30,7 @@
     <AmountDisplay
       title
       amount={TokenAmount.fromE8s({
-        amount: balance.toE8s(),
+        amount: balanceE8s,
         token,
       })}
     />

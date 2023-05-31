@@ -10,7 +10,7 @@
 
   let amount: TokenAmount;
   $: amount = TokenAmount.fromE8s({
-    amount: account.balance.toE8s(),
+    amount: account.balanceE8s,
     token,
   });
 </script>

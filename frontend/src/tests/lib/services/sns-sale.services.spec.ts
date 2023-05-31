@@ -1028,9 +1028,7 @@ describe("sns-api", () => {
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
-      expect(get(accountsStore).main.balance.toE8s()).not.toEqual(
-        newBalanceE8s
-      );
+      expect(get(accountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1041,7 +1039,7 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
 
-      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should update subaccounts's balance in the store", async () => {
@@ -1057,9 +1055,7 @@ describe("sns-api", () => {
       const postprocessSpy = jest.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = jest.fn().mockResolvedValue(undefined);
 
-      expect(get(accountsStore).main.balance.toE8s()).not.toEqual(
-        newBalanceE8s
-      );
+      expect(get(accountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1070,7 +1066,7 @@ describe("sns-api", () => {
         ticket: snsTicket.ticket,
       });
 
-      expect(get(accountsStore).subAccounts[0].balance.toE8s()).toEqual(
+      expect(get(accountsStore).subAccounts[0].balanceE8s).toEqual(
         newBalanceE8s
       );
     });

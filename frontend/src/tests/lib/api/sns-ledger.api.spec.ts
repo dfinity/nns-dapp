@@ -13,7 +13,6 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 jest.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);
-const balanceSpy = jest.fn().mockResolvedValue(mainBalance);
 const fee = BigInt(10_000);
 const transactionFeeSpy = jest.fn().mockResolvedValue(fee);
 const transferSpy = jest.fn().mockResolvedValue(BigInt(10));
@@ -24,6 +23,12 @@ const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
 const metadataSpy = jest
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
+
+let balanceReturn = Promise.resolve(mainBalance);
+const setBalanceError = () => (balanceReturn = Promise.reject(new Error()));
+const setBalanceSuccess = () => (balanceReturn = Promise.resolve(mainBalance));
+const balanceSpy = jest.fn().mockImplementation(() => balanceReturn);
+
 jest.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
@@ -36,11 +41,19 @@ jest.mock("$lib/api/sns-wrapper.api", () => {
 });
 
 describe("sns-ledger api", () => {
+  beforeEach(() => {
+    setMetadataSuccess();
+    setBalanceSuccess();
+  });
+
   describe("getSnsAccounts", () => {
     beforeEach(() => {
       setMetadataSuccess();
     });
+
     it("returns main account with balance and project token metadata", async () => {
+      setBalanceSuccess();
+
       const accounts = await getSnsAccounts({
         certified: true,
         identity: mockIdentity,
@@ -52,14 +65,14 @@ describe("sns-ledger api", () => {
       const main = accounts.find(({ type }) => type === "main");
       expect(main).not.toBeUndefined();
 
-      expect(main?.balance.toE8s()).toEqual(mainBalance);
+      expect(main?.balanceE8s).toEqual(mainBalance);
 
       expect(balanceSpy).toBeCalled();
-      expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
-      setMetadataError();
+    it("throws an error if no balance", () => {
+      setBalanceError();
+
       const call = () =>
         getSnsAccounts({
           certified: true,
@@ -116,7 +129,7 @@ describe("sns-ledger api", () => {
       expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no token metadata", () => {
       setMetadataError();
       const call = () =>
         getSnsToken({

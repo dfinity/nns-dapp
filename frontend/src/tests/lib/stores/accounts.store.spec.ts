@@ -5,7 +5,6 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
-import { TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("accountsStore", () => {
@@ -109,14 +108,16 @@ describe("accountsStore", () => {
     it("should set balance for main account", () => {
       accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-      expect(get(accountsStore)?.main.balance).toEqual(mockMainAccount.balance);
+      expect(get(accountsStore)?.main.balanceE8s).toEqual(
+        mockMainAccount.balanceE8s
+      );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
         accountIdentifier: mockMainAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should set balance for subaccount", () => {
@@ -125,8 +126,8 @@ describe("accountsStore", () => {
         subAccounts: [mockSubAccount],
       });
 
-      expect(get(accountsStore)?.subAccounts[0].balance).toEqual(
-        mockSubAccount.balance
+      expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
+        mockSubAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
@@ -135,8 +136,8 @@ describe("accountsStore", () => {
       });
 
       const store = get(accountsStore);
-      expect(store?.subAccounts[0].balance.toE8s()).toEqual(newBalanceE8s);
-      expect(store.main.balance).toEqual(mockMainAccount.balance);
+      expect(store?.subAccounts[0].balanceE8s).toEqual(newBalanceE8s);
+      expect(store.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
     });
 
     it("should set balance for hw account", () => {
@@ -146,8 +147,8 @@ describe("accountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balance).toEqual(
-        mockHardwareWalletAccount.balance
+      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+        mockHardwareWalletAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
@@ -155,7 +156,7 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balance.toE8s()).toEqual(
+      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
         newBalanceE8s
       );
     });
@@ -174,11 +175,13 @@ describe("accountsStore", () => {
       });
 
       const store = get(accountsStore);
-      expect(store?.hardwareWallets[0].balance).toEqual(
-        mockHardwareWalletAccount.balance
+      expect(store?.hardwareWallets[0].balanceE8s).toEqual(
+        mockHardwareWalletAccount.balanceE8s
       );
-      expect(store?.subAccounts[0].balance).toEqual(mockSubAccount.balance);
-      expect(store?.main.balance).toEqual(mockMainAccount.balance);
+      expect(store?.subAccounts[0].balanceE8s).toEqual(
+        mockSubAccount.balanceE8s
+      );
+      expect(store?.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
     });
 
     it("should reapply set balance on new data from an older request", () => {
@@ -190,18 +193,12 @@ describe("accountsStore", () => {
       const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalance,
-            token: mockMainAccount.balance.token,
-          }),
+          balanceE8s: mainBalance,
         },
         subAccounts: [
           {
             ...mockSubAccount,
-            balance: TokenAmount.fromE8s({
-              amount: subBalance,
-              token: mockSubAccount.balance.token,
-            }),
+            balanceE8s: subBalance,
           },
         ],
         certified,
@@ -214,8 +211,8 @@ describe("accountsStore", () => {
         mainBalance: bigint;
         subBalance: bigint;
       }) => {
-        expect(get(accountsStore)?.main.balance.toE8s()).toEqual(mainBalance);
-        expect(get(accountsStore)?.subAccounts[0].balance.toE8s()).toEqual(
+        expect(get(accountsStore)?.main.balanceE8s).toEqual(mainBalance);
+        expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
           subBalance
         );
       };

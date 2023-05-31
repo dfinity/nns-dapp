@@ -361,7 +361,7 @@ describe("CkBTCTransactionModal", () => {
     );
     expect(input?.value).toEqual(
       `${
-        Number(mockCkBTCMainAccount.balance.toE8s() - mockCkBTCToken.fee) /
+        Number(mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee) /
         E8S_PER_ICP
       }`
     );
@@ -516,7 +516,7 @@ describe("CkBTCTransactionModal", () => {
         "input[name='amount']"
       );
       expect(input?.value).toEqual(
-        `${Number(mockCkBTCWithdrawalAccount.balance.toE8s()) / E8S_PER_ICP}`
+        `${Number(mockCkBTCWithdrawalAccount.balanceE8s) / E8S_PER_ICP}`
       );
     });
   });

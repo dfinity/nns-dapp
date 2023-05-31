@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, type Token, TokenAmount } from "@dfinity/nns";
+  import { type Token, TokenAmount } from "@dfinity/nns";
   import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -30,22 +30,20 @@
     mainName: $i18n.accounts.main,
   });
 
-  let accountBalance: TokenAmount;
-  $: accountBalance =
-    $store.account?.balance ??
-    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
+  let accountBalance: bigint;
+  $: accountBalance = $store.account?.balanceE8s ?? 0n;
 
   let accountBalanceToken: TokenAmount | undefined;
   $: accountBalanceToken = nonNullish(token)
     ? (TokenAmount.fromE8s({
-        amount: accountBalance.toE8s(),
+        amount: accountBalance,
         token,
       }) as TokenAmount)
     : undefined;
 
   let detailedAccountBalance: string;
   $: detailedAccountBalance = formatToken({
-    value: accountBalance.toE8s(),
+    value: accountBalance,
     detailed: true,
   });
 
@@ -61,7 +59,7 @@
       intersecting
         ? $i18n.wallet.title
         : `${accountName} – ${formatToken({
-            value: accountBalance.toE8s(),
+            value: accountBalance,
           })} ${tokenSymbol}`
     );
   };

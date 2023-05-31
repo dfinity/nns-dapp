@@ -8,11 +8,10 @@ import {
 } from "$lib/stores/sns-accounts.store";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
-import type { TokenAmount } from "@dfinity/nns";
 import { derived } from "svelte/store";
 
 export interface UniverseAccountsBalance {
-  balance: TokenAmount | undefined;
+  balanceE8s: bigint | undefined;
   certified: boolean;
 }
 
@@ -28,14 +27,14 @@ export const universesAccountsBalance = derived<
   [accountsStore, snsAccountsStore, icrcAccountsStore],
   ([$accountsStore, $snsAccountsStore, $icrcAccountsStore]) => ({
     [OWN_CANISTER_ID_TEXT]: {
-      balance: sumNnsAccounts($accountsStore),
+      balanceE8s: sumNnsAccounts($accountsStore),
       certified: $accountsStore.certified ?? false,
     },
     ...Object.entries($icrcAccountsStore).reduce(
       (acc, [canisterId, { accounts, certified }]) => ({
         ...acc,
         [canisterId]: {
-          balance: sumAccounts(accounts),
+          balanceE8s: sumAccounts(accounts),
           certified,
         },
       }),
@@ -45,7 +44,7 @@ export const universesAccountsBalance = derived<
       (acc, [rootCanisterId, { accounts, certified }]) => ({
         ...acc,
         [rootCanisterId]: {
-          balance: sumAccounts(accounts),
+          balanceE8s: sumAccounts(accounts),
           certified,
         },
       }),

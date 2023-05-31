@@ -50,8 +50,8 @@ describe("sns-accounts-balance.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + 1 Sns
     expect(Object.keys(store)).toHaveLength(2);
-    expect(store[summary.rootCanisterId.toText()].balance.toE8s()).toEqual(
-      mockSnsMainAccount.balance.toE8s()
+    expect(store[summary.rootCanisterId.toText()].balanceE8s).toEqual(
+      mockSnsMainAccount.balanceE8s
     );
     expect(spyQuery).toBeCalled();
   });

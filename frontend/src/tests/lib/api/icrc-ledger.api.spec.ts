@@ -11,22 +11,19 @@ import {
 
 describe("icrc-ledger api", () => {
   describe("getIcrcMainAccount", () => {
-    const balanceSpy = jest.fn().mockResolvedValue(BigInt(10_000_000));
-
     it("returns main account with balance and project token metadata", async () => {
-      const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
+      const balanceSpy = jest.fn().mockResolvedValue(BigInt(10_000_000));
 
       const account = await getIcrcAccount({
         certified: true,
         owner: mockIdentity.getPrincipal(),
         type: "main",
         getBalance: balanceSpy,
-        getMetadata: metadataSpy,
       });
 
       expect(account).not.toBeUndefined();
 
-      expect(account.balance.toE8s()).toEqual(BigInt(10_000_000));
+      expect(account.balanceE8s).toEqual(BigInt(10_000_000));
 
       expect(account.principal.toText()).toEqual(
         mockIdentity.getPrincipal().toText()
@@ -34,11 +31,10 @@ describe("icrc-ledger api", () => {
       expect(account.type).toEqual("main");
 
       expect(balanceSpy).toBeCalled();
-      expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
-      const metadataSpy = async () => {
+    it("throws an error if no balance", () => {
+      const balanceSpy = async () => {
         throw new Error();
       };
 
@@ -48,7 +44,6 @@ describe("icrc-ledger api", () => {
           owner: mockIdentity.getPrincipal(),
           type: "main",
           getBalance: balanceSpy,
-          getMetadata: metadataSpy,
         });
 
       expect(call).rejects.toThrowError();

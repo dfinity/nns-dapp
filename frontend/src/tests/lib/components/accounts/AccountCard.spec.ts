@@ -50,7 +50,7 @@ describe("AccountCard", () => {
     const balance = container.querySelector("article > div span:first-of-type");
 
     expect(balance?.textContent).toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balanceE8s })}`
     );
   });
 
