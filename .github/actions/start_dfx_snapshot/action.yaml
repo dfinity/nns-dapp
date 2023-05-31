@@ -9,7 +9,7 @@ inputs:
   nns_dapp_wasm:
     description: "The name of the nns-dapp wasm to install"
     required: false
-  sns_aggregator:
+  sns_aggregator_wasm:
     description: "The name of the sns_aggregator wasm to install"
     required: false
 runs:
@@ -45,7 +45,7 @@ runs:
         export DFX_NETWORK=local
         ./config.sh
         echo "Install:"
-        dfx canister install nns-dapp --wasm ${{ inputs.nnd_dapp_wasm }} --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
+        dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
