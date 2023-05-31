@@ -32,10 +32,7 @@ export const mockReceivedFromMainAccountTransaction = {
   },
 } as NnsTransaction;
 
-const displayAmount = TokenAmount.fromNumber({
-  amount: 110000000,
-  token: ICPToken,
-}).toE8s();
+const displayAmount = 11000000000000000n;
 
 export const mockTransactionReceiveDataFromMain: Transaction = {
   type: AccountTransactionType.Send,
