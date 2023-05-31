@@ -44,8 +44,7 @@
   $: canister, (async () => await initWorker())();
 
   let canisterSync: CanisterSync | undefined = undefined;
-  // Multiple workers that sync canister information can be appended to a view.
-  // postMessage being broadcasted, we filter the information that matches this canister.
+
   const syncCanisterCallback = ({
     canister: data,
   }: PostMessageDataResponseCycles) =>
