@@ -11,10 +11,7 @@
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
-  import {
-    filteredProposals,
-    uiProposals,
-  } from "$lib/derived/proposals.derived";
+  import { filteredProposals } from "$lib/derived/proposals.derived";
   import { goto } from "$app/navigation";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
@@ -24,7 +21,11 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
 
-  const navigateToProposal = async ({ detail: proposalId }) => {
+  const navigateToProposal = async ({
+    detail: proposalId,
+  }: {
+    detail: string;
+  }) => {
     await goto(
       buildProposalUrl({
         universe: $pageStore.universe,
@@ -34,9 +35,9 @@
   };
 </script>
 
-{#if nonNullish($store?.proposal.id)}
+{#if nonNullish($store?.proposal?.id)}
   <ProposalNavigation
-    proposalIdString={`${$store.proposal.id}`}
+    proposalIdString={`${$store?.proposal?.id}`}
     proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
     on:nnsNavigation={navigateToProposal}
   />

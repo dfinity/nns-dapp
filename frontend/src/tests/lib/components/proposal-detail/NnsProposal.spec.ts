@@ -25,7 +25,7 @@ jest.mock("$lib/api/nns-dapp.api");
 describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
 
-  const renderProposalModern = (id: bigint = 1000n) =>
+  const renderProposalModern = (id = 1000n) =>
     render(NnsProposalTest, {
       props: {
         proposalInfo: {
@@ -89,9 +89,10 @@ describe("Proposal", () => {
         createMockProposalsStoreSubscribe(generateMockProposals(10))
       );
 
-    const { container, queryByTestId } = renderProposalModern(5n);
-    const { isPresent, getNextButtonPo, getPreviousButtonPo } =
-      ProposalNavigationPo.under(new JestPageObjectElement(container));
+    const { container } = renderProposalModern(5n);
+    const { getNextButtonPo, getPreviousButtonPo } = ProposalNavigationPo.under(
+      new JestPageObjectElement(container)
+    );
 
     // expect(await isPresent()).toBe(true);
     expect(await getNextButtonPo().isPresent()).toBe(true);
