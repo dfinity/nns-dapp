@@ -305,6 +305,7 @@ pub fn add_stable_asset() {
 /// Sets the asset whitelist
 ///
 /// # Panics
+/// - The caller is not a controller
 #[export_name = "canister_update set_asset_whitelist"]
 pub fn set_asset_whitelist() {
     over(candid_one, |new_whitelist: assets::upload::TarballWhitelist| {

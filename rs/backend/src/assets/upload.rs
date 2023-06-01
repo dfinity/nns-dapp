@@ -40,15 +40,14 @@ pub fn may_upload(
     let mut reason = "Permission denied:  ".to_string();
     if is_controller {
         return Ok(());
-    } else {
-        reason += &format!("  Caller '{}' is not a controller.", caller);
     }
+    let reason = format!("{reason}  Caller '{}' is not a controller.", caller);
     if !tarball_whitelist.operators.contains(caller) {
-        reason += &format!("  Caller '{}' is not whitelisted to update assets.", caller);
+        reason = format!("{reason}  Caller '{}' is not whitelisted to update assets.", caller);
         return Err(reason);
     }
     if !tarball_whitelist.hashes.iter().any(|hash| hash.hash == hex_sha256) {
-        reason += &format!("  Tarball with hash '{}' is not whitelisted for upload.", hex_sha256);
+        reason = &format!("{reason}  Tarball with hash '{}' is not whitelisted for upload.", hex_sha256);
         return Err(reason);
     }
     Ok(())
