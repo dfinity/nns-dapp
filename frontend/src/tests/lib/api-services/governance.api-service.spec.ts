@@ -841,7 +841,7 @@ describe("neurons api-service", () => {
       targetNeuronId: BigInt(21),
     };
 
-    it("should call simulmateMergeNeurons api", () => {
+    it("should call simulateMergeNeurons api", () => {
       governanceApiService.simulateMergeNeurons(params);
       expect(api.simulateMergeNeurons).toHaveBeenCalledWith(params);
       expect(api.simulateMergeNeurons).toHaveBeenCalledTimes(1);
