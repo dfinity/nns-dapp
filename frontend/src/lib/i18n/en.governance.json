@@ -21,7 +21,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap",
     "ReplicaVersionManagement": "Replica Version Management",
     "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
-    "SnsAndCommunityFund": "SNS & Community Fund"
+    "SnsAndCommunityFund": "SNS & Neurons Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -38,7 +38,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
     "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
-    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons Fund"
   },
   "rewards": {
     "Unknown": "Unknown",
