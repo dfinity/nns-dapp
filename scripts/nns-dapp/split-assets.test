@@ -33,6 +33,9 @@ canonical_tar_filenames() {
   echo "Chunks should contain all the original files"
 
   : "Get or create a .tar.xz file"
+  # Note: Any .tar.xz file will do.  If we happen to have the assets.tar.xz around, we use that,
+  # otherwise we create a .tar.xz from the contents of the frontend dir.  We could equally use
+  # any other directory or .tar.xz as long as it contains at least two files.
   original="$(mktemp ,original-XXXXXX)"
   if test -e out/assets.tar.xz; then
     cp out/assets.tar.xz "$original"
