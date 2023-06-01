@@ -80,7 +80,7 @@ FILES_PER_CHUNK="$(
   cd "$WORKDIR"
   mkdir chunks
   cd assets
-  list_manifests | while read chunk_manifest; do
+  list_manifests | while read -r chunk_manifest; do
     chunk_name="$WORKDIR/chunks/assets.$(basename "$chunk_manifest").tar.xz"
     tar cJf "$chunk_name" -T "$chunk_manifest"
   done
