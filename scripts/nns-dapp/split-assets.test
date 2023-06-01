@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 tarfile_contents() {
   # Tarfile contents, excluding directories
   tar -Jtf "$1" | grep -vE '/$'
+}
+
+canonical_tar_filenames() {
+  # Omit the leading ./ if present.
+  # Sort the filenames
+  sed -r 's#^./##g' | sort
 }
 
 (
@@ -20,7 +28,7 @@ tarfile_contents() {
   scripts/nns-dapp/split-assets --assets "${original}" --out "$chunks_dir"
 
   : "Check that the list of files is the same"
-  diff <(tarfile_contents "$original" | sort) <(find "$chunks_dir" -type f | while read -r line; do tarfile_contents "$line"; done | sort) || {
+  diff <(tarfile_contents "$original" | canonical_tar_filenames) <(find "$chunks_dir" -type f | while read -r line; do tarfile_contents "$line"; done | canonical_tar_filenames) || {
     echo "ERROR: The list of files present in the chunks should be the same as that in the original, without duplicates or omissions."
     echo "Original:   $original"
     echo "Chunks dir: $chunks_dir"
@@ -29,9 +37,9 @@ tarfile_contents() {
 
   : "Check that the file contents are the same"
   original_unpacked="$(mktemp -d ,original-assets-XXXXXX)"
-  tar -Jxf out/assets.tar.xz -C "$original_unpacked"
+  tar -Jxf "$original" -C "$original_unpacked"
   chunks_unpacked="$(mktemp -d ,chunked-assets-XXXXXX)"
-  find out/chunks/ -type f -printf '%p\n' | xargs -I{} tar -Jxf {} -C "$chunks_unpacked"
+  find "$chunks_dir" -type f -printf '%p\n' | xargs -I{} tar -Jxf {} -C "$chunks_unpacked"
   diff --recursive "$original_unpacked" "$chunks_unpacked" || {
     echo "ERROR: The contents of the chunked tarballs should match the contents of the original tarball"
     echo "Unpacked original: $original_unpacked"
