@@ -9,8 +9,8 @@ print_help() {
 	Splits an assets tarball into several smaller tarballs.
 
 	- Note: The files in each tarball are complete, so each tarball can be uploaded
-	        to a canister independently.  Theer is no need to collect all the
-	        tarballs ion the canister and then install them together.
+	        to a canister independently.  There is no need to collect all the
+	        tarballs in the canister and then install them together.
 	EOF
 }
 
