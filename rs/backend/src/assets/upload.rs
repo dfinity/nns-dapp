@@ -41,13 +41,16 @@ pub fn may_upload(
     if is_controller {
         return Ok(());
     }
-    let reason = format!("{reason}  Caller '{}' is not a controller.", caller);
+    reason = format!("{reason}  Caller '{}' is not a controller.", caller);
     if !tarball_whitelist.operators.contains(caller) {
         reason = format!("{reason}  Caller '{}' is not whitelisted to update assets.", caller);
         return Err(reason);
     }
     if !tarball_whitelist.hashes.iter().any(|hash| hash.hash == hex_sha256) {
-        reason = &format!("{reason}  Tarball with hash '{}' is not whitelisted for upload.", hex_sha256);
+        reason = format!(
+            "{reason}  Tarball with hash '{}' is not whitelisted for upload.",
+            hex_sha256
+        );
         return Err(reason);
     }
     Ok(())
@@ -83,11 +86,19 @@ fn controller_should_be_permitted_to_upload() {
 fn unauthorized_principal_should_not_be_able_to_upload_a_non_whitelisted_asset() {
     let whitelist = toy_whitelist();
     let caller = Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap();
-    let is_controller = true;
+    let is_controller = false;
     let hash = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    let response =
+        may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
+    let expected = format!("Caller '{caller}' is not a controller.");
     assert!(
-        may_upload(&caller, is_controller, &hash, &whitelist).is_ok(),
-        "Controller should be allowed to upload"
+        response.contains(&expected),
+        "The rejection should mention: '{expected}'"
+    );
+    let expected = format!("Caller '{caller}' is not whitelisted to update assets.");
+    assert!(
+        response.contains(&expected),
+        "The rejection should mention: '{expected}'"
     );
 }
 
@@ -97,9 +108,12 @@ fn operator_should_not_be_able_to_upload_a_non_whitelisted_asset() {
     let caller = whitelist.operators[0];
     let is_controller = false;
     let hash = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    let response =
+        may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
+    let expected = format!("Tarball with hash '{hash}' is not whitelisted for upload.");
     assert!(
-        may_upload(&caller, is_controller, &hash, &whitelist).is_ok(),
-        "Operator should not be able to upload a non-whitelisted tarball."
+        response.contains(&expected),
+        "The rejection should mention: '{expected}'"
     );
 }
 
@@ -109,8 +123,11 @@ fn unauthorized_principal_should_not_be_able_to_upload_a_whitelisted_asset() {
     let caller = Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap();
     let is_controller = false;
     let hash = &whitelist.hashes[0].hash;
+    let response =
+        may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
+    let expected = format!("Caller '{caller}' is not whitelisted to update assets.");
     assert!(
-        may_upload(&caller, is_controller, &hash, &whitelist).is_ok(),
-        "Operator should not be able to upload a non-whitelisted tarball."
+        response.contains(&expected),
+        "The rejection should mention: '{expected}'"
     );
 }
