@@ -56,6 +56,7 @@ pub fn may_upload(
     Ok(())
 }
 
+/// Creates a toy whitelist for testing purposes.
 #[cfg(test)]
 fn toy_whitelist() -> TarballWhitelist {
     TarballWhitelist {
@@ -68,6 +69,16 @@ fn toy_whitelist() -> TarballWhitelist {
             Principal::from_text("lanns-ouquq-hckhb-fgytd-vtn4m-rd5q4-hl3ct-vkwtm-ebcjo-xubks-kae")
                 .expect("Invalid principal in test setup"),
         ],
+    }
+}
+/// Checks that a given text contains a given substring.
+///
+/// # Panics
+/// - If the text coes not contain the expected substring.
+#[cfg(test)]
+fn assert_contains(text: &str, expected: &str, description: &str) {
+    if !(text.contains(expected)) {
+        panic!("{} '{}' should contain '{}'", description, text, expected)
     }
 }
 
@@ -90,15 +101,15 @@ fn unauthorized_principal_should_not_be_able_to_upload_a_non_whitelisted_asset()
     let hash = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
     let response =
         may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
-    let expected = format!("Caller '{caller}' is not a controller.");
-    assert!(
-        response.contains(&expected),
-        "The rejection should mention: '{expected}'"
+    assert_contains(
+        &response,
+        &format!("Caller '{caller}' is not a controller."),
+        "The rejection message",
     );
-    let expected = format!("Caller '{caller}' is not whitelisted to update assets.");
-    assert!(
-        response.contains(&expected),
-        "The rejection should mention: '{expected}'"
+    assert_contains(
+        &response,
+        &format!("Caller '{caller}' is not whitelisted to update assets."),
+        "The rejection message",
     );
 }
 
@@ -110,10 +121,10 @@ fn operator_should_not_be_able_to_upload_a_non_whitelisted_asset() {
     let hash = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
     let response =
         may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
-    let expected = format!("Tarball with hash '{hash}' is not whitelisted for upload.");
-    assert!(
-        response.contains(&expected),
-        "The rejection should mention: '{expected}'"
+    assert_contains(
+        &response,
+        &format!("Tarball with hash '{hash}' is not whitelisted for upload."),
+        "The rejection message",
     );
 }
 
@@ -125,9 +136,9 @@ fn unauthorized_principal_should_not_be_able_to_upload_a_whitelisted_asset() {
     let hash = &whitelist.hashes[0].hash;
     let response =
         may_upload(&caller, is_controller, &hash, &whitelist).expect_err("Permission should have been denied.");
-    let expected = format!("Caller '{caller}' is not whitelisted to update assets.");
-    assert!(
-        response.contains(&expected),
-        "The rejection should mention: '{expected}'"
+    assert_contains(
+        &response,
+        &format!("Caller '{caller}' is not whitelisted to update assets."),
+        "The rejection message",
     );
 }
