@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+	
+	Splits an assets tarball into several smaller tarballs.
+
+	- Note: The files in each tarball are complete, so each tarball can be uploaded
+	        to a canister independently.  Theer is no need to collect all the
+	        tarballs ion the canister and then install them together.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=a long=assets desc="The assets.tar.xz to split" variable=ORIGINAL_ASSETS_TAR_XZ default="out/assets.tar.xz"
+clap.define short=o long=out desc="The output directory; a subdirectory 'chunks' will be created and populated." variable=OUTPUT_DIR default="out"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+ORIGINAL_ASSETS_TAR_XZ="$(realpath "$ORIGINAL_ASSETS_TAR_XZ")"
+test -d "$OUTPUT_DIR" || {
+  echo "ERROR: The output directory should exist: '$OUTPUT_DIR'"
+  exit 1
+} >&2
+rm -fr "$OUTPUT_DIR/chunks"
+
+NUM_CHUNKS=2
+WORKDIR="$(mktemp -d)"
+
+(
+  : Unpack the assets
+  cd "$WORKDIR"
+  mkdir assets
+  cd assets
+  tar -Jxf "$ORIGINAL_ASSETS_TAR_XZ"
+)
+
+# Prints paths of assets in the tarball
+list_assets() {
+  (
+    cd "$WORKDIR/assets"
+    find . -type f
+  )
+}
+# Prints absolute paths to chunk manifests.
+# Each manifest contains a list of assets.
+list_manifests() {
+  find "$WORKDIR/chunk_names" -type f
+}
+
+FILES_PER_CHUNK="$(
+  num_files="$(list_assets | wc -l)"
+  echo $(((num_files + NUM_CHUNKS - 1) / NUM_CHUNKS))
+)"
+
+(
+  : Decide which files should go in every chunk
+  cd "$WORKDIR"
+  mkdir chunk_names
+  cd chunk_names
+  list_assets | split -l "$FILES_PER_CHUNK"
+  : "Note: This creates manifest files containing at most FILES_PER_CHUNK lines, each line being the path of an asset."
+  : "      The manifests can be listed with list_manifests"
+  ACTUAL_NUM_CHUNKS="$(list_manifests | wc -l)"
+  ((ACTUAL_NUM_CHUNKS == NUM_CHUNKS)) || ((NUM_CHUNKS > "$(list_assets | wc -l)")) || {
+    echo "ERROR: The actual number of chunks should be as requested:"
+    echo "  EXPECTED: $NUM_CHUNKS"
+    echo "  ACTUAL:   $ACTUAL_NUM_CHUNKS"
+    exit 1
+  } >&2
+)
+
+(
+  : Make chunks
+  cd "$WORKDIR"
+  mkdir chunks
+  cd assets
+  list_manifests | while read chunk_manifest; do
+    chunk_name="$WORKDIR/chunks/assets.$(basename "$chunk_manifest").tar.xz"
+    tar cJf "$chunk_name" -T "$chunk_manifest"
+  done
+)
+
+mv "$WORKDIR/chunks" "$OUTPUT_DIR"
+rm -fr "$WORKDIR" # TODO: Delete on exit
