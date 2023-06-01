@@ -47,7 +47,7 @@ for DFX_NETWORK in mainnet; do
       reference_file="REFERENCE_$file"
       diff "${!file}" "${!reference_file}" || {
         echo "ERROR: '${!file}' should match '${!reference_file}'"
-        echo "If the change is intentional, please re-run with --update."
+        echo "If the change is intentional, please update the reference files with '$0 --update'."
         exit 1
       } >&2
     done
