@@ -53,4 +53,9 @@ export class SnsNeuronHotkeysCardPo extends BasePageObject {
     const row = await this.getHotkeyRowPo(principal);
     return row.clickRemove();
   }
+
+  async getHotkeyPrincipals(): Promise<string[]> {
+    const rows = await this.getHotkeyRowPos();
+    return Promise.all(rows.map((row) => row.getPrincipal()));
+  }
 }
