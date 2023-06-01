@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Verifies that the ${0%.test} command behaves as advertised.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+cd "$SOURCE_DIR/.."
 
 tarfile_contents() {
   # Tarfile contents, excluding directories
