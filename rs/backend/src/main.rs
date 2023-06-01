@@ -304,7 +304,8 @@ pub fn add_stable_asset() {
 
 /// Add assets to be served by the canister.
 ///
-/// Only a whitelist of assets are accepted.
+/// # Errors
+/// - Permission to upload may be denied; see `may_upload()` for details.
 #[export_name = "canister_update add_assets_tar_xz"]
 pub fn add_assets_tar_xz() {
     over(candid_one, |asset_bytes: Vec<u8>| {
@@ -312,24 +313,11 @@ pub fn add_assets_tar_xz() {
         let hash_str = hex::encode(hash_bytes);
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
-        may_upload(&caller, is_controller, &hash_str).expect("Permission to upload asset denied");
+        assets::upload::may_upload(&caller, is_controller, &hash_str)
+            .map_err(|e| format!("Permission to upload '{}' denied: {}", hash_str, e))
+            .unwrap();
         insert_tar_xz(asset_bytes);
     })
-}
-
-/// Determine whether a given caller may upload the given asset.
-///
-/// - A controller may upload an asset.
-/// - TODO: A set of whitelisted users may upload a set of whitelisted assets.
-fn may_upload(caller: &ic_cdk::export::Principal, is_controller: bool, _hex_sha256: &str) -> Result<(), String> {
-    let mut reason = "Permission denied:  ".to_string();
-    if is_controller {
-        return Ok(());
-    } else {
-        reason += &format!("  Caller '{}' is not a controller.", caller);
-    }
-    // TODO: Check against whitelisted principals & hashes.
-    Err(reason)
 }
 
 #[derive(CandidType)]
