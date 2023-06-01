@@ -9,8 +9,9 @@ import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { BallotInfo, Proposal } from "@dfinity/nns";
+import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
+import type { Proposal } from "@dfinity/nns/dist/types/types/governance_converters";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("BallotSummary", () => {
