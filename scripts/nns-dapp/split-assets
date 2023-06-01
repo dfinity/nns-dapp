@@ -24,7 +24,7 @@ source "$(clap.build)"
 
 ORIGINAL_ASSETS_TAR_XZ="$(realpath "$ORIGINAL_ASSETS_TAR_XZ")"
 test -d "$OUTPUT_DIR" || {
-	 echo "ERROR: The output directory should exist: '$OUTPUT_DIR'"
+  echo "ERROR: The output directory should exist: '$OUTPUT_DIR'"
   exit 1
 } >&2
 rm -fr "$OUTPUT_DIR/chunks"
@@ -55,9 +55,8 @@ list_manifests() {
 
 FILES_PER_CHUNK="$(
   num_files="$(list_assets | wc -l)"
-  echo $(( (num_files + NUM_CHUNKS -1 ) / NUM_CHUNKS ))
+  echo $(((num_files + NUM_CHUNKS - 1) / NUM_CHUNKS))
 )"
-
 
 (
   : Decide which files should go in every chunk
@@ -67,8 +66,8 @@ FILES_PER_CHUNK="$(
   list_assets | split -l "$FILES_PER_CHUNK"
   : "Note: This creates manifest files containing at most FILES_PER_CHUNK lines, each line being the path of an asset."
   : "      The manifests can be listed with list_manifests"
-  ACTUAL_NUM_CHUNKS="$( list_manifests | wc -l )"
-  (( ACTUAL_NUM_CHUNKS == NUM_CHUNKS )) || (( NUM_CHUNKS > "$(list_assets | wc -l)" )) || {
+  ACTUAL_NUM_CHUNKS="$(list_manifests | wc -l)"
+  ((ACTUAL_NUM_CHUNKS == NUM_CHUNKS)) || ((NUM_CHUNKS > "$(list_assets | wc -l)")) || {
     echo "ERROR: The actual number of chunks should be as requested:"
     echo "  EXPECTED: $NUM_CHUNKS"
     echo "  ACTUAL:   $ACTUAL_NUM_CHUNKS"
@@ -81,7 +80,7 @@ FILES_PER_CHUNK="$(
   cd "$WORKDIR"
   mkdir chunks
   cd assets
-  list_manifests | while read chunk_manifest ; do
+  list_manifests | while read chunk_manifest; do
     chunk_name="$WORKDIR/chunks/assets.$(basename "$chunk_manifest").tar.xz"
     tar cJf "$chunk_name" -T "$chunk_manifest"
   done

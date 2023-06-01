@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 tarfile_contents() {
-	# Tarfile contents, excluding directories
+  # Tarfile contents, excluding directories
   tar -Jtf "$1" | grep -vE '/$'
 }
 
@@ -9,9 +9,10 @@ tarfile_contents() {
 
   : "Get or create a .tar.xz file"
   original="$(mktemp ,original-XXXXXX)"
-  if test -e out/assets.tar.xz
-  then cp out/assets.tar.xz "$toy_assets"
-  else tar -cJf "$original" frontend
+  if test -e out/assets.tar.xz; then
+    cp out/assets.tar.xz "$toy_assets"
+  else
+    tar -cJf "$original" frontend
   fi
 
   : "Chunk the original"
@@ -36,7 +37,7 @@ tarfile_contents() {
     echo "Unpacked original: $original_unpacked"
     echo "Unpacked chunks:   $chunks_unpacked"
     exit 1
-  }>&2
+  } >&2
 
   : "Clean up"
   rm -fr "$original" "$chunks_dir" "$original_unpacked" "$chunks_unpacked"
