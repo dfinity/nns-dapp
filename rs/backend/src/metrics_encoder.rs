@@ -29,8 +29,8 @@ impl<W: io::Write> MetricsEncoder<W> {
     }
 
     fn encode_header(&mut self, name: &str, help: &str, typ: &str) -> io::Result<()> {
-        writeln!(self.writer, "# HELP {} {}", name, help)?;
-        writeln!(self.writer, "# TYPE {} {}", name, typ)
+        writeln!(self.writer, "# HELP {name} {typ}")?;
+        writeln!(self.writer, "# TYPE {name} {typ}")
     }
 
     pub fn encode_single_value(&mut self, typ: &str, name: &str, value: f64, help: &str) -> io::Result<()> {
