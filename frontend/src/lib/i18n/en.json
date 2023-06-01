@@ -123,7 +123,12 @@
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code."
   },
   "warning": {
-    "auth_sign_out": "You have been logged out because your session has expired."
+    "auth_sign_out": "You have been logged out because your session has expired.",
+    "test_env_welcome": "Welcome to the Testing Environment.",
+    "test_env_note": "Please note that you are currently using a <strong>test</strong> version of NNS-dapp that operates on the Internet Computer <strong>mainnet</strong>. Although it utilizes real data, it is intended solely for testing purposes.",
+    "test_env_request": "We kindly remind you that the functionality and availability of this testing dapp may change or even disappear at any time. Therefore, it is crucial to refrain from relying on it for any production or critical activities.",
+    "test_env_confirm": "I understand and want to continue",
+    "test_env_title": "Warning"
   },
   "navigation": {
     "tokens": "My Tokens",
