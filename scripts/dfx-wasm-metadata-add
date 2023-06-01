@@ -76,7 +76,7 @@ rm "$WITH_COMMIT"
 
 ZIPPED="${DFX_CANISTER_WASM}.gz"
 if ((IS_ZIPPED == 0)); then
-  gzip <"${WITH_DID}" >"$ZIPPED"
+  gzip -n <"${WITH_DID}" >"$ZIPPED"
 else
   cat <"${WITH_DID}" >"$ZIPPED"
 fi
