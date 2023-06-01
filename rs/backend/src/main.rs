@@ -313,9 +313,11 @@ pub fn add_assets_tar_xz() {
         let hash_str = hex::encode(hash_bytes);
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
-        assets::upload::may_upload(&caller, is_controller, &hash_str)
+        assets::upload::TARBALL_WHITELIST.with(|whitelist| {
+            assets::upload::may_upload(&caller, is_controller, &hash_str, whitelist)
             .map_err(|e| format!("Permission to upload '{}' denied: {}", hash_str, e))
             .unwrap();
+        });
         insert_tar_xz(asset_bytes);
     })
 }
