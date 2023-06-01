@@ -62,15 +62,18 @@ test("Test SNS governance", async ({ page, context }) => {
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
   expect(await neuronDetail.getTitle()).toBe(snsProjectName);
   expect(await neuronDetail.getStake()).toBe(formattedStake);
+  expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 
   step("SN003: User can add a hotkey");
   const hotkeyPrincipal =
     "dskxv-lqp33-5g7ev-qesdj-fwwkb-3eze4-6tlur-42rxy-n4gag-6t4a3-tae";
   await neuronDetail.addHotkey(hotkeyPrincipal);
 
+  step("SN005: User can see the list of hotkeys of a neuron");
+  expect(await neuronDetail.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
   step("SN004: User can remove a hotkey");
   await neuronDetail.removeHotkey(hotkeyPrincipal);
   await appPo.waitForNotBusy();
-
-  // SN005: User can see the list of hotkeys of a neuron
+  expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 });
