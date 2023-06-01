@@ -56,6 +56,7 @@ const {
   stopDissolving,
   updateDelay,
   mergeNeurons,
+  simulateMergeNeurons,
   reloadNeuron,
   topUpNeuron,
 } = services;
@@ -176,6 +177,10 @@ describe("neurons-services", () => {
   const spyMergeNeurons = jest
     .spyOn(api, "mergeNeurons")
     .mockImplementation(() => Promise.resolve());
+
+  const spySimulateMergeNeurons = jest
+    .spyOn(api, "simulateMergeNeurons")
+    .mockImplementation(() => Promise.resolve(mockNeuron));
 
   const spyAddHotkey = jest
     .spyOn(api, "addHotkey")
@@ -859,6 +864,92 @@ describe("neurons-services", () => {
           $currentVersion: "1.9.9",
         })
       );
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("simulateMergeNeurons", () => {
+    it("should simulate merging neurons", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      await simulateMergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expect(spySimulateMergeNeurons).toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+
+    it("should not simulate merging neurons if no identity", async () => {
+      setNoIdentity();
+
+      await simulateMergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expectToastError(en.error.missing_identity);
+      expect(spySimulateMergeNeurons).not.toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+
+    it("should not simulate merging neurons if different controllers", async () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "another",
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron, neuron],
+        certified: true,
+      });
+
+      await simulateMergeNeurons({
+        sourceNeuronId: notControlledNeuron.neuronId,
+        targetNeuronId: neuron.neuronId,
+      });
+
+      expectToastError(en.error.merge_neurons_not_same_controller);
+      expect(spySimulateMergeNeurons).not.toHaveBeenCalled();
+      expect(spyMergeNeurons).not.toHaveBeenCalled();
+    });
+
+    it("should not simulate merging neurons if HW controlled", async () => {
+      accountsStore.setForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const hwPrincipal = mockHardwareWalletAccount.principal.toText();
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(5556),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
+
+      await simulateMergeNeurons({
+        sourceNeuronId: neuron1.neuronId,
+        targetNeuronId: neuron2.neuronId,
+      });
+
+      expect(spySimulateMergeNeurons).not.toHaveBeenCalled();
       expect(spyMergeNeurons).not.toHaveBeenCalled();
     });
   });
