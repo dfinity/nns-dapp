@@ -4,6 +4,7 @@ canister_init
 canister_post_upgrade
 canister_pre_upgrade
 canister_query get_account
+canister_query get_asset_whitelist
 canister_query get_canisters
 canister_query get_stats
 canister_query get_transactions
@@ -19,4 +20,5 @@ canister_update detach_canister
 canister_update get_proposal_payload
 canister_update register_hardware_wallet
 canister_update rename_sub_account
+canister_update set_asset_whitelist
 main
