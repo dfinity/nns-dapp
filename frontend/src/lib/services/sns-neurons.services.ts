@@ -22,10 +22,12 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import {
   snsNeuronsStore,
   type ProjectNeuronStore,
 } from "$lib/stores/sns-neurons.store";
+import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -46,12 +48,17 @@ import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+import type {
+  SnsNervousSystemParameters,
+  SnsNeuron,
+  SnsNeuronId,
+} from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,
+  isNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -64,6 +71,7 @@ import { queryAndUpdate } from "./utils.services";
 
 /**
  * Loads sns neurons in store and checks neurons's stake against the balance of the subaccount.
+ * (Loads sns parameters when not already in the store)
  *
  * On update, it will check whether there are neurons that need to be refreshed or claimed.
  * A neuron needs to be refreshed if the balance of the subaccount doesn't match the stake of the neuron.
@@ -75,7 +83,14 @@ import { queryAndUpdate } from "./utils.services";
 export const syncSnsNeurons = async (
   rootCanisterId: Principal
 ): Promise<void> => {
-  return queryAndUpdate<SnsNeuron[], unknown>({
+  const snsParameters = () =>
+    get(snsParametersStore)?.[rootCanisterId.toText()]
+      ?.parameters as SnsNervousSystemParameters;
+  // Load SNS parameters if not in store
+  const snsParametersRequest = isNullish(snsParameters())
+    ? loadSnsParameters(rootCanisterId)
+    : Promise.resolve();
+  const syncSnsNeuronsRequest = queryAndUpdate<SnsNeuron[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       querySnsNeurons({
@@ -91,9 +106,17 @@ export const syncSnsNeurons = async (
       });
 
       if (certified) {
+        // be sure that the parameters are loaded
+        await snsParametersRequest;
+        const neuronMinimumStake = fromNullable(
+          snsParameters()?.neuron_minimum_stake_e8s
+        );
+        assertNonNullish(neuronMinimumStake, "neuron_minimum_stake_e8s");
+
         checkSnsNeuronBalances({
           rootCanisterId,
           neurons,
+          neuronMinimumStake,
         });
       }
     },
@@ -116,6 +139,8 @@ export const syncSnsNeurons = async (
     },
     logMessage: "Syncing Sns Neurons",
   });
+
+  return Promise.all([snsParametersRequest, syncSnsNeuronsRequest]).then();
 };
 
 export const loadNeurons = async ({

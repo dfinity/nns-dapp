@@ -56,7 +56,7 @@ describe("NnsAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({ value: mockMainAccount.balance.toE8s() })} ICP`
+        `${formatToken({ value: mockMainAccount.balanceE8s })} ICP`
       );
     });
 

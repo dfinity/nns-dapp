@@ -6,9 +6,10 @@ import type {
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
-import { toNullable } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   mockDerived,
+  mockInit,
   mockQueryMetadata,
   principal,
   summaryForLifecycle,
@@ -33,10 +34,12 @@ export const snsResponseFor = ({
   principal,
   lifecycle,
   certified = false,
+  restrictedCountries,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
   certified?: boolean;
+  restrictedCountries?: string[];
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
@@ -50,7 +53,17 @@ export const snsResponseFor = ({
       rootCanisterId: principal.toText(),
       swapCanisterId: swapCanisterIdMock,
       governanceCanisterId: governanceCanisterIdMock,
-      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
+      swap: swapToQuerySwap({
+        ...summaryForLifecycle(lifecycle).swap,
+        init: [
+          {
+            ...mockInit,
+            restricted_countries: nonNullish(restrictedCountries)
+              ? [{ iso_codes: restrictedCountries }]
+              : [],
+          },
+        ],
+      }),
       derived: [mockDerived] as [SnsSwapDerivedState],
       certified,
     },

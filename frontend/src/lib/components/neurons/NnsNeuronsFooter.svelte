@@ -1,6 +1,6 @@
 <script lang="ts">
   import Footer from "$lib/components/layout/Footer.svelte";
-  import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
+  import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
@@ -51,7 +51,7 @@
 </Footer>
 
 {#if showModal === "stake-neuron"}
-  <StakeNeuronModal on:nnsClose={closeModal} />
+  <NnsStakeNeuronModal on:nnsClose={closeModal} />
 {/if}
 {#if showModal === "merge-neurons"}
   <MergeNeuronsModal on:nnsClose={closeModal} />

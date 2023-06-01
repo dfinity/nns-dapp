@@ -15,10 +15,12 @@
   import type { CanisterId } from "$lib/types/canister";
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let account: Account;
+  export let token: IcrcTokenMetadata | undefined;
 
   let loading = true;
 
@@ -89,4 +91,5 @@
   {loading}
   {completed}
   {descriptions}
+  {token}
 />

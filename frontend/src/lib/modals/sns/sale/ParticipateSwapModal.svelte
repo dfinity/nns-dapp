@@ -7,6 +7,7 @@
     onDestroy,
     onMount,
   } from "svelte";
+  import { getConditionsToAccept } from "$lib/getters/sns-summary";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -64,6 +65,14 @@
   $: userHasParticipatedToSwap = hasUserParticipatedToSwap({
     swapCommitment,
   });
+
+  let areSwapConditionsAccepted = false;
+  let conditionsToAccept: string | undefined;
+  $: conditionsToAccept = getConditionsToAccept(summary);
+
+  let disableContinue = true;
+  $: disableContinue =
+    nonNullish(conditionsToAccept) && !areSwapConditionsAccepted;
 
   let destinationAddress: string | undefined;
   $: (async () => {
@@ -183,6 +192,7 @@
     on:nnsSubmit={participate}
     {validateAmount}
     {transactionInit}
+    {disableContinue}
     disableSubmit={!accepted || busy}
     skipHardwareWallets
     transactionFee={$mainTransactionFeeStoreAsToken}
@@ -192,7 +202,10 @@
       >{title ?? $i18n.sns_project_detail.participate}</svelte:fragment
     >
     <div class="additional-info" slot="additional-info-form">
-      <AdditionalInfoForm />
+      <AdditionalInfoForm
+        {conditionsToAccept}
+        bind:areConditionsAccepted={areSwapConditionsAccepted}
+      />
     </div>
     <div class="additional-info" slot="additional-info-review">
       <AdditionalInfoReview bind:accepted />

@@ -67,7 +67,6 @@ export const getOrCreateAccount = async ({
   }
 };
 
-// Exported for testing
 export const loadAccounts = async ({
   identity,
   certified,
@@ -76,16 +75,12 @@ export const loadAccounts = async ({
   certified: boolean;
 }): Promise<AccountsStoreData> => {
   // Helper
-  const getAccountBalance = async (
-    identifierString: string
-  ): Promise<TokenAmount> => {
-    const e8sBalance = await queryAccountBalance({
+  const getAccountBalance = (identifierString: string): Promise<bigint> =>
+    queryAccountBalance({
       identity,
       certified,
       accountIdentifier: identifierString,
     });
-    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
-  };
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
     identity,
@@ -98,7 +93,7 @@ export const loadAccounts = async ({
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
     ): Promise<Account> => ({
       identifier: account.account_identifier,
-      balance: await getAccountBalance(account.account_identifier),
+      balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),
@@ -458,7 +453,10 @@ export const pollAccounts = async (certified = true) => {
   // Skip if accounts are already loaded and certified
   // `certified` might be `undefined` if not yet loaded.
   // Therefore, we compare with `true`.
-  if (accounts.certified === true) {
+  if (
+    accounts.certified === true ||
+    (accounts.certified === false && FORCE_CALL_STRATEGY === "query")
+  ) {
     return;
   }
 

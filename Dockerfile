@@ -139,6 +139,11 @@ WORKDIR /build
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
+COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
+# TODO: Move this to the apt install at the beginning of this file.
+RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
+ARG COMMIT
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
@@ -159,6 +164,12 @@ RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
 RUN ./build-sns-aggregator.sh
+COPY ./scripts/clap.bash /build/scripts/clap.bash
+COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
+# TODO: Move this to the apt install at the beginning of this file.
+RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
+ARG COMMIT
+RUN for wasm in sns_aggregator.wasm sns_aggregator_dev.wasm ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch

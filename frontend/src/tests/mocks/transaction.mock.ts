@@ -1,7 +1,6 @@
 import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Transaction } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { mockMainAccount, mockSubAccount } from "./accounts.store.mock";
 
 export const mockSentToSubAccountTransaction = {
@@ -32,13 +31,15 @@ export const mockReceivedFromMainAccountTransaction = {
   },
 } as NnsTransaction;
 
+const displayAmount = 11000000000000000n;
+
 export const mockTransactionReceiveDataFromMain: Transaction = {
   type: AccountTransactionType.Send,
   isReceive: true,
   isSend: false,
   from: "aaaaa-aa",
   to: "bbbbb-bb",
-  displayAmount: TokenAmount.fromNumber({ amount: 110000000, token: ICPToken }),
+  displayAmount,
   date: new Date("03-14-2021"),
 };
 
@@ -48,6 +49,6 @@ export const mockTransactionSendDataFromMain: Transaction = {
   isSend: true,
   from: "aaaaa-aa",
   to: "bbbbb-bb",
-  displayAmount: TokenAmount.fromNumber({ amount: 110000000, token: ICPToken }),
+  displayAmount,
   date: new Date("03-14-2021"),
 };

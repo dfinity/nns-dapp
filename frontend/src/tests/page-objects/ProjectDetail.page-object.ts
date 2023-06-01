@@ -3,6 +3,7 @@ import { ProjectInfoSectionPo } from "$tests/page-objects/ProjectInfoSection.pag
 import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 
 export class ProjectDetailPo extends BasePageObject {
   private static readonly TID = "project-detail-component";
@@ -21,6 +22,12 @@ export class ProjectDetailPo extends BasePageObject {
 
   getProjectStatusSectionPo(): ProjectStatusSectionPo {
     return ProjectStatusSectionPo.under(this.root);
+  }
+
+  getParticipateButton(): ButtonPo {
+    return this.getProjectStatusSectionPo()
+      .getParticipateButtonPo()
+      .getButton();
   }
 
   getProjectName(): Promise<string> {
@@ -43,8 +50,11 @@ export class ProjectDetailPo extends BasePageObject {
     return this.getProjectStatusSectionPo().hasCommitmentAmount();
   }
 
-  participate({ amount }: { amount: number }): Promise<void> {
-    return this.getProjectStatusSectionPo().participate({ amount });
+  participate(params: {
+    amount: number;
+    acceptConditions: boolean;
+  }): Promise<void> {
+    return this.getProjectStatusSectionPo().participate(params);
   }
 
   waitForContentLoaded(): Promise<void> {

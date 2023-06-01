@@ -59,16 +59,6 @@ describe("TotalValueLocked", () => {
     expect(() => getByTestId("tvl-metric")).toThrow();
   });
 
-  it("should not render TVL if response has no metrics", async () => {
-    const { getByTestId } = render(TotalValueLocked);
-
-    await tick();
-
-    metricsCallback?.({});
-
-    await waitFor(() => expect(() => getByTestId("tvl-metric")).toThrow());
-  });
-
   it("should not render TVL if response has zero metrics", async () => {
     const { getByTestId } = render(TotalValueLocked);
 

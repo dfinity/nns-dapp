@@ -1,5 +1,5 @@
 use crate::proposals::def::*;
-use candid::parser::types::{IDLType, PrimType};
+use candid::parser::types::{IDLType, IDLTypes, PrimType};
 use candid::parser::value::IDLValue;
 use candid::{CandidType, Decode, Deserialize};
 use ic_base_types::CanisterId;
@@ -62,6 +62,8 @@ pub struct InternetIdentityInit {
     pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
     pub register_rate_limit: Option<RateLimitConfig>,
+    pub max_num_latest_delegation_origins: Option<u64>,
+    pub migrate_storage_to_memory_manager: Option<bool>,
 }
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct RateLimitConfig {
@@ -96,19 +98,29 @@ pub enum ArchiveIntegration {
     Pull,
 }
 
-fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
+/// Best effort to determine the types of a cansiter args.
+fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
+    // If canister id is II
+    // use InternetIdentityInit type
+    let args = if canister_id == Some(IDENTITY_CANISTER_ID) {
+        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
+        vec![IDLType::OptT(Box::new(idl_type))]
+    } else {
+        vec![]
+    };
+    IDLTypes { args }
+}
+
+fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
     if arg.is_empty() {
         return "[]".to_owned();
     }
-    // If canister id is II
-    // use InternetIdentityInit type
-    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
-        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
-        IDLType::OptT(Box::new(idl_type))
-    } else {
-        // This will be ignored, so we won't have any type information.
-        IDLType::PrimT(PrimType::Null)
-    };
+    // We support only one argument, for the time being.
+    let idl_type = arg_types
+        .args
+        .get(0)
+        .cloned()
+        .unwrap_or_else(|| IDLType::PrimT(PrimType::Null));
 
     match Decode!(arg, IDLValue) {
         Ok(idl_value) => {
@@ -203,10 +215,11 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
 }
 
 fn debug<T: Debug>(value: T) -> String {
-    format!("{:?}", value)
+    format!("{value:?}")
 }
 
 mod def {
+    use crate::proposals::canister_arg_types;
     use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
@@ -250,7 +263,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, None);
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -290,7 +303,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, Some(payload.canister_id));
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -517,7 +530,7 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
@@ -525,7 +538,7 @@ mod def {
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in bytes {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
