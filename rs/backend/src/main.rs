@@ -302,13 +302,35 @@ pub fn add_stable_asset() {
     })
 }
 
+/// Sets the asset whitelist
+///
+/// # Panics
 #[export_name = "canister_update set_asset_whitelist"]
 pub fn set_asset_whitelist() {
-    over(candid_one, |_whitelist: assets::upload::TarballWhitelist| {
-        unimplemented!()
+    over(candid_one, |new_whitelist: assets::upload::TarballWhitelist| {
+        let caller = ic_cdk::caller();
+        let is_controller = ic_cdk::api::is_controller(&caller);
+        if is_controller {
+            assets::upload::TARBALL_WHITELIST.with(|whitelist| {
+                // TODO: Are any sanity checks needed before accepting the asset?  E.g. the data structure has unbounded size, which could be problematic.
+                whitelist.replace(new_whitelist);
+            });
+        } else {
+            panic!(
+                "The caller {} is not a controller, so may not change the whitelist",
+                caller
+            );
+        }
     })
 }
 
+/// Returns the asset whitelist.
+#[export_name = "canister_query get_asset_whitelist"]
+pub fn get_asset_whitelist() {
+    over(candid, |()| {
+        assets::upload::TARBALL_WHITELIST.with(|whitelist| whitelist.clone())
+    });
+}
 
 /// Add assets to be served by the canister.
 ///
@@ -323,8 +345,8 @@ pub fn add_assets_tar_xz() {
         let is_controller = ic_cdk::api::is_controller(&caller);
         assets::upload::TARBALL_WHITELIST.with(|whitelist| {
             assets::upload::may_upload(&caller, is_controller, &hash_str, &whitelist.borrow())
-            .map_err(|e| format!("Permission to upload '{}' denied: {}", hash_str, e))
-            .unwrap();
+                .map_err(|e| format!("Permission to upload '{}' denied: {}", hash_str, e))
+                .unwrap();
         });
         insert_tar_xz(asset_bytes);
     })
