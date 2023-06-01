@@ -302,6 +302,14 @@ pub fn add_stable_asset() {
     })
 }
 
+#[export_name = "canister_update set_asset_whitelist"]
+pub fn set_asset_whitelist() {
+    over(candid_one, |_whitelist: assets::upload::TarballWhitelist| {
+        unimplemented!()
+    })
+}
+
+
 /// Add assets to be served by the canister.
 ///
 /// # Errors
@@ -314,7 +322,7 @@ pub fn add_assets_tar_xz() {
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
         assets::upload::TARBALL_WHITELIST.with(|whitelist| {
-            assets::upload::may_upload(&caller, is_controller, &hash_str, whitelist)
+            assets::upload::may_upload(&caller, is_controller, &hash_str, &whitelist.borrow())
             .map_err(|e| format!("Permission to upload '{}' denied: {}", hash_str, e))
             .unwrap();
         });

@@ -1,11 +1,12 @@
 use ic_cdk::export::Principal;
+use core::cell::RefCell;
 
 thread_local! {
-    pub static TARBALL_WHITELIST: TarballWhitelist = TarballWhitelist::default();
+    pub static TARBALL_WHITELIST: RefCell<TarballWhitelist> = RefCell::new(TarballWhitelist::default());
 }
 
 /// A whitelist of assset tarballs and operators permitted to upload the tarballs.
-#[derive(Default)]
+#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq, serde::Serialize, Default)]
 pub struct TarballWhitelist {
     /// Whitelisted tarballs
     hashes: Vec<TarballHash>,
@@ -13,7 +14,8 @@ pub struct TarballWhitelist {
     operators: Vec<Principal>,
 }
 
-/// A named release with hashes of the corresponding tarballs
+/// A tarball hash with information to verify that the hash is correct.
+#[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq, serde::Serialize)]
 pub struct TarballHash {
     /// The git commit that produced the tarball
     commit: String,
