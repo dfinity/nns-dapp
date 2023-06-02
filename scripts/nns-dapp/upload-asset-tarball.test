@@ -20,25 +20,68 @@ source "$(clap.build)"
 
 export DFX_NETWORK
 
+if [[ "${DFX_NETWORK:-}" == "local" ]] ; then
+  cat <<-EOF
+	################################################################
+	#                   W  A  R  N  I  N  G                        #
+	#                                                              #
+	# dfx uses an old replica which doesn't support is_controller. #
+	# If you know that the replica in dfx has been updated, please #
+	# remove this warning.  Otherwise, expect this test to fail.   #
+	################################################################
+	EOF
+fi
+
 (
   echo "Controller should be able to upload assets"
   controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
-  principal="$(dfx identity get_principal)"
+  principal="$(dfx identity get-principal)"
   echo "$controllers" | grep -w "$principal" || {
     echo "ERROR: Test precondition failed: the current identity is not a controller of the nns-dapp."
   }
-  assets_dir="$(mktemp -d)"
+  work_dir="$(mktemp -d)"
   filename="controller-file.txt"
   tarname="assets.tar.xz"
   download="download.txt"
   (
-    cd "$assets_dir"
+    mkdir "$work_dir/assets"
+    cd "$work_dir/assets"
     echo "I am a controller." >"$filename"
+    echo "I am a still a controller." >"second_$filename"
     # TODO: Make reproducible, not that it matters here.
-    tar -cJ -f "$tarname" "$filename"
-    scripts/nns-dapp/asset-chunk-upload --chunk "$assets_dir/$tarname" --network "$DFX_NETWORK"
+    tar -cJ -f "../$tarname" "./"
+    cd ..
+)
+    # Have to return to the project root for dfx to find the nns-dapp canister ID.
+    "$SOURCE_DIR/nns-dapp/upload-asset-tarball" --chunk "$work_dir/$tarname" --network "$DFX_NETWORK"
     url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$filename"
     curl -LfsS "$url" -o "$download"
-    diff "$filename" "$download"
-  )
+    diff "$work_dir/assets/$filename" "$download"
+)
+
+(
+  echo "Controller should be able to upload assets"
+  controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
+  principal="$(dfx identity get-principal)"
+  echo "$controllers" | grep -w "$principal" || {
+    echo "ERROR: Test precondition failed: the current identity is not a controller of the nns-dapp."
+  }
+  work_dir="$(mktemp -d)"
+  filename="controller-file.txt"
+  tarname="assets.tar.xz"
+  download="download.txt"
+  (
+    mkdir "$work_dir/assets"
+    cd "$work_dir/assets"
+    echo "I am a controller." >"$filename"
+    echo "I am a still a controller." >"second_$filename"
+    # TODO: Make reproducible, not that it matters here.
+    tar -cJ -f "../$tarname" "./"
+    cd ..
+)
+    # Have to return to the project root for dfx to find the nns-dapp canister ID.
+    "$SOURCE_DIR/nns-dapp/upload-asset-tarball" --chunk "$work_dir/$tarname" --network "$DFX_NETWORK"
+    url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$filename"
+    curl -LfsS "$url" -o "$download"
+    diff "$work_dir/assets/$filename" "$download"
 )
