@@ -20,68 +20,135 @@ source "$(clap.build)"
 
 export DFX_NETWORK
 
-if [[ "${DFX_NETWORK:-}" == "local" ]] ; then
-  cat <<-EOF
-	################################################################
-	#                   W  A  R  N  I  N  G                        #
-	#                                                              #
-	# dfx uses an old replica which doesn't support is_controller. #
-	# If you know that the replica in dfx has been updated, please #
-	# remove this warning.  Otherwise, expect this test to fail.   #
-	################################################################
+if [[ "${DFX_NETWORK:-}" == "local" ]]; then
+  cat <<-"EOF"
+	####################################################################
+	#                     W  A  R  N  I  N  G                          #
+	#                                                                  #
+	# dfx uses an old replica which doesn't support `is_controller()`. #
+	# If you know that the replica in dfx has been updated, please     #
+	# remove this warning.  Otherwise, expect this test to fail.       #
+	####################################################################
 	EOF
 fi
 
-(
-  echo "Controller should be able to upload assets"
-  controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
-  principal="$(dfx identity get-principal)"
-  echo "$controllers" | grep -w "$principal" || {
-    echo "ERROR: Test precondition failed: the current identity is not a controller of the nns-dapp."
-  }
-  work_dir="$(mktemp -d)"
-  filename="controller-file.txt"
-  tarname="assets.tar.xz"
-  download="download.txt"
+filename="controller-file.txt"
+tarname="assets.tar.xz"
+downloaded="download.txt"
+mk_tarball() {
   (
-    mkdir "$work_dir/assets"
+    mkdir -p "$work_dir/assets/$DFX_IDENTITY"
     cd "$work_dir/assets"
-    echo "I am a controller." >"$filename"
-    echo "I am a still a controller." >"second_$filename"
-    # TODO: Make reproducible, not that it matters here.
+    echo "$1" >"$DFX_IDENTITY/$filename"
+    # TODO: Make reproducible, not that it matters here.  But it could set a bad example.
     tar -cJ -f "../$tarname" "./"
     cd ..
-)
-    # Have to return to the project root for dfx to find the nns-dapp canister ID.
-    "$SOURCE_DIR/nns-dapp/upload-asset-tarball" --chunk "$work_dir/$tarname" --network "$DFX_NETWORK"
-    url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$filename"
-    curl -LfsS "$url" -o "$download"
-    diff "$work_dir/assets/$filename" "$download"
-)
+  )
+}
+upload() {
+  "$SOURCE_DIR/nns-dapp/upload-asset-tarball" --identity "$DFX_IDENTITY" --chunk "$work_dir/$tarname" --network "$DFX_NETWORK"
+}
+assert_upload() {
+  upload || {
+    echo "ERROR: API call to upload assets should have succeeded."
+    echo "DFX_IDENTITY: $DFX_IDENTITY"
+    exit 1
+  } >&2
+}
+assert_upload_fails() {
+  ! upload &>/dev/null || {
+    echo "ERROR: API call to upload assets should have failed."
+    echo "DFX_IDENTITY: $DFX_IDENTITY"
+    exit 1
+  } >&2
+}
+download() {
+  url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$DFX_IDENTITY/$filename"
+  curl -LsS --fail "$url" -o "$work_dir/$downloaded"
+}
+assert_download() {
+  (
+    download || {
+      echo "ERROR: Should have been able to download assets from url '$url'"
+      exit 1
+    } >&2
+  )
+}
+assert_download_fails() {
+  (
+    ! download &>/dev/null || {
+      echo "ERROR: Download should have failed from url: '$url'"
+      exit 1
+    } >&2
+  )
+}
+assert_download_matches() {
+  diff "$work_dir/assets/$DFX_IDENTITY/$filename" "$work_dir/$downloaded" || {
+    echo "ERROR: The downloaded assets should match the uploaded ones."
+    exit 1
+  } >&2
+}
+is_controller() {
+  controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
+  principal="$(dfx identity get-principal --identity "$DFX_IDENTITY")"
+  echo "$controllers" | grep -qw "$principal"
+}
+assert_is_controller() {
+  (
+    is_controller || {
+      echo "ERROR: Identity '$DFX_IDENTITY' should be a controller of the nns-dapp canister on network '$DFX_NETWORK'"
+      echo "  Principal:   '$principal'"
+      echo "  Controllers: $controllers"
+      exit 1
+    } >&2
+  )
+}
+assert_not_controller() {
+  (
+    ! is_controller || {
+      echo "ERROR: Identity '$DFX_IDENTITY' should NOT be a controller of the nns-dapp canister on network '$DFX_NETWORK'"
+      echo "  Principal:   '$principal'"
+      echo "  Controllers: $controllers"
+      exit 1
+    } >&2
+  )
+}
 
 (
   echo "Controller should be able to upload assets"
-  controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
-  principal="$(dfx identity get-principal)"
-  echo "$controllers" | grep -w "$principal" || {
-    echo "ERROR: Test precondition failed: the current identity is not a controller of the nns-dapp."
-  }
+  DFX_IDENTITY="$(dfx identity whoami)"
+  export DFX_IDENTITY
+  : "Verify that the identity is in fact a controller."
+  assert_is_controller
+  : "Test: We should be able to upload a tarball"
   work_dir="$(mktemp -d)"
-  filename="controller-file.txt"
-  tarname="assets.tar.xz"
-  download="download.txt"
-  (
-    mkdir "$work_dir/assets"
-    cd "$work_dir/assets"
-    echo "I am a controller." >"$filename"
-    echo "I am a still a controller." >"second_$filename"
-    # TODO: Make reproducible, not that it matters here.
-    tar -cJ -f "../$tarname" "./"
-    cd ..
+  mk_tarball "I am a controller"
+  assert_upload
+  : "Test: The assets should be available"
+  assert_download
+  : "Test: The downloaded assets should match the uploaded ones."
+  assert_download_matches
+  : "Clean up"
+  rm -fr "${work_dir:-this is not the directory you are looking for}"
 )
-    # Have to return to the project root for dfx to find the nns-dapp canister ID.
-    "$SOURCE_DIR/nns-dapp/upload-asset-tarball" --chunk "$work_dir/$tarname" --network "$DFX_NETWORK"
-    url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$filename"
-    curl -LfsS "$url" -o "$download"
-    diff "$work_dir/assets/$filename" "$download"
+
+(
+  echo "Unauthorized principals should not be able to upload assets"
+  DFX_IDENTITY="nobody-$(date +%s)"
+  dfx identity new "$DFX_IDENTITY" &>/dev/null
+  export DFX_IDENTITY
+
+  : "Verify that the identity is not a controller."
+  assert_not_controller
+
+  : "Verify that uploading a tarball fails"
+  work_dir="$(mktemp -d)"
+  mk_tarball "I am a nobody"
+  assert_upload_fails
+
+  : "The tarball installation should not have become available for download."
+  assert_download_fails
+
+  : "Clean up"
+  rm -fr "${work_dir:-this is not the directory you are looking for}"
 )
