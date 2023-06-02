@@ -8,7 +8,7 @@ import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
@@ -77,17 +77,14 @@ export const transactionDisplayAmount = ({
   fee,
 }: {
   useFee: boolean;
-  amount: TokenAmount;
-  fee: TokenAmount | undefined;
-}): TokenAmount => {
+  amount: bigint;
+  fee: bigint | undefined;
+}): bigint => {
   if (useFee) {
-    if (fee === undefined) {
+    if (isNullish(fee)) {
       throw new Error("fee is not available");
     }
-    return TokenAmount.fromE8s({
-      amount: amount.toE8s() + fee.toE8s(),
-      token: amount.token,
-    });
+    return amount + fee;
   }
   return amount;
 };
@@ -104,41 +101,23 @@ export const mapNnsTransaction = ({
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
-  let amount: TokenAmount | undefined;
-  let fee: TokenAmount | undefined;
+  let amount: bigint | undefined;
+  let fee: bigint | undefined;
 
   if ("Send" in transfer) {
     from = account.identifier;
     to = transfer.Send.to;
-    amount = TokenAmount.fromE8s({
-      amount: transfer.Send.amount.e8s,
-      token: ICPToken,
-    });
-    fee = TokenAmount.fromE8s({
-      amount: transfer.Send.fee.e8s,
-      token: ICPToken,
-    });
+    amount = transfer.Send.amount.e8s;
+    fee = transfer.Send.fee.e8s;
   } else if ("Receive" in transfer) {
     to = account.identifier;
     from = transfer.Receive.from;
-    amount = TokenAmount.fromE8s({
-      amount: transfer.Receive.amount.e8s,
-      token: ICPToken,
-    });
-    fee = TokenAmount.fromE8s({
-      amount: transfer.Receive.fee.e8s,
-      token: ICPToken,
-    });
+    amount = transfer.Receive.amount.e8s;
+    fee = transfer.Receive.fee.e8s;
   } else if ("Burn" in transfer) {
-    amount = TokenAmount.fromE8s({
-      amount: transfer.Burn.amount.e8s,
-      token: ICPToken,
-    });
+    amount = transfer.Burn.amount.e8s;
   } else if ("Mint" in transfer) {
-    amount = TokenAmount.fromE8s({
-      amount: transfer.Mint.amount.e8s,
-      token: ICPToken,
-    });
+    amount = transfer.Mint.amount.e8s;
   } else {
     throw new Error("Unsupported transfer type");
   }

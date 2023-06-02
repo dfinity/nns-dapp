@@ -82,7 +82,7 @@ describe("TransactionCard", () => {
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `-${formatToken({
-        value: mockTransactionSendDataFromMain.displayAmount.toE8s(),
+        value: mockTransactionSendDataFromMain.displayAmount,
         detailed: true,
       })}`
     );
@@ -95,7 +95,7 @@ describe("TransactionCard", () => {
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `+${formatToken({
-        value: mockTransactionReceiveDataFromMain.displayAmount.toE8s(),
+        value: mockTransactionReceiveDataFromMain.displayAmount,
         detailed: true,
       })}`
     );
