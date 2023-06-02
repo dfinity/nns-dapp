@@ -301,6 +301,31 @@ export const mergeNeurons = async ({
   );
 };
 
+export const simulateMergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: ApiMergeNeuronsParams): Promise<NeuronInfo> => {
+  try {
+    logWithTimestamp(
+      `Simulating merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+        targetNeuronId
+      )}) call...`
+    );
+    const { canister } = await governanceCanister({ identity });
+    return await canister.simulateMergeNeurons({
+      sourceNeuronId,
+      targetNeuronId,
+    });
+  } finally {
+    logWithTimestamp(
+      `Simulating merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+        targetNeuronId
+      )}) complete.`
+    );
+  }
+};
+
 export const startDissolving = async ({
   neuronId,
   identity,
