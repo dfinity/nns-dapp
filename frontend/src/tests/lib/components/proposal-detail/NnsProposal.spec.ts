@@ -94,7 +94,6 @@ describe("Proposal", () => {
       new JestPageObjectElement(container)
     );
 
-    // expect(await isPresent()).toBe(true);
     expect(await getNextButtonPo().isPresent()).toBe(true);
     expect(await getPreviousButtonPo().isPresent()).toBe(true);
   });
