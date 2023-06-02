@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+
+print_help() {
+	cat <<-EOF
+
+	Verifies that a controller can upload an asset tarball to nns-dapp but unauthorized users cannot.
+
+	Assumes that the network is running, nns-dapp is installed and the current user is a controller.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+export DFX_NETWORK
+
+(
+    echo "Controller should be able to upload assets"
+    controllers="$(dfx canister info --network "$DFX_NETWORK" nns-dapp | sed -nE 's/Controllers://g;ta;b;:a;p;q')"
+    principal="$(dfx identity get_principal)"
+    echo "$controllers" | grep -w "$principal" || {
+      echo "ERROR: Test precondition failed: the current identity is not a controller of the nns-dapp."
+    }
+    assets_dir="$(mktemp -d)"
+    filename="controller-file.txt"
+    tarname="assets.tar.xz"
+download="download.txt"
+    (
+    cd "$assets_dir"
+    echo "I am a controller." > "$filename"
+    # TODO: Make reproducible, not that it matters here.
+    tar -cJ -f "$tarname" "$filename"
+    scripts/nns-dapp/asset-chunk-upload --chunk "$assets_dir/$tarname" --network "$DFX_NETWORK"
+    url="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)/$filename"
+    curl -LfsS "$url" -o "$download"
+    diff "$filename" "$download"
+    )
+)
