@@ -79,7 +79,8 @@ RUN cargo install "ic-wasm@$(cat config/ic_wasm_version)"
 # Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
-COPY dfx.json dfx-canister-url config.sh canister_ids.jso[n] /build/
+COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY scripts/dfx-canister-url scripts/clap.bash /build/scripts/
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
@@ -93,7 +94,8 @@ RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-a
 #       The mainnet config is compiled in and may be overridden using deploy args.
 FROM builder AS mainnet_configurator
 SHELL ["bash", "-c"]
-COPY dfx.json dfx-canister-url config.sh /build/
+COPY dfx.json config.sh /build/
+COPY scripts/dfx-canister-url scripts/clap.bash /build/scripts/
 WORKDIR /build
 RUN mkdir -p frontend
 ENV DFX_NETWORK=mainnet
