@@ -36,18 +36,12 @@ fn controller_should_be_permitted_to_upload() {
 }
 #[test]
 fn unauthorized_principal_should_not_be_able_to_upload_a_non_whitelisted_asset() {
-    let whitelist = toy_whitelist();
     let caller = Principal::from_text("qsgjb-riaaa-aaaaa-aaaga-cai").unwrap();
     let is_controller = false;
-    let response = may_upload(&caller, is_controller, &hash).expect_err("Permission should have been denied.");
+    let response = may_upload(&caller, is_controller).expect_err("Permission should have been denied.");
     assert_contains(
         &response,
         &format!("Caller '{caller}' is not a controller."),
-        "The rejection message",
-    );
-    assert_contains(
-        &response,
-        &format!("Caller '{caller}' is not whitelisted to update assets."),
         "The rejection message",
     );
 }
