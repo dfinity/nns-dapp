@@ -236,7 +236,7 @@ jobs:
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "mainnet-config-stability-test"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
