@@ -15,7 +15,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    timeout-minutes: 60
+    timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
@@ -32,37 +32,111 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
-      - name: Get SNS scripts
-        uses: actions/checkout@v3
+      - name: Rename nns-dapp.wasm for upload
+        run: cp nns-dapp.wasm nns-dapp_local.wasm
+      - name: 'Upload nns-dapp_local wasm module'
+        uses: actions/upload-artifact@v3
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
+          name: nns-dapp_local
+          path: nns-dapp_local.wasm
+          retention-days: 3
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
+      - name: 'Upload sns_aggregator_dev wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: sns_aggregator_dev.wasm
+          retention-days: 3
+  test-playwright-e2e:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
           # Version from 2023-05-24 with longer retries to install dfx
-          ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
+      - name: Generate .env configuration for Playwright end-to-end tests
+        run: |
+          DFX_NETWORK=local ./config.sh
+      - name: Prepare for Playwright end-to-end tests
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps firefox
+      - name: Wait for aggregator to get all SNSs
+        run: |
+          set +x
+          for (( try=300; try>0; try-- )); do
+             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
+             (( num_sns < 12)) || break
+             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
+             sleep 2
+          done
+      - name: Run Playwright end-to-end tests
+        working-directory: frontend
+        run: npm run test-e2e
+      - name: Upload Playwright results
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: playwright-failure-results
+          path: |
+            frontend/playwright-report/*
+            frontend/playwright-results/*
+          retention-days: 3
+      - name: Stop replica
+        run: dfx stop
+  test-rest:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          # Version from 2023-05-24 with longer retries to install dfx
+          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-      - name: Get test environment
-        run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
-          dfx-snapshot-restore --snapshot state.tar.xz --verbose
-          dfx identity use snsdemo8
-          dfx-sns-demo-healthcheck
-      - name: Install nns-dapp and sns_aggregator
-        run: |
-          echo "Create the nns-dapp install argument:"
-          export DFX_NETWORK=local
-          ./config.sh
-          echo "Install:"
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
-          dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-          # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
-          dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
@@ -111,22 +185,17 @@ jobs:
             exit 1
           } >&2
       - name: Check that metadata is present
-        run: scripts/dfx-wasm-metadata-add.test --verbose
+        run: |
+          # dfx-wasm-metadata-add.test expects nns-dapp.wasm
+          cp nns-dapp_local.wasm nns-dapp.wasm
+          scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
           if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
           else echo "Skipping test as there are no relevant code changes"
           fi
-      - name: Rename nns-dapp.wasm for upload
-        run: cp nns-dapp.wasm nns-dapp_local.wasm
-      - name: 'Upload nns-dapp_local wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: nns-dapp_local
-          path: nns-dapp_local.wasm
-          retention-days: 3
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -140,35 +209,6 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate .env configuration for Playwright end-to-end tests
-        run: |
-          DFX_NETWORK=local ./config.sh
-      - name: Prepare for Playwright end-to-end tests
-        working-directory: frontend
-        run: |
-          npm ci
-          npx playwright install --with-deps firefox
-      - name: Wait for aggregator to get all SNSs
-        run: |
-          set +x
-          for (( try=300; try>0; try-- )); do
-             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
-             (( num_sns < 12)) || break
-             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
-          done
-      - name: Run Playwright end-to-end tests
-        working-directory: frontend
-        run: npm run test-e2e
-      - name: Upload Playwright results
-        uses: actions/upload-artifact@v3
-        if: ${{ failure() }}
-        with:
-          name: playwright-failure-results
-          path: |
-            frontend/playwright-report/*
-            frontend/playwright-results/*
-          retention-days: 3
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
@@ -193,7 +233,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp_local.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
@@ -230,7 +270,7 @@ jobs:
         run: |
           rm -rf screenshots
   build-pass:
-    needs: ["build"]
+    needs: ["build", "test-playwright-e2e", "test-rest"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
