@@ -112,6 +112,8 @@ local_deployment_data="$(
   # TODO: A canister custom URL should probably not override the API URL.
   API_HOST="$(dfx-canister-url --network "${DFX_NETWORK/mainnet/ic}" --type api nns-governance)"
   export API_HOST
+  STATIC_HOST="$(dfx-canister-url --network "${DFX_NETWORK/mainnet/ic}" --type static nns-governance)"
+  export STATIC_HOST
 
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
@@ -127,6 +129,7 @@ local_deployment_data="$(
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID,
     HOST: env.API_HOST,
+    API_HOST: env.API_HOST,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID
     } | del(..|select(. == null))'
