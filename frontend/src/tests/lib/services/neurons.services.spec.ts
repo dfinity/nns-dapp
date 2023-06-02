@@ -168,28 +168,28 @@ describe("neurons-services", () => {
     spyStakeNeuron.mockImplementation(() =>
       Promise.resolve(mockNeuron.neuronId)
     );
-    spyGetNeuron.mockImplementation(() => Promise.resolve(mockNeuron));
-    spyIncreaseDissolveDelay.mockImplementation(() => Promise.resolve());
-    spyJoinCommunityFund.mockImplementation(() => Promise.resolve());
-    spyAutoStakeMaturity.mockImplementation(() => Promise.resolve());
-    spyLeaveCommunityFund.mockImplementation(() => Promise.resolve());
-    spyDisburse.mockImplementation(() => Promise.resolve());
-    spyMergeMaturity.mockImplementation(() => Promise.resolve());
-    spyStakeMaturity.mockImplementation(() => Promise.resolve());
+    spyGetNeuron.mockResolvedValue(mockNeuron);
+    spyIncreaseDissolveDelay.mockResolvedValue();
+    spyJoinCommunityFund.mockResolvedValue();
+    spyAutoStakeMaturity.mockResolvedValue();
+    spyLeaveCommunityFund.mockResolvedValue();
+    spyDisburse.mockResolvedValue();
+    spyMergeMaturity.mockResolvedValue();
+    spyStakeMaturity.mockResolvedValue();
     spySpawnNeuron.mockImplementation(() =>
       Promise.resolve(newSpawnedNeuronId)
     );
-    spyMergeNeurons.mockImplementation(() => Promise.resolve());
+    spyMergeNeurons.mockResolvedValue();
     spySimulateMergeNeurons.mockImplementation(() =>
       Promise.resolve(mockNeuron)
     );
-    spyAddHotkey.mockImplementation(() => Promise.resolve());
-    spyRemoveHotkey.mockImplementation(() => Promise.resolve());
-    spySplitNeuron.mockImplementation(() => Promise.resolve(BigInt(11)));
-    spyStartDissolving.mockImplementation(() => Promise.resolve());
-    spyStopDissolving.mockImplementation(() => Promise.resolve());
-    spySetFollowees.mockImplementation(() => Promise.resolve());
-    spyClaimOrRefresh.mockImplementation(() => Promise.resolve(undefined));
+    spyAddHotkey.mockResolvedValue();
+    spyRemoveHotkey.mockResolvedValue();
+    spySplitNeuron.mockResolvedValue(BigInt(11));
+    spyStartDissolving.mockResolvedValue();
+    spyStopDissolving.mockResolvedValue();
+    spySetFollowees.mockResolvedValue();
+    spyClaimOrRefresh.mockResolvedValue(undefined);
   });
 
   describe("stake new neuron", () => {
@@ -1686,7 +1686,7 @@ describe("neurons-services", () => {
         neuronId,
         fullNeuron: undefined,
       };
-      spyGetNeuron.mockImplementation(() => Promise.resolve(publicInfoNeuron));
+      spyGetNeuron.mockResolvedValue(publicInfoNeuron);
       const setNeuronSpy = jest.fn();
 
       expect(spyGetNeuron).not.toBeCalled();
