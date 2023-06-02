@@ -215,7 +215,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
 }
 
 fn debug<T: Debug>(value: T) -> String {
-    format!("{:?}", value)
+    format!("{value:?}")
 }
 
 mod def {
@@ -530,7 +530,7 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
@@ -538,7 +538,7 @@ mod def {
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in bytes {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
