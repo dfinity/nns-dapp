@@ -27,10 +27,10 @@ pub struct TarballHash {
     hash: String,
 }
 
-/// Determine whether a given caller may upload the given asset.
+/// Determine whether a given caller may upload the given tarball.
 ///
 /// - A controller may upload an asset.
-/// - TODO: A set of whitelisted users may upload a set of whitelisted assets.
+/// - A set whitelisted user may upload a whitelisted tarball.
 pub fn may_upload(
     caller: &ic_cdk::export::Principal,
     is_controller: bool,
