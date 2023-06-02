@@ -180,7 +180,9 @@ describe("neurons-services", () => {
       Promise.resolve(newSpawnedNeuronId)
     );
     spyMergeNeurons.mockImplementation(() => Promise.resolve());
-    spySimulateMergeNeurons.mockImplementation(() => Promise.resolve(mockNeuron));
+    spySimulateMergeNeurons.mockImplementation(() =>
+      Promise.resolve(mockNeuron)
+    );
     spyAddHotkey.mockImplementation(() => Promise.resolve());
     spyRemoveHotkey.mockImplementation(() => Promise.resolve());
     spySplitNeuron.mockImplementation(() => Promise.resolve(BigInt(11)));
@@ -942,8 +944,8 @@ describe("neurons-services", () => {
         targetNeuronId: neurons[1].neuronId,
       });
 
-      expect(spySimulateMergeNeurons).toBeCalledTimes({
-        identity, mockIdentity,
+      expect(spySimulateMergeNeurons).toBeCalledWith({
+        identity: mockIdentity,
         sourceNeuronId: neurons[0].neuronId,
         targetNeuronId: neurons[1].neuronId,
       });
