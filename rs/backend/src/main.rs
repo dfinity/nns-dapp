@@ -335,7 +335,7 @@ pub fn get_asset_whitelist() {
 
 /// Add assets to be served by the canister.
 ///
-/// # Errors
+/// # Panics
 /// - Permission to upload may be denied; see `may_upload()` for details.
 #[export_name = "canister_update add_assets_tar_xz"]
 pub fn add_assets_tar_xz() {
