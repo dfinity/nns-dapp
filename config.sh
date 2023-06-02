@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR/scripts:$PATH"
 
 ##################################################
 # SINGLE SOURCE OF TRUTH FOR BUILD CONFIGURATION #
