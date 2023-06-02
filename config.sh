@@ -84,8 +84,6 @@ local_deployment_data="$(
   : "Get the governance canister ID and URL - they should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
-  GOVERNANCE_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-governance)"
-  export GOVERNANCE_CANISTER_URL
 
   : "Get the ledger canister ID and URL - they should be defined"
   LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
@@ -130,7 +128,6 @@ local_deployment_data="$(
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID,
-    GOVERNANCE_CANISTER_URL: env.GOVERNANCE_CANISTER_URL,
     HOST: env.API_HOST,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     LEDGER_CANISTER_URL: env.LEDGER_CANISTER_URL,
