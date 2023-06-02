@@ -219,6 +219,15 @@ jobs:
         run: command -v didc
       - name: Recreate and compare patches
         run: scripts/mk_nns_patch.test
+  mainnet-config-stability-test:
+    name: Mainnet config is as expected
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Check mainnet config
+        run: scripts/nns-dapp/test-config
   asset-chunking-works:
     name: Asset chunking works
     runs-on: ubuntu-20.04
@@ -227,7 +236,7 @@ jobs:
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "mainnet-config-stability-test"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
