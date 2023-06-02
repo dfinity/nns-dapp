@@ -13,14 +13,13 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { IcrcTransaction } from "@dfinity/ledger";
-import {
-  TokenAmount,
-  type Ballot,
-  type Followees,
-  type KnownNeuron,
-  type Neuron,
-  type NeuronInfo,
-  type ProposalInfo,
+import type {
+  Ballot,
+  Followees,
+  KnownNeuron,
+  Neuron,
+  NeuronInfo,
+  ProposalInfo,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -62,18 +61,6 @@ export const anonymizeAmount = async (
   amount === undefined
     ? undefined
     : BigInt(((await anonymize(amount)) as string).replace(/[A-z]/g, ""));
-
-export const anonymizeICP = async (
-  tokens: TokenAmount | undefined
-): Promise<TokenAmount | undefined> =>
-  tokens === undefined
-    ? undefined
-    : tokens.toE8s() === BigInt(0)
-    ? TokenAmount.fromE8s({ amount: BigInt(0), token: tokens.token })
-    : TokenAmount.fromE8s({
-        amount: (await anonymizeAmount(tokens.toE8s())) as bigint,
-        token: tokens.token,
-      });
 
 export const anonymizeBallot = async (
   ballot: Ballot | undefined | null
@@ -117,12 +104,12 @@ export const anonymizeAccount = async (
     return account as undefined | null;
   }
 
-  const { identifier, principal, balance, name, type, subAccount } = account;
+  const { identifier, principal, balanceE8s, name, type, subAccount } = account;
 
   return {
     identifier: await cutAndAnonymize(identifier),
     principal: anonymiseAvailability(principal),
-    balance: await anonymizeICP(balance),
+    balanceE8s: await anonymizeAmount(balanceE8s),
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),
@@ -430,7 +417,7 @@ export const anonymizeTransaction = async ({
       type,
       from: from !== undefined ? undefined : await cutAndAnonymize(from),
       to: to !== undefined ? undefined : await cutAndAnonymize(to),
-      displayAmount: await anonymizeICP(displayAmount),
+      displayAmount: await anonymizeAmount(displayAmount),
       date,
     },
   };

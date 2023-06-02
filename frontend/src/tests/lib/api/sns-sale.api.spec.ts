@@ -111,13 +111,20 @@ describe("sns-sale.api", () => {
   });
 
   it("should notify participation", async () => {
+    const confirmationText = "I really agree. Pinky swear!";
+
     const result = await notifyParticipation({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       buyer: mockPrincipal,
+      confirmationText,
     });
 
     expect(result).not.toBeNull();
     expect(result).toEqual(participationResponse);
+    expect(notifyParticipationSpy).toHaveBeenCalledWith({
+      buyer: mockPrincipal.toText(),
+      confirmation_text: [confirmationText],
+    });
   });
 });

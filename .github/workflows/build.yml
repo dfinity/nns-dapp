@@ -15,7 +15,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    timeout-minutes: 60
+    timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
@@ -28,68 +28,10 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=local
+            COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: .
-      - name: Get SNS scripts
-        uses: actions/checkout@v3
-        with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
-      - name: Add go and SNS scripts to the path
-        run: |
-          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-      - name: Get test environment
-        run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-04-27/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
-          dfx-snapshot-restore --snapshot state.tar.xz --verbose
-          dfx identity use snsdemo8
-          dfx-sns-demo-healthcheck
-      - name: Install nns-dapp and sns_aggregator
-        run: |
-          echo "Create the nns-dapp install argument:"
-          export DFX_NETWORK=local
-          ./config.sh
-          echo "Install:"
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
-          dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-          # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
-          dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-      - name: Install command line HTML parser
-        run: |
-          go install github.com/ericchiang/pup@latest
-          pup --version
-      - name: Verify that arguments are set in index.html
-        run: |
-          for ((i=5; i>0; i--)); do
-            (
-              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
-              file index.html
-              < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
-            ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
-            break
-          done
-          echo "Check a few values:"
-          for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
-            # Verify that the key is non-trivial:
-            # jq -e returns an error code if the value is missing
-            # grep ... fails if the value is implausibly short.
-            key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
-          done
-      - name: Basic downgrade-upgrade test
-        run: |
-          git fetch --depth 1 origin tag prod
-          if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
-          else echo "Skipping test as there are no relevant code changes"
-          fi
       - name: Rename nns-dapp.wasm for upload
         run: cp nns-dapp.wasm nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
@@ -98,19 +40,41 @@ jobs:
           name: nns-dapp_local
           path: nns-dapp_local.wasm
           retention-days: 3
-      - name: Release
-        run: |
-          for tag in $(git tag --points-at HEAD) ; do
-            : Creates or updates a release for the tag
-            if gh release view "$tag"
-            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
-            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
-            fi
-            : If the tag is for a proposal or nightly, make it public
-            [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: sns_aggregator.wasm
+          retention-days: 3
+      - name: 'Upload sns_aggregator_dev wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: sns_aggregator_dev.wasm
+          retention-days: 3
+  test-playwright-e2e:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          # Version from 2023-05-24 with longer retries to install dfx
+          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
       - name: Generate .env configuration for Playwright end-to-end tests
         run: |
           DFX_NETWORK=local ./config.sh
@@ -140,6 +104,111 @@ jobs:
             frontend/playwright-report/*
             frontend/playwright-results/*
           retention-days: 3
+      - name: Stop replica
+        run: dfx stop
+  test-rest:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          # Version from 2023-05-24 with longer retries to install dfx
+          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          nns_dapp_wasm: 'nns-dapp_local.wasm'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
+      - name: Add go and SNS scripts to the path
+        run: |
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Install command line HTML parser
+        run: |
+          go install github.com/ericchiang/pup@latest
+          pup --version
+      - name: Verify that arguments are set in index.html
+        run: |
+          for ((i=5; i>0; i--)); do
+            (
+              timeout 60 curl --fail --silent --retry 10 --connect-timeout 5 "http://$(dfx canister id nns-dapp).localhost:8080/" > index.html
+              file index.html
+              < index.html gunzip | pup 'head meta[name="nns-dapp-vars"] json{}' | tee nns_dapp_args_in_page.json
+            ) || { echo "Failed.  Retrying..." ; sleep 5 ; continue ; }
+            break
+          done
+          echo "Check a few values:"
+          for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
+            # Verify that the key is non-trivial:
+            # jq -e returns an error code if the value is missing
+            # grep ... fails if the value is implausibly short.
+            key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
+          done
+      - name: Determine ic-wasm version
+        id: ic-wasm-version
+        run: |
+          echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
+          echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
+      - name: Cache ic-wasm
+        id: cache-ic-wasm
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}
+          key: ${{ runner.os }}-${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}-ic-wasm
+      - name: Install ic-wasm
+        if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
+        run: |
+          cargo install "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
+          command -v ic-wasm || {
+            echo "ERROR: Failed to install ic-wasm"
+            exit 1
+          }>&2
+          [[ "$( command -v ic-wasm )" == ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }} ]] || {
+            echo "ERROR: ic-wasm was installed at an unexpected location."
+            echo "EXPECTED: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}"
+            echo "ACTUAL:   $( command -v ic-wasm )"
+            echo "Please align fact and expectation."
+            exit 1
+          } >&2
+      - name: Check that metadata is present
+        run: |
+          # dfx-wasm-metadata-add.test expects nns-dapp.wasm
+          cp nns-dapp_local.wasm nns-dapp.wasm
+          scripts/dfx-wasm-metadata-add.test --verbose
+      - name: Basic downgrade-upgrade test
+        run: |
+          git fetch --depth 1 origin tag prod
+          if git diff tags/prod rs/backend | grep -q .
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
+          else echo "Skipping test as there are no relevant code changes"
+          fi
+      - name: Release
+        run: |
+          for tag in $(git tag --points-at HEAD) ; do
+            : Creates or updates a release for the tag
+            if gh release view "$tag"
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
+            fi
+            : If the tag is for a proposal or nightly, make it public
+            [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
@@ -164,7 +233,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp_local.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
@@ -201,7 +270,7 @@ jobs:
         run: |
           rm -rf screenshots
   build-pass:
-    needs: ["build"]
+    needs: ["build", "test-playwright-e2e", "test-rest"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

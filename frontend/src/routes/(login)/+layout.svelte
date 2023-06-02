@@ -2,7 +2,7 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
   import { initAppAuth } from "$lib/services/$public/app.services";
-  import { Layout, ContentBackdrop } from "@dfinity/gix-components";
+  import { Layout, ContentBackdrop, Spinner } from "@dfinity/gix-components";
   import LoginMenuItems from "$lib/components/login/LoginMenuItems.svelte";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
@@ -41,6 +41,8 @@
   </Layout>
 
   <Warnings bringToastsForward />
+{:else}
+  <Spinner />
 {/if}
 
 <style lang="scss">

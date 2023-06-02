@@ -17,6 +17,7 @@
   import { ICPToken, type Token } from "@dfinity/nns";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { browser } from "$app/environment";
 
   let visible = false;
   let transferring = false;
@@ -75,7 +76,10 @@
   let tokenBalanceE8s = 0n;
   $: selectedProjectId,
     (async () => {
-      tokenBalanceE8s = await getTestBalance(selectedProjectId);
+      // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
+      if (browser) {
+        tokenBalanceE8s = await getTestBalance(selectedProjectId);
+      }
     })();
 
   // If the test account balance is 0, don't show a button that won't work. Show the ICP token instead.

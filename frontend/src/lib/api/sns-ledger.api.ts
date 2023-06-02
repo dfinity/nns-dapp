@@ -24,7 +24,7 @@ export const getSnsAccounts = async ({
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
 
-  const { balance: getBalance, ledgerMetadata: getMetadata } = await wrapper({
+  const { balance: getBalance } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
@@ -35,7 +35,6 @@ export const getSnsAccounts = async ({
     type: "main",
     certified,
     getBalance,
-    getMetadata,
   });
 
   logWithTimestamp("Getting sns accounts: done");

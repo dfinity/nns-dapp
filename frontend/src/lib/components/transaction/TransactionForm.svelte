@@ -32,6 +32,7 @@
   export let canSelectSource: boolean;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
+  export let disableContinue = false;
   export let token: Token;
   export let transactionFee: TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
@@ -58,7 +59,7 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: selectedAccount?.balance.toE8s(),
+    balance: selectedAccount?.balanceE8s,
     fee: transactionFee.toE8s(),
     maxAmount,
   });
@@ -66,6 +67,7 @@
 
   let disableButton: boolean;
   $: disableButton =
+    disableContinue ||
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
@@ -123,6 +125,7 @@
     bind:selectedAccount
     {canSelectSource}
     {rootCanisterId}
+    {token}
   />
 
   {#if canSelectDestination}

@@ -26,6 +26,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
@@ -133,7 +134,10 @@
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($filteredProposals.certified === false) {
+    if (
+      $filteredProposals.certified === false &&
+      FORCE_CALL_STRATEGY !== "query"
+    ) {
       if (loading) nothingFound = false;
       return;
     }

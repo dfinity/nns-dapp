@@ -38,6 +38,7 @@
   export let currentStep: WizardStep | undefined = undefined;
   export let token: Token = ICPToken;
   export let transactionFee: TokenAmount;
+  export let disableContinue = false;
   export let disableSubmit = false;
   // Max amount accepted by the transaction without fees
   export let maxAmount: bigint | undefined = undefined;
@@ -114,6 +115,7 @@
       {rootCanisterId}
       {canSelectDestination}
       {canSelectSource}
+      {disableContinue}
       {transactionFee}
       {validateAmount}
       bind:selectedDestinationAddress

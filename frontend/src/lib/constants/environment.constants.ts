@@ -1,6 +1,5 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { addRawToUrl, isLocalhost } from "$lib/utils/env.utils";
-import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+import { addRawToUrl, isBrowser, isLocalhost } from "$lib/utils/env.utils";
 
 const envVars = getEnvVars();
 
@@ -43,6 +42,7 @@ export interface FeatureFlags<T> {
   ENABLE_SNS_AGGREGATOR: T;
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
+  ENABLE_SIMULATE_MERGE_NEURONS: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -57,10 +57,14 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
+    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false}'
 );
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
+
+// TODO: display test environment warning on mainnet according configuration
+// DFX_NETWORK === new_environment_to_be_configured
+export const IS_TEST_MAINNET = false;

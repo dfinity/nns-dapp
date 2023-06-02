@@ -6,7 +6,7 @@ import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
+import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import {
   addHotkeyForHardwareWalletNeuron,
@@ -84,7 +84,7 @@ jest.mock("$lib/stores/toasts.store", () => {
   };
 });
 
-describe("StakeNeuronModal", () => {
+describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
     jest.clearAllMocks();
@@ -118,14 +118,16 @@ describe("StakeNeuronModal", () => {
     });
 
     it("should display modal", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       expect(container.querySelector("div.modal")).not.toBeNull();
     });
 
     it("should display accounts with dropdown", async () => {
       const { queryByTestId } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       await waitFor(() =>
@@ -135,7 +137,7 @@ describe("StakeNeuronModal", () => {
 
     it("should have disabled Create neuron button", async () => {
       const { container, queryByText } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
@@ -146,7 +148,7 @@ describe("StakeNeuronModal", () => {
 
     it("should have enabled Create neuron button when entering amount", async () => {
       const { container, queryByText } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       expect(queryByText(en.neurons.stake_neuron)).not.toBeNull();
@@ -161,7 +163,9 @@ describe("StakeNeuronModal", () => {
     });
 
     it("should be able to create a new neuron", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -176,7 +180,9 @@ describe("StakeNeuronModal", () => {
     });
 
     it("should move to update dissolve delay after creating a neuron", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -195,7 +201,9 @@ describe("StakeNeuronModal", () => {
     });
 
     it("should have the update delay button disabled", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -218,7 +226,9 @@ describe("StakeNeuronModal", () => {
     });
 
     it("should have disabled button for dissolve less than six months", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -248,7 +258,7 @@ describe("StakeNeuronModal", () => {
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
       const { container, getByText } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       const input = container.querySelector('input[name="amount"]');
@@ -272,7 +282,7 @@ describe("StakeNeuronModal", () => {
 
     it("should sync balance after staking neuron", async () => {
       const { container } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       const input = container.querySelector('input[name="amount"]');
@@ -303,11 +313,13 @@ describe("StakeNeuronModal", () => {
         accountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
-      const { container } = await renderModal({ component: StakeNeuronModal });
+      const { container } = await renderModal({
+        component: NnsStakeNeuronModal,
+      });
 
       const input = container.querySelector('input[name="amount"]');
       // Svelte generates code for listening to the `input` event
@@ -356,7 +368,7 @@ describe("StakeNeuronModal", () => {
 
     it("should go to edit followers when skipping dissolve delay", async () => {
       const { container, queryByTestId } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       // SCREEN: Create Neuron
@@ -386,7 +398,7 @@ describe("StakeNeuronModal", () => {
 
     it("should trigger close on cancel", async () => {
       const { component, getByTestId } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       const onClose = jest.fn();
@@ -436,7 +448,7 @@ describe("StakeNeuronModal", () => {
 
     it("should create neuron for hardwareWallet and close modal if hotkey is not added", async () => {
       const result = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       await createNeuron(result);
@@ -460,7 +472,7 @@ describe("StakeNeuronModal", () => {
     it("should create neuron for hardwareWallet and add dissolve delay", async () => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       const result = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       await createNeuron(result);
@@ -531,7 +543,7 @@ describe("StakeNeuronModal", () => {
     });
     it("should load and then show the accounts", async () => {
       const { queryByTestId } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
       expect(queryByTestId("account-card")).not.toBeInTheDocument();
 
@@ -562,7 +574,7 @@ describe("StakeNeuronModal", () => {
 
     it("should stop polling", async () => {
       const { unmount } = await renderModal({
-        component: StakeNeuronModal,
+        component: NnsStakeNeuronModal,
       });
 
       await runResolvedPromises();
