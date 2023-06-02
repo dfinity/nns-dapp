@@ -70,7 +70,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     STATE.with(|s| {
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {:?}", e));
+            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         });
 
@@ -89,9 +89,9 @@ pub fn http_request() {
     over(candid_one, assets::http_request);
 }
 
-/// Returns the user's account details if they have an account, else AccountNotFound.
+/// Returns the user's account details if they have an account, else `AccountNotFound`.
 ///
-/// The account details contain each of the AccountIdentifiers linked to the user's account. These
+/// The account details contain each of the `AccountIdentifier`s linked to the user's account. These
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
 #[export_name = "canister_query get_account"]
@@ -122,9 +122,9 @@ fn add_account_impl() -> AccountIdentifier {
     AccountIdentifier::from(principal)
 }
 
-/// Returns a page of transactions for a given AccountIdentifier.
+/// Returns a page of transactions for a given `AccountIdentifier`.
 ///
-/// The AccountIdentifier must be linked to the caller's account, else an empty Vec will be
+/// The `AccountIdentifier` must be linked to the caller's account, else an empty Vec will be
 /// returned.
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
@@ -222,7 +222,7 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_update get_proposal_payload"]
 pub fn get_proposal_payload() {
-    over_async(candid_one, proposals::get_proposal_payload)
+    over_async(candid_one, proposals::get_proposal_payload);
 }
 
 #[export_name = "canister_update add_pending_notify_swap"]
@@ -296,10 +296,10 @@ pub fn add_stable_asset() {
                 insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
             }
             unknown_hash => {
-                dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
+                dfn_core::api::trap_with(&format!("Unknown asset with hash {unknown_hash}"));
             }
         }
-    })
+    });
 }
 
 /// Sets the asset whitelist

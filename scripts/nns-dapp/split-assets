@@ -9,8 +9,8 @@ print_help() {
 	Splits an assets tarball into several smaller tarballs.
 
 	- Note: The files in each tarball are complete, so each tarball can be uploaded
-	        to a canister independently.  Theer is no need to collect all the
-	        tarballs ion the canister and then install them together.
+	        to a canister independently.  There is no need to collect all the
+	        tarballs in the canister and then install them together.
 	EOF
 }
 
@@ -82,7 +82,15 @@ FILES_PER_CHUNK="$(
   cd assets
   list_manifests | while read -r chunk_manifest; do
     chunk_name="$WORKDIR/chunks/assets.$(basename "$chunk_manifest").tar.xz"
-    tar cJf "$chunk_name" -T "$chunk_manifest"
+    tar cJ \
+      --mtime='2021-05-07 17:00Z' \
+      --sort=name \
+      --owner=0 \
+      --group=0 \
+      --numeric-owner \
+      --format=ustar \
+      -f "$chunk_name" \
+      -T "$chunk_manifest"
   done
 )
 
