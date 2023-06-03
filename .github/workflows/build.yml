@@ -290,6 +290,16 @@ jobs:
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./out-mainnet
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+          path: out-local
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+          path: out-local
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@v3
         with:
@@ -299,7 +309,7 @@ jobs:
         run: |
           set -x
           ls -l
-          artefacts="sns_aggregator_dev.wasm"
+          artefacts="sns_aggregator_dev.wasm sns_aggregator.wasm nns-dapp.wasm"
           networks=(mainnet local)
           for network in "${networks[@]}" ; do
             ls -l "out-$network"
