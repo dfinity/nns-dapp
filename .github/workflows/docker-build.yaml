@@ -97,7 +97,12 @@ jobs:
         run: ./scripts/docker-build --help | grep -i usage
       - name: docker-build complains about garbage
         run: |
-          { ./scripts/docker-build safdashfdkj || true ; } |& grep -i error
+          { ./scripts/docker-build safdashfdkj || true ; } 2>,stderr
+          grep -qi error ,stderr || {
+            echo "ERROR: Expected to see an error message in:"
+            cat ,stderr
+            exit 1
+          }
   docker-build:
     needs: assets
     runs-on: ubuntu-20.04
