@@ -295,6 +295,8 @@ jobs:
         with:
           name: nns-dapp_local
           path: out-local
+      - name: Remove _local suffix
+        run: mv out-local/nns-dapp_local.wasm out-local/nns-dapp.wasm
       - name: Get sns_aggregator
         uses: actions/download-artifact@v3
         with:
