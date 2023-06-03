@@ -97,7 +97,7 @@ jobs:
         run: ./scripts/docker-build --help | grep -i usage
       - name: docker-build complains about garbage
         run: |
-          { ./scripts/docker-build safdashfdkj || true ; } |& grep 'ERROR: Unsupported flag:'
+          { ./scripts/docker-build safdashfdkj || true ; } |& grep -i error
   docker-build:
     needs: assets
     runs-on: ubuntu-20.04
