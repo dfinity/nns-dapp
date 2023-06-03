@@ -313,7 +313,7 @@ jobs:
           networks=(mainnet local)
           for network in "${networks[@]}" ; do
             ls -l "out-$network"
-            (cd "out-$network" && sha256sum "${artefacts[@]}" ; ) > "${network}_hashes.txt"
+            (cd "out-$network" && sha256sum ${artefacts[@]} ; ) > "${network}_hashes.txt"
           done
           diff local_hashes.txt mainnet_hashes.txt  || {
             echo "ERROR: wasm hashes differ between mainnet and local."
