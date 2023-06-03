@@ -94,7 +94,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: docker-build prints help
-        run: ./scripts/docker-build --help | grep Usage
+        run: ./scripts/docker-build --help | grep -i usage
       - name: docker-build complains about garbage
         run: |
           { ./scripts/docker-build safdashfdkj || true ; } |& grep 'ERROR: Unsupported flag:'
