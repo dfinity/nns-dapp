@@ -3,7 +3,15 @@ import type { PostMessage } from "$lib/types/post-messages";
 
 export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
-export const initCyclesWorker = async () => {
+export interface InitCyclesWorker {
+  startCyclesTimer: (params: {
+    canisterId: string;
+    callback: CyclesCallback;
+  }) => void;
+  stopCyclesTimer: () => void;
+}
+
+export const initCyclesWorker = async (): Promise<InitCyclesWorker> => {
   const CyclesWorker = await import("$lib/workers/cycles.worker?worker");
   const cyclesWorker: Worker = new CyclesWorker.default();
 

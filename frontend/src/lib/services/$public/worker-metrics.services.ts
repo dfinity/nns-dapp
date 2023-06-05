@@ -3,7 +3,12 @@ import type { PostMessage } from "$lib/types/post-messages";
 
 export type MetricsCallback = (data: PostMessageDataResponseMetrics) => void;
 
-export const initMetricsWorker = async () => {
+export interface InitMetricsWorker {
+  startMetricsTimer: (params: { callback: MetricsCallback }) => void;
+  stopMetricsTimer: () => void;
+}
+
+export const initMetricsWorker = async (): Promise<InitMetricsWorker> => {
   const MetricsWorker = await import("$lib/workers/metrics.worker?worker");
   const metricsWorker: Worker = new MetricsWorker.default();
 

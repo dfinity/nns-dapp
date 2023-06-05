@@ -4,7 +4,11 @@ import type { PostMessage } from "$lib/types/post-messages";
 import type { PostMessageDataResponseAuth } from "$lib/types/post-messsage.auth";
 import { logout } from "./auth.services";
 
-export const initAuthWorker = async () => {
+export interface InitAuthWorker {
+  syncAuthIdle: (auth: AuthStoreData) => void;
+}
+
+export const initAuthWorker = async (): Promise<InitAuthWorker> => {
   const AuthWorker = await import("$lib/workers/auth.worker?worker");
   const authWorker: Worker = new AuthWorker.default();
 

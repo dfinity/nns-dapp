@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import {
-    type CyclesCallback,
+    type InitCyclesWorker,
     initCyclesWorker,
   } from "$lib/services/worker-cycles.services";
   import { onDestroy } from "svelte";
@@ -18,15 +18,7 @@
 
   export let canister: CanisterDetails;
 
-  let worker:
-    | {
-        startCyclesTimer: (params: {
-          canisterId: string;
-          callback: CyclesCallback;
-        }) => void;
-        stopCyclesTimer: () => void;
-      }
-    | undefined;
+  let worker: InitCyclesWorker | undefined;
 
   onDestroy(() => worker?.stopCyclesTimer());
 
