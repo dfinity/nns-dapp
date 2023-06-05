@@ -40,8 +40,8 @@ jobs:
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
-            sns_aggregator.wasm
-            sns_aggregator_dev.wasm
+            out/sns_aggregator.wasm
+            out/sns_aggregator_dev.wasm
       - name: Release
         uses: ./.github/actions/release_nns_dapp
         with:

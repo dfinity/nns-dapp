@@ -9,6 +9,10 @@ inputs:
   token:
     description: "Github access token used to make the release"
     required: true
+  no_cache:
+    description: 'no-cache'
+    default: false
+    type: boolean
 runs:
   using: "composite"
   steps:
@@ -23,6 +27,7 @@ runs:
           DFX_NETWORK=mainnet
           COMMIT=${{ github.sha }}
         cache-from: type=gha,scope=cached-stage
+        no-cache: ${{ inputs.no_cache || false }}
         # Exports the artefacts from the final stage
         outputs: out
     - name: 'Record the git commit and any tags'
