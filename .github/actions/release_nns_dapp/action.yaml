@@ -17,11 +17,11 @@ runs:
       shell: bash
       run: |
         set -euxo pipefail
+        # TODO: Create the local arguments as part of a standardized build.
+        DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
         cd "${{ inputs.assets_dir }}"
         daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
         cp nns-dapp.wasm "$daily_build_name"
-        # TODO: Create the local arguments as part of a standardized build.
-        DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
         artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name" nns-dapp-arg-mainnet.did nns-dapp-arg-mainnet.bin nns-dapp-arg-local.did nns-dapp-arg-local.bin)
         ls -l "${artefacts[@]}"
         for tag in $(git tag --points-at HEAD) ; do
