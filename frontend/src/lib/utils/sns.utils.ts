@@ -37,6 +37,7 @@ type OptionalSummary = QuerySns & {
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
   governanceCanisterId?: Principal;
+  ledgerCanisterId?: Principal;
 };
 
 type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
@@ -153,6 +154,7 @@ export const mapAndSortSnsQueryToSummaries = ({
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
         governanceCanisterId: swapState?.governanceCanisterId,
+        ledgerCanisterId: swapState?.ledgerCanisterId,
         swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
       };
@@ -166,6 +168,7 @@ export const mapAndSortSnsQueryToSummaries = ({
       entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
       entry.governanceCanisterId !== undefined &&
+      entry.ledgerCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
       entry.token !== undefined

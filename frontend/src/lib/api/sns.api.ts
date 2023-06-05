@@ -143,7 +143,7 @@ export const querySnsSwapState = async ({
 
   const {
     swapState,
-    canisterIds: { swapCanisterId, governanceCanisterId },
+    canisterIds: { swapCanisterId, governanceCanisterId, ledgerCanisterId },
   }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
@@ -160,6 +160,7 @@ export const querySnsSwapState = async ({
     rootCanisterId,
     swapCanisterId,
     governanceCanisterId,
+    ledgerCanisterId,
     swap,
     derived,
     certified,
