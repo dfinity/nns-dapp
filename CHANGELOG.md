@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal 122747
+
+* Improve ICRC accounts loading performance.
+* Improve loading state UX.
+* Update (fav)icons.
+* Upgrade libraries.
+* Minor fixes and text changes.
+
 ## Proposal 122614
 
 * Swap conditions.
