@@ -3,20 +3,20 @@
   import { createEventDispatcher, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
 
-  export let currentProposalId: string | undefined;
-  export let proposalIds: string[] | undefined;
+  export let currentProposalId: bigint | undefined;
+  export let proposalIds: bigint[] | undefined;
 
   const dispatcher = createEventDispatcher();
 
-  const next = () => dispatcher("nnsNavigation", nextIdString);
-  const previous = () => dispatcher("nnsNavigation", previousIdString);
+  const next = () => dispatcher("nnsNavigation", nextId);
+  const previous = () => dispatcher("nnsNavigation", previousId);
 
-  let previousIdString: string | undefined;
-  let nextIdString: string | undefined;
+  let previousId: bigint | undefined;
+  let nextId: bigint | undefined;
 
   const reset = () => {
-    nextIdString = undefined;
-    previousIdString = undefined;
+    nextId = undefined;
+    previousId = undefined;
   };
 
   $: currentProposalId,
@@ -32,8 +32,8 @@
         return;
       }
 
-      previousIdString = proposalIds[index - 1];
-      nextIdString = proposalIds[index + 1];
+      previousId = proposalIds[index - 1];
+      nextId = proposalIds[index + 1];
     })();
 
   onDestroy(reset);
@@ -41,16 +41,14 @@
   let singleProposal: boolean;
   $: singleProposal =
     currentProposalId !== undefined &&
-    nextIdString === undefined &&
-    previousIdString === undefined;
+    nextId === undefined &&
+    previousId === undefined;
 
   let prevDisabled = true;
-  $: prevDisabled =
-    currentProposalId !== undefined && previousIdString === undefined;
+  $: prevDisabled = currentProposalId !== undefined && previousId === undefined;
 
   let nextDisabled = true;
-  $: nextDisabled =
-    currentProposalId !== undefined && nextIdString === undefined;
+  $: nextDisabled = currentProposalId !== undefined && nextId === undefined;
 </script>
 
 {#if currentProposalId && !singleProposal}

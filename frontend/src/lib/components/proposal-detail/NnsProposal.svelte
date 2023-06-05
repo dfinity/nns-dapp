@@ -12,7 +12,6 @@
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
-  import { nonNullish } from "@dfinity/utils";
   import { navigateToNnsProposal } from "$lib/utils/proposals.utils";
 
   const { store } = getContext<SelectedProposalContext>(
@@ -24,11 +23,14 @@
   }: {
     detail: string;
   }) => await navigateToNnsProposal(proposalId);
+
+  let proposalIds: bigint[] | undefined;
+  $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
 <ProposalNavigation
-  currentProposalId={`${$store.proposal?.id}`}
-  proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
+  currentProposalId={$store.proposal?.id}
+  {proposalIds}
   on:nnsNavigation={navigateToProposal}
 />
 
