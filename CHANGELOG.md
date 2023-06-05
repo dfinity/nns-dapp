@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXX
+## Proposal 122747
 
 * Improve ICRC accounts loading performance.
 * Improve loading state UX.
