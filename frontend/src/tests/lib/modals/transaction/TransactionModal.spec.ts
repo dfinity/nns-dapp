@@ -22,6 +22,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -123,7 +124,7 @@ describe("TransactionModal", () => {
 
     // Choose select account
     // It will choose the fist subaccount as default
-    const toggle = container.querySelector("input[id='toggle']");
+    const toggle = queryToggleById(container);
     toggle && fireEvent.click(toggle);
 
     await waitFor(() =>
@@ -199,7 +200,7 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
@@ -221,7 +222,7 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
@@ -351,7 +352,7 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
