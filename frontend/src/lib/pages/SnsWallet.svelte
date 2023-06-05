@@ -19,7 +19,10 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
@@ -29,6 +32,8 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import IcrcAccountsObserver from "$lib/components/accounts/IcrcAccountsObserver.svelte";
+  import type { AccountsObserverData } from "$lib/types/accounts.observer";
 
   let showModal: "send" | undefined = undefined;
 
@@ -120,23 +125,36 @@
   $: token = nonNullish($snsOnlyProjectStore)
     ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
+
+  let observerData: AccountsObserverData | undefined;
+  $: observerData =
+    nonNullish($selectedAccountStore.account) &&
+    nonNullish($snsProjectSelectedStore)
+      ? {
+          account: $selectedAccountStore.account,
+          ledgerCanisterId:
+            $snsProjectSelectedStore.summary.ledgerCanisterId.toText(),
+        }
+      : undefined;
 </script>
 
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
-        <Summary />
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(observerData)}
+        <IcrcAccountsObserver data={observerData}>
+          <Summary />
 
-        <WalletSummary {token} />
+          <WalletSummary {token} />
 
-        <Separator />
+          <Separator />
 
-        <SnsTransactionsList
-          rootCanisterId={$snsOnlyProjectStore}
-          account={$selectedAccountStore.account}
-          {token}
-        />
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
+        </IcrcAccountsObserver>
       {:else}
         <Spinner />
       {/if}

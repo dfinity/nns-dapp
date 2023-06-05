@@ -4,7 +4,7 @@ import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
-import { createAuthClient } from "$lib/utils/auth.utils";
+import { loadIdentity } from "$lib/utils/worker.utils";
 import type { Identity } from "@dfinity/agent";
 
 onmessage = async ({
@@ -23,18 +23,6 @@ onmessage = async ({
 };
 
 let timer: NodeJS.Timeout | undefined = undefined;
-
-const loadIdentity = async (): Promise<Identity | undefined> => {
-  const authClient = await createAuthClient();
-  const authenticated = await authClient.isAuthenticated();
-
-  // Not authenticated therefore no identity to fetch the cycles
-  if (!authenticated) {
-    return undefined;
-  }
-
-  return authClient.getIdentity();
-};
 
 const startCyclesTimer = async ({
   data: { canisterId },

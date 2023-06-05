@@ -4,7 +4,9 @@ export type PostMessageRequest =
   | "nnsStartMetricsTimer"
   | "nnsStopMetricsTimer"
   | "nnsStartCyclesTimer"
-  | "nnsStopCyclesTimer";
+  | "nnsStopCyclesTimer"
+  | "nnsStartAccountsTimer"
+  | "nnsStopAccountsTimer";
 
 export type PostMessageResponse =
   | "nnsSignOut"
