@@ -1,0 +1,46 @@
+name: 'Release the nns-dapp'
+description: |
+  Builds the artefacts for a standard nns-dapp release, including:
+          * `nns-dapp.wasm` (for all networks)
+          * `sns_aggregator.wasm` (for all networks)
+          * arguments for mainnet and local
+          * other potentially useful files.
+inputs:
+  token:
+    description: "Github access token used to make the release"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Set up docker buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Build wasms
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        file: Dockerfile
+        build-args: |
+          DFX_NETWORK=mainnet
+          COMMIT=${{ github.sha }}
+        cache-from: type=gha,scope=cached-stage
+        # Exports the artefacts from the final stage
+        outputs: out
+    - name: 'Record the git commit and any tags'
+      run: git log | head -n1 > out/commit.txt
+    - name: Install didc
+      run: |
+        if command -v didc
+        then echo "Skipping, as didc is already installed"
+        else
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+          command -v didc || {
+            echo "Failed to install didc"
+            exit 1
+          }
+        fi
+    - name: Create local arguments
+      run: DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin

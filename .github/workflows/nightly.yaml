@@ -28,23 +28,11 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ github.token }}
-      - name: Set up docker buildx
+      - name: Build nns-dapp
         if: steps.preflight.outputs.need_release == 'true'
-        uses: docker/setup-buildx-action@v2
-      # Build and upload testnet assets
-      - name: Build nns-dapp Docker image
-        if: steps.preflight.outputs.need_release == 'true'
-        uses: docker/build-push-action@v3
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          outputs: out
-          build-args:
-            COMMIT: ${{ github.sha }}
-      - name: 'Record the git commit and any tags'
-        if: steps.preflight.outputs.need_release == 'true'
-        run: git log | head -n1 > out/commit.txt
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Tag commit
         if: steps.preflight.outputs.need_release == 'true'
         id: tag

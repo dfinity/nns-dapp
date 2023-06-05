@@ -15,19 +15,10 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build sns-aggregator image
-        uses: docker/build-push-action@v3
+      - name: Build nns-dapp
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=local
-            COMMIT=${{ github.sha }}
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./out
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
