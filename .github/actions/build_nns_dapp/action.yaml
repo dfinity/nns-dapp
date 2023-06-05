@@ -26,9 +26,14 @@ runs:
         # Exports the artefacts from the final stage
         outputs: out
     - name: 'Record the git commit and any tags'
-      run: git log | head -n1 > out/commit.txt
-    - name: Install didc
+      shell: bash
       run: |
+        set -euxo pipefail
+        git log | head -n1 > out/commit.txt
+    - name: Install didc
+      shell: bash
+      run: |
+        set -euxo pipefail
         if command -v didc
         then echo "Skipping, as didc is already installed"
         else
@@ -43,4 +48,7 @@ runs:
           }
         fi
     - name: Create local arguments
-      run: DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
+      shell: bash
+      run: |
+        set -euxo pipefail
+        DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
