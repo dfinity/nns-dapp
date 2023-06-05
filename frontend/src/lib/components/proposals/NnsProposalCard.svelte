@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId, ProposalId } from "@dfinity/nns";
-  import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import {
+    mapProposalInfo,
+    navigateToNnsProposal,
+  } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
 
@@ -22,13 +22,7 @@
   $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = async () =>
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: `${id}`,
-      })
-    );
+  const showProposal = async () => await navigateToNnsProposal(`${id}`);
 </script>
 
 <ProposalCard

@@ -1,11 +1,14 @@
+import { goto } from "$app/navigation";
 import {
   PROPOSAL_COLOR,
   type ProposalStatusColor,
 } from "$lib/constants/proposals.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
+import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
@@ -614,3 +617,12 @@ export const nnsNeuronToVotingNeuron = ({
   neuronIdString: `${neuron.neuronId}`,
   votingPower: getVotingPower({ neuron, proposal }),
 });
+
+/** Navigate to the current universe proposal page */
+export const navigateToNnsProposal = (proposalId: string): Promise<void> =>
+  goto(
+    buildProposalUrl({
+      universe: get(pageStore).universe,
+      proposalId,
+    })
+  );

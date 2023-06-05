@@ -12,10 +12,8 @@
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
-  import { goto } from "$app/navigation";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
-  import { pageStore } from "$lib/derived/page.derived";
   import { nonNullish } from "@dfinity/utils";
+  import { navigateToNnsProposal } from "$lib/utils/proposals.utils";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -25,14 +23,7 @@
     detail: proposalId,
   }: {
     detail: string;
-  }) => {
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId,
-      })
-    );
-  };
+  }) => await navigateToNnsProposal(proposalId);
 </script>
 
 {#if nonNullish($store?.proposal?.id)}
