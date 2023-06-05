@@ -24,8 +24,6 @@ export const getIcrcBalance = async ({
 
   const { balance } = await createCanister({ identity, canisterId });
 
-  console.log("YOYOYO", account);
-
   const result = await balance({ certified, ...account });
 
   logWithTimestamp(
