@@ -30,6 +30,14 @@ runs:
       run: |
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
+    - name: Install dfx
+      shell: bash
+      run: |
+        set -euxo pipefail
+        if command -v dfx
+        then echo "Skipping, as dfx is already installed"
+        else DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+        fi
     - name: Install didc
       shell: bash
       run: |
