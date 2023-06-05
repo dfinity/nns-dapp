@@ -3,7 +3,7 @@
   import { createEventDispatcher, onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
 
-  export let proposalIdString: string | undefined;
+  export let currentProposalId: string | undefined;
   export let proposalIds: string[] | undefined;
 
   const dispatcher = createEventDispatcher();
@@ -19,13 +19,13 @@
     previousIdString = undefined;
   };
 
-  $: proposalIdString,
+  $: currentProposalId,
     proposalIds,
     (() => {
       const index =
-        proposalIdString === undefined
+        currentProposalId === undefined
           ? undefined
-          : proposalIds?.indexOf(proposalIdString);
+          : proposalIds?.indexOf(currentProposalId);
 
       if (proposalIds === undefined || index === undefined || index < 0) {
         reset();
@@ -40,20 +40,20 @@
 
   let singleProposal: boolean;
   $: singleProposal =
-    proposalIdString !== undefined &&
+    currentProposalId !== undefined &&
     nextIdString === undefined &&
     previousIdString === undefined;
 
   let prevDisabled = true;
   $: prevDisabled =
-    proposalIdString !== undefined && previousIdString === undefined;
+    currentProposalId !== undefined && previousIdString === undefined;
 
   let nextDisabled = true;
   $: nextDisabled =
-    proposalIdString !== undefined && nextIdString === undefined;
+    currentProposalId !== undefined && nextIdString === undefined;
 </script>
 
-{#if proposalIdString && !singleProposal}
+{#if currentProposalId && !singleProposal}
   <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"

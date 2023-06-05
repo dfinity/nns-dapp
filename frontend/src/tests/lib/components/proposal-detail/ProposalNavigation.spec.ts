@@ -15,10 +15,10 @@ describe("ProposalNavigation", () => {
   };
 
   describe("not rendered", () => {
-    it("should not render the component if no proposalIdString", async () => {
+    it("should not render the component if no currentProposalId", async () => {
       // TODO: is it ok to use "root" here?
       const { root } = renderComponent({
-        proposalIdString: undefined,
+        currentProposalId: undefined,
         proposalIds: ["1"],
       });
 
@@ -27,16 +27,16 @@ describe("ProposalNavigation", () => {
 
     it("should not render buttons if no proposalIds", async () => {
       const { root } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: undefined,
       });
 
       expect(await root.isPresent()).toBe(false);
     });
 
-    it("should not render buttons if no proposalIdString in proposalIds", async () => {
+    it("should not render buttons if no currentProposalId in proposalIds", async () => {
       const { root } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0"],
       });
 
@@ -47,7 +47,7 @@ describe("ProposalNavigation", () => {
   describe("display", () => {
     it("should render buttons", async () => {
       const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0", "1", "2"],
       });
 
@@ -57,7 +57,7 @@ describe("ProposalNavigation", () => {
 
     it("should enable both buttons", async () => {
       const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0", "1", "2"],
       });
 
@@ -67,7 +67,7 @@ describe("ProposalNavigation", () => {
 
     it("should disable previous button when it's selected", async () => {
       const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["1", "2"],
       });
 
@@ -77,7 +77,7 @@ describe("ProposalNavigation", () => {
 
     it("should disable next when it's selected", async () => {
       const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0", "1"],
       });
 
@@ -89,7 +89,7 @@ describe("ProposalNavigation", () => {
   describe("action", () => {
     it("should emmit next click", async () => {
       const { clickNextProposal, component } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0", "1", "2"],
       });
       const nnsNavigationSpy = jest.fn();
@@ -107,7 +107,7 @@ describe("ProposalNavigation", () => {
 
     it("should emmit previous click", async () => {
       const { clickPreviousProposal, component } = renderComponent({
-        proposalIdString: "1",
+        currentProposalId: "1",
         proposalIds: ["0", "1", "2"],
       });
       const nnsNavigationSpy = jest.fn();

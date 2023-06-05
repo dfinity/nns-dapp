@@ -26,13 +26,11 @@
   }) => await navigateToNnsProposal(proposalId);
 </script>
 
-{#if nonNullish($store?.proposal?.id)}
-  <ProposalNavigation
-    proposalIdString={`${$store?.proposal?.id}`}
-    proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
-    on:nnsNavigation={navigateToProposal}
-  />
-{/if}
+<ProposalNavigation
+  currentProposalId={`${$store.proposal?.id}`}
+  proposalIds={$filteredProposals.proposals.map(({ id }) => `${id}`)}
+  on:nnsNavigation={navigateToProposal}
+/>
 
 {#if $store?.proposal !== undefined}
   <div class="content-grid" data-tid="proposal-details-grid">
