@@ -15,33 +15,33 @@ describe("ProposalNavigation", () => {
 
   describe("not rendered", () => {
     it("should not render the component if no currentProposalId", async () => {
-      const { root } = renderComponent({
+      const po = renderComponent({
         currentProposalId: undefined,
         proposalIds: [1n],
         selectProposal: jest.fn(),
       });
 
-      expect(await root.isPresent()).toBe(false);
+      expect(await po.isPresent()).toBe(false);
     });
 
     it("should not render buttons if no proposalIds", async () => {
-      const { root } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: undefined,
         selectProposal: jest.fn(),
       });
 
-      expect(await root.isPresent()).toBe(false);
+      expect(await po.isPresent()).toBe(false);
     });
 
     it("should not render buttons if no currentProposalId in proposalIds", async () => {
-      const { root } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n],
         selectProposal: jest.fn(),
       });
 
-      expect(await root.isPresent()).toBe(false);
+      expect(await po.isPresent()).toBe(false);
     });
   });
 
