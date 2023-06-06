@@ -8,10 +8,9 @@
   export let selectProposal: (proposalId: bigint) => void;
 
   let currentProposalIndex: number;
-  $: currentProposalIndex =
-    currentProposalId === undefined
-      ? -1
-      : proposalIds.indexOf(currentProposalId);
+  $: currentProposalIndex = isNullish(currentProposalId)
+    ? -1
+    : proposalIds.indexOf(currentProposalId);
 
   let previousId: bigint | undefined;
   $: previousId =
