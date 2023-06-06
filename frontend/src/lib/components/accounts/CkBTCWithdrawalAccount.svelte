@@ -23,6 +23,8 @@
   /**
    * Calling updateBalance has nothing to do with the withdrawal account but, because users are confused about when and how to call it, product required to add this additional call within this process.
    * That way, when user navigate once per session to the ckBTC accounts page, the call is also triggered.
+   *
+   * TODO(GIX-1320): to be removed when ckBTC update_balance is replaced by track_balance
    */
   const updateBalance = async () => {
     const canisters = nonNullish($selectedCkBTCUniverseIdStore)
