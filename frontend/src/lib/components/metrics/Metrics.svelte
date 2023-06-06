@@ -1,19 +1,14 @@
 <script lang="ts">
   import {
+    type MetricsWorker,
     initMetricsWorker,
-    type MetricsCallback,
   } from "$lib/services/$public/worker-metrics.services";
   import { onMount, onDestroy } from "svelte";
   import { metricsStore } from "$lib/stores/metrics.store";
 
   import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 
-  let worker:
-    | {
-        startMetricsTimer: (params: { callback: MetricsCallback }) => void;
-        stopMetricsTimer: () => void;
-      }
-    | undefined;
+  let worker: MetricsWorker | undefined;
 
   onMount(async () => {
     worker = await initMetricsWorker();
