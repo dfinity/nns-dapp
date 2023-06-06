@@ -1,6 +1,6 @@
 import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
@@ -29,7 +29,7 @@ onmessage = async ({
       return;
     case "nnsStartCyclesTimer":
       await worker.start<PostMessageDataRequestCycles>({
-        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        interval: SYNC_CYCLES_TIMER_INTERVAL,
         job,
         data,
       });
