@@ -71,3 +71,6 @@ runs:
       run: |
         set -euxo pipefail
         DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
+    - name: Hash artefacts
+      shell: bash
+      run: find out/ -type f | xargs sha256sum
