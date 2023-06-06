@@ -36,6 +36,7 @@ runs:
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
     - name: Check whether the snsdemo repo is already present
+      shell: bash
       id: have_snsdemo
       run: |
         if test -d snsdemo
