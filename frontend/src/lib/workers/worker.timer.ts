@@ -1,4 +1,4 @@
-import { loadIdentity } from "$lib/utils/worker.utils";
+import { loadIdentity } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 
 export interface WorkerTimerParams<T> {
