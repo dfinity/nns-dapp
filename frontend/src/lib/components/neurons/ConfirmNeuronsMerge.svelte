@@ -51,14 +51,14 @@
   };
 </script>
 
-<div class="wrapper">
+<div class="wrapper" data-tid="confirm-neurons-merge-component">
   <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-  <NnsNeuronInfo neuron={sourceNeuron} />
+  <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
 
   <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  <NnsNeuronInfo neuron={targetNeuron} />
+  <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
 
   <div class="additional-text">
     <p class="description">

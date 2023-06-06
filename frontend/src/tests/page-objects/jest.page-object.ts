@@ -79,7 +79,9 @@ export class JestPageObjectElement implements PageObjectElement {
 
   async isPresent(): Promise<boolean> {
     const { rootElement, fullSelector } = this.getRootAndFullSelector();
-    this.element = rootElement.querySelector(fullSelector);
+    if (fullSelector !== ":scope") {
+      this.element = rootElement.querySelector(fullSelector);
+    }
     return nonNullish(this.element);
   }
 
