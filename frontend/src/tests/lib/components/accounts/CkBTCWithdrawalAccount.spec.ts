@@ -335,7 +335,7 @@ describe("CkBTCWithdrawalAccount", () => {
       it("should call update balance", async () => {
         render(CkBTCWithdrawalAccount);
 
-        await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+        await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalledTimes(1));
       });
     });
   });
