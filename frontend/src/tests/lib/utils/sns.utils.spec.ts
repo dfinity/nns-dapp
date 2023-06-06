@@ -59,6 +59,7 @@ describe("sns-utils", () => {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 ...mockQuerySwap,
@@ -82,6 +83,7 @@ describe("sns-utils", () => {
             rootCanisterId: "1234",
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [mockQuerySwap],
             derived: [],
             certified: true,
@@ -100,6 +102,7 @@ describe("sns-utils", () => {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
@@ -126,6 +129,7 @@ describe("sns-utils", () => {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
@@ -149,6 +153,7 @@ describe("sns-utils", () => {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [mockQuerySwap],
             derived: [mockDerived],
             certified: true,
@@ -172,6 +177,7 @@ describe("sns-utils", () => {
             rootCanisterId: mockSummary.rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 ...mockQuerySwap,
@@ -190,6 +196,7 @@ describe("sns-utils", () => {
             rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
             swapCanisterId: Principal.fromText("aaaaa-aa"),
             governanceCanisterId: Principal.fromText("aaaaa-aa"),
+            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
             swap: [
               {
                 ...mockQuerySwap,
