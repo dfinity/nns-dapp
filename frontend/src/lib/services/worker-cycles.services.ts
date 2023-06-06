@@ -6,7 +6,7 @@ import type { PostMessage } from "$lib/types/post-messages";
 
 export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
-export interface InitCyclesWorker {
+export interface CyclesWorker {
   startCyclesTimer: (
     params: {
       callback: CyclesCallback;
@@ -15,7 +15,7 @@ export interface InitCyclesWorker {
   stopCyclesTimer: () => void;
 }
 
-export const initCyclesWorker = async (): Promise<InitCyclesWorker> => {
+export const initCyclesWorker = async (): Promise<CyclesWorker> => {
   const CyclesWorker = await import("$lib/workers/cycles.worker?worker");
   const cyclesWorker: Worker = new CyclesWorker.default();
 
