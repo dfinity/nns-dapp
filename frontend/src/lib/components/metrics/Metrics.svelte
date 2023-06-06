@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    type InitMetricsWorker,
+    type MetricsWorker,
     initMetricsWorker,
   } from "$lib/services/$public/worker-metrics.services";
   import { onMount, onDestroy } from "svelte";
@@ -8,7 +8,7 @@
 
   import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 
-  let worker: InitMetricsWorker | undefined;
+  let worker: MetricsWorker | undefined;
 
   onMount(async () => {
     worker = await initMetricsWorker();

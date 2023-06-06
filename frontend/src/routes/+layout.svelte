@@ -3,7 +3,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStoreData } from "$lib/stores/auth.store";
   import {
-    type InitAuthWorker,
+    type AuthWorker,
     initAuthWorker,
   } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
@@ -11,7 +11,7 @@
 
   let ready = false;
 
-  let worker: InitAuthWorker | undefined;
+  let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);
