@@ -12,9 +12,6 @@ import {
 // Worker context to start and stop job
 const worker = new WorkerTimer();
 
-const job = async (params: WorkerTimerJobData<PostMessageDataRequestCycles>) =>
-  await syncCanister(params);
-
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
@@ -27,7 +24,7 @@ onmessage = async ({
     case "nnsStartCyclesTimer":
       await worker.start<PostMessageDataRequestCycles>({
         interval: SYNC_CYCLES_TIMER_INTERVAL,
-        job,
+        job: syncCanister,
         data,
       });
       return;

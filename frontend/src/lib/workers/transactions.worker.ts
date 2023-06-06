@@ -25,10 +25,6 @@ interface TransactionsData extends IcrcWorkerData {
 
 const store = new IcrcWorkerStore<TransactionsData>();
 
-const job = async (
-  params: WorkerTimerJobData<PostMessageDataRequestTransactions>
-) => await syncTransactions(params);
-
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestTransactions>>) => {
@@ -41,7 +37,7 @@ onmessage = async ({
     case "nnsStartTransactionsTimer":
       await worker.start<PostMessageDataRequestTransactions>({
         interval: SYNC_TRANSACTIONS_TIMER_INTERVAL,
-        job,
+        job: syncTransactions,
         data,
       });
       return;
