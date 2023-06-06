@@ -25,16 +25,14 @@ interface TransactionsData extends IcrcWorkerData {
 
 const store = new IcrcWorkerStore<TransactionsData>();
 
+const job = async (
+  params: WorkerTimerJobData<PostMessageDataRequestTransactions>
+) => await syncTransactions(params);
+
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestTransactions>>) => {
   const { msg, data } = dataMsg;
-
-  const job = async ({
-    identity,
-    data,
-  }: WorkerTimerJobData<PostMessageDataRequestTransactions>) =>
-    await syncTransactions({ identity, data });
 
   switch (msg) {
     case "nnsStopTransactionsTimer":

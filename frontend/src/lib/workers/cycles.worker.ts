@@ -12,16 +12,13 @@ import {
 // Worker context to start and stop job
 const worker = new WorkerTimer();
 
+const job = async (params: WorkerTimerJobData<PostMessageDataRequestCycles>) =>
+  await syncCanister(params);
+
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
   const { msg, data } = dataMsg;
-
-  const job = async ({
-    identity,
-    data,
-  }: WorkerTimerJobData<PostMessageDataRequestCycles>) =>
-    await syncCanister({ identity, data });
 
   switch (msg) {
     case "nnsStopCyclesTimer":

@@ -21,16 +21,14 @@ interface AccountBalanceData extends IcrcWorkerData {
 
 const store = new IcrcWorkerStore<AccountBalanceData>();
 
+const job = async (
+  params: WorkerTimerJobData<PostMessageDataRequestAccounts>
+) => await syncAccounts(params);
+
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
   const { msg, data } = dataMsg;
-
-  const job = async ({
-    identity,
-    data,
-  }: WorkerTimerJobData<PostMessageDataRequestAccounts>) =>
-    await syncAccounts({ identity, data });
 
   switch (msg) {
     case "nnsStopAccountsTimer":
