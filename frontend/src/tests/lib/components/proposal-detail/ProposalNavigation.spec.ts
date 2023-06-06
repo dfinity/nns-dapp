@@ -9,7 +9,7 @@ import { render } from "@testing-library/svelte";
 
 describe("ProposalNavigation", () => {
   const renderComponent = (props) => {
-    const { container, component } = render(ProposalNavigation, { props });
+    const { container } = render(ProposalNavigation, { props });
     return ProposalNavigationPo.under(new JestPageObjectElement(container));
   };
 
