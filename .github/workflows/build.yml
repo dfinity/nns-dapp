@@ -269,8 +269,59 @@ jobs:
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
+  network_independent_wasm:
+    name: "Same wasms for mainnet and local"
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build wasms
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=mainnet
+            COMMIT=${{ github.sha }}
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out-mainnet
+      - name: Get nns-dapp_local
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_local
+          path: out-local
+      - name: Remove _local suffix
+        run: mv out-local/nns-dapp_local.wasm out-local/nns-dapp.wasm
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+          path: out-local
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: out-local
+      - name: Compare wasms
+        run: |
+          set -x
+          ls -l
+          artefacts="sns_aggregator_dev.wasm sns_aggregator.wasm nns-dapp.wasm"
+          networks=(mainnet local)
+          for network in "${networks[@]}" ; do
+            ls -l "out-$network"
+            (cd "out-$network" && sha256sum ${artefacts[@]} ; ) > "${network}_hashes.txt"
+          done
+          diff local_hashes.txt mainnet_hashes.txt  || {
+            echo "ERROR: wasm hashes differ between mainnet and local."
+          }
   build-pass:
-    needs: ["build", "test-playwright-e2e", "test-rest"]
+    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

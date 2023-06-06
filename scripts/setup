@@ -217,7 +217,7 @@ install_ic_admin_linux() {
   chmod +x "$USER_BIN/ic-admin"
 }
 install_ic_admin_darwin() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
   command -v ic-admin ||
