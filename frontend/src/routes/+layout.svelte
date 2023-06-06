@@ -2,13 +2,16 @@
   import { onMount } from "svelte";
   import { authStore } from "$lib/stores/auth.store";
   import type { AuthStoreData } from "$lib/stores/auth.store";
-  import { initAuthWorker } from "$lib/services/worker-auth.services";
+  import {
+    type AuthWorker,
+    initAuthWorker,
+  } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsClean } from "$lib/stores/toasts.store";
 
   let ready = false;
 
-  let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
+  let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);
