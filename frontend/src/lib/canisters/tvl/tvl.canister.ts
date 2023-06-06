@@ -1,19 +1,12 @@
 import type { TVLCanisterOptions } from "$lib/canisters/tvl/tvl.canister.types";
 import { Actor } from "@dfinity/agent";
+import { Canister } from "@dfinity/utils";
 import { idlFactory as certifiedIdlFactory } from "./tvl.certified.idl";
 import { idlFactory } from "./tvl.idl";
 import type { TvlResult, _SERVICE as TVLService } from "./tvl.types";
 
-export class TVLCanister {
-  private constructor(
-    private readonly service: TVLService,
-    private readonly certifiedService: TVLService
-  ) {
-    this.service = service;
-    this.certifiedService = certifiedService;
-  }
-
-  public static create(options: TVLCanisterOptions) {
+export class TVLCanister extends Canister<TVLService> {
+  public static create(options: TVLCanisterOptions): TVLCanister {
     const agent = options.agent;
     const canisterId = options.canisterId;
 
@@ -30,11 +23,8 @@ export class TVLCanister {
       }
     );
 
-    return new TVLCanister(service, certifiedService);
+    return new TVLCanister(canisterId, service, certifiedService);
   }
-
-  private caller = ({ certified = true }: { certified: boolean }): TVLService =>
-    certified ? this.certifiedService : this.service;
 
   public getTVL = async (params: {
     certified: boolean;
