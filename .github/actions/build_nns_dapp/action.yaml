@@ -35,30 +35,34 @@ runs:
       run: |
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
-    - name: Install dfx
+    - name: Check whether the snsdemo repo is already present
+      id: have_snsdemo
+      run: |
+        if test -d snsdemo
+        echo have_snsdemo=true >> "$GITHUB_OUTPUT"
+        else have_snsdemo=false >> "$GITHUB_OUTPUT"
+        fi
+    - name: Get SNS scripts
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+      uses: actions/checkout@v3
+      with:
+        repository: 'dfinity/snsdemo'
+        path: 'snsdemo'
+        # Version from 2023-05-24 with longer retries to install dfx
+        ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+    - name: Add SNS scripts to the path
+      run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+    - name: Install tools
       shell: bash
       run: |
         set -euxo pipefail
         if command -v dfx
-        then echo "Skipping, as dfx is already installed"
-        else DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+        then echo "Skipping, dfx installation as dfx is already installed"
+        else dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
         fi
-    - name: Install didc
-      shell: bash
-      run: |
-        set -euxo pipefail
         if command -v didc
-        then echo "Skipping, as didc is already installed"
-        else
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
-          command -v didc || {
-            echo "Failed to install didc"
-            exit 1
-          }
+        then echo "Skipping didc installation, as didc is already installed"
+        else dfx-software-didc-install --version "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
         fi
     - name: Create local arguments
       shell: bash
