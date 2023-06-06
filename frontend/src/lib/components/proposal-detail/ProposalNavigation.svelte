@@ -1,42 +1,32 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let currentProposalId: bigint | undefined;
-  export let proposalIds: bigint[] | undefined;
+  export let proposalIds: bigint[] = [];
 
   const dispatcher = createEventDispatcher();
-
   const next = () => dispatcher("nnsNavigation", nextId);
   const previous = () => dispatcher("nnsNavigation", previousId);
 
+  let currentProposalIndex: number;
+  $: currentProposalIndex =
+    currentProposalId === undefined
+      ? -1
+      : proposalIds.indexOf(currentProposalId);
+
   let previousId: bigint | undefined;
+  $: previousId =
+    currentProposalIndex === -1
+      ? undefined
+      : proposalIds[currentProposalIndex - 1];
+
   let nextId: bigint | undefined;
-
-  const reset = () => {
-    nextId = undefined;
-    previousId = undefined;
-  };
-
-  $: currentProposalId,
-    proposalIds,
-    (() => {
-      const index =
-        currentProposalId === undefined
-          ? undefined
-          : proposalIds?.indexOf(currentProposalId);
-
-      if (proposalIds === undefined || index === undefined || index < 0) {
-        reset();
-        return;
-      }
-
-      previousId = proposalIds[index - 1];
-      nextId = proposalIds[index + 1];
-    })();
-
-  onDestroy(reset);
+  $: nextId =
+    currentProposalIndex === -1
+      ? undefined
+      : proposalIds[currentProposalIndex + 1];
 
   let singleProposal: boolean;
   $: singleProposal =
