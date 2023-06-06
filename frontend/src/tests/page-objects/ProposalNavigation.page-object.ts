@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,8 +9,19 @@ export class ProposalNavigationPo extends BasePageObject {
     return new ProposalNavigationPo(element.byTestId(ProposalNavigationPo.TID));
   }
 
-  getNextButtonPo = () => this.getButton("proposal-nav-next");
-  getPreviousButtonPo = () => this.getButton("proposal-nav-previous");
-  clickNextProposal = () => this.getNextButtonPo().click();
-  clickPreviousProposal = () => this.getPreviousButtonPo().click();
+  getNextButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-next");
+  }
+
+  getPreviousButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-previous");
+  }
+
+  clickNextProposal(): Promise<void> {
+    return this.getNextButtonPo().click();
+  }
+
+  clickPreviousProposal(): Promise<void> {
+    return this.getPreviousButtonPo().click();
+  }
 }

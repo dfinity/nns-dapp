@@ -90,11 +90,9 @@ describe("Proposal", () => {
       );
 
     const { container } = renderProposalModern(5n);
-    const { getNextButtonPo, getPreviousButtonPo } = ProposalNavigationPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
-    expect(await getNextButtonPo().isPresent()).toBe(true);
-    expect(await getPreviousButtonPo().isPresent()).toBe(true);
+    expect(await po.getNextButtonPo().isPresent()).toBe(true);
+    expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
   });
 });
