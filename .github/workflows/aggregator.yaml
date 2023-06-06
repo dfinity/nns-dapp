@@ -44,7 +44,7 @@ jobs:
           dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/state.tar.xz > state.tar.xz
+          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
           dfx-snapshot-restore --snapshot state.tar.xz --verbose
           dfx identity use snsdemo8
           dfx-sns-demo-healthcheck
