@@ -61,8 +61,8 @@ jobs:
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
-          # Version from 2023-05-24 with longer retries to install dfx
-          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          # Version from 2023-05-30 with didc installer
+          snsdemo_ref: '0faea390c743874db3c48ce97b69d970ae55148a'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
           nns_dapp_wasm: 'nns-dapp_local.wasm'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
@@ -119,8 +119,8 @@ jobs:
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
-          # Version from 2023-05-24 with longer retries to install dfx
-          snsdemo_ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
+          # Version from 2023-05-30 with didc installer
+          snsdemo_ref: '0faea390c743874db3c48ce97b69d970ae55148a'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-05-24/snsdemo_snapshot_ubuntu-22.04.tar.xz
           nns_dapp_wasm: 'nns-dapp_local.wasm'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
