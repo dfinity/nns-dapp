@@ -1,79 +1,43 @@
 import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
+import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
-import { loadIdentity } from "$lib/utils/worker.utils";
-import type { Identity } from "@dfinity/agent";
+import { WorkerTimer, type WorkerTimerJobData } from "$lib/workers/worker.timer";
+
+// Worker context to start and stop job
+const worker = new WorkerTimer();
 
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
   const { msg, data } = dataMsg;
 
+  const job = async ({
+    identity,
+    data,
+  }: WorkerTimerJobData<PostMessageDataRequestCycles>) =>
+    await syncCanister({ identity, data });
+
   switch (msg) {
     case "nnsStopCyclesTimer":
-      await stopCyclesTimer();
+      worker.stop();
       return;
     case "nnsStartCyclesTimer":
-      await startCyclesTimer({ data });
+      await worker.start<PostMessageDataRequestCycles>({
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        job,
+        data,
+      });
       return;
   }
 };
-
-let timer: NodeJS.Timeout | undefined = undefined;
-
-const startCyclesTimer = async ({
-  data: { canisterId },
-}: {
-  data: PostMessageDataRequestCycles;
-}) => {
-  // This worker has already been started
-  if (timer !== undefined) {
-    return;
-  }
-
-  const identity: Identity | undefined = await loadIdentity();
-
-  if (!identity) {
-    // We do nothing if no identity
-    return;
-  }
-
-  const sync = async () => await syncCanister({ identity, canisterId });
-
-  // We sync the cycles now but also schedule the update afterwards
-  await sync();
-
-  timer = setInterval(sync, SYNC_CYCLES_TIMER_INTERVAL);
-};
-
-const stopCyclesTimer = async () => {
-  if (!timer) {
-    return;
-  }
-
-  clearInterval(timer);
-  timer = undefined;
-};
-
-let syncInProgress = false;
 
 const syncCanister = async ({
   identity,
-  canisterId,
-}: {
-  identity: Identity;
-  canisterId: string;
-}) => {
-  // Avoid to duplicate the sync if already in progress and not yet finished
-  if (syncInProgress) {
-    return;
-  }
-
-  syncInProgress = true;
-
+  data: { canisterId },
+}: WorkerTimerJobData<PostMessageDataRequestCycles>) => {
   try {
     const canisterInfo: CanisterDetails = await queryCanisterDetails({
       canisterId,
@@ -85,15 +49,14 @@ const syncCanister = async ({
       canisterId,
     });
   } catch (err: unknown) {
-    console.error(err);
-
     emitCanister({
       id: canisterId,
       sync: "error",
     });
-  }
 
-  syncInProgress = false;
+    // Bubble error to stop worker
+    throw err;
+  }
 };
 
 // Update ui with one canister information

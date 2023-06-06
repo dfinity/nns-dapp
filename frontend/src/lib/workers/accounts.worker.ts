@@ -26,7 +26,7 @@ onmessage = async ({
 }: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
   const { msg, data } = dataMsg;
 
-  const syncJob = async ({
+  const job = async ({
     identity,
     data,
   }: WorkerTimerJobData<PostMessageDataRequestAccounts>) =>
@@ -39,7 +39,7 @@ onmessage = async ({
     case "nnsStartAccountsTimer":
       await worker.start<PostMessageDataRequestAccounts>({
         interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
-        job: syncJob,
+        job,
         data,
       });
       return;
