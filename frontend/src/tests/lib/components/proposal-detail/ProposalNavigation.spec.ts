@@ -100,7 +100,7 @@ describe("ProposalNavigation", () => {
         selectProposal: selectProposalSpy,
       });
 
-      await po.clickNextProposal();
+      await po.clickNext();
 
       expect(selectProposalSpy).toHaveBeenCalledTimes(1);
       expect(selectProposalSpy).toHaveBeenCalledWith(2n);
@@ -114,7 +114,7 @@ describe("ProposalNavigation", () => {
         selectProposal: selectProposalSpy,
       });
 
-      await po.clickPreviousProposal();
+      await po.clickPrevious();
 
       expect(selectProposalSpy).toHaveBeenCalledTimes(1);
       expect(selectProposalSpy).toHaveBeenCalledWith(0n);

@@ -17,11 +17,11 @@ export class ProposalNavigationPo extends BasePageObject {
     return this.getButton("proposal-nav-previous");
   }
 
-  clickNextProposal(): Promise<void> {
+  clickNext(): Promise<void> {
     return this.getNextButtonPo().click();
   }
 
-  clickPreviousProposal(): Promise<void> {
+  clickPrevious(): Promise<void> {
     return this.getPreviousButtonPo().click();
   }
 }
