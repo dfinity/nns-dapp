@@ -23,6 +23,7 @@ export type QuerySnsSwapState = QuerySns & {
   swapCanisterId: Principal;
   governanceCanisterId: Principal;
   ledgerCanisterId: Principal;
+  indexCanisterId: Principal;
   swap: [] | [SnsSwap];
   derived: [] | [SnsSwapDerivedState];
 };
