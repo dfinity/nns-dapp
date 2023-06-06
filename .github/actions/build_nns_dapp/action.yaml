@@ -64,7 +64,7 @@ runs:
         fi
         if command -v didc
         then echo "Skipping didc installation, as didc is already installed"
-        else dfx-software-didc-install --version "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+        else dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
         fi
     - name: Create local arguments
       shell: bash
