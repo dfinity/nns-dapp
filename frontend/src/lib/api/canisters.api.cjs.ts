@@ -3,12 +3,9 @@ import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
+import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity, ManagementCanisterRecord } from "@dfinity/agent";
-/**
- * HTTP-Agent explicit CJS import for compatibility with web worker - avoid "window undefined" issues
- */
-import { getManagementCanister, HttpAgent } from "@dfinity/agent/lib/cjs/index";
 import { Principal } from "@dfinity/principal";
 
 export const queryCanisterDetails = async ({
@@ -48,7 +45,7 @@ const canisters = async (
 ): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
-  const agent = new HttpAgent({
+  const agent = new HttpAgentCjs({
     identity,
     host: HOST,
   });
@@ -57,7 +54,7 @@ const canisters = async (
     await agent.fetchRootKey();
   }
 
-  const icMgtService = getManagementCanister({ agent });
+  const icMgtService = getManagementCanisterCjs({ agent });
 
   return { icMgtService };
 };
