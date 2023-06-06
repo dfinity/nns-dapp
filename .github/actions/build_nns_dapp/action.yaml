@@ -40,7 +40,7 @@ runs:
       id: have_snsdemo
       run: |
         if test -d snsdemo
-        echo have_snsdemo=true >> "$GITHUB_OUTPUT"
+        then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
         else have_snsdemo=false >> "$GITHUB_OUTPUT"
         fi
     - name: Get SNS scripts
