@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 
-// This should not be used directly but rather as a base class for specific
+// CardPo should not be used directly but rather as a base class for specific
 // card components.
 export class CardPo extends BasePageObject {
   async hasClass(className: string): Promise<boolean> {
@@ -9,7 +9,6 @@ export class CardPo extends BasePageObject {
   }
 
   async isSelected(): Promise<boolean> {
-    //console.log('dskloetx CardPo root', (this.root as JestPageObjectElement).element.outerHTML);
     return this.hasClass("selected");
   }
 
