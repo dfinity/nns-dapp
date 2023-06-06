@@ -7,9 +7,11 @@ export class SelectNeuronsToMergePo extends BasePageObject {
   static readonly TID = "select-neurons-to-merge-component";
 
   static under(element: PageObjectElement): SelectNeuronsToMergePo {
-    return new SelectNeuronsToMergePo(element.byTestId(SelectNeuronsToMergePo.TID));
+    return new SelectNeuronsToMergePo(
+      element.byTestId(SelectNeuronsToMergePo.TID)
+    );
   }
-  
+
   getNnsNeuronCardPos(): Promise<NnsNeuronCardPo[]> {
     return NnsNeuronCardPo.allUnder(this.root);
   }

@@ -5,6 +5,8 @@ export class NeuronCardContainerPo extends CardPo {
   private static readonly TID = "neuron-card";
 
   static under(element: PageObjectElement): NeuronCardContainerPo {
-    return new NeuronCardContainerPo(element.byTestId(NeuronCardContainerPo.TID));
+    return new NeuronCardContainerPo(
+      element.byTestId(NeuronCardContainerPo.TID)
+    );
   }
 }

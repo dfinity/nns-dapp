@@ -8,7 +8,7 @@
   import { Html } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
-  export let testId: string = "nns-neuron-info-component";
+  export let testId = "nns-neuron-info-component";
   export let neuron: NeuronInfo;
 </script>
 

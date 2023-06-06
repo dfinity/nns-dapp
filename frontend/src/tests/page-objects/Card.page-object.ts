@@ -1,4 +1,3 @@
-import type { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 // This should not be used directly but rather as a base class for specific
