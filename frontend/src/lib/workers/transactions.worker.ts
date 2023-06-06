@@ -1,83 +1,51 @@
-import { SYNC_TRANSACTIONS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import {
   IcrcWorkerStore,
   type IcrcWorkerData,
 } from "$lib/stores/icrc-worker.store";
+import type { PostMessageDataRequestAccounts } from "$lib/types/post-message.accounts";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { loadIdentity } from "$lib/utils/worker.utils";
-import type { Identity } from "@dfinity/agent";
+import { WorkerTimer, type WorkerTimerJobData } from "$lib/workers/worker.timer";
 
-onmessage = async ({
-  data: dataMsg,
-}: MessageEvent<PostMessage<PostMessageDataRequestTransactions>>) => {
-  const { msg, data } = dataMsg;
+// Worker context to start and stop job
+const worker = new WorkerTimer();
 
-  switch (msg) {
-    case "nnsStopTransactionsTimer":
-      destroy();
-      return;
-    case "nnsStartTransactionsTimer":
-      await startAccountsTimer({ data });
-      return;
-  }
-};
-
-const destroy = () => {
-  stopAccountsTimer();
-  cleanup();
-};
-
-let timer: NodeJS.Timeout | undefined = undefined;
-let syncStatus: "idle" | "in_progress" | "error" = "idle";
-
-const stopAccountsTimer = () => {
-  if (!timer) {
-    return;
-  }
-
-  clearInterval(timer);
-  timer = undefined;
-};
-
-const cleanup = () => {
-  store.reset();
-  syncStatus = "idle";
-};
-
-const startAccountsTimer = async ({
-  data,
-}: {
-  data: PostMessageDataRequestTransactions;
-}) => {
-  // This worker has already been started
-  if (timer !== undefined) {
-    return;
-  }
-
-  const identity: Identity | undefined = await loadIdentity();
-
-  if (!identity) {
-    // We do nothing if no identity
-    return;
-  }
-
-  const sync = async () => await syncTransactions({ identity, ...data });
-
-  // We sync the cycles now but also schedule the update afterwards
-  await sync();
-
-  timer = setInterval(sync, SYNC_TRANSACTIONS_TIMER_INTERVAL);
-};
-
+// A worker store to keep track of transactions
 interface TransactionsData extends IcrcWorkerData {
   balance: bigint;
 }
 
 const store = new IcrcWorkerStore<TransactionsData>();
 
-type SyncTransactionsParams = {
-  identity: Identity;
-} & PostMessageDataRequestTransactions;
+onmessage = async ({
+  data: dataMsg,
+}: MessageEvent<PostMessage<PostMessageDataRequestTransactions>>) => {
+  const { msg, data } = dataMsg;
 
-const syncTransactions = async (params: SyncTransactionsParams) => {};
+  const syncJob = async ({
+    identity,
+    data,
+  }: WorkerTimerJobData<PostMessageDataRequestTransactions>) =>
+    await syncTransactions({ identity, data });
+
+  switch (msg) {
+    case "nnsStopTransactionsTimer":
+      worker.stop(() => store.reset());
+      return;
+    case "nnsStartTransactionsTimer":
+      await worker.start<PostMessageDataRequestAccounts>({
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        job: syncJob,
+        data,
+      });
+      return;
+  }
+};
+
+const syncTransactions = async (
+  params: WorkerTimerJobData<PostMessageDataRequestTransactions>
+) => {
+  // TODO
+  console.log(params);
+};

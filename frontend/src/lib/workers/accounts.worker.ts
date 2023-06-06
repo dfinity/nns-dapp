@@ -14,14 +14,13 @@ import { Principal } from "@dfinity/principal";
 // Worker context to start and stop job
 const worker = new WorkerTimer();
 
-// A worker store to keep track of information
+// A worker store to keep track of account balances
 interface AccountBalanceData extends IcrcWorkerData {
   balance: bigint;
 }
 
 const store = new IcrcWorkerStore<AccountBalanceData>();
 
-// Message exchange
 onmessage = async ({
   data: dataMsg,
 }: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
