@@ -3,6 +3,7 @@
  */
 
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as minterApi from "$lib/api/ckbtc-minter.api";
 import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -289,6 +290,53 @@ describe("CkBTCWithdrawalAccount", () => {
       await waitFor(() =>
         expect(container.querySelector("div.modal")).not.toBeNull()
       );
+    });
+  });
+
+  describe("updateBalance", () => {
+    let spyUpdateBalance;
+
+    beforeEach(() => {
+      jest
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockResolvedValue(mockCkBTCWithdrawalAccount);
+
+      spyUpdateBalance = jest
+        .spyOn(minterApi, "updateBalance")
+        .mockResolvedValue(undefined);
+    });
+
+    describe("account is already loaded", () => {
+      beforeEach(() => {
+        ckBTCWithdrawalAccountsStore.set({
+          account: {
+            account: mockCkBTCWithdrawalAccount,
+            certified: true,
+          },
+          universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        });
+      });
+
+      it("should not call update balance if account is already loaded", async () => {
+        render(CkBTCWithdrawalAccount);
+
+        await waitFor(() => expect(spyUpdateBalance).not.toHaveBeenCalled());
+      });
+    });
+
+    describe("account is not yet loaded", () => {
+      beforeEach(() => {
+        jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+          owner: mockCkBTCWithdrawalIcrcAccount.owner,
+          subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
+        });
+      });
+
+      it("should call update balance", async () => {
+        render(CkBTCWithdrawalAccount);
+
+        await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalledTimes(1));
+      });
     });
   });
 });
