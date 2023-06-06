@@ -18,12 +18,6 @@
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
 
-  const navigateToProposal = async ({
-    detail: proposalId,
-  }: {
-    detail: string;
-  }) => await navigateToNnsProposal(proposalId);
-
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
@@ -31,7 +25,7 @@
 <ProposalNavigation
   currentProposalId={$store.proposal?.id}
   {proposalIds}
-  on:nnsNavigation={navigateToProposal}
+  selectProposal={navigateToNnsProposal}
 />
 
 {#if $store?.proposal !== undefined}

@@ -10,8 +10,7 @@ import { render } from "@testing-library/svelte";
 describe("ProposalNavigation", () => {
   const renderComponent = (props) => {
     const { container, component } = render(ProposalNavigation, { props });
-    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
-    return { ...po, component, po };
+    return ProposalNavigationPo.under(new JestPageObjectElement(container));
   };
 
   describe("not rendered", () => {
@@ -19,6 +18,7 @@ describe("ProposalNavigation", () => {
       const { root } = renderComponent({
         currentProposalId: undefined,
         proposalIds: [1n],
+        selectProposal: jest.fn(),
       });
 
       expect(await root.isPresent()).toBe(false);
@@ -28,6 +28,7 @@ describe("ProposalNavigation", () => {
       const { root } = renderComponent({
         currentProposalId: 1n,
         proposalIds: undefined,
+        selectProposal: jest.fn(),
       });
 
       expect(await root.isPresent()).toBe(false);
@@ -37,6 +38,7 @@ describe("ProposalNavigation", () => {
       const { root } = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n],
+        selectProposal: jest.fn(),
       });
 
       expect(await root.isPresent()).toBe(false);
@@ -45,81 +47,77 @@ describe("ProposalNavigation", () => {
 
   describe("display", () => {
     it("should render buttons", async () => {
-      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n, 1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(await getPreviousButtonPo().isPresent()).toBe(true);
-      expect(await getNextButtonPo().isPresent()).toBe(true);
+      expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+      expect(await po.getNextButtonPo().isPresent()).toBe(true);
     });
 
     it("should enable both buttons", async () => {
-      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n, 1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(await getNextButtonPo().isDisabled()).toBe(false);
-      expect(await getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await po.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await po.getPreviousButtonPo().isDisabled()).toBe(false);
     });
 
     it("should disable previous button when it's selected", async () => {
-      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(await getNextButtonPo().isDisabled()).toBe(false);
-      expect(await getPreviousButtonPo().isDisabled()).toBe(true);
+      expect(await po.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await po.getPreviousButtonPo().isDisabled()).toBe(true);
     });
 
     it("should disable next when it's selected", async () => {
-      const { getPreviousButtonPo, getNextButtonPo } = renderComponent({
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n, 1n],
+        selectProposal: jest.fn(),
       });
 
-      expect(await getNextButtonPo().isDisabled()).toBe(true);
-      expect(await getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await po.getNextButtonPo().isDisabled()).toBe(true);
+      expect(await po.getPreviousButtonPo().isDisabled()).toBe(false);
     });
   });
 
   describe("action", () => {
     it("should emmit next click", async () => {
-      const { po, component } = renderComponent({
+      const selectProposalSpy = jest.fn();
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n, 1n, 2n],
+        selectProposal: selectProposalSpy,
       });
-      const nnsNavigationSpy = jest.fn();
-      component.$on("nnsNavigation", nnsNavigationSpy);
 
       await po.clickNextProposal();
 
-      expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
-      // expect(nnsNavigationSpy).toHaveBeenCalledWith(
-      //   expect.objectContaining({
-      //     detail: "2",
-      //   })
-      // );
+      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
     });
 
     it("should emmit previous click", async () => {
-      const { clickPreviousProposal, component } = renderComponent({
+      const selectProposalSpy = jest.fn();
+      const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [0n, 1n, 2n],
+        selectProposal: selectProposalSpy,
       });
-      const nnsNavigationSpy = jest.fn();
-      component.$on("nnsNavigation", nnsNavigationSpy);
 
-      await clickPreviousProposal();
+      await po.clickPreviousProposal();
 
-      expect(nnsNavigationSpy).toHaveBeenCalledTimes(1);
-      // expect(nnsNavigationSpy).toHaveBeenCalledWith(
-      //   expect.objectContaining({
-      //     detail: "0",
-      //   })
-      // );
+      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
     });
   });
 });

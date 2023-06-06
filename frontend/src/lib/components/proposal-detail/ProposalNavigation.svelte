@@ -1,14 +1,10 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
 
   export let currentProposalId: bigint | undefined;
   export let proposalIds: bigint[] = [];
-
-  const dispatcher = createEventDispatcher();
-  const next = () => dispatcher("nnsNavigation", nextId);
-  const previous = () => dispatcher("nnsNavigation", previousId);
+  export let selectProposal: (proposalId: bigint) => void;
 
   let currentProposalIndex: number;
   $: currentProposalIndex =
@@ -47,7 +43,7 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.newer}
-      on:click={previous}
+      on:click={selectProposal(previousId)}
       class:hidden={prevDisabled}
       disabled={prevDisabled}
       data-tid="proposal-nav-previous"
@@ -60,7 +56,7 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.older}
-      on:click={next}
+      on:click={selectProposal(nextId)}
       class:hidden={nextDisabled}
       disabled={nextDisabled}
       data-tid="proposal-nav-next"
