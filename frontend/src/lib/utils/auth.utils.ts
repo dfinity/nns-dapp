@@ -23,3 +23,18 @@ export const createAuthClient = (): Promise<AuthClient> =>
       disableDefaultIdleCallback: true,
     },
   });
+
+/**
+ * In certain features such as in Web Workers, we want to load the identity that may or may have not been authenticated.
+ */
+export const loadIdentity = async (): Promise<Identity | undefined> => {
+    const authClient = await createAuthClient();
+    const authenticated = await authClient.isAuthenticated();
+
+    // Not authenticated therefore no identity to fetch the cycles
+    if (!authenticated) {
+        return undefined;
+    }
+
+    return authClient.getIdentity();
+};
