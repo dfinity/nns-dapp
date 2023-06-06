@@ -619,7 +619,7 @@ export const nnsNeuronToVotingNeuron = ({
 });
 
 /** Navigate to the current universe proposal page */
-export const navigateToNnsProposal = (proposalId: bigint): Promise<void> =>
+export const navigateToNnsProposal = (proposalId: ProposalId): Promise<void> =>
   goto(
     buildProposalUrl({
       universe: get(pageStore).universe,

@@ -22,7 +22,8 @@
   $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = async () => await navigateToNnsProposal(`${id}`);
+  const showProposal = async () =>
+    await navigateToNnsProposal(id as ProposalId);
 </script>
 
 <ProposalCard
