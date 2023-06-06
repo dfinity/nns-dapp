@@ -1,4 +1,4 @@
-import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import {SYNC_ACCOUNTS_TIMER_INTERVAL, SYNC_TRANSACTIONS_TIMER_INTERVAL} from "$lib/constants/accounts.constants";
 import {
   IcrcWorkerStore,
   type IcrcWorkerData,
@@ -35,7 +35,7 @@ onmessage = async ({
       return;
     case "nnsStartTransactionsTimer":
       await worker.start<PostMessageDataRequestAccounts>({
-        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        interval: SYNC_TRANSACTIONS_TIMER_INTERVAL,
         job: syncJob,
         data,
       });
