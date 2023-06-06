@@ -6,7 +6,7 @@ import type { PostMessage } from "$lib/types/post-messages";
 
 export type AccountsCallback = (data: PostMessageDataResponseAccounts) => void;
 
-export interface InitAccountsWorker {
+export interface AccountsWorker {
   startAccountsTimer: (
     params: {
       callback: AccountsCallback;
@@ -15,7 +15,7 @@ export interface InitAccountsWorker {
   stopAccountsTimer: () => void;
 }
 
-export const initAccountsWorker = async (): Promise<InitAccountsWorker> => {
+export const initAccountsWorker = async (): Promise<AccountsWorker> => {
   const AccountsWorker = await import("$lib/workers/accounts.worker?worker");
   const accountsWorker: Worker = new AccountsWorker.default();
 

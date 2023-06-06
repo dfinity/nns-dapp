@@ -3,7 +3,7 @@ import type { PostMessageData } from "$lib/types/post-messages";
 
 export interface PostMessageDataRequestTransactions extends PostMessageData {
   accounts: IcrcAccountIdentifierText[];
-  ledgerCanisterId: string;
+  indexCanisterId: string;
 }
 
 export interface PostMessageDataResponseTransactions extends PostMessageData {

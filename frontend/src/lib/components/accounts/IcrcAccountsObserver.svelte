@@ -1,13 +1,12 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import type { InitAccountsWorker } from "$lib/services/worker-accounts.services";
+  import type { AccountsWorker } from "$lib/services/worker-accounts.services";
   import { initAccountsWorker } from "$lib/services/worker-accounts.services";
-  import type { AccountsObserverData } from "$lib/types/accounts.observer";
-  import { arrayOfNumberToUint8Array, nonNullish } from "@dfinity/utils";
+  import type { AccountsObserverData } from "$lib/types/icrc.observer";
 
   export let data: AccountsObserverData;
 
-  let worker: InitAccountsWorker | undefined;
+  let worker: AccountsWorker | undefined;
 
   onDestroy(() => worker?.stopAccountsTimer());
 

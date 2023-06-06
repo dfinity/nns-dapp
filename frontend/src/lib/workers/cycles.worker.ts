@@ -4,7 +4,10 @@ import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants"
 import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
-import { WorkerTimer, type WorkerTimerJobData } from "$lib/workers/worker.timer";
+import {
+  WorkerTimer,
+  type WorkerTimerJobData,
+} from "$lib/workers/worker.timer";
 
 // Worker context to start and stop job
 const worker = new WorkerTimer();

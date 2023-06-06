@@ -81,7 +81,7 @@ const syncAccounts = async (
 
     // TODO: postMessage
 
-    console.log(store.state);
+    console.log("Worker balance", store.state);
   } catch (err: unknown) {
     // TODO: postMessage error
     // TODO: reset

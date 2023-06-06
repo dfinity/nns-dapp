@@ -33,7 +33,11 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcAccountsObserver from "$lib/components/accounts/IcrcAccountsObserver.svelte";
-  import type { AccountsObserverData } from "$lib/types/accounts.observer";
+  import type {
+    AccountsObserverData,
+    TransactionsObserverData,
+  } from "$lib/types/icrc.observer";
+  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -126,8 +130,8 @@
     ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
 
-  let observerData: AccountsObserverData | undefined;
-  $: observerData =
+  let accountsObserverData: AccountsObserverData | undefined;
+  $: accountsObserverData =
     nonNullish($selectedAccountStore.account) &&
     nonNullish($snsProjectSelectedStore)
       ? {
@@ -136,24 +140,37 @@
             $snsProjectSelectedStore.summary.ledgerCanisterId.toText(),
         }
       : undefined;
+
+  let transactionsObserverData: TransactionsObserverData | undefined;
+  $: transactionsObserverData =
+    nonNullish($selectedAccountStore.account) &&
+    nonNullish($snsProjectSelectedStore)
+      ? {
+          account: $selectedAccountStore.account,
+          indexCanisterId:
+            $snsProjectSelectedStore.summary.indexCanisterId.toText(),
+        }
+      : undefined;
 </script>
 
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(observerData)}
-        <IcrcAccountsObserver data={observerData}>
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(accountsObserverData) && nonNullish(transactionsObserverData)}
+        <IcrcAccountsObserver data={accountsObserverData}>
           <Summary />
 
           <WalletSummary {token} />
 
           <Separator />
 
-          <SnsTransactionsList
-            rootCanisterId={$snsOnlyProjectStore}
-            account={$selectedAccountStore.account}
-            {token}
-          />
+          <IcrcTransactionsObserver data={transactionsObserverData}>
+            <SnsTransactionsList
+              rootCanisterId={$snsOnlyProjectStore}
+              account={$selectedAccountStore.account}
+              {token}
+            />
+          </IcrcTransactionsObserver>
         </IcrcAccountsObserver>
       {:else}
         <Spinner />
