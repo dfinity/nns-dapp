@@ -52,6 +52,7 @@ runs:
         # Version from 2023-05-24 with longer retries to install dfx
         ref: '94a006c4a4b77d7153071dee74d80939a22c835e'
     - name: Add SNS scripts to the path
+      shell: bash
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
     - name: Install tools
       shell: bash
