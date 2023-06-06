@@ -17,12 +17,6 @@ onmessage = async ({
 }: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
   const { msg, data } = dataMsg;
 
-  const job = async ({
-    identity,
-    data,
-  }: WorkerTimerJobData<PostMessageDataRequestCycles>) =>
-    await syncCanister({ identity, data });
-
   switch (msg) {
     case "nnsStopCyclesTimer":
       worker.stop();
@@ -30,7 +24,7 @@ onmessage = async ({
     case "nnsStartCyclesTimer":
       await worker.start<PostMessageDataRequestCycles>({
         interval: SYNC_CYCLES_TIMER_INTERVAL,
-        job,
+        job: syncCanister,
         data,
       });
       return;
