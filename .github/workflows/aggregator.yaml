@@ -52,7 +52,7 @@ jobs:
         run: |
           cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
           # Note: Pretty much any argument values will do; the canister will be reconfigured.
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --mode reinstall --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
           dfx canister call sns_aggregator get_canister_config
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
