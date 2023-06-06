@@ -4,91 +4,53 @@ import type { IcrcWorkerData } from "$lib/stores/icrc-worker.store";
 import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
 import type { PostMessageDataRequestAccounts } from "$lib/types/post-message.accounts";
 import type { PostMessage } from "$lib/types/post-messages";
-import { loadIdentity } from "$lib/utils/worker.utils";
-import type { Identity } from "@dfinity/agent";
+import {
+  WorkerTimer,
+  type WorkerTimerJobData,
+} from "$lib/workers/worker.timer";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 
-onmessage = async ({
-  data: dataMsg,
-}: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
-  const { msg, data } = dataMsg;
+// Worker context to start and stop job
+const worker = new WorkerTimer();
 
-  switch (msg) {
-    case "nnsStopAccountsTimer":
-      destroy();
-      return;
-    case "nnsStartAccountsTimer":
-      await startAccountsTimer({ data });
-      return;
-  }
-};
-
-const destroy = () => {
-  stopAccountsTimer();
-  cleanup();
-};
-
-let timer: NodeJS.Timeout | undefined = undefined;
-let syncStatus: "idle" | "in_progress" | "error" = "idle";
-
-const stopAccountsTimer = () => {
-  if (!timer) {
-    return;
-  }
-
-  clearInterval(timer);
-  timer = undefined;
-};
-
-const cleanup = () => {
-  store.reset();
-  syncStatus = "idle";
-};
-
-const startAccountsTimer = async ({
-  data,
-}: {
-  data: PostMessageDataRequestAccounts;
-}) => {
-  // This worker has already been started
-  if (timer !== undefined) {
-    return;
-  }
-
-  const identity: Identity | undefined = await loadIdentity();
-
-  if (!identity) {
-    // We do nothing if no identity
-    return;
-  }
-
-  const sync = async () => await syncAccounts({ identity, ...data });
-
-  // We sync the cycles now but also schedule the update afterwards
-  await sync();
-
-  timer = setInterval(sync, SYNC_ACCOUNTS_TIMER_INTERVAL);
-};
-
+// A worker store to keep track of information
 interface AccountBalanceData extends IcrcWorkerData {
   balance: bigint;
 }
 
 const store = new IcrcWorkerStore<AccountBalanceData>();
 
-type SyncAccountsParams = {
-  identity: Identity;
-} & PostMessageDataRequestAccounts;
+// Message exchange
+onmessage = async ({
+  data: dataMsg,
+}: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
+  const { msg, data } = dataMsg;
 
-const syncAccounts = async (params: SyncAccountsParams) => {
-  // Avoid to sync if already in progress - do not duplicate calls - or if there was a previous error
-  if (syncStatus !== "idle") {
-    return;
+  const syncJob = async ({
+    identity,
+    data,
+  }: WorkerTimerJobData<PostMessageDataRequestAccounts>) =>
+    await syncAccounts({ identity, data });
+
+  switch (msg) {
+    case "nnsStopAccountsTimer":
+      worker.stop(() => store.reset());
+      return;
+    case "nnsStartAccountsTimer":
+      await worker.start<PostMessageDataRequestAccounts>({
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        job: syncJob,
+        data,
+      });
+      return;
   }
+};
 
-  syncStatus = "in_progress";
-
+const syncAccounts = async (
+  params: WorkerTimerJobData<PostMessageDataRequestAccounts>
+) => {
+  // eslint-disable-next-line no-useless-catch
   try {
     const queries = await getIcrcBalances({
       ...params,
@@ -121,26 +83,22 @@ const syncAccounts = async (params: SyncAccountsParams) => {
     // TODO: postMessage
 
     console.log(store.state);
-
-    syncStatus = "idle";
   } catch (err: unknown) {
-    console.error(err);
-
-    syncStatus = "error";
-
     // TODO: postMessage error
     // TODO: reset
+
+    // Bubble errors
+    throw err;
   }
 };
 
 const getIcrcBalances = ({
   identity,
-  accounts,
-  ledgerCanisterId,
+  data: { accounts, ledgerCanisterId },
   certified,
-}: SyncAccountsParams & { certified: boolean }): Promise<
-  AccountBalanceData[]
-> =>
+}: WorkerTimerJobData<PostMessageDataRequestAccounts> & {
+  certified: boolean;
+}): Promise<AccountBalanceData[]> =>
   Promise.all(
     accounts.map(async (accountIdentifier) => {
       const balance = await getIcrcBalance({
