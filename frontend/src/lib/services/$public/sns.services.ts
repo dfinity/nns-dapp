@@ -70,6 +70,7 @@ export const loadSnsProjects = async (): Promise<void> => {
         ledgerCanisterId: Principal.fromText(
           sns.canister_ids.ledger_canister_id
         ),
+        indexCanisterId: Principal.fromText(sns.canister_ids.index_canister_id),
         swap: toNullable(sns.swap_state.swap),
         derived: toNullable(sns.swap_state.derived),
       })),

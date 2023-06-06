@@ -45,8 +45,10 @@ export interface SnsSummary {
   swapCanisterId: Principal;
   // Used to show destination when staking sns neurons.
   governanceCanisterId: Principal;
-  // Used to observe accounts' balance and transactions
+  // Used to observe accounts' balance
   ledgerCanisterId: Principal;
+  // Used to observe accounts' transactions
+  indexCanisterId: Principal;
 
   /**
    * The metadata of the Sns project (title, description, etc.)
