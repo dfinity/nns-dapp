@@ -8,7 +8,7 @@ describe("worker-timer", () => {
   const now = Date.now();
 
   beforeEach(() => {
-    afterEach(jest.clearAllTimers);
+    jest.clearAllTimers();
     jest.useFakeTimers().setSystemTime(now);
   });
 
@@ -121,6 +121,31 @@ describe("worker-timer", () => {
         data,
         interval: 5000,
       });
+
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
+    });
+
+    it("should call job after interval with same parameter", async () => {
+      const worker = new WorkerTimer();
+
+      const job = jest.fn();
+      const data = { test: 123 };
+
+      await worker.start({
+        job,
+        data,
+        interval: 5000,
+      });
+
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
+
+      // wait for 5 seconds
+      await advanceTime(5000);
+
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
+
+      // wait for 5 seconds
+      await advanceTime(5000);
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
     });
