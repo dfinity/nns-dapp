@@ -56,7 +56,7 @@ jobs:
         env:
           RUST_BACKTRACE: 1
   svelte-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04-8-cores
     defaults:
       run:
         shell: bash
