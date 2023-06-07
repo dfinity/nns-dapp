@@ -8,6 +8,7 @@ import {
 } from "$lib/stores/icrc-worker.store";
 import type {
   PostMessageDataRequestTransactions,
+  PostMessageDataResponseTransaction,
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
@@ -53,29 +54,27 @@ const syncTransactions = async (
   try {
     const results = await getTransactions(params);
 
-    const changes = results.filter(
+    const newTransactions = results.filter(
       ({ accountIdentifier, transactions: { oldestTxId } }) =>
         oldestTxId !== store.state[accountIdentifier]?.oldestTxId
     );
 
-    console.log("NEW Transactions", changes.length);
-
-    if (changes.length === 0) {
+    if (newTransactions.length === 0) {
       // No new transactions
       return;
     }
 
     store.update(
-      changes.map(({ accountIdentifier, transactions: { oldestTxId } }) => ({
-        accountIdentifier,
-        certified: true,
-        oldestTxId,
-      }))
+      newTransactions.map(
+        ({ accountIdentifier, transactions: { oldestTxId } }) => ({
+          accountIdentifier,
+          certified: true,
+          oldestTxId,
+        })
+      )
     );
 
-    console.log("CHANGES", changes);
-
-    // TODO post message
+    emitTransactions(newTransactions);
   } catch (err: unknown) {
     // TODO: postMessage error
     // TODO: reset
@@ -89,7 +88,7 @@ const getTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId },
 }: WorkerTimerJobData<PostMessageDataRequestTransactions>): Promise<
-  PostMessageDataResponseTransactions[]
+  PostMessageDataResponseTransaction[]
 > =>
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) => {
@@ -109,3 +108,14 @@ const getTransactions = ({
       };
     })
   );
+
+const emitTransactions = (
+  transactions: PostMessageDataResponseTransaction[]
+) => {
+  const data: PostMessageDataResponseTransactions = { transactions };
+
+  postMessage({
+    msg: "nnsSyncTransactions",
+    data,
+  });
+};

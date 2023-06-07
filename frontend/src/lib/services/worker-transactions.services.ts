@@ -30,7 +30,12 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
   }: MessageEvent<PostMessage<PostMessageDataResponseTransactions>>) => {
     const { msg } = data;
 
-    // TODO
+    switch (msg) {
+      case "nnsSyncTransactions":
+        // TODO
+        console.log("UI", data.data);
+        return;
+    }
   };
 
   return {

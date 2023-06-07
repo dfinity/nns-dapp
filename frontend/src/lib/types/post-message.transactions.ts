@@ -8,6 +8,10 @@ export interface PostMessageDataRequestTransactions extends PostMessageData {
 }
 
 export interface PostMessageDataResponseTransactions extends PostMessageData {
+  transactions: PostMessageDataResponseTransaction[];
+}
+
+export interface PostMessageDataResponseTransaction {
   accountIdentifier: IcrcAccountIdentifierText;
   transactions: GetTransactionsResponse;
 }

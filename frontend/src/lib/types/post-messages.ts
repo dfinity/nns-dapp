@@ -14,7 +14,8 @@ export type PostMessageResponse =
   | "nnsSignOut"
   | "nnsSyncMetrics"
   | "nnsSyncCanister"
-  | "nnsDelegationRemainingTime";
+  | "nnsDelegationRemainingTime"
+  | "nnsSyncTransactions";
 
 export type PostMessageData = object;
 
