@@ -62,11 +62,11 @@ export class WorkerTimer {
   }
 
   stop(cleanup?: () => void) {
-    this.stopAccountsTimer();
+    this.stopTimer();
     cleanup?.();
   }
 
-  private stopAccountsTimer() {
+  private stopTimer() {
     if (!this.timer) {
       return;
     }
