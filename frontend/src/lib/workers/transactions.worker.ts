@@ -56,7 +56,7 @@ const syncTransactions = async (
         oldestTxId !== store.state[accountIdentifier]?.oldestTxId
     );
 
-    console.log('CHANGES', changes.length);
+    console.log("NEW Transactions", changes.length);
 
     if (changes.length === 0) {
       // No new transactions
@@ -71,10 +71,9 @@ const syncTransactions = async (
       }))
     );
 
-    console.log('CHANGES', changes);
+    console.log("CHANGES", changes);
 
     // TODO post message
-    // TODO: fetch only from last
   } catch (err: unknown) {
     // TODO: postMessage error
     // TODO: reset
@@ -97,11 +96,14 @@ const getTransactions = ({
 > =>
   Promise.all(
     accounts.map(async (accountIdentifier) => {
+      const start = store.state[accountIdentifier]?.oldestTxId;
+
       const transactions = await getIcrcTransactions({
         canisterId: Principal.fromText(indexCanisterId),
         identity,
         account: decodeIcrcAccount(accountIdentifier),
         maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        start,
       });
 
       return {
