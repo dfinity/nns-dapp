@@ -16,7 +16,7 @@ describe("worker-timer", () => {
     const mockAuthClient = mock<AuthClient>();
     mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
-    beforeAll(() =>
+    beforeEach(() =>
       jest
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
@@ -42,7 +42,7 @@ describe("worker-timer", () => {
     mockAuthClient.isAuthenticated.mockResolvedValue(true);
     mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
-    beforeAll(() =>
+    beforeEach(() =>
       jest
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
