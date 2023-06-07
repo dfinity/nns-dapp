@@ -24,12 +24,6 @@
       ? undefined
       : proposalIds[currentProposalIndex + 1];
 
-  let prevDisabled = true;
-  $: prevDisabled = nonNullish(currentProposalId) && isNullish(previousId);
-
-  let nextDisabled = true;
-  $: nextDisabled = nonNullish(currentProposalId) && isNullish(nextId);
-
   const selectPrevious = () => {
     if (nonNullish(previousId)) {
       selectProposal(previousId);
@@ -49,8 +43,7 @@
       type="button"
       aria-label={$i18n.proposal_detail.newer}
       on:click={selectPrevious}
-      class:hidden={prevDisabled}
-      disabled={prevDisabled}
+      class:hidden={isNullish(previousId)}
       data-tid="proposal-nav-previous"
     >
       <IconWest />
@@ -62,8 +55,7 @@
       type="button"
       aria-label={$i18n.proposal_detail.older}
       on:click={selectNext}
-      class:hidden={nextDisabled}
-      disabled={nextDisabled}
+      class:hidden={isNullish(nextId)}
       data-tid="proposal-nav-next"
     >
       {$i18n.proposal_detail.older_short}
