@@ -6,6 +6,7 @@ import {
   IcrcWorkerStore,
   type IcrcWorkerData,
 } from "$lib/stores/icrc-worker.store";
+import type { AccountIdentifierText } from "$lib/types/account";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
@@ -15,6 +16,7 @@ import type { PostMessage } from "$lib/types/post-messages";
 import { jsonReplacer } from "$lib/utils/json.utils";
 import {
   WorkerTimer,
+  type WorkerTimerSyncParams,
   type WorkerTimerJobData,
 } from "$lib/workers/worker.timer";
 import { decodeIcrcAccount } from "@dfinity/ledger";
@@ -54,7 +56,7 @@ const syncTransactions = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const results = await getTransactions(params);
+    const results = await getAllTransactions(params);
 
     const newTransactions = results.filter(
       ({ accountIdentifier, mostRecentTxId }) =>
@@ -84,48 +86,82 @@ const syncTransactions = async (
   }
 };
 
-const getTransactions = ({
+const getAllTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId },
 }: WorkerTimerJobData<PostMessageDataRequestTransactions>): Promise<
   PostMessageDataResponseTransaction[]
 > =>
   Promise.all(
-    accountIdentifiers.map(async (accountIdentifier) => {
-      // start is undefined: index provides most recent transactions
-      // start is defined:
-      // - index provides the particular transaction and previous (IDs 60n, 59n, 58n etc.)
-      // - if the start is above the most recent txId, then the index canister returns the tip and following (request ID 65n, index returns 60n, 59n, 58n etc.)
-      const txId = store.state[accountIdentifier]?.mostRecentTxId;
-      const start =
-        txId !== undefined
-          ? txId + BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT)
-          : undefined;
-
-      const { transactions, ...rest } = await getIcrcTransactions({
-        canisterId: Principal.fromText(indexCanisterId),
+    accountIdentifiers.map(async (accountIdentifier) =>
+      getAccountTransactions({
         identity,
-        account: decodeIcrcAccount(accountIdentifier),
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-        start,
-      });
-
-      const mostRecentTxId = transactions.sort(
-        (
-          { transaction: { timestamp: timestampA } },
-          { transaction: { timestamp: timestampB } }
-        ) => Number(timestampB - timestampA)
-      )[0]?.id;
-
-      return {
+        indexCanisterId,
         accountIdentifier,
-        ...rest,
-        completed: transactions.length < DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT,
-        transactions: JSON.stringify(transactions, jsonReplacer),
-        mostRecentTxId,
-      };
-    })
+      })
+    )
   );
+
+type GetAccountTransactionsParams = WorkerTimerSyncParams &
+  Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
+    accountIdentifier: AccountIdentifierText;
+  };
+
+const getAccountTransactions = ({
+  identity,
+  indexCanisterId,
+  accountIdentifier,
+}: GetAccountTransactionsParams): Promise<PostMessageDataResponseTransaction> => {
+
+  // TODO: find transactions until most recent
+
+  return getTransactions({
+    identity,
+    indexCanisterId,
+    accountIdentifier,
+  });
+};
+
+/**
+ * const txId = store.state[accountIdentifier]?.mostRecentTxId;
+ *     const start =
+ *       txId !== undefined
+ *         ? txId + BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT)
+ *         : undefined;
+ */
+
+const getTransactions = async ({
+  identity,
+  indexCanisterId,
+  accountIdentifier,
+  start,
+}: GetAccountTransactionsParams & {
+  start?: bigint;
+}): Promise<PostMessageDataResponseTransaction> => {
+  {
+    const { transactions, ...rest } = await getIcrcTransactions({
+      canisterId: Principal.fromText(indexCanisterId),
+      identity,
+      account: decodeIcrcAccount(accountIdentifier),
+      maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+      start,
+    });
+
+    const mostRecentTxId = transactions.sort(
+      (
+        { transaction: { timestamp: timestampA } },
+        { transaction: { timestamp: timestampB } }
+      ) => Number(timestampB - timestampA)
+    )[0]?.id;
+
+    return {
+      accountIdentifier,
+      ...rest,
+      transactions: JSON.stringify(transactions, jsonReplacer),
+      mostRecentTxId,
+    };
+  }
+};
 
 const emitTransactions = (
   transactions: PostMessageDataResponseTransaction[]
