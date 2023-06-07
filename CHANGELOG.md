@@ -1,5 +1,14 @@
 # Changelog
 
+## Proposal XXX
+
+* Improve Apple install to home screen look and feel.
+* Enable sns-voting.
+* Add a call to "update_balance" for ckBTC during the withdrawal account check process.
+* Improve participation UI.
+* Fix UI warning duplicate form field id in the same form.
+* Minor fixes.
+
 ## Proposal 122747
 
 * Improve ICRC accounts loading performance.
