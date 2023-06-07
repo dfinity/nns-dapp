@@ -1,5 +1,12 @@
 # Changelog
 
+## Proposal XXX
+
+* Improve Sns proposals filter UI.
+* Icons update.
+* Fix metrics csp.
+* Minor text updates.
+
 ## Proposal 122791
 
 * Improve Apple install to home screen look and feel.
