@@ -1,7 +1,9 @@
 <script lang="ts">
   import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { getDeniedCountries } from "$lib/getters/sns-summary";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
+  import type { CountryCode } from "$lib/types/location";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -19,13 +21,16 @@
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
+  // type safety validation is done in ProjectDetail component
+  let summary: SnsSummary;
+  $: summary = $projectDetailStore.summary as SnsSummary;
+
   let params: SnsParams;
   let token: IcrcTokenMetadata;
-  // type safety validation is done in ProjectDetail component
   $: ({
     swap: { params },
     token,
-  } = $projectDetailStore.summary as SnsSummary);
+  } = summary);
 
   let minCommitmentIcp: TokenAmount;
   $: minCommitmentIcp = TokenAmount.fromE8s({
@@ -46,6 +51,15 @@
 
   let snsTotalTokenSupply: TokenAmount | undefined | null;
   $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
+
+  let deniedCountryCodes: CountryCode[];
+  $: deniedCountryCodes = getDeniedCountries(summary);
+
+  let hasDeniedCountries: boolean;
+  $: hasDeniedCountries = deniedCountryCodes.length > 0;
+
+  let formattedDeniedCountryCodes: string;
+  $: formattedDeniedCountryCodes = deniedCountryCodes.join(", ");
 </script>
 
 <TestIdWrapper testId="project-swap-details-component">
@@ -75,4 +89,10 @@
       tagName="span"
     />
   </KeyValuePair>
+  {#if hasDeniedCountries}
+    <KeyValuePair>
+      <span slot="key">{$i18n.sns_project_detail.persons_excluded} </span>
+      <span slot="value">{formattedDeniedCountryCodes}</span>
+    </KeyValuePair>
+  {/if}
 </TestIdWrapper>
