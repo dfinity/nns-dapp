@@ -138,14 +138,17 @@ export const updateBalance = async ({
   minterCanisterId,
   reload,
   deferReload = false,
+  uiIndicators = true,
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
   deferReload?: boolean;
+  uiIndicators?: boolean;
 }): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
-  startBusy({
-    initiator: "update-ckbtc-balance",
-  });
+  uiIndicators &&
+    startBusy({
+      initiator: "update-ckbtc-balance",
+    });
 
   const identity = await getAuthenticatedIdentity();
 
@@ -157,9 +160,10 @@ export const updateBalance = async ({
       new Promise((resolve) => setTimeout(resolve, time));
     await delay(deferReload ? 4000 : 0);
 
-    toastsSuccess({
-      labelKey: "ckbtc.ckbtc_balance_updated",
-    });
+    uiIndicators &&
+      toastsSuccess({
+        labelKey: "ckbtc.ckbtc_balance_updated",
+      });
 
     return { success: true };
   } catch (error: unknown) {
@@ -167,9 +171,10 @@ export const updateBalance = async ({
 
     // Few errors returned by the minter are considered to be displayed as information for the user
     if (err instanceof CkBTCSuccessKey) {
-      toastsSuccess({
-        labelKey: err.message,
-      });
+      uiIndicators &&
+        toastsSuccess({
+          labelKey: err.message,
+        });
 
       return { success: true };
     }
@@ -184,7 +189,7 @@ export const updateBalance = async ({
     // We reload in any case because the user might hit "Refresh balance" in the UI thinking the feature is meant to reload the account and transactions even though it is actually meant to confirm the conversion of BTC -> ckBTC
     await reload?.();
 
-    stopBusy("update-ckbtc-balance");
+    uiIndicators && stopBusy("update-ckbtc-balance");
   }
 };
 
