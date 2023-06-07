@@ -20,7 +20,7 @@ describe("auth-utils", () => {
       const mockAuthClient = mock<AuthClient>();
       mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
-      beforeAll(() =>
+      beforeEach(() =>
         jest
           .spyOn(AuthClient, "create")
           .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
@@ -36,7 +36,7 @@ describe("auth-utils", () => {
       mockAuthClient.isAuthenticated.mockResolvedValue(true);
       mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
-      beforeAll(() =>
+      beforeEach(() =>
         jest
           .spyOn(AuthClient, "create")
           .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
