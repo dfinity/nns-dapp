@@ -35,7 +35,7 @@ clean_config() {
 		    "ENABLE_CKTESTBTC": false,
 		    "ENABLE_SIMULATE_MERGE_NEURONS": false,
 		    "ENABLE_SNS_AGGREGATOR": true,
-		    "ENABLE_SNS_VOTING": false
+		    "ENABLE_SNS_VOTING": true
 		  },
 		  "FETCH_ROOT_KEY": false,
 		  "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
