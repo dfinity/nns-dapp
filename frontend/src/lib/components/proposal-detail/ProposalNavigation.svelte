@@ -3,14 +3,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
-  export let currentProposalId: bigint | undefined;
+  export let currentProposalId: bigint;
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
   let currentProposalIndex: number;
-  $: currentProposalIndex = isNullish(currentProposalId)
-    ? -1
-    : proposalIds.indexOf(currentProposalId);
+  $: currentProposalIndex = proposalIds.indexOf(currentProposalId);
 
   let previousId: bigint | undefined;
   $: previousId =

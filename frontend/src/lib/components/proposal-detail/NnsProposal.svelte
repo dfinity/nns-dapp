@@ -22,13 +22,13 @@
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
-<ProposalNavigation
-  currentProposalId={$store.proposal?.id}
-  {proposalIds}
-  selectProposal={navigateToNnsProposal}
-/>
+{#if $store?.proposal?.id !== undefined}
+  <ProposalNavigation
+    currentProposalId={$store.proposal.id}
+    {proposalIds}
+    selectProposal={navigateToNnsProposal}
+  />
 
-{#if $store?.proposal !== undefined}
   <div class="content-grid" data-tid="proposal-details-grid">
     <div class="content-a content-cell-island">
       <ProposalSystemInfoSection proposalInfo={$store.proposal} />
