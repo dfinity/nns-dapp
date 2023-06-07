@@ -9,19 +9,31 @@ export class ProposalNavigationPo extends BasePageObject {
     return new ProposalNavigationPo(element.byTestId(ProposalNavigationPo.TID));
   }
 
-  getNextButtonPo(): ButtonPo {
-    return this.getButton("proposal-nav-next");
-  }
-
   getPreviousButtonPo(): ButtonPo {
     return this.getButton("proposal-nav-previous");
   }
 
-  clickNext(): Promise<void> {
-    return this.getNextButtonPo().click();
+  getNextButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-next");
+  }
+
+  async isPreviousButtonHidden(): Promise<boolean> {
+    return (
+      await this.getPreviousButtonPo().root.getAttribute("class")
+    ).includes("hidden");
+  }
+
+  async isNextButtonHidden(): Promise<boolean> {
+    return (await this.getNextButtonPo().root.getAttribute("class")).includes(
+      "hidden"
+    );
   }
 
   clickPrevious(): Promise<void> {
     return this.getPreviousButtonPo().click();
+  }
+
+  clickNext(): Promise<void> {
+    return this.getNextButtonPo().click();
   }
 }

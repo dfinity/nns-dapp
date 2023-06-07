@@ -64,8 +64,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.getNextButtonPo().isDisabled()).toBe(false);
-      expect(await po.getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await po.isNextButtonHidden()).toBe(false);
+      expect(await po.isPreviousButtonHidden()).toBe(false);
     });
 
     it("should disable previous button when it's selected", async () => {
@@ -75,8 +75,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.getNextButtonPo().isDisabled()).toBe(false);
-      expect(await po.getPreviousButtonPo().isDisabled()).toBe(true);
+      expect(await po.isNextButtonHidden()).toBe(false);
+      expect(await po.isPreviousButtonHidden()).toBe(true);
     });
 
     it("should disable next when it's selected", async () => {
@@ -86,8 +86,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.getNextButtonPo().isDisabled()).toBe(true);
-      expect(await po.getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await po.isNextButtonHidden()).toBe(true);
+      expect(await po.isPreviousButtonHidden()).toBe(false);
     });
   });
 
