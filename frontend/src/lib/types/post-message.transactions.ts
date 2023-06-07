@@ -16,4 +16,5 @@ export type JsonTransactionsText = string;
 export type PostMessageDataResponseTransaction = {
   accountIdentifier: IcrcAccountIdentifierText;
   completed: boolean;
+  mostRecentTxId?: bigint;
 } & Omit<GetTransactionsResponse, "transactions"> & {transactions: JsonTransactionsText};
