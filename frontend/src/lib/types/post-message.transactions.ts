@@ -11,7 +11,9 @@ export interface PostMessageDataResponseTransactions extends PostMessageData {
   transactions: PostMessageDataResponseTransaction[];
 }
 
+export type JsonTransactionsText = string;
+
 export type PostMessageDataResponseTransaction = {
   accountIdentifier: IcrcAccountIdentifierText;
   completed: boolean;
-} & GetTransactionsResponse;
+} & Omit<GetTransactionsResponse, "transactions"> & {transactions: JsonTransactionsText};

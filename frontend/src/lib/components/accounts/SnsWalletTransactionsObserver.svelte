@@ -14,6 +14,7 @@
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type {TransactionsCallback} from "$lib/services/worker-transactions.services";
+  import {jsonReviver} from "$lib/utils/json.utils";
 
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   const { store }: WalletContext = context;
@@ -37,12 +38,11 @@
     for (const account of transactions) {
       const {transactions: ts, ...rest} = account;
 
-      // TODO: stringify principal
-      // icrcTransactionsStore.addTransactions({
-      //   ...rest,
-      //   transactions: ts,
-      //   canisterId: universeId,
-      // });
+      icrcTransactionsStore.addTransactions({
+        ...rest,
+        transactions: JSON.parse(ts, jsonReviver),
+        canisterId: universeId,
+      });
     }
   };
 

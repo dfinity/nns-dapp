@@ -18,6 +18,7 @@ import {
 } from "$lib/workers/worker.timer";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
+import {jsonReplacer} from "$lib/utils/json.utils";
 
 // Worker context to start and stop job
 const worker = new WorkerTimer();
@@ -94,7 +95,7 @@ const getTransactions = ({
     accountIdentifiers.map(async (accountIdentifier) => {
       const start = store.state[accountIdentifier]?.oldestTxId;
 
-      const transactions = await getIcrcTransactions({
+      const {transactions, oldestTxId} = await getIcrcTransactions({
         canisterId: Principal.fromText(indexCanisterId),
         identity,
         account: decodeIcrcAccount(accountIdentifier),
@@ -104,8 +105,9 @@ const getTransactions = ({
 
       return {
         accountIdentifier,
-        ...transactions,
-        completed: transactions.transactions.length < DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
+        oldestTxId,
+        completed: transactions.length < DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT,
+        transactions: JSON.stringify(transactions, jsonReplacer)
       };
     })
   );
