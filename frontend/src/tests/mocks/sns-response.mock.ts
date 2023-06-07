@@ -16,6 +16,7 @@ import {
 } from "./sns-projects.mock";
 import {
   governanceCanisterIdMock,
+  indexCanisterIdMock,
   ledgerCanisterIdMock,
   swapCanisterIdMock,
 } from "./sns.api.mock";
@@ -58,6 +59,7 @@ export const snsResponseFor = ({
       swapCanisterId: swapCanisterIdMock,
       governanceCanisterId: governanceCanisterIdMock,
       ledgerCanisterId: ledgerCanisterIdMock,
+      indexCanisterId: indexCanisterIdMock,
       swap: swapToQuerySwap({
         ...summaryForLifecycle(lifecycle).swap,
         init: [

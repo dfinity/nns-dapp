@@ -203,6 +203,89 @@ describe("ckbtc-minter-services", () => {
         substitutions: undefined,
       });
     });
+
+    it("should return generic error even if no ui indicators", async () => {
+      const Err = {
+        GenericError: {
+          error_message: "message",
+          error_code: 123n,
+        },
+      };
+
+      const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
+
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterGenericError(error);
+      });
+
+      const result = await services.updateBalance({
+        ...params,
+        uiIndicators: false,
+      });
+
+      expect(result).toEqual({
+        success: false,
+        err: new MinterGenericError(error),
+      });
+    });
+
+    describe("no ui indicators", () => {
+      it("should not start and stop busy", async () => {
+        const startBusySpy = jest
+          .spyOn(busyStore, "startBusy")
+          .mockImplementation(jest.fn());
+
+        const stopBusySpy = jest
+          .spyOn(busyStore, "stopBusy")
+          .mockImplementation(jest.fn());
+
+        await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        expect(startBusySpy).not.toHaveBeenCalled();
+        expect(stopBusySpy).not.toHaveBeenCalled();
+      });
+
+      it("should not toast success if no ui indicators", async () => {
+        const spyUpdateBalance = jest
+          .spyOn(minterApi, "updateBalance")
+          .mockResolvedValue(mockUpdateBalanceOk);
+
+        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+
+        await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        await waitFor(() =>
+          expect(spyUpdateBalance).toBeCalledWith({
+            identity: mockIdentity,
+            canisterId: CKBTC_MINTER_CANISTER_ID,
+          })
+        );
+
+        expect(spyOnToastsShow).not.toHaveBeenCalled();
+      });
+
+      it("should not handle no new UTXOs success if no ui indicators", async () => {
+        jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+          throw new MinterNoNewUtxosError();
+        });
+
+        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+
+        const result = await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        expect(result).toEqual({ success: true });
+        expect(spyOnToastsShow).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("estimateFee", () => {

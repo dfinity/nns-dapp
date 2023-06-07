@@ -74,7 +74,7 @@ describe("CkBTCWalletActions", () => {
 
     fireEvent.click(button as HTMLButtonElement);
 
-    await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+    await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalledTimes(1));
   });
 
   it("should call reload", async () => {
