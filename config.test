@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xeuo pipefail
+set -euo pipefail
 
 JSON_CONFIG="deployment-config.json"
 ENV_CONFIG="frontend/.env"
