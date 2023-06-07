@@ -29,6 +29,12 @@ print_help() {
 	  - "nns-dapp-arg-${DFX_NETWORK}.did"
 	  - "nns-dapp-arg-${DFX_NETWORK}.bin"
 
+	EOF
+  print_docker_help
+}
+
+print_docker_help() {
+  cat <<-"EOF"
 	Note: If the docker build fails, it may help to build from a clean cache:
 
 	  ./scripts/docker-build -- --no-cache
@@ -73,14 +79,23 @@ COMMIT="$(git rev-parse HEAD)"
 [ -z "$(git status --untracked-files=no --porcelain)" ] || COMMIT="${COMMIT}-dirty"
 
 set -x
-DOCKER_BUILDKIT=1 docker build \
+if DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
   --build-arg COMMIT="$COMMIT" \
   -t "$image_name" \
   -o "$OUTDIR" . \
-  "${@+${@}}"
+  "${@+${@}}"; then
+  echo "SUCCESS: Docker build has succeeded."
+else
+  set +x
+  {
+    echo "ERROR: Docker build failed."
+    print_docker_help
+    exit 1
+  } >&2
+fi
 set +x
 
 for file in "${assets[@]}"; do
