@@ -22,7 +22,7 @@
 
     worker?.startAccountsTimer({
       ledgerCanisterId,
-      accounts: [identifier],
+      accountIdentifiers: [identifier],
       callback: () => console.log("TODO"),
     });
   };

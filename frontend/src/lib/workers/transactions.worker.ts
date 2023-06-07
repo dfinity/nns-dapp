@@ -6,8 +6,10 @@ import {
   IcrcWorkerStore,
   type IcrcWorkerData,
 } from "$lib/stores/icrc-worker.store";
-import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
-import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
+import type {
+  PostMessageDataRequestTransactions,
+  PostMessageDataResponseTransactions,
+} from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
   WorkerTimer,
@@ -83,19 +85,14 @@ const syncTransactions = async (
   }
 };
 
-interface AccountTransactions {
-  accountIdentifier: IcrcAccountIdentifierText;
-  transactions: GetTransactionsResponse;
-}
-
 const getTransactions = ({
   identity,
-  data: { accounts, indexCanisterId },
+  data: { accountIdentifiers, indexCanisterId },
 }: WorkerTimerJobData<PostMessageDataRequestTransactions>): Promise<
-  AccountTransactions[]
+  PostMessageDataResponseTransactions[]
 > =>
   Promise.all(
-    accounts.map(async (accountIdentifier) => {
+    accountIdentifiers.map(async (accountIdentifier) => {
       const start = store.state[accountIdentifier]?.oldestTxId;
 
       const transactions = await getIcrcTransactions({

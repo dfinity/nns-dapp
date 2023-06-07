@@ -87,13 +87,13 @@ const syncAccounts = async (
 
 const getIcrcBalances = ({
   identity,
-  data: { accounts, ledgerCanisterId },
+  data: { accountIdentifiers, ledgerCanisterId },
   certified,
 }: WorkerTimerJobData<PostMessageDataRequestAccounts> & {
   certified: boolean;
 }): Promise<AccountBalanceData[]> =>
   Promise.all(
-    accounts.map(async (accountIdentifier) => {
+    accountIdentifiers.map(async (accountIdentifier) => {
       const balance = await getIcrcBalance({
         canisterId: Principal.fromText(ledgerCanisterId),
         identity,

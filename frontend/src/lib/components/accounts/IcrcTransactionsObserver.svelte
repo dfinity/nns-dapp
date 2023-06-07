@@ -22,7 +22,7 @@
 
     worker?.startTransactionsTimer({
       indexCanisterId,
-      accounts: [identifier],
+      accountIdentifiers: [identifier],
       callback: () => console.log("TODO"),
     });
   };
