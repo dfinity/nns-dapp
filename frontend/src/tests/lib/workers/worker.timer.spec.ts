@@ -7,8 +7,10 @@ import { mock } from "jest-mock-extended";
 describe("worker-timer", () => {
   const now = Date.now();
 
-  beforeEach(() => jest.useFakeTimers().setSystemTime(now));
-  afterEach(jest.clearAllTimers);
+  beforeEach(() => {
+    afterEach(jest.clearAllTimers);
+    jest.useFakeTimers().setSystemTime(now);
+  });
 
   describe("without identity", () => {
     const mockAuthClient = mock<AuthClient>();
