@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { TransactionsObserverData } from "$lib/types/icrc.observer";
-  import type { TransactionsWorker } from "$lib/services/worker-transactions.services";
+  import type {TransactionsCallback, TransactionsWorker} from "$lib/services/worker-transactions.services";
   import { initTransactionsWorker } from "$lib/services/worker-transactions.services";
 
   export let data: TransactionsObserverData;
+  export let callback: TransactionsCallback;
 
   let worker: TransactionsWorker | undefined;
 
@@ -23,7 +24,7 @@
     worker?.startTransactionsTimer({
       indexCanisterId,
       accountIdentifiers: [identifier],
-      callback: () => console.log("TODO"),
+      callback,
     });
   };
 

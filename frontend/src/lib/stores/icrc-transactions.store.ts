@@ -7,6 +7,7 @@ import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
+import type {GetTransactionsResponse} from "$lib/api/icrc-index.api";
 
 export type IcrcAccountIdentifier = string;
 
@@ -33,10 +34,8 @@ export interface IcrcTransactionsStore
   addTransactions: (data: {
     accountIdentifier: string;
     canisterId: UniverseCanisterId;
-    transactions: IcrcTransactionWithId[];
-    oldestTxId?: bigint;
     completed: boolean;
-  }) => void;
+  } & GetTransactionsResponse) => void;
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;
   resetAccount: (params: {

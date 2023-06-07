@@ -32,8 +32,7 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
 
     switch (msg) {
       case "nnsSyncTransactions":
-        // TODO
-        console.log("UI", data.data);
+        transactionsCallback?.(data.data);
         return;
     }
   };

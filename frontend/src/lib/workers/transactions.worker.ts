@@ -55,7 +55,7 @@ const syncTransactions = async (
     const results = await getTransactions(params);
 
     const newTransactions = results.filter(
-      ({ accountIdentifier, transactions: { oldestTxId } }) =>
+      ({ accountIdentifier, oldestTxId }) =>
         oldestTxId !== store.state[accountIdentifier]?.oldestTxId
     );
 
@@ -66,7 +66,7 @@ const syncTransactions = async (
 
     store.update(
       newTransactions.map(
-        ({ accountIdentifier, transactions: { oldestTxId } }) => ({
+        ({ accountIdentifier, oldestTxId }) => ({
           accountIdentifier,
           certified: true,
           oldestTxId,
@@ -104,7 +104,8 @@ const getTransactions = ({
 
       return {
         accountIdentifier,
-        transactions,
+        ...transactions,
+        completed: transactions.transactions.length < DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
       };
     })
   );

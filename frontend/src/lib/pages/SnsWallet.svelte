@@ -33,11 +33,8 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcAccountsObserver from "$lib/components/accounts/IcrcAccountsObserver.svelte";
-  import type {
-    AccountsObserverData,
-    TransactionsObserverData,
-  } from "$lib/types/icrc.observer";
-  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+  import type { AccountsObserverData } from "$lib/types/icrc.observer";
+  import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -140,23 +137,12 @@
             $snsProjectSelectedStore.summary.ledgerCanisterId.toText(),
         }
       : undefined;
-
-  let transactionsObserverData: TransactionsObserverData | undefined;
-  $: transactionsObserverData =
-    nonNullish($selectedAccountStore.account) &&
-    nonNullish($snsProjectSelectedStore)
-      ? {
-          account: $selectedAccountStore.account,
-          indexCanisterId:
-            $snsProjectSelectedStore.summary.indexCanisterId.toText(),
-        }
-      : undefined;
 </script>
 
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(accountsObserverData) && nonNullish(transactionsObserverData)}
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(accountsObserverData)}
         <IcrcAccountsObserver data={accountsObserverData}>
           <Summary />
 
@@ -164,13 +150,13 @@
 
           <Separator />
 
-          <IcrcTransactionsObserver data={transactionsObserverData}>
+          <SnsWalletTransactionsObserver>
             <SnsTransactionsList
               rootCanisterId={$snsOnlyProjectStore}
               account={$selectedAccountStore.account}
               {token}
             />
-          </IcrcTransactionsObserver>
+          </SnsWalletTransactionsObserver>
         </IcrcAccountsObserver>
       {:else}
         <Spinner />
