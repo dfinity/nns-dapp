@@ -36,7 +36,7 @@
     }
 
     for (const account of transactions) {
-      const {transactions: ts, ...rest} = account;
+      const {transactions: ts, mostRecentTxId: _, ...rest} = account;
 
       icrcTransactionsStore.addTransactions({
         ...rest,
