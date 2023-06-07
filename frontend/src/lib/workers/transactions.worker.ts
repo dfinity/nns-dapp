@@ -6,6 +6,7 @@ import {
   IcrcWorkerStore,
   type IcrcWorkerData,
 } from "$lib/stores/icrc-worker.store";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
@@ -19,9 +20,8 @@ import { Principal } from "@dfinity/principal";
 const worker = new WorkerTimer();
 
 // A worker store to keep track of transactions
-interface TransactionsData extends IcrcWorkerData {
-  balance: bigint;
-}
+type TransactionsData = IcrcWorkerData &
+  Pick<GetTransactionsResponse, "oldestTxId">;
 
 const store = new IcrcWorkerStore<TransactionsData>();
 
@@ -50,10 +50,30 @@ const syncTransactions = async (
   // eslint-disable-next-line no-useless-catch
   try {
     const results = await getTransactions(params);
-    console.log("Worker Transactions", results);
 
-    // TODO post message if something new
-    // TODO save last
+    const changes = results.filter(
+      ({ accountIdentifier, transactions: { oldestTxId } }) =>
+        oldestTxId !== store.state[accountIdentifier]?.oldestTxId
+    );
+
+    console.log('CHANGES', changes.length);
+
+    if (changes.length === 0) {
+      // No new transactions
+      return;
+    }
+
+    store.update(
+      changes.map(({ accountIdentifier, transactions: { oldestTxId } }) => ({
+        accountIdentifier,
+        certified: true,
+        oldestTxId,
+      }))
+    );
+
+    console.log('CHANGES', changes);
+
+    // TODO post message
     // TODO: fetch only from last
   } catch (err: unknown) {
     // TODO: postMessage error
@@ -64,19 +84,29 @@ const syncTransactions = async (
   }
 };
 
+interface AccountTransactions {
+  accountIdentifier: IcrcAccountIdentifierText;
+  transactions: GetTransactionsResponse;
+}
+
 const getTransactions = ({
   identity,
   data: { accounts, indexCanisterId },
 }: WorkerTimerJobData<PostMessageDataRequestTransactions>): Promise<
-  GetTransactionsResponse[]
+  AccountTransactions[]
 > =>
   Promise.all(
-    accounts.map(async (accountIdentifier) =>
-      getIcrcTransactions({
+    accounts.map(async (accountIdentifier) => {
+      const transactions = await getIcrcTransactions({
         canisterId: Principal.fromText(indexCanisterId),
         identity,
         account: decodeIcrcAccount(accountIdentifier),
         maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-      })
-    )
+      });
+
+      return {
+        accountIdentifier,
+        transactions,
+      };
+    })
   );
