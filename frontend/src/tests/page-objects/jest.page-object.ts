@@ -2,7 +2,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
-const selfSelector = ":scope";
+const SELF_SELECTOR = ":scope";
 
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
@@ -70,7 +70,7 @@ export class JestPageObjectElement implements PageObjectElement {
     fullSelector: string;
   } {
     if (isNullish(this.parent)) {
-      return { rootElement: this.element, fullSelector: selfSelector };
+      return { rootElement: this.element, fullSelector: SELF_SELECTOR };
     }
     const { rootElement, fullSelector } = this.parent.getRootAndFullSelector();
     return {
@@ -81,10 +81,10 @@ export class JestPageObjectElement implements PageObjectElement {
 
   async isPresent(): Promise<boolean> {
     const { rootElement, fullSelector } = this.getRootAndFullSelector();
-    if (fullSelector !== selfSelector) {
+    if (fullSelector !== SELF_SELECTOR) {
       // I would expect that element.querySelector(":scope") would return the
       // element itself, but it doesn't. So we skip this step if
-      // fullSelector === selfSelector.
+      // fullSelector === SELF_SELECTOR.
       this.element = rootElement.querySelector(fullSelector);
     }
     return nonNullish(this.element);
