@@ -70,7 +70,7 @@ environment. The following steps _should_ build the official Wasm image.
   ```
 
 ### Build
-Afterwards you can simply build the container with the following
+When you have the tools installed, you can build the container with:
 
 ```sh
 ./scripts/docker-build
@@ -80,7 +80,9 @@ sha256sum nns-dapp.wasm
 The resulting `nns-dapp.wasm` is ready for deployment as
 `qoctq-giaaa-aaaaa-aaaea-cai`, which is the reserved principal for this service.
 
-Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact there.
+Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact from [a release](https://github.com/dfinity/nns-dapp/releases?q=proposal&expanded=true).
+
+TODO: When we make a proposal, we should have a corresponding release.  E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
 
 ## Development
 
