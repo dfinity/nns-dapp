@@ -159,14 +159,8 @@ describe("SnsProposalDetail", () => {
         return expect(path).toEqual(AppPath.Proposals);
       });
     });
-  });
 
-  describe("nns universe", () => {
-    beforeEach(() => {
-      page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
-    });
-
-    it("should not render content once proposal is loaded if incorrect universe", async () => {
+    it("should not render content if universe changes to Nns", async () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -174,7 +168,7 @@ describe("SnsProposalDetail", () => {
       });
       fakeSnsGovernanceApi.pause();
 
-      const { container } = render(SnsProposalDetail, {
+      const { container, rerender } = render(SnsProposalDetail, {
         props: {
           proposalIdText: proposalId.id.toString(),
         },
@@ -186,6 +180,11 @@ describe("SnsProposalDetail", () => {
       expect(await po.isContentLoaded()).toBe(false);
 
       fakeSnsGovernanceApi.resume();
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+
+      page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
+
+      rerender(SnsProposalDetail);
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
     });
   });
