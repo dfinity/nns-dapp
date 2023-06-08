@@ -74,8 +74,7 @@ When you have the tools installed, you can build the container with:
 
 * Get the code
   ```sh
-  git clone https://github.com/dfinity/nns-dapp.git
-  cd nns-dapp
+  git clone https://github.com/dfinity/nns-dapp.git && cd nns-dapp
   ```
 * If you would like to build a specific version, e.g. the commit for a specific proposal, please check it out:
   ```sh
