@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
@@ -10,8 +11,8 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { render, waitFor } from "@testing-library/svelte";
@@ -36,13 +37,16 @@ describe("SnsProposalDetail", () => {
     return SnsProposalDetailPo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+  });
+
   describe("not logged in", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -154,6 +158,35 @@ describe("SnsProposalDetail", () => {
         const { path } = get(pageStore);
         return expect(path).toEqual(AppPath.Proposals);
       });
+    });
+  });
+
+  describe("nns universe", () => {
+    beforeEach(() => {
+      page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
+    });
+
+    it("should not render content once proposal is loaded if incorrect universe", async () => {
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+      });
+      fakeSnsGovernanceApi.pause();
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      expect(await po.getSkeletonDetails().isPresent()).toBe(true);
+      expect(await po.isContentLoaded()).toBe(false);
+
+      fakeSnsGovernanceApi.resume();
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
     });
   });
 });
