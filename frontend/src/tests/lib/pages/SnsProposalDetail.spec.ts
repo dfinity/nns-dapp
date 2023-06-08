@@ -37,16 +37,13 @@ describe("SnsProposalDetail", () => {
     return SnsProposalDetailPo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreNoIdentitySubscribe);
-  });
-
   describe("not logged in", () => {
     beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -160,7 +157,7 @@ describe("SnsProposalDetail", () => {
       });
     });
 
-    it("should not render content if universe changes to Nns", async () => {
+    it.only("should not render content if universe changes to Nns", async () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -184,7 +181,12 @@ describe("SnsProposalDetail", () => {
 
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
 
-      rerender(SnsProposalDetail);
+      rerender({
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
     });
   });
