@@ -157,7 +157,7 @@ describe("SnsProposalDetail", () => {
       });
     });
 
-    it.only("should not render content if universe changes to Nns", async () => {
+    it("should not render content if universe changes to Nns", async () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
