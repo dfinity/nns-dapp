@@ -18,9 +18,21 @@ can validate that we really deploy what we claim to deploy.
 We try to achieve some level of reproducibility using a Dockerized build
 environment. The following steps _should_ build the official Wasm image.
 
-We use `docker buildx` as a dependency, to install it please follow [the official guide](https://docs.docker.com/build/install-buildx/) or follow the steps here which walk you through installing the `0.10.4` version of
-`docker-buildx` on a x86-64 Linux machine.
+### Install tools
+#### Docker
+* Install docker, please use [one of the official installers](https://docs.docker.com/get-docker/).
 
+#### Buildx
+* We use `docker buildx` as a dependency, to install it please follow [the official guide](https://docs.docker.com/build/install-buildx/) or follow the steps here.
+
+##### Buildx on Mac
+```
+brew install docker-buildx
+```
+
+##### Buildx on Linux
+The following steps which walk you through installing the `0.10.4` version of
+`docker-buildx` on a x86-64 Linux machine:
 ```sh
 wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64
 mv buildx-v0.10.4.linux-amd64 docker-buildx
@@ -29,6 +41,7 @@ mkdir -p $HOME/.docker/cli-plugins/
 mv docker-buildx $HOME/.docker/cli-plugins/
 ```
 
+### Build
 Afterwards you can simply build the container with the following
 
 ```sh
