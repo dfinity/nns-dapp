@@ -19,6 +19,20 @@ We try to achieve some level of reproducibility using a Dockerized build
 environment. The following steps _should_ build the official Wasm image.
 
 ### Install tools
+#### Git
+Git is a version control tool.
+
+##### Git on Mac
+```
+brew install git
+```
+
+##### Git on Ubuntu
+```
+apt-get update
+apt-get install git
+```
+
 #### Docker
 * Install docker, please use [one of the official installers](https://docs.docker.com/get-docker/).
 
