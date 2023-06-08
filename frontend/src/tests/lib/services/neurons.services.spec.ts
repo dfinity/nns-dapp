@@ -990,7 +990,7 @@ describe("neurons-services", () => {
       expect(spyMergeNeurons).not.toBeCalled();
     });
 
-    it("should not simulate merging neurons if HW controlled", async () => {
+    it("should simulate merging neurons if HW controlled", async () => {
       accountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
@@ -1022,7 +1022,7 @@ describe("neurons-services", () => {
         targetNeuronId: neuron2.neuronId,
       });
 
-      expect(spySimulateMergeNeurons).not.toBeCalled();
+      expect(spySimulateMergeNeurons).toBeCalledTimes(1);
       expect(spyMergeNeurons).not.toBeCalled();
     });
   });
