@@ -24,6 +24,12 @@ environment. The following steps _should_ build the official Wasm image.
   ```
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
+* [Bash](https://www.gnu.org/software/bash/) is a popular shell that we use to execute scripts.
+  * Check which version of bash you have installed:
+    ```
+    bash --version
+    ```
+  * If you have version 5 or newer, your installation is up to date.  If you have an old version, such as 3, [please upgrade](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba).
 * [Git](https://git-scm.com/) is a distributed version control tool.  Please install it with:
   ```
   brew install git
