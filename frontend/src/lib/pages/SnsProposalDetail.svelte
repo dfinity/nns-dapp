@@ -114,6 +114,7 @@
       nonNullish(proposalIdText) &&
       nonNullish(universeIdText) &&
       nonNullish(universeCanisterId) &&
+      // TODO: improve testing to ensure reloadProposal is not called
       !isUniverseNns(universeCanisterId)
     ) {
       try {
