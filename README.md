@@ -82,7 +82,7 @@ The resulting `nns-dapp.wasm` is ready for deployment as
 
 Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact from [a release](https://github.com/dfinity/nns-dapp/releases?q=proposal&expanded=true).
 
-TODO: When we make a proposal, we should have a corresponding release.  E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
+TODO: When we make a proposal, we should have a corresponding release that voters can download.  E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
 
 ## Development
 
