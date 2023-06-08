@@ -35,7 +35,7 @@ clean_config() {
 		    "ENABLE_CKTESTBTC": false,
 		    "ENABLE_SIMULATE_MERGE_NEURONS": false,
 		    "ENABLE_SNS_AGGREGATOR": true,
-		    "ENABLE_SNS_VOTING": true
+		    "ENABLE_SNS_VOTING": false
 		  },
 		  "FETCH_ROOT_KEY": false,
 		  "GOVERNANCE_CANISTER_ID": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -71,7 +71,7 @@ clean_config() {
 		VITE_OWN_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
 		VITE_OWN_CANISTER_URL=https://nns.internetcomputer.org
 		VITE_FETCH_ROOT_KEY=false
-		VITE_FEATURE_FLAGS="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SIMULATE_MERGE_NEURONS\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":true}"
+		VITE_FEATURE_FLAGS="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SIMULATE_MERGE_NEURONS\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}"
 		VITE_HOST=https://icp-api.io
 		VITE_IDENTITY_SERVICE_URL=https://identity.internetcomputer.org/
 		VITE_AGGREGATOR_CANISTER_URL=https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io
@@ -98,7 +98,7 @@ clean_config() {
 		    record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="mqygn-kiaaa-aaaar-qaadq-cai" };
 		    record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
 		    record{ 0="DFX_NETWORK"; 1="mainnet" };
-		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SIMULATE_MERGE_NEURONS\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":true}" };
+		    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_SIMULATE_MERGE_NEURONS\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":false}" };
 		    record{ 0="FETCH_ROOT_KEY"; 1="false" };
 		    record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
 		    record{ 0="HOST"; 1="https://icp-api.io" };
