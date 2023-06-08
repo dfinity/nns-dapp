@@ -192,7 +192,7 @@ jobs:
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
-          /scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
+          scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
