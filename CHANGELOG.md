@@ -1,5 +1,9 @@
 # Changelog
 
+## Proposal XXX
+* Add kinic metrics url to the CSP whitelist
+* Display excluded country codes
+
 ## Proposal 122614
 
 * Swap conditions.
