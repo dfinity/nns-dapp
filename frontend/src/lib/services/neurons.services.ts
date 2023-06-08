@@ -454,12 +454,10 @@ export const simulateMergeNeurons = async ({
   targetNeuronId: NeuronId;
 }): Promise<NeuronInfo | undefined> => {
   try {
-    const { targetNeuron } = await checkCanBeMerged({
+    await checkCanBeMerged({
       sourceNeuronId,
       targetNeuronId,
     });
-
-    const accounts = get(accountsStore);
 
     const identity: Identity = await getAuthenticatedIdentity();
 
