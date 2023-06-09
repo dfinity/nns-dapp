@@ -25,7 +25,8 @@ export const createAuthClient = (): Promise<AuthClient> =>
   });
 
 /**
- * In certain features such as in Web Workers, we want to load the identity that may or may have not been authenticated.
+ * In certain features, we want to execute jobs with the authenticated identity without getting it from the auth.store.
+ * This is notably useful for Web Workers which do not have access to the window.
  */
 export const loadIdentity = async (): Promise<Identity | undefined> => {
   const authClient = await createAuthClient();
