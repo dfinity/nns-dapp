@@ -131,7 +131,11 @@ describe("worker-timer", () => {
     it("should call job after interval with same parameter", async () => {
       const worker = new TimerWorkerUtil();
 
-      const job = jest.fn();
+      let call = 0;
+      const job = jest.fn(async ({ data: { test } }) => {
+        call = call + test;
+      });
+
       const data = { test: 123 };
 
       await worker.start({
@@ -141,16 +145,19 @@ describe("worker-timer", () => {
       });
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
+      expect(call).toEqual(data.test);
 
       // wait for 5 seconds
       await advanceTime(5000);
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
+      expect(call).toEqual(data.test * 2);
 
       // wait for 5 seconds
       await advanceTime(5000);
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
+      expect(call).toEqual(data.test * 3);
     });
 
     it("should stop timer", async () => {
