@@ -5,14 +5,14 @@ import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
 import type { PostMessageDataRequestAccounts } from "$lib/types/post-message.accounts";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
-  WorkerTimer,
-  type WorkerTimerJobData,
-} from "$lib/workers/worker.timer";
+  TimerWorkerUtil,
+  type TimerWorkerUtilJobData,
+} from "$lib/worker-utils/timer.worker-util";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
-const worker = new WorkerTimer();
+const worker = new TimerWorkerUtil();
 
 // A worker store to keep track of account balances
 interface AccountBalanceData extends IcrcWorkerData {
@@ -28,7 +28,8 @@ onmessage = async ({
 
   switch (msg) {
     case "nnsStopAccountsTimer":
-      worker.stop(() => store.reset());
+      worker.stop();
+      store.reset();
       return;
     case "nnsStartAccountsTimer":
       await worker.start<PostMessageDataRequestAccounts>({
@@ -41,7 +42,7 @@ onmessage = async ({
 };
 
 const syncAccounts = async (
-  params: WorkerTimerJobData<PostMessageDataRequestAccounts>
+  params: TimerWorkerUtilJobData<PostMessageDataRequestAccounts>
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -89,7 +90,7 @@ const getIcrcBalances = ({
   identity,
   data: { accountIdentifiers, ledgerCanisterId },
   certified,
-}: WorkerTimerJobData<PostMessageDataRequestAccounts> & {
+}: TimerWorkerUtilJobData<PostMessageDataRequestAccounts> & {
   certified: boolean;
 }): Promise<AccountBalanceData[]> =>
   Promise.all(

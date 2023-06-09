@@ -15,15 +15,15 @@ import type {
 import type { PostMessage } from "$lib/types/post-messages";
 import { jsonReplacer } from "$lib/utils/json.utils";
 import {
-  WorkerTimer,
-  type WorkerTimerSyncParams,
-  type WorkerTimerJobData,
-} from "$lib/workers/worker.timer";
+  TimerWorkerUtil,
+  type TimerWorkerUtilJobData,
+  type TimerWorkerUtilSyncParams,
+} from "$lib/worker-utils/timer.worker-util";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
-const worker = new WorkerTimer();
+const worker = new TimerWorkerUtil();
 
 // A worker store to keep track of transactions
 type TransactionsData = IcrcWorkerData &
@@ -39,7 +39,8 @@ onmessage = async ({
 
   switch (msg) {
     case "nnsStopTransactionsTimer":
-      worker.stop(() => store.reset());
+      worker.stop();
+      store.reset();
       return;
     case "nnsStartTransactionsTimer":
       await worker.start<PostMessageDataRequestTransactions>({
@@ -52,7 +53,7 @@ onmessage = async ({
 };
 
 const syncTransactions = async (
-  params: WorkerTimerJobData<PostMessageDataRequestTransactions>
+  params: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -89,7 +90,7 @@ const syncTransactions = async (
 const getAllTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId },
-}: WorkerTimerJobData<PostMessageDataRequestTransactions>): Promise<
+}: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>): Promise<
   PostMessageDataResponseTransaction[]
 > =>
   Promise.all(
@@ -102,7 +103,7 @@ const getAllTransactions = ({
     )
   );
 
-type GetAccountTransactionsParams = WorkerTimerSyncParams &
+type GetAccountTransactionsParams = TimerWorkerUtilSyncParams &
   Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
     accountIdentifier: AccountIdentifierText;
   };
@@ -112,7 +113,6 @@ const getAccountTransactions = ({
   indexCanisterId,
   accountIdentifier,
 }: GetAccountTransactionsParams): Promise<PostMessageDataResponseTransaction> => {
-
   // TODO: find transactions until most recent
 
   return getTransactions({
