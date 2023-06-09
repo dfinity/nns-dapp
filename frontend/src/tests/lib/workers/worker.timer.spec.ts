@@ -1,4 +1,4 @@
-import { WorkerTimer } from "$lib/workers/worker.timer";
+import { TimerWorkerUtil } from "$lib/worker-utils/timer.worker-util";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
@@ -23,7 +23,7 @@ describe("worker-timer", () => {
     );
 
     it("should not call if no identity", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 
@@ -49,7 +49,7 @@ describe("worker-timer", () => {
     );
 
     it("should call job on start", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 
@@ -63,7 +63,7 @@ describe("worker-timer", () => {
     });
 
     it("should not call job if already started", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 
@@ -87,7 +87,7 @@ describe("worker-timer", () => {
     });
 
     it("should call job after interval", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 
@@ -111,7 +111,7 @@ describe("worker-timer", () => {
     });
 
     it("should call job with identity and data", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
       const data = { test: 123 };
@@ -126,7 +126,7 @@ describe("worker-timer", () => {
     });
 
     it("should call job after interval with same parameter", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
       const data = { test: 123 };
@@ -151,7 +151,7 @@ describe("worker-timer", () => {
     });
 
     it("should stop timer", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 
@@ -172,7 +172,7 @@ describe("worker-timer", () => {
     });
 
     it("should call cleanup on stop", async () => {
-      const worker = new WorkerTimer();
+      const worker = new TimerWorkerUtil();
 
       const job = jest.fn();
 

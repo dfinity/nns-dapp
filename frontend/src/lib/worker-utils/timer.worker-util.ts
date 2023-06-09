@@ -1,24 +1,24 @@
 import { loadIdentity } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 
-export interface WorkerTimerParams<T> {
-  job: (params: WorkerTimerJobData<T>) => Promise<void>;
+export interface TimerWorkerUtilParams<T> {
+  job: (params: TimerWorkerUtilJobData<T>) => Promise<void>;
   data: T;
 }
-export type WorkerTimerJobData<T> = { data: T } & WorkerTimerSyncParams;
+export type TimerWorkerUtilJobData<T> = { data: T } & TimerWorkerUtilSyncParams;
 
-export interface WorkerTimerSyncParams {
+export interface TimerWorkerUtilSyncParams {
   identity: Identity;
 }
 
-export class WorkerTimer {
+export class TimerWorkerUtil {
   private timer: NodeJS.Timeout | undefined = undefined;
   private syncStatus: "idle" | "in_progress" | "error" = "idle";
 
   async start<T>({
     interval,
     ...rest
-  }: WorkerTimerParams<T> & { interval: number }): Promise<void> {
+  }: TimerWorkerUtilParams<T> & { interval: number }): Promise<void> {
     // This worker has already been started
     if (this.timer !== undefined) {
       return;
@@ -42,7 +42,7 @@ export class WorkerTimer {
   private async executeSync<T>({
     job,
     ...rest
-  }: WorkerTimerParams<T> & WorkerTimerSyncParams): Promise<void> {
+  }: TimerWorkerUtilParams<T> & TimerWorkerUtilSyncParams): Promise<void> {
     // Avoid to sync if already in progress - do not duplicate calls - or if there was a previous error
     if (this.syncStatus !== "idle") {
       return;

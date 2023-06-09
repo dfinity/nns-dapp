@@ -5,12 +5,12 @@ import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
-  WorkerTimer,
-  type WorkerTimerJobData,
-} from "$lib/workers/worker.timer";
+  TimerWorkerUtil,
+  type TimerWorkerUtilJobData,
+} from "$lib/worker-utils/timer.worker-util";
 
 // Worker context to start and stop job
-const worker = new WorkerTimer();
+const worker = new TimerWorkerUtil();
 
 onmessage = async ({
   data: dataMsg,
@@ -34,7 +34,7 @@ onmessage = async ({
 const syncCanister = async ({
   identity,
   data: { canisterId },
-}: WorkerTimerJobData<PostMessageDataRequestCycles>) => {
+}: TimerWorkerUtilJobData<PostMessageDataRequestCycles>) => {
   try {
     const canisterInfo: CanisterDetails = await queryCanisterDetails({
       canisterId,
