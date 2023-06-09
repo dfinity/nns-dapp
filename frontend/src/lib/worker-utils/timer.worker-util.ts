@@ -28,7 +28,9 @@ export class TimerWorkerUtil {
 
     if (!identity) {
       // We do nothing if no identity
-      console.warn("Attempted to initiate a worker without an authenticated identity.")
+      console.error(
+        "Attempted to initiate a worker without an authenticated identity."
+      );
       return;
     }
 

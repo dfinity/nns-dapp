@@ -1,6 +1,7 @@
 import { TimerWorkerUtil } from "$lib/worker-utils/timer.worker-util";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
+import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
 
@@ -8,6 +9,8 @@ describe("worker-timer", () => {
   const now = Date.now();
 
   beforeEach(() => {
+    silentConsoleErrors();
+
     jest.clearAllTimers();
     jest.useFakeTimers().setSystemTime(now);
   });
@@ -171,10 +174,18 @@ describe("worker-timer", () => {
       expect(job).toHaveBeenCalledTimes(1);
     });
 
-    it("should call cleanup on stop", async () => {
+    it("should stop timer on job error", async () => {
       const worker = new TimerWorkerUtil();
 
-      const job = jest.fn();
+      let call = 0;
+      const job = jest.fn(async () => {
+        // Job is executed and scheduled, we want to test the error if it throw an error in the scheduler
+        if (call > 0) {
+          throw new Error("Test");
+        }
+
+        call++;
+      });
 
       await worker.start({
         job,
@@ -182,11 +193,15 @@ describe("worker-timer", () => {
         interval: 5000,
       });
 
-      const cleanup = jest.fn();
+      expect(job).toHaveBeenCalledTimes(1);
 
-      worker.stop(cleanup);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((worker as any).timer).not.toBeUndefined();
 
-      expect(cleanup).toHaveBeenCalledTimes(1);
+      await advanceTime(5000);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((worker as any).timer).toBeUndefined();
     });
   });
 });
