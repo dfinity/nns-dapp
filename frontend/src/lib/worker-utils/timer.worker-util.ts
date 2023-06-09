@@ -57,6 +57,7 @@ export class TimerWorkerUtil {
     } catch (err: unknown) {
       console.error(err);
 
+      // Once the status becomes "error", the job will no longer be called and the status will remain "error"
       this.syncStatus = "error";
     }
   }
