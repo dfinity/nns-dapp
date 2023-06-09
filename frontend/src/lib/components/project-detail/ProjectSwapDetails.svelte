@@ -90,7 +90,7 @@
     />
   </KeyValuePair>
   {#if hasDeniedCountries}
-    <KeyValuePair>
+    <KeyValuePair testId="excluded-countries">
       <span slot="key">{$i18n.sns_project_detail.persons_excluded} </span>
       <span slot="value">{formattedDeniedCountryCodes}</span>
     </KeyValuePair>
