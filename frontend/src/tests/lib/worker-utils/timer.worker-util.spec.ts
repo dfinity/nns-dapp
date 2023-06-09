@@ -131,35 +131,31 @@ describe("timer.worker-util", () => {
     it("should call job after interval with same parameter", async () => {
       const worker = new TimerWorkerUtil();
 
-      const methods = {
-        job: jest.fn(),
-      };
-
-      const spy = jest.spyOn(methods, "job");
+      const job = jest.fn();
 
       const data = { test: 123 };
 
       await worker.start({
-        job: methods.job,
+        job,
         data,
         interval: 5000,
       });
 
-      expect(spy).toBeCalledWith({ identity: mockIdentity, data });
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
 
-      spy.mockClear();
-
-      // wait for 5 seconds
-      await advanceTime(5000);
-
-      expect(spy).toBeCalledWith({ identity: mockIdentity, data });
-
-      spy.mockClear();
+      job.mockClear();
 
       // wait for 5 seconds
       await advanceTime(5000);
 
-      expect(spy).toBeCalledWith({ identity: mockIdentity, data });
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
+
+      job.mockClear();
+
+      // wait for 5 seconds
+      await advanceTime(5000);
+
+      expect(job).toBeCalledWith({ identity: mockIdentity, data });
     });
 
     it("should stop timer", async () => {
