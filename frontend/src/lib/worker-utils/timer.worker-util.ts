@@ -13,7 +13,7 @@ export interface TimerWorkerUtilSyncParams {
 
 export class TimerWorkerUtil {
   private timer: NodeJS.Timeout | undefined = undefined;
-  private syncStatus: "idle" | "in_progress" | "error" = "idle";
+  private timerStatus: "idle" | "in_progress" | "error" = "idle";
 
   async start<T>({
     interval,
@@ -31,34 +31,37 @@ export class TimerWorkerUtil {
       return;
     }
 
-    const sync = async () => await this.executeSync<T>({ identity, ...rest });
+    const execute = async () => await this.executeJob<T>({ identity, ...rest });
 
-    // We sync the cycles now but also schedule the update afterwards
-    await sync();
+    // We sync the cycles now but also schedule the update after wards
+    await execute();
 
-    this.timer = setInterval(sync, interval);
+    this.timer = setInterval(execute, interval);
   }
 
-  private async executeSync<T>({
+  private async executeJob<T>({
     job,
     ...rest
   }: TimerWorkerUtilParams<T> & TimerWorkerUtilSyncParams): Promise<void> {
     // Avoid to sync if already in progress - do not duplicate calls - or if there was a previous error
-    if (this.syncStatus !== "idle") {
+    if (this.timerStatus !== "idle") {
       return;
     }
 
-    this.syncStatus = "in_progress";
+    this.timerStatus = "in_progress";
 
     try {
       await job({ ...rest });
 
-      this.syncStatus = "idle";
+      this.timerStatus = "idle";
     } catch (err: unknown) {
       console.error(err);
 
       // Once the status becomes "error", the job will no longer be called and the status will remain "error"
-      this.syncStatus = "error";
+      this.timerStatus = "error";
+
+      // Because it will no longer be called, we can stop it too
+      this.stop();
     }
   }
 
