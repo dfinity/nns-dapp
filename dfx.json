@@ -173,7 +173,7 @@
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
         "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
@@ -188,7 +188,7 @@
       "config": {
         "HOST": "https://nnsdapp.testnet.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
