@@ -65,9 +65,8 @@ export class TimerWorkerUtil {
     }
   }
 
-  stop(cleanup?: () => void) {
+  stop() {
     this.stopTimer();
-    cleanup?.();
   }
 
   private stopTimer() {
