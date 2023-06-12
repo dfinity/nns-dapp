@@ -74,9 +74,9 @@
     <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
     <AmountDisplay slot="value" amount={snsTokens} singleLine />
   </KeyValuePair>
-  <KeyValuePair>
+  <KeyValuePair testId="project-swap-min-participants">
     <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
-    <span slot="value" data-tid="project-swap-min-participants"
+    <span slot="value"
       >{formatNumber(params.min_participants, {
         minFraction: 0,
         maxFraction: 0,

@@ -39,8 +39,8 @@ describe("ProjectSwapDetails", () => {
     );
   });
 
-  it("should render min participants", () => {
-    const { getByTestId } = renderContextCmp({
+  it("should render min participants", async () => {
+    const { container } = renderContextCmp({
       summary: {
         ...mockSummary,
         swap: {
@@ -55,9 +55,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const element = getByTestId("project-swap-min-participants");
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
-    expect(element.innerHTML).toEqual("1’430");
+    expect(await po.getMinParticipants()).toEqual("1’430");
   });
 
   it("should render min commitment", () => {
