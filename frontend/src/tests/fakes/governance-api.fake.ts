@@ -11,7 +11,7 @@ import {
 } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
 const fakeFunctions = {
@@ -130,6 +130,9 @@ export const addNeuronWith = ({
   }
   if (controller) {
     neuron.fullNeuron.controller = controller;
+  }
+  if (nonNullish(getNeuron({ identity, neuronId: neuron.neuronId }))) {
+    throw new Error(`A neuron with id ${neuron.neuronId} already exists`);
   }
   getNeurons(identity).push(neuron);
 };
