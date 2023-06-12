@@ -1,9 +1,9 @@
 <script lang="ts">
   import { IconLogin } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
+  import { signIn as signInService } from "$lib/services/auth.services";
 
   // TODO: Same code as in SignIn.svelte maybe we can refactore
   const signIn = async () => {
@@ -13,7 +13,7 @@
         err,
       });
 
-    await authStore.signIn(onError);
+    await signInService(onError);
   };
 </script>
 

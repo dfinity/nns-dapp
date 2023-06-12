@@ -4,8 +4,10 @@ import {
   loadSnsProjects,
   loadSnsSummaries,
 } from "$lib/services/$public/sns.services";
-import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
-import { authStore } from "$lib/stores/auth.store";
+import {
+  displayAndCleanLogoutMsg,
+  syncAuth,
+} from "$lib/services/auth.services";
 import { ENABLE_SNS_AGGREGATOR } from "$lib/stores/feature-flags.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -34,7 +36,7 @@ export const initAppPublicData = (): Promise<
 
 const syncAuthStore = async () => {
   try {
-    await authStore.sync();
+    await syncAuth();
   } catch (err) {
     toastsError({ labelKey: "error.auth_sync", err });
   }
