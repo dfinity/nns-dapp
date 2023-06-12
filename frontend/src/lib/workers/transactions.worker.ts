@@ -75,6 +75,8 @@ const syncTransactions = async (
       return;
     }
 
+    console.log('NEW', newTransactions);
+
     store.update(
       newTransactions.map(({ accountIdentifier, mostRecentTxId }) => ({
         accountIdentifier,
