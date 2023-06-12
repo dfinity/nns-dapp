@@ -280,7 +280,7 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
-command -v sha256sum || "install_coreutils_$OS"
+command -v sha256sum && command -v realpath || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
