@@ -52,6 +52,7 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
 # Install IC CDK optimizer
+# TODO: Make ic-cdk-optimizer support binstall, then use cargo binstall --no-confirm ic-cdk-optimizer here.
 RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
@@ -69,6 +70,7 @@ RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/li
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
+# TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
