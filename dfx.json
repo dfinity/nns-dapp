@@ -186,7 +186,7 @@
     },
     "staging": {
       "config": {
-        "HOST": "https://nnsdapp.testnet.dfinity.network",
+        "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": false,
           "ENABLE_SNS_AGGREGATOR": true,
