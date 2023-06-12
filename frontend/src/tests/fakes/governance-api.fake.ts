@@ -1,4 +1,7 @@
-import type { ApiQueryParams } from "$lib/api/governance.api";
+import type {
+  ApiMergeNeuronsParams,
+  ApiQueryParams,
+} from "$lib/api/governance.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
@@ -15,6 +18,7 @@ const fakeFunctions = {
   queryNeurons,
   queryKnownNeurons,
   queryLastestRewardEvent,
+  mergeNeurons,
 };
 
 //////////////////////////////////////////////
@@ -34,6 +38,17 @@ const getNeurons = (identity: Identity) => {
     neurons.set(key, neuronList);
   }
   return neuronList;
+};
+
+const getNeuron = ({
+  identity,
+  neuronId,
+}: {
+  identity: Identity;
+  neuronId: bigint;
+}): NeuronInfo | undefined => {
+  const neurons = getNeurons(identity);
+  return neurons.find((n) => n.neuronId === neuronId);
 };
 
 ////////////////////////
@@ -61,9 +76,29 @@ async function queryLastestRewardEvent({
   return mockRewardEvent;
 }
 
+async function mergeNeurons({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: ApiMergeNeuronsParams): Promise<void> {
+  const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
+  const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  // This is extremely simplified, just good enough for the test to see that the
+  // merge happened.
+  targetNeuron.fullNeuron.cachedNeuronStake +=
+    sourceNeuron.fullNeuron.cachedNeuronStake;
+  sourceNeuron.fullNeuron.cachedNeuronStake = BigInt(0);
+}
+
 /////////////////////////////////
 // Functions to control the fake:
 /////////////////////////////////
+
+export type FakeNeuronParams = {
+  neuronId?: bigint;
+  controller?: string;
+  stake?: bigint;
+};
 
 const {
   pause,
@@ -77,16 +112,38 @@ const reset = () => {
   resetPaused();
 };
 
-export { pause, resume };
+export { pause, resume, getNeuron };
 
 export const addNeuronWith = ({
   identity = mockIdentity,
-  ...neuronParams
-}: { identity?: Identity } & Partial<NeuronInfo>) => {
-  getNeurons(identity).push({
-    ...mockNeuron,
-    ...neuronParams,
-  });
+  neuronId,
+  controller,
+  stake,
+}: { identity?: Identity } & Partial<FakeNeuronParams>) => {
+  const neuron = { ...mockNeuron, fullNeuron: { ...mockNeuron.fullNeuron } };
+  if (neuronId) {
+    neuron.neuronId = neuronId;
+    neuron.fullNeuron.id = neuronId;
+  }
+  if (stake) {
+    neuron.fullNeuron.cachedNeuronStake = stake;
+  }
+  if (controller) {
+    neuron.fullNeuron.controller = controller;
+  }
+  getNeurons(identity).push(neuron);
+};
+
+export const addNeurons = ({
+  identity = mockIdentity,
+  neurons,
+}: {
+  identity?: Identity;
+  neurons: FakeNeuronParams[];
+}) => {
+  for (const neuron of neurons) {
+    addNeuronWith({ identity, ...neuron });
+  }
 };
 
 // Call this inside a describe() block outside beforeEach() because it defines
