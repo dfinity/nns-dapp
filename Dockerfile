@@ -5,7 +5,9 @@
 # docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
 # docker rm --volumes $container_id
 
-# Operating system with basic tools
+# Check the memory available to docker.
+# - If run on Linux, the RAM will be the same as the host machine.
+# - If run on Mac, Docker will be spinning up a Linux virtual machine and then running docker inside that; the user can change the memory available to the virtual machine.
 FROM --platform=linux/amd64 ubuntu:20.04 as check-environment
 SHELL ["bash", "-c"]
 ENV TZ=UTC
