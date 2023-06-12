@@ -41,16 +41,7 @@ describe("ProjectSwapDetails", () => {
 
   it("should render min participants", async () => {
     const { container } = renderContextCmp({
-      summary: {
-        ...mockSummary,
-        swap: {
-          ...mockSummary.swap,
-          params: {
-            ...mockSummary.swap.params,
-            min_participants: 1430,
-          },
-        },
-      },
+      summary: createSummary({ minParticipants: 1430 }),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectSwapDetails,
     });
