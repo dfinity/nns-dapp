@@ -19,6 +19,7 @@ const fakeFunctions = {
   queryKnownNeurons,
   queryLastestRewardEvent,
   mergeNeurons,
+  simulateMergeNeurons,
 };
 
 //////////////////////////////////////////////
@@ -88,6 +89,27 @@ async function mergeNeurons({
   targetNeuron.fullNeuron.cachedNeuronStake +=
     sourceNeuron.fullNeuron.cachedNeuronStake;
   sourceNeuron.fullNeuron.cachedNeuronStake = BigInt(0);
+}
+
+async function simulateMergeNeurons({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: ApiMergeNeuronsParams): Promise<NeuronInfo> {
+  const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
+  const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  // This is extremely simplified, just good enough for the test to see that the
+  // correct merge was simulated.
+  const mergedStake =
+    sourceNeuron.fullNeuron.cachedNeuronStake +
+    targetNeuron.fullNeuron.cachedNeuronStake;
+  return {
+    ...targetNeuron,
+    fullNeuron: {
+      ...targetNeuron.fullNeuron,
+      cachedNeuronStake: mergedStake,
+    },
+  };
 }
 
 /////////////////////////////////

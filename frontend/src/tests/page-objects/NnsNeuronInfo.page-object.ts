@@ -15,4 +15,8 @@ export class NnsNeuronInfoPo extends BasePageObject {
   getNeuronId(): Promise<string> {
     return this.getText("neuron-id");
   }
+
+  getBalance(): Promise<string> {
+    return this.getText("balance");
+  }
 }
