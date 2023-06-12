@@ -268,6 +268,7 @@ interface I18nNeurons {
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_into: string;
+  expected_merge_result: string;
   set_dissolve_delay: string;
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
