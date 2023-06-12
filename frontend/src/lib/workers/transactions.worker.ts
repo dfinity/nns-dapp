@@ -1,6 +1,6 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import { getIcrcTransactions } from "$lib/api/icrc-index.api.cjs";
-import { SYNC_TRANSACTIONS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import {
   IcrcWorkerStore,
@@ -48,7 +48,7 @@ onmessage = async ({
       return;
     case "nnsStartTransactionsTimer":
       await worker.start<PostMessageDataRequestTransactions>({
-        interval: SYNC_TRANSACTIONS_TIMER_INTERVAL,
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
         job: syncTransactions,
         data,
       });
@@ -75,7 +75,7 @@ const syncTransactions = async (
       return;
     }
 
-    console.log('NEW', newTransactions);
+    console.log("NEW", newTransactions);
 
     store.update(
       newTransactions.map(({ accountIdentifier, mostRecentTxId }) => ({
