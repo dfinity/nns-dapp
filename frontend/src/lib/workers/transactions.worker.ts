@@ -20,6 +20,7 @@ import {
   type TimerWorkerUtilSyncParams,
 } from "$lib/worker-utils/timer.worker-util";
 import { decodeIcrcAccount } from "@dfinity/ledger";
+import type { TxId } from "@dfinity/ledger/dist/candid/icrc1_index";
 import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
@@ -57,6 +58,8 @@ const syncTransactions = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
+    console.log("SYNC");
+
     const results = await getAllTransactions(params);
 
     const newTransactions = results.filter(
@@ -77,7 +80,12 @@ const syncTransactions = async (
       }))
     );
 
-    emitTransactions(newTransactions);
+    emitTransactions(
+      newTransactions.map(({ transactions, ...rest }) => ({
+        transactions: JSON.stringify(transactions, jsonReplacer),
+        ...rest,
+      }))
+    );
   } catch (err: unknown) {
     // TODO: postMessage error
     // TODO: reset
@@ -87,11 +95,17 @@ const syncTransactions = async (
   }
 };
 
+type GetTransactionsResults = Omit<
+  PostMessageDataResponseTransaction,
+  "transactions"
+> &
+  Pick<GetTransactionsResponse, "transactions">;
+
 const getAllTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId },
 }: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>): Promise<
-  PostMessageDataResponseTransaction[]
+  GetTransactionsResults[]
 > =>
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) =>
@@ -106,38 +120,81 @@ const getAllTransactions = ({
 type GetAccountTransactionsParams = TimerWorkerUtilSyncParams &
   Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
     accountIdentifier: AccountIdentifierText;
+    start?: bigint;
   };
 
-const getAccountTransactions = ({
+const getAccountTransactions = async ({
   identity,
   indexCanisterId,
   accountIdentifier,
-}: GetAccountTransactionsParams): Promise<PostMessageDataResponseTransaction> => {
-  // TODO: find transactions until most recent
-
-  return getTransactions({
+  start,
+}: GetAccountTransactionsParams): Promise<GetTransactionsResults> => {
+  const { mostRecentTxId, transactions, ...rest } = await getTransactions({
     identity,
     indexCanisterId,
     accountIdentifier,
+    start,
   });
-};
 
-/**
- * const txId = store.state[accountIdentifier]?.mostRecentTxId;
- *     const start =
- *       txId !== undefined
- *         ? txId + BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT)
- *         : undefined;
- */
+  const oldestTxId: TxId | undefined = [...transactions].sort(
+    (
+      { transaction: { timestamp: timestampA } },
+      { transaction: { timestamp: timestampB } }
+    ) => Number(timestampA - timestampB)
+  )[0]?.id;
+
+  // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
+  const fetchMore = (): boolean => {
+    const stateMostRecentTxId = store.state[accountIdentifier]?.mostRecentTxId;
+    return (
+      stateMostRecentTxId !== undefined &&
+      oldestTxId !== undefined &&
+      oldestTxId > stateMostRecentTxId
+    );
+  };
+
+  // Two transactions can have the same Id - e.g. a transaction from/to same account.
+  // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
+  // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
+  const nextTxId = (oldestTxId: bigint): bigint => oldestTxId;
+
+  console.log(
+    "Transactions",
+    store.state[accountIdentifier]?.mostRecentTxId,
+    mostRecentTxId,
+    transactions,
+    fetchMore(),
+    oldestTxId,
+    start
+  );
+
+  // TODO: filter unique transactions
+
+  return {
+    mostRecentTxId,
+    ...rest,
+    transactions: [
+      ...transactions,
+      ...(fetchMore() && oldestTxId !== undefined
+        ? (
+            await getAccountTransactions({
+              identity,
+              indexCanisterId,
+              accountIdentifier,
+              start: nextTxId(oldestTxId),
+            })
+          ).transactions
+        : []),
+    ],
+  };
+};
 
 const getTransactions = async ({
   identity,
   indexCanisterId,
   accountIdentifier,
   start,
-}: GetAccountTransactionsParams & {
-  start?: bigint;
-}): Promise<PostMessageDataResponseTransaction> => {
+}: GetAccountTransactionsParams): Promise<GetTransactionsResults> => {
   {
     const { transactions, ...rest } = await getIcrcTransactions({
       canisterId: Principal.fromText(indexCanisterId),
@@ -157,7 +214,7 @@ const getTransactions = async ({
     return {
       accountIdentifier,
       ...rest,
-      transactions: JSON.stringify(transactions, jsonReplacer),
+      transactions,
       mostRecentTxId,
     };
   }

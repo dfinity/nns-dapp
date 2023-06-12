@@ -34,7 +34,6 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcAccountsObserver from "$lib/components/accounts/IcrcAccountsObserver.svelte";
   import type { AccountsObserverData } from "$lib/types/icrc.observer";
-  import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -150,13 +149,11 @@
 
           <Separator />
 
-          <SnsWalletTransactionsObserver>
-            <SnsTransactionsList
-              rootCanisterId={$snsOnlyProjectStore}
-              account={$selectedAccountStore.account}
-              {token}
-            />
-          </SnsWalletTransactionsObserver>
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
         </IcrcAccountsObserver>
       {:else}
         <Spinner />

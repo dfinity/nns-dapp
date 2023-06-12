@@ -5,25 +5,21 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import {
-    WALLET_CONTEXT_KEY,
-    type WalletContext,
-  } from "$lib/types/wallet.context";
-  import { getContext } from "svelte";
   import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type {TransactionsCallback} from "$lib/services/worker-transactions.services";
   import {jsonReviver} from "$lib/utils/json.utils";
+  import type {Account} from "$lib/types/account";
 
-  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
-  const { store }: WalletContext = context;
+  export let account: Account;
+  export let completed: boolean;
 
   let data: TransactionsObserverData | undefined;
   $: data =
-    nonNullish($store.account) && nonNullish($snsProjectSelectedStore)
+    nonNullish($snsProjectSelectedStore)
       ? {
-          account: $store.account,
+          account,
           indexCanisterId:
             $snsProjectSelectedStore.summary.indexCanisterId.toText(),
         }
@@ -36,12 +32,14 @@
     }
 
     for (const account of transactions) {
-      const {transactions: ts, mostRecentTxId: _, ...rest} = account;
+      const {transactions: ts, mostRecentTxId: _, accountIdentifier, ...rest} = account;
 
       icrcTransactionsStore.addTransactions({
         ...rest,
+        accountIdentifier,
         transactions: JSON.parse(ts, jsonReviver),
         canisterId: universeId,
+        completed
       });
     }
   };
