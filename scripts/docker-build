@@ -79,6 +79,9 @@ COMMIT="$(git rev-parse HEAD)"
 [ -z "$(git status --untracked-files=no --porcelain)" ] || COMMIT="${COMMIT}-dirty"
 
 set -x
+docker build --target check-environment .
+
+set -x
 if DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   "$PROGRESS" \

@@ -6,6 +6,12 @@
 # docker rm --volumes $container_id
 
 # Operating system with basic tools
+FROM --platform=linux/amd64 ubuntu:20.04 as check-environment
+SHELL ["bash", "-c"]
+ENV TZ=UTC
+RUN awk -v gigs=4 '/^MemTotal:/{if ($2 < (gigs*1024 * 1024)){ printf "Insufficient RAM.  Please provide Docker with at least %dGB of RAM\n", gigs; exit 1 }}' /proc/meminfo
+
+# Operating system with basic tools
 FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
 ENV TZ=UTC
