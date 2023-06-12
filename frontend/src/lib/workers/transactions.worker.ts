@@ -20,7 +20,10 @@ import {
   type TimerWorkerUtilSyncParams,
 } from "$lib/worker-utils/timer.worker-util";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import type { TxId } from "@dfinity/ledger/dist/candid/icrc1_index";
+import type {
+  TransactionWithId,
+  TxId,
+} from "@dfinity/ledger/dist/candid/icrc1_index";
 import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
@@ -108,13 +111,28 @@ const getAllTransactions = ({
   GetTransactionsResults[]
 > =>
   Promise.all(
-    accountIdentifiers.map(async (accountIdentifier) =>
-      getAccountTransactions({
+    accountIdentifiers.map(async (accountIdentifier) => {
+      const { transactions, ...rest } = await getAccountTransactions({
         identity,
         indexCanisterId,
         accountIdentifier,
-      })
-    )
+      });
+
+      return {
+        transactions: transactions.reduce((acc, value) => {
+          const alreadyExist = (): boolean =>
+            acc.find(
+              ({ id, transaction }) =>
+                value.id === id &&
+                JSON.stringify(transaction, jsonReplacer) ===
+                  JSON.stringify(value, jsonReplacer)
+            ) !== undefined;
+
+          return [...acc, ...(alreadyExist() ? [] : [value])];
+        }, [] as TransactionWithId[]),
+        ...rest,
+      };
+    })
   );
 
 type GetAccountTransactionsParams = TimerWorkerUtilSyncParams &
@@ -157,18 +175,6 @@ const getAccountTransactions = async ({
   // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
   // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
   const nextTxId = (oldestTxId: bigint): bigint => oldestTxId;
-
-  console.log(
-    "Transactions",
-    store.state[accountIdentifier]?.mostRecentTxId,
-    mostRecentTxId,
-    transactions,
-    fetchMore(),
-    oldestTxId,
-    start
-  );
-
-  // TODO: filter unique transactions
 
   return {
     mostRecentTxId,
