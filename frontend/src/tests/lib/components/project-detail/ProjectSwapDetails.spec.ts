@@ -39,6 +39,27 @@ describe("ProjectSwapDetails", () => {
     );
   });
 
+  it("should render min participants", () => {
+    const { getByTestId } = renderContextCmp({
+      summary: {
+        ...mockSummary,
+        swap: {
+          ...mockSummary.swap,
+          params: {
+            ...mockSummary.swap.params,
+            min_participants: 1430,
+          },
+        },
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectSwapDetails,
+    });
+
+    const element = getByTestId("project-swap-min-participants");
+
+    expect(element.innerHTML).toEqual("1’430");
+  });
+
   it("should render min commitment", () => {
     const { container } = renderContextCmp({
       summary: mockSummary,
