@@ -1,5 +1,4 @@
 import {
-  depositFee,
   estimateFee,
   getBTCAddress,
   getWithdrawalAccount,
@@ -169,31 +168,6 @@ describe("ckbtc-minter api", () => {
       });
 
       const call = () => estimateFee(feeParams);
-
-      expect(call).rejects.toThrowError();
-    });
-  });
-
-  describe("depositFee", () => {
-    it("returns deposit fee", async () => {
-      const expectedResult = 789n;
-
-      const depositFeeSpy =
-        minterCanisterMock.getDepositFee.mockResolvedValue(expectedResult);
-
-      const result = await depositFee(params);
-
-      expect(result).toEqual(expectedResult);
-
-      expect(depositFeeSpy).toBeCalled();
-    });
-
-    it("bubble errors", () => {
-      minterCanisterMock.getDepositFee.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      const call = () => depositFee(params);
 
       expect(call).rejects.toThrowError();
     });
