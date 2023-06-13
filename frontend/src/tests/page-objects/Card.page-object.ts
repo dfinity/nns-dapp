@@ -4,7 +4,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 // card components.
 export class CardPo extends BasePageObject {
   async hasClass(className: string): Promise<boolean> {
-    const classNames = (await this.root.getAttribute("class")).split(" ");
+    const classNames = await this.root.getClasses();
     return classNames.includes(className);
   }
 
