@@ -60,11 +60,12 @@
     {:else}
       {#each accounts as account}
         <AccountCard
-                role="link"
-                on:click={() => goToWallet(account)}
-                hash
-                {account}
-                token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
+          role="link"
+          on:click={() => goToWallet(account)}
+          hash
+          {account}
+          token={token?.token}
+          >{account.name ?? $i18n.accounts.main}</AccountCard
         >
       {/each}
 
