@@ -1,5 +1,4 @@
 import {
-  depositFee as depositFeeAPI,
   estimateFee as estimateFeeAPI,
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
@@ -95,42 +94,6 @@ export const estimateFee = async ({
       );
     },
     logMessage: "Getting Bitcoin estimated fee",
-  });
-};
-
-export const depositFee = async ({
-  minterCanisterId,
-  callback,
-}: {
-  minterCanisterId: CanisterId;
-  callback: (fee: bigint | null) => void;
-}): Promise<void> => {
-  return queryAndUpdate<bigint, unknown>({
-    request: ({ certified, identity }) =>
-      depositFeeAPI({
-        identity,
-        certified,
-        canisterId: minterCanisterId,
-      }),
-    onLoad: ({ response: fee }) => callback(fee),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      // hide fee on any error
-      callback(null);
-
-      if (certified !== true) {
-        return;
-      }
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__ckbtc.deposit_fee",
-        })
-      );
-    },
-    logMessage: "Getting Bitcoin deposit fee",
   });
 };
 
