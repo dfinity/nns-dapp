@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
+  import { assertNonNullish, isNullish } from "@dfinity/utils";
 
   export let currentProposalId: bigint;
   export let proposalIds: bigint[] = [];
