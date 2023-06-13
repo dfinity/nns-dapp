@@ -9,6 +9,10 @@ export class ProposalNavigationPo extends BasePageObject {
     return new ProposalNavigationPo(element.byTestId(ProposalNavigationPo.TID));
   }
 
+  private static async isButtonHidden({ root }: ButtonPo): Promise<boolean> {
+    return (await root.getClasses()).includes("hidden");
+  }
+
   getPreviousButtonPo(): ButtonPo {
     return this.getButton("proposal-nav-previous");
   }
@@ -18,15 +22,11 @@ export class ProposalNavigationPo extends BasePageObject {
   }
 
   async isPreviousButtonHidden(): Promise<boolean> {
-    return (
-      await this.getPreviousButtonPo().root.getAttribute("class")
-    ).includes("hidden");
+    return ProposalNavigationPo.isButtonHidden(this.getPreviousButtonPo());
   }
 
   async isNextButtonHidden(): Promise<boolean> {
-    return (await this.getNextButtonPo().root.getAttribute("class")).includes(
-      "hidden"
-    );
+    return ProposalNavigationPo.isButtonHidden(this.getNextButtonPo());
   }
 
   clickPrevious(): Promise<void> {
