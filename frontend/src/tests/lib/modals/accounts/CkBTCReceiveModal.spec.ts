@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import * as api from "$lib/api/ckbtc-minter.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -12,6 +11,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
@@ -24,6 +24,7 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
@@ -112,7 +113,14 @@ describe("BtcCkBTCReceiveModal", () => {
           btcAddress: mockBTCAddressTestnet,
         });
 
-        jest.spyOn(api, "depositFee").mockResolvedValue(789n);
+        ckBTCInfoStore.setInfo({
+          canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+          info: {
+            ...mockCkBTCMinterInfo,
+            kyt_fee: 789n,
+          },
+          certified: true,
+        });
       });
 
       it("should render BTC address", async () => {
