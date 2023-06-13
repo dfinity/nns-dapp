@@ -30,7 +30,10 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import { nonNullish } from "@dfinity/utils";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
-  import {ckBTCInfoStore} from "$lib/stores/ckbtc-info.store";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -158,8 +161,8 @@
 
   let userAmount: number | undefined = undefined;
 
-  let retrieveBtcMinAmount: bigint | undefined = undefined;
-  $: retrieveBtcMinAmount = $ckBTCInfoStore[universeId.toText()]?.info.retrieve_btc_min_amount;
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
 
   let validateAmount: ValidateAmountFn;
   $: validateAmount = ({ amount, selectedAccount }) => {
@@ -168,7 +171,7 @@
       sourceAccount: selectedAccount,
       amount,
       transactionFee: fee.toE8s(),
-      retrieveBtcMinAmount
+      infoData,
     });
 
     return undefined;

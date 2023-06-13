@@ -912,7 +912,8 @@
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched.",
     "deposit_fee": "Sorry, the Inter-network Fee cannot be fetched.",
     "retrieve_btc_min_amount": "The amount falls below the minimum of $amount ckBTC required for converting to BTC.",
-    "retrieve_btc_min_amount_unknown": "The minimum amount of ckBTC required for converting to BTC is unknown."
+    "retrieve_btc_min_amount_unknown": "The minimum amount of ckBTC required for converting to BTC is unknown.",
+    "wait_ckbtc_info_parameters_certified": "Please wait until the ckBTC parameters have been certified."
   },
   "feature_flags_prompt": {
     "override_true": "Enter the number for the feature you want to enable.",
