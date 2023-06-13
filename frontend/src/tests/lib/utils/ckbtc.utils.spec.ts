@@ -1,4 +1,3 @@
-import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
@@ -9,11 +8,14 @@ import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 
 describe("ckbtc.utils", () => {
+  const RETRIEVE_BTC_MIN_AMOUNT = 100_000n;
+
   const params = {
     networkBtc: true,
     sourceAccount: mockMainAccount,
     amount: 0.002,
     transactionFee: 1n,
+    retrieveBtcMinAmount: RETRIEVE_BTC_MIN_AMOUNT,
   };
 
   it("should not throw error", () => {
@@ -62,7 +64,7 @@ describe("ckbtc.utils", () => {
     expect(() => assertCkBTCUserInputAmount(params)).not.toThrow();
   });
 
-  it.only("should throw error if amount is lower than min retrieve btc amount", () => {
+  it("should throw error if amount is lower than min retrieve btc amount", () => {
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
