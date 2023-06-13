@@ -1,7 +1,7 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let currentProposalId: bigint;
   export let proposalIds: bigint[] = [];
@@ -23,14 +23,12 @@
       : proposalIds[currentProposalIndex + 1];
 
   const selectPrevious = () => {
-    if (nonNullish(previousId)) {
-      selectProposal(previousId);
-    }
+    assertNonNullish(previousId);
+    selectProposal(previousId);
   };
   const selectNext = () => {
-    if (nonNullish(nextId)) {
-      selectProposal(nextId);
-    }
+    assertNonNullish(nextId);
+    selectProposal(nextId);
   };
 </script>
 
