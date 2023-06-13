@@ -33,14 +33,13 @@ onmessage = async ({
 
 const syncCanister = async ({
   identity,
-  data: { canisterId, host, fetchRootKey },
+  data,
 }: TimerWorkerUtilJobData<PostMessageDataRequestCycles>) => {
+  const { canisterId } = data;
   try {
     const canisterInfo: CanisterDetails = await queryCanisterDetails({
-      canisterId,
+      ...data,
       identity,
-      host,
-      fetchRootKey,
     });
 
     syncCanisterData({

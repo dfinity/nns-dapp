@@ -14,7 +14,7 @@ export type PostMessageResponse =
 
 export type PostMessageData = object;
 
-export interface PostMessageFetchBase extends PostMessageData {
+export interface PostMessageDataActor extends PostMessageData {
   host: string;
   fetchRootKey: boolean;
 }

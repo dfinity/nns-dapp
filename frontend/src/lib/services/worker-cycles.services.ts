@@ -33,7 +33,7 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
   return {
     startCyclesTimer: ({
       callback,
-      canisterId,
+      ...rest
     }: {
       callback: CyclesCallback;
       canisterId: string;
@@ -42,7 +42,7 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { canisterId, host: HOST, fetchRootKey: FETCH_ROOT_KEY },
+        data: { ...rest, host: HOST, fetchRootKey: FETCH_ROOT_KEY },
       });
     },
     stopCyclesTimer: () => {
