@@ -1,5 +1,6 @@
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
+  ballotVotingPower,
   isAccepted,
   lastProposalId,
   mapProposalInfo,
@@ -13,20 +14,15 @@ import {
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type {
-  SnsAction,
-  SnsNervousSystemParameters,
-  SnsNeuron,
-  SnsProposalData,
-} from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsVote,
+  type SnsAction,
+  type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
@@ -474,8 +470,50 @@ describe("sns-proposals utils", () => {
     });
   });
 
+  describe("ballotVotingPower", () => {
+    const testNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
+    };
+
+    it("should return the voting power of the ballot for a specific neuron", () => {
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [
+          [
+            "010203", // neuron id
+            {
+              vote: SnsVote.Yes,
+              voting_power: 250n,
+              cast_timestamp_seconds: 122n,
+            },
+          ],
+        ],
+      };
+      expect(
+        ballotVotingPower({
+          neuron: testNeuron,
+          proposal,
+        })
+      ).toBe(250n);
+    });
+
+    it("should return 0 voting power if neuron doesn't have a ballot", () => {
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [],
+      };
+      expect(
+        ballotVotingPower({
+          neuron: testNeuron,
+          proposal,
+        })
+      ).toBe(0n);
+    });
+  });
+
   describe("snsNeuronToVotingNeuron", () => {
-    it("should create VotingNeuron out of SnsNeuron", () => {
+    it("should create VotingNeuron out of SnsNeuron with voting power from ballot", () => {
       const testNeuron: SnsNeuron = {
         ...mockSnsNeuron,
         id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
@@ -487,18 +525,23 @@ describe("sns-proposals utils", () => {
         voting_power_percentage_multiplier: 100n,
         cached_neuron_stake_e8s: 100n,
       };
-      const testParameters: SnsNervousSystemParameters = {
-        ...snsNervousSystemParametersMock,
-        max_dissolve_delay_seconds: [100n],
-        max_neuron_age_for_age_bonus: [100n],
-        max_dissolve_delay_bonus_percentage: [100n],
-        max_age_bonus_percentage: [25n],
-        neuron_minimum_dissolve_delay_to_vote_seconds: [0n],
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [
+          [
+            "010203", // neuron id
+            {
+              vote: SnsVote.Yes,
+              voting_power: 250n,
+              cast_timestamp_seconds: 122n,
+            },
+          ],
+        ],
       };
       expect(
         snsNeuronToVotingNeuron({
           neuron: testNeuron,
-          snsParameters: testParameters,
+          proposal,
         })
       ).toEqual({
         neuronIdString: "010203",

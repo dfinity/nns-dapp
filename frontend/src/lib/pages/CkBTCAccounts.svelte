@@ -12,7 +12,9 @@
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-  import CkBTCInfoLoader from "$lib/components/accounts/CkBTCInfoLoader.svelte";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -51,25 +53,33 @@
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
-<CkBTCInfoLoader>
-  <div class="card-grid" data-tid="ckbtc-accounts-body">
-    {#if loading}
-      <SkeletonCard size="medium" />
-    {:else}
-      {#each accounts as account}
-        <AccountCard
-          role="link"
-          on:click={() => goToWallet(account)}
-          hash
-          {account}
-          token={token?.token}
-          >{account.name ?? $i18n.accounts.main}</AccountCard
-        >
-      {/each}
+<div class="card-grid" data-tid="ckbtc-accounts-body">
+  {#if loading}
+    <SkeletonCard size="medium" />
+  {:else}
+    {#each accounts as account}
+      <AccountCard
+        role="link"
+        on:click={() => goToWallet(account)}
+        hash
+        {account}
+        token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
+      >
+    {/each}
 
-      <CkBTCWithdrawalAccount />
-    {/if}
-  </div>
-</CkBTCInfoLoader>
+    <CkBTCWithdrawalAccount />
+  {/if}
+</div>
