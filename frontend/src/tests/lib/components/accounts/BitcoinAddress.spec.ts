@@ -12,7 +12,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -20,7 +19,6 @@ import {
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
-import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 
@@ -128,15 +126,15 @@ describe("BitcoinAddress", () => {
       await waitFor(() =>
         expect(
           getByText(
-            replacePlaceholders(en.ckbtc.incoming_bitcoin_network_part_1, {
-              $min: `${mockCkBTCMinterInfo.min_confirmations}`,
-            }),
+            "Incoming Bitcoin network transactions require 12 confirmations. Then click",
             { exact: false }
           )
         ).toBeInTheDocument()
       );
       expect(
-        getByText(en.ckbtc.incoming_bitcoin_network_part_2, { exact: false })
+        getByText("to update your ckBTC balance. Check status on a", {
+          exact: false,
+        })
       ).toBeInTheDocument();
     });
 
@@ -175,11 +173,12 @@ describe("BitcoinAddress", () => {
     it("should display a sentence info with empty instead of the number of confirmations", () => {
       const { getByText } = render(BitcoinAddress, { props });
 
-      const splits = en.ckbtc.incoming_bitcoin_network_part_1.split("$min");
-
-      for (const split of splits) {
-        expect(getByText(split, { exact: false })).toBeInTheDocument();
-      }
+      expect(
+        getByText(
+          "Incoming Bitcoin network transactions require confirmations. Then click",
+          { exact: false }
+        )
+      ).toBeInTheDocument();
     });
   });
 });
