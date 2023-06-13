@@ -31,7 +31,7 @@ That is why we are providing a `./config.sh` script that generate the above envi
 To run the dapp against canisters deployed locally on a simulated IC network, use the steps below, or run `./scripts/dev-local.sh` which guides you through these steps
 
 - Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
-- Deploy the Nns backend canisters locally with `dfx nns install`
+- Deploy the NNS backend canisters locally with `dfx nns install`
 - From the last line of output of `dfx nns install` note down the value url for `nns-dapp`
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
 - Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the url you noted down before.

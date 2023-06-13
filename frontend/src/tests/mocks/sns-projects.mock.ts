@@ -48,6 +48,9 @@ export const principal = (index: number): Principal =>
     Principal.fromText(
       "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe"
     ),
+    Principal.fromText(
+      "4etav-nasrq-uvswa-iqsll-6spts-ryhsl-e4yf6-xtycj-4sxvp-ciay5-yae"
+    ),
   ][index];
 
 export const createTransferableAmount = (
@@ -172,6 +175,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(0),
     swapCanisterId: principal(3),
     governanceCanisterId: principal(2),
+    ledgerCanisterId: principal(1),
+    indexCanisterId: principal(4),
     metadata: mockMetadata,
     token: mockToken,
     swap: mockSwap,
@@ -181,6 +186,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(1),
     swapCanisterId: principal(2),
     governanceCanisterId: principal(3),
+    ledgerCanisterId: principal(0),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAClSURBVHgB7dqxDYMwEEBRE2UET5I6icQUzMgc9EziHUAuqLElS+if/iuoruAXyCeL6fufjxTMuz5KKbeDOee0rXtq8Vs+TbM9cy3vWNX3fKWAjKIwisIoipBRU9iNYuTp3zM7eu6a9ZuiMIrCKAqjKNwoek711nuPkXPXrN8UhVEURlEYReFG4R3Fg4yiMIrCKAo3Cgr/o6AwisIoCqMojKIIuSadjJ5VyRrmqP4AAAAASUVORK5CYII=",
       name: "Pac-Man",
@@ -200,6 +207,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(2),
     swapCanisterId: principal(1),
     governanceCanisterId: principal(3),
+    ledgerCanisterId: principal(0),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACjSURBVHgB7dkxDkRAGEDh32ZPsuWWWy+JQ4gzimPolUpXIXMCM4nmjfcVqglegT+j+Xf9EZV5p8MyrZcL2/EX+7BFjs/8zVpbsi7nHpN0n6+okFEURlEYRVFlVPP4iaLkq37npFB6bZ8pCqMojKIwisKJomSP4s5zukcRvig4jKIwisKJgsK/HhRGURhFYRSFEwWFEwWFURRGURhFYRRFlWPSCah/Vck0pRWfAAAAAElFTkSuQmCC",
       name: "Super Mario",
@@ -219,6 +228,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(3),
     swapCanisterId: principal(0),
     governanceCanisterId: principal(2),
+    ledgerCanisterId: principal(1),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC6SURBVHgB7ZkxCsJAFAUTETyAexcbEfZSHsJLBcTGu6wHsFK3SL0/EIvZzBSpHj87gYXHz3i+5M/QGfv6OB2mZvD5zqHcnC2lNHMppb+8ezd0iFIUlKKgFIUupcbNN4rpeB0i5Ndt1ZnRefNM7xQFpSgoRUEpCv02ijX3CZXoTmFJLnLGSj2nd4qCUhSUoqAUBXcUSxrF497O/j6ofz2iKEVBKQpKUbBRUHBHQUEpCkpRUIqCUhS6rElfBK1VyaWjTNYAAAAASUVORK5CYII=",
       name: "Donkey Kong",
@@ -262,10 +273,12 @@ export const createSummary = ({
   lifecycle = SnsSwapLifecycle.Open,
   confirmationText = undefined,
   restrictedCountries = undefined,
+  minParticipants = 20,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
   restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -274,12 +287,17 @@ export const createSummary = ({
       ? [{ iso_codes: restrictedCountries }]
       : [],
   };
+  const params: SnsParams = {
+    ...mockSnsParams,
+    min_participants: minParticipants,
+  };
   const summary = summaryForLifecycle(lifecycle);
   return {
     ...summary,
     swap: {
       ...summary.swap,
       init: [init],
+      params,
     },
   };
 };

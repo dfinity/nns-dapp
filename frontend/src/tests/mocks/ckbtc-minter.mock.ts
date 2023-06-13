@@ -9,3 +9,9 @@ export const mockUpdateBalanceOk = [
     },
   },
 ];
+
+export const mockCkBTCMinterInfo = {
+  retrieve_btc_min_amount: 1n,
+  min_confirmations: 12,
+  kyt_fee: 3n,
+};
