@@ -93,4 +93,15 @@ describe("ckbtc.utils", () => {
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });
+
+  it("should throw error if retrieve min btc is not defined", () => {
+    expect(() =>
+      assertCkBTCUserInputAmount({
+        ...params,
+        retrieveBtcMinAmount: undefined,
+      })
+    ).toThrow(
+      new NotEnoughAmountError(en.error__ckbtc.retrieve_btc_min_amount_unknown)
+    );
+  });
 });
