@@ -19,7 +19,7 @@ export class ProjectCardPo extends BasePageObject {
   }
 
   async isHighlighted(): Promise<boolean> {
-    const classNames = await this.root.getAttribute("class");
-    return classNames.includes("highlighted");
+    const classes = await this.root.getClasses();
+    return classes.includes("highlighted");
   }
 }
