@@ -11,12 +11,15 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -39,6 +42,7 @@ describe("BitcoinAddress", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     bitcoinAddressStore.reset();
+    ckBTCInfoStore.reset();
   });
 
   describe("not matching bitcoin address store", () => {
@@ -94,6 +98,12 @@ describe("BitcoinAddress", () => {
 
     beforeEach(() => {
       bitcoinAddressStore.set(data);
+
+      ckBTCInfoStore.setInfo({
+        canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        info: mockCkBTCMinterInfo,
+        certified: true,
+      });
     });
 
     it("should not load bitcoin address on mount if already loaded", async () => {
@@ -112,12 +122,19 @@ describe("BitcoinAddress", () => {
       expect(() => getByTestId("spinner")).toThrow();
     });
 
-    it("should display a sentence info", () => {
+    it("should display a sentence info", async () => {
       const { getByText } = render(BitcoinAddress, { props });
 
-      expect(
-        getByText(en.ckbtc.incoming_bitcoin_network_part_1, { exact: false })
-      ).toBeInTheDocument();
+      await waitFor(() =>
+        expect(
+          getByText(
+            replacePlaceholders(en.ckbtc.incoming_bitcoin_network_part_1, {
+              $min: `${mockCkBTCMinterInfo.min_confirmations}`,
+            }),
+            { exact: false }
+          )
+        ).toBeInTheDocument()
+      );
       expect(
         getByText(en.ckbtc.incoming_bitcoin_network_part_2, { exact: false })
       ).toBeInTheDocument();
@@ -142,6 +159,27 @@ describe("BitcoinAddress", () => {
 
       const action = getByTestId("manual-refresh-balance");
       expect(action).not.toBeNull();
+    });
+  });
+
+  describe("no matching ckBTC info parameter", () => {
+    const data = {
+      identifier: mockCkBTCMainAccount.identifier,
+      btcAddress: mockBTCAddressTestnet,
+    };
+
+    beforeEach(() => {
+      bitcoinAddressStore.set(data);
+    });
+
+    it("should display a sentence info with empty instead of the number of confirmations", () => {
+      const { getByText } = render(BitcoinAddress, { props });
+
+      const splits = en.ckbtc.incoming_bitcoin_network_part_1.split("$min");
+
+      for (const split of splits) {
+        expect(getByText(split, { exact: false })).toBeInTheDocument();
+      }
     });
   });
 });
