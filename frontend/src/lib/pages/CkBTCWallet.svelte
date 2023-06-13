@@ -36,7 +36,7 @@
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import CkBTCInfoLoader from "$lib/components/accounts/CkBTCInfoLoader.svelte";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -158,49 +158,53 @@
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
-<CkBTCInfoLoader>
-  <Island>
-    <main class="legacy" data-tid="ckbtc-wallet">
-      <section>
-        {#if loaded}
-          <Summary />
+<Island>
+  <main class="legacy" data-tid="ckbtc-wallet">
+    <section>
+      {#if loaded}
+        <Summary />
 
-          <WalletSummary detailedBalance token={token?.token} />
+        <WalletSummary detailedBalance token={token?.token} />
 
-          {#if nonNullish(canisters)}
-            <CkBTCWalletActions
-              reload={reloadAccount}
-              minterCanisterId={canisters.minterCanisterId}
-            />
-          {/if}
-
-          <Separator />
-
-          {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
-            <BitcoinAddress
-              account={$selectedAccountStore.account}
-              universeId={$selectedCkBTCUniverseIdStore}
-              minterCanisterId={canisters.minterCanisterId}
-              reload={reloadAccount}
-            />
-
-            <CkBTCTransactionsList
-              account={$selectedAccountStore.account}
-              universeId={$selectedCkBTCUniverseIdStore}
-              indexCanisterId={canisters.indexCanisterId}
-              token={token?.token}
-            />
-          {/if}
-        {:else}
-          <Spinner />
+        {#if nonNullish(canisters)}
+          <CkBTCWalletActions
+            reload={reloadAccount}
+            minterCanisterId={canisters.minterCanisterId}
+          />
         {/if}
-      </section>
-    </main>
 
-    {#if canMakeTransactions}
-      <CkBTCWalletFooter />
-    {/if}
-  </Island>
-</CkBTCInfoLoader>
+        <Separator />
+
+        {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
+          <BitcoinAddress
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+            minterCanisterId={canisters.minterCanisterId}
+            reload={reloadAccount}
+          />
+
+          <CkBTCTransactionsList
+            account={$selectedAccountStore.account}
+            universeId={$selectedCkBTCUniverseIdStore}
+            indexCanisterId={canisters.indexCanisterId}
+            token={token?.token}
+          />
+        {/if}
+      {:else}
+        <Spinner />
+      {/if}
+    </section>
+  </main>
+
+  {#if canMakeTransactions}
+    <CkBTCWalletFooter />
+  {/if}
+</Island>
