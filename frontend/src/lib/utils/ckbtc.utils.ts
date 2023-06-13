@@ -75,8 +75,6 @@ export const assertCkBTCUserInputAmount = ({
     amountE8s: amountE8s + transactionFee,
   });
 
-  console.log(infoData);
-
   // This assertion is primarily intended to handle edge cases.
   // It serves to prevent situations where the user has entered an amount before the ckBTCInfoStore has been filled with certified data.
   // However, considering our current user experience, the likelihood of this scenario is low.
