@@ -68,6 +68,12 @@ jest.mock("$lib/services/ckbtc-minter.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Accounts", () => {
   beforeAll(() => {
     jest

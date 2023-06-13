@@ -3,7 +3,11 @@
  */
 
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_MINTER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-info.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -18,18 +22,25 @@ describe("ckbtc-info-services", () => {
   });
 
   describe("loadCkBTCInfo", () => {
-    it("should load info in the store", async () => {
-      const spyGetMinterInfo = jest
+    let spyGetMinterInfo;
+
+    beforeEach(() => {
+      spyGetMinterInfo = jest
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
+    });
 
-      await services.loadCkBTCInfo({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+    it("should load info in the store", async () => {
+      await services.loadCkBTCInfo({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
 
       await waitFor(() =>
         expect(spyGetMinterInfo).toBeCalledWith({
           identity: mockIdentity,
           certified: true,
-          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+          canisterId: CKBTC_MINTER_CANISTER_ID,
         })
       );
 
@@ -43,6 +54,33 @@ describe("ckbtc-info-services", () => {
       expect(storeData).toEqual({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: info,
       });
+    });
+
+    it("should not call api if no universe is provided", async () => {
+      await services.loadCkBTCInfo({
+        universeId: undefined,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      expect(spyGetMinterInfo).not.toBeCalled();
+    });
+
+    it("should not call api if universe is not ckBTC", async () => {
+      await services.loadCkBTCInfo({
+        universeId: OWN_CANISTER_ID,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      expect(spyGetMinterInfo).not.toBeCalled();
+    });
+
+    it("should not call api if minter canister ID is not provided", async () => {
+      await services.loadCkBTCInfo({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: undefined,
+      });
+
+      expect(spyGetMinterInfo).not.toBeCalled();
     });
   });
 
@@ -62,7 +100,10 @@ describe("ckbtc-info-services", () => {
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
 
-      await services.loadCkBTCInfo({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+      await services.loadCkBTCInfo({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
 
       expect(spyGetMinterInfo).not.toBeCalled();
     });
