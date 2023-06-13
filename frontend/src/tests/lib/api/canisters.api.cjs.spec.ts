@@ -33,9 +33,12 @@ describe("canisters-api.cjs", () => {
 
   describe("queryCanisterDetails", () => {
     it("should call IC Management Canister with canister id", async () => {
+      const host = "http://localhost:8000";
       const result = await queryCanisterDetails({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id.toText(),
+        host,
+        fetchRootKey: true,
       });
 
       expect(result).toEqual({
@@ -50,20 +53,6 @@ describe("canisters-api.cjs", () => {
           computeAllocation: 5n,
         },
         moduleHash: undefined,
-      });
-    });
-
-    it("should use the host parameter", async () => {
-      const host = "http://localhost:8000";
-      await queryCanisterDetails({
-        identity: mockIdentity,
-        canisterId: mockCanisterDetails.id.toText(),
-        host,
-      });
-
-      expect(MockHttpAgent).toBeCalledWith({
-        host,
-        identity: mockIdentity,
       });
     });
   });

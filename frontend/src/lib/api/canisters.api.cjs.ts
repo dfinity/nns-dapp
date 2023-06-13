@@ -2,7 +2,6 @@ import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity, ManagementCanisterRecord } from "@dfinity/agent";
@@ -11,13 +10,13 @@ import { Principal } from "@dfinity/principal";
 export const queryCanisterDetails = async ({
   identity,
   canisterId,
-  host = HOST,
-  fetchRootKey = FETCH_ROOT_KEY,
+  host,
+  fetchRootKey,
 }: {
   identity: Identity;
   canisterId: string;
-  host?: string;
-  fetchRootKey?: boolean;
+  host: string;
+  fetchRootKey: boolean;
 }): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
