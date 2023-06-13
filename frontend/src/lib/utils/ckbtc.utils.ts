@@ -1,4 +1,3 @@
-import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
@@ -13,11 +12,13 @@ export const assertCkBTCUserInputAmount = ({
   sourceAccount,
   amount,
   transactionFee,
+  retrieveBtcMinAmount,
 }: {
   networkBtc: boolean;
   sourceAccount: Account | undefined;
   amount: number | undefined;
   transactionFee: bigint;
+  retrieveBtcMinAmount: bigint | undefined;
 }) => {
   if (!networkBtc) {
     return;
@@ -40,14 +41,22 @@ export const assertCkBTCUserInputAmount = ({
     return;
   }
 
-  if (amountE8s < RETRIEVE_BTC_MIN_AMOUNT) {
+  // The minimal amount to retrieve of BTC may have not been loaded yet.
+  if (isNullish(retrieveBtcMinAmount)) {
+    const {
+      error__ckbtc: { retrieve_btc_min_amount_unknown },
+    } = get(i18n);
+    throw new CkBTCErrorRetrieveBtcMinAmount(retrieve_btc_min_amount_unknown);
+  }
+
+  if (amountE8s < retrieveBtcMinAmount) {
     const {
       error__ckbtc: { retrieve_btc_min_amount },
     } = get(i18n);
     throw new CkBTCErrorRetrieveBtcMinAmount(
       replacePlaceholders(retrieve_btc_min_amount, {
         $amount: formatToken({
-          value: RETRIEVE_BTC_MIN_AMOUNT,
+          value: retrieveBtcMinAmount,
           detailed: true,
         }),
       })

@@ -961,6 +961,7 @@ interface I18nError__ckbtc {
   estimated_fee: string;
   deposit_fee: string;
   retrieve_btc_min_amount: string;
+  retrieve_btc_min_amount_unknown: string;
 }
 
 interface I18nFeature_flags_prompt {

@@ -12,6 +12,7 @@
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+  import CkBTCInfoLoader from "$lib/components/accounts/CkBTCInfoLoader.svelte";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -52,20 +53,22 @@
     : undefined;
 </script>
 
-<div class="card-grid" data-tid="ckbtc-accounts-body">
-  {#if loading}
-    <SkeletonCard size="medium" />
-  {:else}
-    {#each accounts as account}
-      <AccountCard
-        role="link"
-        on:click={() => goToWallet(account)}
-        hash
-        {account}
-        token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
-      >
-    {/each}
+<CkBTCInfoLoader>
+  <div class="card-grid" data-tid="ckbtc-accounts-body">
+    {#if loading}
+      <SkeletonCard size="medium" />
+    {:else}
+      {#each accounts as account}
+        <AccountCard
+                role="link"
+                on:click={() => goToWallet(account)}
+                hash
+                {account}
+                token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
+        >
+      {/each}
 
-    <CkBTCWithdrawalAccount />
-  {/if}
-</div>
+      <CkBTCWithdrawalAccount />
+    {/if}
+  </div>
+</CkBTCInfoLoader>
