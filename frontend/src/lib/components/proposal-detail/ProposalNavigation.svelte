@@ -32,7 +32,7 @@
   };
 </script>
 
-{#if nonNullish(currentProposalId) && proposalIds.length > 1}
+{#if proposalIds.length > 1}
   <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"
