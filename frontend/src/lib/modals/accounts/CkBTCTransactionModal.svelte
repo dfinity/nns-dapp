@@ -70,7 +70,6 @@
       : TransactionNetwork.BTC_MAINNET
     : undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  let kytEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep | undefined;
 
@@ -208,17 +207,14 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-    <BitcoinKYTFee
-      {selectedNetwork}
-      minterCanisterId={canisters.minterCanisterId}
-      bind:kytFee={kytEstimatedFee}
-    />
+    {#if networkBtc}
+      <BitcoinKYTFee {universeId} />
+    {/if}
   </svelte:fragment>
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
-        {kytEstimatedFee}
         {universeId}
         amount={userAmount}
       />

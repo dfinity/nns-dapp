@@ -320,37 +320,6 @@ describe("ckbtc-minter-services", () => {
     });
   });
 
-  describe("depositFee", () => {
-    it("should call deposit fee", async () => {
-      const result = 789n;
-
-      const spyDepositFee = jest
-        .spyOn(minterApi, "depositFee")
-        .mockResolvedValue(result);
-
-      const params = { certified: true };
-
-      const callback = jest.fn();
-
-      await services.depositFee({
-        callback,
-        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
-      });
-
-      await waitFor(() =>
-        expect(spyDepositFee).toBeCalledWith({
-          identity: mockIdentity,
-          canisterId: CKBTC_MINTER_CANISTER_ID,
-          ...params,
-        })
-      );
-
-      expect(callback).toHaveBeenCalledWith(result);
-      // Query + Update
-      expect(callback).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe("getWithdrawalAccount", () => {
     it("should call get withdrawal account", async () => {
       const result: WithdrawalAccount = {

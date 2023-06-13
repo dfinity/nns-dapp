@@ -80,6 +80,7 @@ describe("CkBTCTransactionModal", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       info: {
         ...mockCkBTCMinterInfo,
+        kyt_fee: 789n,
         retrieve_btc_min_amount: 100_000n,
       },
       certified: true,
@@ -93,8 +94,6 @@ describe("CkBTCTransactionModal", () => {
     jest
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
-
-    jest.spyOn(minterApi, "depositFee").mockResolvedValue(789n);
   });
 
   it("should transfer tokens", async () => {
