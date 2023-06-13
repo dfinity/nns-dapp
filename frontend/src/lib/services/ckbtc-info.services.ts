@@ -3,6 +3,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { MinterInfo } from "@dfinity/ckbtc";
 import { get } from "svelte/store";
@@ -10,10 +11,11 @@ import { get } from "svelte/store";
 export const loadCkBTCInfo = async ({
   handleError,
   universeId,
+  minterCanisterId,
 }: {
   handleError?: () => void;
   universeId: UniverseCanisterId;
-}) => {
+} & Pick<CkBTCAdditionalCanisters, "minterCanisterId">) => {
   // We assume the ckBTC parameters do not change that often and might never change while the session is active
   // That's why, we load the params for a project only once as long as its data is already certified
   const storeData = get(ckBTCInfoStore);
@@ -27,7 +29,7 @@ export const loadCkBTCInfo = async ({
       minterInfo({
         identity,
         certified,
-        canisterId: universeId,
+        canisterId: minterCanisterId,
       }),
     onLoad: async ({ response: info, certified }) =>
       ckBTCInfoStore.setInfo({
