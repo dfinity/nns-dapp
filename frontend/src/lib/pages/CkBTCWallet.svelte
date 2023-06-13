@@ -36,6 +36,7 @@
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -157,6 +158,12 @@
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
 <Island>
