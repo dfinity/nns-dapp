@@ -81,6 +81,7 @@ describe("CkBTCTransactionModal", () => {
       info: {
         ...mockCkBTCMinterInfo,
         kyt_fee: 789n,
+        retrieve_btc_min_amount: 100_000n,
       },
       certified: true,
     });
