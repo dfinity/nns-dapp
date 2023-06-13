@@ -454,22 +454,12 @@ export const simulateMergeNeurons = async ({
   targetNeuronId: NeuronId;
 }): Promise<NeuronInfo | undefined> => {
   try {
-    const { targetNeuron } = await checkCanBeMerged({
+    await checkCanBeMerged({
       sourceNeuronId,
       targetNeuronId,
     });
 
-    const accounts = get(accountsStore);
-    if (
-      isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
-    ) {
-      // Simulating is not yet supported for HW controlled neurons.
-      return undefined;
-    }
-
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      targetNeuronId
-    );
+    const identity: Identity = await getAuthenticatedIdentity();
 
     return await governanceApiService.simulateMergeNeurons({
       sourceNeuronId,

@@ -14,7 +14,7 @@ defaults:
     shell: bash -euxlo pipefail {0}
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest-m
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
@@ -163,7 +163,8 @@ jobs:
       - name: Install ic-wasm
         if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
         run: |
-          cargo install "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
           command -v ic-wasm || {
             echo "ERROR: Failed to install ic-wasm"
             exit 1
