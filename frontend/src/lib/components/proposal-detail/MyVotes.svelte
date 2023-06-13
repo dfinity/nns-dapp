@@ -52,7 +52,7 @@
               SNS_NEURON_ID_DISPLAY_LENGTH
             )}
           </p>
-          <p class="vote-details">
+          <p class="vote-details" data-tid="my-votes-voting-power">
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
