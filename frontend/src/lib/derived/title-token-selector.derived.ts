@@ -9,8 +9,8 @@ export const titleTokenSelectorStore = derived(
   ([$i18n, page]) =>
     isSelectedPath({
       currentPath: page.path,
-      paths: [AppPath.Neurons, AppPath.Neuron],
+      paths: [AppPath.Accounts, AppPath.Wallet],
     })
-      ? $i18n.universe.select_nervous_system
-      : $i18n.universe.select_token
+      ? $i18n.universe.select_token
+      : $i18n.universe.select_nervous_system
 );

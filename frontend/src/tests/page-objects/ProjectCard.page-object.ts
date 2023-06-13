@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { CardPo } from "$tests/page-objects/Card.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ProjectCardPo extends BasePageObject {
+export class ProjectCardPo extends CardPo {
   private static readonly TID = "project-card-component";
 
   static async allUnder(element: PageObjectElement): Promise<ProjectCardPo[]> {
@@ -16,10 +16,5 @@ export class ProjectCardPo extends BasePageObject {
 
   getProjectName(): Promise<string> {
     return this.getText("project-name");
-  }
-
-  async isHighlighted(): Promise<boolean> {
-    const classes = await this.root.getClasses();
-    return classes.includes("highlighted");
   }
 }
