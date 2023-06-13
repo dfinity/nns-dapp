@@ -1,14 +1,18 @@
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
-import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
+import type {
+  PostMessageDataRequestCycles,
+  PostMessageDataResponseCycles,
+} from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 
 export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
 export interface CyclesWorker {
-  startCyclesTimer: (params: {
-    callback: CyclesCallback;
-    canisterId: string;
-  }) => void;
+  startCyclesTimer: (
+    params: {
+      callback: CyclesCallback;
+    } & Pick<PostMessageDataRequestCycles, "canisterId">
+  ) => void;
   stopCyclesTimer: () => void;
 }
 
