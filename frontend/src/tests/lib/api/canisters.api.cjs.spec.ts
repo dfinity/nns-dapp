@@ -38,7 +38,7 @@ describe("canisters-api.cjs", () => {
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id.toText(),
         host,
-        fetchRootKey: true,
+        fetchRootKey: false,
       });
 
       expect(result).toEqual({
