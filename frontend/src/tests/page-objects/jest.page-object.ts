@@ -111,6 +111,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && this.element.getAttribute(attribute);
   }
 
+  async getClasses(): Promise<string[] | null> {
+    return this.element && Array.from(this.element.classList);
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);
