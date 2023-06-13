@@ -11,14 +11,18 @@ import { Principal } from "@dfinity/principal";
 export const queryCanisterDetails = async ({
   identity,
   canisterId,
+  host = HOST,
+  fetchRootKey = FETCH_ROOT_KEY,
 }: {
   identity: Identity;
   canisterId: string;
+  host?: string;
+  fetchRootKey?: boolean;
 }): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
     icMgtService: { canister_status },
-  } = await canisters(identity);
+  } = await canisters({ identity, host, fetchRootKey });
 
   try {
     const canister_id = Principal.fromText(canisterId);
@@ -40,17 +44,23 @@ export const queryCanisterDetails = async ({
   }
 };
 
-const canisters = async (
-  identity: Identity
-): Promise<{
+const canisters = async ({
+  identity,
+  host,
+  fetchRootKey,
+}: {
+  identity: Identity;
+  host: string;
+  fetchRootKey: boolean;
+}): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
   const agent = new HttpAgentCjs({
     identity,
-    host: HOST,
+    host,
   });
 
-  if (FETCH_ROOT_KEY) {
+  if (fetchRootKey) {
     await agent.fetchRootKey();
   }
 

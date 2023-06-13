@@ -1,17 +1,14 @@
-import type {
-  PostMessageDataRequestCycles,
-  PostMessageDataResponseCycles,
-} from "$lib/types/post-message.canister";
+import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
+import type { PostMessageDataResponseCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
 
 export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
 export interface CyclesWorker {
-  startCyclesTimer: (
-    params: {
-      callback: CyclesCallback;
-    } & PostMessageDataRequestCycles
-  ) => void;
+  startCyclesTimer: (params: {
+    callback: CyclesCallback;
+    canisterId: string;
+  }) => void;
   stopCyclesTimer: () => void;
 }
 
@@ -36,15 +33,16 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
   return {
     startCyclesTimer: ({
       callback,
-      ...rest
+      canisterId,
     }: {
       callback: CyclesCallback;
-    } & PostMessageDataRequestCycles) => {
+      canisterId: string;
+    }) => {
       cyclesCallback = callback;
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { ...rest },
+        data: { canisterId, host: HOST, fetchRootKey: FETCH_ROOT_KEY },
       });
     },
     stopCyclesTimer: () => {
