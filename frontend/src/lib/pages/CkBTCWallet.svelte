@@ -171,8 +171,8 @@
 
           {#if nonNullish(canisters)}
             <CkBTCWalletActions
-                    reload={reloadAccount}
-                    minterCanisterId={canisters.minterCanisterId}
+              reload={reloadAccount}
+              minterCanisterId={canisters.minterCanisterId}
             />
           {/if}
 
@@ -180,17 +180,17 @@
 
           {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
             <BitcoinAddress
-                    account={$selectedAccountStore.account}
-                    universeId={$selectedCkBTCUniverseIdStore}
-                    minterCanisterId={canisters.minterCanisterId}
-                    reload={reloadAccount}
+              account={$selectedAccountStore.account}
+              universeId={$selectedCkBTCUniverseIdStore}
+              minterCanisterId={canisters.minterCanisterId}
+              reload={reloadAccount}
             />
 
             <CkBTCTransactionsList
-                    account={$selectedAccountStore.account}
-                    universeId={$selectedCkBTCUniverseIdStore}
-                    indexCanisterId={canisters.indexCanisterId}
-                    token={token?.token}
+              account={$selectedAccountStore.account}
+              universeId={$selectedCkBTCUniverseIdStore}
+              indexCanisterId={canisters.indexCanisterId}
+              token={token?.token}
             />
           {/if}
         {:else}

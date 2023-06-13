@@ -16,7 +16,7 @@
     canisters,
   }: {
     selectedCkBTCUniverseId: UniverseCanisterId | undefined;
-    canisters: Partial<CkBTCAdditionalCanisters>;
+    canisters: Partial<CkBTCAdditionalCanisters> | undefined;
   }) => {
     // Do nothing when the universe is not ckBTC
     if (isNullish(selectedCkBTCUniverseId)) {
