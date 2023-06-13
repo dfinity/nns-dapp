@@ -81,3 +81,11 @@ export const mockEmptyProposalsStoreSubscribe = (
 
   return () => undefined;
 };
+
+export const createMockProposalsStoreSubscribe =
+  (proposals: ProposalInfo[]) =>
+  (run: Subscriber<ProposalsStore>): (() => void) => {
+    run({ proposals, certified: true });
+
+    return () => undefined;
+  };
