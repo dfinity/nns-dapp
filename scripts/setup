@@ -158,6 +158,10 @@ install_rust() {
   append_to_profile 'export CARGO_BUILD_JOBS=2'
 }
 
+install_binstall() {
+  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+}
+
 install_xz_darwin() {
   brew install xz
 }
@@ -174,7 +178,7 @@ install_tar_linux() {
 
 install_ic_cdk_optimizer() {
   # Nit: Needs rust to be in a working state.
-  cargo install --version 0.3.2 ic-cdk-optimizer
+  cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
 }
 
 is_docker_installed() {
@@ -253,6 +257,7 @@ install_idl2json() {
 install_didc_linux() {
   local version
   version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+  # TODO: Use binstall
   curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
 }
 install_didc_darwin() {
@@ -265,7 +270,7 @@ install_didc_darwin() {
 }
 
 install_wasm_nm() {
-  cargo install wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
+  cargo binstall --no-confirm wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
 }
 
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
@@ -286,6 +291,7 @@ command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
+cargo binstall -V || install_binstall
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx

@@ -16,6 +16,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { formatNumber } from "$lib/utils/format.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -72,6 +73,15 @@
   <KeyValuePair>
     <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
     <AmountDisplay slot="value" amount={snsTokens} singleLine />
+  </KeyValuePair>
+  <KeyValuePair testId="project-swap-min-participants">
+    <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
+    <span slot="value"
+      >{formatNumber(params.min_participants, {
+        minFraction: 0,
+        maxFraction: 0,
+      })}</span
+    >
   </KeyValuePair>
   <KeyValuePair>
     <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>

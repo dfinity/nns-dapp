@@ -273,10 +273,12 @@ export const createSummary = ({
   lifecycle = SnsSwapLifecycle.Open,
   confirmationText = undefined,
   restrictedCountries = undefined,
+  minParticipants = 20,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
   restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -285,12 +287,17 @@ export const createSummary = ({
       ? [{ iso_codes: restrictedCountries }]
       : [],
   };
+  const params: SnsParams = {
+    ...mockSnsParams,
+    min_participants: minParticipants,
+  };
   const summary = summaryForLifecycle(lifecycle);
   return {
     ...summary,
     swap: {
       ...summary.swap,
       init: [init],
+      params,
     },
   };
 };

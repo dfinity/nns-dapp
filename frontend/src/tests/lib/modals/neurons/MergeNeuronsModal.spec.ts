@@ -3,11 +3,13 @@
  */
 
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import { mergeNeurons, simulateMergeNeurons } from "$lib/api/governance.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { accountsStore } from "$lib/stores/accounts.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
@@ -197,6 +199,106 @@ describe("MergeNeuronsModal", () => {
       expect(getStake(targetNeuron)).toBe(
         mergeableNeuron1.stake + mergeableNeuron2.stake
       );
+    });
+
+    it("should not simulate merging with feature disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", false);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        false
+      );
+      expect(
+        await po.getConfirmNeuronsMergePo().getMergedNeuronInfoPo().isPresent()
+      ).toBe(false);
+      expect(simulateMergeNeurons).not.toBeCalled();
+
+      // Make sure no actual merge happened either.
+      expect(mergeNeurons).not.toBeCalled();
+    });
+
+    it("should simulate merging with feature enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      const mergeNeuronInfo = po
+        .getConfirmNeuronsMergePo()
+        .getMergedNeuronInfoPo();
+      expect(await mergeNeuronInfo.isPresent()).toBe(true);
+      expect(await mergeNeuronInfo.getBalance()).toBe("46.00 ICP Stake");
+      // Just to show where the 46 is coming from:
+      expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(
+        BigInt(46 * E8S_PER_ICP)
+      );
+
+      // Make sure no actual merge happened.
+      expect(mergeNeurons).not.toBeCalled();
+    });
+
+    it("should show a skeleton card while simulating the merging", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      fakeGovernanceApi.pause();
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      expect(
+        await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+      const mergeNeuronInfo = po
+        .getConfirmNeuronsMergePo()
+        .getMergedNeuronInfoPo();
+      expect(await mergeNeuronInfo.isPresent()).toBe(false);
+
+      fakeGovernanceApi.resume();
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      expect(
+        await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(await mergeNeuronInfo.isPresent()).toBe(true);
     });
   });
 
