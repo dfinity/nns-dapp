@@ -2,157 +2,112 @@
  * @jest-environment jsdom
  */
 
-import { page } from "$app/stores";
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-import { AppPath } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/derived/page.derived";
-import { proposalsStore } from "$lib/stores/proposals.store";
-import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { fireEvent } from "@testing-library/dom";
+import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 
 describe("ProposalNavigation", () => {
-  const props = { proposalInfo: mockProposals[0] };
+  const renderComponent = (props) => {
+    const { container } = render(ProposalNavigation, { props });
+    return ProposalNavigationPo.under(new JestPageObjectElement(container));
+  };
 
   describe("not rendered", () => {
-    it("should not render buttons if no proposal", () => {
-      proposalsStore.setProposals({ proposals: [], certified: true });
-
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
+    it("should not render buttons if no proposalIds", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: undefined,
+        selectProposal: jest.fn(),
       });
 
-      expect(() => getByTestId("proposal-nav-previous")).toThrow();
-      expect(() => getByTestId("proposal-nav-next")).toThrow();
-
-      proposalsStore.setProposals({ proposals: [], certified: undefined });
+      expect(await po.isPresent()).toBe(false);
     });
 
-    it("should not render buttons if very last proposal", () => {
-      proposalsStore.setProposals({
-        proposals: [mockProposals[0]],
-        certified: true,
+    it("should not render buttons if no currentProposalId in proposalIds", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n],
+        selectProposal: jest.fn(),
       });
 
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
-      });
-
-      expect(() => getByTestId("proposal-nav-previous")).toThrow();
-      expect(() => getByTestId("proposal-nav-next")).toThrow();
-
-      proposalsStore.setProposals({ proposals: [], certified: undefined });
+      expect(await po.isPresent()).toBe(false);
     });
   });
 
   describe("display", () => {
-    const propsPrevious = { proposalInfo: mockProposals[0] };
-    const propsNext = { proposalInfo: mockProposals[1] };
-
-    beforeAll(() =>
-      proposalsStore.setProposals({ proposals: mockProposals, certified: true })
-    );
-
-    afterAll(() =>
-      proposalsStore.setProposals({ proposals: [], certified: undefined })
-    );
-
-    it("should render buttons", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+    it("should render buttons", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n, 1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(getByTestId("proposal-nav-previous")).not.toBeNull();
-      expect(getByTestId("proposal-nav-next")).not.toBeNull();
+      expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+      expect(await po.getNextButtonPo().isPresent()).toBe(true);
     });
 
-    it("should hide previous", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+    it("should enable both buttons", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n, 1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(
-        getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).toBeTruthy();
+      expect(await po.isNextButtonHidden()).toBe(false);
+      expect(await po.isPreviousButtonHidden()).toBe(false);
     });
 
-    it("should display next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: propsPrevious,
+    it("should disable previous button when it's selected", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [1n, 2n],
+        selectProposal: jest.fn(),
       });
 
-      expect(
-        getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).not.toBeTruthy();
+      expect(await po.isNextButtonHidden()).toBe(false);
+      expect(await po.isPreviousButtonHidden()).toBe(true);
     });
 
-    it("should hide previous", () => {
-      const { getByTestId } = render(ProposalNavigation, { props: propsNext });
-
-      expect(
-        getByTestId("proposal-nav-previous")?.classList.contains("hidden")
-      ).not.toBeTruthy();
-    });
-
-    it("should display next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props: propsNext,
+    it("should disable next when it's selected", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n, 1n],
+        selectProposal: jest.fn(),
       });
 
-      expect(
-        getByTestId("proposal-nav-next")?.classList.contains("hidden")
-      ).toBeTruthy();
+      expect(await po.isNextButtonHidden()).toBe(true);
+      expect(await po.isPreviousButtonHidden()).toBe(false);
     });
   });
 
   describe("action", () => {
-    const props = { proposalInfo: mockProposals[1] };
-    const proposalId = BigInt(202);
-
-    beforeAll(() =>
-      proposalsStore.setProposals({
-        proposals: [...mockProposals, { ...mockProposals[0], id: proposalId }],
-        certified: true,
-      })
-    );
-
-    afterAll(() =>
-      proposalsStore.setProposals({ proposals: [], certified: undefined })
-    );
-
-    it("should go to next", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
+    it("should emmit next click", async () => {
+      const selectProposalSpy = jest.fn();
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n, 1n, 2n],
+        selectProposal: selectProposalSpy,
       });
 
-      const btn = getByTestId("proposal-nav-next") as HTMLButtonElement;
-      fireEvent.click(btn);
+      await po.clickNext();
 
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Proposal);
-
-      const {
-        data: { proposal },
-      } = get(page);
-      expect(proposal).toEqual(`${proposalId}`);
+      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
     });
 
-    it("should go to previous", () => {
-      const { getByTestId } = render(ProposalNavigation, {
-        props,
+    it("should emmit previous click", async () => {
+      const selectProposalSpy = jest.fn();
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [0n, 1n, 2n],
+        selectProposal: selectProposalSpy,
       });
 
-      const btn = getByTestId("proposal-nav-previous") as HTMLButtonElement;
-      fireEvent.click(btn);
+      await po.clickPrevious();
 
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Proposal);
-
-      const {
-        data: { proposal },
-      } = get(page);
-      expect(proposal).toEqual(`${mockProposals[0].id}`);
+      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
     });
   });
 });
