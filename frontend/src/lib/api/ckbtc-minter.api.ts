@@ -6,6 +6,7 @@ import {
   CkBTCMinterCanister,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
+  type MinterInfo,
   type MinterParams,
   type RetrieveBtcOk,
   type RetrieveBtcParams,
@@ -138,6 +139,27 @@ export const depositFee = async ({
   const result = await getDepositFee(rest);
 
   logWithTimestamp("Bitcoin deposit fee: done");
+
+  return result;
+};
+
+export const minterInfo = async ({
+  identity,
+  canisterId,
+  ...rest
+}: {
+  identity: Identity;
+  canisterId: Principal;
+} & QueryParams): Promise<MinterInfo> => {
+  logWithTimestamp("Minter info: call...");
+
+  const {
+    canister: { getMinterInfo },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await getMinterInfo(rest);
+
+  logWithTimestamp("Minter info: done");
 
   return result;
 };

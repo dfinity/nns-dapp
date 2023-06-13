@@ -897,6 +897,7 @@
     "no_new_utxo": "There are no new UTXOs to process.",
     "temporary_unavailable": "The minter is temporary unavailable.",
     "no_minter_defined": "No minter canister is defined.",
+    "info_not_found": "Sorry, there was an error loading the ckBTC minter information.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
     "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",
