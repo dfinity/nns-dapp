@@ -41,6 +41,7 @@ export const queryProposals = async ({
       limit: DEFAULT_LIST_PAGINATION_LIMIT,
       beforeProposal,
       excludeTopic:
+        // We want all topics if the filter is empty
         topics.length === 0
           ? []
           : enumsExclude<Topic>({
