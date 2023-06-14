@@ -289,11 +289,13 @@ describe("SnsProposalDetail", () => {
         proposalId: proposalId.id,
       });
 
+      const proposalCreatedTimestamp = 33333n;
+
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         ...proposal,
-        proposal_creation_timestamp_seconds: 33333n,
+        proposal_creation_timestamp_seconds: proposalCreatedTimestamp,
         ballots: [
           [
             getSnsNeuronIdAsHexString(mockSnsNeuron),
@@ -310,7 +312,7 @@ describe("SnsProposalDetail", () => {
         identity: mockIdentity,
         rootCanisterId,
         id: mockSnsNeuron.id,
-        created_timestamp_seconds: 111n,
+        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
@@ -337,7 +339,8 @@ describe("SnsProposalDetail", () => {
       authStore.setForTesting(mockIdentity);
       await runResolvedPromises();
 
-      await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
+      // await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
+      expect(await po.hasVotingToolbar()).toBe(true);
     });
   });
 });
