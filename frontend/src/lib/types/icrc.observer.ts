@@ -1,9 +1,9 @@
 import type { Account } from "$lib/types/account";
-import type { PostMessageDataRequestAccounts } from "$lib/types/post-message.accounts";
+import type { PostMessageDataRequestBalances } from "$lib/types/post-message.balances";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 
 export type AccountsObserverData = Pick<
-  PostMessageDataRequestAccounts,
+  PostMessageDataRequestBalances,
   "ledgerCanisterId"
 > & {
   account: Account;

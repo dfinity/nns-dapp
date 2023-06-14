@@ -2,7 +2,11 @@ import { getIcrcBalance } from "$lib/api/icrc-ledger.api.cjs";
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import type { IcrcWorkerData } from "$lib/stores/icrc-worker.store";
 import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
-import type { PostMessageDataRequestAccounts } from "$lib/types/post-message.accounts";
+import type {
+  PostMessageDataRequestBalances,
+  PostMessageDataResponseBalances,
+  PostMessageDataResponseBalance,
+} from "$lib/types/post-message.balances";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
   TimerWorkerUtil,
@@ -15,34 +19,34 @@ import { Principal } from "@dfinity/principal";
 const worker = new TimerWorkerUtil();
 
 // A worker store to keep track of account balances
-interface AccountBalanceData extends IcrcWorkerData {
+interface BalanceData extends IcrcWorkerData {
   balance: bigint;
 }
 
-const store = new IcrcWorkerStore<AccountBalanceData>();
+const store = new IcrcWorkerStore<BalanceData>();
 
 onmessage = async ({
   data: dataMsg,
-}: MessageEvent<PostMessage<PostMessageDataRequestAccounts>>) => {
+}: MessageEvent<PostMessage<PostMessageDataRequestBalances>>) => {
   const { msg, data } = dataMsg;
 
   switch (msg) {
-    case "nnsStopAccountsTimer":
+    case "nnsStopBalancesTimer":
       worker.stop();
       store.reset();
       return;
-    case "nnsStartAccountsTimer":
-      await worker.start<PostMessageDataRequestAccounts>({
+    case "nnsStartBalancesTimer":
+      await worker.start<PostMessageDataRequestBalances>({
         interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
-        job: syncAccounts,
+        job: syncBalances,
         data,
       });
       return;
   }
 };
 
-const syncAccounts = async (
-  params: TimerWorkerUtilJobData<PostMessageDataRequestAccounts>
+const syncBalances = async (
+  params: TimerWorkerUtilJobData<PostMessageDataRequestBalances>
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -63,10 +67,10 @@ const syncAccounts = async (
       return;
     }
 
+    // Update store with queries
     store.update(changes);
 
-    // TODO: postMessage
-
+    // Call and update store with certified data
     const updates = await getIcrcBalances({
       ...params,
       certified: true,
@@ -74,9 +78,14 @@ const syncAccounts = async (
 
     store.update(updates);
 
-    // TODO: postMessage
+    console.log(updates);
 
-    console.log("Worker balance", store.state);
+    emitBalances(
+      updates.map(({ accountIdentifier, balance }) => ({
+        accountIdentifier,
+        balance,
+      }))
+    );
   } catch (err: unknown) {
     // TODO: postMessage error
     // TODO: reset
@@ -90,9 +99,9 @@ const getIcrcBalances = ({
   identity,
   data: { accountIdentifiers, ledgerCanisterId },
   certified,
-}: TimerWorkerUtilJobData<PostMessageDataRequestAccounts> & {
+}: TimerWorkerUtilJobData<PostMessageDataRequestBalances> & {
   certified: boolean;
-}): Promise<AccountBalanceData[]> =>
+}): Promise<BalanceData[]> =>
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) => {
       const balance = await getIcrcBalance({
@@ -109,3 +118,12 @@ const getIcrcBalances = ({
       };
     })
   );
+
+const emitBalances = (balances: PostMessageDataResponseBalance[]) => {
+  const data: PostMessageDataResponseBalances = { balances };
+
+  postMessage({
+    msg: "nnsSyncAccountsBalances",
+    data,
+  });
+};

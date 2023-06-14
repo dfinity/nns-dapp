@@ -1,26 +1,26 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import type { AccountsWorker } from "$lib/services/worker-accounts.services";
-  import { initAccountsWorker } from "$lib/services/worker-accounts.services";
+  import type { BalancesWorker } from "$lib/services/worker-balances.services";
+  import { initBalancesWorker } from "$lib/services/worker-balances.services";
   import type { AccountsObserverData } from "$lib/types/icrc.observer";
 
   export let data: AccountsObserverData;
 
-  let worker: AccountsWorker | undefined;
+  let worker: BalancesWorker | undefined;
 
-  onDestroy(() => worker?.stopAccountsTimer());
+  onDestroy(() => worker?.stopBalancesTimer());
 
   const initWorker = async () => {
-    worker?.stopAccountsTimer();
+    worker?.stopBalancesTimer();
 
-    worker = await initAccountsWorker();
+    worker = await initBalancesWorker();
 
     const {
       account: { identifier },
       ledgerCanisterId,
     } = data;
 
-    worker?.startAccountsTimer({
+    worker?.startBalancesTimer({
       ledgerCanisterId,
       accountIdentifiers: [identifier],
       callback: () => console.log("TODO"),

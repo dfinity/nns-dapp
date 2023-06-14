@@ -32,7 +32,7 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import IcrcAccountsObserver from "$lib/components/accounts/IcrcAccountsObserver.svelte";
+  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { AccountsObserverData } from "$lib/types/icrc.observer";
 
   let showModal: "send" | undefined = undefined;
@@ -142,7 +142,7 @@
   <main class="legacy" data-tid="sns-wallet">
     <section>
       {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(accountsObserverData)}
-        <IcrcAccountsObserver data={accountsObserverData}>
+        <IcrcBalancesObserver data={accountsObserverData}>
           <Summary />
 
           <WalletSummary {token} />
@@ -154,7 +154,7 @@
             account={$selectedAccountStore.account}
             {token}
           />
-        </IcrcAccountsObserver>
+        </IcrcBalancesObserver>
       {:else}
         <Spinner />
       {/if}
