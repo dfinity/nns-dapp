@@ -277,7 +277,7 @@ describe("proposals-utils", () => {
       ).toBeTruthy();
     });
 
-    it("should hide proposal if a filter is empty", () => {
+    it("should not hide proposal if a filter is empty", () => {
       expect(
         hideProposal({
           proposalInfo: proposalWithBallot({
@@ -291,7 +291,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeTruthy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -306,7 +306,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeTruthy();
+      ).toBe(false);
 
       expect(
         hideProposal({
@@ -321,7 +321,7 @@ describe("proposals-utils", () => {
           neurons,
           identity: mockIdentity,
         })
-      ).toBeTruthy();
+      ).toBe(false);
     });
 
     it("should hide proposal if does not match filter", () => {
