@@ -19,10 +19,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import {
-    snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/sns/sns-selected-project.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
