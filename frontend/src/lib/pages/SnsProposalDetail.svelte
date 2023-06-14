@@ -29,7 +29,6 @@
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-  import { isUIntString } from "$lib/utils/utils";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -167,9 +166,9 @@
     : [];
 </script>
 
-{#if nonNullish(proposalIdText) && isUIntString(proposalIdText)}
+{#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
   <ProposalNavigation
-    currentProposalId={BigInt(proposalIdText)}
+    currentProposalId={proposalIdText}
     {proposalIds}
     selectProposal={navigateToProposal}
   />
