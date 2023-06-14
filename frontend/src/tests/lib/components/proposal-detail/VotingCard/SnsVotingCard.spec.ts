@@ -8,6 +8,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockAuthStoreSubscribe,
@@ -140,6 +141,47 @@ describe("SnsVotingCard", () => {
     );
   });
 
+  it("should display votable neurons voting power from ballot", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: testNeurons,
+      certified: true,
+    });
+    const proposal: SnsProposalData = {
+      ...testProposal,
+      ballots: [
+        [
+          getSnsNeuronIdAsHexString(testNeurons[0]),
+          {
+            vote: SnsVote.Unspecified,
+            cast_timestamp_seconds: 0n,
+            voting_power: 314_000_000n,
+          },
+        ],
+        [
+          getSnsNeuronIdAsHexString(testNeurons[1]),
+          {
+            vote: SnsVote.Unspecified,
+            cast_timestamp_seconds: 0n,
+            voting_power: 100_000_000n,
+          },
+        ],
+      ],
+    };
+
+    const { queryAllByTestId } = render(SnsVotingCard, {
+      props: {
+        proposal,
+        reloadProposal: spyOnReloadProposal,
+      },
+    });
+
+    const elements = queryAllByTestId("voting-neuron-select-voting-power");
+
+    expect(elements[0]).toHaveTextContent("3.14");
+    expect(elements[1]).toHaveTextContent("1.00");
+  });
+
   it("should disable action buttons if no neurons selected", async () => {
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,
@@ -182,6 +224,42 @@ describe("SnsVotingCard", () => {
 
     const { getByText } = renderVotingCard();
     expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+  });
+
+  it("should display my votes with ballot voting power", async () => {
+    const votedNeuron = {
+      ...createMockSnsNeuron({
+        id: [3],
+        state: NeuronState.Locked,
+      }),
+    };
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [...testNeurons, votedNeuron],
+      certified: true,
+    });
+
+    const proposal: SnsProposalData = {
+      ...testProposal,
+      ballots: [
+        [
+          getSnsNeuronIdAsHexString(votedNeuron),
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 123n,
+            voting_power: 314_000_000n,
+          },
+        ],
+      ],
+    };
+
+    const { getByTestId } = render(SnsVotingCard, {
+      props: {
+        proposal,
+        reloadProposal: spyOnReloadProposal,
+      },
+    });
+    expect(getByTestId("my-votes-voting-power")).toHaveTextContent("3.14");
   });
 
   it("should display my votes also when all neurons were voted (#2501)", async () => {

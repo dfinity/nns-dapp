@@ -76,7 +76,6 @@ for file in "${assets[@]}"; do
 done
 
 COMMIT="$(git rev-parse HEAD)"
-[ -z "$(git status --untracked-files=no --porcelain)" ] || COMMIT="${COMMIT}-dirty"
 
 set -x
 docker build --target check-environment .
