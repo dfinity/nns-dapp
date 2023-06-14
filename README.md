@@ -81,7 +81,7 @@ When you have the tools installed, you can build the container with:
   git checkout THE_COMMIT
   ```
 * Verify that docker is running.  If not, please start it.
-  * Mac: Press ⌘-space and enter docker
+  * Mac: Press cmd+space and enter docker
   * Ubuntu: `pgrep docker || sudo systemctl start docker`
 * Now you can build:
   ```sh
