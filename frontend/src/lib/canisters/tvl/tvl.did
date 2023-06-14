@@ -1,4 +1,4 @@
-// Generated from IC repo commit cf973f3a9977fa924c8701b10822a8e96afae382 'rs/rosetta-api/tvl/tvl.did' by import-candid
+// Generated from IC repo commit 3340e9da93c9edd724927ed4fc902b03b0ec6426 'rs/rosetta-api/tvl/tvl.did' by import-candid
 type FiatCurrency = variant {
     EUR;
     CNY;
