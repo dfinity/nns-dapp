@@ -1,3 +1,4 @@
+import type { SyncState } from "$lib/types/sync";
 import { loadIdentity } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 
@@ -13,7 +14,7 @@ export interface TimerWorkerUtilSyncParams {
 
 export class TimerWorkerUtil {
   private timer: NodeJS.Timeout | undefined = undefined;
-  private timerStatus: "idle" | "in_progress" | "error" = "idle";
+  private timerStatus: SyncState = "idle";
 
   async start<T>({
     interval,
@@ -51,17 +52,17 @@ export class TimerWorkerUtil {
       return;
     }
 
-    this.timerStatus = "in_progress";
+    this.setStatus("in_progress");
 
     try {
       await job({ ...rest });
 
-      this.timerStatus = "idle";
+      this.setStatus("idle");
     } catch (err: unknown) {
       console.error(err);
 
       // Once the status becomes "error", the job will no longer be called and the status will remain "error"
-      this.timerStatus = "error";
+      this.setStatus("error");
 
       // Because it will no longer be called, we can stop it too
       this.stop();
@@ -70,6 +71,7 @@ export class TimerWorkerUtil {
 
   stop() {
     this.stopTimer();
+    this.setStatus("idle");
   }
 
   private stopTimer() {
@@ -79,5 +81,16 @@ export class TimerWorkerUtil {
 
     clearInterval(this.timer);
     this.timer = undefined;
+  }
+
+  private setStatus(state: SyncState) {
+    this.timerStatus = state;
+
+    postMessage({
+      msg: "nnsSyncStatus",
+      data: {
+        state,
+      },
+    });
   }
 }
