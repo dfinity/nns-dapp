@@ -13,7 +13,7 @@ export const queryCanisterDetails = async ({
   canisterId,
   host,
   fetchRootKey,
-}: CanisterActorParams): Promise<CanisterDetails> => {
+}: { canisterId: string } & CanisterActorParams): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
     icMgtService: { canister_status },
@@ -43,7 +43,7 @@ const canisters = async ({
   identity,
   host,
   fetchRootKey,
-}: Omit<CanisterActorParams, "canisterId">): Promise<{
+}: CanisterActorParams): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
   const agent = new HttpAgentCjs({

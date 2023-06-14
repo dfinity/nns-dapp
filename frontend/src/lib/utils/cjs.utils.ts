@@ -1,3 +1,4 @@
+import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
 /**
  * HTTP-Agent explicit CJS import for compatibility with web worker - avoid Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
@@ -9,8 +10,8 @@ export {
   getManagementCanister as getManagementCanisterCjs,
 };
 
-export interface CreateCanisterCjsParams
-  extends Pick<CanisterActorParams, "canisterId"> {
+export interface CreateCanisterCjsParams {
+  canisterId: CanisterId;
   agent: HttpAgent;
 }
 
@@ -22,7 +23,7 @@ export const createCanisterCjs = async <T>({
   fetchRootKey,
 }: {
   create: (params: CreateCanisterCjsParams) => T;
-} & CanisterActorParams): Promise<T> => {
+} & CanisterActorParams & { canisterId: CanisterId }): Promise<T> => {
   const agent = new HttpAgent({
     identity,
     host,

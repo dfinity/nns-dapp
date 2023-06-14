@@ -4,7 +4,7 @@ import type { CanisterActorParams } from "$lib/types/worker";
 import { AnonymousIdentity } from "@dfinity/agent";
 
 export const queryTVL = async (
-  params: Omit<CanisterActorParams, "canisterId" | "identity">
+  params: Omit<CanisterActorParams, "identity">
 ): Promise<TvlResult | undefined> => {
   try {
     const result = await queryTVLApi({
