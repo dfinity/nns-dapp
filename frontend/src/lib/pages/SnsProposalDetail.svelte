@@ -1,9 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import {
-    buildProposalsUrl,
-    buildProposalUrl,
-  } from "$lib/utils/navigation.utils";
+  import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
