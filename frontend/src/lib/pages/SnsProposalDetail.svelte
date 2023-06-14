@@ -1,6 +1,9 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { buildProposalsUrl } from "$lib/utils/navigation.utils";
+  import {
+    buildProposalsUrl,
+    buildProposalUrl,
+  } from "$lib/utils/navigation.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
   import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
@@ -18,10 +21,17 @@
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
-  import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
+  import {
+    snsProposalId,
+    snsProposalIdString,
+    sortSnsProposalsById,
+  } from "$lib/utils/sns-proposals.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSnsProposalStore } from "../derived/debug.derived";
   import { isUniverseNns } from "$lib/utils/universe.utils";
+  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -150,7 +160,22 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, update();
+
+  let proposalIds: bigint[];
+  $: proposalIds = nonNullish(universeIdText)
+    ? sortSnsProposalsById(
+        $snsFilteredProposalsStore[universeIdText]?.proposals
+      )?.map(snsProposalId) ?? []
+    : [];
 </script>
+
+{#if nonNullish(proposalIdText)}
+  <ProposalNavigation
+    currentProposalId={BigInt(proposalIdText)}
+    {proposalIds}
+    selectProposal={navigateToProposal}
+  />
+{/if}
 
 <div class="content-grid" data-tid="sns-proposal-details-grid">
   {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
