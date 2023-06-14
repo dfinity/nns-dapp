@@ -12,6 +12,9 @@
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -50,6 +53,17 @@
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
     ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">

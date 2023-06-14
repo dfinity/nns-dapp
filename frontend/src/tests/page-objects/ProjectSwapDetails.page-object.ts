@@ -22,4 +22,11 @@ export class ProjectSwapDetailsPo extends BasePageObject {
       testId: "excluded-countries",
     });
   }
+
+  getMinParticipants(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "project-swap-min-participants",
+    }).getValueText();
+  }
 }

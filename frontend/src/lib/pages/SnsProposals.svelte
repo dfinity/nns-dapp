@@ -71,8 +71,13 @@
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
     if (selectedProjectCanisterId !== undefined) {
-      const beforeProposalId =
-        proposals !== undefined ? lastProposalId(proposals) : undefined;
+      const beforeProposalId = nonNullish(currentProjectCanisterId)
+        ? lastProposalId(
+            $snsProposalsStore[currentProjectCanisterId.toText()]?.proposals ??
+              []
+          )
+        : undefined;
+
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,

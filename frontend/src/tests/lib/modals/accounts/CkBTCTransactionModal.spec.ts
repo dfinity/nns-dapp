@@ -10,6 +10,7 @@ import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.sv
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
 import * as services from "$lib/services/ckbtc-convert.services";
 import { authStore } from "$lib/stores/auth.store";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
@@ -24,6 +25,7 @@ import {
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
@@ -74,6 +76,16 @@ describe("CkBTCTransactionModal", () => {
       universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     });
 
+    ckBTCInfoStore.setInfo({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: 789n,
+        retrieve_btc_min_amount: 100_000n,
+      },
+      certified: true,
+    });
+
     page.mock({
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
@@ -82,8 +94,6 @@ describe("CkBTCTransactionModal", () => {
     jest
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
-
-    jest.spyOn(minterApi, "depositFee").mockResolvedValue(789n);
   });
 
   it("should transfer tokens", async () => {

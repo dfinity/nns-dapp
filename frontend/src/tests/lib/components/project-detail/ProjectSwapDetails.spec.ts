@@ -39,6 +39,18 @@ describe("ProjectSwapDetails", () => {
     );
   });
 
+  it("should render min participants", async () => {
+    const { container } = renderContextCmp({
+      summary: createSummary({ minParticipants: 1430 }),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectSwapDetails,
+    });
+
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getMinParticipants()).toEqual("1’430");
+  });
+
   it("should render min commitment", () => {
     const { container } = renderContextCmp({
       summary: mockSummary,
