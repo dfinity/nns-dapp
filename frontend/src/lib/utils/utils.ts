@@ -391,5 +391,9 @@ export const expandObject = (
     return acc;
   }, {} as Record<string, unknown>);
 
-/** "0" -> true; "" -> false; "-1" -> false */
+/**
+ * Returns true only for strings that represent a positive integer.
+ * @example
+ * "0" -> true; "" -> false; "-1" -> false
+ */
 export const isUIntString = (text: string): boolean => /^\d+$/.test(text);
