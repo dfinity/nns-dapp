@@ -1,10 +1,14 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import type { BalancesWorker } from "$lib/services/worker-balances.services";
+  import type {
+    BalancesCallback,
+    BalancesWorker,
+  } from "$lib/services/worker-balances.services";
   import { initBalancesWorker } from "$lib/services/worker-balances.services";
   import type { AccountsObserverData } from "$lib/types/icrc.observer";
 
   export let data: AccountsObserverData;
+  export let callback: BalancesCallback;
 
   let worker: BalancesWorker | undefined;
 
@@ -23,7 +27,7 @@
     worker?.startBalancesTimer({
       ledgerCanisterId,
       accountIdentifiers: [identifier],
-      callback: () => console.log("TODO"),
+      callback,
     });
   };
 

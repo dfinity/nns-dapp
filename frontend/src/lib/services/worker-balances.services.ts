@@ -26,7 +26,11 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
   }: MessageEvent<PostMessage<PostMessageDataResponseBalances>>) => {
     const { msg } = data;
 
-    // TODO
+    switch (msg) {
+      case "nnsSyncBalances":
+        balancesCallback?.(data.data);
+        return;
+    }
   };
 
   return {

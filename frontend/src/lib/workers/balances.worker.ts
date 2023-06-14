@@ -123,7 +123,7 @@ const emitBalances = (balances: PostMessageDataResponseBalance[]) => {
   const data: PostMessageDataResponseBalances = { balances };
 
   postMessage({
-    msg: "nnsSyncAccountsBalances",
+    msg: "nnsSyncBalances",
     data,
   });
 };
