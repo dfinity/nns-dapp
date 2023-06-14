@@ -1,8 +1,8 @@
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
-import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
+import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
@@ -13,29 +13,31 @@ import { isNullish } from "@dfinity/utils";
 export const queryTVL = async ({
   identity,
   certified,
+  tvlCanisterId,
   fetchRootKey,
   host,
 }: {
+  tvlCanisterId: string | undefined;
   certified: boolean;
 } & CanisterActorParams): Promise<TvlResult | undefined> => {
-  if (isNullish(TVL_CANISTER_ID)) {
+  if (isNullish(tvlCanisterId)) {
     return undefined;
   }
 
-  logWithTimestamp(`Getting canister ${TVL_CANISTER_ID.toText()} TVL call...`);
+  const canisterId = mapCanisterId(tvlCanisterId);
+
+  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL call...`);
 
   const { getTVL } = await canister({
     identity,
-    canisterId: TVL_CANISTER_ID,
+    canisterId,
     host,
     fetchRootKey,
   });
 
   const result = getTVL({ certified });
 
-  logWithTimestamp(
-    `Getting canister ${TVL_CANISTER_ID.toText()} TVL complete.`
-  );
+  logWithTimestamp(`Getting canister ${canisterId.toText()} TVL complete.`);
 
   return result;
 };

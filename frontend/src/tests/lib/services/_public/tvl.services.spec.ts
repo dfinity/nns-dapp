@@ -4,11 +4,17 @@
 
 import * as tvlApi from "$lib/api/tvl.api.cjs";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 
 describe("tvl services", () => {
+  const params = {
+    ...ACTOR_PARAMS,
+    tvlCanisterId: TVL_CANISTER_ID.toText(),
+  };
+
   beforeEach(() =>
     jest.spyOn(console, "error").mockImplementation(() => undefined)
   );
@@ -23,13 +29,13 @@ describe("tvl services", () => {
       .spyOn(tvlApi, "queryTVL")
       .mockResolvedValue(result);
 
-    await queryTVL(ACTOR_PARAMS);
+    await queryTVL(params);
 
     await waitFor(() =>
       expect(spyQueryTVL).toBeCalledWith({
         identity: new AnonymousIdentity(),
         certified: false,
-        ...ACTOR_PARAMS,
+        ...params,
       })
     );
   });
@@ -39,7 +45,7 @@ describe("tvl services", () => {
       throw new Error("test");
     });
 
-    const result = await queryTVL(ACTOR_PARAMS);
+    const result = await queryTVL(params);
 
     expect(result).toBeUndefined();
   });
