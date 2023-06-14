@@ -1,33 +1,34 @@
 /* Do not edit.  Compiled with ./scripts/compile-idl-js from packages/tvl/candid/tvl.did */
 export const idlFactory = ({ IDL }) => {
-  const InitArgs = IDL.Record({
-    governance_id: IDL.Principal,
-    update_period: IDL.Nat64,
-    xrc_id: IDL.Principal,
-  });
-  const TimeseriesEntry = IDL.Record({
-    value: IDL.Nat,
-    time_sec: IDL.Nat,
-  });
-  const TimeseriesResult = IDL.Record({
-    timeseries: IDL.Vec(TimeseriesEntry),
+  const TvlArgs = IDL.Record({
+    governance_id: IDL.Opt(IDL.Principal),
+    update_period: IDL.Opt(IDL.Nat64),
+    xrc_id: IDL.Opt(IDL.Principal),
   });
   const TvlResult = IDL.Record({ tvl: IDL.Nat, time_sec: IDL.Nat });
   const TvlResultError = IDL.Record({ message: IDL.Text });
-  const Result_tvl = IDL.Variant({ Ok: TvlResult, Err: TvlResultError });
-  const TvlTimeseriesResult = IDL.Record({ timeseries: IDL.Vec(TvlResult) });
+  const Result = IDL.Variant({ Ok: TvlResult, Err: TvlResultError });
+  const HttpRequest = IDL.Record({
+    url: IDL.Text,
+    method: IDL.Text,
+    body: IDL.Vec(IDL.Nat8),
+    headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+  });
+  const HttpResponse = IDL.Record({
+    body: IDL.Vec(IDL.Nat8),
+    headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+    status_code: IDL.Nat16,
+  });
   return IDL.Service({
-    get_locked_e8s_timeseries: IDL.Func([], [TimeseriesResult], []),
-    get_tvl: IDL.Func([], [Result_tvl], ["query"]),
-    get_tvl_timeseries: IDL.Func([], [TvlTimeseriesResult], []),
-    get_xr_timeseries: IDL.Func([], [TimeseriesResult], []),
+    get_tvl: IDL.Func([], [Result], ["query"]),
+    http_request: IDL.Func([HttpRequest], [HttpResponse], ["query"]),
   });
 };
 export const init = ({ IDL }) => {
-  const InitArgs = IDL.Record({
-    governance_id: IDL.Principal,
-    update_period: IDL.Nat64,
-    xrc_id: IDL.Principal,
+  const TvlArgs = IDL.Record({
+    governance_id: IDL.Opt(IDL.Principal),
+    update_period: IDL.Opt(IDL.Nat64),
+    xrc_id: IDL.Opt(IDL.Principal),
   });
-  return [InitArgs];
+  return [TvlArgs];
 };
