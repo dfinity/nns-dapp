@@ -4,8 +4,8 @@
   import IconCloud from "$lib/components/sync/IconCloud.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Popover } from "@dfinity/gix-components";
-  import { syncStore } from "$lib/stores/sync.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { workersSyncStore } from "$lib/derived/sync.derived";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;
@@ -14,7 +14,7 @@
   let icon: typeof SvelteComponent;
 
   const syncLabel = (): string => {
-    switch ($syncStore) {
+    switch ($workersSyncStore) {
       case "error":
         return "Error";
       case "in_progress":
@@ -25,14 +25,14 @@
   };
 
   const syncIcon = (): typeof SvelteComponent => {
-    if (["in_progress", "pending", "init"].includes($syncStore)) {
+    if (["in_progress", "pending", "init"].includes($workersSyncStore)) {
       return IconSync;
     }
 
     return IconCloud;
   };
 
-  $: $syncStore, (label = syncLabel()), (icon = syncIcon());
+  $: $workersSyncStore, (label = syncLabel()), (icon = syncIcon());
 
   const toggle = () => (visible = !visible);
 </script>

@@ -1,8 +1,10 @@
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { syncStore } from "$lib/stores/sync.store";
 import type {
   PostMessageDataRequestBalances,
   PostMessageDataResponseBalances,
 } from "$lib/types/post-message.balances";
+import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import type { PostMessage } from "$lib/types/post-messages";
 
 export type BalancesCallback = (data: PostMessageDataResponseBalances) => void;
@@ -24,12 +26,20 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
 
   balancesWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessage<PostMessageDataResponseBalances>>) => {
+  }: MessageEvent<
+    PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
+  >) => {
     const { msg } = data;
 
     switch (msg) {
       case "nnsSyncBalances":
-        balancesCallback?.(data.data);
+        balancesCallback?.(data.data as PostMessageDataResponseBalances);
+        return;
+      case "nnsSyncStatus":
+        syncStore.setState({
+          key: "balances",
+          state: (data.data as PostMessageDataResponseSync).state,
+        });
         return;
     }
   };

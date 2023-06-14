@@ -1,11 +1,11 @@
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { syncStore } from "$lib/stores/sync.store";
+import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import {syncStore} from "$lib/stores/sync.store";
-import type {PostMessageDataResponseSync} from "$lib/types/post-message.sync";
 
 export type TransactionsCallback = (
   data: PostMessageDataResponseTransactions
@@ -30,15 +30,24 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
 
   transactionsWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessage<PostMessageDataResponseTransactions | PostMessageDataResponseSync>>) => {
+  }: MessageEvent<
+    PostMessage<
+      PostMessageDataResponseTransactions | PostMessageDataResponseSync
+    >
+  >) => {
     const { msg } = data;
 
     switch (msg) {
       case "nnsSyncTransactions":
-        transactionsCallback?.(data.data as PostMessageDataResponseTransactions);
+        transactionsCallback?.(
+          data.data as PostMessageDataResponseTransactions
+        );
         return;
       case "nnsSyncStatus":
-        syncStore.set((data.data as PostMessageDataResponseSync).state);
+        syncStore.setState({
+          key: "transactions",
+          state: (data.data as PostMessageDataResponseSync).state,
+        });
         return;
     }
   };
