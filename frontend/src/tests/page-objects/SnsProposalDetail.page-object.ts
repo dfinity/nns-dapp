@@ -17,7 +17,7 @@ export class SnsProposalDetailPo extends BasePageObject {
     return SkeletonDetailsPo.under(this.root);
   }
 
-  getProposalNavigation(): ProposalNavigationPo {
+  getProposalNavigationPo(): ProposalNavigationPo {
     return ProposalNavigationPo.under(this.root);
   }
 

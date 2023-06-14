@@ -257,7 +257,7 @@ describe("SnsProposalDetail", () => {
 
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
 
-      const navigationPo = po.getProposalNavigation();
+      const navigationPo = po.getProposalNavigationPo();
       expect(await navigationPo.isPresent()).toBe(true);
       expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
       expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
