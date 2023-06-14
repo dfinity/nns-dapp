@@ -15,7 +15,6 @@ jest.mock("@dfinity/agent", () => {
   };
 });
 
-const defaultTVLCanisterId = Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai");
 jest.mock("$lib/constants/canister-ids.constants");
 
 describe("tvl api", () => {
