@@ -881,7 +881,7 @@
     "about_thirty_minutes": "Typically 30-60min",
     "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
     "loading_address": "Loading the address",
-    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require 12 confirmations. Then click",
+    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require $min confirmations. Then click",
     "incoming_bitcoin_network_part_2": "to update your ckBTC balance. Check status on a",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
@@ -911,7 +911,9 @@
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched.",
     "deposit_fee": "Sorry, the Inter-network Fee cannot be fetched.",
-    "retrieve_btc_min_amount": "The amount is below the $amount ckBTC minimum for converting to BTC."
+    "retrieve_btc_min_amount": "The amount falls below the minimum of $amount ckBTC required for converting to BTC.",
+    "retrieve_btc_min_amount_unknown": "The minimum amount of ckBTC required for converting to BTC is unknown.",
+    "wait_ckbtc_info_parameters_certified": "Please wait until the ckBTC parameters have been certified."
   },
   "feature_flags_prompt": {
     "override_true": "Enter the number for the feature you want to enable.",

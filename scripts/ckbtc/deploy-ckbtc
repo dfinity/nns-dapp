@@ -20,7 +20,7 @@ dfx deploy ckbtc_minter --network "$DFX_NETWORK" --argument "(variant {
        btc_network = variant { Regtest };
        ledger_id = principal \"$LEDGERID\";
        ecdsa_key_name = \"dfx_test_key\";
-       retrieve_btc_min_amount = 0;
+       retrieve_btc_min_amount = 10_000;
        max_time_in_queue_nanos = 420_000_000_000;
        min_confirmations = opt 12;
        mode = variant { GeneralAvailability };
