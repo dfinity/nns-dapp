@@ -282,6 +282,7 @@ describe("SnsProposalDetail", () => {
     it("show neurons that can vote", async () => {
       authStore.setForTesting(undefined);
 
+      const proposalCreatedTimestamp = 33333n;
       const proposal = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         rewardStatus:
@@ -289,7 +290,21 @@ describe("SnsProposalDetail", () => {
         proposalId: proposalId.id,
       });
 
-      const proposalCreatedTimestamp = 33333n;
+      fakeSnsGovernanceApi.addNeuronWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        id: mockSnsNeuron.id,
+        // The neuron must have creation timestamp before the proposal
+        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
 
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
@@ -305,21 +320,6 @@ describe("SnsProposalDetail", () => {
               cast_timestamp_seconds: 0n,
             },
           ],
-        ],
-      });
-
-      fakeSnsGovernanceApi.addNeuronWith({
-        identity: mockIdentity,
-        rootCanisterId,
-        id: mockSnsNeuron.id,
-        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
-        permissions: [
-          {
-            principal: [mockIdentity.getPrincipal()],
-            permission_type: Int32Array.from([
-              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
-            ]),
-          },
         ],
       });
 
