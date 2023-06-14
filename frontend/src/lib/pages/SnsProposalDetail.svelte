@@ -30,6 +30,8 @@
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -155,6 +157,13 @@
       setProposal(undefined);
     }
   };
+
+  // Update layout title
+  $: layoutTitleStore.set(
+    `${$i18n.proposal_detail.title}${
+      nonNullish(proposalIdText) ? ` ${proposalIdText}` : ""
+    }`
+  );
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, update();

@@ -131,9 +131,9 @@ const matchFilters = ({
   } = proposalInfo;
 
   return (
-    topics.includes(proposalTopic) &&
-    rewards.includes(rewardStatus) &&
-    status.includes(proposalStatus)
+    (topics.length === 0 || topics.includes(proposalTopic)) &&
+    (rewards.length === 0 || rewards.includes(rewardStatus)) &&
+    (status.length === 0 || status.includes(proposalStatus))
   );
 };
 
