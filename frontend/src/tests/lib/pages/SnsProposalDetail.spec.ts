@@ -16,7 +16,6 @@ import {
   buildMockSnsProposalsStoreSubscribe,
   createSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -231,16 +230,19 @@ describe("SnsProposalDetail", () => {
           proposalIdText: "2",
         },
       });
-      const po = ProposalNavigationPo.under(
+      const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
       );
-      await waitFor(async () => expect(await po.isPresent()).toBe(true));
 
-      expect(await po.getNextButtonPo().isPresent()).toBe(true);
-      expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+
+      const navigationPo = po.getProposalNavigation();
+      expect(await navigationPo.isPresent()).toBe(true);
+      expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
       // all buttons should be enabled
-      expect(await po.getNextButtonPo().isDisabled()).toBe(false);
-      expect(await po.getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
     });
   });
 });

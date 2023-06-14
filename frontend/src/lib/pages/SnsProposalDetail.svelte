@@ -29,6 +29,7 @@
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -166,37 +167,39 @@
     : [];
 </script>
 
-{#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
-  <ProposalNavigation
-    currentProposalId={proposalIdText}
-    {proposalIds}
-    selectProposal={navigateToProposal}
-  />
-{/if}
-
-<div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
-    <div class="content-a">
-      <SnsProposalSystemInfoSection
-        {proposal}
-        rootCanisterId={universeCanisterId}
-      />
-    </div>
-    <div class="content-b expand-content-b">
-      <SnsProposalVotingSection {proposal} {reloadProposal} />
-    </div>
-    <div class="content-c proposal-data-section">
-      <SnsProposalSummarySection {proposal} />
-      <SnsProposalPayloadSection {proposal} />
-    </div>
-  {:else}
-    <div class="content-a">
-      <div class="skeleton">
-        <SkeletonDetails />
-      </div>
-    </div>
+<TestIdWrapper testId="sns-proposal-details-grid">
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+    <ProposalNavigation
+      currentProposalId={proposalIdText}
+      {proposalIds}
+      selectProposal={navigateToProposal}
+    />
   {/if}
-</div>
+
+  <div class="content-grid">
+    {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+      <div class="content-a">
+        <SnsProposalSystemInfoSection
+          {proposal}
+          rootCanisterId={universeCanisterId}
+        />
+      </div>
+      <div class="content-b expand-content-b">
+        <SnsProposalVotingSection {proposal} {reloadProposal} />
+      </div>
+      <div class="content-c proposal-data-section">
+        <SnsProposalSummarySection {proposal} />
+        <SnsProposalPayloadSection {proposal} />
+      </div>
+    {:else}
+      <div class="content-a">
+        <div class="skeleton">
+          <SkeletonDetails />
+        </div>
+      </div>
+    {/if}
+  </div>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
