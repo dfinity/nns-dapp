@@ -334,7 +334,6 @@ describe("SnsProposalDetail", () => {
 
       expect(await po.hasVotingToolbar()).toBe(false);
 
-      // TODO: This doesn't trigger a rerender that would show the voting toolbar.
       authStore.setForTesting(mockIdentity);
       await runResolvedPromises();
 
