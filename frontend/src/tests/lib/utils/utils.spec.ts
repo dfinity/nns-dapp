@@ -837,7 +837,7 @@ describe("utils", () => {
     });
   });
 
-  describe("isUIntegerString", () => {
+  describe("isUIntString", () => {
     it("should return true for unsigned integers", () => {
       expect(isUIntString("0")).toBe(true);
       expect(isUIntString("123")).toBe(true);
