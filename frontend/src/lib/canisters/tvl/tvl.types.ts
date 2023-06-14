@@ -1,18 +1,22 @@
 import type { ActorMethod } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 
-export interface InitArgs {
-  governance_id: Principal;
-  update_period: bigint;
-  xrc_id: Principal;
+export interface HttpRequest {
+  url: string;
+  method: string;
+  body: Uint8Array;
+  headers: Array<[string, string]>;
 }
-export type Result_tvl = { Ok: TvlResult } | { Err: TvlResultError };
-export interface TimeseriesEntry {
-  value: bigint;
-  time_sec: bigint;
+export interface HttpResponse {
+  body: Uint8Array;
+  headers: Array<[string, string]>;
+  status_code: number;
 }
-export interface TimeseriesResult {
-  timeseries: Array<TimeseriesEntry>;
+export type Result = { Ok: TvlResult } | { Err: TvlResultError };
+export interface TvlArgs {
+  governance_id: [] | [Principal];
+  update_period: [] | [bigint];
+  xrc_id: [] | [Principal];
 }
 export interface TvlResult {
   tvl: bigint;
@@ -21,12 +25,7 @@ export interface TvlResult {
 export interface TvlResultError {
   message: string;
 }
-export interface TvlTimeseriesResult {
-  timeseries: Array<TvlResult>;
-}
 export interface _SERVICE {
-  get_locked_e8s_timeseries: ActorMethod<[], TimeseriesResult>;
-  get_tvl: ActorMethod<[], Result_tvl>;
-  get_tvl_timeseries: ActorMethod<[], TvlTimeseriesResult>;
-  get_xr_timeseries: ActorMethod<[], TimeseriesResult>;
+  get_tvl: ActorMethod<[], Result>;
+  http_request: ActorMethod<[HttpRequest], HttpResponse>;
 }
