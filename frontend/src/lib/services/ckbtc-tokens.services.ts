@@ -5,6 +5,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { get } from "svelte/store";
 
 export const loadCkBTCToken = async ({
@@ -36,7 +37,7 @@ export const loadCkBTCToken = async ({
         token,
       }),
     onError: ({ error: err, certified }) => {
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 

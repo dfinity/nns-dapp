@@ -17,6 +17,7 @@ import {
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
+import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { errorToString } from "$lib/utils/error.utils";
 import {
   excludeProposals,
@@ -46,7 +47,7 @@ const handleFindProposalsError = ({
   if (
     certified ||
     identity.getPrincipal().isAnonymous() ||
-    FORCE_CALL_STRATEGY === "query"
+    isForceCallStrategy()
   ) {
     proposalsStore.setProposals({ proposals: [], certified });
 
@@ -229,8 +230,7 @@ export const loadProposal = async ({
     const skipUpdateErrorHandling =
       silentUpdateErrorMessages === true &&
       (erroneusResponse.certified === true ||
-        (erroneusResponse.certified === false &&
-          FORCE_CALL_STRATEGY === "query"));
+        (erroneusResponse.certified === false && isForceCallStrategy()));
 
     if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);
