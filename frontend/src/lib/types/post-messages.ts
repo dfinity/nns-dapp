@@ -20,6 +20,11 @@ export type PostMessageResponse =
 
 export type PostMessageData = object;
 
+export interface PostMessageDataActor extends PostMessageData {
+  host: string;
+  fetchRootKey: boolean;
+}
+
 export interface PostMessage<T extends PostMessageData> {
   msg: PostMessageRequest | PostMessageResponse;
   data: T;
