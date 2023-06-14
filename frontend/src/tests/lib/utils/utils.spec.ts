@@ -7,6 +7,7 @@ import {
   isDefined,
   isHash,
   isPngAsset,
+  isUIntegerString,
   poll,
   PollingCancelledError,
   PollingLimitExceededError,
@@ -833,6 +834,30 @@ describe("utils", () => {
     it("should parse JSON strings", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
+    });
+  });
+
+  describe("isUIntegerString", () => {
+    it("should return true for unsigned integers", () => {
+      expect(isUIntegerString("0")).toBe(true);
+      expect(isUIntegerString("123")).toBe(true);
+      expect(
+        isUIntegerString(
+          "123456789012345678901234567890123456789012345678901234567890"
+        )
+      ).toBe(true);
+    });
+
+    it("should return false for not unsigned integers", () => {
+      expect(isUIntegerString("")).toBe(false);
+      expect(isUIntegerString("0n")).toBe(false);
+      expect(isUIntegerString("0.1")).toBe(false);
+      expect(isUIntegerString(".1")).toBe(false);
+      expect(isUIntegerString("-1")).toBe(false);
+      expect(isUIntegerString("*")).toBe(false);
+      expect(isUIntegerString("one")).toBe(false);
+      expect(isUIntegerString("0x5")).toBe(false);
+      expect(isUIntegerString("1e8")).toBe(false);
     });
   });
 });
