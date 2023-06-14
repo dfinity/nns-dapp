@@ -2,14 +2,14 @@ import type {
   GetTransactionsParams,
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
+import type { CanisterActorParams } from "$lib/types/canister";
+import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
 } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
 import { IcrcIndexCanister } from "@dfinity/ledger";
-import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 
 export const getIcrcTransactions = async ({
@@ -18,15 +18,22 @@ export const getIcrcTransactions = async ({
   maxResults: max_results,
   start,
   account,
-}: Omit<
-  GetTransactionsParams,
-  "getTransactions"
->): Promise<GetTransactionsResponse> => {
+  fetchRootKey,
+  host,
+}: Omit<GetTransactionsParams, "getTransactions" | "identity" | "canisterId"> &
+  CanisterActorParams): Promise<GetTransactionsResponse> => {
+  const canister_id = mapCanisterId(canisterId);
+
   logWithTimestamp(
-    `Getting transactions from Index canister ID ${canisterId.toText()}...`
+    `Getting transactions from Index canister ID ${canister_id.toText()}...`
   );
 
-  const { getTransactions } = await createCanister({ identity, canisterId });
+  const { getTransactions } = await createCanister({
+    identity,
+    canisterId: canister_id,
+    fetchRootKey,
+    host,
+  });
 
   const { oldest_tx_id, ...rest } = await getTransactions({
     max_results,
@@ -35,7 +42,7 @@ export const getIcrcTransactions = async ({
   });
 
   logWithTimestamp(
-    `Getting transactions from Index canister ID ${canisterId.toText()} complete.`
+    `Getting transactions from Index canister ID ${canister_id.toText()} complete.`
   );
 
   return {
@@ -44,19 +51,14 @@ export const getIcrcTransactions = async ({
   };
 };
 
-const createCanister = ({
-  identity,
-  canisterId,
-}: {
-  identity: Identity;
-  canisterId: Principal;
-}): Promise<IcrcIndexCanister> =>
+const createCanister = (
+  params: CanisterActorParams
+): Promise<IcrcIndexCanister> =>
   createCanisterCjs<IcrcIndexCanister>({
-    identity,
-    canisterId,
+    ...params,
     create: ({ agent, canisterId }: CreateCanisterCjsParams) =>
       IcrcIndexCanister.create({
         agent,
-        canisterId,
+        canisterId: mapCanisterId(canisterId),
       }),
   });

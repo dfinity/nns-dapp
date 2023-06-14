@@ -1,51 +1,53 @@
+import type { CanisterActorParams } from "$lib/types/canister";
+import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
 } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
 import { IcrcLedgerCanister, type IcrcAccount } from "@dfinity/ledger";
-import type { Principal } from "@dfinity/principal";
 
 export const getIcrcBalance = async ({
   identity,
   certified,
   account,
   canisterId,
+  fetchRootKey,
+  host,
 }: {
-  identity: Identity;
   certified: boolean;
   account: IcrcAccount;
-  canisterId: Principal;
-}): Promise<bigint> => {
+} & CanisterActorParams): Promise<bigint> => {
+  const canister_id = mapCanisterId(canisterId);
+
   logWithTimestamp(
-    `Getting balance from Ledger canister ID ${canisterId.toText()}...`
+    `Getting balance from Ledger canister ID ${canister_id.toText()}...`
   );
 
-  const { balance } = await createCanister({ identity, canisterId });
+  const { balance } = await createCanister({
+    identity,
+    canisterId: canister_id,
+    fetchRootKey,
+    host,
+  });
 
   const result = await balance({ certified, ...account });
 
   logWithTimestamp(
-    `Getting balance from Ledger canister ID ${canisterId.toText()} complete.`
+    `Getting balance from Ledger canister ID ${canister_id.toText()} complete.`
   );
 
   return result;
 };
 
-const createCanister = ({
-  identity,
-  canisterId,
-}: {
-  identity: Identity;
-  canisterId: Principal;
-}): Promise<IcrcLedgerCanister> =>
+const createCanister = (
+  params: CanisterActorParams
+): Promise<IcrcLedgerCanister> =>
   createCanisterCjs<IcrcLedgerCanister>({
-    identity,
-    canisterId,
+    ...params,
     create: ({ agent, canisterId }: CreateCanisterCjsParams) =>
       IcrcLedgerCanister.create({
         agent,
-        canisterId,
+        canisterId: mapCanisterId(canisterId),
       }),
   });

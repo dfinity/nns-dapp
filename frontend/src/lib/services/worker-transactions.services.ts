@@ -1,3 +1,4 @@
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransactions,
@@ -12,7 +13,7 @@ export interface TransactionsWorker {
   startTransactionsTimer: (
     params: {
       callback: TransactionsCallback;
-    } & PostMessageDataRequestTransactions
+    } & Omit<PostMessageDataRequestTransactions, "fetchRootKey" | "host">
   ) => void;
   stopTransactionsTimer: () => void;
 }
@@ -43,12 +44,12 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
       ...rest
     }: {
       callback: TransactionsCallback;
-    } & PostMessageDataRequestTransactions) => {
+    } & Omit<PostMessageDataRequestTransactions, "fetchRootKey" | "host">) => {
       transactionsCallback = callback;
 
       transactionsWorker.postMessage({
         msg: "nnsStartTransactionsTimer",
-        data: { ...rest },
+        data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopTransactionsTimer: () => {

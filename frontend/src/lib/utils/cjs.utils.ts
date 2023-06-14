@@ -1,7 +1,4 @@
-import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
-import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
-
+import type { CanisterActorParams } from "$lib/types/canister";
 /**
  * HTTP-Agent explicit CJS import for compatibility with web worker - avoid Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
  */
@@ -12,25 +9,26 @@ export {
   getManagementCanister as getManagementCanisterCjs,
 };
 
-export interface CreateCanisterCjsParams {
+export interface CreateCanisterCjsParams
+  extends Pick<CanisterActorParams, "canisterId"> {
   agent: HttpAgent;
-  canisterId: Principal;
 }
 
 export const createCanisterCjs = async <T>({
   identity,
   canisterId,
   create,
+  host,
+  fetchRootKey,
 }: {
-  identity: Identity;
   create: (params: CreateCanisterCjsParams) => T;
-} & Pick<CreateCanisterCjsParams, "canisterId">): Promise<T> => {
+} & CanisterActorParams): Promise<T> => {
   const agent = new HttpAgent({
     identity,
-    host: HOST,
+    host,
   });
 
-  if (FETCH_ROOT_KEY) {
+  if (fetchRootKey) {
     await agent.fetchRootKey();
   }
 

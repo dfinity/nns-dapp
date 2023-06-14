@@ -1,3 +1,4 @@
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import type {
   PostMessageDataRequestBalances,
   PostMessageDataResponseBalances,
@@ -10,7 +11,7 @@ export interface BalancesWorker {
   startBalancesTimer: (
     params: {
       callback: BalancesCallback;
-    } & PostMessageDataRequestBalances
+    } & Omit<PostMessageDataRequestBalances, "fetchRootKey" | "host">
   ) => void;
   stopBalancesTimer: () => void;
 }
@@ -39,12 +40,12 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
       ...rest
     }: {
       callback: BalancesCallback;
-    } & PostMessageDataRequestBalances) => {
+    } & Omit<PostMessageDataRequestBalances, "fetchRootKey" | "host">) => {
       balancesCallback = callback;
 
       balancesWorker.postMessage({
         msg: "nnsStartBalancesTimer",
-        data: { ...rest },
+        data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopBalancesTimer: () => {

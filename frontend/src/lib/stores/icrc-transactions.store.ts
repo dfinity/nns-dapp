@@ -1,3 +1,4 @@
+import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
@@ -7,7 +8,6 @@ import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
-import type {GetTransactionsResponse} from "$lib/api/icrc-index.api";
 
 export type IcrcAccountIdentifier = string;
 
@@ -31,11 +31,13 @@ export type IcrcTransactionsStoreData = Record<
 
 export interface IcrcTransactionsStore
   extends Readable<IcrcTransactionsStoreData> {
-  addTransactions: (data: {
-    accountIdentifier: string;
-    canisterId: UniverseCanisterId;
-    completed: boolean;
-  } & GetTransactionsResponse) => void;
+  addTransactions: (
+    data: {
+      accountIdentifier: string;
+      canisterId: UniverseCanisterId;
+      completed: boolean;
+    } & GetTransactionsResponse
+  ) => void;
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;
   resetAccount: (params: {

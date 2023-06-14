@@ -4,8 +4,8 @@ import type { IcrcWorkerData } from "$lib/stores/icrc-worker.store";
 import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
 import type {
   PostMessageDataRequestBalances,
-  PostMessageDataResponseBalances,
   PostMessageDataResponseBalance,
+  PostMessageDataResponseBalances,
 } from "$lib/types/post-message.balances";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
@@ -67,7 +67,7 @@ const syncBalances = async (
       return;
     }
 
-    console.log('BALANCES', changes);
+    console.log("BALANCES", changes);
 
     // Update store with queries
     store.update(changes);
@@ -97,7 +97,7 @@ const syncBalances = async (
 
 const getIcrcBalances = ({
   identity,
-  data: { accountIdentifiers, ledgerCanisterId },
+  data: { accountIdentifiers, ledgerCanisterId, ...rest },
   certified,
 }: TimerWorkerUtilJobData<PostMessageDataRequestBalances> & {
   certified: boolean;
@@ -109,6 +109,7 @@ const getIcrcBalances = ({
         identity,
         account: decodeIcrcAccount(accountIdentifier),
         certified,
+        ...rest,
       });
 
       return {

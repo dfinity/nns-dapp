@@ -106,7 +106,7 @@ type GetTransactionsResults = Omit<
 
 const getAllTransactions = ({
   identity,
-  data: { accountIdentifiers, indexCanisterId },
+  data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
 }: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>): Promise<
   GetTransactionsResults[]
 > =>
@@ -116,6 +116,8 @@ const getAllTransactions = ({
         identity,
         indexCanisterId,
         accountIdentifier,
+        host,
+        fetchRootKey,
       });
 
       return {
@@ -146,12 +148,16 @@ const getAccountTransactions = async ({
   indexCanisterId,
   accountIdentifier,
   start,
+  fetchRootKey,
+  host,
 }: GetAccountTransactionsParams): Promise<GetTransactionsResults> => {
   const { mostRecentTxId, transactions, ...rest } = await getTransactions({
     identity,
     indexCanisterId,
     accountIdentifier,
     start,
+    fetchRootKey,
+    host,
   });
 
   const oldestTxId: TxId | undefined = [...transactions].sort(
@@ -188,6 +194,8 @@ const getAccountTransactions = async ({
               indexCanisterId,
               accountIdentifier,
               start: nextTxId(oldestTxId),
+              fetchRootKey,
+              host,
             })
           ).transactions
         : []),
@@ -200,6 +208,8 @@ const getTransactions = async ({
   indexCanisterId,
   accountIdentifier,
   start,
+  fetchRootKey,
+  host,
 }: GetAccountTransactionsParams): Promise<GetTransactionsResults> => {
   {
     const { transactions, ...rest } = await getIcrcTransactions({
@@ -208,6 +218,8 @@ const getTransactions = async ({
       account: decodeIcrcAccount(accountIdentifier),
       maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
       start,
+      fetchRootKey,
+      host,
     });
 
     const mostRecentTxId = transactions.sort(

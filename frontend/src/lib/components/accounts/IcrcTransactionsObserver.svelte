@@ -1,7 +1,10 @@
 <script lang="ts">
-    import {onDestroy, onMount} from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { TransactionsObserverData } from "$lib/types/icrc.observer";
-  import type {TransactionsCallback, TransactionsWorker} from "$lib/services/worker-transactions.services";
+  import type {
+    TransactionsCallback,
+    TransactionsWorker,
+  } from "$lib/services/worker-transactions.services";
   import { initTransactionsWorker } from "$lib/services/worker-transactions.services";
 
   export let data: TransactionsObserverData;
@@ -28,7 +31,7 @@
     });
   };
 
-    onMount(async () => await initWorker());
+  onMount(async () => await initWorker());
 </script>
 
 <slot />
