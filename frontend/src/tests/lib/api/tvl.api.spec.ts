@@ -2,7 +2,6 @@ import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
 import mock from "jest-mock-extended/lib/Mock";
 
 jest.mock("@dfinity/agent", () => {
