@@ -2,26 +2,26 @@ import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
+import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity, ManagementCanisterRecord } from "@dfinity/agent";
-/**
- * HTTP-Agent explicit CJS import for compatibility with web worker - avoid "window undefined" issues
- */
-import { getManagementCanister, HttpAgent } from "@dfinity/agent/lib/cjs/index";
 import { Principal } from "@dfinity/principal";
 
 export const queryCanisterDetails = async ({
   identity,
   canisterId,
+  host,
+  fetchRootKey,
 }: {
   identity: Identity;
   canisterId: string;
+  host: string;
+  fetchRootKey: boolean;
 }): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
     icMgtService: { canister_status },
-  } = await canisters(identity);
+  } = await canisters({ identity, host, fetchRootKey });
 
   try {
     const canister_id = Principal.fromText(canisterId);
@@ -43,21 +43,27 @@ export const queryCanisterDetails = async ({
   }
 };
 
-const canisters = async (
-  identity: Identity
-): Promise<{
+const canisters = async ({
+  identity,
+  host,
+  fetchRootKey,
+}: {
+  identity: Identity;
+  host: string;
+  fetchRootKey: boolean;
+}): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
-  const agent = new HttpAgent({
+  const agent = new HttpAgentCjs({
     identity,
-    host: HOST,
+    host,
   });
 
-  if (FETCH_ROOT_KEY) {
+  if (fetchRootKey) {
     await agent.fetchRootKey();
   }
 
-  const icMgtService = getManagementCanister({ agent });
+  const icMgtService = getManagementCanisterCjs({ agent });
 
   return { icMgtService };
 };

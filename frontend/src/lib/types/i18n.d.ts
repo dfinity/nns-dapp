@@ -268,6 +268,7 @@ interface I18nNeurons {
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_into: string;
+  expected_merge_result: string;
   set_dissolve_delay: string;
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
@@ -656,6 +657,7 @@ interface I18nSns_project_detail {
   total_tokens_supply: string;
   min_commitment: string;
   max_commitment: string;
+  min_participants: string;
   current_overall_commitment: string;
   current_sale_buyer_count: string;
   min_commitment_goal: string;
@@ -680,6 +682,7 @@ interface I18nSns_project_detail {
   status_completed: string;
   completed: string;
   sale_end: string;
+  persons_excluded: string;
   max_user_commitment_reached: string;
   not_eligible_to_participate: string;
   getting_sns_open_ticket: string;
@@ -943,6 +946,7 @@ interface I18nError__ckbtc {
   no_new_utxo: string;
   temporary_unavailable: string;
   no_minter_defined: string;
+  info_not_found: string;
   get_btc_address: string;
   get_btc_no_account: string;
   get_btc_no_universe: string;
@@ -957,6 +961,8 @@ interface I18nError__ckbtc {
   estimated_fee: string;
   deposit_fee: string;
   retrieve_btc_min_amount: string;
+  retrieve_btc_min_amount_unknown: string;
+  wait_ckbtc_info_parameters_certified: string;
 }
 
 interface I18nFeature_flags_prompt {

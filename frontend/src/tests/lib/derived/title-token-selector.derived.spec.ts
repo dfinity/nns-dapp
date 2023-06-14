@@ -30,7 +30,7 @@ describe("title token selector derived store", () => {
       routeId: AppPath.Proposals,
     });
     const $store3 = get(titleTokenSelectorStore);
-    expect($store3).toEqual(en.universe.select_token);
+    expect($store3).toEqual(en.universe.select_nervous_system);
   });
 
   it("should return select nervous system text if path is related to neurons", () => {

@@ -13,6 +13,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
@@ -49,7 +50,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       expect(toggle).toBeInTheDocument();
     });
 
@@ -61,7 +62,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       expect(toggle).not.toBeInTheDocument();
     });
 
@@ -76,7 +77,7 @@ describe("SelectDestinationAddress", () => {
         container.querySelector("input[name='accounts-address']")
       ).toBeInTheDocument();
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
@@ -127,7 +128,7 @@ describe("SelectDestinationAddress", () => {
         container.querySelector("input[name='accounts-address']")
       ).toBeInTheDocument();
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>

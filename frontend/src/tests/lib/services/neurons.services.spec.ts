@@ -57,6 +57,7 @@ const {
   stopDissolving,
   updateDelay,
   mergeNeurons,
+  simulateMergeNeurons,
   reloadNeuron,
   topUpNeuron,
 } = services;
@@ -145,6 +146,7 @@ describe("neurons-services", () => {
   const spyStakeMaturity = jest.spyOn(api, "stakeMaturity");
   const spySpawnNeuron = jest.spyOn(api, "spawnNeuron");
   const spyMergeNeurons = jest.spyOn(api, "mergeNeurons");
+  const spySimulateMergeNeurons = jest.spyOn(api, "simulateMergeNeurons");
   const spyAddHotkey = jest.spyOn(api, "addHotkey");
   const spyRemoveHotkey = jest.spyOn(api, "removeHotkey");
   const spySplitNeuron = jest.spyOn(api, "splitNeuron");
@@ -166,25 +168,28 @@ describe("neurons-services", () => {
     spyStakeNeuron.mockImplementation(() =>
       Promise.resolve(mockNeuron.neuronId)
     );
-    spyGetNeuron.mockImplementation(() => Promise.resolve(mockNeuron));
-    spyIncreaseDissolveDelay.mockImplementation(() => Promise.resolve());
-    spyJoinCommunityFund.mockImplementation(() => Promise.resolve());
-    spyAutoStakeMaturity.mockImplementation(() => Promise.resolve());
-    spyLeaveCommunityFund.mockImplementation(() => Promise.resolve());
-    spyDisburse.mockImplementation(() => Promise.resolve());
-    spyMergeMaturity.mockImplementation(() => Promise.resolve());
-    spyStakeMaturity.mockImplementation(() => Promise.resolve());
+    spyGetNeuron.mockResolvedValue(mockNeuron);
+    spyIncreaseDissolveDelay.mockResolvedValue();
+    spyJoinCommunityFund.mockResolvedValue();
+    spyAutoStakeMaturity.mockResolvedValue();
+    spyLeaveCommunityFund.mockResolvedValue();
+    spyDisburse.mockResolvedValue();
+    spyMergeMaturity.mockResolvedValue();
+    spyStakeMaturity.mockResolvedValue();
     spySpawnNeuron.mockImplementation(() =>
       Promise.resolve(newSpawnedNeuronId)
     );
-    spyMergeNeurons.mockImplementation(() => Promise.resolve());
-    spyAddHotkey.mockImplementation(() => Promise.resolve());
-    spyRemoveHotkey.mockImplementation(() => Promise.resolve());
-    spySplitNeuron.mockImplementation(() => Promise.resolve(BigInt(11)));
-    spyStartDissolving.mockImplementation(() => Promise.resolve());
-    spyStopDissolving.mockImplementation(() => Promise.resolve());
-    spySetFollowees.mockImplementation(() => Promise.resolve());
-    spyClaimOrRefresh.mockImplementation(() => Promise.resolve(undefined));
+    spyMergeNeurons.mockResolvedValue();
+    spySimulateMergeNeurons.mockImplementation(() =>
+      Promise.resolve(mockNeuron)
+    );
+    spyAddHotkey.mockResolvedValue();
+    spyRemoveHotkey.mockResolvedValue();
+    spySplitNeuron.mockResolvedValue(BigInt(11));
+    spyStartDissolving.mockResolvedValue();
+    spyStopDissolving.mockResolvedValue();
+    spySetFollowees.mockResolvedValue();
+    spyClaimOrRefresh.mockResolvedValue(undefined);
   });
 
   describe("stake new neuron", () => {
@@ -929,6 +934,99 @@ describe("neurons-services", () => {
     });
   });
 
+  describe("simulateMergeNeurons", () => {
+    it("should simulate merging neurons", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+
+      expect(spySimulateMergeNeurons).not.toBeCalled();
+      await simulateMergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expect(spySimulateMergeNeurons).toBeCalledWith({
+        identity: mockIdentity,
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+      expect(spySimulateMergeNeurons).toBeCalledTimes(1);
+      expect(spyMergeNeurons).not.toBeCalled();
+    });
+
+    it("should not simulate merging neurons if no identity", async () => {
+      setNoIdentity();
+
+      await simulateMergeNeurons({
+        sourceNeuronId: neurons[0].neuronId,
+        targetNeuronId: neurons[1].neuronId,
+      });
+
+      expectToastError(en.error.missing_identity);
+      expect(spySimulateMergeNeurons).not.toBeCalled();
+      expect(spyMergeNeurons).not.toBeCalled();
+    });
+
+    it("should not simulate merging neurons if different controllers", async () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: "another",
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron, neuron],
+        certified: true,
+      });
+
+      await simulateMergeNeurons({
+        sourceNeuronId: notControlledNeuron.neuronId,
+        targetNeuronId: neuron.neuronId,
+      });
+
+      expectToastError(en.error.merge_neurons_not_same_controller);
+      expect(spySimulateMergeNeurons).not.toBeCalled();
+      expect(spyMergeNeurons).not.toBeCalled();
+    });
+
+    it("should simulate merging neurons if HW controlled", async () => {
+      accountsStore.setForTesting({
+        main: mockMainAccount,
+        hardwareWallets: [mockHardwareWalletAccount],
+      });
+      const hwPrincipal = mockHardwareWalletAccount.principal.toText();
+      const neuron1 = {
+        ...mockNeuron,
+        neuronId: BigInt(5555),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(5556),
+        fullNeuron: {
+          ...mockFullNeuron,
+          controller: hwPrincipal,
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [neuron1, neuron2],
+        certified: true,
+      });
+
+      await simulateMergeNeurons({
+        sourceNeuronId: neuron1.neuronId,
+        targetNeuronId: neuron2.neuronId,
+      });
+
+      expect(spySimulateMergeNeurons).toBeCalledTimes(1);
+      expect(spyMergeNeurons).not.toBeCalled();
+    });
+  });
+
   describe("addHotkey", () => {
     it("should update neuron", async () => {
       const principal = Principal.fromText("aaaaa-aa");
@@ -1588,7 +1686,7 @@ describe("neurons-services", () => {
         neuronId,
         fullNeuron: undefined,
       };
-      spyGetNeuron.mockImplementation(() => Promise.resolve(publicInfoNeuron));
+      spyGetNeuron.mockResolvedValue(publicInfoNeuron);
       const setNeuronSpy = jest.fn();
 
       expect(spyGetNeuron).not.toBeCalled();

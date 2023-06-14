@@ -21,9 +21,11 @@
   import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSnsProposalStore } from "../derived/debug.derived";
+  import { isUniverseNns } from "$lib/utils/universe.utils";
 
   export let proposalIdText: string | undefined | null = undefined;
 
+  // TODO: why using $pageStore.universe and not $selectedUniverseIdStore as in other components and routes?
   let universeId: Principal;
   $: universeId = Principal.fromText($pageStore.universe);
 
@@ -111,7 +113,9 @@
     if (
       nonNullish(proposalIdText) &&
       nonNullish(universeIdText) &&
-      nonNullish(universeCanisterId)
+      nonNullish(universeCanisterId) &&
+      // TODO: improve testing to ensure reloadProposal is not called
+      !isUniverseNns(universeCanisterId)
     ) {
       try {
         updating = true;
