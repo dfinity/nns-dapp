@@ -32,8 +32,7 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
-  import type { AccountsObserverData } from "$lib/types/icrc.observer";
+  import SnsWalletBalancesObserver from "$lib/components/accounts/SnsWalletBalancesObserver.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -125,24 +124,13 @@
   $: token = nonNullish($snsOnlyProjectStore)
     ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
-
-  let accountsObserverData: AccountsObserverData | undefined;
-  $: accountsObserverData =
-    nonNullish($selectedAccountStore.account) &&
-    nonNullish($snsProjectSelectedStore)
-      ? {
-          account: $selectedAccountStore.account,
-          ledgerCanisterId:
-            $snsProjectSelectedStore.summary.ledgerCanisterId.toText(),
-        }
-      : undefined;
 </script>
 
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish(accountsObserverData)}
-        <IcrcBalancesObserver data={accountsObserverData}>
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore)}
+        <SnsWalletBalancesObserver>
           <Summary />
 
           <WalletSummary {token} />
@@ -154,7 +142,7 @@
             account={$selectedAccountStore.account}
             {token}
           />
-        </IcrcBalancesObserver>
+        </SnsWalletBalancesObserver>
       {:else}
         <Spinner />
       {/if}

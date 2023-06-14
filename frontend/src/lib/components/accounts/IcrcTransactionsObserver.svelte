@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+    import {onDestroy, onMount} from "svelte";
   import type { TransactionsObserverData } from "$lib/types/icrc.observer";
   import type {TransactionsCallback, TransactionsWorker} from "$lib/services/worker-transactions.services";
   import { initTransactionsWorker } from "$lib/services/worker-transactions.services";
@@ -28,7 +28,7 @@
     });
   };
 
-  $: data, (async () => await initWorker())();
+    onMount(async () => await initWorker());
 </script>
 
 <slot />

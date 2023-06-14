@@ -67,6 +67,8 @@ const syncBalances = async (
       return;
     }
 
+    console.log('BALANCES', changes);
+
     // Update store with queries
     store.update(changes);
 
@@ -77,8 +79,6 @@ const syncBalances = async (
     });
 
     store.update(updates);
-
-    console.log(updates);
 
     emitBalances(
       updates.map(({ accountIdentifier, balance }) => ({

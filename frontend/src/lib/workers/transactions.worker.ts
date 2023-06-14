@@ -61,8 +61,6 @@ const syncTransactions = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    console.log("SYNC");
-
     const results = await getAllTransactions(params);
 
     const newTransactions = results.filter(
@@ -75,7 +73,7 @@ const syncTransactions = async (
       return;
     }
 
-    console.log("NEW", newTransactions);
+    console.log("NEW TRANSACTIONS", newTransactions);
 
     store.update(
       newTransactions.map(({ accountIdentifier, mostRecentTxId }) => ({

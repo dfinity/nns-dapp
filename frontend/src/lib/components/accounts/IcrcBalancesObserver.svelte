@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+    import {onDestroy, onMount} from "svelte";
   import type {
     BalancesCallback,
     BalancesWorker,
   } from "$lib/services/worker-balances.services";
   import { initBalancesWorker } from "$lib/services/worker-balances.services";
-  import type { AccountsObserverData } from "$lib/types/icrc.observer";
+  import type { BalancesObserverData } from "$lib/types/icrc.observer";
 
-  export let data: AccountsObserverData;
+  export let data: BalancesObserverData;
   export let callback: BalancesCallback;
 
   let worker: BalancesWorker | undefined;
@@ -31,7 +31,7 @@
     });
   };
 
-  $: data, (async () => await initWorker())();
+  onMount(async () => await initWorker());
 </script>
 
 <slot />
