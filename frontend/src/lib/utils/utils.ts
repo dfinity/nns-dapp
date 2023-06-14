@@ -392,4 +392,4 @@ export const expandObject = (
   }, {} as Record<string, unknown>);
 
 /** "0" -> true; "" -> false; "-1" -> false */
-export const isUIntegerString = (text: string): boolean => /^\d+$/.test(text);
+export const isUIntString = (text: string): boolean => /^\d+$/.test(text);
