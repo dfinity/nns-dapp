@@ -3,6 +3,7 @@
  */
 
 import * as tvlApi from "$lib/api/tvl.api.cjs";
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
@@ -22,12 +23,13 @@ describe("tvl services", () => {
       .spyOn(tvlApi, "queryTVL")
       .mockResolvedValue(result);
 
-    await queryTVL();
+    await queryTVL(ACTOR_PARAMS);
 
     await waitFor(() =>
       expect(spyQueryTVL).toBeCalledWith({
         identity: new AnonymousIdentity(),
         certified: false,
+        ...ACTOR_PARAMS,
       })
     );
   });
@@ -37,7 +39,7 @@ describe("tvl services", () => {
       throw new Error("test");
     });
 
-    const result = await queryTVL();
+    const result = await queryTVL(ACTOR_PARAMS);
 
     expect(result).toBeUndefined();
   });
