@@ -219,6 +219,12 @@ describe("SnsProposalDetail", () => {
         })
       );
 
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [{ id: 2n }],
+      });
+
       const { container } = render(SnsProposalDetail, {
         props: {
           // set the proposal with id=2 to be in the middle of the list
@@ -228,8 +234,8 @@ describe("SnsProposalDetail", () => {
       const po = ProposalNavigationPo.under(
         new JestPageObjectElement(container)
       );
+      await waitFor(async () => expect(await po.isPresent()).toBe(true));
 
-      expect(await po.isPresent()).toBe(true);
       expect(await po.getNextButtonPo().isPresent()).toBe(true);
       expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
       // all buttons should be enabled
