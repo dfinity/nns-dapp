@@ -7,16 +7,12 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
-import type { AuthStoreData } from "$lib/stores/auth.store";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -28,13 +24,13 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
+  SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsVote,
 } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
-import { get, type Subscriber } from "svelte/store";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/sns-governance.api");
 
@@ -59,9 +55,7 @@ describe("SnsProposalDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      authStore.setForTesting(undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -286,14 +280,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("show neurons that can vote", async () => {
-      const payload = "# Test payload";
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation((run: Subscriber<AuthStoreData>) => {
-          run({ identity: undefined });
-
-          return () => undefined;
-        });
+      authStore.setForTesting(undefined);
 
       const proposal = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -306,7 +293,7 @@ describe("SnsProposalDetail", () => {
         identity: new AnonymousIdentity(),
         rootCanisterId,
         ...proposal,
-        payload_text_rendering: [payload],
+        proposal_creation_timestamp_seconds: 33333n,
         ballots: [
           [
             getSnsNeuronIdAsHexString(mockSnsNeuron),
@@ -323,9 +310,18 @@ describe("SnsProposalDetail", () => {
         identity: mockIdentity,
         rootCanisterId,
         id: mockSnsNeuron.id,
+        created_timestamp_seconds: 111n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
       });
 
-      const { container, rerender } = render(SnsProposalDetail, {
+      const { container } = render(SnsProposalDetail, {
         props: {
           proposalIdText: proposalId.id.toString(),
         },
@@ -334,29 +330,13 @@ describe("SnsProposalDetail", () => {
         new JestPageObjectElement(container)
       );
 
+      await runResolvedPromises();
+
       expect(await po.hasVotingToolbar()).toBe(false);
 
-      jest.spyOn(authStore, "subscribe").mockClear();
-
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation((run: Subscriber<AuthStoreData>) => {
-          run({ identity: mockIdentity });
-
-          return () => undefined;
-        });
-
-      await tick();
-
-      rerender({
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
-      await waitFor(async () =>
-        expect(await po.getPayloadText()).toBe(payload)
-      );
+      // TODO: This doesn't trigger a rerender that would show the voting toolbar.
+      authStore.setForTesting(mockIdentity);
+      await runResolvedPromises();
 
       await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
     });
