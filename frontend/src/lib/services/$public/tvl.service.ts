@@ -1,6 +1,6 @@
 import { queryTVL as queryTVLApi } from "$lib/api/tvl.api.cjs";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 import { AnonymousIdentity } from "@dfinity/agent";
 
 export const queryTVL = async (

@@ -1,4 +1,4 @@
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 /**
  * HTTP-Agent explicit CJS import for compatibility with web worker - avoid Error [RollupError]: Unexpected token (Note that you need plugins to import files that are not JavaScript)
  */

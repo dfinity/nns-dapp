@@ -1,7 +1,7 @@
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
