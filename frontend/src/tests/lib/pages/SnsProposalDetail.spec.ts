@@ -7,6 +7,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { layoutTitleStore } from "$lib/stores/layout.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
@@ -91,6 +92,26 @@ describe("SnsProposalDetail", () => {
       expect(await po.hasSummarySection()).toBe(true);
       expect(await po.hasSystemInfoSection()).toBe(true);
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
+    });
+
+    it("should update layout title text", async () => {
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [proposalId],
+      });
+      fakeSnsGovernanceApi.pause();
+
+      const spyOnSetTitle = jest.spyOn(layoutTitleStore, "set");
+      const proposalIdText = proposalId.id.toString();
+      render(SnsProposalDetail, {
+        props: {
+          proposalIdText,
+        },
+      });
+
+      expect(spyOnSetTitle).toHaveBeenCalledTimes(1);
+      expect(spyOnSetTitle).toHaveBeenCalledWith(`Proposal ${proposalIdText}`);
     });
 
     it("should render the name of the nervous function as title", async () => {
