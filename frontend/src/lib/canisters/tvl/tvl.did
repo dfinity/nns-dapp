@@ -1,4 +1,10 @@
 // Generated from IC repo commit cf973f3a9977fa924c8701b10822a8e96afae382 'rs/rosetta-api/tvl/tvl.did' by import-candid
+type FiatCurrency = variant {
+    EUR;
+    CNY;
+    JPY;
+    GBP;
+};
 type HttpRequest = record {
   url : text;
   method : text;
@@ -13,12 +19,13 @@ type HttpResponse = record {
 type Result = variant { Ok : TvlResult; Err : TvlResultError };
 type TvlResult = record { tvl : nat; time_sec : nat };
 type TvlResultError = record { message : text };
+type TvlRequest = record { currency: FiatCurrency; };
 type TvlArgs = record {
   governance_id: opt principal;
   xrc_id: opt principal;
   update_period: opt nat64;
 };
 service : (TvlArgs) -> {
-  get_tvl : () -> (Result) query;
+  get_tvl : (opt TvlRequest) -> (Result) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
 }

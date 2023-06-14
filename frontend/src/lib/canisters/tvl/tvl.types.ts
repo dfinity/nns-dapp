@@ -1,6 +1,11 @@
 import type { ActorMethod } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 
+export type FiatCurrency =
+  | { CNY: null }
+  | { EUR: null }
+  | { GBP: null }
+  | { JPY: null };
 export interface HttpRequest {
   url: string;
   method: string;
@@ -18,6 +23,9 @@ export interface TvlArgs {
   update_period: [] | [bigint];
   xrc_id: [] | [Principal];
 }
+export interface TvlRequest {
+  currency: FiatCurrency;
+}
 export interface TvlResult {
   tvl: bigint;
   time_sec: bigint;
@@ -26,6 +34,6 @@ export interface TvlResultError {
   message: string;
 }
 export interface _SERVICE {
-  get_tvl: ActorMethod<[], Result>;
+  get_tvl: ActorMethod<[[] | [TvlRequest]], Result>;
   http_request: ActorMethod<[HttpRequest], HttpResponse>;
 }

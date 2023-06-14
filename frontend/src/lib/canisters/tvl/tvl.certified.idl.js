@@ -5,6 +5,13 @@ export const idlFactory = ({ IDL }) => {
     update_period: IDL.Opt(IDL.Nat64),
     xrc_id: IDL.Opt(IDL.Principal),
   });
+  const FiatCurrency = IDL.Variant({
+    CNY: IDL.Null,
+    EUR: IDL.Null,
+    GBP: IDL.Null,
+    JPY: IDL.Null,
+  });
+  const TvlRequest = IDL.Record({ currency: FiatCurrency });
   const TvlResult = IDL.Record({ tvl: IDL.Nat, time_sec: IDL.Nat });
   const TvlResultError = IDL.Record({ message: IDL.Text });
   const Result = IDL.Variant({ Ok: TvlResult, Err: TvlResultError });
@@ -20,7 +27,7 @@ export const idlFactory = ({ IDL }) => {
     status_code: IDL.Nat16,
   });
   return IDL.Service({
-    get_tvl: IDL.Func([], [Result], []),
+    get_tvl: IDL.Func([IDL.Opt(TvlRequest)], [Result], []),
     http_request: IDL.Func([HttpRequest], [HttpResponse], []),
   });
 };
