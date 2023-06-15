@@ -1,12 +1,12 @@
-import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
+import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api.js";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 
 jest.mock("@dfinity/agent/lib/cjs/index");
 
-describe("canisters-api.cjs", () => {
+describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
     status: { running: null },
     memory_size: BigInt(1000),

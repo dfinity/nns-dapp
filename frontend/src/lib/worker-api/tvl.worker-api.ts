@@ -3,11 +3,11 @@ import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
 import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
-} from "$lib/utils/cjs.utils";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
+} from "$lib/worker-utils/canister.worker-utils";
 import { isNullish } from "@dfinity/utils";
 
 export const queryTVL = async ({
