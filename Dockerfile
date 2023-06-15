@@ -74,6 +74,7 @@ COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 COPY scripts/prebuild-cargo scripts/prebuild-cargo
+COPY scripts/clap.bash scripts/clap.bash
 RUN scripts/prebuild-cargo
 # Install dfx
 WORKDIR /
