@@ -81,33 +81,45 @@ describe("ProposalNavigation", () => {
     });
   });
 
-  describe("action", () => {
-    it("should emmit next click", async () => {
-      const selectProposalSpy = jest.fn();
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
-        selectProposal: selectProposalSpy,
-      });
-
-      await po.clickNext();
-
-      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
+  it("should emmit next click", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 1n,
+      proposalIds: [0n, 1n, 2n],
+      selectProposal: selectProposalSpy,
     });
 
-    it("should emmit previous click", async () => {
-      const selectProposalSpy = jest.fn();
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
-        selectProposal: selectProposalSpy,
-      });
+    await po.clickNext();
 
-      await po.clickPrevious();
+    expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+    expect(selectProposalSpy).toHaveBeenCalledWith(0n);
+  });
 
-      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
+  it("should emmit previous click", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 1n,
+      proposalIds: [0n, 1n, 2n],
+      selectProposal: selectProposalSpy,
     });
+
+    await po.clickPrevious();
+
+    expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+    expect(selectProposalSpy).toHaveBeenCalledWith(2n);
+  });
+
+  it("should work also w/ not sorted proposalIds list", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 3n,
+      proposalIds: [5n, 2n, 3n, 0n, 1n, 4n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickPrevious();
+    expect(selectProposalSpy).toHaveBeenCalledWith(4n);
+    await po.clickNext();
+    expect(selectProposalSpy).toHaveBeenCalledWith(2n);
   });
 });
