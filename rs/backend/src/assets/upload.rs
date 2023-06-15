@@ -17,7 +17,7 @@ pub fn may_upload(caller: &Principal, is_controller: bool) -> Result<(), String>
 /// Checks that a given text contains a given substring.
 ///
 /// # Panics
-/// - If the text coes not contain the expected substring.
+/// - If the text does not contain the expected substring.
 #[cfg(test)]
 fn assert_contains(text: &str, expected: &str, description: &str) {
     if !(text.contains(expected)) {
