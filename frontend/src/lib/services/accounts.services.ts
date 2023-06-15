@@ -31,6 +31,10 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,
@@ -329,7 +333,7 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -447,7 +451,7 @@ const pollLoadAccounts = async (params: {
  * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
-  const overrideCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
+  const overrideCertified = isForceCallStrategy() ? false : certified;
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
@@ -455,7 +459,7 @@ export const pollAccounts = async (certified = true) => {
   // Therefore, we compare with `true`.
   if (
     accounts.certified === true ||
-    (accounts.certified === false && FORCE_CALL_STRATEGY === "query")
+    (accounts.certified === false && isForceCallStrategy())
   ) {
     return;
   }
