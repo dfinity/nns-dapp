@@ -1,9 +1,9 @@
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { CkBTCInfoStoreUniverseData } from "$lib/stores/ckbtc-info.store";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { isNullish } from "@dfinity/utils";
@@ -78,7 +78,7 @@ export const assertCkBTCUserInputAmount = ({
   // This assertion is primarily intended to handle edge cases.
   // It serves to prevent situations where the user has entered an amount before the ckBTCInfoStore has been filled with certified data.
   // However, considering our current user experience, the likelihood of this scenario is low.
-  if (infoCertified !== true && FORCE_CALL_STRATEGY !== "query") {
+  if (infoCertified !== true && notForceCallStrategy()) {
     const {
       error__ckbtc: { wait_ckbtc_info_parameters_certified },
     } = get(i18n);

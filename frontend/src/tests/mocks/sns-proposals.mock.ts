@@ -1,3 +1,4 @@
+import type { ProjectProposalData } from "$lib/stores/sns-proposals.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   SnsProposalDecisionStatus,
@@ -7,6 +8,7 @@ import {
   type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import type { Subscriber } from "svelte/store";
 
 export const mockSnsProposal: SnsProposalData = {
   id: [
@@ -190,3 +192,24 @@ export const createSnsProposal = ({
       });
   }
 };
+
+export const buildMockSnsProposalsStoreSubscribe =
+  ({
+    universeIdText,
+    proposals,
+  }: {
+    universeIdText: string;
+    proposals: SnsProposalData[];
+  }) =>
+  (
+    run: Subscriber<{ [universeIdText: string]: ProjectProposalData }>
+  ): (() => void) => {
+    run({
+      [universeIdText]: {
+        proposals,
+        certified: true,
+        completed: true,
+      },
+    });
+    return () => undefined;
+  };
