@@ -273,7 +273,7 @@ jobs:
   network_independent_wasm:
     name: "Same wasms for mainnet and local"
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest-m
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
