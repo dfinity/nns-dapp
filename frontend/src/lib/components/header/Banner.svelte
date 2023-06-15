@@ -7,6 +7,7 @@
   } from "$lib/constants/environment.constants";
   import { DEV } from "$lib/constants/mockable.constants";
   import { browser } from "$app/environment";
+  import { isJuno } from "$lib/utils/env-vars.utils";
 
   const localstorageKey = "nnsdapp-testnet-banner-display";
 
@@ -14,7 +15,7 @@
     ? (JSON.parse(localStorage.getItem(localstorageKey) ?? "true") as boolean)
     : false;
 
-  const testnet = IS_TESTNET;
+  const testnet = IS_TESTNET || isJuno();
   const localEnv = DEV || DFX_NETWORK === "local";
   const banner = testnet && !localEnv;
 

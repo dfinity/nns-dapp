@@ -152,8 +152,11 @@ export const getEnvVars = (): EnvironmentVars => {
   const isDevServer =
     localDevelopment ||
     (isBrowser && ["5173", "4173"].includes(window.location.port));
-  if (!isBrowser || isDevServer) {
+  if (!isBrowser || isDevServer || isJuno()) {
     return getBuildEnvVars();
   }
   return getHtmlEnvVars();
 };
+
+export const isJuno = (): boolean =>
+  isBrowser && window.location.origin.includes("nbyi7-6aaaa-aaaal-acjtq-cai");
