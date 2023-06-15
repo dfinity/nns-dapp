@@ -6,23 +6,23 @@ import type { CanisterActorParams } from "$lib/types/worker";
 import { HttpAgent, getManagementCanister } from "@dfinity/agent/lib/cjs/index";
 
 export {
-  HttpAgent as HttpAgentCjs,
-  getManagementCanister as getManagementCanisterCjs,
+  HttpAgent as HttpAgentWorker,
+  getManagementCanister as getManagementCanisterWorker,
 };
 
-export interface CreateCanisterCjsParams {
+export interface CreateCanisterWorkerParams {
   canisterId: CanisterId;
   agent: HttpAgent;
 }
 
-export const createCanisterCjs = async <T>({
+export const createCanisterWorker = async <T>({
   identity,
   canisterId,
   create,
   host,
   fetchRootKey,
 }: {
-  create: (params: CreateCanisterCjsParams) => T;
+  create: (params: CreateCanisterWorkerParams) => T;
 } & CanisterActorParams & { canisterId: CanisterId }): Promise<T> => {
   const agent = new HttpAgent({
     identity,
