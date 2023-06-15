@@ -1,4 +1,4 @@
-import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import type {
   PostMessageDataRequestCycles,
   PostMessageDataResponseCycles,
@@ -46,7 +46,7 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { ...rest, host: HOST, fetchRootKey: FETCH_ROOT_KEY },
+        data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopCyclesTimer: () => {
