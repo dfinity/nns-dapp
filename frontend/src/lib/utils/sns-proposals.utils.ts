@@ -348,6 +348,9 @@ export const proposalActionFields = (
 export const snsProposalIdString = (proposal: SnsProposalData): string =>
   fromDefinedNullable(proposal.id).id.toString();
 
+export const snsProposalId = (proposal: SnsProposalData): bigint =>
+  fromDefinedNullable(proposal.id).id;
+
 export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
   proposal.decided_timestamp_seconds === 0n;
 

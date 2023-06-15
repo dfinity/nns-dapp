@@ -2,7 +2,7 @@
   import type { ProposalInfo, NeuronId, ProposalId } from "@dfinity/nns";
   import {
     mapProposalInfo,
-    navigateToNnsProposal,
+    navigateToProposal,
   } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
@@ -22,8 +22,7 @@
   $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = async () =>
-    await navigateToNnsProposal(id as ProposalId);
+  const showProposal = async () => await navigateToProposal(id as ProposalId);
 </script>
 
 <ProposalCard

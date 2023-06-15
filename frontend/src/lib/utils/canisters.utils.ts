@@ -5,6 +5,8 @@ import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
+import type { CanisterId } from "$lib/types/canister";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { formatNumber } from "./format.utils";
 
@@ -70,3 +72,6 @@ export const canisterStatusToText = (status: CanisterStatus): string => {
       return i18nObj.canister_detail.status_running;
   }
 };
+
+export const mapCanisterId = (canisterId: CanisterId | string): CanisterId =>
+  typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;

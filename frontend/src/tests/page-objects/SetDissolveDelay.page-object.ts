@@ -1,6 +1,6 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
 
 export class SetDissolveDelayPo extends BasePageObject {
   private static readonly TID = "set-dissolve-delay-component";
@@ -23,7 +23,16 @@ export class SetDissolveDelayPo extends BasePageObject {
     });
   }
 
+  clickUpdate(): Promise<void> {
+    return this.getUpdateButtonPo().click();
+  }
+
   clickMax(): Promise<void> {
     return this.getMaxButtonPo().click();
+  }
+
+  async setMax(): Promise<void> {
+    await this.clickMax();
+    await this.clickUpdate();
   }
 }

@@ -131,9 +131,9 @@ const matchFilters = ({
   } = proposalInfo;
 
   return (
-    topics.includes(proposalTopic) &&
-    rewards.includes(rewardStatus) &&
-    status.includes(proposalStatus)
+    (topics.length === 0 || topics.includes(proposalTopic)) &&
+    (rewards.length === 0 || rewards.includes(rewardStatus)) &&
+    (status.length === 0 || status.includes(proposalStatus))
   );
 };
 
@@ -618,8 +618,8 @@ export const nnsNeuronToVotingNeuron = ({
   votingPower: getVotingPower({ neuron, proposal }),
 });
 
-/** Navigate to the current universe proposal page */
-export const navigateToNnsProposal = (proposalId: ProposalId): Promise<void> =>
+/** Navigate to the current universe (NNS/SNS) proposal page */
+export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
   goto(
     buildProposalUrl({
       universe: get(pageStore).universe,

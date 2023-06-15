@@ -12,7 +12,7 @@
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
-  import { navigateToNnsProposal } from "$lib/utils/proposals.utils";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -26,7 +26,7 @@
   <ProposalNavigation
     currentProposalId={$store.proposal.id}
     {proposalIds}
-    selectProposal={navigateToNnsProposal}
+    selectProposal={navigateToProposal}
   />
 
   <div class="content-grid" data-tid="proposal-details-grid">
