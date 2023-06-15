@@ -606,6 +606,18 @@ export const followeesByNeuronId = ({
 };
 
 /**
+ * Returns the neuron's age
+ *
+ * Backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L415
+ * @param {SnsNeuron} neuron
+ * @returns {bigint}
+ */
+export const ageSeconds = ({
+  aging_since_timestamp_seconds,
+}: SnsNeuron): bigint =>
+  BigInt(Math.max(nowInSeconds() - Number(aging_since_timestamp_seconds), 0));
+
+/**
  * Returns the sns neuron voting power
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
@@ -627,7 +639,6 @@ export const snsNeuronVotingPower = ({
     newDissolveDelayInSeconds !== undefined
       ? newDissolveDelayInSeconds
       : getSnsDissolveDelaySeconds(neuron) ?? 0n;
-  const nowSeconds = nowInSeconds();
   const {
     max_dissolve_delay_seconds,
     max_neuron_age_for_age_bonus,
@@ -654,11 +665,8 @@ export const snsNeuronVotingPower = ({
     return 0;
   }
 
-  const {
-    voting_power_percentage_multiplier,
-    aging_since_timestamp_seconds,
-    staked_maturity_e8s_equivalent,
-  } = neuron;
+  const { voting_power_percentage_multiplier, staked_maturity_e8s_equivalent } =
+    neuron;
   const dissolveDelay =
     dissolveDelayInSeconds < maxDissolveDelaySeconds
       ? dissolveDelayInSeconds
@@ -672,14 +680,12 @@ export const snsNeuronVotingPower = ({
       0
     )
   );
-  const ageSeconds = BigInt(
-    Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
-  );
+
   const vp = Number(
     votingPower({
       stakeE8s,
       dissolveDelay,
-      ageSeconds,
+      ageSeconds: ageSeconds(neuron),
       ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
       dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
       maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),

@@ -1,4 +1,4 @@
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -7,6 +7,7 @@ import {
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
+  ageSeconds,
   canIdentityManageHotkeys,
   followeesByFunction,
   followeesByNeuronId,
@@ -2122,6 +2123,32 @@ describe("sns-neuron utils", () => {
           reason: "short",
         },
       ]);
+    });
+  });
+
+  describe("ageSeconds", () => {
+    const now = 1686806749421;
+    const nowSeconds = Math.floor(now / 1000);
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns 0 if age_since is in the future", () => {
+      expect(
+        ageSeconds({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds + 1000),
+        })
+      ).toEqual(0n);
+    });
+
+    it("returns age if age_since is in the past", () => {
+      expect(
+        ageSeconds({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds - SECONDS_IN_MONTH),
+        })
+      ).toEqual(BigInt(SECONDS_IN_MONTH));
     });
   });
 });

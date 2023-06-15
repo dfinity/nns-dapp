@@ -1,23 +1,24 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { ageSeconds } from "$lib/utils/sns-neuron.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
-  // TODO: remove svelte ignore for svelte-check once implemented
-  // svelte-ignore unused-export-let
   export let neuron: SnsNeuron;
 
-  // TODO: implement Sns neuron Age
-  // Pseudo code:
-  // const snsNeuronAge = Math.min(queryAndUpdate(sns_gov).param.max_neuron_age_for_age_bonus, now - neuron.aging_since_timestamp_seconds);
-
-  // let age: bigint;
-  // $: age = BigInt(nowInSeconds()) - neuron.created_timestamp_seconds;
+  let age: bigint;
+  $: age = ageSeconds(neuron);
 </script>
 
-<!--{#if age > 0}-->
-<!--  <KeyValuePair>-->
-<!--    <span class="label" slot="key">{$i18n.neurons.age}</span>-->
-<!--    <span class="value" slot="value" data-tid="sns-neuron-age">-->
-<!--      {secondsToDuration(age)}-->
-<!--    </span>-->
-<!--  </KeyValuePair>-->
-<!--{/if}-->
+<TestIdWrapper testId="sns-neuron-age-component">
+  {#if age > 0}
+    <KeyValuePair testId="sns-neuron-age">
+      <span class="label" slot="key">{$i18n.neurons.age}</span>
+      <span class="value" slot="value">
+        {secondsToDuration(age)}
+      </span>
+    </KeyValuePair>
+  {/if}
+</TestIdWrapper>
