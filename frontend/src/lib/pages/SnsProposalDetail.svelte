@@ -18,10 +18,18 @@
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
-  import { snsProposalIdString } from "$lib/utils/sns-proposals.utils";
+  import {
+    snsProposalId,
+    snsProposalIdString,
+    sortSnsProposalsById,
+  } from "$lib/utils/sns-proposals.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { debugSnsProposalStore } from "../derived/debug.derived";
   import { isUniverseNns } from "$lib/utils/universe.utils";
+  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
 
@@ -159,31 +167,48 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, update();
+
+  let proposalIds: bigint[];
+  $: proposalIds = nonNullish(universeIdText)
+    ? sortSnsProposalsById(
+        $snsFilteredProposalsStore[universeIdText]?.proposals
+      )?.map(snsProposalId) ?? []
+    : [];
 </script>
 
-<div class="content-grid" data-tid="sns-proposal-details-grid">
-  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
-    <div class="content-a">
-      <SnsProposalSystemInfoSection
-        {proposal}
-        rootCanisterId={universeCanisterId}
-      />
-    </div>
-    <div class="content-b expand-content-b">
-      <SnsProposalVotingSection {proposal} {reloadProposal} />
-    </div>
-    <div class="content-c proposal-data-section">
-      <SnsProposalSummarySection {proposal} />
-      <SnsProposalPayloadSection {proposal} />
-    </div>
-  {:else}
-    <div class="content-a">
-      <div class="skeleton">
-        <SkeletonDetails />
-      </div>
-    </div>
+<TestIdWrapper testId="sns-proposal-details-grid">
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+    <ProposalNavigation
+      currentProposalId={BigInt(proposalIdText)}
+      {proposalIds}
+      selectProposal={navigateToProposal}
+    />
   {/if}
-</div>
+
+  <div class="content-grid">
+    {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+      <div class="content-a">
+        <SnsProposalSystemInfoSection
+          {proposal}
+          rootCanisterId={universeCanisterId}
+        />
+      </div>
+      <div class="content-b expand-content-b">
+        <SnsProposalVotingSection {proposal} {reloadProposal} />
+      </div>
+      <div class="content-c proposal-data-section">
+        <SnsProposalSummarySection {proposal} />
+        <SnsProposalPayloadSection {proposal} />
+      </div>
+    {:else}
+      <div class="content-a">
+        <div class="skeleton">
+          <SkeletonDetails />
+        </div>
+      </div>
+    {/if}
+  </div>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
