@@ -5,6 +5,7 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -12,10 +13,15 @@ import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import {
+  buildMockSnsProposalsStoreSubscribe,
+  createSnsProposal,
+} from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
+import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -209,6 +215,55 @@ describe("SnsProposalDetail", () => {
       });
 
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
+    });
+
+    it("should display proposal navigation", async () => {
+      // mock the store to have 3 proposals for navigation
+      jest.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
+        buildMockSnsProposalsStoreSubscribe({
+          universeIdText: rootCanisterId.toText(),
+          proposals: [
+            createSnsProposal({
+              proposalId: 1n,
+              status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+            }),
+            createSnsProposal({
+              proposalId: 2n,
+              status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+            }),
+            createSnsProposal({
+              proposalId: 3n,
+              status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+            }),
+          ],
+        })
+      );
+
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [{ id: 2n }],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          // set the proposal with id=2 to be in the middle of the list
+          proposalIdText: "2",
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+
+      const navigationPo = po.getProposalNavigationPo();
+      expect(await navigationPo.isPresent()).toBe(true);
+      expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
+      // all buttons should be enabled
+      expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
     });
   });
 });

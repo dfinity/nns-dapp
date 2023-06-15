@@ -8,6 +8,7 @@ import {
   proposalOnlyActionKey,
   snsDecisionStatus,
   snsNeuronToVotingNeuron,
+  snsProposalId,
   snsProposalIdString,
   snsProposalOpen,
   snsRewardStatus,
@@ -434,6 +435,21 @@ describe("sns-proposals utils", () => {
         proposal: [],
       };
       expect(proposalActionFields(proposalWithoutProposal)).toHaveLength(0);
+    });
+  });
+
+  describe("snsProposalId", () => {
+    it("should return proposal id", () => {
+      const testId = 123987n;
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [
+          {
+            id: testId,
+          },
+        ],
+      };
+      expect(snsProposalId(testProposal)).toEqual(testId);
     });
   });
 
