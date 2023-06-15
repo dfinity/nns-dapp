@@ -1,4 +1,5 @@
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterId } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
@@ -11,14 +12,16 @@ export const getIcrcBalance = async ({
   identity,
   certified,
   account,
-  canisterId,
+  ledgerCanisterId,
   fetchRootKey,
   host,
 }: {
   certified: boolean;
   account: IcrcAccount;
-} & CanisterActorParams): Promise<bigint> => {
-  const canister_id = mapCanisterId(canisterId);
+} & CanisterActorParams & {
+    ledgerCanisterId: string;
+  }): Promise<bigint> => {
+  const canister_id = mapCanisterId(ledgerCanisterId);
 
   logWithTimestamp(
     `Getting balance from Ledger canister ID ${canister_id.toText()}...`
@@ -41,7 +44,7 @@ export const getIcrcBalance = async ({
 };
 
 const createCanister = (
-  params: CanisterActorParams
+  params: CanisterActorParams & { canisterId: CanisterId }
 ): Promise<IcrcLedgerCanister> =>
   createCanisterCjs<IcrcLedgerCanister>({
     ...params,

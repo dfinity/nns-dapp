@@ -2,7 +2,8 @@ import type {
   GetTransactionsParams,
   GetTransactionsResponse,
 } from "$lib/api/icrc-index.api";
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterId } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
@@ -14,15 +15,17 @@ import { fromNullable } from "@dfinity/utils";
 
 export const getIcrcTransactions = async ({
   identity,
-  canisterId,
+  indexCanisterId,
   maxResults: max_results,
   start,
   account,
   fetchRootKey,
   host,
 }: Omit<GetTransactionsParams, "getTransactions" | "identity" | "canisterId"> &
-  CanisterActorParams): Promise<GetTransactionsResponse> => {
-  const canister_id = mapCanisterId(canisterId);
+  CanisterActorParams & {
+    indexCanisterId: string;
+  }): Promise<GetTransactionsResponse> => {
+  const canister_id = mapCanisterId(indexCanisterId);
 
   logWithTimestamp(
     `Getting transactions from Index canister ID ${canister_id.toText()}...`
@@ -52,7 +55,7 @@ export const getIcrcTransactions = async ({
 };
 
 const createCanister = (
-  params: CanisterActorParams
+  params: CanisterActorParams & { canisterId: CanisterId }
 ): Promise<IcrcIndexCanister> =>
   createCanisterCjs<IcrcIndexCanister>({
     ...params,

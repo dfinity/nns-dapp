@@ -24,7 +24,6 @@ import type {
   TransactionWithId,
   TxId,
 } from "@dfinity/ledger/dist/candid/icrc1_index";
-import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
 const worker = new TimerWorkerUtil();
@@ -213,7 +212,7 @@ const getTransactions = async ({
 }: GetAccountTransactionsParams): Promise<GetTransactionsResults> => {
   {
     const { transactions, ...rest } = await getIcrcTransactions({
-      canisterId: Principal.fromText(indexCanisterId),
+      indexCanisterId,
       identity,
       account: decodeIcrcAccount(accountIdentifier),
       maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),

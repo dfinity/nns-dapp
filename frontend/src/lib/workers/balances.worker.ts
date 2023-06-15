@@ -13,7 +13,6 @@ import {
   type TimerWorkerUtilJobData,
 } from "$lib/worker-utils/timer.worker-util";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import { Principal } from "@dfinity/principal";
 
 // Worker context to start and stop job
 const worker = new TimerWorkerUtil();
@@ -105,7 +104,7 @@ const getIcrcBalances = ({
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) => {
       const balance = await getIcrcBalance({
-        canisterId: Principal.fromText(ledgerCanisterId),
+        ledgerCanisterId,
         identity,
         account: decodeIcrcAccount(accountIdentifier),
         certified,
