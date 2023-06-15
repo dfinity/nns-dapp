@@ -68,7 +68,10 @@
   const close = () => dispatcher("nnsClose");
 </script>
 
-<form on:submit|preventDefault={createNeuron}>
+<form
+  on:submit|preventDefault={createNeuron}
+  data-tid="nns-stake-neuron-component"
+>
   <TransactionFromAccount
     bind:selectedAccount={account}
     canSelectSource={true}
