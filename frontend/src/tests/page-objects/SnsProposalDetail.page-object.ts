@@ -5,6 +5,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { ProposalSummarySectionPo } from "./ProposalSummarySection.page-object";
 import { SnsProposalPayloadSectionPo } from "./SnsProposalPayloadSection.page-object";
+import { SnsProposalVotingSectionPo } from "./SnsProposalVotingSection.page-object";
 
 export class SnsProposalDetailPo extends BasePageObject {
   private static readonly TID = "sns-proposal-details-grid";
@@ -53,5 +54,13 @@ export class SnsProposalDetailPo extends BasePageObject {
 
   hasSummarySection(): Promise<boolean> {
     return this.getSummarySectionPo().isPresent();
+  }
+
+  getSnsProposalVotingSectionPo(): SnsProposalVotingSectionPo {
+    return SnsProposalVotingSectionPo.under(this.root);
+  }
+
+  hasVotingToolbar(): Promise<boolean> {
+    return this.getSnsProposalVotingSectionPo().hasVotingToolbar();
   }
 }

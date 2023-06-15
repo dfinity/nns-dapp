@@ -45,6 +45,7 @@
   import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -163,36 +164,40 @@
         );
 </script>
 
-<BottomSheet>
-  <div class="container" class:signedIn={$authSignedInStore}>
-    <SignInGuard>
-      {#if $sortedSnsUserNeuronsStore.length > 0}
-        {#if neuronsReady}
-          {#if visible}
-            <VotingConfirmationToolbar
-              {voteRegistration}
-              on:nnsConfirm={vote}
-            />
-          {/if}
+<TestIdWrapper testId="sns-voting-card-component">
+  <BottomSheet>
+    <div class="container" class:signedIn={$authSignedInStore}>
+      <SignInGuard>
+        {#if $sortedSnsUserNeuronsStore.length > 0}
+          {#if neuronsReady}
+            {#if visible}
+              <VotingConfirmationToolbar
+                {voteRegistration}
+                on:nnsConfirm={vote}
+              />
+            {/if}
 
-          <VotingNeuronSelect>
-            <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes {neuronsVotedForProposal} />
-            <IneligibleNeuronsCard
-              {ineligibleNeurons}
-              {minSnsDissolveDelaySeconds}
-            />
-          </VotingNeuronSelect>
-        {:else}
-          <div class="loader">
-            <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
-          </div>
+            <VotingNeuronSelect>
+              <VotingNeuronSelectList
+                disabled={voteRegistration !== undefined}
+              />
+              <MyVotes {neuronsVotedForProposal} />
+              <IneligibleNeuronsCard
+                {ineligibleNeurons}
+                {minSnsDissolveDelaySeconds}
+              />
+            </VotingNeuronSelect>
+          {:else}
+            <div class="loader">
+              <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
+            </div>
+          {/if}
         {/if}
-      {/if}
-      <span slot="signin-cta">{$i18n.proposal_detail.sign_in}</span>
-    </SignInGuard>
-  </div>
-</BottomSheet>
+        <span slot="signin-cta">{$i18n.proposal_detail.sign_in}</span>
+      </SignInGuard>
+    </div>
+  </BottomSheet>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
