@@ -2,24 +2,24 @@ import type { SyncState } from "$lib/types/sync";
 import { loadIdentity } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
 
-export interface TimerWorkerUtilParams<T> {
-  job: (params: TimerWorkerUtilJobData<T>) => Promise<void>;
+export interface TimerWorkerUtilsParams<T> {
+  job: (params: TimerWorkerUtilsJobData<T>) => Promise<void>;
   data: T;
 }
-export type TimerWorkerUtilJobData<T> = { data: T } & TimerWorkerUtilSyncParams;
+export type TimerWorkerUtilsJobData<T> = { data: T } & TimerWorkerUtilsSyncParams;
 
-export interface TimerWorkerUtilSyncParams {
+export interface TimerWorkerUtilsSyncParams {
   identity: Identity;
 }
 
-export class TimerWorkerUtil {
+export class TimerWorkerUtils {
   private timer: NodeJS.Timeout | undefined = undefined;
   private timerStatus: SyncState = "idle";
 
   async start<T>({
     interval,
     ...rest
-  }: TimerWorkerUtilParams<T> & { interval: number }): Promise<void> {
+  }: TimerWorkerUtilsParams<T> & { interval: number }): Promise<void> {
     // This worker has already been started
     if (this.timer !== undefined) {
       return;
@@ -46,7 +46,7 @@ export class TimerWorkerUtil {
   private async executeJob<T>({
     job,
     ...rest
-  }: TimerWorkerUtilParams<T> & TimerWorkerUtilSyncParams): Promise<void> {
+  }: TimerWorkerUtilsParams<T> & TimerWorkerUtilsSyncParams): Promise<void> {
     // Avoid to sync if already in progress - do not duplicate calls - or if there was a previous error
     if (this.timerStatus !== "idle") {
       return;

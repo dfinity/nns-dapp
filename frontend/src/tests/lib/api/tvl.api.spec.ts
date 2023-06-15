@@ -1,4 +1,4 @@
-import { queryTVL } from "$lib/api/tvl.api.cjs";
+import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { AnonymousIdentity } from "@dfinity/agent";

@@ -78,6 +78,8 @@ const config: UserConfig = {
               "frontend/src/lib/stores",
               "frontend/src/lib/types",
               "frontend/src/lib/utils",
+              "frontend/src/lib/worker-api",
+              "frontend/src/lib/worker-services",
               "frontend/src/lib/worker-utils",
               "frontend/src/lib/workers",
             ].find((module) => folder.includes(module)) !== undefined

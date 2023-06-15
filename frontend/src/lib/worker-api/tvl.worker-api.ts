@@ -6,7 +6,7 @@ import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
-} from "$lib/utils/cjs.utils";
+} from "$lib/worker-utils/canister.worker-utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isNullish } from "@dfinity/utils";
 

@@ -1,4 +1,4 @@
-import { getIcrcBalance } from "$lib/api/icrc-ledger.api.cjs";
+import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import type { IcrcWorkerData } from "$lib/stores/icrc-worker.store";
 import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
@@ -9,13 +9,13 @@ import type {
 } from "$lib/types/post-message.balances";
 import type { PostMessage } from "$lib/types/post-messages";
 import {
-  TimerWorkerUtil,
-  type TimerWorkerUtilJobData,
-} from "$lib/worker-utils/timer.worker-util";
+  TimerWorkerUtils,
+  type TimerWorkerUtilsJobData,
+} from "$lib/worker-utils/timer.worker-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 
 // Worker context to start and stop job
-const worker = new TimerWorkerUtil();
+const worker = new TimerWorkerUtils();
 
 // A worker store to keep track of account balances
 interface BalanceData extends IcrcWorkerData {
@@ -45,7 +45,7 @@ onmessage = async ({
 };
 
 const syncBalances = async (
-  params: TimerWorkerUtilJobData<PostMessageDataRequestBalances>
+  params: TimerWorkerUtilsJobData<PostMessageDataRequestBalances>
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -98,7 +98,7 @@ const getIcrcBalances = ({
   identity,
   data: { accountIdentifiers, ledgerCanisterId, ...rest },
   certified,
-}: TimerWorkerUtilJobData<PostMessageDataRequestBalances> & {
+}: TimerWorkerUtilsJobData<PostMessageDataRequestBalances> & {
   certified: boolean;
 }): Promise<BalanceData[]> =>
   Promise.all(

@@ -8,7 +8,7 @@ import { mapCanisterId } from "$lib/utils/canisters.utils";
 import {
   createCanisterCjs,
   type CreateCanisterCjsParams,
-} from "$lib/utils/cjs.utils";
+} from "$lib/worker-utils/canister.worker-utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { IcrcIndexCanister } from "@dfinity/ledger";
 import { fromNullable } from "@dfinity/utils";

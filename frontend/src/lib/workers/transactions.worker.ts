@@ -1,5 +1,5 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
-import { getIcrcTransactions } from "$lib/api/icrc-index.api.cjs";
+import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import {
@@ -15,10 +15,10 @@ import type {
 import type { PostMessage } from "$lib/types/post-messages";
 import { jsonReplacer } from "$lib/utils/json.utils";
 import {
-  TimerWorkerUtil,
-  type TimerWorkerUtilJobData,
-  type TimerWorkerUtilSyncParams,
-} from "$lib/worker-utils/timer.worker-util";
+  TimerWorkerUtils,
+  type TimerWorkerUtilsJobData,
+  type TimerWorkerUtilsSyncParams,
+} from "$lib/worker-utils/timer.worker-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger";
 import type {
   TransactionWithId,
@@ -26,7 +26,7 @@ import type {
 } from "@dfinity/ledger/dist/candid/icrc1_index";
 
 // Worker context to start and stop job
-const worker = new TimerWorkerUtil();
+const worker = new TimerWorkerUtils();
 
 // A worker store to keep track of transactions
 type TransactionsData = IcrcWorkerData &
@@ -56,7 +56,7 @@ onmessage = async ({
 };
 
 const syncTransactions = async (
-  params: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>
+  params: TimerWorkerUtilsJobData<PostMessageDataRequestTransactions>
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
@@ -106,7 +106,7 @@ type GetTransactionsResults = Omit<
 const getAllTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
-}: TimerWorkerUtilJobData<PostMessageDataRequestTransactions>): Promise<
+}: TimerWorkerUtilsJobData<PostMessageDataRequestTransactions>): Promise<
   GetTransactionsResults[]
 > =>
   Promise.all(
@@ -136,7 +136,7 @@ const getAllTransactions = ({
     })
   );
 
-type GetAccountTransactionsParams = TimerWorkerUtilSyncParams &
+type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
   Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
     accountIdentifier: AccountIdentifierText;
     start?: bigint;

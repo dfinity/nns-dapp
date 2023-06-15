@@ -1,4 +1,4 @@
-import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
+import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";

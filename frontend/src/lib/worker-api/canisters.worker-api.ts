@@ -4,7 +4,7 @@ import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
-import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/utils/cjs.utils";
+import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/worker-utils/canister.worker-utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { ManagementCanisterRecord } from "@dfinity/agent";
 
