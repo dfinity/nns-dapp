@@ -7,20 +7,23 @@
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
+  let sortedProposalIds: bigint[];
+  $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
+
   let currentProposalIndex: number;
-  $: currentProposalIndex = proposalIds.indexOf(currentProposalId);
+  $: currentProposalIndex = sortedProposalIds.indexOf(currentProposalId);
 
   let previousId: bigint | undefined;
   $: previousId =
     currentProposalIndex === -1
       ? undefined
-      : proposalIds[currentProposalIndex - 1];
+      : sortedProposalIds[currentProposalIndex - 1];
 
   let nextId: bigint | undefined;
   $: nextId =
     currentProposalIndex === -1
       ? undefined
-      : proposalIds[currentProposalIndex + 1];
+      : sortedProposalIds[currentProposalIndex + 1];
 
   const selectPrevious = () => {
     assertNonNullish(previousId);
@@ -32,7 +35,7 @@
   };
 </script>
 
-{#if proposalIds.length > 1}
+{#if sortedProposalIds.length > 1}
   <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"
