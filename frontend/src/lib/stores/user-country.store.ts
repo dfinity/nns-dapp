@@ -1,12 +1,13 @@
 import type { Country } from "$lib/types/location";
 import { derived, writable } from "svelte/store";
+import type { StoreData } from "../types/store";
 
 /**
  * - Not Loaded: "not loaded"
  * - Error: Error
  * - Success: Country
  */
-type UserCountryStore = Country | Error | "not loaded";
+type UserCountryStore = StoreData<Country>;
 
 // Stores the user's country code
 export const userCountryStore = writable<UserCountryStore>("not loaded");
