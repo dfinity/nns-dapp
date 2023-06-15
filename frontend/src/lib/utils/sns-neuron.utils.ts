@@ -612,7 +612,7 @@ export const followeesByNeuronId = ({
  * @param {SnsNeuron} neuron
  * @returns {bigint}
  */
-export const ageSeconds = ({
+export const neuronAge = ({
   aging_since_timestamp_seconds,
 }: SnsNeuron): bigint =>
   BigInt(Math.max(nowInSeconds() - Number(aging_since_timestamp_seconds), 0));
@@ -685,7 +685,7 @@ export const snsNeuronVotingPower = ({
     votingPower({
       stakeE8s,
       dissolveDelay,
-      ageSeconds: ageSeconds(neuron),
+      ageSeconds: neuronAge(neuron),
       ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
       dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
       maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),

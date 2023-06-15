@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { ageSeconds } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import neuronAgePair } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
@@ -18,7 +18,7 @@
       <span class="label" slot="key">{$i18n.neurons.age}</span>
       <span class="value" slot="value">
         {secondsToDuration(age)}
-      </span>
+      </span>neuronAge
     </KeyValuePair>
   {/if}
 </TestIdWrapper>

@@ -7,7 +7,6 @@ import {
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
-  ageSeconds,
   canIdentityManageHotkeys,
   followeesByFunction,
   followeesByNeuronId,
@@ -38,6 +37,7 @@ import {
   isUserHotkey,
   minNeuronSplittable,
   needsRefresh,
+  neuronAge,
   neuronCanBeSplit,
   nextMemo,
   snsNeuronVotingPower,
@@ -2126,7 +2126,7 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("ageSeconds", () => {
+  describe("neuronAge", () => {
     const now = 1686806749421;
     const nowSeconds = Math.floor(now / 1000);
     beforeEach(() => {
@@ -2135,7 +2135,7 @@ describe("sns-neuron utils", () => {
 
     it("returns 0 if age_since is in the future", () => {
       expect(
-        ageSeconds({
+        neuronAge({
           ...mockSnsNeuron,
           aging_since_timestamp_seconds: BigInt(nowSeconds + 1000),
         })
@@ -2144,7 +2144,7 @@ describe("sns-neuron utils", () => {
 
     it("returns age if age_since is in the past", () => {
       expect(
-        ageSeconds({
+        neuronAge({
           ...mockSnsNeuron,
           aging_since_timestamp_seconds: BigInt(nowSeconds - SECONDS_IN_MONTH),
         })
