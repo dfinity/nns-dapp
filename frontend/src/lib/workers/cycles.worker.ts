@@ -3,7 +3,7 @@ import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
 import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
 import type { PostMessage } from "$lib/types/post-messages";
-import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api.js";
+import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
 import {
   TimerWorkerUtils,
   type TimerWorkerUtilsJobData,
