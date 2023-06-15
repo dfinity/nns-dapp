@@ -30,6 +30,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -256,7 +257,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -948,7 +949,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
       catchError(error);
