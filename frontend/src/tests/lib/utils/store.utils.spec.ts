@@ -7,8 +7,10 @@ describe("store utils", () => {
       expect(isStoreData(new Error())).toBe(false);
     });
 
-    it("should return true if data is error or not loaded", () => {
+    it("should return true if data is error nor 'not loaded'", () => {
       expect(isStoreData({ data: [] })).toBe(true);
+      // It can also be a string
+      expect(isStoreData("successful")).toBe(true);
     });
   });
 });
