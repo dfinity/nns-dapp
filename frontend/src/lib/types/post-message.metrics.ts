@@ -4,7 +4,9 @@ import type {
   PostMessageDataActor,
 } from "$lib/types/post-messages";
 
-export type PostMessageDataRequestMetrics = PostMessageDataActor;
+export interface PostMessageDataRequestMetrics extends PostMessageDataActor {
+  tvlCanisterId: string | undefined;
+}
 
 export interface PostMessageDataResponseMetrics extends PostMessageData {
   metrics: MetricsSync;

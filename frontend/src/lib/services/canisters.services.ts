@@ -20,6 +20,7 @@ import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { isController } from "$lib/utils/canisters.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import {
   mapCanisterErrorToToastMessage,
   toToastError,
@@ -47,7 +48,7 @@ export const listCanisters = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 

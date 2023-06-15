@@ -64,8 +64,7 @@ let syncInProgress = false;
 const syncMetrics = async ({
   syncTvl,
   syncTransactionRate,
-  host,
-  fetchRootKey,
+  ...rest
 }: {
   syncTvl: boolean;
   syncTransactionRate: boolean;
@@ -79,7 +78,7 @@ const syncMetrics = async ({
 
   try {
     const metrics = await Promise.all([
-      syncTvl ? queryTVL({ host, fetchRootKey }) : Promise.resolve(undefined),
+      syncTvl ? queryTVL({ ...rest }) : Promise.resolve(undefined),
       syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
     ]);
 

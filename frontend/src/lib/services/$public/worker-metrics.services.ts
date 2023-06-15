@@ -1,4 +1,5 @@
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { PostMessageDataResponseMetrics } from "$lib/types/post-message.metrics";
 import type { PostMessage } from "$lib/types/post-messages";
 
@@ -33,7 +34,7 @@ export const initMetricsWorker = async (): Promise<MetricsWorker> => {
 
       metricsWorker.postMessage({
         msg: "nnsStartMetricsTimer",
-        data: { ...ACTOR_PARAMS },
+        data: { ...ACTOR_PARAMS, tvlCanisterId: TVL_CANISTER_ID?.toText() },
       });
     },
     stopMetricsTimer: () => {

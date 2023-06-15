@@ -2,6 +2,7 @@ import { nervousSystemParameters } from "$lib/api/sns-governance.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
@@ -20,7 +21,7 @@ export const loadSnsParameters = async (
   if (
     storeData[rootCanisterId.toText()]?.certified === true ||
     (storeData[rootCanisterId.toText()]?.certified === false &&
-      FORCE_CALL_STRATEGY === "query")
+      isForceCallStrategy())
   ) {
     return;
   }
@@ -44,7 +45,7 @@ export const loadSnsParameters = async (
       if (
         certified ||
         identity.getPrincipal().isAnonymous() ||
-        FORCE_CALL_STRATEGY === "query"
+        isForceCallStrategy()
       ) {
         snsParametersStore.resetProject(rootCanisterId);
 

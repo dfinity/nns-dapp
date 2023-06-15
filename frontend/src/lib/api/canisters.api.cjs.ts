@@ -2,7 +2,7 @@ import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import type { CanisterActorParams } from "$lib/types/canister";
+import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { HttpAgentCjs, getManagementCanisterCjs } from "$lib/utils/cjs.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -13,7 +13,7 @@ export const queryCanisterDetails = async ({
   canisterId,
   host,
   fetchRootKey,
-}: CanisterActorParams): Promise<CanisterDetails> => {
+}: { canisterId: string } & CanisterActorParams): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
     icMgtService: { canister_status },
@@ -43,7 +43,7 @@ const canisters = async ({
   identity,
   host,
   fetchRootKey,
-}: Omit<CanisterActorParams, "canisterId">): Promise<{
+}: CanisterActorParams): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
   const agent = new HttpAgentCjs({

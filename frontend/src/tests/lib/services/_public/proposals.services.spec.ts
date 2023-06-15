@@ -7,7 +7,6 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
-import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import {
   listNextProposals,
   listProposals,
@@ -283,8 +282,10 @@ describe("proposals-services", () => {
 
     afterAll(() => jest.clearAllMocks());
 
-    it("should not call the canister if empty filter", async () => {
+    it("should load proposals if filters are empty", async () => {
       proposalsFiltersStore.filterStatus([]);
+      proposalsFiltersStore.filterRewards([]);
+      proposalsFiltersStore.filterTopics([]);
 
       await listProposals({
         loadFinished: () => {
@@ -292,24 +293,12 @@ describe("proposals-services", () => {
         },
       });
 
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-
-      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
-    });
-
-    it("should reset the proposal store if empty filter", async () => {
-      proposalsFiltersStore.filterStatus([]);
-
-      await listProposals({
-        loadFinished: () => {
-          // do nothing here
-        },
-      });
+      expect(spyQueryProposals).toHaveBeenCalledTimes(1);
 
       const { proposals } = get(proposalsStore);
-      expect(proposals).toEqual([]);
+      expect(proposals).toEqual(mockProposals);
 
-      proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
+      proposalsFiltersStore.reset();
     });
   });
 
