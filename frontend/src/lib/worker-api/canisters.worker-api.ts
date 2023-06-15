@@ -6,8 +6,8 @@ import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import {
-  HttpAgentCjs,
-  getManagementCanisterCjs,
+  HttpAgentWorker,
+  getManagementCanisterWorker,
 } from "$lib/worker-utils/canister.worker-utils";
 import type { ManagementCanisterRecord } from "@dfinity/agent";
 
@@ -49,7 +49,7 @@ const canisters = async ({
 }: CanisterActorParams): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
-  const agent = new HttpAgentCjs({
+  const agent = new HttpAgentWorker({
     identity,
     host,
   });
@@ -58,7 +58,7 @@ const canisters = async ({
     await agent.fetchRootKey();
   }
 
-  const icMgtService = getManagementCanisterCjs({ agent });
+  const icMgtService = getManagementCanisterWorker({ agent });
 
   return { icMgtService };
 };

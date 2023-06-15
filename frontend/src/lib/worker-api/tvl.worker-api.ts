@@ -5,8 +5,8 @@ import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import {
-  createCanisterCjs,
-  type CreateCanisterCjsParams,
+  createCanisterWorker,
+  type CreateCanisterWorkerParams,
 } from "$lib/worker-utils/canister.worker-utils";
 import { isNullish } from "@dfinity/utils";
 
@@ -45,9 +45,9 @@ export const queryTVL = async ({
 const canister = (
   params: CanisterActorParams & { canisterId: CanisterId }
 ): Promise<TVLCanister> =>
-  createCanisterCjs<TVLCanister>({
+  createCanisterWorker<TVLCanister>({
     ...params,
-    create: ({ agent, canisterId }: CreateCanisterCjsParams) =>
+    create: ({ agent, canisterId }: CreateCanisterWorkerParams) =>
       TVLCanister.create({
         agent,
         canisterId,
