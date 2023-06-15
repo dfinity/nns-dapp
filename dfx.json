@@ -16,7 +16,7 @@
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
-      "wasm": "nns-dapp.wasm",
+      "wasm": "nns-dapp.wasm.gz",
       "build": "./build.sh",
       "remote": {
         "id": {
