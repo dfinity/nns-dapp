@@ -63,7 +63,6 @@ COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 COPY scripts/prebuild-cargo scripts/prebuild-cargo
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs rs/backend/src/main.rs rs/backend/src/bin/nns-dapp-check-args.rs
 RUN scripts/prebuild-cargo
 # Install dfx
 WORKDIR /

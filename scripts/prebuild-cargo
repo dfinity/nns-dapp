@@ -30,26 +30,11 @@ test -e Cargo.toml || {
   exit 1
 } >&2
 
-if test -d src; then
-  # Get a list of the root library and executable source files.
-  readarray -t root_files < <(find src/main.rs src/lib.rs src/main/*.rs 2>/dev/null)
-
-  # Remove the code
-  rm -fr src
-
-  # Create minimal files
-  for file in "${root_files[@]}"; do
-    mkdir -p "$(dirname "${file:-}")"
-    touch "${file:-}"
-    # Main files need a main function
-    [[ "${file:-}" == "src/lib.rs" ]] || echo 'fn main(){}' >"$file"
-  done
-
-  cargo build --target wasm32-unknown-unknown --release
-fi
-
-readarray -t packages < <(yq -r .workspace.members[] Cargo.toml -o json)
-for package in "${packages[@]}"; do
-  echo "Pre-building ${package:-}"
-  "$0" --dir "${package:-}"
+# Create blank projects
+yq .workspace.members[] Cargo.toml -oy | while read -r path; do
+  rm -fr "${path:-cargo-has-a-blank-workspace-member}"
+  cargo new "$path"
+  git checkout "$path/Cargo.toml"
 done
+# Build
+cargo build --target wasm32-unknown-unknown --release
