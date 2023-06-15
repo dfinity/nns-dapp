@@ -38,6 +38,5 @@ yq .workspace.members[] Cargo.toml -oy | while read -r path; do
   cp "${path}.prebuild/Cargo.toml" "${path}/Cargo.toml"
   rm -fr "${path}.prebuild"
 done
-exit 0
 # Build
 cargo check
