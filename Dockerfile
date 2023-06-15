@@ -75,7 +75,7 @@ COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 COPY scripts/prebuild-cargo scripts/prebuild-cargo
 COPY scripts/clap.bash scripts/clap.bash
-RUN YQ_VERSION="4.33.1" && curl -Lf "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCH}" | install -m 755 /dev/stdin /usr/local/bin/yq && command -v yq
+RUN YQ_VERSION="4.33.1" && ARCH="$(uname -p | sed 's/x86_64/amd64/g')" && curl -Lf "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${ARCH}" | install -m 755 /dev/stdin /usr/local/bin/yq && command -v yq
 RUN scripts/prebuild-cargo
 # Install dfx
 WORKDIR /
