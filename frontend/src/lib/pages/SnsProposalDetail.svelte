@@ -179,7 +179,7 @@
 <TestIdWrapper testId="sns-proposal-details-grid">
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
-      currentProposalId={proposalIdText}
+      currentProposalId={BigInt(proposalIdText)}
       {proposalIds}
       selectProposal={navigateToProposal}
     />
