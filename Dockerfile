@@ -156,7 +156,7 @@ RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
-# Title: Image to build the nns-dapp backend.
+# Title: Image to build the nns-dapp backend without assets.
 FROM builder AS build_nnsdapp_without_assets
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
@@ -168,6 +168,7 @@ COPY ./Cargo.toml /build/
 COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
 WORKDIR /build
+# Create an empty assets tarfile.
 RUN tar -cJf assets.tar.xz -T /dev/null
 # We need to make sure that the rebuild happens if the code has changed.
 # - Docker checks whether the filesystem or command line have changed, so it will
@@ -181,6 +182,11 @@ RUN tar -cJf assets.tar.xz -T /dev/null
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
+COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
+# TODO: Move this to the apt install at the beginning of this file.
+RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
+ARG COMMIT
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
