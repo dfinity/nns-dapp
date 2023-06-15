@@ -36,7 +36,7 @@
     voteRegistrationStore: VoteRegistrationStoreData;
   }): bigint[] => {
     const proposalIds =
-      $filteredProposals.proposals?.map(({ id }) => id as bigint) || [];
+      proposalStore.proposals?.map(({ id }) => id as bigint) || [];
     const proposalIdsInRegistrations = (
       voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
     ).map(({ proposalIdString }) => BigInt(proposalIdString));
