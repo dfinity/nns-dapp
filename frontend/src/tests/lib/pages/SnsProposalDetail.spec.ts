@@ -9,10 +9,12 @@ import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposa
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import { mockAuthStoreNoIdentitySubscribe } from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
   buildMockSnsProposalsStoreSubscribe,
   createSnsProposal,
@@ -21,7 +23,12 @@ import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  SnsVote,
+} from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -48,9 +55,7 @@ describe("SnsProposalDetail", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      authStore.setForTesting(undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -264,6 +269,78 @@ describe("SnsProposalDetail", () => {
       // all buttons should be enabled
       expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
       expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
+    });
+  });
+
+  describe("not logged in that logs in afterwards", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+    });
+
+    it("show neurons that can vote", async () => {
+      authStore.setForTesting(undefined);
+
+      const proposalCreatedTimestamp = 33333n;
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+
+      fakeSnsGovernanceApi.addNeuronWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        id: mockSnsNeuron.id,
+        // The neuron must have creation timestamp before the proposal
+        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
+
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+        proposal_creation_timestamp_seconds: proposalCreatedTimestamp,
+        ballots: [
+          [
+            getSnsNeuronIdAsHexString(mockSnsNeuron),
+            {
+              vote: SnsVote.Unspecified,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await runResolvedPromises();
+
+      expect(await po.hasVotingToolbar()).toBe(false);
+
+      authStore.setForTesting(mockIdentity);
+      await runResolvedPromises();
+
+      // await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
+      expect(await po.hasVotingToolbar()).toBe(true);
     });
   });
 });

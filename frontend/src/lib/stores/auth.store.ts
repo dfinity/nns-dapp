@@ -4,6 +4,7 @@ import {
   IDENTITY_SERVICE_URL,
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
+import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
 import { NNS_IC_APP_DERIVATION_ORIGIN } from "$lib/constants/origin.constants";
 import { createAuthClient } from "$lib/utils/auth.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
@@ -49,6 +50,7 @@ const getIdentityProvider = () => {
  */
 export interface AuthStore extends Readable<AuthStoreData> {
   sync: () => Promise<void>;
+  setForTesting: (identity: Identity) => void;
   signIn: (onError: (error?: string) => void) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -60,6 +62,16 @@ const initAuthStore = (): AuthStore => {
 
   return {
     subscribe,
+
+    setForTesting: (identity: Identity | undefined | null) => {
+      if (!IS_TEST_ENV) {
+        throw new Error(
+          "This function should only be used in test environment"
+        );
+      }
+
+      set({ identity });
+    },
 
     sync: async () => {
       authClient = authClient ?? (await createAuthClient());

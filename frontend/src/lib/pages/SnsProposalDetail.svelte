@@ -32,6 +32,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -165,15 +166,15 @@
     }`
   );
 
-  // The `update` function cares about the necessary data to be refetched.
-  $: universeIdText, proposalIdText, $snsNeuronsStore, update();
-
   let proposalIds: bigint[];
   $: proposalIds = nonNullish(universeIdText)
     ? sortSnsProposalsById(
         $snsFilteredProposalsStore[universeIdText]?.proposals
       )?.map(snsProposalId) ?? []
     : [];
+
+  // The `update` function cares about the necessary data to be refetched.
+  $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
