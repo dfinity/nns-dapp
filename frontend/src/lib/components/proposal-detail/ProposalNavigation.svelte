@@ -10,20 +10,14 @@
   let sortedProposalIds: bigint[];
   $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
 
-  let currentProposalIndex: number;
-  $: currentProposalIndex = sortedProposalIds.indexOf(currentProposalId);
-
   let previousId: bigint | undefined;
-  $: previousId =
-    currentProposalIndex === -1
-      ? undefined
-      : sortedProposalIds[currentProposalIndex - 1];
+  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
+  $: previousId = ([...sortedProposalIds].reverse() as bigint[]).find(
+    (id) => id > currentProposalId
+  );
 
   let nextId: bigint | undefined;
-  $: nextId =
-    currentProposalIndex === -1
-      ? undefined
-      : sortedProposalIds[currentProposalIndex + 1];
+  $: nextId = sortedProposalIds.find((id) => id < currentProposalId);
 
   const selectPrevious = () => {
     assertNonNullish(previousId);
