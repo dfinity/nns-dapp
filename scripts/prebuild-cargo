@@ -32,13 +32,15 @@ test -e Cargo.toml || {
 
 # Replace projects with blank placeholders.
 yq .workspace.members[] Cargo.toml -oy | while read -r path; do
-  rm -fr "${path:-cargo-has-a-blank-workspace-member}"
+  rm -fr "${path}.prebuild"
+  mv "${path:-cargo-has-a-blank-workspace-member}" "${path}.prebuild"
   cargo new --lib "$path"
-  git checkout "$path/Cargo.toml"
+  cp "${path}.prebuild/Cargo.toml" "${path}/Cargo.toml"
 done
 # Build
 cargo build --target wasm32-unknown-unknown --release
 # Delete the placeholders.
 yq .workspace.members[] Cargo.toml -oy | while read -r path; do
   rm -fr "${path:-cargo-has-a-blank-workspace-member}"
+  mv "${path}.prebuild" "$path"
 done
