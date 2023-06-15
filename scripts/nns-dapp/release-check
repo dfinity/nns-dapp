@@ -14,13 +14,14 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-cd ""
+cd "$SOURCE_DIR/.."
 
-# The deployment converts the did file to bianry at the last moment, like this:
-ARG_DID="./release/nns-dapp-arg.did"
-ARG_PATH="./release/nns-dapp-arg.bin"
+# The deployment converts the did file to binary at the last moment, like this:
+ARG_DID="./release/nns-dapp-arg-${DFX_NETWORK}.did"
+ARG_PATH="./release/nns-dapp-arg-${DFX_NETWORK}.bin"
 test -e "$ARG_DID" || {
   echo "ERROR: Arguments need to be provided in $ARG_DID"
   exit 1
@@ -28,5 +29,5 @@ test -e "$ARG_DID" || {
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
 # ... Check whether that produces a valid argument
 echo "Checking binary argument:"
-cargo run --bin nns-dapp-check-args -- ./release/nns-dapp-arg.bin
+cargo run --bin nns-dapp-check-args -- "./release/nns-dapp-arg-${DFX_NETWORK}.bin"
 echo "Check passes"

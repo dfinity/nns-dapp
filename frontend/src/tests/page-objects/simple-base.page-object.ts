@@ -1,7 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
-// Most page objects should extends BasePageObject instead.
+// Most page objects should extend BasePageObject instead.
 export class SimpleBasePageObject {
   readonly root: PageObjectElement;
 
@@ -17,18 +17,18 @@ export class SimpleBasePageObject {
     return this.root.waitFor();
   }
 
-  waitForAbsent(): Promise<void> {
-    return this.root.waitForAbsent();
+  waitForAbsent(timeout?: number): Promise<void> {
+    return this.root.waitForAbsent(timeout);
   }
 
-  click(tid: string | undefined): Promise<void> {
+  click(tid: string | undefined = undefined): Promise<void> {
     if (isNullish(tid)) {
       return this.root.click();
     }
     return this.root.byTestId(tid).click();
   }
 
-  getText(tid: string | undefined): Promise<string> {
+  getText(tid: string | undefined = undefined): Promise<string> {
     if (isNullish(tid)) {
       return this.root.getText();
     }

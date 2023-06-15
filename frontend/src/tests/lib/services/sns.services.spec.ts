@@ -24,11 +24,11 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import type {
-  GetDerivedStateResponse,
-  GetLifecycleResponse,
-} from "@dfinity/sns/dist/candid/sns_swap";
+  SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
+} from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -113,9 +113,12 @@ describe("sns-services", () => {
     });
 
     it("should call api to get total commitments and load them in store", async () => {
-      const derivedState: GetDerivedStateResponse = {
+      const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
         certified: true,
@@ -157,9 +160,12 @@ describe("sns-services", () => {
     });
 
     it("should call api with the strategy passed", async () => {
-      const derivedState: GetDerivedStateResponse = {
+      const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [1],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const spy = jest
         .spyOn(api, "querySnsDerivedState")
@@ -191,9 +197,12 @@ describe("sns-services", () => {
     });
 
     it("should call api to get total commitments and load them in store and keep polling", async () => {
-      const derivedState: GetDerivedStateResponse = {
+      const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+        cf_participant_count: [],
+        direct_participant_count: [],
+        cf_neuron_count: [],
       };
       const [metadatas, swaps] = snsResponsesForLifecycle({
         certified: true,
@@ -328,7 +337,7 @@ describe("sns-services", () => {
 
     it("should call api to get lifecycle and load them in store", async () => {
       const newLifeCycle = SnsSwapLifecycle.Committed;
-      const lifeCycleResponse: GetLifecycleResponse = {
+      const lifeCycleResponse: SnsGetLifecycleResponse = {
         lifecycle: [newLifeCycle],
         decentralization_sale_open_timestamp_seconds: [BigInt(1)],
       };

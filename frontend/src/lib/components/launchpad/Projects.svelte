@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { keyOf } from "$lib/utils/utils";
   import { snsQueryStoreIsLoading } from "$lib/stores/sns.store";
@@ -12,6 +13,7 @@
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { Html } from "@dfinity/gix-components";
 
+  export let testId: string;
   export let status: SnsSwapLifecycle;
 
   let projects: SnsFullProject[];
@@ -38,24 +40,26 @@
   });
 </script>
 
-{#if loading}
-  <div class="card-grid">
-    <SkeletonProjectCard />
-    <SkeletonProjectCard />
-    <SkeletonProjectCard />
-  </div>
-{:else}
-  <div class="card-grid">
-    {#each projects as project (project.rootCanisterId.toText())}
-      <ProjectCard {project} />
-    {/each}
-  </div>
-  {#if projects.length === 0}
-    <p data-tid="no-projects-message" class="no-projects description">
-      <Html text={noProjectsMessageLabel} />
-    </p>
+<TestIdWrapper {testId}>
+  {#if loading}
+    <div class="card-grid">
+      <SkeletonProjectCard />
+      <SkeletonProjectCard />
+      <SkeletonProjectCard />
+    </div>
+  {:else}
+    <div class="card-grid">
+      {#each projects as project (project.rootCanisterId.toText())}
+        <ProjectCard {project} />
+      {/each}
+    </div>
+    {#if projects.length === 0}
+      <p data-tid="no-projects-message" class="no-projects description">
+        <Html text={noProjectsMessageLabel} />
+      </p>
+    {/if}
   {/if}
-{/if}
+</TestIdWrapper>
 
 <style lang="scss">
   // match page spinner

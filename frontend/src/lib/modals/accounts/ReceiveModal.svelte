@@ -5,7 +5,7 @@
   import type { Account } from "$lib/types/account";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/environment.constants";
+  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
 

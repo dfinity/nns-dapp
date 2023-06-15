@@ -1,10 +1,10 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index caf728e4..739c2846 100644
+index a8b595640..0bb086fa1 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -2,14 +2,14 @@
- #![allow(clippy::all)]
+@@ -4,17 +4,17 @@
  #![allow(non_camel_case_types)]
+ #![allow(dead_code)]
  
 -use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 +use crate::types::{CandidType, Deserialize, Serialize};
@@ -16,21 +16,25 @@ index caf728e4..739c2846 100644
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct Countries { iso_codes: Vec<String> }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Init {
    pub  sns_root_canister_id: String,
    pub  fallback_controller_principal_ids: Vec<String>,
-@@ -74,7 +74,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -79,7 +79,7 @@ pub struct SettleCommunityFundParticipationResult {
  }
-
+ 
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub enum Possibility_2 { Ok{}, Err(CanisterCallError) }
 +pub enum Possibility_2 { Ok, Err(CanisterCallError) }
-
+ 
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SetModeCallResult { possibility: Option<Possibility_2> }
-@@ -171,13 +171,13 @@ pub struct CfNeuron { nns_neuron_id: u64, amount_icp_e8s: u64 }
+@@ -217,13 +217,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct CfParticipant { hotkey_principal: String, cf_neurons: Vec<CfNeuron> }
+ pub struct get_sale_parameters_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
@@ -44,12 +48,9 @@ index caf728e4..739c2846 100644
  pub struct Params {
    pub  min_participant_icp_e8s: u64,
    pub  neuron_basket_construction_parameters: Option<
-@@ -204,10 +204,10 @@ pub struct Swap {
+@@ -302,8 +302,8 @@ pub struct DerivedState {
+   pub  cf_neuron_count: Option<u64>,
  }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct DerivedState { sns_tokens_per_icp: f32, buyer_total_icp_e8s: u64 }
-+pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: u64 }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub struct GetStateResponse { swap: Option<Swap>, derived: Option<DerivedState> }
@@ -57,4 +58,4 @@ index caf728e4..739c2846 100644
 +pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct OpenRequest {
+ pub struct ListCommunityFundParticipantsRequest {

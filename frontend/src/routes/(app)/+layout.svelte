@@ -8,7 +8,7 @@
     initAppAuth,
     initAppPublicData,
   } from "$lib/services/$public/app.services";
-  import Warnings from "$lib/components/metrics/Warnings.svelte";
+  import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
@@ -22,7 +22,7 @@
 
 <slot />
 
-<Warnings />
+<Warnings ckBTCWarnings testEnvironmentWarning />
 
 <Toasts />
 <BusyScreen />

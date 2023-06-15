@@ -59,10 +59,10 @@
   count={followees.length}
   id={nsFunction.id.toString()}
 >
-  <h3 slot="title">{nsFunction.name}</h3>
-  <p slot="subtitle" class="subtitle description">
-    {fromNullable(nsFunction.description)}
-  </p>
+  <svelte:fragment slot="title">{nsFunction.name}</svelte:fragment>
+  <svelte:fragment slot="subtitle"
+    >{fromNullable(nsFunction.description)}</svelte:fragment
+  >
   <ul>
     {#each followees as followee (subaccountToHexString(followee.id))}
       {@const followeeIdHex = subaccountToHexString(followee.id)}
@@ -102,8 +102,5 @@
     button {
       display: flex;
     }
-  }
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
   }
 </style>

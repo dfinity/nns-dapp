@@ -3,12 +3,12 @@ import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import { SnsSwapCanister } from "@dfinity/sns";
 import type {
-  RefreshBuyerTokensResponse,
-  Ticket,
-} from "@dfinity/sns/dist/candid/sns_swap";
-import type { E8s } from "@dfinity/sns/dist/types/types/common";
+  SnsRefreshBuyerTokensResponse,
+  SnsSwapTicket,
+} from "@dfinity/sns";
+import { SnsSwapCanister } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
@@ -19,7 +19,7 @@ export const getOpenTicket = async ({
   identity: Identity;
   swapCanisterId: Principal;
   certified: boolean;
-}): Promise<Ticket | undefined> => {
+}): Promise<SnsSwapTicket | undefined> => {
   logWithTimestamp(`[sale] getOpenTicket call...`);
   const agent = await createAgent({
     identity,
@@ -46,9 +46,9 @@ export const newSaleTicket = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  amount_icp_e8s: E8s;
+  amount_icp_e8s: bigint;
   subaccount?: Uint8Array;
-}): Promise<Ticket> => {
+}): Promise<SnsSwapTicket> => {
   logWithTimestamp(`[sale]newSaleTicket call...`);
 
   const { newSaleTicket } = await wrapper({
@@ -70,7 +70,7 @@ export const notifyPaymentFailure = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-}): Promise<Ticket | undefined> => {
+}): Promise<SnsSwapTicket | undefined> => {
   logWithTimestamp(`[sale] notifyPaymentFailure call...`);
 
   const { notifyPaymentFailure } = await wrapper({
@@ -90,11 +90,13 @@ export const notifyParticipation = async ({
   identity,
   rootCanisterId,
   buyer,
+  confirmationText,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   buyer: Principal;
-}): Promise<RefreshBuyerTokensResponse> => {
+  confirmationText: string | undefined;
+}): Promise<SnsRefreshBuyerTokensResponse> => {
   logWithTimestamp(`[sale] notifyParticipation call...`);
 
   const { notifyParticipation: notifyParticipationApi } = await wrapper({
@@ -103,7 +105,10 @@ export const notifyParticipation = async ({
     certified: true,
   });
 
-  const response = await notifyParticipationApi({ buyer: buyer.toText() });
+  const response = await notifyParticipationApi({
+    buyer: buyer.toText(),
+    confirmation_text: toNullable(confirmationText),
+  });
 
   logWithTimestamp(`[sale] notifyParticipation complete.`);
 

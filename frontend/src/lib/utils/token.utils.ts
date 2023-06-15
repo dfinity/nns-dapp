@@ -2,6 +2,7 @@ import {
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
+  ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 
@@ -19,25 +20,34 @@ const countDecimals = (value: number): number => {
  * - ICP with round number (12.0) should be displayed 12.00
  * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
  * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
+ *
+ * Jira GIX-1563:
+ * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
  */
 export const formatToken = ({
   value,
   detailed = false,
 }: {
   value: bigint;
-  detailed?: boolean;
+  detailed?: boolean | "height_decimals";
 }): string => {
   if (value === BigInt(0)) {
     return "0";
   }
 
   const converted = Number(value) / E8S_PER_ICP;
-  const decimals: number =
+
+  const decimalsICP = (): number =>
     converted < 0.01
       ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
       : detailed
       ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
       : ICP_DISPLAYED_DECIMALS;
+
+  const decimals =
+    detailed === "height_decimals"
+      ? ICP_DISPLAYED_HEIGHT_DECIMALS
+      : decimalsICP();
 
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
@@ -47,24 +57,8 @@ export const formatToken = ({
     .replace(/,/g, "'");
 };
 
-export const sumTokenAmounts = (
-  ...amountTokens: TokenAmount[]
-): TokenAmount => {
-  if (
-    amountTokens.some(
-      (amountToken) => amountToken.token.symbol !== amountTokens[0].token.symbol
-    )
-  ) {
-    throw new Error("Token symbols must be equal");
-  }
-  return TokenAmount.fromE8s({
-    amount: amountTokens.reduce<bigint>(
-      (acc, icp) => acc + icp.toE8s(),
-      BigInt(0)
-    ),
-    token: amountTokens[0].token,
-  });
-};
+export const sumAmountE8s = (...amountE8s: bigint[]): bigint =>
+  amountE8s.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
@@ -90,7 +84,7 @@ export const formattedTransactionFee = (fee: TokenAmount): string =>
  * Calculates the maximum amount for a transaction.
  *
  * @param {Object} params
- * @param {bigint | undefined} params.balanceE8s The balance of the account in E8S.
+ * @param {bigint | undefined} params.balance The balance of the account in E8S.
  * @param {bigint | undefined} params.fee The fee of the transaction in E8S.
  * @param {bigint | undefined}params.maxAmount The maximum amount of the transaction not counting the fees.
  * @returns {number} The maximum amount for the transaction.

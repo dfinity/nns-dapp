@@ -15,13 +15,13 @@
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { formattedTransactionFee } from "$lib/utils/token.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
   export let token: Token;
-  export let parameters: NervousSystemParameters;
+  export let parameters: SnsNervousSystemParameters;
   export let transactionFee: E8s;
   export let reloadNeuron: () => Promise<void>;
 

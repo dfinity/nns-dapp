@@ -1,5 +1,90 @@
 # Changelog
 
+## Proposal 122791
+
+* Improve Apple install to home screen look and feel.
+* Enable sns-voting.
+* Add a call to "update_balance" for ckBTC during the withdrawal account check process.
+* Improve participation UI.
+* Fix UI warning duplicate form field id in the same form.
+* Minor fixes.
+
+## Proposal 122747
+
+* Improve ICRC accounts loading performance.
+* Improve loading state UX.
+* Update (fav)icons.
+* Upgrade libraries.
+* Minor fixes and text changes.
+
+## Proposal 122614
+
+* Swap conditions.
+* Parameters loading optimisation.
+* Libraries loading optimisation.
+* Minor bugfixes and improvements.
+
+## Proposal 122512
+
+* Feat reload account and transactions regardless of ckBTC update balance success or error.
+
+## Proposal 122509
+
+* Fix ckBTC transfer status visibility.
+* Improve ckBTC transactions reload.
+
+## Proposal 122355
+
+* Improve participation UX.
+* Simplifications to reduce stress on the system during upcoming SNS swaps.
+* Fix metrics API.
+* Fix number formatting on max button click.
+* Minor fixes and UI improvements.
+
+## Proposal 122282
+
+* UI improvements.
+* Minor bugfixes.
+
+## Proposal 122267
+
+* Receive BTC.
+* Convert ckBTC to BTC.
+* Minor bugfixes.
+
+## Proposal 122210
+
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
+
+## Proposal 121690
+
+* Add BitcoinSetConfig proposal payload support.
+* Minor fixes and UI improvements.
+
+## Proposal 120468
+* UI fixes.
+* Testing improvements.
+* Minor configuration clean up.
+* Fix bug when filtering proposals.
+* Upgrade dependencies to IC to prepare for new NNS Proposal Action.
+* Improve modal width.
+* Some copy changes.
+
+## Proposal 119296
+* Display info text for Last Distribution.
+* Add new field to NNS payload to show arguments as hex string.
+* Accessibility improvement: colors and proposal payload/summary contrast.
+* Performance improvements (neuron caching).
+* Redesign and review of transaction confirmation step.
+* Narrowed modal design.
+* Modal wizard animation.
+* Make followees modal UI more compact.
+* Minor style fixes.
+* Fix settings title glitch.
+* Label updates.
+* Minor fixes.
+
 ## Proposal 115271
 * Fix back to detail from "Settings" page.
 * UX improvements:

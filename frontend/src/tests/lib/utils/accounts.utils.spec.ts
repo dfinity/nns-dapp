@@ -27,14 +27,12 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   mockBTCAddressMainnet,
@@ -113,21 +111,21 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: undefined,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: "test",
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
         expect(
           invalidAddress({
             address: mockAddressInputInvalid,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -162,14 +160,14 @@ describe("accounts-utils", () => {
             network: undefined,
             rootCanisterId: OWN_CANISTER_ID,
           })
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
           invalidAddress({
             address: mockAddressInputValid,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: OWN_CANISTER_ID,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return false for Icrc accounts", () => {
@@ -179,14 +177,14 @@ describe("accounts-utils", () => {
             network: undefined,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
         expect(
           invalidAddress({
             address: subaccountString,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return false for BTC", () => {
@@ -196,7 +194,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_TESTNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should not be a valid ICP address", () => {
@@ -231,7 +229,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressTestnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -254,7 +252,7 @@ describe("accounts-utils", () => {
       });
 
       it("should be a valid ICP address", () => {
-        expect(invalidIcpAddress(mockAddressInputValid)).toBeFalsy();
+        expect(invalidIcpAddress(mockAddressInputValid)).toBe(false);
       });
 
       it("should return false for sns accounts", () => {
@@ -274,7 +272,7 @@ describe("accounts-utils", () => {
       });
 
       it("should return false for sns accounts", () => {
-        expect(invalidIcrcAddress(subaccountString)).toBeFalsy();
+        expect(invalidIcrcAddress(subaccountString)).toBe(false);
       });
     });
 
@@ -286,7 +284,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_TESTNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
 
         expect(
           invalidAddress({
@@ -294,7 +292,7 @@ describe("accounts-utils", () => {
             network: TransactionNetwork.BTC_MAINNET,
             rootCanisterId: mockCanisterId,
           })
-        ).toBeFalsy();
+        ).toBe(false);
       });
 
       it("should return invalid for BTC", () => {
@@ -309,7 +307,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressTestnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -333,7 +331,7 @@ describe("accounts-utils", () => {
         expect(
           invalidAddress({
             address: mockBTCAddressMainnet,
-            network: TransactionNetwork.ICP_CKBTC,
+            network: TransactionNetwork.ICP,
             rootCanisterId: mockCanisterId,
           })
         ).toBeTruthy();
@@ -356,7 +354,7 @@ describe("accounts-utils", () => {
     });
 
     it("should not be an empty address", () => {
-      expect(emptyAddress("test")).toBeFalsy();
+      expect(emptyAddress("test")).toBe(false);
     });
   });
 
@@ -382,12 +380,12 @@ describe("accounts-utils", () => {
     });
 
     it("returns false if type no hardware wallet", () => {
-      expect(isAccountHardwareWallet(mockMainAccount)).toBeFalsy();
-      expect(isAccountHardwareWallet(mockSubAccount)).toBeFalsy();
+      expect(isAccountHardwareWallet(mockMainAccount)).toBe(false);
+      expect(isAccountHardwareWallet(mockSubAccount)).toBe(false);
     });
 
     it("returns false if no account", () => {
-      expect(isAccountHardwareWallet(undefined)).toBeFalsy();
+      expect(isAccountHardwareWallet(undefined)).toBe(false);
     });
   });
 
@@ -504,10 +502,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: TokenAmount.fromE8s({
-              amount: amountE8s,
-              token: ICPToken,
-            }),
+            balanceE8s: amountE8s,
           },
           amountE8s: amountE8s + BigInt(10_000),
         });
@@ -520,10 +515,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balance: TokenAmount.fromE8s({
-              amount: amountE8s,
-              token: ICPToken,
-            }),
+            balanceE8s: amountE8s,
           },
           amountE8s: amountE8s - BigInt(10_000),
         });
@@ -579,69 +571,52 @@ describe("accounts-utils", () => {
   describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
+        mockMainAccount.balanceE8s +
+        mockSubAccount.balanceE8s +
+        mockHardwareWalletAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [mockHardwareWalletAccount],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
 
-      totalBalance =
-        mockMainAccount.balance.toE8s() + mockSubAccount.balance.toE8s();
+      totalBalance = mockMainAccount.balanceE8s + mockSubAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [mockSubAccount],
           hardwareWallets: [],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balance.toE8s();
+      totalBalance = mockMainAccount.balanceE8s;
 
       expect(
         sumNnsAccounts({
           main: mockMainAccount,
           subAccounts: [],
           hardwareWallets: [],
-        }).toE8s()
+        })
       ).toEqual(totalBalance);
-    });
-
-    it("should sum ICP", () => {
-      expect(
-        sumNnsAccounts({
-          main: mockMainAccount,
-          subAccounts: [],
-          hardwareWallets: [],
-        }).token.name
-      ).toEqual(en.core.ic);
     });
   });
 
   describe("sumAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockSnsMainAccount.balance.toE8s() + mockSnsSubAccount.balance.toE8s();
+        mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s;
 
-      expect(
-        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).toE8s()
-      ).toEqual(totalBalance);
+      expect(sumAccounts([mockSnsMainAccount, mockSnsSubAccount])).toEqual(
+        totalBalance
+      );
 
-      totalBalance = mockSnsMainAccount.balance.toE8s();
+      totalBalance = mockSnsMainAccount.balanceE8s;
 
-      expect(sumAccounts([mockSnsMainAccount]).toE8s()).toEqual(totalBalance);
-    });
-
-    it("should sum ICP", () => {
-      expect(
-        sumAccounts([mockSnsMainAccount, mockSnsSubAccount]).token.name
-      ).toEqual(mockSnsMainAccount.balance.token.name);
+      expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
     });
   });
 
@@ -649,6 +624,6 @@ describe("accounts-utils", () => {
     it("should have accounts", () =>
       expect(hasAccounts([mockMainAccount])).toBeTruthy());
 
-    it("should not have accounts", () => expect(hasAccounts([])).toBeFalsy());
+    it("should not have accounts", () => expect(hasAccounts([])).toBe(false));
   });
 });

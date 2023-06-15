@@ -11,19 +11,23 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests//mocks/sns-accounts.mock";
+import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 
 describe("icrc-transaction utils", () => {
   const to = {
     owner: mockPrincipal,
-    subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+    subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
   };
   const from = {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
-  const transactionFromMainToSubaccount = createIcrcTransactionWithId(to, from);
+  const transactionFromMainToSubaccount = createIcrcTransactionWithId({
+    to,
+    from,
+  });
   const recentTx = {
     id: BigInt(1234),
     transaction: {
@@ -45,7 +49,7 @@ describe("icrc-transaction utils", () => {
       timestamp: BigInt(1000),
     },
   };
-  const selfTransaction = createIcrcTransactionWithId(to, to);
+  const selfTransaction = createIcrcTransactionWithId({ to, from: to });
 
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
@@ -122,10 +126,10 @@ describe("icrc-transaction utils", () => {
         owner: governanceCanisterId,
         subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
       };
-      const stakeNeuronTransaction = createIcrcTransactionWithId(
-        toGovernance,
-        from
-      );
+      const stakeNeuronTransaction = createIcrcTransactionWithId({
+        to: toGovernance,
+        from,
+      });
       stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
       const data = mapIcrcTransaction({
         transaction: stakeNeuronTransaction,
@@ -144,10 +148,10 @@ describe("icrc-transaction utils", () => {
         owner: governanceCanisterId,
         subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
       };
-      const topUpNeuronTransaction = createIcrcTransactionWithId(
-        toGovernance,
-        from
-      );
+      const topUpNeuronTransaction = createIcrcTransactionWithId({
+        to: toGovernance,
+        from,
+      });
       topUpNeuronTransaction.transaction.transfer[0].memo = [];
       const data = mapIcrcTransaction({
         transaction: topUpNeuronTransaction,
@@ -188,7 +192,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data.isSend).toBe(true);
       const txData = transactionFromMainToSubaccount.transaction.transfer[0];
-      expect(data.displayAmount.toE8s()).toBe(txData.amount + txData.fee[0]);
+      expect(data.displayAmount).toBe(txData.amount + txData.fee[0]);
     });
   });
 

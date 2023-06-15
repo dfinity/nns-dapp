@@ -5,14 +5,23 @@
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import { TokenAmount } from "@dfinity/nns";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import type { Token } from "@dfinity/nns/dist/types/token";
+  import type { Token } from "@dfinity/nns";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  export let kytEstimatedFee: bigint | undefined | null = undefined;
   export let universeId: UniverseCanisterId;
+
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
+  let kytEstimatedFee: bigint | undefined = undefined;
+  $: kytEstimatedFee = infoData?.info.kyt_fee;
 
   let bitcoinLabel: string;
   $: bitcoinLabel = isUniverseCkTESTBTC(universeId)
@@ -57,9 +66,17 @@
   fee={bitcoinEstimatedFee}
   testId="bitcoin-estimated-fee-display"
 >
-  {$i18n.accounts.estimated_bitcoin_transaction_fee}
+  {$i18n.accounts.bitcoin_transaction_fee_notice}
 </BitcoinFeeDisplay>
 
 <BitcoinFeeDisplay fee={kytEstimatedFee} testId="kyt-estimated-fee-display">
-  {$i18n.accounts.estimated_internetwork_fee}
+  {$i18n.accounts.internetwork_fee_notice}
 </BitcoinFeeDisplay>
+
+<p>{$i18n.accounts.estimation_notice}</p>
+
+<style lang="scss">
+  p {
+    margin: var(--padding) 0 0;
+  }
+</style>

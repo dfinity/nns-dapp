@@ -1,4 +1,3 @@
-import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
@@ -6,16 +5,25 @@ import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 
 describe("ckbtc.utils", () => {
+  const RETRIEVE_BTC_MIN_AMOUNT = 100_000n;
+
   const params = {
     networkBtc: true,
     sourceAccount: mockMainAccount,
     amount: 0.002,
-    bitcoinEstimatedFee: 1n,
-    transactionFee: 2n,
-    kytEstimatedFee: 3n,
+    transactionFee: 1n,
+    infoData: {
+      info: {
+        ...mockCkBTCMinterInfo,
+        retrieve_btc_min_amount: RETRIEVE_BTC_MIN_AMOUNT,
+      },
+      certified: true,
+    },
   };
 
   it("should not throw error", () => {
@@ -89,28 +97,49 @@ describe("ckbtc.utils", () => {
         amount:
           Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP +
           Number(params.transactionFee) / E8S_PER_ICP +
-          Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP,
+          Number(params.sourceAccount.balanceE8s) / E8S_PER_ICP,
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
+  });
 
-    const closestAmount =
-      Number(params.sourceAccount.balance.toE8s()) / E8S_PER_ICP -
-      Number(params.bitcoinEstimatedFee) / E8S_PER_ICP -
-      Number(params.kytEstimatedFee) / E8S_PER_ICP -
-      Number(params.transactionFee) / E8S_PER_ICP;
+  it("should throw error if retrieve min btc is not defined", () => {
+    expect(() =>
+      assertCkBTCUserInputAmount({
+        ...params,
+        infoData: undefined,
+      })
+    ).toThrow(
+      new NotEnoughAmountError(en.error__ckbtc.retrieve_btc_min_amount_unknown)
+    );
+  });
+
+  it("should throw error if ckbtc info is not certified", () => {
+    expect(() =>
+      assertCkBTCUserInputAmount({
+        ...params,
+        infoData: {
+          info: mockCkBTCMinterInfo,
+          certified: false,
+        },
+      })
+    ).toThrow(
+      new NotEnoughAmountError(
+        en.error__ckbtc.wait_ckbtc_info_parameters_certified
+      )
+    );
+  });
+
+  it("should not throw error if ckbtc info is not certified but call strategy is query", () => {
+    mockedConstants.FORCE_CALL_STRATEGY = "query";
 
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
-        amount: closestAmount,
+        infoData: {
+          info: mockCkBTCMinterInfo,
+          certified: false,
+        },
       })
-    ).not.toThrow(new NotEnoughAmountError("error.insufficient_funds"));
-
-    expect(() =>
-      assertCkBTCUserInputAmount({
-        ...params,
-        amount: closestAmount + 0.01,
-      })
-    ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
+    ).not.toThrow();
   });
 });

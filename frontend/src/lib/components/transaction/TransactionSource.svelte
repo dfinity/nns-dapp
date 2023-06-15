@@ -3,8 +3,16 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
+  import { type Token, TokenAmount } from "@dfinity/nns";
 
   export let account: Account;
+  export let token: Token;
+
+  let amount: TokenAmount;
+  $: amount = TokenAmount.fromE8s({
+    amount: account.balanceE8s,
+    token,
+  });
 </script>
 
 <p class="label account-name" data-tid="transaction-review-source-account-name">
@@ -20,7 +28,7 @@
 
 <KeyValuePair>
   <span class="label" slot="key">{$i18n.accounts.balance}</span>
-  <AmountDisplay slot="value" singleLine detailed amount={account.balance} />
+  <AmountDisplay slot="value" singleLine detailed="height_decimals" {amount} />
 </KeyValuePair>
 
 <style lang="scss">

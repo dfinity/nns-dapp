@@ -11,7 +11,7 @@ export class ProposalSummarySectionPo extends BasePageObject {
   }
 
   getProposalTitle(): Promise<string> {
-    return this.root.querySelector("h1").getText();
+    return this.root.byTestId("propose-summary-title").getText();
   }
 
   getProposalUrlText(): Promise<string> {

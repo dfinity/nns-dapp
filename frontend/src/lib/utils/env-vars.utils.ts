@@ -1,12 +1,13 @@
-import { isBrowser } from "@dfinity/auth-client/lib/cjs/storage";
+import { isBrowser } from "$lib/utils/env.utils";
 import { isNullish } from "@dfinity/utils";
 
-const localDev = import.meta.env.DEV;
+const localDevelopment = import.meta.env.DEV;
 
 type EnvironmentVars = {
   // Environments without ckBTC canisters are valid
   ckbtcIndexCanisterId?: string;
   ckbtcLedgerCanisterId?: string;
+  ckbtcMinterCanisterId?: string;
   cyclesMintingCanisterId: string;
   dfxNetwork: string;
   featureFlags: string;
@@ -19,6 +20,8 @@ type EnvironmentVars = {
   // Environments without SNS aggregator are valid
   snsAggregatorUrl?: string;
   wasmCanisterId: string;
+  // Environments without TVL are valid
+  tvlCanisterId?: string;
 };
 
 const mandatoryEnvVarKeys: EnvironmentVars = {
@@ -49,6 +52,20 @@ function assertEnvVars(
   }
 }
 
+const convertEmtpyStringToUndefined = (
+  str: string | undefined
+): string | undefined => (str === "" ? undefined : str);
+
+const mapEmtpyStringsToUndefined = (obj: {
+  [key: string]: string | undefined;
+}): { [key: string]: string | undefined } => {
+  const result: { [key: string]: string | undefined } = {};
+  Object.keys(obj).forEach((key: string) => {
+    result[key] = convertEmtpyStringToUndefined(obj[key]);
+  });
+  return result;
+};
+
 const getHtmlEnvVars = (): EnvironmentVars => {
   const ENV_VARS_ELEMENT_SELECTOR = "meta[name=nns-dapp-vars]";
   const dataElement: HTMLElement | null = window.document.querySelector(
@@ -59,13 +76,11 @@ const getHtmlEnvVars = (): EnvironmentVars => {
       `Missing environment variables element with selector ${ENV_VARS_ELEMENT_SELECTOR} in HTML page.`
     );
   }
-  const envVars: Record<string, unknown> = dataElement.dataset ?? {};
+  const envVars: Record<string, string | undefined> =
+    mapEmtpyStringsToUndefined(dataElement.dataset ?? {});
   assertEnvVars(envVars);
   return envVars;
 };
-
-const convertEmtpyStringToUndefined = (str: string): string | undefined =>
-  str === "" ? undefined : str;
 
 const getBuildEnvVars = (): EnvironmentVars => {
   const envVars = {
@@ -75,6 +90,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     ckbtcLedgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CKBTC_LEDGER_CANISTER_ID
+    ),
+    ckbtcMinterCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_CKBTC_MINTER_CANISTER_ID
     ),
     cyclesMintingCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_CYCLES_MINTING_CANISTER_ID
@@ -105,14 +123,37 @@ const getBuildEnvVars = (): EnvironmentVars => {
     wasmCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_WASM_CANISTER_ID
     ),
+    tvlCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_TVL_CANISTER_ID
+    ),
   };
   assertEnvVars(envVars);
   return envVars;
 };
 
+/**
+ * Returns the environment variables depending on the environment.
+ *
+ * The environment variables might be set in the HTML or from the build environment variables.
+ *
+ * We use the build environment variables when one of the following conditions is true:
+ * - Not in the browser
+ * - Local development server
+ *
+ * All the other scenarios use the HTML environment variables.
+ *
+ * @returns {EnvironmentVars}
+ */
 export const getEnvVars = (): EnvironmentVars => {
-  if (isBrowser && !localDev) {
-    return getHtmlEnvVars();
+  // There are two instances of local dev server:
+  // - The local dev server started by `npm run dev`
+  // - The local dev server started by `npm run preview`. The only way to distinguis this one is by the port.
+  // We need to check `isBrowser` to skip the check when running the build.
+  const isDevServer =
+    localDevelopment ||
+    (isBrowser && ["5173", "4173"].includes(window.location.port));
+  if (!isBrowser || isDevServer) {
+    return getBuildEnvVars();
   }
-  return getBuildEnvVars();
+  return getHtmlEnvVars();
 };

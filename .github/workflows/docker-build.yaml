@@ -18,8 +18,6 @@ jobs:
         include:
           - BUILD_NAME: "mainnet"
             DFX_NETWORK: "mainnet"
-          - BUILD_NAME: "local"
-            DFX_NETWORK: "local"
     steps:
       - uses: actions/checkout@v3
       - name: Set up docker buildx
@@ -32,39 +30,38 @@ jobs:
           file: Dockerfile
           build-args: |
             DFX_NETWORK=${{ matrix.DFX_NETWORK }}
+            COMMIT=${{ github.sha }}
           no-cache: ${{ inputs.no_cache || false }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./${{ matrix.BUILD_NAME }}-out
+      - name: Print the hash of all assets
+        run: find ${{ matrix.BUILD_NAME }}-out -type f | xargs sha256sum
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > ${{ matrix.BUILD_NAME }}-out/commit.txt
-      - name: 'Upload ${{ matrix.BUILD_NAME }} wasm module'
+      - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
         uses: actions/upload-artifact@v3
         with:
-          name: NNS ${{ matrix.BUILD_NAME }} wasm module and arguments
+          name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
             ${{ matrix.BUILD_NAME }}-out/commit.txt
             ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg.did
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg.bin
+            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
+            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
             ${{ matrix.BUILD_NAME }}-out/frontend-config.sh
             ${{ matrix.BUILD_NAME }}-out/deployment-config.json
+      - name: 'Upload ${{ matrix.BUILD_NAME }} sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator for ${{ matrix.BUILD_NAME }}
+          path: |
+            ${{ matrix.BUILD_NAME }}-out/sns_aggregator.wasm
+            ${{ matrix.BUILD_NAME }}-out/sns_aggregator_dev.wasm
       - name: Release
-        run: |
-          cd "${{ matrix.BUILD_NAME }}-out"
-          artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz)
-          ls -l "${artefacts[@]}"
-          for tag in $(git tag --points-at HEAD) ; do
-            : Creates or updates a release for the tag
-            if gh release view "$tag"
-            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
-            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" "${artefacts[@]}"
-            fi
-            : If the tag is for a proposal, make it public
-            [[ "$tag" != proposal-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ./.github/actions/release_nns_dapp
+        with:
+          assets_dir: '${{ matrix.BUILD_NAME }}-out'
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload ${{ matrix.BUILD_NAME }} frontend assets'
         uses: actions/upload-artifact@v3
         with:
@@ -97,10 +94,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: docker-build prints help
-        run: ./scripts/docker-build --help | grep Usage
-      - name: docker-build complains about garbage
-        run: |
-          { ./scripts/docker-build safdashfdkj || true ; } |& grep 'ERROR: Unsupported flag:'
+        run: ./scripts/docker-build --help | grep -i usage
   docker-build:
     needs: assets
     runs-on: ubuntu-20.04

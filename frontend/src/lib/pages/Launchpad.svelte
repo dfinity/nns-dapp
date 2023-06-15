@@ -9,10 +9,10 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   const loadSnsSale = async () => {
-    if (!isSignedIn($authStore.identity)) {
+    if (!$authSignedInStore) {
       return;
     }
     await loadSnsSwapCommitments();
@@ -26,18 +26,18 @@
   $: showAdopted = $snsProjectsAdoptedStore.length > 0;
 </script>
 
-<main>
+<main data-tid="launchpad-component">
   <h2>{$i18n.sns_launchpad.open_projects}</h2>
-  <Projects status={SnsSwapLifecycle.Open} />
+  <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
 
   {#if showAdopted}
     <h2>{$i18n.sns_launchpad.upcoming_projects}</h2>
-    <Projects status={SnsSwapLifecycle.Adopted} />
+    <Projects testId="upcoming-projects" status={SnsSwapLifecycle.Adopted} />
   {/if}
 
   {#if showCommitted}
     <h2>{$i18n.sns_launchpad.committed_projects}</h2>
-    <Projects status={SnsSwapLifecycle.Committed} />
+    <Projects testId="committed-projects" status={SnsSwapLifecycle.Committed} />
   {/if}
 
   <h2>{$i18n.sns_launchpad.proposals}</h2>

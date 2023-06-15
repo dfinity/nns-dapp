@@ -33,7 +33,7 @@ export class NnsWalletPo extends BasePageObject {
   }): Promise<void> {
     await this.clickSend();
     const modal = this.getIcpTransactionModalPo();
-    return modal.transferToAccount({
+    await modal.transferToAccount({
       accountName,
       expectedAccountAddress,
       amount,

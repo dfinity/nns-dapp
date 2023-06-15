@@ -12,6 +12,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/services/accounts.services", () => {
@@ -56,10 +57,10 @@ describe("IcpTransactionModal", () => {
 
     // Choose select account
     // It will choose the fist subaccount as default
-    const toggle = container.querySelector("input[id='toggle']");
+    const toggle = queryToggleById(container);
     toggle && fireEvent.click(toggle);
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);

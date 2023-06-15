@@ -1,8 +1,9 @@
-import { RETRIEVE_BTC_MIN_AMOUNT } from "$lib/constants/bitcoin.constants";
+import type { CkBTCInfoStoreUniverseData } from "$lib/stores/ckbtc-info.store";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { isNullish } from "@dfinity/utils";
@@ -12,16 +13,14 @@ export const assertCkBTCUserInputAmount = ({
   networkBtc,
   sourceAccount,
   amount,
-  bitcoinEstimatedFee,
-  kytEstimatedFee,
   transactionFee,
+  infoData,
 }: {
   networkBtc: boolean;
   sourceAccount: Account | undefined;
   amount: number | undefined;
-  bitcoinEstimatedFee: bigint | undefined | null;
-  kytEstimatedFee: bigint | undefined | null;
   transactionFee: bigint;
+  infoData: CkBTCInfoStoreUniverseData | undefined;
 }) => {
   if (!networkBtc) {
     return;
@@ -44,14 +43,27 @@ export const assertCkBTCUserInputAmount = ({
     return;
   }
 
-  if (amountE8s < RETRIEVE_BTC_MIN_AMOUNT) {
+  // The minimal amount to retrieve of BTC may have not been loaded yet.
+  if (isNullish(infoData)) {
+    const {
+      error__ckbtc: { retrieve_btc_min_amount_unknown },
+    } = get(i18n);
+    throw new CkBTCErrorRetrieveBtcMinAmount(retrieve_btc_min_amount_unknown);
+  }
+
+  const {
+    info: { retrieve_btc_min_amount: retrieveBtcMinAmount },
+    certified: infoCertified,
+  } = infoData;
+
+  if (amountE8s < retrieveBtcMinAmount) {
     const {
       error__ckbtc: { retrieve_btc_min_amount },
     } = get(i18n);
     throw new CkBTCErrorRetrieveBtcMinAmount(
       replacePlaceholders(retrieve_btc_min_amount, {
         $amount: formatToken({
-          value: RETRIEVE_BTC_MIN_AMOUNT,
+          value: retrieveBtcMinAmount,
           detailed: true,
         }),
       })
@@ -60,10 +72,19 @@ export const assertCkBTCUserInputAmount = ({
 
   assertEnoughAccountFunds({
     account: sourceAccount,
-    amountE8s:
-      amountE8s +
-      transactionFee +
-      (bitcoinEstimatedFee ?? BigInt(0)) +
-      (kytEstimatedFee ?? BigInt(0)),
+    amountE8s: amountE8s + transactionFee,
   });
+
+  // This assertion is primarily intended to handle edge cases.
+  // It serves to prevent situations where the user has entered an amount before the ckBTCInfoStore has been filled with certified data.
+  // However, considering our current user experience, the likelihood of this scenario is low.
+  if (infoCertified !== true && notForceCallStrategy()) {
+    const {
+      error__ckbtc: { wait_ckbtc_info_parameters_certified },
+    } = get(i18n);
+
+    throw new CkBTCErrorRetrieveBtcMinAmount(
+      wait_ckbtc_info_parameters_certified
+    );
+  }
 };

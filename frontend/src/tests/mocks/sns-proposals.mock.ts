@@ -1,10 +1,14 @@
+import type { ProjectProposalData } from "$lib/stores/sns-proposals.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
   type SnsProposalData,
   type SnsProposalId,
   type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import type { Subscriber } from "svelte/store";
 
 export const mockSnsProposal: SnsProposalData = {
   id: [
@@ -64,6 +68,53 @@ const rejectedTally: SnsTally = {
   timestamp_seconds: BigInt(123455),
 };
 
+const addRewardStatusData = ({
+  proposal,
+  rewardStatus,
+}: {
+  proposal: SnsProposalData;
+  rewardStatus?: SnsProposalRewardStatus;
+}): SnsProposalData => {
+  const now = BigInt(nowInSeconds());
+  switch (rewardStatus) {
+    case undefined:
+      return proposal;
+    case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES:
+      return {
+        ...proposal,
+        reward_event_round: BigInt(0),
+        wait_for_quiet_state: [
+          {
+            current_deadline_timestamp_seconds: BigInt(10_000) + now,
+          },
+        ],
+      };
+    case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED:
+      return {
+        ...proposal,
+        reward_event_round: BigInt(0),
+        wait_for_quiet_state: [
+          {
+            current_deadline_timestamp_seconds: BigInt(10_000) - now,
+          },
+        ],
+      };
+    case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE:
+      return {
+        ...proposal,
+        reward_event_round: BigInt(0),
+        is_eligible_for_rewards: true,
+        wait_for_quiet_state: [
+          {
+            current_deadline_timestamp_seconds: BigInt(10_000) - now,
+          },
+        ],
+      };
+    default:
+      throw new Error(`Unsupported Sns Reward Status: ${rewardStatus}`);
+  }
+};
+
 /**
  * Returns a proposal with the cusotmized parameters.
  *
@@ -72,54 +123,93 @@ const rejectedTally: SnsTally = {
  */
 export const createSnsProposal = ({
   status,
+  rewardStatus,
   proposalId,
 }: {
   status: SnsProposalDecisionStatus;
+  rewardStatus?: SnsProposalRewardStatus;
   proposalId: bigint;
 }): SnsProposalData => {
   const id: [SnsProposalId] = [{ id: proposalId }];
   switch (status) {
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN:
-      return {
-        ...mockSnsProposal,
-        id,
-        decided_timestamp_seconds: BigInt(0),
-      };
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          latest_tally: [acceptedTally],
+          decided_timestamp_seconds: BigInt(0),
+        },
+        rewardStatus,
+      });
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED:
-      return {
-        ...mockSnsProposal,
-        id,
-        latest_tally: [acceptedTally],
-        decided_timestamp_seconds: BigInt(11223),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
-      };
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          latest_tally: [acceptedTally],
+          decided_timestamp_seconds: BigInt(11223),
+          executed_timestamp_seconds: BigInt(0),
+          failed_timestamp_seconds: BigInt(0),
+        },
+        rewardStatus,
+      });
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED:
-      return {
-        ...mockSnsProposal,
-        id,
-        latest_tally: [acceptedTally],
-        decided_timestamp_seconds: BigInt(11223),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(112231320),
-      };
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          latest_tally: [acceptedTally],
+          decided_timestamp_seconds: BigInt(11223),
+          executed_timestamp_seconds: BigInt(0),
+          failed_timestamp_seconds: BigInt(112231320),
+        },
+        rewardStatus,
+      });
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED:
-      return {
-        ...mockSnsProposal,
-        id,
-        latest_tally: [acceptedTally],
-        decided_timestamp_seconds: BigInt(11223),
-        executed_timestamp_seconds: BigInt(112231320),
-        failed_timestamp_seconds: BigInt(0),
-      };
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          latest_tally: [acceptedTally],
+          decided_timestamp_seconds: BigInt(11223),
+          executed_timestamp_seconds: BigInt(112231320),
+          failed_timestamp_seconds: BigInt(0),
+        },
+        rewardStatus,
+      });
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED:
-      return {
-        ...mockSnsProposal,
-        id,
-        latest_tally: [rejectedTally],
-        decided_timestamp_seconds: BigInt(11223),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
-      };
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          latest_tally: [rejectedTally],
+          decided_timestamp_seconds: BigInt(11223),
+          executed_timestamp_seconds: BigInt(0),
+          failed_timestamp_seconds: BigInt(0),
+        },
+        rewardStatus,
+      });
   }
 };
+
+export const buildMockSnsProposalsStoreSubscribe =
+  ({
+    universeIdText,
+    proposals,
+  }: {
+    universeIdText: string;
+    proposals: SnsProposalData[];
+  }) =>
+  (
+    run: Subscriber<{ [universeIdText: string]: ProjectProposalData }>
+  ): (() => void) => {
+    run({
+      [universeIdText]: {
+        proposals,
+        certified: true,
+        completed: true,
+      },
+    });
+    return () => undefined;
+  };

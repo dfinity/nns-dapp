@@ -10,6 +10,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import en from "$tests/mocks/i18n.mock";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -19,12 +20,17 @@ jest.mock("$lib/api/ckbtc-minter.api", () => ({
 }));
 
 describe("CkBTCWalletActions", () => {
+  const now = Date.now();
+
   beforeAll(() => {
     page.mock({
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
     });
   });
+
+  beforeEach(() => jest.useFakeTimers().setSystemTime(now));
+  afterEach(jest.clearAllTimers);
 
   const props = {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
@@ -40,6 +46,25 @@ describe("CkBTCWalletActions", () => {
     expect(button?.textContent).toEqual(en.ckbtc.refresh_balance);
   });
 
+  it("should render a menubar", () => {
+    const { getByTestId } = render(CkBTCWalletActions, { props });
+    expect(
+      getByTestId("manual-refresh-balance-container")?.getAttribute("role")
+    ).toEqual("menubar");
+  });
+
+  it("should not render a menubar", () => {
+    const { getByTestId } = render(CkBTCWalletActions, {
+      props: {
+        ...props,
+        inline: true,
+      },
+    });
+    expect(
+      getByTestId("manual-refresh-balance-container")?.hasAttribute("role")
+    ).toEqual(false);
+  });
+
   it("should call update balance", async () => {
     const spyUpdateBalance = jest.spyOn(api, "updateBalance");
 
@@ -49,7 +74,7 @@ describe("CkBTCWalletActions", () => {
 
     fireEvent.click(button as HTMLButtonElement);
 
-    await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalled());
+    await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalledTimes(1));
   });
 
   it("should call reload", async () => {
@@ -62,9 +87,14 @@ describe("CkBTCWalletActions", () => {
       },
     });
 
+    expect(spyReload).not.toHaveBeenCalled();
+
     const button = getByTestId("manual-refresh-balance");
 
-    fireEvent.click(button as HTMLButtonElement);
+    await fireEvent.click(button as HTMLButtonElement);
+
+    // wait for 4 seconds
+    await advanceTime(4000);
 
     await waitFor(() => expect(spyReload).toHaveBeenCalled());
   });

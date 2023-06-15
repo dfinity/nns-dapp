@@ -4,19 +4,23 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import type { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/nns";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
-  import { convertCkBTCToBtc } from "$lib/services/ckbtc-convert.services";
+  import {
+    convertCkBTCToBtc,
+    type ConvertCkBTCToBtcParams,
+    retrieveBtc,
+  } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
@@ -24,9 +28,12 @@
   import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
   import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
-  import BitcoinTransactionInfo from "$lib/components/accounts/BitcoinTransactionInfo.svelte";
   import { nonNullish } from "@dfinity/utils";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -36,16 +43,35 @@
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
 
+  let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
+
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
-    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    mustSelectNetwork: true,
+    ...(withdrawalAccount && {
+      networkReadonly: true,
+      selectDestinationMethods: "manual",
+      showLedgerFee: false,
+    }),
   };
 
-  let selectedNetwork: TransactionNetwork | undefined = undefined;
-  let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  let kytEstimatedFee: bigint | undefined | null = undefined;
+  // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
+  let fee: TokenAmount;
+  $: fee = withdrawalAccount
+    ? TokenAmount.fromE8s({
+        amount: 0n,
+        token: transactionFee.token,
+      })
+    : transactionFee;
 
-  let currentStep: WizardStep;
+  let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
+    ? isUniverseCkTESTBTC(universeId)
+      ? TransactionNetwork.BTC_TESTNET
+      : TransactionNetwork.BTC_MAINNET
+    : undefined;
+  let bitcoinEstimatedFee: bigint | undefined | null = undefined;
+
+  let currentStep: WizardStep | undefined;
 
   let title: string;
   $: title =
@@ -69,7 +95,7 @@
       initiator: "accounts",
     });
 
-    const { success } = await ckBTCTransferTokens({
+    const { blockIndex } = await ckBTCTransferTokens({
       source: sourceAccount,
       destinationAddress,
       amount,
@@ -80,7 +106,7 @@
 
     stopBusy("accounts");
 
-    if (success) {
+    if (nonNullish(blockIndex)) {
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsTransfer");
     }
@@ -93,14 +119,20 @@
 
     const updateProgress = (step: ConvertBtcStep) => (progressStep = step);
 
-    const { success } = await convertCkBTCToBtc({
-      source: sourceAccount,
+    const params: ConvertCkBTCToBtcParams = {
       destinationAddress,
       amount,
       universeId,
       canisters,
       updateProgress,
-    });
+    };
+
+    const { success } = withdrawalAccount
+      ? await retrieveBtc(params)
+      : await convertCkBTCToBtc({
+          source: sourceAccount,
+          ...params,
+        });
 
     if (success) {
       toastsSuccess({
@@ -128,15 +160,17 @@
 
   let userAmount: number | undefined = undefined;
 
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
   let validateAmount: ValidateAmountFn;
   $: validateAmount = ({ amount, selectedAccount }) => {
     assertCkBTCUserInputAmount({
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: transactionFee.toE8s(),
-      bitcoinEstimatedFee,
-      kytEstimatedFee,
+      transactionFee: fee.toE8s(),
+      infoData,
     });
 
     return undefined;
@@ -150,7 +184,7 @@
   on:nnsClose
   bind:currentStep
   {token}
-  {transactionFee}
+  transactionFee={fee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}
@@ -173,18 +207,14 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-    <BitcoinKYTFee
-      {selectedNetwork}
-      minterCanisterId={canisters.minterCanisterId}
-      bind:kytFee={kytEstimatedFee}
-    />
+    {#if networkBtc}
+      <BitcoinKYTFee {universeId} />
+    {/if}
   </svelte:fragment>
-  <BitcoinTransactionInfo {networkBtc} slot="additional-info-review" />
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
-        {kytEstimatedFee}
         {universeId}
         amount={userAmount}
       />
@@ -192,5 +222,9 @@
       <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>
-  <ConvertBtcInProgress slot="in_progress" {progressStep} />
+  <ConvertBtcInProgress
+    slot="in_progress"
+    {progressStep}
+    transferToLedgerStep={!withdrawalAccount}
+  />
 </TransactionModal>

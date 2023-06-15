@@ -118,8 +118,8 @@ WASM="./release/ci/nns-dapp.wasm"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
 # Gets the canister arguments
-ARG_DID="./release/nns-dapp-arg.did"
-ARG_PATH="./release/nns-dapp-arg.bin"
+ARG_DID="./release/nns-dapp-arg-${DFX_NETWORK}.did"
+ARG_PATH="./release/nns-dapp-arg-${DFX_NETWORK}.bin"
 test -e "$ARG_DID" || {
   echo "ERROR: Arguments need to be provided in $ARG_DID"
   exit 1

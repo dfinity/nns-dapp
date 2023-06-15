@@ -1,5 +1,6 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 
 const envVars = getEnvVars();
 
@@ -14,7 +15,8 @@ export const CYCLES_MINTING_CANISTER_ID = Principal.fromText(
 );
 export const WASM_CANISTER_ID = envVars.wasmCanisterId;
 
-// TVL Canister ID on mainnet. Use for readonly.
-export const TVL_CANISTER_ID = Principal.fromText(
-  "ewh3f-3qaaa-aaaap-aazjq-cai"
-);
+export const TVL_CANISTER_ID: Principal | undefined = nonNullish(
+  envVars?.tvlCanisterId
+)
+  ? Principal.fromText(envVars?.tvlCanisterId)
+  : undefined;

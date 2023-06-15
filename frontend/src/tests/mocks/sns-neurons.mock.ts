@@ -5,7 +5,7 @@ import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
-  type NervousSystemParameters,
+  type SnsNervousSystemParameters,
   type SnsNeuron,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
@@ -107,7 +107,7 @@ export const buildMockSortedSnsNeuronsStoreSubscribe =
     return () => undefined;
   };
 
-export const snsNervousSystemParametersMock: NervousSystemParameters = {
+export const snsNervousSystemParametersMock: SnsNervousSystemParameters = {
   default_followees: [
     {
       followees: [[0n, { followees: [mockSnsNeuronId] }]],
@@ -146,6 +146,7 @@ export const snsNervousSystemParametersMock: NervousSystemParameters = {
     },
   ],
   max_number_of_principals_per_neuron: [5n],
+  maturity_modulation_disabled: [false],
 };
 
 export const buildMockSnsParametersStore =

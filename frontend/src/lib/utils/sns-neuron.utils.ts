@@ -4,21 +4,26 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
-import { votingPower } from "$lib/utils/neuron.utils";
+import {
+  votingPower,
+  type CompactNeuronInfo,
+  type IneligibleNeuronData,
+  type NeuronIneligibilityReason,
+} from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { NeuronState, type E8s, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
+  SnsVote,
   neuronSubaccount,
+  type SnsNervousSystemFunction,
+  type SnsNervousSystemParameters,
   type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
-import type {
-  NervousSystemFunction,
-  NervousSystemParameters,
-} from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -26,6 +31,7 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
+import { ballotVotingPower } from "./sns-proposals.utils";
 import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -179,7 +185,7 @@ export const nextMemo = ({
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
  * @param {Identity | undefined | null} params.identity
- * @param {NervousSystemParameters} params.parameters
+ * @param {SnsNervousSystemParameters} params.parameters
  */
 export const canIdentityManageHotkeys = ({
   neuron,
@@ -188,7 +194,7 @@ export const canIdentityManageHotkeys = ({
 }: {
   neuron: SnsNeuron;
   identity: Identity | undefined | null;
-  parameters: NervousSystemParameters;
+  parameters: SnsNervousSystemParameters;
 }): boolean => {
   const { neuron_grantable_permissions } =
     mapNervousSystemParameters(parameters);
@@ -549,7 +555,7 @@ export const followeesByFunction = ({
 
 export interface SnsFolloweesByNeuron {
   neuronIdHex: string;
-  nsFunctions: NervousSystemFunction[];
+  nsFunctions: SnsNervousSystemFunction[];
 }
 
 /**
@@ -559,7 +565,7 @@ export interface SnsFolloweesByNeuron {
  *
  * @param {Object} params
  * @param {SnsNeuron} params.neuron
- * @param {NervousSystemFunction[]} params.nsFunctions
+ * @param {SnsNervousSystemFunction[]} params.nsFunctions
  * @returns {SnsFolloweesByNeuron[]}
  */
 export const followeesByNeuronId = ({
@@ -567,10 +573,10 @@ export const followeesByNeuronId = ({
   nsFunctions,
 }: {
   neuron: SnsNeuron;
-  nsFunctions: NervousSystemFunction[];
+  nsFunctions: SnsNervousSystemFunction[];
 }): SnsFolloweesByNeuron[] => {
   const followeesDictionary = neuron.followees.reduce<{
-    [key: string]: NervousSystemFunction[];
+    [key: string]: SnsNervousSystemFunction[];
   }>((acc, [functionId, followeesData]) => {
     const nsFunction = nsFunctions.find(({ id }) => id === functionId);
     // Edge case, all ns functions in followees should also be in the nervous system.
@@ -605,7 +611,7 @@ export const followeesByNeuronId = ({
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
  *
  * @param {SnsNeuron} neuron
- * @param {NervousSystemParameters} neuron.snsParameters
+ * @param {SnsNervousSystemParameters} neuron.snsParameters
  * @param {number} neuron.newDissolveDelayInSeconds
  */
 export const snsNeuronVotingPower = ({
@@ -614,7 +620,7 @@ export const snsNeuronVotingPower = ({
   newDissolveDelayInSeconds,
 }: {
   neuron: SnsNeuron;
-  snsParameters: NervousSystemParameters;
+  snsParameters: SnsNervousSystemParameters;
   newDissolveDelayInSeconds?: bigint;
 }): number => {
   const dissolveDelayInSeconds =
@@ -683,5 +689,150 @@ export const snsNeuronVotingPower = ({
   );
 
   // The voting power multiplier is applied against the total voting power of the neuron
-  return vp * (Number(voting_power_percentage_multiplier) / 100);
+  // Rounding to avoid RangeError when converting to BigInt
+  // (voting power is similar to e8s therefore rounding should not decrease accuracy)
+  return Math.round(vp * (Number(voting_power_percentage_multiplier) / 100));
 };
+
+/** Returns the reason or undefined when the neuron is eligible to vote. */
+export const snsNeuronsIneligibilityReasons = ({
+  neuron,
+  proposal,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  proposal: SnsProposalData;
+  identity: Identity;
+}): NeuronIneligibilityReason | undefined => {
+  const { ballots, proposal_creation_timestamp_seconds } = proposal;
+  const neuronId = getSnsNeuronIdAsHexString(neuron);
+
+  if (neuron.created_timestamp_seconds > proposal_creation_timestamp_seconds) {
+    return "since";
+  }
+
+  if (!hasPermissionToVote({ neuron, identity })) {
+    return "no-permission";
+  }
+
+  const noBallot: boolean =
+    ballots.find(([ballotNeuronId]) => ballotNeuronId === neuronId) ===
+    undefined;
+  if (noBallot) {
+    return "short";
+  }
+
+  return undefined;
+};
+
+export const ineligibleSnsNeurons = ({
+  neurons,
+  proposal,
+  identity,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+  identity: Identity;
+}): SnsNeuron[] =>
+  neurons.filter(
+    (neuron) =>
+      snsNeuronsIneligibilityReasons({
+        neuron,
+        proposal,
+        identity,
+      }) !== undefined
+  );
+
+export const votableSnsNeurons = ({
+  neurons,
+  proposal,
+  identity,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+  identity: Identity;
+}): SnsNeuron[] => {
+  return neurons.filter((neuron) => {
+    const ineligibleReason = snsNeuronsIneligibilityReasons({
+      neuron,
+      proposal,
+      identity,
+    });
+    const vote: SnsVote | undefined = proposal.ballots
+      .filter(
+        ([ballotNeuronId]) =>
+          getSnsNeuronIdAsHexString(neuron) === ballotNeuronId
+      )
+      .map(([, { vote }]) => vote)?.[0];
+
+    return ineligibleReason === undefined && vote === SnsVote.Unspecified;
+  });
+};
+
+/** Returns the neurons that have voted on the proposal (based on proposal ballots) */
+export const votedSnsNeurons = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): SnsNeuron[] => {
+  const votedNeuronIds = new Set(
+    proposal.ballots
+      // filter out the unspecified votes or the ballots that are not presented in ballots
+      .filter(([, { vote }]) => vote === Vote.Yes || vote === Vote.No)
+      .map(([neuronId]) => neuronId)
+  );
+  return neurons.filter((neuron) =>
+    votedNeuronIds.has(getSnsNeuronIdAsHexString(neuron))
+  );
+};
+
+export const votedSnsNeuronDetails = ({
+  neurons,
+  proposal,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+}): CompactNeuronInfo[] =>
+  votedSnsNeurons({
+    neurons,
+    proposal,
+  })
+    .map((neuron) => ({
+      idString: getSnsNeuronIdAsHexString(neuron),
+      votingPower: ballotVotingPower({ proposal, neuron }),
+      vote: getSnsNeuronVote({ neuron, proposal }),
+    }))
+    // Exclude the cases where the vote was not found.
+    .filter(({ vote }) => vote !== undefined) as CompactNeuronInfo[];
+
+/** Returns neuron vote using proposal ballots. */
+export const getSnsNeuronVote = ({
+  neuron,
+  proposal,
+}: {
+  neuron: SnsNeuron;
+  proposal: SnsProposalData;
+}): Vote | undefined =>
+  proposal.ballots.find(
+    ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
+  )?.[1].vote;
+
+export const snsNeuronsToIneligibleNeuronData = ({
+  neurons,
+  proposal,
+  identity,
+}: {
+  neurons: SnsNeuron[];
+  proposal: SnsProposalData;
+  identity: Identity;
+}): IneligibleNeuronData[] =>
+  neurons.map((neuron) => ({
+    neuronIdString: getSnsNeuronIdAsHexString(neuron),
+    reason: snsNeuronsIneligibilityReasons({
+      neuron,
+      proposal,
+      identity,
+    }),
+  }));

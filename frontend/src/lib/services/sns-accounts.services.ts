@@ -1,6 +1,6 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -10,6 +10,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcBlockIndex } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
@@ -77,7 +78,7 @@ export const snsTransferTokens = async ({
 }: IcrcTransferTokensUserParams & {
   rootCanisterId: Principal;
   loadTransactions: boolean;
-}): Promise<{ success: boolean }> => {
+}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
   const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;
 
   return transferTokens({

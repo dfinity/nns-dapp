@@ -19,12 +19,6 @@ import {
 describe("SelectNetworkDropdown", () => {
   const props = { universeId: CKBTC_UNIVERSE_CANISTER_ID };
 
-  it("should display a network title", () => {
-    const { getByText } = render(SelectNetworkDropdown, { props });
-
-    expect(getByText(en.accounts.network)).toBeInTheDocument();
-  });
-
   it("should render a select component", () => {
     const { getByTestId } = render(SelectNetworkDropdown, { props });
 
@@ -43,10 +37,10 @@ describe("SelectNetworkDropdown", () => {
   it("should display an option to select ICP", () => {
     const { container } = render(SelectNetworkDropdown, { props });
 
-    const option = container.querySelector("option[value='network_icp_ckbtc']");
+    const option = container.querySelector("option[value='network_icp']");
 
     expect(option).not.toBeNull();
-    expect(option.innerHTML).toEqual(en.accounts.network_icp_ckbtc);
+    expect(option.innerHTML).toEqual(en.accounts.network_icp);
   });
 
   it("should display an option to select bitcoin", () => {
@@ -74,12 +68,12 @@ describe("SelectNetworkDropdown", () => {
     ) as HTMLSelectElement | null;
     selectElement &&
       fireEvent.change(selectElement, {
-        target: { value: TransactionNetwork.ICP_CKBTC },
+        target: { value: TransactionNetwork.ICP },
       });
 
     await waitFor(() =>
       expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.ICP_CKBTC
+        TransactionNetwork.ICP
       )
     );
   });
@@ -94,7 +88,7 @@ describe("SelectNetworkDropdown", () => {
 
     await waitFor(() =>
       expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.ICP_CKBTC
+        TransactionNetwork.ICP
       )
     );
   });
@@ -134,7 +128,7 @@ describe("SelectNetworkDropdown", () => {
     const { component } = render(SelectNetworkDropdown, {
       props: {
         ...props,
-        selectedNetwork: TransactionNetwork.ICP_CKBTC,
+        selectedNetwork: TransactionNetwork.ICP,
         selectedDestinationAddress: mockBTCAddressMainnet,
       },
     });

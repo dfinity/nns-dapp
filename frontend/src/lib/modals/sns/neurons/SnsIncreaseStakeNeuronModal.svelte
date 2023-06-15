@@ -23,7 +23,7 @@
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let title: string;
   $: title =

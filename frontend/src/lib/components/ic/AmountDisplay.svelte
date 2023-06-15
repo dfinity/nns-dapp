@@ -3,6 +3,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
 
+  // TODO: should we expose two properties - an amount in bigint and a token Token - and build the TokenAmount.fromE8s in this component?
   export let amount: TokenAmount;
   export let label: string | undefined = undefined;
   export let inline = false;
@@ -12,7 +13,7 @@
   export let text = false;
   export let inheritSize = false;
   export let sign: "+" | "-" | "" = "";
-  export let detailed = false;
+  export let detailed: boolean | "height_decimals" = false;
 </script>
 
 <div
@@ -25,7 +26,10 @@
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
-  <span data-tid="token-value" class="value"
+  <span
+    data-tid="token-value"
+    class="value"
+    class:tabular-num={detailed === "height_decimals"}
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span>

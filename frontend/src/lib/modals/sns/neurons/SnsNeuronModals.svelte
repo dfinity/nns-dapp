@@ -24,7 +24,7 @@
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
   import SnsAutoStakeMaturityModal from "$lib/modals/sns/neurons/SnsAutoStakeMaturityModal.svelte";
   import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
@@ -61,7 +61,7 @@
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
 
-  let parameters: NervousSystemParameters | undefined;
+  let parameters: SnsNervousSystemParameters | undefined;
   $: parameters = nonNullish(rootCanisterId)
     ? $snsParametersStore?.[rootCanisterId.toText()]?.parameters
     : undefined;
@@ -161,6 +161,17 @@
           {neuronId}
           {reloadNeuron}
           on:nnsClose={close}
+          mode="add"
+        />
+      {/if}
+
+      {#if type === "dev-remove-permissions" && IS_TESTNET}
+        <AddPermissionsModal
+          {rootCanisterId}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+          mode="remove"
         />
       {/if}
     {/if}

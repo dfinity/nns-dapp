@@ -7,8 +7,8 @@ import type {
   SnsSwapBuyerState,
   SnsSwapDerivedState,
   SnsSwapInit,
+  SnsSwapTicket,
 } from "@dfinity/sns";
-import type { Ticket } from "@dfinity/sns/dist/candid/sns_swap";
 import type { PngDataUrl } from "./assets";
 
 export type RootCanisterId = Principal;
@@ -45,6 +45,10 @@ export interface SnsSummary {
   swapCanisterId: Principal;
   // Used to show destination when staking sns neurons.
   governanceCanisterId: Principal;
+  // Used to observe accounts' balance
+  ledgerCanisterId: Principal;
+  // Used to observe accounts' transactions
+  indexCanisterId: Principal;
 
   /**
    * The metadata of the Sns project (title, description, etc.)
@@ -68,10 +72,11 @@ export interface SnsSummary {
 
 export interface SnsSwapCommitment {
   rootCanisterId: RootCanisterId;
+  // sns swap canister doesn't return any `SnsSwapBuyerState` if user has no commitment
   myCommitment: SnsSwapBuyerState | undefined;
 }
 
 export interface SnsTicket {
   rootCanisterId: Principal;
-  ticket?: Ticket;
+  ticket?: SnsSwapTicket;
 }

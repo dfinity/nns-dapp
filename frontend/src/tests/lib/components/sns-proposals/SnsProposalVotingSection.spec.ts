@@ -15,8 +15,9 @@ describe("SnsProposalVotingSection", () => {
     latest_tally: [
       {
         ...fromDefinedNullable(mockSnsProposal.latest_tally),
-        yes: 10n,
-        no: 20n,
+        yes: 1_000_000_000n,
+        no: 2_000_000_000n,
+        total: 3_000_000_000n,
       },
     ],
   };
@@ -24,6 +25,9 @@ describe("SnsProposalVotingSection", () => {
   it("should render vote results", async () => {
     const { container } = render(SnsProposalVotingSection, {
       props: {
+        reloadProposal: () => {
+          // do nothing
+        },
         proposal: {
           ...proposal,
         },

@@ -65,6 +65,7 @@ const initSnsProposalsStore = () => {
       }));
     },
 
+    /** Add or replace proposals for a specific project */
     addProposals({
       rootCanisterId,
       proposals,

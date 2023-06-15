@@ -25,13 +25,14 @@
   } from "$lib/derived/proposals.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { listNeurons } from "$lib/services/neurons.services";
-  import { isSignedIn } from "$lib/utils/auth.utils";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { notForceCallStrategy } from "$lib/utils/env.utils";
 
   export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
 
-  $: if (isSignedIn($authStore.identity)) {
+  $: if ($authSignedInStore) {
     listNeurons();
   }
 
@@ -127,13 +128,13 @@
     debounceFindProposals?.();
   };
 
-  $: applyFilter($proposalsFiltersStore);
+  $: $definedNeuronsStore, applyFilter($proposalsFiltersStore);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
 
   const updateNothingFound = () => {
     // Update the "nothing found" UI information only when the results of the certified query has been received to minimize UI glitches
-    if ($filteredProposals.certified === false) {
+    if ($filteredProposals.certified === false && notForceCallStrategy()) {
       if (loading) nothingFound = false;
       return;
     }

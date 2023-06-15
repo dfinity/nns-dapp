@@ -15,7 +15,7 @@
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { nonNullish } from "@dfinity/utils";
 
@@ -24,7 +24,7 @@
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
 
   let stakeNeuronText = replacePlaceholders(
     $i18n.sns_neurons.stake_sns_neuron,
@@ -39,7 +39,7 @@
       ? stakeNeuronText
       : $i18n.accounts.review_transaction;
 
-  let parameters: NervousSystemParameters | undefined;
+  let parameters: SnsNervousSystemParameters | undefined;
   $: parameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
   let minimumStake: number | undefined;
   $: minimumStake =
@@ -94,6 +94,7 @@
 </script>
 
 <SnsTransactionModal
+  testId="sns-stake-neuron-modal-component"
   {rootCanisterId}
   on:nnsSubmit={stake}
   on:nnsClose

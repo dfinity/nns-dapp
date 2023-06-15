@@ -7,11 +7,12 @@
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import type { TransactionInit } from "$lib/types/transaction";
 
+  export let testId: string | undefined = undefined;
   export let token: Token;
   export let rootCanisterId: Principal;
   export let governanceCanisterId: Principal;
   export let transactionFee: TokenAmount;
-  export let currentStep: WizardStep;
+  export let currentStep: WizardStep | undefined;
   export let validateAmount: ValidateAmountFn = () => undefined;
 
   let transactionInit: TransactionInit = {
@@ -20,6 +21,7 @@
 </script>
 
 <TransactionModal
+  {testId}
   {rootCanisterId}
   on:nnsSubmit
   on:nnsClose

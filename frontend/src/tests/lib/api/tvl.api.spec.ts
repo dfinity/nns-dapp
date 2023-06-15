@@ -1,5 +1,6 @@
 import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 
@@ -13,42 +14,64 @@ jest.mock("@dfinity/agent", () => {
   };
 });
 
+jest.mock("$lib/constants/canister-ids.constants");
+
 describe("tvl api", () => {
   const tvlCanisterMock = mock<TVLCanister>();
-
-  beforeAll(() => {
-    jest.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
-  });
-
-  afterAll(() => jest.clearAllMocks());
-
   const params = {
     identity: new AnonymousIdentity(),
     certified: true,
+    ...ACTOR_PARAMS,
   };
 
-  it("returns the tvl", async () => {
-    const result = {
-      tvl: 1n,
-      time_sec: 0n,
-    };
+  const result = {
+    tvl: 1n,
+    time_sec: 0n,
+  };
 
-    const getTVLSpy = tvlCanisterMock.getTVL.mockResolvedValue(result);
-
-    const response = await queryTVL(params);
-
-    expect(response).toEqual(result);
-
-    expect(getTVLSpy).toBeCalled();
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    jest.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
   });
 
-  it("throws an error if no token", () => {
-    tvlCanisterMock.getTVL.mockImplementation(async () => {
-      throw new Error();
+  describe("with tvl canister id set", () => {
+    const paramsCanisterId = {
+      ...params,
+      tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
+    };
+
+    it("returns the tvl", async () => {
+      const getTVLSpy = tvlCanisterMock.getTVL.mockResolvedValue(result);
+
+      const response = await queryTVL(paramsCanisterId);
+
+      expect(response).toEqual(result);
+
+      expect(getTVLSpy).toBeCalled();
     });
 
-    const call = () => queryTVL(params);
+    it("throws an error if no token", () => {
+      tvlCanisterMock.getTVL.mockImplementation(async () => {
+        throw new Error();
+      });
 
-    expect(call).rejects.toThrowError();
+      const call = () => queryTVL(paramsCanisterId);
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("with tvl canister id not set", () => {
+    it("returns undefined", async () => {
+      const getTVLSpy = tvlCanisterMock.getTVL.mockResolvedValue(result);
+
+      const response = await queryTVL({
+        ...params,
+        tvlCanisterId: undefined,
+      });
+
+      expect(response).toBeUndefined();
+      expect(getTVLSpy).not.toBeCalled();
+    });
   });
 });

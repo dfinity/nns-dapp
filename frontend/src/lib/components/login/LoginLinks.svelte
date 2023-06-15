@@ -7,11 +7,7 @@
     IconLaunchpad,
   } from "@dfinity/gix-components";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
-
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
 <ul>
@@ -19,7 +15,7 @@
     <a
       href={AppPath.Accounts}
       data-tid="auth-link-accounts"
-      aria-disabled={signedIn}
+      aria-disabled={$authSignedInStore}
       ><IconTokens />
       {$i18n.auth.wallet}</a
     >
@@ -28,7 +24,7 @@
     <a
       href={AppPath.Neurons}
       data-tid="auth-link-neurons"
-      aria-disabled={signedIn}
+      aria-disabled={$authSignedInStore}
       ><IconNeurons />
       {$i18n.auth.stake}</a
     >
@@ -37,7 +33,7 @@
     <a
       href={AppPath.Proposals}
       data-tid="auth-link-proposals"
-      aria-disabled={signedIn}
+      aria-disabled={$authSignedInStore}
       ><IconVote />
       {$i18n.auth.earn}</a
     >
@@ -46,7 +42,7 @@
     <a
       href={AppPath.Launchpad}
       data-tid="auth-link-launchpad"
-      aria-disabled={signedIn}
+      aria-disabled={$authSignedInStore}
       ><IconLaunchpad />
       {$i18n.auth.launchpad}</a
     >

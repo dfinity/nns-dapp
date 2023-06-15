@@ -24,10 +24,10 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { authStore } from "$lib/stores/auth.store";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
-  export let parameters: NervousSystemParameters;
+  export let parameters: SnsNervousSystemParameters;
   export let token: Token;
   export let transactionFee: E8s;
 

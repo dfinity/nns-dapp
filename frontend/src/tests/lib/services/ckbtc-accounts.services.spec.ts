@@ -17,7 +17,6 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -36,10 +35,10 @@ describe("ckbtc-accounts-services", () => {
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call api.getSnsAccounts and load neurons in store", async () => {
+    it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
-        .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
@@ -57,7 +56,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
+        .spyOn(ledgerApi, "getCkBTCAccount")
         .mockRejectedValue(new Error());
 
       const spy = jest.fn();
@@ -90,7 +89,7 @@ describe("ckbtc-accounts-services", () => {
       });
 
       jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
+        .spyOn(ledgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.reject(undefined));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -113,8 +112,8 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccounts")
-        .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       const spyTokenQuery = jest
         .spyOn(ledgerApi, "getCkBTCToken")
@@ -147,8 +146,8 @@ describe("ckbtc-accounts-services", () => {
 
   describe("ckBTCTransferTokens", () => {
     const spyAccounts = jest
-      .spyOn(ledgerApi, "getCkBTCAccounts")
-      .mockImplementation(() => Promise.resolve([mockCkBTCMainAccount]));
+      .spyOn(ledgerApi, "getCkBTCAccount")
+      .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -164,9 +163,9 @@ describe("ckbtc-accounts-services", () => {
 
       const spyTransfer = jest
         .spyOn(ledgerApi, "ckBTCTransfer")
-        .mockResolvedValue(undefined);
+        .mockResolvedValue(456n);
 
-      const { success } = await services.ckBTCTransferTokens({
+      const { blockIndex } = await services.ckBTCTransferTokens({
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
@@ -175,7 +174,7 @@ describe("ckbtc-accounts-services", () => {
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
-      expect(success).toBe(true);
+      expect(blockIndex).toEqual(456n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
     });
@@ -185,10 +184,10 @@ describe("ckbtc-accounts-services", () => {
 
       const spyTransfer = jest
         .spyOn(ledgerApi, "ckBTCTransfer")
-        .mockResolvedValue(undefined);
+        .mockResolvedValue(456n);
 
-      const { success } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+      const { blockIndex } = await services.ckBTCTransferTokens({
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: true,
@@ -196,7 +195,7 @@ describe("ckbtc-accounts-services", () => {
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
-      expect(success).toBe(true);
+      expect(blockIndex).toEqual(456n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
       expect(loadCkBTCAccountTransactions).toBeCalled();
@@ -212,8 +211,8 @@ describe("ckbtc-accounts-services", () => {
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      const { success } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+      const { blockIndex } = await services.ckBTCTransferTokens({
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
@@ -221,7 +220,7 @@ describe("ckbtc-accounts-services", () => {
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
-      expect(success).toBe(false);
+      expect(blockIndex).toBeUndefined();
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();
@@ -236,8 +235,8 @@ describe("ckbtc-accounts-services", () => {
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
 
-      const { success } = await services.ckBTCTransferTokens({
-        source: mockSnsMainAccount,
+      const { blockIndex } = await services.ckBTCTransferTokens({
+        source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
         loadTransactions: false,
@@ -245,7 +244,7 @@ describe("ckbtc-accounts-services", () => {
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
-      expect(success).toBe(false);
+      expect(blockIndex).toBeUndefined();
       expect(spyTransfer).not.toBeCalled();
       expect(spyAccounts).not.toBeCalled();
       expect(spyOnToastsError).toBeCalled();

@@ -4,7 +4,7 @@ import {
   querySnsSwapCommitment,
   querySnsSwapCommitments,
 } from "$lib/api/sns.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import {
   snsQueryStore,
@@ -13,6 +13,10 @@ import {
 } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/nns";
@@ -71,7 +75,7 @@ export const loadSnsSwapCommitments = async (): Promise<void> => {
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -124,7 +128,7 @@ export const loadSnsSwapCommitment = async ({
       if (
         certified ||
         identity.getPrincipal().isAnonymous() ||
-        FORCE_CALL_STRATEGY === "query"
+        isForceCallStrategy()
       ) {
         toastsError(
           toToastError({

@@ -10,7 +10,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
-import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -22,6 +22,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -45,6 +46,7 @@ describe("TransactionModal", () => {
     rootCanisterId,
     validateAmount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -52,6 +54,7 @@ describe("TransactionModal", () => {
     rootCanisterId?: Principal;
     validateAmount?: ValidateAmountFn;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -63,6 +66,7 @@ describe("TransactionModal", () => {
           sourceAccount,
           destinationAddress,
           mustSelectNetwork,
+          showLedgerFee,
         },
       },
     });
@@ -91,12 +95,14 @@ describe("TransactionModal", () => {
     rootCanisterId,
     sourceAccount,
     mustSelectNetwork = false,
+    showLedgerFee,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
     transactionFee?: TokenAmount;
     rootCanisterId?: Principal;
     mustSelectNetwork?: boolean;
+    showLedgerFee?: boolean;
   }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
@@ -104,6 +110,7 @@ describe("TransactionModal", () => {
       transactionFee,
       rootCanisterId,
       mustSelectNetwork,
+      showLedgerFee,
     });
 
     const { getByTestId, container } = result;
@@ -117,11 +124,11 @@ describe("TransactionModal", () => {
 
     // Choose select account
     // It will choose the fist subaccount as default
-    const toggle = container.querySelector("input[id='toggle']");
+    const toggle = queryToggleById(container);
     toggle && fireEvent.click(toggle);
 
     await waitFor(() =>
-      expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+      expect(participateButton?.hasAttribute("disabled")).toBe(false)
     );
 
     fireEvent.click(participateButton);
@@ -193,11 +200,11 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
     });
 
@@ -215,7 +222,7 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
@@ -234,7 +241,15 @@ describe("TransactionModal", () => {
         ).includes(mockMainAccount.identifier)
       ).toBeTruthy();
       expect(
-        getByText(formattedTransactionFeeICP(DEFAULT_TRANSACTION_FEE_E8S))
+        getByText(
+          formatToken({
+            value: TokenAmount.fromE8s({
+              amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+              token: ICPToken,
+            }).toE8s(),
+            detailed: "height_decimals",
+          })
+        )
       ).toBeInTheDocument();
     });
 
@@ -257,8 +272,53 @@ describe("TransactionModal", () => {
         ).includes(mockMainAccount.identifier)
       ).toBeTruthy();
       expect(
-        getByText(formattedTransactionFeeICP(Number(fee.toE8s())))
+        getByText(
+          formatToken({
+            value: TokenAmount.fromE8s({
+              amount: fee.toE8s(),
+              token: ICPToken,
+            }).toE8s(),
+            detailed: "height_decimals",
+          })
+        )
       ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and show ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+      });
+
+      expect(getByTestId("transaction-summary-fee")).toBeInTheDocument();
+      expect(
+        getByTestId("transaction-summary-total-deducted")
+      ).toBeInTheDocument();
+    });
+
+    it("should move to the last step and hide ledger fees", async () => {
+      const fee = TokenAmount.fromE8s({
+        amount: BigInt(20_000),
+        token: {
+          symbol: "TST",
+          name: "Test token",
+        },
+      });
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        transactionFee: fee,
+        showLedgerFee: false,
+      });
+
+      expect(() => getByTestId("transaction-summary-fee")).toThrow();
+      expect(() => getByTestId("transaction-summary-total-deducted")).toThrow();
     });
 
     it("should move to the last step and trigger nnsSubmit event", async () => {
@@ -292,11 +352,11 @@ describe("TransactionModal", () => {
 
       // Choose select account
       // It will choose the fist subaccount as default
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);
@@ -355,6 +415,25 @@ describe("TransactionModal", () => {
 
       expect(call).rejects.toThrowError();
     });
+
+    it("should show the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).toBeInTheDocument();
+    });
+
+    it("should hide the ledger fee", async () => {
+      const { queryByTestId } = await renderTransactionModal({
+        destinationAddress: mockMainAccount.identifier,
+        rootCanisterId: OWN_CANISTER_ID,
+        showLedgerFee: false,
+      });
+
+      expect(queryByTestId("transaction-form-fee")).not.toBeInTheDocument();
+    });
   });
 
   describe("when source account is provided", () => {
@@ -393,7 +472,7 @@ describe("TransactionModal", () => {
         fireEvent.input(addressInput, { target: { value: "aaaaa-aa" } });
 
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);

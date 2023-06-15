@@ -34,7 +34,7 @@ describe("NnsNeurons", () => {
       const spawningNeuron = {
         ...mockNeuron,
         state: NeuronState.Spawning,
-        neuronId: BigInt(223),
+        neuronId: BigInt(456),
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: BigInt(12312313),
@@ -53,7 +53,7 @@ describe("NnsNeurons", () => {
 
     it("should open stake neuron modal", async () => {
       // To avoid that the modal requests the accounts
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
       const { queryByTestId, queryByText, getByTestId } =
         render(NnsNeuronsFooter);
 

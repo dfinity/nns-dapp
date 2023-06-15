@@ -44,14 +44,14 @@ describe("universes-utils", () => {
           universe: "not used here",
           path: AppPath.Neurons,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         pathSupportsCkBTC({
           universe: "not used here",
           path: AppPath.Proposal,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -61,7 +61,7 @@ describe("universes-utils", () => {
     });
 
     it("returns true if nns dapp principal", () => {
-      expect(isUniverseNns(Principal.from("aaaaa-aa"))).toBeFalsy();
+      expect(isUniverseNns(Principal.from("aaaaa-aa"))).toBe(false);
     });
   });
 
@@ -79,11 +79,11 @@ describe("universes-utils", () => {
     });
 
     it("returns false if not ckBTC canister id", () => {
-      expect(isUniverseCkBTC(OWN_CANISTER_ID)).toBeFalsy();
+      expect(isUniverseCkBTC(OWN_CANISTER_ID)).toBe(false);
     });
 
     it("returns false if not ckBTC canister id text", () => {
-      expect(isUniverseCkBTC(OWN_CANISTER_ID.toText())).toBeFalsy();
+      expect(isUniverseCkBTC(OWN_CANISTER_ID.toText())).toBe(false);
     });
   });
 

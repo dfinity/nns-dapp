@@ -20,7 +20,9 @@ describe("TransactionReceivedTokenAmount", () => {
     });
 
     expect(
-      getByText(formatToken({ value: amount.toE8s(), detailed: true }))
+      getByText(
+        formatToken({ value: amount.toE8s(), detailed: "height_decimals" })
+      )
     ).toBeInTheDocument();
 
     expect(getByText(amount.token.symbol)).toBeInTheDocument();
@@ -39,9 +41,7 @@ describe("TransactionReceivedTokenAmount", () => {
       props: { amount, estimation: true },
     });
 
-    expect(
-      getByText(en.accounts.estimated_amount_received)
-    ).toBeInTheDocument();
+    expect(getByText(en.accounts.received_amount_notice)).toBeInTheDocument();
   });
 
   it("should render estimation amount with equals sign", () => {
@@ -52,7 +52,7 @@ describe("TransactionReceivedTokenAmount", () => {
     });
 
     expect(getByTestId(testId)?.textContent).toContain(
-      `≈${formatToken({ value: amount.toE8s(), detailed: true })}`
+      `${formatToken({ value: amount.toE8s(), detailed: true })}`
     );
   });
 });

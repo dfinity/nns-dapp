@@ -1,5 +1,5 @@
 import {
-  getIcrcMainAccount,
+  getIcrcAccount,
   getIcrcToken,
   icrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
@@ -8,6 +8,7 @@ import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcBlockIndex } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import { wrapper } from "./sns-wrapper.api";
 
@@ -23,17 +24,17 @@ export const getSnsAccounts = async ({
   // TODO: Support subaccounts
   logWithTimestamp("Getting sns accounts: call...");
 
-  const { balance: getBalance, ledgerMetadata: getMetadata } = await wrapper({
+  const { balance: getBalance } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
   });
 
-  const mainAccount = await getIcrcMainAccount({
-    identity,
+  const mainAccount = await getIcrcAccount({
+    owner: identity.getPrincipal(),
+    type: "main",
     certified,
     getBalance,
-    getMetadata,
   });
 
   logWithTimestamp("Getting sns accounts: done");
@@ -97,7 +98,7 @@ export const snsTransfer = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-} & Omit<IcrcTransferParams, "transfer">): Promise<void> => {
+} & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
   logWithTimestamp("Getting Sns transfer: call...");
 
   const { transfer: transferApi } = await wrapper({
@@ -106,10 +107,12 @@ export const snsTransfer = async ({
     certified: true,
   });
 
-  await transferIcrcApi({
+  const blockIndex = await transferIcrcApi({
     ...rest,
     transfer: transferApi,
   });
 
   logWithTimestamp("Getting Sns transfer: done");
+
+  return blockIndex;
 };

@@ -72,10 +72,10 @@ You may also want to verify the canister arguments.  In the proposal they are bi
 provides both binary and text formats and you can verify that the text format corresponds to the binary in the proposal.
 
 \`\`\`
-sha256sum nns-dapp-arg.bin
-didc encode "$(cat nns-dapp-arg.did)" | xxd -r -p | sha256sum
+sha256sum nns-dapp-arg-${DFX_NETWORK}.bin
+didc encode "\$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p | sha256sum
 \`\`\`
 EOF
 
 ./config.sh
-cp nns-dapp-arg.did ./release/nns-dapp-arg.did
+cp "nns-dapp-arg-${DFX_NETWORK}.did" "./release/nns-dapp-arg-${DFX_NETWORK}.did"

@@ -18,16 +18,23 @@ import {
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import { accountsStore } from "$lib/stores/accounts.store";
+import {
+  accountsStore,
+  type SingleMutationAccountsStore,
+} from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,
@@ -64,7 +71,6 @@ export const getOrCreateAccount = async ({
   }
 };
 
-// Exported for testing
 export const loadAccounts = async ({
   identity,
   certified,
@@ -73,16 +79,12 @@ export const loadAccounts = async ({
   certified: boolean;
 }): Promise<AccountsStoreData> => {
   // Helper
-  const getAccountBalance = async (
-    identifierString: string
-  ): Promise<TokenAmount> => {
-    const e8sBalance = await queryAccountBalance({
+  const getAccountBalance = (identifierString: string): Promise<bigint> =>
+    queryAccountBalance({
       identity,
       certified,
       accountIdentifier: identifierString,
     });
-    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
-  };
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
     identity,
@@ -95,7 +97,7 @@ export const loadAccounts = async ({
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
     ): Promise<Account> => ({
       identifier: account.account_identifier,
-      balance: await getAccountBalance(account.account_identifier),
+      balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),
@@ -119,6 +121,7 @@ export const loadAccounts = async ({
 };
 
 type SyncAccontsErrorHandler = (params: {
+  mutableStore: SingleMutationAccountsStore;
   err: unknown;
   certified: boolean;
 }) => void;
@@ -130,9 +133,11 @@ type SyncAccontsErrorHandler = (params: {
  * Resets accountsStore and shows toast for certified errors.
  */
 const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
+  mutableStore,
   err,
   certified,
 }: {
+  mutableStore: SingleMutationAccountsStore;
   err: unknown;
   certified: boolean;
 }) => {
@@ -140,7 +145,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
     return;
   }
 
-  accountsStore.reset();
+  mutableStore.reset({ certified });
 
   toastsError(
     toToastError({
@@ -153,21 +158,26 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
 /**
  * Loads the account data using the ledger and the nns dapp canister.
  */
-export const syncAccounts = (
-  errorHandler: SyncAccontsErrorHandler = defaultErrorHandlerAccounts
+const syncAccountsWithErrorHandler = (
+  errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
   return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
-    onLoad: ({ response: accounts }) => accountsStore.set(accounts),
+    onLoad: ({ response: accounts }) => mutableStore.set(accounts),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      errorHandler({ err, certified });
+      errorHandler({ mutableStore, err, certified });
     },
     logMessage: "Syncing Accounts",
     strategy: FORCE_CALL_STRATEGY,
   });
 };
+
+export const syncAccounts = () =>
+  syncAccountsWithErrorHandler(defaultErrorHandlerAccounts);
 
 const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
 
@@ -176,7 +186,7 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  *
  * It ignores errors and does not show any toasts. Accounts will be synced again.
  */
-export const initAccounts = () => syncAccounts(ignoreErrors);
+export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 
 /**
  * Queries the balance of an account and loads it in the store.
@@ -188,16 +198,22 @@ export const loadBalance = async ({
 }: {
   accountIdentifier: string;
 }): Promise<void> => {
+  const strategy = FORCE_CALL_STRATEGY;
+  const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
       queryAccountBalance({ identity, certified, accountIdentifier }),
-    onLoad: ({ response: balanceE8s }) => {
-      accountsStore.setBalance({ accountIdentifier, balanceE8s });
+    onLoad: ({ certified, response: balanceE8s }) => {
+      mutableStore.setBalance({
+        certified,
+        accountIdentifier,
+        balanceE8s,
+      });
     },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && strategy !== "query") {
         return;
       }
 
@@ -210,7 +226,7 @@ export const loadBalance = async ({
       });
     },
     logMessage: `Syncing Balance for ${accountIdentifier}`,
-    strategy: FORCE_CALL_STRATEGY,
+    strategy,
   });
 };
 
@@ -317,7 +333,7 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -435,24 +451,30 @@ const pollLoadAccounts = async (params: {
  * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
-  const overrideCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
+  const overrideCertified = isForceCallStrategy() ? false : certified;
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
   // `certified` might be `undefined` if not yet loaded.
   // Therefore, we compare with `true`.
-  if (accounts.certified === true) {
+  if (
+    accounts.certified === true ||
+    (accounts.certified === false && isForceCallStrategy())
+  ) {
     return;
   }
 
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
   try {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({
       identity,
       certified: overrideCertified,
     });
-    accountsStore.set(certifiedAccounts);
+    mutableStore.set(certifiedAccounts);
   } catch (err) {
+    mutableStore.cancel();
     // Don't show error if polling was cancelled
     if (pollingCancelled(err)) {
       return;

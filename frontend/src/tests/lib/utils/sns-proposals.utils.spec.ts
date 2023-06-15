@@ -1,21 +1,31 @@
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
+  ballotVotingPower,
   isAccepted,
   lastProposalId,
   mapProposalInfo,
   proposalActionFields,
   proposalOnlyActionKey,
   snsDecisionStatus,
+  snsNeuronToVotingNeuron,
+  snsProposalId,
+  snsProposalIdString,
+  snsProposalOpen,
   snsRewardStatus,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsAction, SnsProposalData } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsVote,
+  type SnsAction,
+  type SnsNeuron,
+  type SnsProposalData,
 } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
@@ -133,7 +143,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
@@ -149,7 +159,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: true,
@@ -166,7 +176,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now - BigInt(100),
           },
         ],
         is_eligible_for_rewards: false,
@@ -190,7 +200,7 @@ describe("sns-proposals utils", () => {
         reward_event_round: BigInt(0),
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now + BigInt(100),
           },
         ],
       };
@@ -425,6 +435,134 @@ describe("sns-proposals utils", () => {
         proposal: [],
       };
       expect(proposalActionFields(proposalWithoutProposal)).toHaveLength(0);
+    });
+  });
+
+  describe("snsProposalId", () => {
+    it("should return proposal id", () => {
+      const testId = 123987n;
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [
+          {
+            id: testId,
+          },
+        ],
+      };
+      expect(snsProposalId(testProposal)).toEqual(testId);
+    });
+  });
+
+  describe("snsProposalIdString", () => {
+    it("should stringify proposal id", () => {
+      const testId = 123987n;
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        id: [
+          {
+            id: testId,
+          },
+        ],
+      };
+      expect(snsProposalIdString(testProposal)).toEqual(`${testId}`);
+    });
+  });
+
+  describe("snsProposalOpen", () => {
+    it("should return true when proposal is in open state", () => {
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: 0n,
+      };
+      expect(snsProposalOpen(testProposal)).toBe(true);
+    });
+
+    it("should return false when proposal is not in open state", () => {
+      const testProposal: SnsProposalData = {
+        ...mockSnsProposal,
+        decided_timestamp_seconds: 123n,
+      };
+      expect(snsProposalOpen(testProposal)).toBe(false);
+    });
+  });
+
+  describe("ballotVotingPower", () => {
+    const testNeuron: SnsNeuron = {
+      ...mockSnsNeuron,
+      id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
+    };
+
+    it("should return the voting power of the ballot for a specific neuron", () => {
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [
+          [
+            "010203", // neuron id
+            {
+              vote: SnsVote.Yes,
+              voting_power: 250n,
+              cast_timestamp_seconds: 122n,
+            },
+          ],
+        ],
+      };
+      expect(
+        ballotVotingPower({
+          neuron: testNeuron,
+          proposal,
+        })
+      ).toBe(250n);
+    });
+
+    it("should return 0 voting power if neuron doesn't have a ballot", () => {
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [],
+      };
+      expect(
+        ballotVotingPower({
+          neuron: testNeuron,
+          proposal,
+        })
+      ).toBe(0n);
+    });
+  });
+
+  describe("snsNeuronToVotingNeuron", () => {
+    it("should create VotingNeuron out of SnsNeuron with voting power from ballot", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
+        staked_maturity_e8s_equivalent: [],
+        maturity_e8s_equivalent: BigInt(0),
+        neuron_fees_e8s: 0n,
+        dissolve_state: [{ DissolveDelaySeconds: 100n }],
+        aging_since_timestamp_seconds: 0n,
+        voting_power_percentage_multiplier: 100n,
+        cached_neuron_stake_e8s: 100n,
+      };
+      const proposal: SnsProposalData = {
+        ...mockSnsProposal,
+        ballots: [
+          [
+            "010203", // neuron id
+            {
+              vote: SnsVote.Yes,
+              voting_power: 250n,
+              cast_timestamp_seconds: 122n,
+            },
+          ],
+        ],
+      };
+      expect(
+        snsNeuronToVotingNeuron({
+          neuron: testNeuron,
+          proposal,
+        })
+      ).toEqual({
+        neuronIdString: "010203",
+        votingPower: 250n,
+      });
     });
   });
 });

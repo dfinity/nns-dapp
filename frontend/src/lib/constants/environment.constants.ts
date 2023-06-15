@@ -1,24 +1,23 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { addRawToUrl } from "$lib/utils/env.utils";
+import { addRawToUrl, isBrowser, isLocalhost } from "$lib/utils/env.utils";
 
 const envVars = getEnvVars();
 
 export const DFX_NETWORK = envVars.dfxNetwork;
 export const HOST = envVars.host;
-export const DEV = import.meta.env.DEV;
-export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
-export const HOST_IC0_APP = "https://ic0.app";
+export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
 
 const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
-    if (["localhost", "127.0.0.1"].includes(hostname)) {
+    if (isLocalhost(hostname)) {
       return url;
     }
 
-    if (DEV) {
+    // If the nns-dapp is running in localhost, we need to add `raw` to the URL to avoid CORS issues.
+    if (isBrowser && isLocalhost(window.location.hostname)) {
       return addRawToUrl(url);
     }
 
@@ -39,11 +38,12 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
   snsAggregatorUrl(snsAggregatorUrlEnv);
 
 export interface FeatureFlags<T> {
-  ENABLE_SNS_2: T;
   ENABLE_SNS_VOTING: T;
   ENABLE_SNS_AGGREGATOR: T;
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
+  ENABLE_SIMULATE_MERGE_NEURONS: T;
+  ENABLE_INSTANT_UNLOCK: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -58,7 +58,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_SNS_2": false, "ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false}'
+    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_INSTANT_UNLOCK": false}'
 );
 
 export const IS_TESTNET: boolean =
@@ -66,19 +66,6 @@ export const IS_TESTNET: boolean =
   FETCH_ROOT_KEY === true &&
   !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
 
-// Disable TVL or transaction rate warning locally because that information is not crucial when we develop
-export const ENABLE_METRICS = !DEV;
-
-export const FORCE_CALL_STRATEGY: "query" | undefined = undefined;
-
-export const IS_TEST_ENV = process.env.NODE_ENV === "test";
-
-// When the QR code is rendered (draw), it triggers an event that is replicated to a property to get to know if the QR code has been or not rendered.
-// We use a constant / environment variable that way, we can mock it to `true` for test purpose.
-// Jest has trouble loading the QR-code dependency and because the QR-code content is anyway covered by e2e snapshot testing in gix-cmp.
-export const QR_CODE_RENDERED_DEFAULT_STATE = false;
-
-// Here too, Jest has trouble loading the QR-code reader dependency asynchronously (`await import ("")`).
-// npm run test leads to error -> segmentation fault  npm run test src/tests/lib/modals/transaction/TransactionModal.spec.ts
-// That's why we use a constant / environment variable that way, we can mock it to `false` for test purpose.
-export const ENABLE_QR_CODE_READER = true;
+// TODO: display test environment warning on mainnet according configuration
+// DFX_NETWORK === new_environment_to_be_configured
+export const IS_TEST_MAINNET = false;

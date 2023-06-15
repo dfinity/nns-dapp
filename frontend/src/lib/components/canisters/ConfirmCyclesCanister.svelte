@@ -5,6 +5,7 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   export let amount: number;
   export let account: Account;
@@ -26,19 +27,25 @@
 </script>
 
 <div class="wrapper" data-tid="confirm-cycles-canister-screen">
-  <div class="conversion">
-    <h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
-    <p>{$i18n.core.icp}</p>
+  <p class="conversion">
+    <span
+      ><span class="value"
+        >{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</span
+      >
+      <span>{$i18n.core.icp}</span></span
+    >
     {#if tCyclesFormatted !== undefined}
-      <p>{$i18n.canisters.converted_to}</p>
-      <h3>
-        {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
-      </h3>
-      <p>{$i18n.canisters.t_cycles}</p>
+      <span class="description">{$i18n.canisters.converted_to}</span>
+      <span
+        ><span class="value">
+          {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
+        </span>
+        <span>{$i18n.canisters.t_cycles}</span></span
+      >
     {/if}
-  </div>
+  </p>
   <div>
-    <TransactionSource {account} />
+    <TransactionSource {account} token={ICPToken} />
   </div>
   <slot />
 
@@ -58,7 +65,7 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .wrapper {
     display: flex;
@@ -66,20 +73,14 @@
     gap: var(--padding);
   }
 
+  .value {
+    @include fonts.h3;
+  }
+
   .conversion {
-    padding: 0 0 var(--padding-4x);
-
-    p,
-    h3 {
-      margin: 0;
-      display: inline-block;
-    }
-
-    @include media.min-width(small) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--padding);
-    }
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 </style>

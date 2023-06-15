@@ -3,20 +3,16 @@
   import Logout from "./Logout.svelte";
   import LoginIconOnly from "./LoginIconOnly.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { isSignedIn } from "$lib/utils/auth.utils";
-  import { authStore } from "$lib/stores/auth.store";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
 
-  let signedIn = false;
-  $: signedIn = isSignedIn($authStore.identity);
-
   const toggle = () => (visible = !visible);
 </script>
 
-{#if signedIn}
+{#if $authSignedInStore}
   <button
     data-tid="account-menu"
     class="icon-only toggle"

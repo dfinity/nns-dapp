@@ -2,7 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { addRawToUrl, isNnsAlternativeOrigin } from "$lib/utils/env.utils";
+import {
+  addRawToUrl,
+  isLocalhost,
+  isNnsAlternativeOrigin,
+} from "$lib/utils/env.utils";
 
 describe("env-utils", () => {
   describe("isNnsAlternativeOrigin", () => {
@@ -40,7 +44,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -50,7 +54,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -60,7 +64,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -70,7 +74,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
 
       Object.defineProperty(window, "location", {
         writable: true,
@@ -80,7 +84,7 @@ describe("env-utils", () => {
         },
       });
 
-      expect(isNnsAlternativeOrigin()).toBeFalsy();
+      expect(isNnsAlternativeOrigin()).toBe(false);
     });
   });
 
@@ -121,6 +125,24 @@ describe("env-utils", () => {
       expect(() => addRawToUrl(invalid2)).toThrow(
         new TypeError(`Invalid URL: ${invalid2}`)
       );
+    });
+  });
+
+  describe("isLocalhost", () => {
+    it("return false when hostname is not localhost", () => {
+      expect(
+        isLocalhost(
+          "53zcu-tiaaa-aaaaa-qaaba-cai.medium09.testnet.dfinity.network"
+        )
+      ).toBe(false);
+      expect(isLocalhost("internetcomputer.org")).toBe(false);
+      expect(isLocalhost("nns.ic0.app")).toBe(false);
+    });
+
+    it("return true when hostname is localhost", () => {
+      expect(isLocalhost("localhost:3000")).toBe(true);
+      expect(isLocalhost("127.0.0.1:3000")).toBe(true);
+      expect(isLocalhost("xxxx.localhost")).toBe(true);
     });
   });
 });

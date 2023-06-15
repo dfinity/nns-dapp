@@ -7,7 +7,6 @@ import {
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import {
   getSnsNeuronIdAsHexString,
   needsRefresh,
@@ -15,14 +14,12 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
-import type { NervousSystemParameters } from "@dfinity/sns";
 import {
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-import { get } from "svelte/store";
+import { fromNullable } from "@dfinity/utils";
 
 const loadNeuron = async ({
   rootCanisterId,
@@ -280,7 +277,7 @@ const checkNeurons = async ({
  * It refetches the neurons that are not in sync with the subaccounts and adds them to the store.
  *
  * Note:
- * `NervousSystemParameters` should be preloaded before calling this function.
+ * `SnsNervousSystemParameters` should be preloaded before calling this function.
  *
  * @param param0
  * @returns {boolean}
@@ -288,21 +285,14 @@ const checkNeurons = async ({
 export const checkSnsNeuronBalances = async ({
   rootCanisterId,
   neurons,
+  neuronMinimumStake,
 }: {
   rootCanisterId: Principal;
   neurons: SnsNeuron[];
+  neuronMinimumStake: bigint;
 }): Promise<void> => {
   // TODO: Check neurons controlled by linked HW?
   const identity = await getAuthenticatedIdentity();
-
-  // TODO(Maks): refactor using `getSnsParametersFromStore` https://dfinity.atlassian.net/browse/GIX-1178
-  const neuronMinimumStake = fromDefinedNullable(
-    (
-      get(snsParametersStore)?.[rootCanisterId.toText()]
-        ?.parameters as NervousSystemParameters
-    ).neuron_minimum_stake_e8s ?? [0n]
-  );
-
   const unvisitedNeurons = await checkNeuronsSubaccounts({
     identity,
     rootCanisterId,

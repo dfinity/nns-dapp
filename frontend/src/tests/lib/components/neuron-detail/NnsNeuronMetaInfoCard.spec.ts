@@ -94,7 +94,7 @@ describe("NnsNeuronMetaInfoCard", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders split actions", () => {
+  it("renders actions", () => {
     // Each action button is tested separately
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
@@ -103,10 +103,19 @@ describe("NnsNeuronMetaInfoCard", () => {
       },
     });
 
+    expect(
+      queryByText(en.neuron_detail.increase_dissolve_delay)
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(en.neuron_detail.start_dissolving)
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(en.neuron_detail.increase_stake)
+    ).not.toBeInTheDocument();
     expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
   });
 
-  it("renders no actions if user is not controller", () => {
+  it("does not render specific actions if user is not controller", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {
         neuron: {
@@ -129,7 +138,23 @@ describe("NnsNeuronMetaInfoCard", () => {
     expect(
       queryByText(en.neuron_detail.increase_stake)
     ).not.toBeInTheDocument();
-    expect(queryByText(en.neuron_detail.split_neuron)).not.toBeInTheDocument();
+  });
+
+  it("renders split neuron action if user is not controller", () => {
+    const { queryByText } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            controller: "not-controller",
+          },
+        },
+        testComponent: NnsNeuronMetaInfoCard,
+      },
+    });
+
+    expect(queryByText(en.neuron_detail.split_neuron)).toBeInTheDocument();
   });
 
   it("should render neuron age", () => {

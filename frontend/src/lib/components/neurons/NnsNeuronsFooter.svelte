@@ -1,6 +1,7 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
-  import StakeNeuronModal from "$lib/modals/neurons/StakeNeuronModal.svelte";
+  import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
   import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
@@ -22,40 +23,46 @@
   $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
 </script>
 
-<Footer>
-  <button
-    data-tid="stake-neuron-button"
-    class="primary full-width"
-    on:click={() => openModal("stake-neuron")}
-    >{$i18n.neurons.stake_neurons}</button
-  >
-  {#if enoughNeuronsToMerge}
+<TestIdWrapper testId="nns-neurons-footer-component">
+  <Footer>
     <button
-      disabled={votingInProgress}
-      data-tid="merge-neurons-button"
-      class="secondary full-width"
-      on:click={() => openModal("merge-neurons")}
-      >{$i18n.neurons.merge_neurons}</button
+      data-tid="stake-neuron-button"
+      class="primary full-width"
+      on:click={() => openModal("stake-neuron")}
+      >{$i18n.neurons.stake_neurons}</button
     >
-  {:else}
-    <Tooltip id="merge-neurons-info" top text={$i18n.neurons.need_two_to_merge}>
+    {#if enoughNeuronsToMerge}
       <button
-        disabled
+        disabled={votingInProgress}
         data-tid="merge-neurons-button"
-        class="secondary full-width tooltip-button"
+        class="secondary full-width"
         on:click={() => openModal("merge-neurons")}
         >{$i18n.neurons.merge_neurons}</button
       >
-    </Tooltip>
-  {/if}
-</Footer>
+    {:else}
+      <Tooltip
+        id="merge-neurons-info"
+        top
+        text={$i18n.neurons.need_two_to_merge}
+      >
+        <button
+          disabled
+          data-tid="merge-neurons-button"
+          class="secondary full-width tooltip-button"
+          on:click={() => openModal("merge-neurons")}
+          >{$i18n.neurons.merge_neurons}</button
+        >
+      </Tooltip>
+    {/if}
+  </Footer>
 
-{#if showModal === "stake-neuron"}
-  <StakeNeuronModal on:nnsClose={closeModal} />
-{/if}
-{#if showModal === "merge-neurons"}
-  <MergeNeuronsModal on:nnsClose={closeModal} />
-{/if}
+  {#if showModal === "stake-neuron"}
+    <NnsStakeNeuronModal on:nnsClose={closeModal} />
+  {/if}
+  {#if showModal === "merge-neurons"}
+    <MergeNeuronsModal on:nnsClose={closeModal} />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   // TODO: do not use :global root this can affects other components

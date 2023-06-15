@@ -19,13 +19,14 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
-ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
-JSON_OUT="deployment-config.json"
-CANDID_ARGS_FILE="nns-dapp-arg.did"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
 export DFX_NETWORK
+
+ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
+JSON_OUT="deployment-config.json"
+CANDID_ARGS_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
 
 first_not_null() {
   for x in "$@"; do
@@ -104,10 +105,17 @@ local_deployment_data="$(
   CKBTC_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_index 2>/dev/null || true)"
   export CKBTC_INDEX_CANISTER_ID
   test -n "${CKBTC_INDEX_CANISTER_ID:-}" || unset CKBTC_INDEX_CANISTER_ID
+  CKBTC_MINTER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_minter 2>/dev/null || true)"
+  export CKBTC_MINTER_CANISTER_ID
+  test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
+
+  : "Try to find the TVL canister ID"
+  TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
+  export TVL_CANISTER_ID
 
   : "Define the robots text, if any"
   if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
@@ -125,9 +133,11 @@ local_deployment_data="$(
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
+    CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
+    TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
     } | del(..|select(. == null))'
 )"
@@ -146,8 +156,6 @@ json=$(HOST=$(api_host) jq -s --sort-keys '
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST |
-  .GOVERNANCE_CANISTER_URL=( if (.GOVERNANCE_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.GOVERNANCE_CANISTER_ID).")) else .GOVERNANCE_CANISTER_URL end ) |
-  .LEDGER_CANISTER_URL=( if (.LEDGER_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.LEDGER_CANISTER_ID).")) else .LEDGER_CANISTER_URL end ) |
   .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
   .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
 ' dfx.json <(echo "$local_deployment_data"))
@@ -156,9 +164,8 @@ dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
 wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
 governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
-governanceCanisterUrl=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_URL")
+tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
-ledgerCanisterUrl=$(echo "$json" | jq -r ".LEDGER_CANISTER_URL")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
 ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
@@ -167,15 +174,15 @@ host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
+ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
 VITE_WASM_CANISTER_ID=$wasmCanisterId
 VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
-VITE_GOVERNANCE_CANISTER_URL=$governanceCanisterUrl
+VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
-VITE_LEDGER_CANISTER_URL=$ledgerCanisterUrl
 VITE_OWN_CANISTER_ID=$ownCanisterId
 VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
@@ -184,6 +191,7 @@ VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
+VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
 VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
@@ -209,18 +217,19 @@ export SNS_AGGREGATOR_URL
 
 CKBTC_LEDGER_CANISTER_ID="${ckbtcLedgerCanisterId:-}"
 export CKBTC_LEDGER_CANISTER_ID
+CKBTC_MINTER_CANISTER_ID="${ckbtcMinterCanisterId:-}"
+export CKBTC_MINTER_CANISTER_ID
 CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
 export CKBTC_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
-GOVERNANCE_CANISTER_URL="$governanceCanisterUrl"
-export GOVERNANCE_CANISTER_URL
+
+TVL_CANISTER_ID="$tvlCanisterId"
+export TVL_CANISTER_ID
 
 LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
-LEDGER_CANISTER_URL="$ledgerCanisterUrl"
-export LEDGER_CANISTER_URL
 
 OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID

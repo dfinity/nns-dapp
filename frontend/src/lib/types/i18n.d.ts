@@ -129,6 +129,11 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
+  test_env_welcome: string;
+  test_env_note: string;
+  test_env_request: string;
+  test_env_confirm: string;
+  test_env_title: string;
 }
 
 interface I18nNavigation {
@@ -192,6 +197,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   subAccount: string;
   hardwareWallet: string;
+  withdrawalAccount: string;
   select_source: string;
   select_destination: string;
   address: string;
@@ -233,19 +239,22 @@ interface I18nAccounts {
   no_account_select: string;
   current_balance_detail: string;
   network: string;
-  network_icp_ckbtc: string;
-  network_icp_cktestbtc: string;
+  network_icp: string;
   network_btc_mainnet: string;
   network_btc_testnet: string;
   select_network: string;
+  bitcoin_transaction_fee_notice: string;
   estimated_bitcoin_transaction_fee: string;
+  internetwork_fee_notice: string;
   estimated_internetwork_fee: string;
-  estimated_amount_received: string;
+  estimation_notice: string;
   receive_account: string;
   sending_amount: string;
   total_deducted: string;
   received_amount: string;
+  received_amount_notice: string;
   transaction_time: string;
+  transaction_time_seconds: string;
 }
 
 interface I18nNeurons {
@@ -259,6 +268,7 @@ interface I18nNeurons {
   merge_neurons_modal_merge_button: string;
   merge_neurons_modal_title_2: string;
   merge_neurons_modal_into: string;
+  expected_merge_result: string;
   set_dissolve_delay: string;
   add_user_as_hotkey: string;
   add_user_as_hotkey_message: string;
@@ -540,6 +550,7 @@ interface I18nProposal_detail__ineligible {
   headline: string;
   text: string;
   reason_since: string;
+  reason_no_permission: string;
   reason_short: string;
 }
 
@@ -566,6 +577,7 @@ interface I18nNeuron_detail {
   community_fund_more_info: string;
   maturity_title: string;
   maturity_last_distribution: string;
+  maturity_last_distribution_info: string;
   stake_maturity: string;
   stake: string;
   spawn_neuron: string;
@@ -645,6 +657,7 @@ interface I18nSns_project_detail {
   total_tokens_supply: string;
   min_commitment: string;
   max_commitment: string;
+  min_participants: string;
   current_overall_commitment: string;
   current_sale_buyer_count: string;
   min_commitment_goal: string;
@@ -662,7 +675,6 @@ interface I18nSns_project_detail {
   status_pending: string;
   status_unspecified: string;
   participate_swap_description: string;
-  participate_swap_warning: string;
   understand_agree: string;
   participate_success: string;
   participate: string;
@@ -670,8 +682,9 @@ interface I18nSns_project_detail {
   status_completed: string;
   completed: string;
   sale_end: string;
-  max_left: string;
+  persons_excluded: string;
   max_user_commitment_reached: string;
+  not_eligible_to_participate: string;
   getting_sns_open_ticket: string;
   sign_in: string;
 }
@@ -916,21 +929,29 @@ interface I18nCkbtc {
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;
-  incoming_bitcoin_network: string;
+  incoming_bitcoin_network_part_1: string;
+  incoming_bitcoin_network_part_2: string;
   block_explorer: string;
   refresh_balance: string;
   confirmations: string;
-  typically_twelve: string;
+  warning_transaction_failed: string;
+  warning_transaction_description: string;
+  checking_incomplete_btc_transfers: string;
+  all_btc_transfers_complete: string;
+  click_to_complete_btc_transfers: string;
 }
 
 interface I18nError__ckbtc {
   already_process: string;
   no_new_utxo: string;
   temporary_unavailable: string;
+  no_minter_defined: string;
+  info_not_found: string;
   get_btc_address: string;
   get_btc_no_account: string;
   get_btc_no_universe: string;
   update_balance: string;
+  no_new_confirmed_btc: string;
   withdrawal_account: string;
   retrieve_btc: string;
   malformed_address: string;
@@ -940,6 +961,8 @@ interface I18nError__ckbtc {
   estimated_fee: string;
   deposit_fee: string;
   retrieve_btc_min_amount: string;
+  retrieve_btc_min_amount_unknown: string;
+  wait_ckbtc_info_parameters_certified: string;
 }
 
 interface I18nFeature_flags_prompt {
@@ -1101,6 +1124,7 @@ interface I18nNns_functions {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18nNns_functions_description {
@@ -1143,6 +1167,7 @@ interface I18nNns_functions_description {
   RetireReplicaVersion: string;
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
+  BitcoinSetConfig: string;
 }
 
 interface I18n {

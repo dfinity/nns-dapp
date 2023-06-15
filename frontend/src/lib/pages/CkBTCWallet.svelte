@@ -35,6 +35,8 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -151,6 +153,17 @@
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
 <Island>
@@ -159,7 +172,7 @@
       {#if loaded}
         <Summary />
 
-        <WalletSummary />
+        <WalletSummary detailedBalance token={token?.token} />
 
         {#if nonNullish(canisters)}
           <CkBTCWalletActions
@@ -175,12 +188,14 @@
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             minterCanisterId={canisters.minterCanisterId}
+            reload={reloadAccount}
           />
 
           <CkBTCTransactionsList
             account={$selectedAccountStore.account}
             universeId={$selectedCkBTCUniverseIdStore}
             indexCanisterId={canisters.indexCanisterId}
+            token={token?.token}
           />
         {/if}
       {:else}

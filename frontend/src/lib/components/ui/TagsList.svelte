@@ -18,6 +18,9 @@
 
     margin: var(--padding-0_5x) 0 var(--padding) 0;
     padding: 0 0 calc(2 * var(--padding));
-    border-bottom: 1px solid currentColor;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid var(--line);
+    }
   }
 </style>

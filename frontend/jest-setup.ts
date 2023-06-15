@@ -7,6 +7,10 @@ import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+import {
+  mockedConstants,
+  setDefaultTestConstants,
+} from "./src/tests/utils/mockable-constants.test-utils";
 
 // Mock SubtleCrypto to test @dfinity/auth-client
 const crypto = new SubtleCrypto();
@@ -28,11 +32,12 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
-      ENABLE_SNS_2: true,
       ENABLE_SNS_VOTING: true,
       ENABLE_SNS_AGGREGATOR: true,
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
+      ENABLE_SIMULATE_MERGE_NEURONS: true,
+      ENABLE_INSTANT_UNLOCK: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
@@ -46,33 +51,19 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     snsAggregatorUrl:
       "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
     wasmCanisterId: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+    tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
   }),
 }));
 
-// TODO: Split the constants that depend on the environment variables and the ones that don't.
-jest.mock("./src/lib/constants/environment.constants.ts", () => ({
-  DFX_NETWORK: "testnet",
-  HOST: "https://icp-api.io",
+jest.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
+setDefaultTestConstants({
   DEV: false,
-  FETCH_ROOT_KEY: false,
-  FEATURE_FLAG_ENVIRONMENT: {
-    ENABLE_SNS_2: true,
-    ENABLE_SNS_VOTING: true,
-    ENABLE_SNS_AGGREGATOR: true,
-    ENABLE_CKBTC: true,
-    ENABLE_CKTESTBTC: true,
-    TEST_FLAG_EDITABLE: true,
-    TEST_FLAG_NOT_EDITABLE: true,
-  },
-  SNS_AGGREGATOR_CANISTER_URL:
-    "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
-  STAKE_MATURITY: true,
   ENABLE_METRICS: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
-}));
+});
 
 global.localStorage = localStorageMock;
 

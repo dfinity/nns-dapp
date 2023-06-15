@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 ##########################
 # Hjelpe meg!
@@ -79,7 +79,11 @@ cd "$GIT_ROOT"
   #   - We need a few but not all of the types to have the Default macro
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
-  didc bind "${DID_PATH}" --target rs | sed -E 's/^(struct|enum|type) /pub &/g;s/^use .*/\/\/ &/g;s/\<Deserialize\>/&, Serialize, Clone, Debug/g;s/^  [a-z].*:/  pub&/g;s/^( *pub ) *pub /\1/g'
+  didc bind "${DID_PATH}" --target rs |
+    sed -E 's/^(struct|enum|type) /pub &/;
+            s@^use .*@// &@;
+            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;'
 } >"${RUST_PATH}"
 if test -f "${PATCH_PATH}"; then
   (

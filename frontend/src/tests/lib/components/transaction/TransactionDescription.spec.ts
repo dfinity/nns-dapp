@@ -26,12 +26,38 @@ describe("TransactionDescription", () => {
     expect(getByText(en.accounts.description)).toBeInTheDocument();
   });
 
-  it("should not render network", () => {
-    const { getByTestId } = render(TransactionDescription, {
+  it("should render transaction time seconds", () => {
+    const { getByText } = render(TransactionDescription, {
       props: { destinationAddress: mockMainAccount.identifier },
     });
 
-    expect(() => getByTestId("transaction-description-network")).toThrow();
+    expect(getByText(en.accounts.transaction_time)).toBeInTheDocument();
+    expect(getByText(en.accounts.transaction_time_seconds)).toBeInTheDocument();
+  });
+
+  it("should render transaction time bitcoin", () => {
+    const { getByText } = render(TransactionDescription, {
+      props: {
+        destinationAddress: mockMainAccount.identifier,
+        selectedNetwork: TransactionNetwork.BTC_TESTNET,
+      },
+    });
+
+    expect(getByText(en.accounts.transaction_time)).toBeInTheDocument();
+    expect(getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
+  });
+
+  it("should render ICP network as default", () => {
+    const { getByTestId } = render(TransactionDescription, {
+      props: {
+        destinationAddress: mockMainAccount.identifier,
+        selectedNetwork: undefined,
+      },
+    });
+
+    expect(getByTestId("transaction-description-network")?.textContent).toEqual(
+      en.accounts.network_icp
+    );
   });
 
   it("should render network", () => {

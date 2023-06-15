@@ -7,7 +7,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+  import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -44,7 +44,7 @@
     },
   ];
 
-  let currentStep: WizardStep;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let loading = false;
   let amount: TokenAmount;
@@ -100,10 +100,10 @@
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
-  {#if currentStep.name === "SelectDestination"}
-    <DestinationAddress on:nnsAddress={onSelectAddress} />
+  {#if currentStep?.name === "SelectDestination"}
+    <NnsDestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
-  {#if currentStep.name === "ConfirmDisburse" && destinationAddress !== undefined}
+  {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
       on:nnsConfirm={executeTransaction}

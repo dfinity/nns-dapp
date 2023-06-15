@@ -24,7 +24,7 @@
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { E8s } from "@dfinity/nns";
@@ -60,7 +60,7 @@
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = $selectedSnsNeuronStore.selected?.rootCanisterId;
 
-  let parameters: NervousSystemParameters | undefined;
+  let parameters: SnsNervousSystemParameters | undefined;
   $: parameters =
     $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 

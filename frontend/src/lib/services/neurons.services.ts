@@ -1,14 +1,13 @@
 import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { makeDummyProposals as makeDummyProposalsApi } from "$lib/api/dev.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import {
-  FORCE_CALL_STRATEGY,
-  IS_TESTNET,
-} from "$lib/constants/environment.constants";
+import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
   MIN_VERSION_STAKE_MATURITY_WORKAROUND,
-} from "$lib/constants/neurons.constants";
+  SNS_SUPPORT_VERSION,
+} from "$lib/constants/ledger-app.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { accountsStore } from "$lib/stores/accounts.store";
@@ -31,6 +30,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -257,7 +257,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -380,6 +380,28 @@ export const toggleAutoStakeMaturity = async (
   }
 };
 
+const checkCanBeMerged = async ({
+  sourceNeuronId,
+  targetNeuronId,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+}): Promise<{ sourceNeuron: NeuronInfo; targetNeuron: NeuronInfo }> => {
+  const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
+    sourceNeuronId
+  );
+  const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
+    targetNeuronId
+  );
+  const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
+  if (!isValid) {
+    throw new CannotBeMerged(
+      translate({ labelKey: messageKey ?? "error.governance_error" })
+    );
+  }
+  return { sourceNeuron, targetNeuron };
+};
+
 export const mergeNeurons = async ({
   sourceNeuronId,
   targetNeuronId,
@@ -389,18 +411,10 @@ export const mergeNeurons = async ({
 }): Promise<NeuronId | undefined> => {
   let success = false;
   try {
-    const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
-      sourceNeuronId
-    );
-    const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
-      targetNeuronId
-    );
-    const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
-    if (!isValid) {
-      throw new CannotBeMerged(
-        translate({ labelKey: messageKey ?? "error.governance_error" })
-      );
-    }
+    const { targetNeuron } = await checkCanBeMerged({
+      sourceNeuronId,
+      targetNeuronId,
+    });
 
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       targetNeuronId
@@ -430,6 +444,33 @@ export const mergeNeurons = async ({
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
+  }
+};
+
+export const simulateMergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+}): Promise<NeuronInfo | undefined> => {
+  try {
+    await checkCanBeMerged({
+      sourceNeuronId,
+      targetNeuronId,
+    });
+
+    const identity: Identity = await getAuthenticatedIdentity();
+
+    return await governanceApiService.simulateMergeNeurons({
+      sourceNeuronId,
+      targetNeuronId,
+      identity,
+    });
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+    // To inform there was an error
+    return undefined;
   }
 };
 
@@ -556,16 +597,23 @@ export const removeHotkey = async ({
 };
 
 export const splitNeuron = async ({
-  neuronId,
+  neuron,
   amount,
 }: {
-  neuronId: NeuronId;
+  neuron: NeuronInfo;
   amount: number;
 }): Promise<NeuronId | undefined> => {
   try {
     const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
+      neuron.neuronId
     );
+    const accounts = get(accountsStore);
+    if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
+      await assertLedgerVersion({
+        identity,
+        minVersion: SNS_SUPPORT_VERSION,
+      });
+    }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
     const amountE8s = numberToE8s(amount) + feeE8s;
@@ -575,14 +623,14 @@ export const splitNeuron = async ({
     }
 
     await governanceApiService.splitNeuron({
-      neuronId,
+      neuronId: neuron.neuronId,
       identity,
       amount: amountE8s,
     });
 
     await listNeurons();
 
-    return neuronId;
+    return neuron.neuronId;
   } catch (err) {
     toastsShow(mapNeuronErrorToToastMessage(err));
     return undefined;
@@ -901,7 +949,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
       catchError(error);

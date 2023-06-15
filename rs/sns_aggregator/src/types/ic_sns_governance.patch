@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 102317cc..9e78cfd4 100644
+index d1acc5d98..25b9ba676 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -9,6 +9,7 @@ use ic_cdk::api::call::CallResult;
+@@ -11,6 +11,7 @@ use ic_cdk::api::call::CallResult;
  // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
  // use ic_cdk::api::call::CallResult;
  
@@ -10,7 +10,7 @@ index 102317cc..9e78cfd4 100644
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GenericNervousSystemFunction {
    pub  validator_canister_id: Option<candid::Principal>,
-@@ -19,7 +20,7 @@ pub struct GenericNervousSystemFunction {
+@@ -21,7 +22,7 @@ pub struct GenericNervousSystemFunction {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum FunctionType {
@@ -19,7 +19,7 @@ index 102317cc..9e78cfd4 100644
    GenericNervousSystemFunction(GenericNervousSystemFunction),
  }
  
-@@ -180,12 +181,12 @@ pub enum Action {
+@@ -193,12 +194,12 @@ pub enum Action {
    ManageNervousSystemParameters(NervousSystemParameters),
    AddGenericNervousSystemFunction(NervousSystemFunction),
    RemoveGenericNervousSystemFunction(u64),
@@ -34,7 +34,7 @@ index 102317cc..9e78cfd4 100644
    ManageSnsMetadata(ManageSnsMetadata),
    ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
    Motion(Motion),
-@@ -256,8 +257,8 @@ pub struct SetDissolveTimestamp { dissolve_timestamp_seconds: u64 }
+@@ -270,8 +271,8 @@ pub struct SetDissolveTimestamp { dissolve_timestamp_seconds: u64 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Operation {
    ChangeAutoStakeMaturity(ChangeAutoStakeMaturity),
@@ -45,7 +45,7 @@ index 102317cc..9e78cfd4 100644
    IncreaseDissolveDelay(IncreaseDissolveDelay),
    SetDissolveTimestamp(SetDissolveTimestamp),
  }
-@@ -278,7 +279,7 @@ pub struct FinalizeDisburseMaturity {
+@@ -292,7 +293,7 @@ pub struct FinalizeDisburseMaturity {
  pub struct MemoAndController { controller: Option<candid::Principal>, memo: u64 }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -54,7 +54,7 @@ index 102317cc..9e78cfd4 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct ClaimOrRefresh { by: Option<By> }
-@@ -311,7 +312,7 @@ pub enum Command_2 {
+@@ -325,7 +326,7 @@ pub enum Command_2 {
    DisburseMaturity(DisburseMaturity),
    Configure(Configure),
    RegisterVote(RegisterVote),
@@ -63,7 +63,7 @@ index 102317cc..9e78cfd4 100644
    MakeProposal(Proposal),
    FinalizeDisburseMaturity(FinalizeDisburseMaturity),
    ClaimOrRefreshNeuron(ClaimOrRefresh),
-@@ -406,7 +407,7 @@ pub struct ClaimSwapNeuronsResponse {
+@@ -443,7 +444,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_metadata_arg0 {}
  
@@ -72,7 +72,7 @@ index 102317cc..9e78cfd4 100644
  pub struct GetMetadataResponse {
    pub  url: Option<String>,
    pub  logo: Option<String>,
-@@ -474,7 +475,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -517,7 +518,7 @@ pub struct GetSnsInitializationParametersResponse {
    pub  sns_initialization_parameters: String,
  }
  
@@ -81,7 +81,7 @@ index 102317cc..9e78cfd4 100644
  pub struct ListNervousSystemFunctionsResponse {
    pub  reserved_ids: Vec<u64>,
    pub  functions: Vec<NervousSystemFunction>,
-@@ -546,17 +547,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
+@@ -589,17 +590,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
  pub enum Command_1 {
    Error(GovernanceError),
    Split(SplitResponse),

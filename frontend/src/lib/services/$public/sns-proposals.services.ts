@@ -124,19 +124,6 @@ export const registerVoteDemo = async ({
       rootCanisterId,
     });
 
-    const $snsProposalsStore = get(snsProposalsStore);
-
-    console.log(
-      "Proposal after voting:",
-      (
-        $snsProposalsStore[rootCanisterId.toText()]
-          ?.proposals as SnsProposalData[]
-      )?.find(
-        ({ id }) =>
-          fromDefinedNullable(id).id === fromDefinedNullable(proposal.id).id
-      )
-    );
-
     toastsSuccess({
       labelKey: `${registrations} votes were successfully registered`,
     });
@@ -220,12 +207,15 @@ const getProposalFromStoreById = ({
  * @param {Object} params
  * @param {Principal} params.rootCanisterId
  * @param {SnsProposalId} params.proposalId
+ * @param {Function} params.handleError
+ * @param {boolean} params.reloadForBallots Skip the store value and fetch the proposal when there is no ballots available.
  */
 export const getSnsProposalById = async ({
   rootCanisterId,
   proposalId,
   setProposal,
   handleError,
+  reloadForBallots,
 }: {
   rootCanisterId: Principal;
   proposalId: SnsProposalId;
@@ -234,13 +224,21 @@ export const getSnsProposalById = async ({
     certified: boolean;
   }) => void;
   handleError?: (err: unknown) => void;
+  /**  */
+  reloadForBallots?: boolean;
 }): Promise<void> => {
   const proposal = getProposalFromStoreById({
     rootCanisterId,
     proposalId,
     certified: true,
   });
-  if (nonNullish(proposal)) {
+
+  // Get proposal from the store if proposal is there:
+  // (when ballots not needed OR when proposal has ballots)
+  if (
+    nonNullish(proposal) &&
+    (proposal.ballots.length > 0 || !reloadForBallots)
+  ) {
     setProposal({ proposal, certified: true });
     return;
   }

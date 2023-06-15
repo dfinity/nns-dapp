@@ -20,7 +20,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+jest.mock("$lib/api/ckbtc-minter.api", () => {
   return {
     getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
   };

@@ -1,6 +1,6 @@
 import {
   ckBTCTransfer,
-  getCkBTCAccounts,
+  getCkBTCAccount,
   getCkBTCToken,
 } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -23,40 +23,39 @@ describe("ckbtc-ledger api", () => {
 
   afterAll(() => jest.clearAllMocks());
 
-  describe("getCkBTCAccounts", () => {
-    it("returns main account with balance and token metadata", async () => {
-      const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
-        mockQueryTokenResponse
-      );
-      const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(
-        BigInt(10_000_000)
-      );
+  describe("getCkBTCAccount", () => {
+    it("returns main account with balance", async () => {
+      const balance = BigInt(10_000_000);
 
-      const accounts = await getCkBTCAccounts({
+      const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
+
+      const account = await getCkBTCAccount({
         certified: true,
         identity: mockIdentity,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
+        type: "main",
+        owner: mockIdentity.getPrincipal(),
       });
 
-      expect(accounts.length).toBeGreaterThan(0);
+      expect(account).not.toBeUndefined();
 
-      const main = accounts.find(({ type }) => type === "main");
-      expect(main).not.toBeUndefined();
-
-      expect(main?.balance.toE8s()).toEqual(BigInt(10_000_000));
+      expect(account?.balanceE8s).toEqual(balance);
 
       expect(balanceSpy).toBeCalled();
-      expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
-      ledgerCanisterMock.metadata.mockResolvedValue([]);
+    it("throws an error if no balance", () => {
+      ledgerCanisterMock.balance.mockImplementation(() =>
+        Promise.reject(new Error())
+      );
 
       const call = () =>
-        getCkBTCAccounts({
+        getCkBTCAccount({
           certified: true,
           identity: mockIdentity,
           canisterId: CKBTC_LEDGER_CANISTER_ID,
+          type: "main",
+          owner: mockIdentity.getPrincipal(),
         });
 
       expect(call).rejects.toThrowError();

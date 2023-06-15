@@ -1,10 +1,9 @@
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "$lib/types/account";
+import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import type { Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
@@ -16,51 +15,38 @@ import {
   type IcrcBlockIndex,
   type TransferParams,
 } from "@dfinity/ledger";
-import { TokenAmount } from "@dfinity/nns";
 import type { QueryParams } from "@dfinity/utils";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
   toNullable,
+  uint8ArrayToArrayOfNumber,
 } from "@dfinity/utils";
 
-export const getIcrcMainAccount = async ({
-  identity,
+export const getIcrcAccount = async ({
+  owner,
+  subaccount,
   certified,
+  type,
   getBalance,
-  getMetadata: ledgerMetadata,
 }: {
-  identity: Identity;
-  certified: boolean;
+  type: AccountType;
   getBalance: (params: BalanceParams) => Promise<IcrcTokens>;
-  /**
-   * TODO: integrate ckBTC fee
-   * @deprecated metadata should not be called here and token should not be interpreted per account because it is the same token for all accounts
-   */
-  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
-}): Promise<Account> => {
-  const mainAccountIdentifier = { owner: identity.getPrincipal() };
+} & IcrcAccount &
+  QueryParams): Promise<Account> => {
+  const account = { owner, subaccount };
 
-  const [mainBalanceE8s, metadata] = await Promise.all([
-    getBalance({ ...mainAccountIdentifier, certified }),
-    ledgerMetadata({ certified }),
-  ]);
-
-  const projectToken = mapOptionalToken(metadata);
-
-  if (projectToken === undefined) {
-    throw new LedgerErrorKey("error.icrc_token_load");
-  }
+  const balanceE8s = await getBalance({ ...account, certified });
 
   return {
-    identifier: encodeIcrcAccount(mainAccountIdentifier),
-    principal: identity.getPrincipal(),
-    balance: TokenAmount.fromE8s({
-      amount: mainBalanceE8s,
-      token: projectToken,
+    identifier: encodeIcrcAccount(account),
+    principal: owner,
+    ...(nonNullish(subaccount) && {
+      subAccount: uint8ArrayToArrayOfNumber(subaccount),
     }),
-    type: "main",
+    balanceE8s,
+    type,
   };
 };
 
@@ -106,8 +92,8 @@ export const icrcTransfer = async ({
   createdAt,
   transfer: transferApi,
   ...rest
-}: IcrcTransferParams): Promise<void> => {
-  await transferApi({
+}: IcrcTransferParams): Promise<IcrcBlockIndex> =>
+  transferApi({
     to: {
       owner,
       subaccount: toNullable(subaccount),
@@ -118,4 +104,3 @@ export const icrcTransfer = async ({
       : undefined,
     ...rest,
   });
-};

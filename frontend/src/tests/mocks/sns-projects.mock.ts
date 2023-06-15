@@ -20,8 +20,10 @@ import {
   type SnsSwap,
   type SnsSwapBuyerState,
   type SnsSwapDerivedState,
+  type SnsSwapInit,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =
@@ -46,6 +48,9 @@ export const principal = (index: number): Principal =>
     Principal.fromText(
       "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe"
     ),
+    Principal.fromText(
+      "4etav-nasrq-uvswa-iqsll-6spts-ryhsl-e4yf6-xtycj-4sxvp-ciay5-yae"
+    ),
   ][index];
 
 export const createTransferableAmount = (
@@ -54,6 +59,8 @@ export const createTransferableAmount = (
   transfer_start_timestamp_seconds: BigInt(0),
   amount_e8s: amount,
   transfer_success_timestamp_seconds: BigInt(0),
+  transfer_fee_paid_e8s: [],
+  amount_transferred_e8s: [],
 });
 export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
   icp: [createTransferableAmount(amount)],
@@ -96,6 +103,24 @@ export const mockSnsParams: SnsParams = {
   sale_delay_seconds: [],
 };
 
+export const mockInit: SnsSwapInit = {
+  sns_root_canister_id:
+    "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe",
+  fallback_controller_principal_ids: [],
+  neuron_minimum_stake_e8s: [100_000_000n],
+  confirmation_text: [],
+  nns_governance_canister_id:
+    "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
+  transaction_fee_e8s: [10_000n],
+  icp_ledger_canister_id:
+    "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe",
+  sns_ledger_canister_id:
+    "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae",
+  sns_governance_canister_id:
+    "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
+  restricted_countries: [],
+};
+
 export const mockSwap: SnsSummarySwap = {
   neuron_recipes: [],
   cf_participants: [],
@@ -126,6 +151,9 @@ export const mockQuerySwap: SnsSwap = {
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
   sns_tokens_per_icp: 1,
+  cf_participant_count: [BigInt(100)],
+  direct_participant_count: [BigInt(300)],
+  cf_neuron_count: [BigInt(200)],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {
@@ -147,6 +175,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(0),
     swapCanisterId: principal(3),
     governanceCanisterId: principal(2),
+    ledgerCanisterId: principal(1),
+    indexCanisterId: principal(4),
     metadata: mockMetadata,
     token: mockToken,
     swap: mockSwap,
@@ -156,6 +186,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(1),
     swapCanisterId: principal(2),
     governanceCanisterId: principal(3),
+    ledgerCanisterId: principal(0),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAClSURBVHgB7dqxDYMwEEBRE2UET5I6icQUzMgc9EziHUAuqLElS+if/iuoruAXyCeL6fufjxTMuz5KKbeDOee0rXtq8Vs+TbM9cy3vWNX3fKWAjKIwisIoipBRU9iNYuTp3zM7eu6a9ZuiMIrCKAqjKNwoek711nuPkXPXrN8UhVEURlEYReFG4R3Fg4yiMIrCKAo3Cgr/o6AwisIoCqMojKIIuSadjJ5VyRrmqP4AAAAASUVORK5CYII=",
       name: "Pac-Man",
@@ -175,6 +207,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(2),
     swapCanisterId: principal(1),
     governanceCanisterId: principal(3),
+    ledgerCanisterId: principal(0),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACjSURBVHgB7dkxDkRAGEDh32ZPsuWWWy+JQ4gzimPolUpXIXMCM4nmjfcVqglegT+j+Xf9EZV5p8MyrZcL2/EX+7BFjs/8zVpbsi7nHpN0n6+okFEURlEYRVFlVPP4iaLkq37npFB6bZ8pCqMojKIwisKJomSP4s5zukcRvig4jKIwisKJgsK/HhRGURhFYRSFEwWFEwWFURRGURhFYRRFlWPSCah/Vck0pRWfAAAAAElFTkSuQmCC",
       name: "Super Mario",
@@ -194,6 +228,8 @@ export const mockSnsSummaryList: SnsSummary[] = [
     rootCanisterId: principal(3),
     swapCanisterId: principal(0),
     governanceCanisterId: principal(2),
+    ledgerCanisterId: principal(1),
+    indexCanisterId: principal(4),
     metadata: {
       logo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA0CAYAAAAqunDVAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC6SURBVHgB7ZkxCsJAFAUTETyAexcbEfZSHsJLBcTGu6wHsFK3SL0/EIvZzBSpHj87gYXHz3i+5M/QGfv6OB2mZvD5zqHcnC2lNHMppb+8ezd0iFIUlKKgFIUupcbNN4rpeB0i5Ndt1ZnRefNM7xQFpSgoRUEpCv02ijX3CZXoTmFJLnLGSj2nd4qCUhSUoqAUBXcUSxrF497O/j6ofz2iKEVBKQpKUbBRUHBHQUEpCkpRUIqCUhS6rElfBK1VyaWjTNYAAAAASUVORK5CYII=",
       name: "Donkey Kong",
@@ -232,6 +268,39 @@ export const summaryForLifecycle = (
     lifecycle,
   },
 });
+
+export const createSummary = ({
+  lifecycle = SnsSwapLifecycle.Open,
+  confirmationText = undefined,
+  restrictedCountries = undefined,
+  minParticipants = 20,
+}: {
+  lifecycle?: SnsSwapLifecycle;
+  confirmationText?: string | undefined;
+  restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
+}): SnsSummary => {
+  const init: SnsSwapInit = {
+    ...mockInit,
+    confirmation_text: toNullable(confirmationText),
+    restricted_countries: nonNullish(restrictedCountries)
+      ? [{ iso_codes: restrictedCountries }]
+      : [],
+  };
+  const params: SnsParams = {
+    ...mockSnsParams,
+    min_participants: minParticipants,
+  };
+  const summary = summaryForLifecycle(lifecycle);
+  return {
+    ...summary,
+    swap: {
+      ...summary.swap,
+      init: [init],
+      params,
+    },
+  };
+};
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   url: [`https://my.url/`],

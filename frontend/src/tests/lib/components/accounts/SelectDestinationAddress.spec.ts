@@ -13,6 +13,7 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
@@ -49,7 +50,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       expect(toggle).toBeInTheDocument();
     });
 
@@ -61,7 +62,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       expect(toggle).not.toBeInTheDocument();
     });
 
@@ -76,12 +77,38 @@ describe("SelectDestinationAddress", () => {
         container.querySelector("input[name='accounts-address']")
       ).toBeInTheDocument();
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>
         expect(queryByTestId("select-account-dropdown")).toBeInTheDocument()
       );
+    });
+
+    it("should not render toggle and address input if selection methods is dropdown", () => {
+      const { container } = render(SelectDestinationAddress, {
+        props: {
+          rootCanisterId: OWN_CANISTER_ID,
+          selectMethods: "dropdown",
+        },
+      });
+
+      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(
+        container.querySelector("input[name='accounts-address']")
+      ).toBeNull();
+    });
+
+    it("should not render dropdown and toggle if selection methods is manual", () => {
+      const { container, queryByTestId } = render(SelectDestinationAddress, {
+        props: {
+          rootCanisterId: OWN_CANISTER_ID,
+          selectMethods: "manual",
+        },
+      });
+
+      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(queryByTestId("select-account-dropdown")).toBeNull();
     });
   });
 
@@ -101,7 +128,7 @@ describe("SelectDestinationAddress", () => {
         container.querySelector("input[name='accounts-address']")
       ).toBeInTheDocument();
 
-      const toggle = container.querySelector("input[id='toggle']");
+      const toggle = queryToggleById(container);
       toggle && fireEvent.click(toggle);
 
       await waitFor(() =>

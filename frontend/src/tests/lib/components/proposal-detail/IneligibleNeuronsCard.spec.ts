@@ -2,28 +2,19 @@
  * @jest-environment jsdom
  */
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
+import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-
-const proposalTimestampSeconds = BigInt(100);
-const proposalInfo = {
-  ...mockProposalInfo,
-  proposalTimestampSeconds,
-} as ProposalInfo;
-const neuron = {
-  ...mockNeuron,
-  createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
-} as NeuronInfo;
 
 describe("IneligibleNeuronsCard", () => {
   it("should be hidden if no neurons", () => {
     const { queryByTestId } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo,
-        neurons: [],
+        ineligibleNeurons: [],
+        minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
       },
     });
     expect(queryByTestId("neuron-card")).not.toBeInTheDocument();
@@ -32,55 +23,63 @@ describe("IneligibleNeuronsCard", () => {
   it("should display texts", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo,
-        neurons: [
+        ineligibleNeurons: [
           {
-            neuron,
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+            neuronIdString: "123",
+            reason: "short",
           },
-        ],
+        ] as IneligibleNeuronData[],
+        minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
       },
     });
     expect(
       getByText(en.proposal_detail__ineligible.headline)
     ).toBeInTheDocument();
-    expect(getByText(en.proposal_detail__ineligible.text)).toBeInTheDocument();
+    expect(
+      getByText(
+        replacePlaceholders(en.proposal_detail__ineligible.text, {
+          $minDissolveDelay: secondsToDissolveDelayDuration(
+            BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
+          ),
+        })
+      )
+    ).toBeInTheDocument();
   });
 
-  it("should display ineligible neurons (< 6 months) ", () => {
+  it("should display ineligible neurons with reason 'short'", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: { ...proposalInfo, ballots: [] },
-        neurons: [
+        ineligibleNeurons: [
           {
-            ...neuron,
-            createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
-            neuronId: BigInt(123),
+            neuronIdString: "123",
+            reason: "short",
           },
-        ] as NeuronInfo[],
+        ] as IneligibleNeuronData[],
+        minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
       },
     });
     expect(getByText("123", { exact: false })).toBeInTheDocument();
     expect(
-      getByText(en.proposal_detail__ineligible.reason_short, { exact: false })
+      getByText(
+        replacePlaceholders(en.proposal_detail__ineligible.reason_short, {
+          $minDissolveDelay: secondsToDissolveDelayDuration(
+            BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
+          ),
+        }),
+        { exact: false }
+      )
     ).toBeInTheDocument();
   });
 
   it("should display ineligible neurons (created after proposal) ", () => {
     const { getByText, container } = render(IneligibleNeuronsCard, {
-      props: {
-        proposalInfo: {
-          ...proposalInfo,
-          ballots: [],
+      ineligibleNeurons: [
+        {
+          neuronIdString: "111",
+          reason: "since",
         },
-        neurons: [
-          {
-            ...neuron,
-            neuronId: BigInt(111),
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
-          },
-        ] as NeuronInfo[],
-      },
+      ] as IneligibleNeuronData[],
+      minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     });
     expect(getByText("111", { exact: false })).toBeInTheDocument();
     expect(
@@ -88,26 +87,36 @@ describe("IneligibleNeuronsCard", () => {
     ).toEqual(en.proposal_detail__ineligible.reason_since);
   });
 
+  it("should display ineligible neurons due to reason 'no-permission'", () => {
+    const { getByText, container } = render(IneligibleNeuronsCard, {
+      ineligibleNeurons: [
+        {
+          neuronIdString: "111",
+          reason: "no-permission",
+        },
+      ] as IneligibleNeuronData[],
+      minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+    });
+    expect(getByText("111", { exact: false })).toBeInTheDocument();
+    expect(
+      (container.querySelector("small") as HTMLElement).textContent
+    ).toEqual(en.proposal_detail__ineligible.reason_no_permission);
+  });
+
   it("should display multiple ineligible neurons", () => {
     const { container, getByText } = render(IneligibleNeuronsCard, {
       props: {
-        proposalInfo: {
-          ...proposalInfo,
-          proposalTimestampSeconds,
-          ballots: [],
-        },
-        neurons: [
+        ineligibleNeurons: [
           {
-            ...neuron,
-            neuronId: BigInt(111),
-            createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+            neuronIdString: "111",
+            reason: "since",
           },
           {
-            ...neuron,
-            neuronId: BigInt(222),
-            createdTimestampSeconds: proposalTimestampSeconds,
+            neuronIdString: "222",
+            reason: "short",
           },
-        ] as NeuronInfo[],
+        ] as IneligibleNeuronData[],
+        minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
       },
     });
     expect(container.querySelectorAll("li").length).toBe(2);
@@ -115,7 +124,14 @@ describe("IneligibleNeuronsCard", () => {
       (container.querySelector("small") as HTMLElement).textContent
     ).toEqual(en.proposal_detail__ineligible.reason_since);
     expect(
-      getByText(en.proposal_detail__ineligible.reason_short, { exact: false })
+      getByText(
+        replacePlaceholders(en.proposal_detail__ineligible.reason_short, {
+          $minDissolveDelay: secondsToDissolveDelayDuration(
+            BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
+          ),
+        }),
+        { exact: false }
+      )
     ).toBeInTheDocument();
   });
 });

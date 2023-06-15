@@ -337,7 +337,6 @@ pub fn hash_bytes(value: impl AsRef<[u8]>) -> Hash {
 
 /// Insert an asset into the state and update the certificates.
 pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
-    dfn_core::api::print(format!("Inserting asset {}", &path.clone().into()));
     STATE.with(|state| {
         insert_asset_into_state(state, path, asset);
         update_root_hash(&state.asset_hashes.borrow_mut());
@@ -348,7 +347,6 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
 /// Note:  This does NOT update the certificates.  To insert multiple assets, call
 ///        this repeatedly and then update the root hash.
 pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, asset: Asset) {
-    dfn_core::api::print(format!("Inserting asset {}", &path.clone().into()));
     let mut asset_hashes = state.asset_hashes.borrow_mut();
     let mut assets = state.assets.borrow_mut();
     let path: String = path.into();
@@ -361,12 +359,23 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
 
 /// Adds the files bundled in the wasm to the state.
 ///
-/// - Adds the files to `state.assets`.
-/// - Signs the given path and all alternate paths for the given asset.
-///
 /// Note: Used both in init and post_upgrade
 pub fn init_assets() {
     let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
+    insert_tar_xz(compressed);
+}
+
+/// Adds an xz compressed tarball of assets to the state.
+///
+/// - Adds the files to `state.assets`.
+/// - Signs the given path and all alternate paths for the given asset.
+///
+/// Note: The vec is mutated during decompression, so pass by reference is inefficient
+///       as it would force the data to be copied into a new vector, even when the
+///       original is no longer needed.
+pub fn insert_tar_xz(compressed: Vec<u8>) {
+    dfn_core::api::print("Inserting assets...");
+    let mut num_assets = 0;
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
@@ -395,21 +404,20 @@ pub fn init_assets() {
             entry.read_to_end(&mut bytes).unwrap();
 
             if name.ends_with("index.html.gz") {
-                dfn_core::api::print(format!("{}: {} + arguments", &name, bytes.len()));
                 let mut html = gunzip_string(&bytes);
                 if let Some(insertion_point) = html.find("</head>") {
                     html.insert_str(insertion_point, &arguments_html);
                 }
                 let html = template_engine.populate(&html);
                 bytes = gzip(html.as_bytes());
-            } else {
-                dfn_core::api::print(format!("{}: {}", &name, bytes.len()));
             }
 
             insert_asset_into_state(state, name, Asset::new(bytes));
+            num_assets += 1;
         }
         update_root_hash(&state.asset_hashes.borrow_mut());
-    })
+    });
+    dfn_core::api::print(format!("Inserted {num_assets} assets."));
 }
 
 impl StableState for Assets {

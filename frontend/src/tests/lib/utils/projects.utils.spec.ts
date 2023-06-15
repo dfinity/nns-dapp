@@ -11,10 +11,14 @@ import {
   filterCommittedProjects,
   filterProjectsStatus,
   hasUserParticipatedToSwap,
+  participateButtonStatus,
   projectRemainingAmount,
+  userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
+  createSummary,
   createTransferableAmount,
   mockSnsFullProject,
   mockSnsParams,
@@ -25,9 +29,18 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 
 describe("project-utils", () => {
+  const summaryUsRestricted: SnsSummary = createSummary({
+    lifecycle: SnsSwapLifecycle.Open,
+    restrictedCountries: ["US"],
+  });
+  const summaryNoRestricted: SnsSummary = createSummary({
+    lifecycle: SnsSwapLifecycle.Open,
+    restrictedCountries: [],
+  });
+
   describe("filter", () => {
     it("should filter by status", () => {
       expect(
@@ -195,16 +208,16 @@ describe("project-utils", () => {
           summary: undefined,
           swapCommitment: undefined,
         })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: null, swapCommitment: undefined })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: undefined, swapCommitment: null })
-      ).toBeFalsy();
+      ).toBe(false);
       expect(
         canUserParticipateToSwap({ summary: null, swapCommitment: null })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("cannot participate to swap if sale is not open", () => {
@@ -213,28 +226,28 @@ describe("project-utils", () => {
           summary: summaryForLifecycle(SnsSwapLifecycle.Unspecified),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Pending),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         canUserParticipateToSwap({
           summary: summaryForLifecycle(SnsSwapLifecycle.Aborted),
           swapCommitment: mockSwapCommitment,
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("can participate to swap if sale is open", () => {
@@ -259,7 +272,7 @@ describe("project-utils", () => {
             },
           },
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("can participate to swap if max user commitment is not reached", () => {
@@ -269,6 +282,136 @@ describe("project-utils", () => {
           swapCommitment: mockSwapCommitment,
         })
       ).toBeTruthy();
+    });
+  });
+
+  describe("userCountryIsNeeded", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("country not needed", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: undefined,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: undefined,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBe(false);
+      expect(
+        userCountryIsNeeded({
+          summary: null,
+          swapCommitment: null,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country not needed if sale is not open", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Unspecified,
+            restrictedCountries: ["US"],
+          }),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Pending,
+            restrictedCountries: ["US"],
+          }),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Committed,
+            restrictedCountries: ["US"],
+          }),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+
+      expect(
+        userCountryIsNeeded({
+          summary: createSummary({
+            lifecycle: SnsSwapLifecycle.Aborted,
+            restrictedCountries: ["US"],
+          }),
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country is needed", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryUsRestricted,
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(true);
+    });
+
+    it("country not needed if empty list of denied countries", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryNoRestricted,
+          swapCommitment: mockSwapCommitment,
+          loggedIn: true,
+        })
+      ).toBe(false);
+    });
+
+    it("country not needed if not logged in", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryUsRestricted,
+          swapCommitment: mockSwapCommitment,
+          loggedIn: false,
+        })
+      ).toBe(false);
+    });
+
+    it("country is not needed if max user commitment is reached", () => {
+      expect(
+        userCountryIsNeeded({
+          summary: summaryUsRestricted,
+          swapCommitment: {
+            rootCanisterId: mockSwapCommitment.rootCanisterId,
+            myCommitment: {
+              icp: [
+                createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
+              ],
+            },
+          },
+          loggedIn: true,
+        })
+      ).toBe(false);
     });
   });
 
@@ -285,19 +428,19 @@ describe("project-utils", () => {
         hasUserParticipatedToSwap({
           swapCommitment: undefined,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
           swapCommitment: null,
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
           swapCommitment: mockSnsSwapCommitment(principal(3)),
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         hasUserParticipatedToSwap({
@@ -308,7 +451,7 @@ describe("project-utils", () => {
             },
           },
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 
@@ -323,6 +466,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: BigInt(0),
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -350,6 +496,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: userCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -384,6 +533,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -414,6 +566,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: projectCommitment,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -447,6 +602,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: projectCommitment,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -473,6 +631,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -610,6 +771,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentE8s,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -644,6 +808,9 @@ describe("project-utils", () => {
           derived: {
             buyer_total_icp_e8s: currentProjectParticipation,
             sns_tokens_per_icp: 1,
+            cf_participant_count: [],
+            direct_participant_count: [],
+            cf_neuron_count: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -684,6 +851,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: BigInt(0),
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -794,6 +964,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -819,6 +992,9 @@ describe("project-utils", () => {
         derived: {
           buyer_total_icp_e8s: currentE8s,
           sns_tokens_per_icp: 1,
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -833,6 +1009,213 @@ describe("project-utils", () => {
         amountE8s: participationE8s,
       });
       expect(expected).toBe(false);
+    });
+  });
+
+  describe("participateButtonStatus", () => {
+    const summary: SnsSummary = {
+      ...mockSnsFullProject.summary,
+    };
+
+    const notOpenSummary: SnsSummary = {
+      ...mockSnsFullProject.summary,
+      swap: {
+        ...mockSnsFullProject.summary.swap,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    };
+
+    const userNoCommitment: SnsSwapCommitment = {
+      rootCanisterId: mockSnsFullProject.rootCanisterId,
+      myCommitment: undefined,
+    };
+
+    const testTicket: SnsSwapTicket = {
+      creation_time: BigInt(nowInSeconds()),
+      ticket_id: 123n,
+      account: [
+        {
+          owner: [mockPrincipal],
+          subaccount: [],
+        },
+      ],
+      amount_icp_e8s: BigInt(1000_000_000),
+    };
+
+    it("returns 'logged-out' if user is not logged in", () => {
+      const expected = participateButtonStatus({
+        loggedIn: false,
+        summary,
+        swapCommitment: userNoCommitment,
+        userCountry: "not loaded",
+        ticket: null,
+      });
+      expect(expected).toBe("logged-out");
+    });
+
+    it("returns 'loading' if summary or swap are still fetching", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: undefined,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: null,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: null,
+          swapCommitment: userNoCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: undefined,
+          swapCommitment: userNoCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("loading");
+    });
+
+    it("returns 'loading' if ticket is still fetching or it's open", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: undefined,
+        })
+      ).toBe("loading");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: testTicket,
+        })
+      ).toBe("loading");
+    });
+
+    it("returns 'disabled-not-open' if project is not open", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: notOpenSummary,
+          swapCommitment: userNoCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("disabled-not-open");
+    });
+
+    it("returns 'disabled-max-participation' if user already participated with max amount", () => {
+      const userMaxCommitment: SnsSwapCommitment = {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        myCommitment: {
+          icp: [
+            createTransferableAmount(
+              summary.swap.params.max_participant_icp_e8s + BigInt(1)
+            ),
+          ],
+        },
+      };
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userMaxCommitment,
+          userCountry: { isoCode: "CH" },
+          ticket: null,
+        })
+      ).toBe("disabled-max-participation");
+    });
+
+    it("returns 'enabled' if there are no restricted countries", () => {
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary: summaryNoRestricted,
+          swapCommitment: userNoCommitment,
+          userCountry: "not loaded",
+          ticket: null,
+        })
+      ).toBe("enabled");
+      expect(
+        participateButtonStatus({
+          loggedIn: true,
+          summary,
+          swapCommitment: userNoCommitment,
+          userCountry: new Error("Failed to get user country"),
+          ticket: null,
+        })
+      ).toBe("enabled");
+    });
+
+    describe("when project has a restricted countries list", () => {
+      it("returns 'disabled-not-eligible' if user is in a restricted country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary: summaryUsRestricted,
+            swapCommitment: userNoCommitment,
+            userCountry: { isoCode: "US" },
+            ticket: null,
+          })
+        ).toBe("disabled-not-eligible");
+      });
+
+      it("returns 'loading' if no user country but restricted list is not empty", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary: summaryUsRestricted,
+            swapCommitment: userNoCommitment,
+            userCountry: "not loaded",
+            ticket: null,
+          })
+        ).toBe("loading");
+      });
+
+      it("returns 'enabled' if it fails to get the user country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary: summaryUsRestricted,
+            swapCommitment: userNoCommitment,
+            userCountry: new Error("Failed to get user country"),
+            ticket: null,
+          })
+        ).toBe("enabled");
+      });
+
+      it("returns 'enabled' if user is NOT in a restricted country", () => {
+        expect(
+          participateButtonStatus({
+            loggedIn: true,
+            summary: summaryUsRestricted,
+            swapCommitment: userNoCommitment,
+            userCountry: { isoCode: "SP" },
+            ticket: null,
+          })
+        ).toBe("enabled");
+      });
     });
   });
 });

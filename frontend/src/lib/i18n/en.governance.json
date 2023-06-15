@@ -21,7 +21,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap",
     "ReplicaVersionManagement": "Replica Version Management",
     "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
-    "SnsAndCommunityFund": "SNS & Community Fund"
+    "SnsAndCommunityFund": "SNS & Neurons' Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -38,7 +38,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
     "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
-    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund"
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -135,7 +135,8 @@
     "UpdateAllowedPrincipals": "Update Allowed Principals",
     "RetireReplicaVersion": "Retire Replica Version",
     "InsertSnsWasmUpgradePathEntries": "Insert SNS-WASM Upgrade Path Entries",
-    "UpdateElectedReplicaVersions": "Update Elected Replica Versions"
+    "UpdateElectedReplicaVersions": "Update Elected Replica Versions",
+    "BitcoinSetConfig": "Set Bitcoin Config"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -176,6 +177,7 @@
     "UpdateAllowedPrincipals": "Update the SNS-WASM canister's list of allowed principals. This list guards which principals can deploy an SNS.",
     "RetireReplicaVersion": "A proposal to retire previously elected and unused replica versions. The specified versions are removed from the list of blessed replica versions in the registry. This ensures that a replica can no longer be upgraded to these versions. The proposal will fail to remove replica version if that version is currently used by a subnet or unassigned node.",
     "InsertSnsWasmUpgradePathEntries": "Insert custom upgrade path entries into SNS-WASM for all SNSs, or for an SNS specified by its governance canister ID.",
-    "UpdateElectedReplicaVersions": "A proposal to update currently elected replica versions, by electing a new version, and/or unelecting multiple unused versions.<br/><br/>The version to elect (identified by the hash of the installation image) is added to the registry. Besides creating a record for that version, the proposal also appends that version to the list of elected versions that can be installed on a subnet. By itself, this proposal does not affect any upgrade.<br/><br/>The specified versions to unelect are removed from the registry and the elected versions record. This ensures that the replica cannot upgrade to these versions anymore."
+    "UpdateElectedReplicaVersions": "A proposal to update currently elected replica versions, by electing a new version, and/or unelecting multiple unused versions.<br/><br/>The version to elect (identified by the hash of the installation image) is added to the registry. Besides creating a record for that version, the proposal also appends that version to the list of elected versions that can be installed on a subnet. By itself, this proposal does not affect any upgrade.<br/><br/>The specified versions to unelect are removed from the registry and the elected versions record. This ensures that the replica cannot upgrade to these versions anymore.",
+    "BitcoinSetConfig": "A proposal to set the configuration of the underlying Bitcoin Canister that powers the Bitcoin API. The configuration includes whether or not the Bitcoin Canister should sync new blocks from the network, whether the API is enabled, the fees to charge, etc."
   }
 }

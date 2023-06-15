@@ -11,6 +11,7 @@ import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { formatToken } from "$lib/utils/token.utils";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -29,6 +30,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { ICPToken } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import AccountsTest from "./AccountsTest.svelte";
@@ -80,7 +82,7 @@ describe("NnsWallet", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       cancelPollAccounts();
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -124,7 +126,7 @@ describe("NnsWallet", () => {
   describe("accounts loaded", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      accountsStore.set(mockAccountsStoreData);
+      accountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should render nns project name", async () => {
@@ -133,6 +135,20 @@ describe("NnsWallet", () => {
       const titleRow = getByTestId("projects-summary");
 
       expect(titleRow).not.toBeNull();
+    });
+
+    it("should render a balance with token in summary", async () => {
+      const { getByTestId } = render(NnsWallet, props);
+
+      await waitFor(() =>
+        expect(getByTestId("token-value-label")).not.toBeNull()
+      );
+
+      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockMainAccount.balanceE8s,
+        })} ${ICPToken.symbol}`
+      );
     });
 
     it("should enable new transaction action for route and store", async () => {
@@ -225,7 +241,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Hardware Wallet)", () => {
     beforeEach(() => {
-      accountsStore.set({
+      accountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -253,7 +269,7 @@ describe("NnsWallet", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.reset();
+      accountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();

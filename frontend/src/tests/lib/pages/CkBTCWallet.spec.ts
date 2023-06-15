@@ -25,15 +25,11 @@ import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
-import { TokenAmount } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
 
-const expectedBalanceAfterTransfer = TokenAmount.fromE8s({
-  amount: BigInt(11_111),
-  token: mockCkBTCToken,
-});
+const expectedBalanceAfterTransfer = 11_111n;
 
 jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -45,7 +41,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
           accounts: [
             {
               ...mockCkBTCMainAccount,
-              balance: expectedBalanceAfterTransfer,
+              balanceE8s: expectedBalanceAfterTransfer,
             },
           ],
           certified: true,
@@ -53,7 +49,7 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       });
 
-      return { success: true };
+      return { blockIndex: 123n };
     }),
   };
 });
@@ -61,14 +57,27 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
     loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/api/ckbtc-minter.api", () => {
+  return {
+    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
   };
 });
 
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
+    ...jest.requireActual("$lib/services/ckbtc-minter.services"),
     updateBalance: jest.fn().mockResolvedValue([]),
     depositFee: jest.fn().mockResolvedValue(789n),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -150,6 +159,38 @@ describe("CkBTCWallet", () => {
       );
     });
 
+    it("should render a detailed balance in summary", async () => {
+      const { queryByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+      );
+
+      const icp: HTMLSpanElement | null = queryByTestId("token-value");
+
+      expect(icp?.innerHTML).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balanceE8s,
+          detailed: true,
+        })}`
+      );
+    });
+
+    it("should render a balance with token in summary", async () => {
+      const { getByTestId } = render(CkBTCWallet, props);
+
+      await waitFor(() =>
+        expect(getByTestId("token-value-label")).not.toBeNull()
+      );
+
+      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balanceE8s,
+          detailed: true,
+        })} ${mockCkBTCToken.symbol}`
+      );
+    });
+
     const modalProps = {
       ...props,
       testComponent: CkBTCWallet,
@@ -180,7 +221,10 @@ describe("CkBTCWallet", () => {
       // Check original sum
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: mockCkBTCMainAccount.balance.toE8s() })}`
+          `${formatToken({
+            value: mockCkBTCMainAccount.balanceE8s,
+            detailed: true,
+          })}`
         )
       );
 
@@ -194,7 +238,7 @@ describe("CkBTCWallet", () => {
 
       await testTransferTokens({
         result,
-        selectedNetwork: TransactionNetwork.ICP_CKTESTBTC,
+        selectedNetwork: TransactionNetwork.ICP,
       });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
@@ -202,7 +246,7 @@ describe("CkBTCWallet", () => {
       // Account should have been updated and sum should be reflected
       await waitFor(() =>
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: expectedBalanceAfterTransfer.toE8s() })}`
+          `${formatToken({ value: expectedBalanceAfterTransfer })}`
         )
       );
     });
@@ -238,7 +282,9 @@ describe("CkBTCWallet", () => {
 
       const spy = jest.spyOn(services, "syncCkBTCAccounts");
 
-      fireEvent.click(getByTestId("update-ckbtc-balance") as HTMLButtonElement);
+      fireEvent.click(
+        getByTestId("reload-receive-account") as HTMLButtonElement
+      );
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
     });

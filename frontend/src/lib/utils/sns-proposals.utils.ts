@@ -4,20 +4,25 @@ import {
   SNS_PROPOSAL_COLOR,
 } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { VotingNeuron } from "$lib/types/proposals";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import type { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
+  SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
   SnsTally,
+  SnsVote,
 } from "@dfinity/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { keyOfOptional } from "./utils";
@@ -37,6 +42,7 @@ export type SnsProposalDataMap = {
   wait_for_quiet_deadline_increase_seconds: bigint;
   decided_timestamp_seconds: bigint;
   proposer?: SnsNeuronId;
+  /** will be removed in the future */
   is_eligible_for_rewards: boolean;
   executed_timestamp_seconds: bigint;
 
@@ -217,7 +223,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > 0) {
+  if (reward_event_round > BigInt(0)) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
@@ -228,7 +234,7 @@ export const snsRewardStatus = ({
     // Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L760
     throw new Error("Proposal must have a wait_for_quiet_state.");
   }
-  if (now > deadline) {
+  if (now < deadline) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
   }
 
@@ -338,3 +344,47 @@ export const proposalActionFields = (
     return false;
   });
 };
+
+export const snsProposalIdString = (proposal: SnsProposalData): string =>
+  fromDefinedNullable(proposal.id).id.toString();
+
+export const snsProposalId = (proposal: SnsProposalData): bigint =>
+  fromDefinedNullable(proposal.id).id;
+
+export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
+  proposal.decided_timestamp_seconds === 0n;
+
+/**
+ * Returns the voting power of a neuron for a proposal.
+ */
+export const ballotVotingPower = ({
+  proposal,
+  neuron,
+}: {
+  proposal: SnsProposalData;
+  neuron: SnsNeuron;
+}): bigint =>
+  BigInt(
+    proposal.ballots.find(
+      ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
+    )?.[1].voting_power || 0
+  );
+
+export const snsNeuronToVotingNeuron = ({
+  neuron,
+  proposal,
+}: {
+  neuron: SnsNeuron;
+  proposal: SnsProposalData;
+}): VotingNeuron => ({
+  neuronIdString: getSnsNeuronIdAsHexString(neuron),
+  votingPower: ballotVotingPower({ proposal, neuron }),
+});
+
+/** To have the logic in one place */
+export const toNnsVote = (vote: SnsVote | Vote): Vote =>
+  vote as unknown as Vote;
+
+/** To have the logic in one place */
+export const toSnsVote = (vote: SnsVote | Vote): SnsVote =>
+  vote as unknown as SnsVote;

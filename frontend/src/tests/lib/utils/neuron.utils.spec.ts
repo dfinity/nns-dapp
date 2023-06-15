@@ -1,4 +1,5 @@
 import {
+  SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
@@ -24,6 +25,7 @@ import {
   canBeMerged,
   checkInvalidState,
   dissolveDelayMultiplier,
+  filterIneligibleNnsNeurons,
   followeesByTopic,
   followeesNeurons,
   formatVotingPower,
@@ -47,6 +49,7 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
+  maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
   neuronCanBeSplit,
@@ -57,6 +60,7 @@ import {
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
+  type IneligibleNeuronData,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
 import {
@@ -70,6 +74,7 @@ import {
   mockNeuronControlled,
   mockNeuronNotControlled,
 } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -79,6 +84,9 @@ import {
   Topic,
   Vote,
   type BallotInfo,
+  type NeuronInfo,
+  type ProposalInfo,
+  type RewardEvent,
 } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -281,13 +289,13 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: fullNeuronWithoutEnoughStake,
       };
-      expect(hasValidStake(neuronWithoutEnoughStake)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutEnoughStake)).toBe(false);
 
       const neuronWithoutFullNeuron = {
         ...mockNeuron,
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
-      expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutFullNeuron)).toBe(false);
     });
   });
 
@@ -1687,7 +1695,9 @@ describe("neuron-utils", () => {
         proposal,
       });
       expect(expected).toHaveLength(2);
-      const compactNeuron1 = expected.find(({ id }) => id === neuronId1);
+      const compactNeuron1 = expected.find(
+        ({ idString }) => idString === neuronId1.toString()
+      );
       expect(compactNeuron1).toBeDefined();
       compactNeuron1 &&
         expect(compactNeuron1.votingPower).toBe(ballot1.votingPower);
@@ -1891,6 +1901,100 @@ describe("neuron-utils", () => {
         ageSeconds: mockNeuron.ageSeconds + BigInt(SECONDS_IN_FOUR_YEARS),
       };
       expect(neuronAge(neuron)).toEqual(BigInt(SECONDS_IN_FOUR_YEARS));
+    });
+  });
+
+  describe("filterIneligibleNnsNeurons", () => {
+    const proposalTimestampSeconds = BigInt(100);
+    const testProposalInfo = {
+      ...mockProposalInfo,
+      proposalTimestampSeconds,
+      ballots: [
+        {
+          neuronId: 3n,
+          vote: Vote.Yes,
+          votingPower: 12345n,
+        },
+      ],
+    } as ProposalInfo;
+    const testSinceNeuron = {
+      ...mockNeuron,
+      neuronId: 1n,
+      createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+    } as NeuronInfo;
+    const testShortNeuron = {
+      ...mockNeuron,
+      neuronId: 2n,
+      createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
+    } as NeuronInfo;
+    const testVotedNeuron = {
+      ...mockNeuron,
+      neuronId: 3n,
+    } as NeuronInfo;
+
+    it("should return ineligible neurons data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testSinceNeuron, testShortNeuron, testVotedNeuron],
+        }).length
+      ).toEqual(2);
+    });
+
+    it("should return since reason data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testSinceNeuron],
+        })
+      ).toEqual([
+        {
+          neuronIdString: "1",
+          reason: "since",
+        },
+      ] as IneligibleNeuronData[]);
+    });
+
+    it("should return short reason data", () => {
+      expect(
+        filterIneligibleNnsNeurons({
+          proposal: testProposalInfo,
+          neurons: [testShortNeuron],
+        })
+      ).toEqual([
+        {
+          neuronIdString: "2",
+          reason: "short",
+        },
+      ] as IneligibleNeuronData[]);
+    });
+  });
+
+  describe("maturityLastDistribution", () => {
+    it("should return last distribution timestamp w/o rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        settled_proposals: [
+          {
+            id: 0n,
+          },
+        ],
+      } as RewardEvent;
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(12234455555n);
+    });
+
+    it("should return last distribution timestamp after 3 rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        rounds_since_last_distribution: [3n],
+        settled_proposals: [],
+      } as RewardEvent;
+      const threeDays = BigInt(3 * SECONDS_IN_DAY);
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(
+        12234455555n - threeDays
+      );
     });
   });
 });

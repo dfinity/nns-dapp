@@ -15,18 +15,23 @@
 <article data-tid={`follow-topic-${id}-section`}>
   <Collapsible {id} iconSize="medium">
     <div class="wrapper" slot="header">
-      <div>
-        <slot name="title" />
-        <slot name="subtitle" />
-      </div>
-      <div class="toolbar">
-        <h3 class="badge" data-tid={`topic-${id}-followees-badge`}>
-          {count}
-        </h3>
-      </div>
+      <span class="value"><slot name="title" /></span>
+      <span class="badge" data-tid={`topic-${id}-followees-badge`}>
+        {count}
+      </span>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
-      <p class="label">{$i18n.follow_neurons.current_followees}</p>
+      <p class="subtitle description"><slot name="subtitle" /></p>
+
+      {#if count > 0}
+        <p
+          class="description current-followees"
+          data-tid="current-followees-label"
+        >
+          {$i18n.follow_neurons.current_followees}
+        </p>
+      {/if}
+
       <div class="followees-wrapper">
         <slot />
       </div>
@@ -45,52 +50,46 @@
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
   article {
-    :global(.collapsible-expand-icon) {
-      align-items: start;
-      padding-top: var(--padding-3x);
+    padding: 0 0 var(--padding-2x);
+
+    &:first-of-type {
+      margin-top: var(--padding-2x);
     }
   }
 
   .wrapper {
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: space-between;
     gap: var(--padding-2x);
-    width: 100%;
-  }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    // Used to align with the collapsible icon
-    padding-right: var(--padding-2x);
-    margin-top: var(--padding);
-    margin-right: var(--padding-2x);
+    width: calc(100% - var(--padding-4x));
   }
 
   .badge {
     background-color: var(--background-contrast);
     color: var(--background);
     border-radius: 50%;
-    padding: var(--padding);
-    width: var(--padding-2x);
-    height: var(--padding-2x);
+    padding: var(--padding-1_5x);
+    width: var(--padding-0_5x);
+    height: var(--padding-0_5x);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
   }
 
-  .content {
-    .followees-wrapper {
-      padding: 0 var(--padding) 0 0;
-      margin-bottom: var(--padding);
-    }
-    .button-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--padding) 0;
-    }
+  .button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 var(--padding-2x);
+  }
+
+  .subtitle {
+    padding: 0 0 var(--padding) 0;
+  }
+
+  .current-followees {
+    padding: var(--padding) 0 0;
   }
 </style>

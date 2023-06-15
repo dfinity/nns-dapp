@@ -1,9 +1,10 @@
 import { getSnsToken } from "$lib/api/sns-ledger.api";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/environment.constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -32,7 +33,7 @@ export const loadSnsToken = async ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: rootCanisterId, token }),
     onError: ({ error: err, certified }) => {
-      if (certified && FORCE_CALL_STRATEGY !== "query") {
+      if (certified && notForceCallStrategy()) {
         return;
       }
 

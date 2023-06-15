@@ -1,5 +1,4 @@
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
-import type { TokenAmount } from "@dfinity/nns";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -11,8 +10,27 @@ export type NewTransaction = {
 export interface TransactionInit {
   sourceAccount?: Account;
   destinationAddress?: string;
+  /**
+   * e.g. ckBTC transactions can either happen on the IC (ckBTC -> ckBTC) or on the IC and Bitcoin Network (ckBTC -> BTC)
+   */
   mustSelectNetwork?: boolean;
+  /**
+   * e.g. when a conversion of ckBTC -> BTC resulted in some funds stuck in the withdrawal account, the user might try to restart the conversion. In that case, only the Bitcoin Network will be targeted.
+   */
+  networkReadonly?: boolean;
   amount?: number;
+  /**
+   * Generally user can use either one of the accounts or enter a manual address (see dedicated component for more rules).
+   * However, it is possible that for some use case we might want to display either the input field or the dropdown - i.e. one method or the other.
+   * This is the case when user restarts the ckBTC -> BTC conversion in which only manual address can be used.
+   */
+  selectDestinationMethods?: TransactionSelectDestinationMethods;
+  /**
+   * Fees are applied for transactions on the IC.
+   * Yet, when user restart the conversion of ckBTC -> BTC from the withdrawal account, there is no transfer to the ledger.
+   * That is why with the help of this flag, the ledger fee can be skipped on the UI side.
+   */
+  showLedgerFee?: boolean;
 }
 
 export type ValidateAmountFn = (params: {
@@ -55,13 +73,14 @@ export interface Transaction {
   from: string | undefined;
   // Account string representation
   to: string | undefined;
-  displayAmount: TokenAmount;
+  displayAmount: bigint;
   date: Date;
 }
 
 export enum TransactionNetwork {
-  ICP_CKBTC = "network_icp_ckbtc",
-  ICP_CKTESTBTC = "network_icp_cktestbtc",
+  ICP = "network_icp",
   BTC_MAINNET = "network_btc_mainnet",
   BTC_TESTNET = "network_btc_testnet",
 }
+
+export type TransactionSelectDestinationMethods = "all" | "manual" | "dropdown";

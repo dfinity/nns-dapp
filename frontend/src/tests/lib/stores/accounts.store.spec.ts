@@ -16,8 +16,31 @@ describe("accountsStore", () => {
     expect(initState.hardwareWallets).toBeUndefined();
   };
 
+  // Convenience functions for tests that don't care about the functionality of
+  // the queued store to handle out of order responses.
+  const accountsStoreSet = (accounts: AccountsStoreData) => {
+    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+    mutableStore.set(accounts);
+  };
+
+  const accountsStoreSetBalance = ({
+    accountIdentifier,
+    balanceE8s,
+  }: {
+    accountIdentifier: string;
+    balanceE8s: bigint;
+  }) => {
+    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+    mutableStore.setBalance({ accountIdentifier, balanceE8s, certified: true });
+  };
+
+  const accountsStoreReset = () => {
+    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+    mutableStore.reset({ certified: true });
+  };
+
   beforeEach(() => {
-    accountsStore.reset();
+    accountsStore.resetForTesting();
   });
 
   it("initializes to undefined", () => {
@@ -25,7 +48,7 @@ describe("accountsStore", () => {
   });
 
   it("should set main account", () => {
-    accountsStore.set({ main: mockMainAccount, subAccounts: [] });
+    accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
     const { main } = get(accountsStore);
     expect(main).toEqual(mockMainAccount);
@@ -33,9 +56,9 @@ describe("accountsStore", () => {
 
   it("should set certified data", () => {
     const { certified: initialCertified } = get(accountsStore);
-    expect(initialCertified).toBeFalsy();
+    expect(initialCertified).toBe(undefined);
 
-    accountsStore.set({
+    accountsStoreSet({
       main: mockMainAccount,
       subAccounts: [],
       certified: true,
@@ -46,87 +69,184 @@ describe("accountsStore", () => {
   });
 
   it("should reset account store", () => {
-    accountsStore.set({ main: mockMainAccount, subAccounts: [] });
-
-    accountsStore.reset();
-
+    accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
+    accountsStoreReset();
     expectStoreInitialValues();
+  });
+
+  it("should not override new data with stale data", () => {
+    const mutableStore1 = accountsStore.getSingleMutationAccountsStore();
+    mutableStore1.set({
+      main: mockMainAccount,
+      subAccounts: [],
+      certified: false,
+    });
+
+    expect(get(accountsStore).subAccounts).toHaveLength(0);
+
+    const mutableStore2 = accountsStore.getSingleMutationAccountsStore();
+    mutableStore2.set({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+      certified: false,
+    });
+
+    expect(get(accountsStore).subAccounts).toHaveLength(1);
+
+    // Slow update response for out-dated state without subaccount
+    mutableStore1.set({
+      main: mockMainAccount,
+      subAccounts: [],
+      certified: true,
+    });
+
+    // Should not have overridden the newer data with subaccount
+    expect(get(accountsStore).subAccounts).toHaveLength(1);
   });
 
   describe("setBalance", () => {
     it("should set balance for main account", () => {
-      accountsStore.set({ main: mockMainAccount, subAccounts: [] });
+      accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-      expect(get(accountsStore)?.main.balance).toEqual(mockMainAccount.balance);
+      expect(get(accountsStore)?.main.balanceE8s).toEqual(
+        mockMainAccount.balanceE8s
+      );
       const newBalanceE8s = BigInt(100);
-      accountsStore.setBalance({
+      accountsStoreSetBalance({
         accountIdentifier: mockMainAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should set balance for subaccount", () => {
-      accountsStore.set({
+      accountsStoreSet({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
 
-      expect(get(accountsStore)?.subAccounts[0].balance).toEqual(
-        mockSubAccount.balance
+      expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
+        mockSubAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
-      accountsStore.setBalance({
+      accountsStoreSetBalance({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
       const store = get(accountsStore);
-      expect(store?.subAccounts[0].balance.toE8s()).toEqual(newBalanceE8s);
-      expect(store.main.balance).toEqual(mockMainAccount.balance);
+      expect(store?.subAccounts[0].balanceE8s).toEqual(newBalanceE8s);
+      expect(store.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
     });
 
     it("should set balance for hw account", () => {
-      accountsStore.set({
+      accountsStoreSet({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balance).toEqual(
-        mockHardwareWalletAccount.balance
+      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+        mockHardwareWalletAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
-      accountsStore.setBalance({
+      accountsStoreSetBalance({
         accountIdentifier: mockHardwareWalletAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balance.toE8s()).toEqual(
+      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
         newBalanceE8s
       );
     });
 
     it("should not set balance if identifier doesn't match", () => {
-      accountsStore.set({
+      accountsStoreSet({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
       const newBalanceE8s = BigInt(100);
-      accountsStore.setBalance({
+      accountsStoreSetBalance({
         accountIdentifier: "not-matching-identifier",
         balanceE8s: newBalanceE8s,
       });
 
       const store = get(accountsStore);
-      expect(store?.hardwareWallets[0].balance).toEqual(
-        mockHardwareWalletAccount.balance
+      expect(store?.hardwareWallets[0].balanceE8s).toEqual(
+        mockHardwareWalletAccount.balanceE8s
       );
-      expect(store?.subAccounts[0].balance).toEqual(mockSubAccount.balance);
-      expect(store?.main.balance).toEqual(mockMainAccount.balance);
+      expect(store?.subAccounts[0].balanceE8s).toEqual(
+        mockSubAccount.balanceE8s
+      );
+      expect(store?.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
+    });
+
+    it("should reapply set balance on new data from an older request", () => {
+      const mainBalance1 = BigInt(100);
+      const mainBalance2 = BigInt(200);
+      const subBalance1 = BigInt(300);
+      const subBalance2 = BigInt(400);
+
+      const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
+        main: {
+          ...mockMainAccount,
+          balanceE8s: mainBalance,
+        },
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            balanceE8s: subBalance,
+          },
+        ],
+        certified,
+      });
+
+      const expectBalances = ({
+        mainBalance,
+        subBalance,
+      }: {
+        mainBalance: bigint;
+        subBalance: bigint;
+      }) => {
+        expect(get(accountsStore)?.main.balanceE8s).toEqual(mainBalance);
+        expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
+          subBalance
+        );
+      };
+
+      const mutableStore1 = accountsStore.getSingleMutationAccountsStore();
+      mutableStore1.set(
+        dataWithBalances({
+          mainBalance: mainBalance1,
+          subBalance: subBalance1,
+          certified: false,
+        })
+      );
+      expectBalances({ mainBalance: mainBalance1, subBalance: subBalance1 });
+
+      const mutableStore2 = accountsStore.getSingleMutationAccountsStore();
+      mutableStore2.setBalance({
+        accountIdentifier: mockSubAccount.identifier,
+        balanceE8s: subBalance2,
+        certified: false,
+      });
+      expectBalances({ mainBalance: mainBalance1, subBalance: subBalance2 });
+
+      // The update response of the old mutation still has subBalance1 for the
+      // subaccount.
+      mutableStore1.set(
+        dataWithBalances({
+          mainBalance: mainBalance2,
+          subBalance: subBalance1,
+          certified: true,
+        })
+      );
+      // But this does not override the balance from the newer setBalance
+      // mutation.
+      expectBalances({ mainBalance: mainBalance2, subBalance: subBalance2 });
     });
   });
 });

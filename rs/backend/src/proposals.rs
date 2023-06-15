@@ -1,5 +1,5 @@
 use crate::proposals::def::*;
-use candid::parser::types::{IDLType, PrimType};
+use candid::parser::types::{IDLType, IDLTypes, PrimType};
 use candid::parser::value::IDLValue;
 use candid::{CandidType, Decode, Deserialize};
 use ic_base_types::CanisterId;
@@ -62,6 +62,8 @@ pub struct InternetIdentityInit {
     pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
     pub register_rate_limit: Option<RateLimitConfig>,
+    pub max_num_latest_delegation_origins: Option<u64>,
+    pub migrate_storage_to_memory_manager: Option<bool>,
 }
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct RateLimitConfig {
@@ -96,27 +98,41 @@ pub enum ArchiveIntegration {
     Pull,
 }
 
-fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
+/// Best effort to determine the types of a cansiter args.
+fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
+    // If canister id is II
+    // use InternetIdentityInit type
+    let args = if canister_id == Some(IDENTITY_CANISTER_ID) {
+        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
+        vec![IDLType::OptT(Box::new(idl_type))]
+    } else {
+        vec![]
+    };
+    IDLTypes { args }
+}
+
+fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
     if arg.is_empty() {
         return "[]".to_owned();
     }
-    // If canister id is II
-    // use InternetIdentityInit type
-    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
-        let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
-        IDLType::OptT(Box::new(idl_type))
-    } else {
-        // This will be ignored, so we won't have any type information.
-        IDLType::PrimT(PrimType::Null)
-    };
+    // We support only one argument, for the time being.
+    let idl_type = arg_types
+        .args
+        .get(0)
+        .cloned()
+        .unwrap_or_else(|| IDLType::PrimT(PrimType::Null));
 
-    let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
-    let options = Idl2JsonOptions {
-        bytes_as: Some(BytesFormat::Hex),
-        long_bytes_as: None,
-    };
-    let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
-    serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+    match Decode!(arg, IDLValue) {
+        Ok(idl_value) => {
+            let options = Idl2JsonOptions {
+                bytes_as: Some(BytesFormat::Hex),
+                long_bytes_as: None,
+            };
+            let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
+            serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+        }
+        Err(_) => "[]".to_owned(),
+    }
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
@@ -193,15 +209,17 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         36 => identity::<RetireReplicaVersionPayload>(payload_bytes),
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
+        39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
 
 fn debug<T: Debug>(value: T) -> String {
-    format!("{:?}", value)
+    format!("{value:?}")
 }
 
 mod def {
+    use crate::proposals::canister_arg_types;
     use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
@@ -223,7 +241,7 @@ mod def {
 
     // NNS function 3 - AddNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::AddCanisterProposal;
+    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -245,7 +263,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, None);
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -263,7 +281,7 @@ mod def {
 
     // NNS function 4 - UpgradeNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::ChangeCanisterProposal;
+    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -285,7 +303,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, Some(payload.canister_id));
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -384,7 +402,7 @@ mod def {
 
     // NNS function 17 - StopOrStartNNSCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
-    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::StopOrStartCanisterProposal;
+    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
 
     // NNS function 18 - RemoveNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
@@ -512,7 +530,7 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
@@ -520,7 +538,7 @@ mod def {
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in bytes {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
@@ -606,6 +624,26 @@ mod def {
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
     pub type UpdateElectedReplicaVersionsPayload =
         registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
+
+    // NNS function 39 - BitcoinSetConfig
+    // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
+    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+
+    #[derive(CandidType, Serialize, Deserialize)]
+    pub struct BitcoinSetConfigProposalHumanReadable {
+        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub set_config_request: ic_btc_interface::SetConfigRequest,
+    }
+
+    impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
+        fn from(proposal: BitcoinSetConfigProposal) -> Self {
+            let set_config_request: ic_btc_interface::SetConfigRequest = candid::decode_one(&proposal.payload).unwrap();
+            BitcoinSetConfigProposalHumanReadable {
+                network: proposal.network,
+                set_config_request,
+            }
+        }
+    }
 }
 
 #[cfg(test)]

@@ -2,6 +2,23 @@
 
 This document list a couple of useful information to develop the NNS-dapp frontend.
 
+## Table of contents
+
+- [dapp development](#dapp-development)
+- [Local](#local)
+- [Testnet](#testnet)
+- [Preview](#preview)
+  - [Configure](#configure)
+- [e2e](#e2e)
+  - [Running against local server](#running-against-local-server)
+- [Requirements](#requirements)
+- [Dependencies](#dependencies)
+- [ckBTC deployment](#ckbtc-deployment)
+  - [Bitcoin network](#bitcoin-network)
+  - [Ledger, Index and Minter](#ledger-index-and-minter)
+  - [Feature flag](#feature-flag)
+- [Mint bitcoin](#mint-bitcoin)
+
 ## dapp development
 
 NNS-dapp frontend uses an `.env` file to read various environment information and variables.
@@ -14,11 +31,12 @@ That is why we are providing a `./config.sh` script that generate the above envi
 To run the dapp against canisters deployed locally on a simulated IC network, use the steps below, or run `./scripts/dev-local.sh` which guides you through these steps
 
 - Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
-- Deploy the Nns backend canisters locally with `dfx nns install`
+- Deploy the NNS backend canisters locally with `dfx nns install`
 - From the last line of output of `dfx nns install` note down the value url for `nns-dapp`
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
 - Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the url you noted down before.
 - Create a file called `canister_ids.json` in `./dfx/local/` with the following content (and make sure to replace the id:
+
 ```
 {
   "nns-dapp": {
@@ -26,6 +44,7 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
   }
 }
 ```
+
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the
@@ -38,6 +57,16 @@ Once you have a running replica with nns installed and a fixed
 ## Testnet
 
 The [canister_ids.json] data provides the list of canister IDs available for various test environments.
+
+## Preview
+
+To run a production like environment locally against a replica run:
+
+```bash
+DFX_NETWORK=<replica-network> ../config.sh
+npm run build
+npm run preview
+```
 
 ### Configure
 
@@ -72,9 +101,67 @@ The `dfx` version installed locally should match the one defined in [dfx.json](h
 [canister_ids.json]: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json
 [package.json]: https://github.com/dfinity/nns-dapp/blob/main/frontend/package.json
 
+## Dependencies
+
+It's essential to keep our dependencies up-to-date to benefit from the latest features, bug fixes, and security patches.
+
+In this guide, we will walk you through the process of checking for newer dependencies and updating them for your frontend dapp using the [npm-check-updates](https://github.com/raineorshine/npm-check-updates) tool.
+
+1. Install `npm-check-updates`:
+
+First, make sure you have Node.js and npm (Node Package Manager) installed on your system. If not, you can download and install them from the official Node.js website (https://nodejs.org).
+
+To install the `npm-check-updates` tool, open your terminal and run the following command:
+
+```bash
+npm install -g npm-check-updates
+```
+
+2. Navigate to the Frontend Folder:
+
+Navigate to the folder where the frontend dapp is located.
+
+```bash
+cd frontend
+```
+
+3. Check for Newer Dependencies:
+   
+Identify the available newer versions of the dependencies. Run the following command in your terminal:
+
+```bash
+ncu -u
+```
+
+This command will provide you with a list of available updates and automatically update the `package.json` file with the newer versions.
+
+4. Review and Modify `package.json`:
+
+Open the `package.json` file in a text editor. Review the changes made by the tool and consider whether you want to update all the libraries or selectively update specific ones.
+
+If there are dependencies you do not want to update at this point, you can manually revert the changes in the file by reverting the corresponding lines.
+
+5. Install Newer Dependencies:
+
+To effectively install the updated dependencies, execute the following command in your terminal:
+
+```bash
+npm i
+```
+
+This command will install the newer versions of the dependencies and update the `package-lock.json` file accordingly.
+
+6. Thoroughly Test The Dapp:
+
+After the installation is complete, it's crucial to thoroughly test the frontend dapp. Ensure that all the functionalities are working as expected and there are no compatibility issues with the updated dependencies.
+
+7. Create a Pull Request (PR):
+   
+If everything looks good and the frontend dapp is functioning correctly with the updated dependencies, it's time to create a pull request. Include the modified `package.json` and `package-lock.json` files in a new PR to let others review and merge the changes.
+
 ## ckBTC deployment
 
-> Last update: 2023, Jan. 30
+> Last update: 2023, May 1
 
 ckBTC deployment and development in NNS-dapp are in progress.
 
@@ -95,45 +182,60 @@ Add following in `defaults` of [dfx.json](./dfx.json).
 }
 ```
 
-### Ledger and minter
+### Ledger, Index and Minter
 
-Deploying ckBTC ledger and minter are as well not yet automated.
+Deploying ckBTC ledger, index and minter are as well not yet automated.
 
-To deploy these locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc).
+Their wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
 
-However, this scripts requires downloading these canisters WASM and did files locally first and configuring these manually in [dfx.json](./dfx.json).
+```
+./scripts/ckbtc/download-ckbtc
+```
+
+To deploy the canisters locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc) as well.
+
+However, it requires first to manually edit [dfx.json](./dfx.json).
 
 e.g. in `canisters`:
 
 ```
-"ckbtc_test_minter": {
+"ckbtc_minter": {
   "type": "custom",
   "candid": "target/ic/ckbtc_minter.did",
   "wasm": "target/ic/ckbtc_minter.wasm"
 },
-"ckbtc_test_ledger": {
+"ckbtc_ledger": {
   "type": "custom",
   "candid": "target/ic/ckbtc_ledger.did",
   "wasm": "target/ic/ckbtc_ledger.wasm"
 },
-"ckbtc_test_index": {
+"ckbtc_index": {
   "type": "custom",
   "candid": "target/ic/ckbtc_index.did",
   "wasm": "target/ic/ckbtc_index.wasm"
-}
+},
+"ckbtc_kyt": {
+  "type": "custom",
+  "candid": "target/ic/ckbtc_kyt.did",
+  "wasm": "target/ic/ckbtc_kyt.wasm"
+},
 ```
 
-Once canisters deployed, their respective IDs shall be collected and updated in [canister-ids.constants.ts](./frontend/src/lib/constants/canister-ids.constants.ts).
+Once set, the script can be executed.
+
+> Note: when the script is run, the network should be provided
+
+```bash
+DFX_NETWORK=local ./scripts/ckbtc/deploy-ckbtc
+```
+
+After deployment, their respective IDs shall be collected and updated in [ckbtc-canister-ids.constants.ts](./frontend/src/lib/constants/ckbtc-canister-ids.constants.ts).
 
 Likewise, as the configuration is not yet automated, there are no `.env` variable that are yet generated.
 
-### Index
-
-The index canister does not exist yet on mainnet but, will be proposed soon. Same pattern will apply.
-
 ### Feature flag
 
-Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default. 
+Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default.
 
 Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
 

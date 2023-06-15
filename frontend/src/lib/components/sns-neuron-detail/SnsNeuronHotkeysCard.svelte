@@ -29,10 +29,10 @@
   import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
-  export let parameters: NervousSystemParameters;
+  export let parameters: SnsNervousSystemParameters;
 
   const { reload, store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -133,8 +133,8 @@
       {:else}
         <ul>
           {#each hotkeys as hotkey (hotkey)}
-            <li>
-              <Value>{hotkey}</Value>
+            <li data-tid="hotkey-row">
+              <Value testId="hotkey-principal">{hotkey}</Value>
               {#if canManageHotkeys}
                 <button
                   class="text"

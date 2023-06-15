@@ -10,7 +10,7 @@
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import type { NervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
@@ -28,7 +28,7 @@
   let neuronDissolveDelaySeconds: bigint;
   $: neuronDissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
 
-  let snsParameters: NervousSystemParameters | undefined;
+  let snsParameters: SnsNervousSystemParameters | undefined;
   $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
   let neuronStake: TokenAmount;

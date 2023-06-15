@@ -24,6 +24,7 @@ frontend/src/tests/
 frontend/playwright*
 frontend/jest*
 frontend/tsconfig.spec.json
+frontend/.env
 e2e-tests
 **/*.wasm
 /deployment-config.json

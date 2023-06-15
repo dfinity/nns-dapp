@@ -5,32 +5,27 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockMainAccount: Account = {
   identifier:
     "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
-  balance: TokenAmount.fromString({
-    amount: "1234567.8901",
-    token: ICPToken,
-  }) as TokenAmount,
+  balanceE8s: 123456789010000n,
   principal: Principal.fromText("aaaaa-aa"),
   type: "main",
 };
 
+export const mockSubAccountArray = [
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 1,
+];
+
 export const mockSubAccount: Account = {
   identifier:
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-  balance: TokenAmount.fromString({
-    amount: "1234567.8901",
-    token: ICPToken,
-  }) as TokenAmount,
-  subAccount: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 1,
-  ],
+  balanceE8s: 123456789010000n,
+  subAccount: mockSubAccountArray,
   name: "test subaccount",
   type: "subAccount",
 };
@@ -38,10 +33,7 @@ export const mockSubAccount: Account = {
 export const mockHardwareWalletAccount: Account = {
   identifier:
     "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
-  balance: TokenAmount.fromString({
-    amount: "1234567.8901",
-    token: ICPToken,
-  }) as TokenAmount,
+  balanceE8s: 123456789010000n,
   principal: Principal.fromText(
     "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
   ),

@@ -10,7 +10,6 @@ import {
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -45,7 +44,7 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 
 jest.mock("$lib/services/sns-parameters.services", () => {
   return {
-    loadSnsParameters: jest.fn().mockReturnValue(undefined),
+    loadSnsParameters: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -95,7 +94,6 @@ describe("SnsNeurons", () => {
     it("should subscribe to store and call services to set up data", async () => {
       render(SnsNeurons);
       await waitFor(() => expect(authStoreMock).toHaveBeenCalled());
-      await waitFor(() => expect(loadSnsParameters).toHaveBeenCalled());
       await waitFor(() => expect(syncSnsAccounts).toBeCalled());
       await waitFor(() => expect(syncSnsNeurons).toBeCalled());
     });

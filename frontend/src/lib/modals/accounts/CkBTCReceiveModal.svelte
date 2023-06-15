@@ -1,33 +1,28 @@
 <script lang="ts">
   import {
-    busy,
     Modal,
     Segment,
     SegmentButton,
     Spinner,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+  import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import { createEventDispatcher } from "svelte";
   import type { CkBTCReceiveModalData } from "$lib/types/ckbtc-accounts.modal";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
-  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import { nonNullish } from "@dfinity/utils";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
-  import { TransactionNetwork } from "$lib/types/transaction";
 
   export let data: CkBTCReceiveModalData;
 
@@ -35,17 +30,9 @@
   let canisters: CkBTCAdditionalCanisters;
   let account: Account | undefined;
   let reload: (() => Promise<void>) | undefined;
-  let displayBtcAddress: boolean;
   let canSelectAccount: boolean;
 
-  $: ({
-    account,
-    reload,
-    canisters,
-    universeId,
-    displayBtcAddress,
-    canSelectAccount,
-  } = data);
+  $: ({ account, reload, canisters, universeId, canSelectAccount } = data);
 
   let bitcoinSegmentId = Symbol("bitcoin");
   let ckBTCSegmentId = Symbol("ckBTC");
@@ -70,42 +57,26 @@
   $: logo = bitcoin ? BITCOIN_LOGO : ckTESTBTC ? CKTESTBTC_LOGO : CKBTC_LOGO;
 
   let bitcoinSegmentLabel: string;
-  $: bitcoinSegmentLabel = isUniverseCkTESTBTC(universeId)
+  $: bitcoinSegmentLabel = ckTESTBTC
     ? $i18n.ckbtc.test_bitcoin
     : $i18n.ckbtc.bitcoin;
 
   let tokenLabel: string;
   $: tokenLabel = bitcoin
-    ? isUniverseCkTESTBTC(universeId)
+    ? ckTESTBTC
       ? $i18n.ckbtc.test_bitcoin
       : $i18n.ckbtc.bitcoin
-    : isUniverseCkTESTBTC(universeId)
+    : ckTESTBTC
     ? $i18n.ckbtc.test_title
     : $i18n.ckbtc.title;
 
   let segmentLabel: string;
-  $: segmentLabel = isUniverseCkTESTBTC(universeId)
-    ? $i18n.ckbtc.test_title
-    : $i18n.ckbtc.title;
+  $: segmentLabel = ckTESTBTC ? $i18n.ckbtc.test_title : $i18n.ckbtc.title;
 
   // Avoid a UI glich by not showing the buttons until the QR Code is rendered
   let qrCodeRendered: boolean;
 
   const dispatcher = createEventDispatcher();
-
-  // TODO(GIX-1320): ckBTC - update_balance is an happy path, improve UX once track_balance implemented
-  const updateBalance = async () => {
-    const { success } = await updateBalanceService({
-      minterCanisterId: canisters.minterCanisterId,
-      reload,
-    });
-
-    if (!success) {
-      return;
-    }
-
-    dispatcher("nnsClose");
-  };
 
   const reloadAccountAndClose = async () => {
     startBusy({
@@ -118,12 +89,6 @@
     stopBusy("reload-receive-account");
   };
 
-  // TODO: to be removed when ckBTC with minter is live.
-  let token: TokensStoreUniverseData | undefined = undefined;
-  $: token = nonNullish($selectedCkBTCUniverseIdStore)
-    ? $ckBTCTokenStore[universeId.toText()]
-    : undefined;
-
   let title: string;
   $: title = replacePlaceholders($i18n.wallet.token_address, {
     $tokenSymbol: tokenLabel,
@@ -135,21 +100,35 @@
       ? $bitcoinAddressStore[account?.identifier]
       : undefined
     : account?.identifier;
+
+  // When used in ckBTC receive modal, the identifier is originally undefined that's why we reload when it changes
+  const loadBitcoinAddress = async (
+    identifier: AccountIdentifierText | undefined
+  ) => {
+    if (isNullish(identifier)) {
+      return;
+    }
+
+    await loadBtcAddress({
+      minterCanisterId: canisters.minterCanisterId,
+      identifier,
+    });
+  };
+
+  $: loadBitcoinAddress(account?.identifier);
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
   <span slot="title">{$i18n.ckbtc.receive}</span>
 
-  {#if displayBtcAddress}
-    <div class="receive">
-      <Segment bind:selectedSegmentId bind:this={segment}>
-        <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
-        <SegmentButton segmentId={bitcoinSegmentId}
-          >{bitcoinSegmentLabel}</SegmentButton
-        >
-      </Segment>
-    </div>
-  {/if}
+  <div class="receive">
+    <Segment bind:selectedSegmentId bind:this={segment}>
+      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
+      <SegmentButton segmentId={bitcoinSegmentId}
+        >{bitcoinSegmentLabel}</SegmentButton
+      >
+    </Segment>
+  </div>
 
   <ReceiveSelectAccountDropdown
     {account}
@@ -173,12 +152,7 @@
 
       <svelte:fragment slot="additional-information">
         {#if bitcoin}
-          <BitcoinKYTFee
-            minterCanisterId={canisters.minterCanisterId}
-            selectedNetwork={ckTESTBTC
-              ? TransactionNetwork.BTC_TESTNET
-              : TransactionNetwork.BTC_MAINNET}
-          />
+          <BitcoinKYTFee {universeId} />
         {/if}
       </svelte:fragment>
     </ReceiveAddressQRCode>
@@ -191,20 +165,11 @@
 
   <div class="toolbar">
     {#if qrCodeRendered}
-      {#if bitcoin}
-        <button
-          class="primary"
-          on:click={updateBalance}
-          disabled={$busy}
-          data-tid="update-ckbtc-balance">{$i18n.core.finish}</button
-        >
-      {:else}
-        <button
-          class="primary"
-          on:click={reloadAccountAndClose}
-          data-tid="reload-receive-account">{$i18n.core.finish}</button
-        >
-      {/if}
+      <button
+        class="primary"
+        on:click={reloadAccountAndClose}
+        data-tid="reload-receive-account">{$i18n.core.finish}</button
+      >
     {/if}
   </div>
 </Modal>

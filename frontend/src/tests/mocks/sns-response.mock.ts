@@ -6,14 +6,20 @@ import type {
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
-import { toNullable } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   mockDerived,
+  mockInit,
   mockQueryMetadata,
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
-import { governanceCanisterIdMock, swapCanisterIdMock } from "./sns.api.mock";
+import {
+  governanceCanisterIdMock,
+  indexCanisterIdMock,
+  ledgerCanisterIdMock,
+  swapCanisterIdMock,
+} from "./sns.api.mock";
 
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {
@@ -33,10 +39,12 @@ export const snsResponseFor = ({
   principal,
   lifecycle,
   certified = false,
+  restrictedCountries,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
   certified?: boolean;
+  restrictedCountries?: string[];
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
@@ -50,7 +58,19 @@ export const snsResponseFor = ({
       rootCanisterId: principal.toText(),
       swapCanisterId: swapCanisterIdMock,
       governanceCanisterId: governanceCanisterIdMock,
-      swap: swapToQuerySwap(summaryForLifecycle(lifecycle).swap),
+      ledgerCanisterId: ledgerCanisterIdMock,
+      indexCanisterId: indexCanisterIdMock,
+      swap: swapToQuerySwap({
+        ...summaryForLifecycle(lifecycle).swap,
+        init: [
+          {
+            ...mockInit,
+            restricted_countries: nonNullish(restrictedCountries)
+              ? [{ iso_codes: restrictedCountries }]
+              : [],
+          },
+        ],
+      }),
       derived: [mockDerived] as [SnsSwapDerivedState],
       certified,
     },

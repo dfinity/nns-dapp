@@ -3,16 +3,15 @@ import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
-  NervousSystemParameters,
   SnsListProposalsParams,
   SnsNervousSystemFunction,
+  SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
   SnsNeuronPermissionType,
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import type { E8s } from "@dfinity/sns/dist/types/types/common";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
@@ -184,7 +183,7 @@ export const splitNeuron = async ({
   identity: Identity;
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  amount: E8s;
+  amount: bigint;
   memo: bigint;
 }): Promise<void> => {
   logWithTimestamp(`Split sns neuron call...`);
@@ -390,7 +389,7 @@ export const nervousSystemParameters = async ({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<NervousSystemParameters> => {
+}): Promise<SnsNervousSystemParameters> => {
   logWithTimestamp(`Querying nervous system parameters...`);
 
   const { nervousSystemParameters: nervousSystemParametersApi } = await wrapper(
