@@ -61,7 +61,7 @@ describe("ProposalNavigation", () => {
     it("should disable previous button when it's selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [1n, 2n],
+        proposalIds: [0n, 1n],
         selectProposal: jest.fn(),
       });
 
@@ -72,7 +72,7 @@ describe("ProposalNavigation", () => {
     it("should disable next when it's selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n],
+        proposalIds: [1n, 2n],
         selectProposal: jest.fn(),
       });
 
@@ -93,7 +93,7 @@ describe("ProposalNavigation", () => {
       await po.clickNext();
 
       expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
+      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
     });
 
     it("should emmit previous click", async () => {
@@ -107,7 +107,7 @@ describe("ProposalNavigation", () => {
       await po.clickPrevious();
 
       expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
+      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
     });
   });
 });
