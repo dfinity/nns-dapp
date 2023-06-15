@@ -36,11 +36,8 @@ yq .workspace.members[] Cargo.toml -oy | while read -r path; do
   mv "${path:-cargo-has-a-blank-workspace-member}" "${path}.prebuild"
   cargo new --lib "$path"
   cp "${path}.prebuild/Cargo.toml" "${path}/Cargo.toml"
+  rm -fr "${path}.prebuild"
 done
+exit 0
 # Build
-cargo build --target wasm32-unknown-unknown --release
-# Delete the placeholders.
-yq .workspace.members[] Cargo.toml -oy | while read -r path; do
-  rm -fr "${path:-cargo-has-a-blank-workspace-member}"
-  mv "${path}.prebuild" "$path"
-done
+cargo check
