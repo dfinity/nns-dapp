@@ -5,7 +5,7 @@ export class NeuronsTab extends MyNavigator {
   static readonly SELECTOR: string = `[data-tid="neurons-body"]`; // Note: This is not quite right; this catches only the main body, not the footer.
   static readonly MODAL_SELECTOR: string = `.modal`; // TODO: This should have a data-tid
   static readonly MODAL_CLOSE_SELECTOR: string = `[data-tid="close-modal"]`;
-  static readonly MODAL_HEADER_SELECTOR: string = `#modalTitle`; // TODO: This should have a data-tid
+  static readonly MODAL_HEADER_SELECTOR: string = `[id*="modal-title-"]`; // TODO: This should have a data-tid
   static readonly STAKE_NEURON_BUTTON_SELECTOR: string = `[data-tid="stake-neuron-button"]`; // Note the user-visible text is plural but the data-tid is singular.  One neuron gets staked.
   static readonly STAKE_NEURON_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`; // TODO: This is very imprecise
   static readonly STAKE_NEURON_AMOUNT_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="input-ui-element"]`;

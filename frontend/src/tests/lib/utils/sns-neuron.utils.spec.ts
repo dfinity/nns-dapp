@@ -2038,7 +2038,7 @@ describe("sns-neuron utils", () => {
           {
             vote: SnsVote.Yes,
             cast_timestamp_seconds: 0n,
-            voting_power: 321n,
+            voting_power: 324n,
           },
         ],
         [
@@ -2052,22 +2052,21 @@ describe("sns-neuron utils", () => {
       ],
     };
 
-    it("should return an sns neuron vote", () => {
+    it("should return an sns neuron vote with ballot voting power", () => {
       expect(
         votedSnsNeuronDetails({
           neurons: [testVotedNeuronA, testVotedNeuronB, testNotVotedNeuron],
           proposal: testProposal,
-          snsParameters: snsNervousSystemParametersMock,
         })
       ).toEqual([
         {
           idString: "010203",
-          votingPower: 0n,
+          votingPower: 324n,
           vote: Vote.Yes,
         },
         {
           idString: "010101",
-          votingPower: 0n,
+          votingPower: 321n,
           vote: Vote.No,
         },
       ]);

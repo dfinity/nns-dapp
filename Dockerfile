@@ -5,6 +5,14 @@
 # docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
 # docker rm --volumes $container_id
 
+# Check the memory available to docker.
+# - If run on Linux, the RAM will be the same as the host machine.
+# - If run on Mac, Docker will be spinning up a Linux virtual machine and then running docker inside that; the user can change the memory available to the virtual machine.
+FROM --platform=linux/amd64 ubuntu:20.04 as check-environment
+SHELL ["bash", "-c"]
+ENV TZ=UTC
+RUN awk -v gigs=4 '/^MemTotal:/{if ($2 < (gigs*1024 * 1024)){ printf "Insufficient RAM.  Please provide Docker with at least %dGB of RAM\n", gigs; exit 1 }}' /proc/meminfo
+
 # Operating system with basic tools
 FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
@@ -52,6 +60,7 @@ RUN curl --fail https://sh.rustup.rs -sSf \
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
 # Install IC CDK optimizer
+# TODO: Make ic-cdk-optimizer support binstall, then use cargo binstall --no-confirm ic-cdk-optimizer here.
 RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
@@ -69,10 +78,12 @@ RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/li
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 RUN dfx --version
+# TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
 RUN didc --version
-RUN cargo install "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
-RUN cargo install "ic-wasm@$(cat config/ic_wasm_version)"
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN cargo binstall --no-confirm "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
+RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
 # Args: Everything in the environment.  Ideally also ~/.config/dfx but that is inaccessible.

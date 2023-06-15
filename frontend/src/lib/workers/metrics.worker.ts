@@ -7,24 +7,27 @@ import {
 import { queryTVL } from "$lib/services/$public/tvl.service";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import type { MetricsSync } from "$lib/types/metrics";
-import type { PostMessage, PostMessageData } from "$lib/types/post-messages";
+import type { PostMessageDataRequestMetrics } from "$lib/types/post-message.metrics";
+import type { PostMessage } from "$lib/types/post-messages";
 
-onmessage = async ({ data }: MessageEvent<PostMessage<PostMessageData>>) => {
-  const { msg } = data;
+onmessage = async ({
+  data: dataMsg,
+}: MessageEvent<PostMessage<PostMessageDataRequestMetrics>>) => {
+  const { msg, data } = dataMsg;
 
   switch (msg) {
     case "nnsStopMetricsTimer":
       stopMetricsTimer();
       return;
     case "nnsStartMetricsTimer":
-      await startMetricsTimer();
+      await startMetricsTimer(data);
       return;
   }
 };
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
-const startMetricsTimer = async () => {
+const startMetricsTimer = async (params: PostMessageDataRequestMetrics) => {
   // This worker has already been started
   if (timer !== undefined) {
     return;
@@ -34,12 +37,14 @@ const startMetricsTimer = async () => {
     await syncMetrics({
       syncTvl: SYNC_METRICS_CONFIG.tvl === "sync",
       syncTransactionRate: SYNC_METRICS_CONFIG.transactionRate === "sync",
+      ...params,
     });
 
   // We sync now but also schedule the update afterwards
   await syncMetrics({
     syncTvl: true,
     syncTransactionRate: true,
+    ...params,
   });
 
   timer = setInterval(sync, SYNC_METRICS_TIMER_INTERVAL);
@@ -59,10 +64,11 @@ let syncInProgress = false;
 const syncMetrics = async ({
   syncTvl,
   syncTransactionRate,
+  ...rest
 }: {
   syncTvl: boolean;
   syncTransactionRate: boolean;
-}) => {
+} & PostMessageDataRequestMetrics) => {
   // Avoid to duplicate the sync if already in progress and not yet finished
   if (syncInProgress) {
     return;
@@ -72,7 +78,7 @@ const syncMetrics = async ({
 
   try {
     const metrics = await Promise.all([
-      syncTvl ? queryTVL() : Promise.resolve(undefined),
+      syncTvl ? queryTVL({ ...rest }) : Promise.resolve(undefined),
       syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
     ]);
 

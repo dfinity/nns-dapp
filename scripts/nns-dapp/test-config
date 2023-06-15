@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034
+
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Compares the mainnet config with the expected config
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=u long=update desc="Update the reference files" variable=UPDATE nargs=0 default="false"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+: "Move to the root of the repo."
+cd "$SOURCE_DIR/.."
+
+# shellcheck disable=SC2043
+for DFX_NETWORK in mainnet; do
+  export DFX_NETWORK
+
+  : "Create the config"
+  ./config.sh >/dev/null
+
+  INSTALL_ARG_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
+  FRONTEND_ARG_FILE="frontend/.env"
+  REFERENCE_ARG_DIR="scripts/nns-dapp/test-config-assets/$DFX_NETWORK"
+  REFERENCE_INSTALL_ARG_FILE="$REFERENCE_ARG_DIR/arg.did"
+  REFERENCE_FRONTEND_ARG_FILE="$REFERENCE_ARG_DIR/env"
+
+  if [[ "$UPDATE" == "true" ]]; then
+    echo "Updating $DFX_NETWORK reference files"
+    mkdir -p "$REFERENCE_ARG_DIR"
+    for file in INSTALL_ARG_FILE FRONTEND_ARG_FILE; do
+      reference_file="REFERENCE_$file"
+      cp "${!file}" "${!reference_file}"
+    done
+  else
+    for file in INSTALL_ARG_FILE FRONTEND_ARG_FILE; do
+      reference_file="REFERENCE_$file"
+      diff "${!file}" "${!reference_file}" || {
+        echo "ERROR: '${!file}' should match '${!reference_file}'"
+        echo "If the change is intentional, please update the reference files with '$0 --update'."
+        exit 1
+      } >&2
+    done
+    echo "$(basename "$0") PASSED"
+  fi
+done
