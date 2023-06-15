@@ -1,3 +1,4 @@
+import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type {
   PostMessageDataRequestCycles,
   PostMessageDataResponseCycles,
@@ -10,7 +11,7 @@ export interface CyclesWorker {
   startCyclesTimer: (
     params: {
       callback: CyclesCallback;
-    } & PostMessageDataRequestCycles
+    } & Pick<PostMessageDataRequestCycles, "canisterId">
   ) => void;
   stopCyclesTimer: () => void;
 }
@@ -39,12 +40,13 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
       ...rest
     }: {
       callback: CyclesCallback;
-    } & PostMessageDataRequestCycles) => {
+      canisterId: string;
+    }) => {
       cyclesCallback = callback;
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { ...rest },
+        data: { ...rest, host: HOST, fetchRootKey: FETCH_ROOT_KEY },
       });
     },
     stopCyclesTimer: () => {

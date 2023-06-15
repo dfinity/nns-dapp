@@ -5,6 +5,14 @@
 # docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
 # docker rm --volumes $container_id
 
+# Check the memory available to docker.
+# - If run on Linux, the RAM will be the same as the host machine.
+# - If run on Mac, Docker will be spinning up a Linux virtual machine and then running docker inside that; the user can change the memory available to the virtual machine.
+FROM --platform=linux/amd64 ubuntu:20.04 as check-environment
+SHELL ["bash", "-c"]
+ENV TZ=UTC
+RUN awk -v gigs=4 '/^MemTotal:/{if ($2 < (gigs*1024 * 1024)){ printf "Insufficient RAM.  Please provide Docker with at least %dGB of RAM\n", gigs; exit 1 }}' /proc/meminfo
+
 # Operating system with basic tools
 FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
