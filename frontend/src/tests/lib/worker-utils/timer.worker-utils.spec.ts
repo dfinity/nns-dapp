@@ -5,7 +5,7 @@ import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
 
-describe("timer.worker-util", () => {
+describe("timer.worker-utils", () => {
   const now = Date.now();
 
   beforeEach(() => {

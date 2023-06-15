@@ -4,11 +4,11 @@ import {
   SYNC_METRICS_CONFIG,
   SYNC_METRICS_TIMER_INTERVAL,
 } from "$lib/constants/metrics.constants";
-import { queryTVL } from "$lib/worker-services/$public/tvl.worker-service";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import type { MetricsSync } from "$lib/types/metrics";
 import type { PostMessageDataRequestMetrics } from "$lib/types/post-message.metrics";
 import type { PostMessage } from "$lib/types/post-messages";
+import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
 
 onmessage = async ({
   data: dataMsg,

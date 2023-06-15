@@ -6,7 +6,9 @@ export interface TimerWorkerUtilsParams<T> {
   job: (params: TimerWorkerUtilsJobData<T>) => Promise<void>;
   data: T;
 }
-export type TimerWorkerUtilsJobData<T> = { data: T } & TimerWorkerUtilsSyncParams;
+export type TimerWorkerUtilsJobData<T> = {
+  data: T;
+} & TimerWorkerUtilsSyncParams;
 
 export interface TimerWorkerUtilsSyncParams {
   identity: Identity;

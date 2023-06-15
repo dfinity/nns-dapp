@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import * as tvlApi from "$lib/worker-api/tvl.worker-api";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { queryTVL } from "$lib/worker-services/$public/tvl.worker-service";
+import * as tvlApi from "$lib/worker-api/tvl.worker-api";
+import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 
