@@ -28,10 +28,14 @@ jobs:
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
       - name: Set credentials
-        uses: aviate-labs/setup-dfx@v0.2.3
-        with:
-          dfx-version: ${{ steps.tool_versions.outputs.dfx }}
-          dfx-disable-encryption: true
+        #        uses: aviate-labs/setup-dfx@v0.2.3
+        #with:
+        #  dfx-version: ${{ steps.tool_versions.outputs.dfx }}
+        #  dfx-disable-encryption: true
+        run: |
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
+          dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
       - name: Verify identity
