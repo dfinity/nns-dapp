@@ -48,9 +48,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
         run: |
-          export DFX_NETWORK=ic
-          scripts/docker-build --network "$DFX_NETWORK"
           scripts/nns-dapp/split-assets
-          dfx canister install--network $DFX_NETWORK nns-dapp --argument "$(cat out/nns-dapp-arg-$DFX_NETWORK.did)" --wasm out/nns-dapp_noassets.wasm
+          dfx canister install --network ic nns-dapp --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
           ./scripts/nns-dapp/upload-asset-tarball --network ic --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network ic --chunk out/chunks/assets.xab.tar.xz
