@@ -12,7 +12,8 @@ on:
       - "deploy-to-app"
 jobs:
   deploy-app:
-    runs-on: ubuntu-20.04
+    # TODO: When we use a pre-built release, switch to a smaller runner.
+    runs-on: ubuntu-latest-m
     timeout-minutes: 60
     env:
       NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
@@ -20,7 +21,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
-      - name: Build sns_aggregator
+      - name: Build wasms
         uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
