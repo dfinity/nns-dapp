@@ -78,3 +78,13 @@ jobs:
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
           dfx canister install --mode reinstall --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
+      - name: Canister info
+        run: |
+          set -x
+          for canister in nns-dapp sns_aggregator ; do
+             echo "========================================"
+             printf "== % 34s ==" "$canister"
+             dfx-canister-url --network "$DFX_NETWORK" "$canister"
+             dfx canister info --network "$DFX_NETWORK" "$canister"
+             dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id
+          done
