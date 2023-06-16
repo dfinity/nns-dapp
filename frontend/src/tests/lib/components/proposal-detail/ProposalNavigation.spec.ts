@@ -58,6 +58,17 @@ describe("ProposalNavigation", () => {
       expect(await po.isPreviousButtonHidden()).toBe(false);
     });
 
+    it("should be visible even when the current proposal is not in the list", async () => {
+      const po = renderComponent({
+        currentProposalId: 10n,
+        proposalIds: [20n, 0n],
+        selectProposal: jest.fn(),
+      });
+
+      expect(await po.isNextButtonHidden()).toBe(false);
+      expect(await po.isPreviousButtonHidden()).toBe(false);
+    });
+
     it("should disable previous button when it's selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
