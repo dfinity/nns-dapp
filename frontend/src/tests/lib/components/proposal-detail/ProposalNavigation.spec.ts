@@ -133,4 +133,18 @@ describe("ProposalNavigation", () => {
     await po.clickNext();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
+
+  it("should emit with right arguments even when the current id is not in the list", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 9n,
+      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickPrevious();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(13n);
+    await po.clickNext();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+  });
 });
