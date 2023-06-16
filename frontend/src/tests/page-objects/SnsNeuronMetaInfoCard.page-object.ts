@@ -20,6 +20,6 @@ export class SnsNeuronMetaInfoCardPo extends BasePageObject {
   }
 
   hasNeuronAge(): Promise<boolean> {
-    return this.getNeuronAgePo().hasAge();
+    return this.getNeuronAgePo().ageIsPresent();
   }
 }

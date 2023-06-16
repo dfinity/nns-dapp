@@ -42,6 +42,6 @@ describe("SnsNeuronAge", () => {
 
     const po = renderComponent(neuronWithAge0);
 
-    expect(await po.hasAge()).toBe(false);
+    expect(await po.ageIsPresent()).toBe(false);
   });
 });

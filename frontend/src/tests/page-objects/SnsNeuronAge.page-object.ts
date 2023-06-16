@@ -20,7 +20,7 @@ export class SnsNeuronAgePo extends BasePageObject {
     return this.getKeyValuePairPo().getValueText();
   }
 
-  hasAge(): Promise<boolean> {
+  ageIsPresent(): Promise<boolean> {
     return this.getKeyValuePairPo().isPresent();
   }
 }
