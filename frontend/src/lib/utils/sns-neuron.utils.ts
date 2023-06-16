@@ -31,6 +31,7 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
+import { ballotVotingPower } from "./sns-proposals.utils";
 import { bytesToHexString } from "./utils";
 
 export const sortSnsNeuronsByCreatedTimestamp = (
@@ -790,11 +791,9 @@ export const votedSnsNeurons = ({
 export const votedSnsNeuronDetails = ({
   neurons,
   proposal,
-  snsParameters,
 }: {
   neurons: SnsNeuron[];
   proposal: SnsProposalData;
-  snsParameters: SnsNervousSystemParameters;
 }): CompactNeuronInfo[] =>
   votedSnsNeurons({
     neurons,
@@ -802,12 +801,7 @@ export const votedSnsNeuronDetails = ({
   })
     .map((neuron) => ({
       idString: getSnsNeuronIdAsHexString(neuron),
-      votingPower: BigInt(
-        snsNeuronVotingPower({
-          neuron,
-          snsParameters,
-        })
-      ),
+      votingPower: ballotVotingPower({ proposal, neuron }),
       vote: getSnsNeuronVote({ neuron, proposal }),
     }))
     // Exclude the cases where the vote was not found.

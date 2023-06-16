@@ -11,15 +11,24 @@
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
+  import { filteredProposals } from "$lib/derived/proposals.derived";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
+
+  let proposalIds: bigint[] | undefined;
+  $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
-<ProposalNavigation proposalInfo={$store.proposal} />
+{#if $store?.proposal?.id !== undefined}
+  <ProposalNavigation
+    currentProposalId={$store.proposal.id}
+    {proposalIds}
+    selectProposal={navigateToProposal}
+  />
 
-{#if $store?.proposal !== undefined}
   <div class="content-grid" data-tid="proposal-details-grid">
     <div class="content-a content-cell-island">
       <ProposalSystemInfoSection proposalInfo={$store.proposal} />

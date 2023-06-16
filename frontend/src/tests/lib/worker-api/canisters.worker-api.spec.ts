@@ -1,12 +1,12 @@
-import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
+import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 
-jest.mock("@dfinity/agent/lib/cjs/index", () => {
-  class MockHttpAgent {}
+jest.mock("@dfinity/agent/lib/cjs/index");
 
+describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
     status: { running: null },
     memory_size: BigInt(1000),
@@ -20,22 +20,25 @@ jest.mock("@dfinity/agent/lib/cjs/index", () => {
     module_hash: [],
   };
 
-  return {
-    HttpAgent: MockHttpAgent,
-    getManagementCanister: () => ({
-      canister_status: async () => response,
-    }),
-  };
-});
+  const MockHttpAgent = jest.fn();
 
-describe("canisters-api.cjs", () => {
-  afterAll(() => jest.resetAllMocks());
+  beforeEach(async () => {
+    jest.resetAllMocks();
+    const module = await import("@dfinity/agent/lib/cjs/index");
+    module.HttpAgent = MockHttpAgent;
+    module.getManagementCanister = jest.fn().mockReturnValue({
+      canister_status: async () => response,
+    });
+  });
 
   describe("queryCanisterDetails", () => {
     it("should call IC Management Canister with canister id", async () => {
+      const host = "http://localhost:8000";
       const result = await queryCanisterDetails({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id.toText(),
+        host,
+        fetchRootKey: false,
       });
 
       expect(result).toEqual({

@@ -35,6 +35,12 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("Wallet", () => {
   beforeEach(() => {
     snsQueryStore.reset();

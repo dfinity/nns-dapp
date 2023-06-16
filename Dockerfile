@@ -5,6 +5,14 @@
 # docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
 # docker rm --volumes $container_id
 
+# Check the memory available to docker.
+# - If run on Linux, the RAM will be the same as the host machine.
+# - If run on Mac, Docker will be spinning up a Linux virtual machine and then running docker inside that; the user can change the memory available to the virtual machine.
+FROM --platform=linux/amd64 ubuntu:20.04 as check-environment
+SHELL ["bash", "-c"]
+ENV TZ=UTC
+RUN awk -v gigs=4 '/^MemTotal:/{if ($2 < (gigs*1024 * 1024)){ printf "Insufficient RAM.  Please provide Docker with at least %dGB of RAM\n", gigs; exit 1 }}' /proc/meminfo
+
 # Operating system with basic tools
 FROM --platform=linux/amd64 ubuntu:20.04 as base
 SHELL ["bash", "-c"]
@@ -148,6 +156,38 @@ RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
+# Title: Image to build the nns-dapp backend without assets.
+FROM builder AS build_nnsdapp_without_assets
+SHELL ["bash", "-c"]
+COPY ./rs/backend /build/rs/backend
+COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
+COPY ./scripts/clap.bash /build/scripts/clap.bash
+COPY ./build-backend.sh /build/
+COPY ./build-rs.sh /build/
+COPY ./Cargo.toml /build/
+COPY ./Cargo.lock /build/
+COPY ./dfx.json /build/
+WORKDIR /build
+# Create an empty assets tarfile.
+RUN tar -cJf assets.tar.xz -T /dev/null
+# We need to make sure that the rebuild happens if the code has changed.
+# - Docker checks whether the filesystem or command line have changed, so it will
+#   run if there are code changes and skip otherwise.  Perfect.
+# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
+#   rebuilding is necessary due to the potentially recent dependency building step above.
+#   Cargo checks whether the mtime of some code is newer than its last build, like
+#   it's 1974, unlike bazel that uses checksums.
+# So we update the timestamps of the root code files.
+# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
+# We don't wish to update the code from main.rs to lib.rs and then have builds break.
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
+RUN ./build-backend.sh
+COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
+# TODO: Move this to the apt install at the beginning of this file.
+RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
+ARG COMMIT
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
+
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
 #       The SNS aggregator needs to know the canister ID of the
@@ -181,6 +221,7 @@ COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm /nns-dapp_noassets.wasm
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
 COPY --from=build_aggregate /build/sns_aggregator.wasm /

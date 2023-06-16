@@ -71,6 +71,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     throw new Error("Not implement");
   }
 
+  getClasses(): Promise<string[] | null> {
+    throw new Error("Not implement");
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }

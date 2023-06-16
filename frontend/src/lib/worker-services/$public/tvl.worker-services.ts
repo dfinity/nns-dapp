@@ -1,8 +1,13 @@
-import { queryTVL as queryTVLApi } from "$lib/api/tvl.api.cjs";
 import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
+import type { CanisterActorParams } from "$lib/types/worker";
+import { queryTVL as queryTVLApi } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 
-export const queryTVL = async (): Promise<TvlResult | undefined> => {
+export const queryTVL = async (
+  params: Omit<CanisterActorParams, "identity"> & {
+    tvlCanisterId: string | undefined;
+  }
+): Promise<TvlResult | undefined> => {
   try {
     const result = await queryTVLApi({
       // Because we use the service in a web worker.
@@ -10,6 +15,7 @@ export const queryTVL = async (): Promise<TvlResult | undefined> => {
       // "Unexpected token (Note that you need plugins to import files that are not JavaScript)"
       identity: new AnonymousIdentity(),
       certified: false,
+      ...params,
     });
 
     return result;

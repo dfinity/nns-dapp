@@ -29,6 +29,7 @@ module.exports = {
     "@dfinity/gix-components":
       "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },
+  resolver: "<rootDir>/jest-resolver.cjs",
   setupFiles: ["fake-indexeddb/auto"],
   testPathIgnorePatterns: ["<rootDir>/src/tests/e2e/"],
 };

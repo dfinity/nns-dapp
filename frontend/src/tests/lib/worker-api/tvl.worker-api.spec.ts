@@ -1,7 +1,7 @@
-import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
 import mock from "jest-mock-extended/lib/Mock";
 
 jest.mock("@dfinity/agent", () => {
@@ -14,14 +14,14 @@ jest.mock("@dfinity/agent", () => {
   };
 });
 
-const defaultTVLCanisterId = Principal.fromText("ewh3f-3qaaa-aaaap-aazjq-cai");
 jest.mock("$lib/constants/canister-ids.constants");
 
-describe("tvl api", () => {
+describe("tvl worker-api", () => {
   const tvlCanisterMock = mock<TVLCanister>();
   const params = {
     identity: new AnonymousIdentity(),
     certified: true,
+    ...ACTOR_PARAMS,
   };
 
   const result = {
@@ -35,19 +35,15 @@ describe("tvl api", () => {
   });
 
   describe("with tvl canister id set", () => {
-    beforeEach(async () => {
-      // `import` returns "readonly" properties.
-      // casting is needed to change the value
-      const canisterIds = (await import(
-        "$lib/constants/canister-ids.constants"
-      )) as { TVL_CANISTER_ID: Principal };
-      canisterIds.TVL_CANISTER_ID = defaultTVLCanisterId;
-    });
+    const paramsCanisterId = {
+      ...params,
+      tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
+    };
 
     it("returns the tvl", async () => {
       const getTVLSpy = tvlCanisterMock.getTVL.mockResolvedValue(result);
 
-      const response = await queryTVL(params);
+      const response = await queryTVL(paramsCanisterId);
 
       expect(response).toEqual(result);
 
@@ -59,26 +55,20 @@ describe("tvl api", () => {
         throw new Error();
       });
 
-      const call = () => queryTVL(params);
+      const call = () => queryTVL(paramsCanisterId);
 
       expect(call).rejects.toThrowError();
     });
   });
 
   describe("with tvl canister id not set", () => {
-    beforeEach(async () => {
-      // `import` returns "readonly" properties.
-      // casting is needed to change the value
-      const canisterIds = (await import(
-        "$lib/constants/canister-ids.constants"
-      )) as { TVL_CANISTER_ID: Principal };
-      canisterIds.TVL_CANISTER_ID = undefined;
-    });
-
     it("returns undefined", async () => {
       const getTVLSpy = tvlCanisterMock.getTVL.mockResolvedValue(result);
 
-      const response = await queryTVL(params);
+      const response = await queryTVL({
+        ...params,
+        tvlCanisterId: undefined,
+      });
 
       expect(response).toBeUndefined();
       expect(getTVLSpy).not.toBeCalled();
