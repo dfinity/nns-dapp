@@ -1,5 +1,13 @@
 # Changelog
 
+## Proposal XXXXXX
+
+* Improvement in NNS proposal filters.
+* New field minimum participants in project detail page.
+* Mobile experience improvements.
+* Use minter info to retrieve ckBTC parameters (retrieve min amount, kit fee and number of confirmations).
+* Fix for Dragginz SNS metrics.
+
 ## Proposal 122791
 
 * Improve Apple install to home screen look and feel.
