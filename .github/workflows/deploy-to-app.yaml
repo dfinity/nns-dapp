@@ -10,6 +10,9 @@ on:
   push:
     branches:
       - "deploy-to-app"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   deploy-app:
     # TODO: When we use a pre-built release, switch to a smaller runner.
