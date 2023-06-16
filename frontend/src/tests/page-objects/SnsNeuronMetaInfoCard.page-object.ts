@@ -1,6 +1,6 @@
+import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SnsNeuronAgePo } from "./SnsNeuronAge.page-object";
 
 export class SnsNeuronMetaInfoCardPo extends BasePageObject {
   static readonly TID = "sns-neuron-meta-info-card-component";
