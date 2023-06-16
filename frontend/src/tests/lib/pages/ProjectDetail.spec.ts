@@ -9,6 +9,7 @@ import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
@@ -80,7 +81,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsQueryStore.reset();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
-    userCountryStore.set("not loaded");
+    userCountryStore.set(NOT_LOADED);
 
     jest.clearAllTimers();
     const now = Date.now();
@@ -343,7 +344,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             true
           );
 
-          expect(get(userCountryStore)).toBe("not loaded");
+          expect(get(userCountryStore)).toBe(NOT_LOADED);
         });
 
         it("should show enabled button after getting user country", async () => {
