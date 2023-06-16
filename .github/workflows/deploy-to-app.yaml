@@ -31,6 +31,7 @@ jobs:
         uses: aviate-labs/setup-dfx@v0.2.3
         with:
           dfx-version: ${{ steps.tool_versions.outputs.dfx }}
+          dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
       - name: Deploy nns-dapp
