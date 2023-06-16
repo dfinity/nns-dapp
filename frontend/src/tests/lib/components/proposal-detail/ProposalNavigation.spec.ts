@@ -108,4 +108,18 @@ describe("ProposalNavigation", () => {
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(2n);
   });
+
+  it("should emit with right arguments for non-consecutive ids", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 13n,
+      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickPrevious();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(17n);
+    await po.clickNext();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+  });
 });
