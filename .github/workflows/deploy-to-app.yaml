@@ -15,8 +15,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   deploy-app:
-    # TODO: When we use a pre-built release, switch to a smaller runner.
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-20.04
     timeout-minutes: 60
     env:
       NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
