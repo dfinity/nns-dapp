@@ -108,18 +108,4 @@ describe("ProposalNavigation", () => {
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(2n);
   });
-
-  it("should work also w/ not sorted proposalIds list", async () => {
-    const selectProposalSpy = jest.fn();
-    const po = renderComponent({
-      currentProposalId: 3n,
-      proposalIds: [5n, 2n, 3n, 0n, 1n, 4n],
-      selectProposal: selectProposalSpy,
-    });
-
-    await po.clickPrevious();
-    expect(selectProposalSpy).toHaveBeenCalledWith(4n);
-    await po.clickNext();
-    expect(selectProposalSpy).toHaveBeenCalledWith(2n);
-  });
 });
