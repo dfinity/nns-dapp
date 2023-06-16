@@ -1,4 +1,5 @@
 import * as locationApi from "$lib/api/location.api";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { loadUserCountry } from "$lib/services/user-country.services";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
@@ -16,10 +17,10 @@ describe("location services", () => {
 
   describe("loadUserLocation", () => {
     beforeEach(() => {
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
     });
     it("should set the location store to api response", async () => {
-      expect(get(userCountryStore)).toBe("not loaded");
+      expect(get(userCountryStore)).toBe(NOT_LOADED);
 
       const countryCode = "CH";
       jest
@@ -32,7 +33,7 @@ describe("location services", () => {
     });
 
     it("should set the location store to error if api fails", async () => {
-      expect(get(userCountryStore)).toBe("not loaded");
+      expect(get(userCountryStore)).toBe(NOT_LOADED);
 
       jest
         .spyOn(locationApi, "queryUserCountryLocation")
