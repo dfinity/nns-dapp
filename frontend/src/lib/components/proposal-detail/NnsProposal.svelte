@@ -13,43 +13,14 @@
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
-  import {
-    voteRegistrationStore,
-    type VoteRegistrationStoreData,
-  } from "$lib/stores/vote-registration.store";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import type { ProposalsStore } from "$lib/stores/proposals.store";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
 
-  // The proposal that is currently in vote registration process is not included in the filtered proposals list,
-  // since it should not be available for voting.
-  // But this shouldn't prevent user from navigating to it.
-  // Here we are adding this proposal to the list of proposals, so that the navigation block is not hidden for it.
-  const collectProposalIds = ({
-    proposalStore,
-    voteRegistrationStore,
-  }: {
-    proposalStore: ProposalsStore;
-    voteRegistrationStore: VoteRegistrationStoreData;
-  }): bigint[] => {
-    const proposalIds =
-      proposalStore.proposals?.map(({ id }) => id as bigint) || [];
-    const proposalIdsInRegistrations = (
-      voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
-    ).map(({ proposalIdString }) => BigInt(proposalIdString));
-
-    // return unique proposal ids
-    return Array.from(new Set([...proposalIds, ...proposalIdsInRegistrations]));
-  };
-
   let proposalIds: bigint[] | undefined;
-  $: proposalIds = collectProposalIds({
-    proposalStore: $filteredProposals,
-    voteRegistrationStore: $voteRegistrationStore,
-  });
+  $: proposalIds =
+    $filteredProposals.proposals?.map(({ id }) => id as bigint) ?? [];
 </script>
 
 {#if $store?.proposal?.id !== undefined}
