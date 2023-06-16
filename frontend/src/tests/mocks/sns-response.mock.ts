@@ -71,7 +71,7 @@ export const snsResponseFor = ({
           },
         ],
       }),
-      derived: [mockDerived] as [SnsSwapDerivedState],
+      derived: [{ ...mockDerived }] as [SnsSwapDerivedState],
       certified,
     },
   ],

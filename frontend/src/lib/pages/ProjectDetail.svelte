@@ -44,6 +44,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
   import { loadUserCountry } from "$lib/services/user-country.services";
+  import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -172,25 +173,41 @@
     loadUserCountry();
   }
 
+  let derivedStateHasBuyersCount: boolean | undefined;
+  $: derivedStateHasBuyersCount = hasBuyersCount(
+    $projectDetailStore?.summary?.derived
+  );
+  let watchersSet = false;
+
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
-  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
-    // We load the metrics to have them initially available before setInterval starts
-    loadSnsSwapMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
-      forceFetch: false,
-    });
+  $: if (
+    nonNullish(rootCanisterId) &&
+    nonNullish(swapCanisterId) &&
+    nonNullish(derivedStateHasBuyersCount) &&
+    !watchersSet
+  ) {
+    // TODO: Remove once all SNS support the buyers count in derived state
+    if (!derivedStateHasBuyersCount) {
+      // We load the metrics to have them initially available before setInterval starts
+      loadSnsSwapMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId,
+        forceFetch: false,
+      });
+      if (!derivedStateHasBuyersCount && enableOpenProjectWatchers) {
+        unsubscribeWatchMetrics?.();
+        unsubscribeWatchMetrics = watchSnsMetrics({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          swapCanisterId: swapCanisterId,
+        });
+      }
+    }
 
     if (enableOpenProjectWatchers) {
+      watchersSet = true;
       unsubscribeWatchCommitment?.();
       unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
-
-      unsubscribeWatchMetrics?.();
-      unsubscribeWatchMetrics = watchSnsMetrics({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId: swapCanisterId,
-      });
     }
   }
 
