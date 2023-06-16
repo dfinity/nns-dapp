@@ -19,8 +19,7 @@
   );
 
   let proposalIds: bigint[] | undefined;
-  $: proposalIds =
-    $filteredProposals.proposals?.map(({ id }) => id as bigint) ?? [];
+  $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
 {#if $store?.proposal?.id !== undefined}
