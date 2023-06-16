@@ -220,7 +220,7 @@ const cspConnectSrc = () => {
     // Used for the metrics of Kinic launch.
     "https://7sppf-6aaaa-aaaaq-aaata-cai.raw.icp0.io",
     // Used for the metrics of SNS1(Dragginz) launch.
-    "https://zcdfx-6iaaa-aaaaq-aaagq-cai.raw.icp0.io"
+    "https://zcdfx-6iaaa-aaaaq-aaagq-cai.raw.icp0.io",
   ];
 
   if (isAggregatorCanisterUrlDefined) {
