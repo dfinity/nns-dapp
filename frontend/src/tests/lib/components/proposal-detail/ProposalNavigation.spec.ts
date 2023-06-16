@@ -39,7 +39,7 @@ describe("ProposalNavigation", () => {
     it("should render buttons", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
+        proposalIds: [2n, 1n, 0n],
         selectProposal: jest.fn(),
       });
 
@@ -50,7 +50,7 @@ describe("ProposalNavigation", () => {
     it("should enable both buttons", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
+        proposalIds: [2n, 1n, 0n],
         selectProposal: jest.fn(),
       });
 
@@ -61,7 +61,7 @@ describe("ProposalNavigation", () => {
     it("should disable previous button when it's selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n],
+        proposalIds: [1n, 0n],
         selectProposal: jest.fn(),
       });
 
@@ -72,7 +72,7 @@ describe("ProposalNavigation", () => {
     it("should disable next when it's selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [1n, 2n],
+        proposalIds: [2n, 1n],
         selectProposal: jest.fn(),
       });
 
@@ -85,7 +85,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
       currentProposalId: 1n,
-      proposalIds: [0n, 1n, 2n],
+      proposalIds: [2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
 
@@ -99,7 +99,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
       currentProposalId: 1n,
-      proposalIds: [0n, 1n, 2n],
+      proposalIds: [2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
 
