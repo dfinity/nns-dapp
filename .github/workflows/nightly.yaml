@@ -28,7 +28,7 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ github.token }}
-      - name: Build nns-dapp
+      - name: Build nns-dapp repo
         if: steps.preflight.outputs.need_release == 'true'
         uses: ./.github/actions/build_nns_dapp
         with:
