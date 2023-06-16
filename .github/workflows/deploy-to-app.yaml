@@ -63,9 +63,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
         run: |
-          DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
-          dfx-canister set-id --network "$DFX_NETWORK" --canister_name nns-dapp --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
+          CANISTER_NAME="nns-dapp"
+          export DFX_NETWORK CANISTER_NAME
+          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
           scripts/nns-dapp/split-assets
-          dfx canister install --network "$DFX_NETWORK" nns-dapp --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
+          dfx canister install --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
+      - name: Deploy sns_aggregator
+        run: |
+          CANISTER_NAME="sns_aggregator"
+          export DFX_NETWORK CANISTER_NAME
+          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
+          dfx canister install --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
