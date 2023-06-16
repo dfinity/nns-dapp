@@ -84,29 +84,29 @@ describe("ProposalNavigation", () => {
   it("should emmit next click", async () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
-      currentProposalId: 1n,
-      proposalIds: [2n, 1n, 0n],
+      currentProposalId: 2n,
+      proposalIds: [4n, 3n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickNext();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-    expect(selectProposalSpy).toHaveBeenCalledWith(0n);
+    expect(selectProposalSpy).toHaveBeenCalledWith(1n);
   });
 
   it("should emmit previous click", async () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
-      currentProposalId: 1n,
-      proposalIds: [2n, 1n, 0n],
+      currentProposalId: 2n,
+      proposalIds: [4n, 3n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
 
     await po.clickPrevious();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-    expect(selectProposalSpy).toHaveBeenCalledWith(2n);
+    expect(selectProposalSpy).toHaveBeenCalledWith(3n);
   });
 
   it("should emit with right arguments for non-consecutive ids", async () => {
