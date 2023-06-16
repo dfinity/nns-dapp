@@ -71,6 +71,7 @@ jobs:
           dfx canister install --mode reinstall --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
+          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
       - name: Deploy sns_aggregator
         run: |
           set -x
