@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 60
     env:
       NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
-      SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
+      SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "otgyv-wyaaa-aaaak-qcgba-cai"
       DFX_NETWORK: ic
     steps:
       - name: Checkout nns-dapp
@@ -62,6 +62,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
         run: |
+          set -x
           CANISTER_NAME="nns-dapp"
           export DFX_NETWORK CANISTER_NAME
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
@@ -72,6 +73,7 @@ jobs:
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
       - name: Deploy sns_aggregator
         run: |
+          set -x
           CANISTER_NAME="sns_aggregator"
           export DFX_NETWORK CANISTER_NAME
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
@@ -80,11 +82,12 @@ jobs:
           dfx canister install --mode reinstall --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
       - name: Canister info
         run: |
-          set -x
           for canister in nns-dapp sns_aggregator ; do
              echo "========================================"
-             printf "== % 34s ==" "$canister"
+             printf "== % 34s ==\n" "$canister"
+             set -x
              dfx-canister-url --network "$DFX_NETWORK" "$canister"
              dfx canister info --network "$DFX_NETWORK" "$canister"
              dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id
+             set +x
           done
