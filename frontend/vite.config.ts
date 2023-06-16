@@ -106,9 +106,6 @@ const config: UserConfig = {
       },
     },
   },
-  worker: {
-    format: "es",
-  },
 };
 
 export default config;
