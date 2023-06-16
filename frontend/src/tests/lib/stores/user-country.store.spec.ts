@@ -1,3 +1,4 @@
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import {
   isUserCountryErrorStore,
   isUserCountryLoadedStore,
@@ -7,7 +8,7 @@ import { get } from "svelte/store";
 
 describe("userCountryStore", () => {
   beforeEach(() => {
-    userCountryStore.set("not loaded");
+    userCountryStore.set(NOT_LOADED);
   });
 
   describe("userCountryStore", () => {
@@ -24,11 +25,11 @@ describe("userCountryStore", () => {
 
   describe("isUserCountryLoadedStore", () => {
     beforeEach(() => {
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
     });
 
     it("should return false when the location is 'not loaded'", () => {
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
       expect(get(isUserCountryLoadedStore)).toBe(false);
     });
 
@@ -43,7 +44,7 @@ describe("userCountryStore", () => {
 
   describe("isUserCountryErrorStore", () => {
     beforeEach(() => {
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
     });
 
     it("should return true when the location is an error", () => {
@@ -55,7 +56,7 @@ describe("userCountryStore", () => {
       userCountryStore.set({ isoCode: "CH" });
       expect(get(isUserCountryErrorStore)).toEqual(false);
 
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
       expect(get(isUserCountryErrorStore)).toEqual(false);
     });
   });
