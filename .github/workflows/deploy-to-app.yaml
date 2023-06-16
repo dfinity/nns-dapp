@@ -21,10 +21,6 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
-      - name: Build wasms
-        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get versions
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
@@ -35,6 +31,14 @@ jobs:
           dfx-disable-encryption: true
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
+      - name: Verify identity
+        run: |
+          dfx identity whoami
+          dfx identity get-principal
+      - name: Build wasms
+        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
         run: |
           export DFX_NETWORK=ic
