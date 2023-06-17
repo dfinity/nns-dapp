@@ -13,6 +13,7 @@ import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
  */
 function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
   const browsers = process.env.WDIO_BROWSER ?? "all";
+  const headless = (process.env.WDIO_VIEW ?? "headless") === "headless";
   const useChrome = ["all", "chrome"].includes(browsers);
   const useFirefox = ["all", "firefox"].includes(browsers);
   const capabilities: Capabilities.RemoteCapabilities = [];
@@ -20,7 +21,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
     const chrome = {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: ["headless", "disable-gpu"],
+        args: headless ? ["headless", "disable-gpu"] : [],
       },
       acceptInsecureCerts: true,
     };
@@ -37,7 +38,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
       maxInstances: 5,
       browserName: "firefox",
       "moz:firefoxOptions": {
-        args: ["-headless"],
+        args: headless ? ["-headless"] : [],
         binary: firefoxPath,
       },
     };
@@ -140,6 +141,7 @@ export const config: WebdriverIO.Config = {
   reporters: ["spec"],
 
   mochaOpts: {
+    bail: true,
     ui: "bdd",
     timeout: 60000,
     retries: 1,

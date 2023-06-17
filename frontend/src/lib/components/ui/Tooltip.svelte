@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-
-  /** Used in aria-describedby */
-  import { debounce } from "../../utils/utils";
+  import { debounce } from "@dfinity/utils";
 
   export let id: string;
   export let text = "";
-  export let noWrap: boolean = false;
+  export let noWrap = false;
+  export let top = false;
+  export let containerSelector = "main";
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
   let target: HTMLDivElement | undefined = undefined;
@@ -15,7 +15,7 @@
 
   const setPosition = debounce(() => {
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
-    const main: HTMLElement | null = document.querySelector("main");
+    const main: HTMLElement | null = document.querySelector(containerSelector);
 
     if (
       destroyed ||
@@ -29,8 +29,13 @@
 
     const { innerWidth } = window;
 
+    const SCROLLBAR_FALLBACK_WIDTH = 20;
+
     const { clientWidth, offsetWidth } = main;
-    const scrollbarWidth: number = offsetWidth - clientWidth;
+    const scrollbarWidth =
+      offsetWidth - clientWidth > 0
+        ? offsetWidth - clientWidth
+        : SCROLLBAR_FALLBACK_WIDTH;
 
     const { left: targetLeft, width: targetWidth } =
       target.getBoundingClientRect();
@@ -38,11 +43,17 @@
 
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
-    const spaceLeft = targetCenter;
+    const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
     const spaceRight = innerWidth - scrollbarWidth - targetCenter;
 
-    const overflowLeft = tooltipWidth / 2 - spaceLeft;
-    const overflowRight = tooltipWidth / 2 - spaceRight;
+    const overflowLeft = spaceLeft > 0 ? tooltipWidth / 2 - spaceLeft : 0;
+    const overflowRight = spaceRight > 0 ? tooltipWidth / 2 - spaceRight : 0;
+
+    const { left: mainLeft, right: mainRight } = main.getBoundingClientRect();
+
+    // If we cannot calculate the overflow left we then avoid overflow by setting no transform on the left side
+    const leftToMainCenter =
+      mainLeft + (mainRight - mainLeft) / 2 > targetCenter;
 
     // If tooltip overflow both on left and right, we only set the left anchor.
     // It would need the width to be maximized to window screen too but it seems to be an acceptable edge case.
@@ -51,17 +62,20 @@
         ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
         : overflowRight > 0
         ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
+        : leftToMainCenter
+        ? `--tooltip-transform-x: 0`
         : undefined;
   });
 
   $: innerWidth, tooltipComponent, target, setPosition();
 
-  let destroyed: boolean = false;
+  let destroyed = false;
   onDestroy(() => (destroyed = true));
 </script>
 
 <svelte:window bind:innerWidth />
-<div class="tooltip-wrapper">
+
+<div class="tooltip-wrapper" data-tid="tooltip-component">
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>
@@ -70,6 +84,7 @@
     role="tooltip"
     {id}
     class:noWrap
+    class:top
     bind:this={tooltipComponent}
     style={tooltipStyle}
   >
@@ -85,14 +100,18 @@
   }
 
   .tooltip {
-    z-index: var(--z-index);
+    z-index: calc(var(--overlay-z-index) + 1);
 
     position: absolute;
     display: inline-block;
 
     left: 50%;
     bottom: var(--padding-0_5x);
-    transform: translate(var(--tooltip-transform-x, -50%), 100%);
+    --tooltip-transform-x-default: calc(-50% - var(--padding-4x));
+    transform: translate(
+      var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+      100%
+    );
 
     opacity: 0;
     visibility: hidden;
@@ -101,7 +120,7 @@
     padding: 4px 6px;
     border-radius: 4px;
 
-    font-size: var(--font-size-ultra-small);
+    font-size: var(--font-size-small);
 
     background: var(--card-background-contrast);
     color: var(--card-background);
@@ -114,6 +133,15 @@
 
     &.noWrap {
       white-space: nowrap;
+    }
+
+    &.top {
+      bottom: unset;
+      top: calc(-1 * var(--padding));
+      transform: translate(
+        var(--tooltip-transform-x, var(--tooltip-transform-x-default)),
+        -100%
+      );
     }
 
     pointer-events: none;

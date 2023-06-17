@@ -2,14 +2,19 @@
  * @jest-environment jsdom
  */
 
+import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
+import { spawnNeuron } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { formattedMaturity } from "$lib/utils/neuron.utils";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
-import SpawnNeuronModal from "../../../../lib/modals/neurons/SpawnNeuronModal.svelte";
-import { spawnNeuron } from "../../../../lib/services/neurons.services";
-import { formattedMaturity } from "../../../../lib/utils/neuron.utils";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),
@@ -25,6 +30,13 @@ describe("SpawnNeuronModal", () => {
     },
   };
 
+  beforeAll(() =>
+    accountsStore.setForTesting({
+      main: mockMainAccount,
+      hardwareWallets: [mockHardwareWalletAccount],
+    })
+  );
+
   afterAll(() => jest.clearAllMocks());
 
   it("should display modal", async () => {
@@ -32,7 +44,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
       },
     });
 
@@ -44,7 +55,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
       },
     });
 
@@ -62,7 +72,6 @@ describe("SpawnNeuronModal", () => {
             maturityE8sEquivalent: BigInt(1_000_000),
           },
         },
-        controlledByHarwareWallet: false,
       },
     });
 
@@ -83,7 +92,6 @@ describe("SpawnNeuronModal", () => {
       component: SpawnNeuronModal,
       props: {
         neuron,
-        controlledByHarwareWallet: false,
       },
     });
 
@@ -102,11 +110,18 @@ describe("SpawnNeuronModal", () => {
   });
 
   it("should show only confirm screen for hardware wallet controlled neurons", async () => {
+    const neuronHW = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: mockHardwareWalletAccount.principal?.toText() as string,
+      },
+    };
+
     const { queryByTestId } = await renderModal({
       component: SpawnNeuronModal,
       props: {
-        neuron,
-        controlledByHarwareWallet: true,
+        neuron: neuronHW,
       },
     });
 

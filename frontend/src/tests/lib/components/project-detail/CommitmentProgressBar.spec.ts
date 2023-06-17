@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
+import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
 import { render } from "@testing-library/svelte";
-import CommitmentProgressBar from "../../../../lib/components/project-detail/CommitmentProgressBar.svelte";
 
 describe("CommitmentProgressBar", () => {
   const props = {
@@ -35,10 +35,10 @@ describe("CommitmentProgressBar", () => {
   it("should display maximum and minimum indicators values", async () => {
     const { queryByTestId } = render(CommitmentProgressBar, { props });
     expect(
-      queryByTestId("commitment-max-indicator-value")?.textContent
+      queryByTestId("commitment-max-indicator-value")?.textContent.trim()
     ).toEqual(`${Number(props.max) / 100000000} ICP`);
     expect(
-      queryByTestId("commitment-min-indicator-value")?.textContent
+      queryByTestId("commitment-min-indicator-value")?.textContent.trim()
     ).toEqual(`${Number(props.minimumIndicator) / 100000000} ICP`);
   });
 });

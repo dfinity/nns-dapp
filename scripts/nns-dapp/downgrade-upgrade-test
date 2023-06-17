@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+PROD_WASM="nns-dapp-prod_local.wasm"
+
+help_text() {
+  cat <<-EOF
+	Tests:
+	  - downgrading the local build to prod.
+	  - upgrading prod to the local build.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+verify_healthy() {
+  # Checking get_stats() is temporarily disabled, as the get_stats API is changing
+  # and the new schema is incompatible with the old.
+  # dfx canister call nns-dapp get_stats
+  dfx canister call nns-dapp get_canisters
+}
+
+get_current_wasm() {
+  DFX_NETWORK=local ./scripts/docker-build
+}
+
+get_prod_wasm() {
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm >"$PROD_WASM"
+}
+
+# Installs the current build of nns-dapp
+upgrade_nnsdapp() {
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+  scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
+}
+
+echo "Getting or building the wasm..."
+test -n "${CURRENT_WASM:-}" || {
+  CURRENT_WASM="nns-dapp.wasm"
+  echo "Building $CURRENT_WASM..."
+  DFX_NETWORK=local ./scripts/docker-build
+}
+test -e "$CURRENT_WASM" || {
+  echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
+  exit 1
+} >&2
+echo "Installing $CURRENT_WASM..."
+if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
+  upgrade_nnsdapp "$CURRENT_WASM"
+else
+  dfx canister create nns-dapp
+  dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)"
+fi
+echo "Checking that the current wasm is healthy..."
+verify_healthy
+echo "Downloading and installing the prod wasm..."
+get_prod_wasm
+upgrade_nnsdapp "$PROD_WASM"
+echo "Checking that the rollback is healthy..."
+verify_healthy
+echo "Rolling forwards..."
+upgrade_nnsdapp "$CURRENT_WASM"
+echo "Checking that the upgrade is healthy..."
+verify_healthy
+echo SUCCESS

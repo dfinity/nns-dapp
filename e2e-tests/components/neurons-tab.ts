@@ -1,15 +1,18 @@
+import { SECONDS_IN_DAY } from "../common/constants";
 import { MyNavigator } from "../common/navigator";
 
 export class NeuronsTab extends MyNavigator {
   static readonly SELECTOR: string = `[data-tid="neurons-body"]`; // Note: This is not quite right; this catches only the main body, not the footer.
   static readonly MODAL_SELECTOR: string = `.modal`; // TODO: This should have a data-tid
   static readonly MODAL_CLOSE_SELECTOR: string = `[data-tid="close-modal"]`;
-  static readonly MODAL_HEADER_SELECTOR: string = `#modalTitle`; // TODO: This should have a data-tid
+  static readonly MODAL_HEADER_SELECTOR: string = `[id*="modal-title-"]`; // TODO: This should have a data-tid
   static readonly STAKE_NEURON_BUTTON_SELECTOR: string = `[data-tid="stake-neuron-button"]`; // Note the user-visible text is plural but the data-tid is singular.  One neuron gets staked.
   static readonly STAKE_NEURON_ACCOUNT_SELECTOR = `${NeuronsTab.MODAL_SELECTOR} [data-tid="account-card"]`; // TODO: This is very imprecise
   static readonly STAKE_NEURON_AMOUNT_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="input-ui-element"]`;
   static readonly STAKE_NEURON_SUBMIT_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="create-neuron-button"]`;
   static readonly SET_DISSOLVE_DELAY_SLIDER_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-range"]`;
+  static readonly SET_DISSOLVE_DELAY_INPUT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="input-ui-element"]`;
+  static readonly SET_DISSOLVE_DELAY_MIN_BUTTON_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} .select-delay-container [data-tid="min-button"]`;
   static readonly SET_DISSOLVE_DELAY_SUBMIT_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="go-confirm-delay-button"]`;
   static readonly SKIP_DISSOLVE_DELAY_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="cancel-neuron-delay"]`;
   static readonly SET_DISSOLVE_DELAY_CONFIRM_SELECTOR: string = `${NeuronsTab.MODAL_SELECTOR} [data-tid="confirm-delay-button"]`;
@@ -48,7 +51,7 @@ export class NeuronsTab extends MyNavigator {
       neuronId,
       `Get neuron ${neuronId} to check balance`
     );
-    const icpField = await neuron.$(`[data-tid="icp-value"]`);
+    const icpField = await neuron.$(`[data-tid="token-value"]`);
     const icpValue = Number(await icpField.getText());
     if (Number.isFinite(icpValue)) {
       return icpValue;
@@ -90,24 +93,21 @@ export class NeuronsTab extends MyNavigator {
     // Ok, now the accounts should have loaded.
 
     const icp = options?.icp ?? 1;
-    const dissolveDelay = options?.dissolveDelay ?? 100000000;
+    const dissolveDelay = Math.ceil(
+      (options?.dissolveDelay ?? 100000000) / SECONDS_IN_DAY
+    );
 
-    console.log("Start staking neuron:");
+    console.log("Start staking neuron:", icp, dissolveDelay);
     await this.click(
       NeuronsTab.STAKE_NEURON_BUTTON_SELECTOR,
       "Click to start staking neuron"
     );
-    await this.getElement(NeuronsTab.MODAL_SELECTOR, "Wait for modal");
 
-    console.log("Choose account");
-    await this.waitForModalWithTitle("Select Source Account");
-    await this.click(
-      NeuronsTab.STAKE_NEURON_ACCOUNT_SELECTOR,
-      "Choose to pay with the first account"
-    );
+    await this.waitForModalWithTitle("Stake Neuron");
+
+    console.log("Continue with default first account");
 
     console.log("Input the amount");
-    await this.waitForModalWithTitle("Stake Neuron");
     await this.getElement(
       NeuronsTab.STAKE_NEURON_AMOUNT_INPUT_SELECTOR,
       "Get stake amount input field"
@@ -120,10 +120,29 @@ export class NeuronsTab extends MyNavigator {
     console.log("Setting dissolve delay...");
     await this.waitForModalWithTitle("Set Dissolve Delay", { timeout: 70_000 });
     if (dissolveDelay > 0) {
+      await this.waitForModalWithTitle("Set Dissolve Delay", {
+        timeout: 70_000,
+      });
+
+      // update by input change
       await this.getElement(
-        NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
-        "Get dissolve delay slider"
+        NeuronsTab.SET_DISSOLVE_DELAY_INPUT_SELECTOR,
+        "Get dissolve delay input"
       ).then(async (element) => element.setValue(dissolveDelay));
+
+      // update by range (doesn't work)
+      // TODO: find the way to update using the range. Currently it doesn't trigger `handleInput={updateDelays}` (check the range in gix components)
+      // await this.getElement(
+      //   NeuronsTab.SET_DISSOLVE_DELAY_SLIDER_SELECTOR,
+      //   "Get dissolve delay slider"
+      // ).then(async (element) => element.setValue(dissolveDelay));
+
+      // update by min click (always works)
+      // await this.click(
+      //   NeuronsTab.SET_DISSOLVE_DELAY_MIN_BUTTON_SELECTOR,
+      //   "Click to set minimum dissolve delay"
+      // );
+
       await this.click(
         NeuronsTab.SET_DISSOLVE_DELAY_SUBMIT_SELECTOR,
         "Submit dissolve delay"

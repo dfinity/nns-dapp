@@ -1,9 +1,22 @@
+import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
+import localStorageMock from "./src/tests/mocks/local-storage.mock";
+import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+import {
+  mockedConstants,
+  setDefaultTestConstants,
+} from "./src/tests/utils/mockable-constants.test-utils";
+
+// Mock SubtleCrypto to test @dfinity/auth-client
+const crypto = new SubtleCrypto();
+Object.defineProperty(global, "crypto", {
+  value: crypto,
+});
 
 global.TextEncoder = TextEncoder;
 (global as { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;
@@ -12,16 +25,49 @@ global.TextEncoder = TextEncoder;
 ).IntersectionObserver = IntersectionObserverPassive;
 
 // Environment Variables Setup
-process.env.IDENTITY_SERVICE_URL = "http://localhost:8000/";
-process.env.OWN_CANISTER_ID = "qhbym-qaaaa-aaaaa-aaafq-cai";
-process.env.GOVERNANCE_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai";
-process.env.LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-process.env.CYCLES_MINTING_CANISTER_ID = "rkp4c-7iaaa-aaaaa-aaaca-cai";
-process.env.IDENTITY_SERVICE_URL =
-  "https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network";
-process.env.ENABLE_NEW_SPAWN_FEATURE = "true";
-process.env.WASM_CANISTER_ID = "u7xn3-ciaaa-aaaaa-aaa4a-cai";
-process.env.ENABLE_SNS_NEURONS = "true";
+jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
+  getEnvVars: () => ({
+    ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
+    ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
+    cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+    dfxNetwork: "testnet",
+    featureFlags: JSON.stringify({
+      ENABLE_SNS_VOTING: true,
+      ENABLE_SNS_AGGREGATOR: true,
+      ENABLE_CKBTC: true,
+      ENABLE_CKTESTBTC: true,
+      ENABLE_SIMULATE_MERGE_NEURONS: true,
+      ENABLE_INSTANT_UNLOCK: true,
+      TEST_FLAG_EDITABLE: true,
+      TEST_FLAG_NOT_EDITABLE: true,
+    }),
+    fetchRootKey: "false",
+    host: "https://icp-api.io",
+    governanceCanisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
+    identityServiceUrl: "http://localhost:8000/",
+    ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
+    // Environments without SNS aggregator are valid
+    snsAggregatorUrl:
+      "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
+    wasmCanisterId: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
+    tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
+  }),
+}));
+
+jest.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
+setDefaultTestConstants({
+  DEV: false,
+  ENABLE_METRICS: false,
+  FORCE_CALL_STRATEGY: undefined,
+  IS_TEST_ENV: true,
+  QR_CODE_RENDERED_DEFAULT_STATE: true,
+  ENABLE_QR_CODE_READER: false,
+});
+
+global.localStorage = localStorageMock;
+
+failTestsThatLogToConsole();
 
 // testing-library setup
 configure({

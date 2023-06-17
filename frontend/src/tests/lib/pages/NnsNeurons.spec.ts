@@ -2,36 +2,25 @@
  * @jest-environment jsdom
  */
 
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import * as api from "$lib/api/governance.api";
+import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
+import * as authServices from "$lib/services/auth.services";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import NnsNeurons from "../../../lib/pages/NnsNeurons.svelte";
-import { authStore } from "../../../lib/stores/auth.store";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockFullNeuron,
-  mockNeuron,
-} from "../../mocks/neurons.mock";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
-jest.mock("../../../lib/services/neurons.services", () => {
-  return {
-    listNeurons: jest.fn().mockResolvedValue(undefined),
-  };
-});
+jest.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  let authStoreMock: jest.MockedFunction<any>;
-
   beforeEach(() => {
-    authStoreMock = jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    jest.resetAllMocks();
+    resetNeuronsApiService();
+    neuronsStore.reset();
   });
 
   describe("with enough neurons", () => {
@@ -42,37 +31,29 @@ describe("NnsNeurons", () => {
       };
       const spawningNeuron = {
         ...mockNeuron,
-        state: NeuronState.SPAWNING,
-        neuronId: BigInt(223),
+        state: NeuronState.Spawning,
+        neuronId: BigInt(224),
         fullNeuron: {
           ...mockFullNeuron,
           spawnAtTimesSeconds: BigInt(12312313),
         },
       };
       jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockNeuronsStoreSubscribe([
-            mockNeuron,
-            mockNeuron2,
-            spawningNeuron,
-          ])
-        );
+        .spyOn(authServices, "getAuthenticatedIdentity")
+        .mockResolvedValue(mockIdentity);
+      jest
+        .spyOn(api, "queryNeurons")
+        .mockResolvedValue([mockNeuron, spawningNeuron, mockNeuron2]);
     });
 
-    it("should render content", () => {
-      const { getByText } = render(NnsNeurons);
-
-      expect(
-        getByText("Earn rewards by staking your ICP in neurons.", {
-          exact: false,
-        })
-      ).toBeInTheDocument();
-    });
-
-    it("should render spawning neurons as disabled", () => {
+    it("should render spawning neurons as disabled", async () => {
       const { queryAllByTestId } = render(NnsNeurons);
 
+      // Wait for the neurons to be loaded and rendered
+      await waitFor(() => {
+        const neuronCards = queryAllByTestId("neuron-card");
+        return expect(neuronCards.length).toBe(3);
+      });
       const neuronCards = queryAllByTestId("neuron-card");
       const disabledCards = neuronCards.filter(
         (card) => card.getAttribute("aria-disabled") === "true"
@@ -80,65 +61,77 @@ describe("NnsNeurons", () => {
       expect(disabledCards.length).toBe(1);
     });
 
-    it("should subscribe to store", () => {
-      render(NnsNeurons);
-      expect(authStoreMock).toHaveBeenCalled();
-    });
-
-    it("should render a principal as text", () => {
-      const { getByText } = render(NnsNeurons);
-
-      expect(
-        getByText(mockPrincipal.toText(), { exact: false })
-      ).toBeInTheDocument();
-    });
-
     it("should render a NeuronCard", async () => {
       const { container } = render(NnsNeurons);
 
-      waitFor(() =>
+      await waitFor(() =>
         expect(container.querySelector('article[role="link"]')).not.toBeNull()
       );
     });
+  });
 
-    it("should open the CreateNeuronModal on click to Stake Neurons", async () => {
-      const { queryByTestId, queryByText } = render(NnsNeurons);
-
-      const toolbarButton = queryByTestId("stake-neuron-button");
-      expect(toolbarButton).not.toBeNull();
-      expect(queryByText(en.accounts.select_source)).toBeNull();
-
-      toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-      expect(queryByText(en.accounts.select_source)).not.toBeNull();
+  describe("no neurons", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(authServices, "getAuthenticatedIdentity")
+        .mockResolvedValue(mockIdentity);
+      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
-    it("should open the MergeNeuronsModal on click to Merge Neurons", async () => {
-      const { queryByTestId, queryByText } = render(NnsNeurons);
+    it("should render an empty message", async () => {
+      const { getByText } = render(NnsNeurons);
 
-      const toolbarButton = queryByTestId("merge-neurons-button");
-      expect(toolbarButton).not.toBeNull();
-      expect(queryByText(en.neurons.merge_neurons_modal_title)).toBeNull();
-
-      toolbarButton !== null && (await fireEvent.click(toolbarButton));
-
-      expect(queryByText(en.neurons.merge_neurons_modal_title)).not.toBeNull();
+      await waitFor(() =>
+        expect(getByText(en.neurons.text)).toBeInTheDocument()
+      );
     });
   });
 
-  describe("with less than two neurons", () => {
+  describe("navigating", () => {
     beforeEach(() => {
       jest
-        .spyOn(neuronsStore, "subscribe")
-        .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+        .spyOn(authServices, "getAuthenticatedIdentity")
+        .mockResolvedValue(mockIdentity);
+      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
-    it("should have disabled Merge Neurons button", async () => {
-      const { queryByTestId } = render(NnsNeurons);
 
-      const toolbarButton = queryByTestId("merge-neurons-button");
-      expect(toolbarButton).not.toBeNull();
-      toolbarButton &&
-        expect(toolbarButton.hasAttribute("disabled")).toBeTruthy();
+    it("should call query neurons twice when rendered", async () => {
+      render(NnsNeurons);
+
+      await waitFor(() =>
+        expect(api.queryNeurons).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          certified: true,
+        })
+      );
+      expect(api.queryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+    });
+
+    it("should NOT call query neurons after being visited", async () => {
+      render(NnsNeurons);
+
+      await waitFor(() =>
+        expect(api.queryNeurons).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          certified: true,
+        })
+      );
+      expect(api.queryNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: false,
+      });
+
+      render(NnsNeurons);
+
+      // We wait to make sure there are no more calls
+      await tick();
+      await tick();
+      await tick();
+
+      await waitFor(() => expect(api.queryNeurons).toHaveBeenCalledTimes(2));
     });
   });
 });

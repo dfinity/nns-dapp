@@ -1,16 +1,16 @@
 <script lang="ts">
-  import Input from "../ui/Input.svelte";
-  import { i18n } from "../../stores/i18n";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
-  import { addSubAccount } from "../../services/accounts.services";
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import { addSubAccount } from "$lib/services/accounts.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
+  } from "$lib/types/add-account.context";
 
-  let newAccountName: string = "";
+  let newAccountName = "";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -33,9 +33,12 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount} class="wizard-wrapper">
+<form
+  on:submit|preventDefault={createNewSubAccount}
+  data-tid="add-sub-account-component"
+>
   <div>
-    <h4 class="balance">{$i18n.accounts.new_linked_account_enter_name}</h4>
+    <p class="label">{$i18n.accounts.new_linked_account_enter_name}</p>
     <Input
       inputType="text"
       placeholderLabelKey="accounts.new_linked_account_placeholder"
@@ -44,24 +47,24 @@
       disabled={$busy}
     />
   </div>
-  <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+
+  <div class="toolbar">
+    <button class="secondary" type="button" on:click={back} data-tid="back">
       {$i18n.core.back}
     </button>
     <button
-      class="primary small"
+      class="primary"
+      data-tid="create-account-button"
       type="submit"
       disabled={newAccountName.length === 0 || $busy}
     >
       {$i18n.core.create}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
   }
 </style>

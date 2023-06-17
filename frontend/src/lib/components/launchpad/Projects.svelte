@@ -1,53 +1,65 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import ProjectCard from "./ProjectCard.svelte";
-  import CardGrid from "../ui/CardGrid.svelte";
-  import SkeletonProjectCard from "../ui/SkeletonProjectCard.svelte";
-  import Spinner from "../ui/Spinner.svelte";
-  import { isNullish } from "../../utils/utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
+  import { keyOf } from "$lib/utils/utils";
+  import { snsQueryStoreIsLoading } from "$lib/stores/sns.store";
   import {
-    snsesCountStore,
-    snsSummariesStore,
-    snsSwapCommitmentsStore,
-  } from "../../stores/sns.store";
-  import {
-    activePadProjectsStore,
+    snsProjectsActivePadStore,
     type SnsFullProject,
-  } from "../../stores/projects.store";
+  } from "$lib/derived/sns/sns-projects.derived";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { filterProjectsStatus } from "$lib/utils/projects.utils";
+  import { Html } from "@dfinity/gix-components";
 
-  let projects: SnsFullProject[] | undefined;
-  $: projects = $activePadProjectsStore;
+  export let testId: string;
+  export let status: SnsSwapLifecycle;
 
-  let projectCount: number | undefined;
-  $: projectCount = $snsesCountStore;
+  let projects: SnsFullProject[];
+  $: projects = filterProjectsStatus({
+    swapLifecycle: status,
+    projects: $snsProjectsActivePadStore,
+  });
 
-  let loading: boolean = false;
-  $: loading =
-    isNullish($snsSummariesStore) || isNullish($snsSwapCommitmentsStore);
+  let loading = false;
+  $: loading = $snsQueryStoreIsLoading;
+
+  const mapper: Record<SnsSwapLifecycle, string> = {
+    [SnsSwapLifecycle.Open]: "no_open_projects",
+    [SnsSwapLifecycle.Adopted]: "no_opening_soon_projects",
+    [SnsSwapLifecycle.Committed]: "no_committed_projects",
+    [SnsSwapLifecycle.Unspecified]: "no_projects",
+    [SnsSwapLifecycle.Aborted]: "no_projects",
+    [SnsSwapLifecycle.Pending]: "no_projects",
+  };
+  let noProjectsMessageLabel: string;
+  $: noProjectsMessageLabel = keyOf({
+    obj: $i18n.sns_launchpad,
+    key: mapper[status],
+  });
 </script>
 
-{#if loading}
-  {#if projectCount === undefined}
-    <div>
-      <Spinner inline />
+<TestIdWrapper {testId}>
+  {#if loading}
+    <div class="card-grid">
+      <SkeletonProjectCard />
+      <SkeletonProjectCard />
+      <SkeletonProjectCard />
     </div>
   {:else}
-    <CardGrid>
-      {#each Array(projectCount) as _}
-        <SkeletonProjectCard />
+    <div class="card-grid">
+      {#each projects as project (project.rootCanisterId.toText())}
+        <ProjectCard {project} />
       {/each}
-    </CardGrid>
+    </div>
+    {#if projects.length === 0}
+      <p data-tid="no-projects-message" class="no-projects description">
+        <Html text={noProjectsMessageLabel} />
+      </p>
+    {/if}
   {/if}
-{:else if projects !== undefined}
-  <CardGrid>
-    {#each projects as project (project.rootCanisterId.toText())}
-      <ProjectCard {project} />
-    {/each}
-  </CardGrid>
-  {#if projects.length === 0}
-    <p class="no-projects">{$i18n.sns_launchpad.no_projects}</p>
-  {/if}
-{/if}
+</TestIdWrapper>
 
 <style lang="scss">
   // match page spinner
@@ -56,7 +68,6 @@
   }
 
   .no-projects {
-    text-align: center;
-    margin: var(--padding-2x) 0;
+    margin: 0 0 var(--padding-2x);
   }
 </style>

@@ -1,25 +1,13 @@
-import { ENABLE_SNS_NEURONS } from "../constants/environment.constants";
-import {
-  loadSnsSummariesProxy,
-  loadSnsSwapCommitmentsProxy,
-} from "../proxy/sns.services.proxy";
-import { syncAccounts } from "./accounts.services";
-import { listNeurons } from "./neurons.services";
-import { loadMainTransactionFee } from "./transaction-fees.services";
+import { loadSnsProjects } from "./$public/sns.services";
+import { initAccounts } from "./accounts.services";
 
-export const initApp = (): Promise<
+export const initAppPrivateData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
-  const initNns: Promise<void>[] = [
-    syncAccounts(),
-    listNeurons(),
-    loadMainTransactionFee(),
-  ];
-
-  // Sns in an initiative currently under development and not proposed on mainnet yet
-  const initSns: Promise<void>[] = ENABLE_SNS_NEURONS
-    ? [loadSnsSummariesProxy(), loadSnsSwapCommitmentsProxy()]
-    : [];
+  const initNns: Promise<void>[] = [initAccounts()];
+  // Reload the SNS projects even if they were loaded.
+  // Get latest data and create wrapper caches for the logged in identity.
+  const initSns: Promise<void>[] = [loadSnsProjects()];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.

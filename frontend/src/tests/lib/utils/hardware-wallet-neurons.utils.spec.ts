@@ -1,9 +1,9 @@
-import { mapHardwareWalletNeuronInfo } from "../../../lib/utils/hardware-wallet-neurons.utils";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockNeuronControlled,
   mockNeuronNotControlled,
-} from "../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
 
 describe("hardware-wallet-neurons.utilse", () => {
   it("should map neuron to a controlled by nns dapp neuron", () =>

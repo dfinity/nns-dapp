@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+if command -v google-chrome; then
+  chrome_version=$(google-chrome --version)
+else
+  chrome_version="$(osascript -e 'get version of application "Google Chrome"')"
+fi
+
+chrome_major_version="$(echo "$chrome_version" | sed -E 's/[^0-9]*([0-9]+).*/\1/g')"
+
+cd "$(dirname "$0")/.."
+npm install "chromedriver@$chrome_major_version"

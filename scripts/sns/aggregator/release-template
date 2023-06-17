@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../../.."
+
+./scripts/docker-build
+mkdir -p release/ci
+mkdir -p release/docker
+WASM="sns_aggregator.wasm"
+cp "$WASM" release/docker/
+
+if test -f "$WASM"; then
+  SHA="$(sha256sum "$WASM" | awk '{print $1}')"
+else
+  echo "Please populate ${WASM} and run this again."
+  exit 0
+fi
+
+cat <<EOF >release/AGGREGATOR_PROPOSAL.md
+# Upgrade SNS aggregator canister to commit \`$(git rev-parse HEAD)\`
+Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
+
+## Change Log:
+
+* Write about...
+* ... what has changed
+* ... in simple bullet points
+
+## Commit log:
+
+\`\`\`
++ bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/"
+$(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/")
+\`\`\`
+
+## Wasm Verification
+
+To build the wasm module yourself and verify its hash, run the following commands from the root of the [nns-dapp repo](https://github.com/dfinity/nns-dapp):
+
+\`\`\`
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse HEAD)"
+./scripts/docker-build
+sha256sum sns_aggregator.wasm
+\`\`\`
+EOF
+
+cat <<EOF >release/AGGREGATOR_ROLLBACK.md
+# Downgrade SNS aggregator canister to commit \`$(git rev-parse HEAD)\`
+Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
+
+## Wasm Verification
+
+To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
+
+\`\`\`
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse HEAD)"
+./scripts/docker-build
+sha256sum sns_aggregator.wasm
+\`\`\`
+EOF
+
+ARG_DID="./release/sns_aggregator_arg.did"
+echo '(record{})' >"$ARG_DID"

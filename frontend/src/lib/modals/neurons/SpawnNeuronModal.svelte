@@ -1,54 +1,61 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import SelectPercentage from "../../components/neuron-detail/SelectPercentage.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import WizardModal from "../WizardModal.svelte";
-  import ConfirmActionScreen from "../../components/ui/ConfirmActionScreen.svelte";
-  import { formatPercentage } from "../../utils/format.utils";
-  import { stopBusy } from "../../stores/busy.store";
+  import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import {
+    WizardModal,
+    Html,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
-  import { spawnNeuron } from "../../services/neurons.services";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { isEnoughMaturityToSpawn } from "../../utils/neuron.utils";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { ENABLE_NEW_SPAWN_FEATURE } from "../../constants/environment.constants";
-  import ConfirmSpawnHW from "../../components/neuron-detail/ConfirmSpawnHW.svelte";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import { valueSpan } from "../../utils/utils";
+  import { spawnNeuron } from "$lib/services/neurons.services";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import {
+    formattedMaturity,
+    isEnoughMaturityToSpawn,
+    isNeuronControlledByHardwareWallet,
+  } from "$lib/utils/neuron.utils";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { goto } from "$app/navigation";
+  import { accountsStore } from "$lib/stores/accounts.store";
 
   export let neuron: NeuronInfo;
-  export let controlledByHarwareWallet: boolean;
 
-  const hardwareWalletSteps: Steps = [
+  let controlledByHardwareWallet: boolean;
+  $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $accountsStore,
+  });
+
+  const hardwareWalletSteps: WizardSteps = [
     {
       name: "ConfirmSpawn",
-      showBackButton: false,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const nnsDappAccountSteps: Steps = [
+  const nnsDappAccountSteps: WizardSteps = [
     {
       name: "SelectPercentage",
-      showBackButton: false,
-      title: $i18n.neuron_detail.spawn_maturity_modal_title,
+      title: $i18n.neuron_detail.spawn_neuron_modal_title,
     },
     {
       name: "ConfirmSpawn",
-      showBackButton: true,
       title: $i18n.neuron_detail.spawn_confirmation_modal_title,
     },
   ];
-  const steps: Steps = controlledByHarwareWallet
+
+  let steps: WizardSteps;
+  $: steps = controlledByHardwareWallet
     ? hardwareWalletSteps
     : nnsDappAccountSteps;
 
-  let currentStep: Step;
-  let modal: WizardModal;
+  let currentStep: WizardStep | undefined;
 
-  let percentageToSpawn: number = 0;
+  let percentageToSpawn = 0;
 
   let enoughMaturityToSpawn: boolean;
   $: enoughMaturityToSpawn = isEnoughMaturityToSpawn({
@@ -56,126 +63,67 @@
     percentage: percentageToSpawn,
   });
 
-  let percentageMessage: string;
-  $: percentageMessage = controlledByHarwareWallet
-    ? "100%"
-    : formatPercentage(percentageToSpawn / 100, {
-        minFraction: 0,
-        maxFraction: 0,
-      });
-
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
+
   const spawnNeuronFromMaturity = async () => {
     startBusyNeuron({ initiator: "spawn-neuron", neuronId: neuron.neuronId });
 
     const newNeuronId = await spawnNeuron({
       neuronId: neuron.neuronId,
-      percentageToSpawn: controlledByHarwareWallet
+      percentageToSpawn: controlledByHardwareWallet
         ? undefined
         : percentageToSpawn,
     });
     if (newNeuronId !== undefined) {
-      toastsStore.show({
+      toastsShow({
         level: "success",
-        labelKey: "neuron_detail.spawn_maturity_success",
+        labelKey: "neuron_detail.spawn_neuron_success",
         substitutions: {
           $neuronId: String(newNeuronId),
         },
       });
       close();
-      routeStore.navigate({ path: AppPath.Neurons });
+
+      await goto(AppPath.Neurons);
     }
 
     stopBusy("spawn-neuron");
   };
-  const goToConfirm = () => {
-    modal.next();
-  };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal {steps} bind:currentStep on:nnsClose>
   <svelte:fragment slot="title"
-    >{currentStep?.title ??
-      $i18n.neuron_detail.spawn_maturity_modal_title}</svelte:fragment
+    >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
-  {#if currentStep.name === "SelectPercentage" && !ENABLE_NEW_SPAWN_FEATURE}
-    <SelectPercentage
-      {neuron}
-      buttonText={$i18n.neuron_detail.spawn}
-      on:nnsSelectPercentage={goToConfirm}
-      on:nnsBack={close}
-      bind:percentage={percentageToSpawn}
-      disabled={!enoughMaturityToSpawn}
-    >
-      <svelte:fragment slot="text">
-        <h5>{$i18n.neuron_detail.spawn_maturity_modal_title}</h5>
-        <p>{$i18n.neuron_detail.spawn_maturity_modal_description}</p>
-      </svelte:fragment>
-    </SelectPercentage>
-  {:else if currentStep.name === "SelectPercentage" && ENABLE_NEW_SPAWN_FEATURE}
-    <SelectPercentage
-      {neuron}
+  {#if currentStep?.name === "SelectPercentage"}
+    <NeuronSelectPercentage
+      formattedMaturity={formattedMaturity(neuron)}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
-      on:nnsBack={close}
+      on:nnsCancel={close}
       bind:percentage={percentageToSpawn}
       disabled={!enoughMaturityToSpawn}
     >
-      <h5 slot="text">{$i18n.neuron_detail.spawn_maturity_choose}</h5>
-      <div slot="description" class="description">
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_1}
-        </p>
-        <p>
-          {@html $i18n.neuron_detail.spawn_maturity_explanation_2}
-        </p>
-      </div>
-    </SelectPercentage>
-  {:else if currentStep.name === "ConfirmSpawn" && ENABLE_NEW_SPAWN_FEATURE}
-    <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
-  {:else if currentStep.name === "ConfirmSpawn" && !ENABLE_NEW_SPAWN_FEATURE}
-    <ConfirmActionScreen on:nnsConfirm={spawnNeuronFromMaturity}>
-      <div class="confirm" slot="main-info">
-        <h4>{$i18n.neuron_detail.spawn_maturity_confirmation_q}</h4>
-        <p class="confirm-answer">
-          {replacePlaceholders(
-            $i18n.neuron_detail.spawn_maturity_confirmation_a,
-            {
-              $percentage: valueSpan(percentageMessage),
-            }
-          )}
-        </p>
-      </div>
-      <svelte:fragment slot="button-content"
-        >{$i18n.core.confirm}</svelte:fragment
+      <svelte:fragment slot="text"
+        >{$i18n.neuron_detail.spawn_neuron_choose}</svelte:fragment
       >
-    </ConfirmActionScreen>
+      <svelte:fragment slot="description">
+        <p class="description">
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_1} />
+        </p>
+        <p class="description">
+          <Html text={$i18n.neuron_detail.spawn_neuron_explanation_2} />
+        </p>
+      </svelte:fragment>
+    </NeuronSelectPercentage>
+  {:else if currentStep?.name === "ConfirmSpawn"}
+    <ConfirmSpawnHW {neuron} on:nnsConfirm={spawnNeuronFromMaturity} />
   {/if}
 </WizardModal>
 
 <style lang="scss">
-  h4 {
-    text-align: center;
-  }
-
-  p {
-    // For the link inside "i18n.neuron_detail.spawn_maturity_explanation"
-    :global(a) {
-      color: var(--primary);
-      text-decoration: none;
-      font-size: inherit;
-      line-height: inherit;
-    }
-  }
-
-  .confirm-answer {
-    margin: 0;
-    text-align: center;
-  }
-
-  .confirm {
-    display: flex;
-    flex-direction: column;
+  .description:first-of-type {
+    margin-top: var(--padding-2x);
   }
 </style>

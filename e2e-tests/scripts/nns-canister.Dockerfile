@@ -6,7 +6,8 @@ RUN apt -yq update && \
     apt autoremove --purge -y && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN cargo install --version 0.3.2 ic-cdk-optimizer
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
 
 ARG IC_COMMIT
 
@@ -45,11 +46,16 @@ RUN binary=sns-swap-canister && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
 
+RUN binary=sns-wasm-canister && \
+    cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
+    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did
 COPY --from=builder /ic/rs/rosetta-api/ledger.did /ledger.private.did
-COPY --from=builder /ic/rs/rosetta-api/ledger_canister/ledger.did /ledger.did
+COPY --from=builder /ic/rs/rosetta-api/icp_ledger/ledger.did /ledger.did
 COPY --from=builder /ic/rs/rosetta-api/icrc1/ledger/icrc1.did /ic-icrc1-ledger.did
+COPY --from=builder /ic/rs/rosetta-api/icrc1/index/index.did /ic-icrc1-ledger-index.did
 COPY --from=builder /ic/rs/nns/gtc/canister/gtc.did /genesis_token.did
 COPY --from=builder /ic/rs/nns/cmc/cmc.did /cmc.did
 COPY --from=builder /ic/rs/nns/sns-wasm/canister/sns-wasm.did /sns_wasm.did

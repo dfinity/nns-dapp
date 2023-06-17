@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+. "$SOURCE_DIR/versions.bash"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+gh release list --exclude-drafts --limit 20 --repo dfinity/nns-dapp | grep -m1 proposal | sed -E 's/.*\<(proposal-[0-9]+).*/\1/g'

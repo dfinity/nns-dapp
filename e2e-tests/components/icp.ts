@@ -3,7 +3,7 @@ import { MyNavigator } from "../common/navigator";
 const GET_ICP_BUTTON: string = `[data-tid="get-icp-button"]`;
 const GET_ICP_FORM: string = `[data-tid="get-icp-form"]`;
 const GET_ICP_FORM_FIELD: string = `[data-tid="get-icp-form"] [data-tid="input-ui-element"]`;
-const GET_ICP_FORM_BUTTON: string = `[data-tid="get-icp-form"] [data-tid="get-icp-submit"]`;
+const GET_ICP_FORM_BUTTON: string = `[data-tid="get-icp-submit"]`;
 
 export class Icp extends MyNavigator {
   constructor(browser: WebdriverIO.Browser) {

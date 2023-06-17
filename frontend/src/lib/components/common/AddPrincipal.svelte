@@ -1,10 +1,9 @@
 <script lang="ts">
   import type { Principal } from "@dfinity/principal";
-  import { busy } from "../../stores/busy.store";
-  import PrincipalInput from "../ui/PrincipalInput.svelte";
+  import { busy } from "@dfinity/gix-components";
+  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   export let principal: Principal | undefined = undefined;
 
@@ -15,18 +14,19 @@
 </script>
 
 <form on:submit|preventDefault={select}>
-  <div class="input-wrapper">
-    <h5><slot name="title" /></h5>
+  <div>
     <PrincipalInput
       bind:principal
       placeholderLabelKey="core.principal_id"
       name="principal"
-    />
+    >
+      <slot name="title" slot="label" />
+    </PrincipalInput>
   </div>
 
-  <FooterModal>
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsClose")}
     >
@@ -34,33 +34,11 @@
     </button>
     <button
       data-tid="add-principal-button"
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={principal === undefined || $busy}
     >
       <slot name="button" />
     </button>
-  </FooterModal>
+  </div>
 </form>
-
-<style lang="scss">
-  h5 {
-    text-align: center;
-  }
-
-  form {
-    max-width: 100%;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
-  .input-wrapper {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-</style>

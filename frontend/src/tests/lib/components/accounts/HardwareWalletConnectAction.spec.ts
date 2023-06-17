@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import HardwareWalletConnectAction from "../../../../lib/components/accounts/HardwareWalletConnectAction.svelte";
-import { LedgerConnectionState } from "../../../../lib/constants/ledger.constants";
-import { connectToHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
   afterEach(() => {
@@ -55,15 +55,15 @@ describe("HardwareWalletConnectAction", () => {
       );
     });
 
-    it("should display a connected inforation", async () => {
-      const { getByRole, getByText } = render(HardwareWalletConnectAction);
+    it("should display a connected information", async () => {
+      const { getByRole, getByText, getByTestId } = render(
+        HardwareWalletConnectAction
+      );
 
       fireEvent.click(getByRole("button"));
 
       await waitFor(() =>
-        expect(
-          getByText(en.accounts.hardware_wallet_connected)
-        ).toBeInTheDocument()
+        expect(getByTestId("hardware-wallet-principal")).toBeInTheDocument()
       );
 
       expect(getByText(en.core.principal)).toBeInTheDocument();

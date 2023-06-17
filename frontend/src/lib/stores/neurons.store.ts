@@ -1,9 +1,9 @@
-import type { NeuronInfo } from "@dfinity/nns";
-import { derived, writable, type Readable } from "svelte/store";
 import {
   hasValidStake,
   sortNeuronsByCreatedTimestamp,
-} from "../utils/neuron.utils";
+} from "$lib/utils/neuron.utils";
+import type { NeuronInfo } from "@dfinity/nns";
+import { derived, writable, type Readable } from "svelte/store";
 
 export interface NeuronsStore {
   neurons?: NeuronInfo[];
@@ -28,26 +28,57 @@ const initNeuronsStore = () => {
 
     setNeurons({ neurons, certified }: Required<NeuronsStore>) {
       set({
-        neurons: [...neurons.filter(hasValidStake)],
+        neurons,
         certified,
       });
     },
 
     pushNeurons({ neurons, certified }: Required<NeuronsStore>) {
       update(({ neurons: oldNeurons }: NeuronsStore) => {
-        const filteredNewNeurons = neurons.filter(hasValidStake);
-        const newIds = new Set(
-          filteredNewNeurons.map(({ neuronId }) => neuronId)
-        );
+        const newIds = new Set(neurons.map(({ neuronId }) => neuronId));
         return {
           neurons: [
             ...(oldNeurons || []).filter(
               ({ neuronId }) => !newIds.has(neuronId)
             ),
-            ...filteredNewNeurons,
+            ...neurons,
           ],
           certified,
         };
+      });
+    },
+
+    replaceNeurons(neurons: NeuronInfo[]) {
+      // the function should preserve the order to avoid jumps in the lists
+      update(({ neurons: oldNeurons, certified }: NeuronsStore) => {
+        const newNeurons = new Map(
+          neurons.map((neuron) => [neuron.neuronId, neuron])
+        );
+        const updatedNeurons = oldNeurons?.map((old) => {
+          const { neuronId } = old;
+          const newNeuron = newNeurons.get(neuronId);
+
+          if (newNeuron) {
+            newNeurons.delete(neuronId);
+          }
+
+          return newNeuron ?? old;
+        });
+
+        return {
+          neurons: [
+            ...Array.from(updatedNeurons?.values() ?? []),
+            ...Array.from(newNeurons.values()),
+          ],
+          certified,
+        };
+      });
+    },
+
+    reset() {
+      set({
+        neurons: undefined,
+        certified: undefined,
       });
     },
   };
@@ -57,7 +88,7 @@ export const neuronsStore = initNeuronsStore();
 
 export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
   neuronsStore,
-  ($neuronsStore) => $neuronsStore.neurons || []
+  ($neuronsStore) => $neuronsStore.neurons?.filter(hasValidStake) || []
 );
 
 export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(

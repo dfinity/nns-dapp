@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { ICP } from "@dfinity/nns";
-  import { AppPath } from "../../constants/routes.constants";
-  import type { SnsSummary, SnsSwapCommitment } from "../../types/sns";
-
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import type { SnsFullProject } from "../../stores/projects.store";
-  import Card from "../ui/Card.svelte";
-  import Logo from "../ui/Logo.svelte";
-  import Spinner from "../ui/Spinner.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+  import { i18n } from "$lib/stores/i18n";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { Card } from "@dfinity/gix-components";
+  import Logo from "$lib/components/ui/Logo.svelte";
+  import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import { goto } from "$app/navigation";
+  import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let project: SnsFullProject;
 
@@ -27,39 +28,46 @@
   let title: string;
   $: title = `${$i18n.sns_project.project} ${name}`;
 
-  let myCommitment: ICP | undefined;
+  let commitmentE8s: bigint | undefined;
+  $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
-  const showProject = () => {
-    routeStore.navigate({
-      path: `${AppPath.ProjectDetail}/${project.rootCanisterId.toText()}`,
-    });
-  };
+  let userHasParticipated: boolean;
+  $: userHasParticipated =
+    nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
+
+  const showProject = async () =>
+    await goto(
+      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
+    );
 </script>
 
 <Card
+  testId="project-card-component"
   role="link"
   on:click={showProject}
-  highlighted={myCommitment !== undefined}
+  theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h3>{title}</h3>
+    <h3 data-tid="project-name">{title}</h3>
   </div>
 
   <p class="value description">{description}</p>
 
-  <ProjectCardSwapInfo {project} bind:myCommitment />
+  <ProjectCardSwapInfo {project} />
 
-  <!-- TODO L2-751: handle fetching errors -->
-  {#if swapCommitment === undefined}
-    <div class="spinner">
-      <Spinner size="small" inline />
-    </div>
-  {/if}
+  <SignedInOnly>
+    <!-- TODO L2-751: handle fetching errors -->
+    {#if swapCommitment === undefined}
+      <div class="spinner">
+        <Spinner size="small" inline />
+      </div>
+    {/if}
+  </SignedInOnly>
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   .title {
     display: flex;

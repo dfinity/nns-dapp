@@ -1,4 +1,4 @@
-import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
+import type { BlockHeight, E8s } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;
@@ -9,6 +9,14 @@ export interface AccountDetails {
 // ledger and account canisters in nns-js define a AccountIdentifier as an object that contains the bytes array as a variable
 // nns-dapp canister returns a string
 export type AccountIdentifierString = string;
+export interface AddPendingNotifySwapRequest {
+  swap_canister_id: Principal;
+  buyer_sub_account: [] | [SubAccountArray];
+  buyer: Principal;
+}
+export type AddPendingTransactionResponse =
+  | { Ok: null }
+  | { NotAuthorized: null };
 export interface AttachCanisterRequest {
   name: string;
   canister_id: Principal;
@@ -24,20 +32,18 @@ export interface CanisterDetails {
   canister_id: CanisterId;
 }
 export type CanisterId = Principal;
-export type CreateSubAccountResponse = {
-  Ok?: SubAccountDetails;
-  AccountNotFound?: null;
-  NameTooLong?: null;
-  SubAccountLimitExceeded?: null;
-};
+export type CreateSubAccountResponse =
+  | { Ok: SubAccountDetails }
+  | { AccountNotFound: null }
+  | { NameTooLong: null }
+  | { SubAccountLimitExceeded: null };
 export interface DetachCanisterRequest {
   canister_id: Principal;
 }
 export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
-export type GetAccountResponse = {
-  Ok?: AccountDetails;
-  AccountNotFound?: null;
-};
+export type GetAccountResponse =
+  | { Ok: AccountDetails }
+  | { AccountNotFound: null };
 export type GetProposalPayloadResponse = { Ok: string } | { Err: string };
 export interface GetTransactionsRequest {
   page_size: number;
@@ -68,20 +74,6 @@ export interface HttpResponse {
 export interface ICPTs {
   e8s: E8s;
 }
-export interface MultiPartTransactionError {
-  error_message: string;
-  block_height: BlockHeight;
-}
-export type MultiPartTransactionStatus =
-  | { Queued: null }
-  | { Error: string }
-  | { Refunded: [BlockHeight, string] }
-  | { CanisterCreated: CanisterId }
-  | { Complete: null }
-  | { NotFound: null }
-  | { NeuronCreated: NeuronId }
-  | { PendingSync: null }
-  | { ErrorWithRefundPending: string };
 export interface Receive {
   fee: ICPTs;
   from: AccountIdentifierString;
@@ -147,10 +139,11 @@ export interface Transaction {
 export type TransactionType =
   | { Burn: null }
   | { Mint: null }
-  | { Transfer: null }
   | { StakeNeuronNotification: null }
   | { TopUpCanister: CanisterId }
+  | { ParticipateSwap: CanisterId }
   | { CreateCanister: null }
+  | { Transfer: null }
   | { TopUpNeuron: null }
   | { StakeNeuron: null };
 export type Transfer =
@@ -160,6 +153,9 @@ export type Transfer =
   | { Receive: Receive };
 export default interface _SERVICE {
   add_account: () => Promise<AccountIdentifierString>;
+  add_pending_notify_swap: (
+    arg_0: AddPendingNotifySwapRequest
+  ) => Promise<AddPendingTransactionResponse>;
   add_stable_asset: (arg_0: Array<number>) => Promise<undefined>;
   attach_canister: (
     arg_0: AttachCanisterRequest
@@ -170,13 +166,6 @@ export default interface _SERVICE {
   ) => Promise<DetachCanisterResponse>;
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
-  get_multi_part_transaction_errors: () => Promise<
-    Array<MultiPartTransactionError>
-  >;
-  get_multi_part_transaction_status: (
-    arg_0: Principal,
-    arg_1: BlockHeight
-  ) => Promise<MultiPartTransactionStatus>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   get_transactions: (

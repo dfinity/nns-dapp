@@ -1,13 +1,13 @@
-import type { HttpAgent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
-import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
-import * as api from "../../../lib/api/governance.api";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { LedgerConnectionState } from "../../../lib/constants/ledger.constants";
-import { LedgerIdentity } from "../../../lib/identities/ledger.identity";
-import * as accountsServices from "../../../lib/services/accounts.services";
-import * as authServices from "../../../lib/services/auth.services";
+/**
+ * @jest-environment jsdom
+ */
+import * as agent from "$lib/api/agent.api";
+import * as api from "$lib/api/governance.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import { LedgerIdentity } from "$lib/identities/ledger.identity";
+import * as accountsServices from "$lib/services/accounts.services";
+import * as authServices from "$lib/services/auth.services";
 import {
   assertLedgerVersion,
   connectToHardwareWallet,
@@ -15,15 +15,11 @@ import {
   listNeuronsHardwareWallet,
   registerHardwareWallet,
   showAddressAndPubKeyOnHardwareWallet,
-} from "../../../lib/services/ledger.services";
-import { authStore } from "../../../lib/stores/auth.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
-import {
-  LedgerErrorKey,
-  LedgerErrorMessage,
-} from "../../../lib/types/ledger.errors";
-import * as agent from "../../../lib/utils/agent.utils";
-import { replacePlaceholders } from "../../../lib/utils/i18n.utils";
+} from "$lib/services/ledger.services";
+import { authStore } from "$lib/stores/auth.store";
+import * as toastsStore from "$lib/stores/toasts.store";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAuthStoreSubscribe,
   mockGetIdentity,
@@ -31,14 +27,18 @@ import {
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
-import en from "../../mocks/i18n.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
-  mockLedgerIdentifier,
   MockLedgerIdentity,
-} from "../../mocks/ledger.identity.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { MockNNSDappCanister } from "../../mocks/nns-dapp.canister.mock";
+  mockLedgerIdentifier,
+} from "$tests/mocks/ledger.identity.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { principalToAccountIdentifier } from "@dfinity/nns";
+import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
+import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
   describe("connect hardware wallet", () => {
@@ -47,13 +47,13 @@ describe("ledger-services", () => {
     describe("success", () => {
       const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
-      beforeAll(() =>
+      beforeAll(() => {
         jest
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          )
-      );
+          );
+      });
 
       afterAll(() => {
         jest.clearAllMocks();
@@ -87,14 +87,14 @@ describe("ledger-services", () => {
         });
       });
 
-      it("should display a toast for the error assuming the user has cancelled the process", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+      it("should display a toast for the error assuming the browser is not supported", async () => {
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
-          labelKey: "error__ledger.access_denied",
+          labelKey: "error__ledger.browser_not_supported",
         });
 
         spyToastError.mockRestore();
@@ -126,7 +126,7 @@ describe("ledger-services", () => {
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
       jest
-        .spyOn(authServices, "getIdentity")
+        .spyOn(authServices, "getAuthenticatedIdentity")
         .mockImplementation(() => Promise.resolve(mockGetIdentity()));
     });
 
@@ -145,7 +145,7 @@ describe("ledger-services", () => {
 
     describe("error", () => {
       it("should throw an error if no name provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({ name: undefined, ledgerIdentity });
 
@@ -158,7 +158,7 @@ describe("ledger-services", () => {
       });
 
       it("should throw an error if no ledger identity provided", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await registerHardwareWallet({
           name: "test",
@@ -260,7 +260,7 @@ describe("ledger-services", () => {
           throw new LedgerErrorKey("error__ledger.unexpected_wallet");
         });
 
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await showAddressAndPubKeyOnHardwareWallet();
 
@@ -310,7 +310,7 @@ describe("ledger-services", () => {
       );
 
       it("should not list neurons if ledger throw an error", async () => {
-        const spyToastError = jest.spyOn(toastsStore, "error");
+        const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         const { err } = await listNeuronsHardwareWallet();
 

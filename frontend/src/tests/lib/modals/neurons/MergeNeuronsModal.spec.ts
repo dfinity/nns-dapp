@@ -2,260 +2,368 @@
  * @jest-environment jsdom
  */
 
-import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import type { RenderResult } from "@testing-library/svelte";
-import MergeNeuronsModal from "../../../../lib/modals/neurons/MergeNeuronsModal.svelte";
-import { mergeNeurons } from "../../../../lib/services/neurons.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
-import type { Account } from "../../../../lib/types/account";
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import { mergeNeurons, simulateMergeNeurons } from "$lib/api/governance.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
+import * as authServices from "$lib/services/auth.services";
+import { listNeurons } from "$lib/services/neurons.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import type { Account } from "$lib/types/account";
+import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockFullNeuron,
-  mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { createMockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
-  return {
-    mergeNeurons: jest.fn().mockResolvedValue(BigInt(10)),
-    getNeuronFromStore: jest.fn(),
-  };
-});
+jest.mock("$lib/api/governance.api");
+
+const testIdentity = createMockIdentity(37373);
+
+const getStake = (neuron: NeuronInfo): bigint =>
+  neuron.fullNeuron.cachedNeuronStake;
 
 describe("MergeNeuronsModal", () => {
-  const selectAndTestTwoNeurons = async ({ queryAllByTestId, neurons }) => {
-    const neuronCardElements = queryAllByTestId("neuron-card");
-    expect(neuronCardElements.length).toBe(neurons.length);
+  fakeGovernanceApi.install();
 
-    let [neuronElement1, neuronElement2] = neuronCardElements;
+  beforeEach(() => {
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
+    jest.clearAllMocks();
+    accountsStore.resetForTesting();
+    neuronsStore.reset();
+    resetNeuronsApiService();
+  });
 
-    expect(neuronElement2.classList.contains("selected")).toBe(false);
-    expect(neuronElement1.classList.contains("selected")).toBe(false);
+  const selectAndTestTwoNeurons = async ({ po, neurons }) => {
+    const selectNeurons = po.getSelectNeuronsToMergePo();
+    const neuronCards = await selectNeurons.getNnsNeuronCardPos();
+    expect(neuronCards.length).toBe(neurons.length);
+    let [neuronCard1, neuronCard2] = neuronCards;
 
-    await fireEvent.click(neuronElement1);
+    expect(await neuronCard1.isSelected()).toBe(false);
+    expect(await neuronCard2.isSelected()).toBe(false);
+
+    await neuronCard1.click();
     // Elements might change after every click
-    [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
+    [neuronCard1, neuronCard2] = await selectNeurons.getNnsNeuronCardPos();
+    expect(await neuronCard1.isSelected()).toBe(true);
+    expect(await neuronCard2.isSelected()).toBe(false);
 
-    expect(neuronElement1.classList.contains("selected")).toBe(true);
-
-    await fireEvent.click(neuronElement2);
+    await neuronCard2.click();
     // Elements might change after every click
-    [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
-
-    expect(neuronElement2.classList.contains("selected")).toBe(true);
+    [neuronCard1, neuronCard2] = await selectNeurons.getNnsNeuronCardPos();
+    expect(await neuronCard1.isSelected()).toBe(true);
+    expect(await neuronCard2.isSelected()).toBe(true);
   };
+
   const renderMergeModal = async (
-    neurons: NeuronInfo[],
+    neurons: fakeGovernanceApi.FakeNeuronParams[],
     hardwareWalletAccounts: Account[] = []
-  ): Promise<RenderResult> => {
-    accountsStore.set({
-      main: mockMainAccount,
+  ): Promise<MergeNeuronsModalPo> => {
+    accountsStore.setForTesting({
+      main: { ...mockMainAccount, principal: testIdentity.getPrincipal() },
       hardwareWallets: hardwareWalletAccounts,
     });
-    jest
-      .spyOn(neuronsStore, "subscribe")
-      .mockImplementation(buildMockNeuronsStoreSubscribe(neurons));
-    return renderModal({
+    fakeGovernanceApi.addNeurons({ identity: testIdentity, neurons });
+    await listNeurons();
+    const { container } = await renderModal({
       component: MergeNeuronsModal,
     });
+    return MergeNeuronsModalPo.under(new JestPageObjectElement(container));
   };
+
   describe("when mergeable neurons by user", () => {
-    const controller = mockMainAccount.principal?.toText() as string;
+    const controller = testIdentity.getPrincipal().toText();
     const mergeableNeuron1 = {
-      ...mockNeuron,
       neuronId: BigInt(10),
-      fullNeuron: { ...mockFullNeuron, controller },
+      controller,
+      stake: BigInt(12 * E8S_PER_ICP),
     };
     const mergeableNeuron2 = {
-      ...mockNeuron,
       neuronId: BigInt(11),
-      fullNeuron: { ...mockFullNeuron, controller },
+      controller,
+      stake: BigInt(34 * E8S_PER_ICP),
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
 
-    afterEach(() => {
-      jest.clearAllMocks();
-      accountsStore.reset();
-    });
-
     it("renders title", async () => {
-      const { queryByText } = await renderMergeModal([mockNeuron]);
-
-      const element = queryByText(en.neurons.merge_neurons_modal_title);
-      expect(element).not.toBeNull();
+      const po = await renderMergeModal([mergeableNeuron1]);
+      expect(await po.getTitle()).toBe(en.neurons.merge_neurons_modal_title);
     });
 
     it("renders disabled button", async () => {
-      const { queryByTestId } = await renderMergeModal([mockNeuron]);
+      const po = await renderMergeModal([mergeableNeuron1]);
+      const selectNeurons = po.getSelectNeuronsToMergePo();
 
-      const button = queryByTestId("merge-neurons-confirm-selection-button");
-      expect(button).not.toBeNull();
-      expect(button?.hasAttribute("disabled")).toBeTruthy();
+      expect(
+        await selectNeurons.getConfirmSelectionButtonPo().isDisabled()
+      ).toBe(true);
     });
 
     it("renders mergeable neurons", async () => {
-      const { queryAllByTestId } = await renderMergeModal(mergeableNeurons);
+      const po = await renderMergeModal(mergeableNeurons);
+      const selectNeurons = po.getSelectNeuronsToMergePo();
 
-      const neuronCardElements = queryAllByTestId("neuron-card-title");
-      expect(neuronCardElements.length).toBe(mergeableNeurons.length);
+      expect((await selectNeurons.getNnsNeuronCardPos()).length).toBe(
+        mergeableNeurons.length
+      );
     });
 
     it("allows user to select two neurons", async () => {
-      const { queryAllByTestId } = await renderMergeModal(mergeableNeurons);
+      const po = await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
-        queryAllByTestId,
+        po,
         neurons: mergeableNeurons,
       });
     });
 
     it("allows user to unselect after selecting a neuron", async () => {
-      const { queryAllByTestId } = await renderMergeModal(mergeableNeurons);
+      const po = await renderMergeModal(mergeableNeurons);
 
-      const neuronCardElements = queryAllByTestId("neuron-card");
-      expect(neuronCardElements.length).toBe(mergeableNeurons.length);
+      const neuronCards = await po
+        .getSelectNeuronsToMergePo()
+        .getNnsNeuronCardPos();
+      expect(neuronCards.length).toBe(mergeableNeurons.length);
+      const [neuronCard1, _neuronCard2] = neuronCards;
 
-      const [neuronElement1] = neuronCardElements;
+      expect(await neuronCard1.isSelected()).toBe(false);
 
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      await neuronCard1.click();
+      expect(await neuronCard1.isSelected()).toBe(true);
 
-      await fireEvent.click(neuronElement1);
-      expect(neuronElement1.classList.contains("selected")).toBe(true);
-
-      await fireEvent.click(neuronElement1);
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      await neuronCard1.click();
+      expect(await neuronCard1.isSelected()).toBe(false);
     });
 
     it("allows user to select two neurons and move to confirmation screen", async () => {
-      const { queryAllByTestId, queryByTestId, queryByText, queryAllByText } =
-        await renderMergeModal(mergeableNeurons);
+      const po = await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
-        queryAllByTestId,
+        po,
         neurons: mergeableNeurons,
       });
 
-      const button = queryByTestId("merge-neurons-confirm-selection-button");
-      expect(button).not.toBeNull();
-
-      button && (await fireEvent.click(button));
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
 
       // Confirm Merge Screen
-      expect(
-        queryAllByText(en.neurons.merge_neurons_modal_confirm).length
-      ).toBeGreaterThan(0);
-      expect(queryByText(mergeableNeuron1.neuronId.toString())).not.toBeNull();
+      expect(await po.getConfirmNeuronsMergePo().isPresent()).toBe(true);
+      expect(await po.getConfirmNeuronsMergePo().getSourceNeuronId()).toBe(
+        mergeableNeuron1.neuronId.toString()
+      );
+      expect(await po.getConfirmNeuronsMergePo().getTargetNeuronId()).toBe(
+        mergeableNeuron2.neuronId.toString()
+      );
     });
 
     it("allows user to select two neurons and merge them", async () => {
-      const { queryAllByTestId, queryByTestId, queryAllByText } =
-        await renderMergeModal(mergeableNeurons);
+      const po = await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
-        queryAllByTestId,
+        po,
         neurons: mergeableNeurons,
       });
 
-      const button = queryByTestId("merge-neurons-confirm-selection-button");
-      expect(button).not.toBeNull();
-
-      button && (await fireEvent.click(button));
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
 
       // Confirm Merge Screen
+      await po.getConfirmNeuronsMergePo().getConfirmMergeButtonPo().click();
+
+      const sourceNeuron = fakeGovernanceApi.getNeuron({
+        identity: testIdentity,
+        neuronId: mergeableNeuron1.neuronId,
+      });
+      const targetNeuron = fakeGovernanceApi.getNeuron({
+        identity: testIdentity,
+        neuronId: mergeableNeuron2.neuronId,
+      });
+      await runResolvedPromises();
+      expect(getStake(sourceNeuron)).toBe(BigInt(0));
+      expect(getStake(targetNeuron)).toBe(
+        mergeableNeuron1.stake + mergeableNeuron2.stake
+      );
+    });
+
+    it("should not simulate merging with feature disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", false);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        false
+      );
       expect(
-        queryAllByText(en.neurons.merge_neurons_modal_confirm).length
-      ).toBeGreaterThan(0);
+        await po.getConfirmNeuronsMergePo().getMergedNeuronInfoPo().isPresent()
+      ).toBe(false);
+      expect(simulateMergeNeurons).not.toBeCalled();
 
-      const confirmMergeButton = queryByTestId("confirm-merge-neurons-button");
+      // Make sure no actual merge happened either.
+      expect(mergeNeurons).not.toBeCalled();
+    });
 
-      confirmMergeButton && (await fireEvent.click(confirmMergeButton));
+    it("should simulate merging with feature enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
 
-      expect(mergeNeurons).toBeCalled();
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      const mergeNeuronInfo = po
+        .getConfirmNeuronsMergePo()
+        .getMergedNeuronInfoPo();
+      expect(await mergeNeuronInfo.isPresent()).toBe(true);
+      expect(await mergeNeuronInfo.getBalance()).toBe("46.00 ICP Stake");
+      // Just to show where the 46 is coming from:
+      expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(
+        BigInt(46 * E8S_PER_ICP)
+      );
+
+      // Make sure no actual merge happened.
+      expect(mergeNeurons).not.toBeCalled();
+    });
+
+    it("should show a skeleton card while simulating the merging", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      fakeGovernanceApi.pause();
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      expect(
+        await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+      const mergeNeuronInfo = po
+        .getConfirmNeuronsMergePo()
+        .getMergedNeuronInfoPo();
+      expect(await mergeNeuronInfo.isPresent()).toBe(false);
+
+      fakeGovernanceApi.resume();
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        true
+      );
+      expect(
+        await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(await mergeNeuronInfo.isPresent()).toBe(true);
     });
   });
 
-  // Merging of neurons controlled via hardware wallet is not yet supported.
   describe("when mergeable neurons by hardware wallet", () => {
     const controller = mockHardwareWalletAccount.principal?.toText() as string;
     const mergeableNeuron1 = {
-      ...mockNeuron,
       neuronId: BigInt(10),
-      fullNeuron: { ...mockFullNeuron, controller },
+      controller,
     };
     const mergeableNeuron2 = {
-      ...mockNeuron,
       neuronId: BigInt(11),
-      fullNeuron: { ...mockFullNeuron, controller },
+      controller,
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
-    it("does not allow user to select neurons", async () => {
-      const { queryAllByTestId } = await renderMergeModal(mergeableNeurons, [
+
+    it("allows user to select neurons", async () => {
+      const po = await renderMergeModal(mergeableNeurons, [
         mockHardwareWalletAccount,
       ]);
 
-      const neuronCardElements = queryAllByTestId("neuron-card");
-      expect(neuronCardElements.length).toBe(mergeableNeurons.length);
+      const selectNeurons = po.getSelectNeuronsToMergePo();
+      const neuronCards = await selectNeurons.getNnsNeuronCardPos();
+      expect(neuronCards.length).toBe(mergeableNeurons.length);
+      let [neuronCard1, neuronCard2] = neuronCards;
 
-      let [neuronElement1, neuronElement2] = neuronCardElements;
+      expect(await neuronCard1.isSelected()).toBe(false);
+      expect(await neuronCard2.isSelected()).toBe(false);
 
-      expect(neuronElement2.classList.contains("selected")).toBe(false);
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      await neuronCard1.click();
 
-      await fireEvent.click(neuronElement1);
       // Elements might change after every click
-      [neuronElement1, neuronElement2] = queryAllByTestId("neuron-card");
-
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      [neuronCard1, neuronCard2] = await selectNeurons.getNnsNeuronCardPos();
+      expect(await neuronCard1.isSelected()).toBe(true);
     });
   });
 
-  // Merging of neurons controlled via hardware wallet is not yet supported.
   describe("when neurons from main user and hardware wallet", () => {
     const neuronHW = {
-      ...mockNeuron,
       neuronId: BigInt(10),
-      fullNeuron: {
-        ...mockFullNeuron,
-        controller: mockHardwareWalletAccount.principal?.toText() as string,
-      },
+      controller: mockHardwareWalletAccount.principal?.toText() as string,
     };
     const neuronMain = {
-      ...mockNeuron,
       neuronId: BigInt(11),
-      fullNeuron: {
-        ...mockFullNeuron,
-        controller: mockMainAccount.principal?.toText() as string,
-      },
+      controller: testIdentity.getPrincipal().toText(),
     };
     const neurons = [neuronMain, neuronHW];
+
     it("does not allow to select two neurons with different controller", async () => {
-      const { queryAllByTestId } = await renderMergeModal(neurons, [
-        mockHardwareWalletAccount,
-      ]);
+      const po = await renderMergeModal(neurons, [mockHardwareWalletAccount]);
 
-      const neuronCardElements = queryAllByTestId("neuron-card");
-      expect(neuronCardElements.length).toBe(neurons.length);
+      const selectNeurons = po.getSelectNeuronsToMergePo();
+      const neuronCards = await selectNeurons.getNnsNeuronCardPos();
+      expect(neuronCards.length).toBe(neurons.length);
 
-      const [neuronElement1] = neuronCardElements;
-
-      expect(neuronElement1.classList.contains("selected")).toBe(false);
+      let [neuronCard1, neuronCard2] = neuronCards;
+      expect(await neuronCard1.isSelected()).toBe(false);
+      expect(await neuronCard2.isDisabled()).toBe(false);
 
       // Select the neuron controlled by user
-      await fireEvent.click(neuronElement1);
-      expect(neuronElement1.classList.contains("selected")).toBe(true);
+      await neuronCard1.click();
 
       // We need to query again because the elements have changed because of the Tooltip.
-      const neuronCardElementsAfterSelection = queryAllByTestId("neuron-card");
-      const [, neuronElement2] = neuronCardElementsAfterSelection;
-
-      expect(neuronElement2.classList.contains("disabled")).toBe(true);
+      [neuronCard1, neuronCard2] = await selectNeurons.getNnsNeuronCardPos();
+      expect(await neuronCard1.isSelected()).toBe(true);
+      expect(await neuronCard2.isDisabled()).toBe(true);
     });
   });
 });

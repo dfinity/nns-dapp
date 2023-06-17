@@ -1,41 +1,56 @@
+import { authStore } from "$lib/stores/auth.store";
+import { startBusy } from "$lib/stores/busy.store";
+import { toastsShow } from "$lib/stores/toasts.store";
+import type { ToastMsg } from "$lib/types/toast";
+import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity } from "@dfinity/agent";
+import type { ToastLevel } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { authStore } from "../stores/auth.store";
-import { themeStore } from "../stores/theme.store";
-import { toastsStore } from "../stores/toasts.store";
-import type { ToastLevel, ToastMsg } from "../types/toast";
-import { replaceHistory } from "../utils/route.utils";
 
-const msgParam: string = "msg";
-const levelParam: string = "level";
+const msgParam = "msg";
+const levelParam = "level";
 
 export const logout = async ({
   msg = undefined,
 }: {
   msg?: Pick<ToastMsg, "labelKey" | "level">;
 }) => {
+  // To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
+  startBusy({ initiator: "logout" });
+
   await authStore.signOut();
 
   if (msg) {
     appendMsgToUrl(msg);
   }
 
-  // We preserve the anonymous theme information only so that user sign-in with same theme next time
-  const { theme: storageTheme }: Storage = localStorage;
+  // Auth: Delegation and identity are cleared from indexedDB by agent-js so, we do not need to clear these
 
-  window.localStorage.clear();
-
-  themeStore.select(storageTheme);
+  // Preferences: We do not clear local storage as well. It contains anonymous information such as the selected theme.
+  // Information the user want to preserve across sign-in. e.g. if I select the light theme, logout and sign-in again, I am happy if the dapp still uses the light theme.
 
   // We reload the page to make sure all the states are cleared
   window.location.reload();
 };
 
 /**
+ * An anonymous identity that can be use for public call to the IC.
+ */
+export const getAnonymousIdentity = (): Identity => new AnonymousIdentity();
+
+/**
+ * Some services return data regardless if signed-in or not but, returns more information if signed-in.
+ * e.g. querying a proposals returns ballots information only if signed-in.
+ */
+export const getCurrentIdentity = (): Identity =>
+  get(authStore).identity ?? new AnonymousIdentity();
+
+/**
  * Provide the identity that has been authorized.
  * If none is provided logout the user automatically. Services that are using this getter need an identity no matter what.
  */
-export const getIdentity = async (): Promise<Identity> => {
+export const getAuthenticatedIdentity = async (): Promise<Identity> => {
   /* eslint-disable-next-line no-async-promise-executor */
   return new Promise<Identity>(async (resolve) => {
     const identity: Identity | undefined | null = get(authStore).identity;
@@ -54,19 +69,17 @@ export const getIdentity = async (): Promise<Identity> => {
 };
 
 /**
- * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timedout - append the information to the url as query params
+ * If a message was provided to the logout process - e.g. a message informing the logout happened because the session timed-out - append the information to the url as query params
  */
 const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
   const { labelKey, level } = msg;
 
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.append(msgParam, encodeURI(labelKey));
-  urlParams.append(levelParam, level);
+  url.searchParams.append(msgParam, encodeURI(labelKey));
+  url.searchParams.append(levelParam, level);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
 
 /**
@@ -87,24 +100,16 @@ export const displayAndCleanLogoutMsg = () => {
   const level: ToastLevel =
     (urlParams.get(levelParam) as ToastLevel | null) ?? "success";
 
-  toastsStore.show({ labelKey: msg, level });
+  toastsShow({ labelKey: msg, level });
 
   cleanUpMsgUrl();
 };
 
 const cleanUpMsgUrl = () => {
-  const urlParams: URLSearchParams = new URLSearchParams(
-    window.location.search
-  );
+  const url: URL = new URL(window.location.href);
 
-  urlParams.delete(msgParam);
-  urlParams.delete(levelParam);
+  url.searchParams.delete(msgParam);
+  url.searchParams.delete(levelParam);
 
-  updateAuthUrl(urlParams);
+  replaceHistory(url);
 };
-
-const updateAuthUrl = (urlParams: URLSearchParams) =>
-  replaceHistory({
-    path: "/",
-    query: urlParams.toString(),
-  });

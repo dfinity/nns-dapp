@@ -1,15 +1,47 @@
-import { transactionFee } from "../api/ledger.api";
-import { transactionsFeesStore } from "../stores/transaction-fees.store";
-import { getIdentity } from "./auth.services";
+import { transactionFee as snsTransactionFee } from "$lib/api/sns-ledger.api";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { toastsError } from "$lib/stores/toasts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
+import type { Principal } from "@dfinity/principal/lib/cjs";
+import { get } from "svelte/store";
+import { queryAndUpdate } from "./utils.services";
 
-export const loadMainTransactionFee = async () => {
-  try {
-    const identity = await getIdentity();
-    const fee = await transactionFee({ identity });
-    transactionsFeesStore.setMain(fee);
-  } catch (error) {
-    // Swallow error and continue with the DEFAULT_TRANSACTION_FEE value
-    console.error("Error getting the transaction fee from the ledger");
-    console.error(error);
+export const loadSnsTransactionFee = async ({
+  rootCanisterId,
+  handleError,
+}: {
+  rootCanisterId: Principal;
+  handleError?: () => void;
+}) => {
+  const storeData = get(transactionsFeesStore);
+  // Avoid loading the same data multiple times if the data loaded is certified
+  if (storeData.projects[rootCanisterId.toText()]?.certified) {
+    return;
   }
+  return queryAndUpdate<bigint, unknown>({
+    strategy: FORCE_CALL_STRATEGY,
+    request: ({ certified, identity }) =>
+      snsTransactionFee({
+        identity,
+        rootCanisterId,
+        certified,
+      }),
+    onLoad: async ({ response: fee, certified }) => {
+      transactionsFeesStore.setFee({ certified, rootCanisterId, fee });
+    },
+    onError: ({ error: err, certified }) => {
+      if (!certified && notForceCallStrategy()) {
+        return;
+      }
+
+      // Explicitly handle only UPDATE errors
+      toastsError({
+        labelKey: "error.transaction_fee_not_found",
+        err,
+      });
+
+      handleError?.();
+    },
+  });
 };

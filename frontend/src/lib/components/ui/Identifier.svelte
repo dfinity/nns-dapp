@@ -1,10 +1,9 @@
 <script lang="ts">
-  import Copy from "./Copy.svelte";
-  import Value from "./Value.svelte";
+  import { Value, Copy } from "@dfinity/gix-components";
 
   export let identifier: string;
   export let label: string | undefined = undefined;
-  export let showCopy: boolean = false;
+  export let showCopy = false;
   export let size: "small" | "medium" = "small";
 
   let labelText: string;
@@ -26,7 +25,6 @@
   }
 
   p {
-    margin: 0;
     display: flex;
     align-items: center;
   }

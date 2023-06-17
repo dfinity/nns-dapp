@@ -1,56 +1,59 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import SelectAccount from "../../components/accounts/SelectAccount.svelte";
-  import ConfirmCyclesCanister from "../../components/canisters/ConfirmCyclesCanister.svelte";
-  import SelectCyclesCanister from "../../components/canisters/SelectCyclesCanister.svelte";
+  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
+  import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
+  import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
     getIcpToCyclesExchangeRate,
     topUpCanister,
-  } from "../../services/canisters.services";
-  import { i18n } from "../../stores/i18n";
-  import type { Step, Steps } from "../../stores/steps.state";
-  import type { Account } from "../../types/account";
-  import WizardModal from "../WizardModal.svelte";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
+  } from "$lib/services/canisters.services";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import {
+    WizardModal,
+    Html,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import CanisterIdInfo from "../../components/canisters/CanisterIdInfo.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formattedTransactionFeeICP } from "../../utils/icp.utils";
-  import { mainTransactionFeeStore } from "../../stores/transaction-fees.store";
-  import { valueSpan } from "../../utils/utils";
+  } from "$lib/types/canister-detail.context";
+  import CanisterIdInfo from "$lib/components/canisters/CanisterIdInfo.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { valueSpan } from "$lib/utils/utils";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
     icpToCyclesExchangeRate = await getIcpToCyclesExchangeRate();
   });
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SelectAccount",
       title: $i18n.canister_detail.top_up_canister,
-      showBackButton: true,
     },
     {
       name: "SelectCycles",
       title: $i18n.canisters.enter_amount,
-      showBackButton: true,
     },
     {
       name: "ConfirmCycles",
       title: $i18n.canisters.review_cycles_purchase,
-      showBackButton: true,
     },
   ];
 
   const { store, reloadDetails }: CanisterDetailsContext =
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let account: Account | undefined;
   let amount: number | undefined;
@@ -76,7 +79,7 @@
       account === undefined ||
       canisterId === undefined
     ) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;
@@ -94,7 +97,7 @@
     }
     stopBusy("top-up-canister");
     if (success) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "canister_detail.top_up_successful",
       });
       dispatcher("nnsClose");
@@ -110,7 +113,7 @@
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
-      <SelectAccount
+      <NnsSelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
@@ -123,22 +126,22 @@
         on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
       >
-        <p>
-          {@html replacePlaceholders($i18n.canisters.transaction_fee, {
-            $amount: valueSpan(
-              formattedTransactionFeeICP($mainTransactionFeeStore)
-            ),
-          })}
+        <svelte:fragment slot="select-amount"
+          >{$i18n.canisters.review_cycles_purchase}</svelte:fragment
+        >
+        <p class="description">
+          <Html
+            text={replacePlaceholders($i18n.canisters.transaction_fee, {
+              $amount: valueSpan(
+                formattedTransactionFeeICP($mainTransactionFeeStore)
+              ),
+            })}
+          />
         </p>
         <div>
-          <div>
-            <h5>{$i18n.accounts.source}</h5>
-            <p class="value">{account?.identifier}</p>
-          </div>
-          <div>
-            <CanisterIdInfo {canisterId} />
-          </div>
+          <TransactionSource {account} token={ICPToken} />
         </div>
+        <CanisterIdInfo {canisterId} />
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
@@ -147,12 +150,10 @@
         {icpToCyclesExchangeRate}
         {amount}
         on:nnsClose
-        on:nnsBack={() => modal.back()}
+        on:nnsBack={modal.back}
         on:nnsConfirm={addCycles}
       >
-        <div>
-          <CanisterIdInfo {canisterId} />
-        </div>
+        <CanisterIdInfo {canisterId} />
       </ConfirmCyclesCanister>
     {/if}
   </svelte:fragment>

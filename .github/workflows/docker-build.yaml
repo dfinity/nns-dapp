@@ -1,94 +1,97 @@
 name: Docker build
-
 on:
   push:
-    branches:
-      - main
-  pull_request:
-
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'no-cache'
+        default: false
+        type: boolean
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  builder:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-
-      # We use buildx and its GitHub Actions caching support `type=gha`. For
-      # more information, see
-      # https://github.com/docker/build-push-action/issues/539
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build base Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: Dockerfile
-          cache-from: type=gha,scope=cached-stage
-          cache-to: type=gha,scope=cached-stage,mode=max
-          outputs: type=cacheonly
-          target: builder
-
   assets:
-    needs: builder
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-       include:
-         - BUILD_NAME: "mainnet"
-           DFX_NETWORK: "mainnet"
-           OWN_CANISTER_ID: ""
-           REDIRECT_TO_LEGACY: "prod"
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v1
-      # Build and upload testnet assets
-      - name: Build ${{ matrix.DFX_NETWORK }} nns-dapp Docker image
-        uses: docker/build-push-action@v2
+      - uses: actions/checkout@v3
+      - name: Build nns-dapp repo
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
-            OWN_CANISTER_ID=${{ matrix.OWN_CANISTER_ID }}
-            REDIRECT_TO_LEGACY=${{ matrix.REDIRECT_TO_LEGACY }}
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./${{ matrix.BUILD_NAME }}-out
-      - name: 'Upload ${{ matrix.BUILD_NAME }} wasm module'
-        uses: actions/upload-artifact@v2
+          token: ${{ secrets.GITHUB_TOKEN }}
+          no-cache: ${{ inputs.no_cache || false }}
+      - name: Print the hash of all assets
+        run: find out -type f | xargs sha256sum
+      - name: 'Record the git commit and any tags'
+        run: git log | head -n1 > out/commit.txt
+      - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
+        uses: actions/upload-artifact@v3
         with:
-          name: NNS ${{ matrix.BUILD_NAME }} backend wasm module
-          path: ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
-      - name: 'Upload ${{ matrix.BUILD_NAME }} frontend assets'
-        uses: actions/upload-artifact@v2
+          name: nns-dapp for ${{ matrix.BUILD_NAME }}
+          path: |
+            out/commit.txt
+            out/nns-dapp.wasm
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
+            out/frontend-config.sh
+            out/deployment-config.json
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
         with:
-          name: NNS ${{ matrix.BUILD_NAME }} frontend assets
-          path: ${{ matrix.BUILD_NAME }}-out/assets.tar.xz
+          name: sns_aggregator for ${{ matrix.BUILD_NAME }}
+          path: |
+            out/sns_aggregator.wasm
+            out/sns_aggregator_dev.wasm
+      - name: Release
+        uses: ./.github/actions/release_nns_dapp
+        with:
+          assets_dir: 'out'
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Upload frontend assets'
+        uses: actions/upload-artifact@v3
+        with:
+          name: NNS frontend assets
+          path: |
+            out/assets.tar.xz
+            out/sourcemaps.tar.xz
       - name: "Link the build sha to this commit"
         run: |
-         : Set up git
-         git config user.name "GitHub Actions Bot"
-         git config user.email "<>"
-         : Make a note of the WASM shasum.
-         NOTE="refs/notes/${{ matrix.DFX_NETWORK }}/wasm-sha"
-         SHA="$(sha256sum < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
-         git fetch origin "+${NOTE}:${NOTE}"
-         if git notes --ref="${{ matrix.BUILD_NAME }}/wasm-sha" add -m "$SHA"
-         then git push origin "${NOTE}:${NOTE}" || true
-         else echo SHA already set
-         fi
+          : Set up git
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          : Make a note of the WASM shasum.
+          NOTE="refs/notes/mainnet/wasm-sha"
+          SHA="$(sha256sum < "out/nns-dapp.wasm")"
+          git fetch origin "+${NOTE}:${NOTE}"
+          if git notes --ref="wasm-sha" add -m "$SHA"
+          then git push origin "${NOTE}:${NOTE}" || true
+          else echo SHA already set
+          fi
       - name: "Verify that the WASM module is small enough to deploy"
         run: |
-         wasm_size="$(wc -c < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
-         max_size=3670016
-         echo "WASM size:          $wasm_size"
-         echo "Max supported size: $max_size"
-         (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
-
+          wasm_size="$(wc -c < "out/nns-dapp.wasm")"
+          max_size=3145728
+          echo "WASM size:          $wasm_size"
+          echo "Max supported size: $max_size"
+          (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
+  docker-build-cli-flags:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker-build prints help
+        run: ./scripts/docker-build --help | grep -i usage
   docker-build:
     needs: assets
     runs-on: ubuntu-20.04
     steps:
-       - name: Extract assets for verification
-         run: echo TODO
+      - name: Extract assets for verification
+        run: echo TODO
+  docker-build-passes:
+    needs: ["assets", "docker-build", "docker-build-cli-flags"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

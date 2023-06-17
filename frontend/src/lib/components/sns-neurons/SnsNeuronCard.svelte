@@ -1,99 +1,44 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { authStore } from "../../stores/auth.store";
-  import { i18n } from "../../stores/i18n";
-  import type { CardType } from "../../types/card";
-  import type { StateInfo } from "../../utils/neuron.utils";
-  import {
-    getSnsDissolvingTimeInSeconds,
-    getSnsLockedTimeInSeconds,
-    getSnsNeuronIdAsHexString,
-    getSnsNeuronStake,
-    getSnsNeuronState,
-    getSnsStateInfo,
-    isUserHotkey,
-  } from "../../utils/sns-neuron.utils";
-  import IcpComponent from "../ic/ICP.svelte";
-  import NeuronCardContainer from "../neurons/NeuronCardContainer.svelte";
-  import NeuronStateInfo from "../neurons/NeuronStateInfo.svelte";
-  import NeuronStateRemainingTime from "../neurons/NeuronStateRemainingTime.svelte";
-  import Hash from "../ui/Hash.svelte";
-  import { snsTokenSymbolSelectedStore } from "../../derived/sns/sns-token-symbol-selected.store";
+  import type { CardType } from "$lib/types/card";
+  import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import NeuronCardContainer from "$lib/components/neurons/NeuronCardContainer.svelte";
+  import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
+  import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
+  import SnsNeuronAmount from "$lib/components/sns-neurons/SnsNeuronAmount.svelte";
+  import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
   export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
 
-  let isHotkey: boolean;
-  $: isHotkey = isUserHotkey({
-    neuron,
-    identity: $authStore.identity,
-  });
-
-  let neuronId: string;
-  $: neuronId = getSnsNeuronIdAsHexString(neuron);
-
-  let neuronICP: ICP;
-  $: neuronICP = ICP.fromE8s(getSnsNeuronStake(neuron));
-
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getSnsStateInfo(neuron);
-
-  let dissolvingTime: bigint | undefined;
-  $: dissolvingTime = getSnsDissolvingTimeInSeconds(neuron);
-
-  let lockedTime: bigint | undefined;
-  $: lockedTime = getSnsLockedTimeInSeconds(neuron);
+  let neuronState: NeuronState;
+  $: neuronState = getSnsNeuronState(neuron);
 </script>
 
-<NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
-  <div class="identifier" slot="start" data-tid="sns-neuron-card-title">
-    <Hash id="neuron-id" tagName="h3" testId="neuron-id" text={neuronId} />
-    {#if isHotkey}
-      <span>{$i18n.neurons.hotkey_control}</span>
-    {/if}
-  </div>
+<TestIdWrapper testId="sns-neuron-card-component">
+  <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
+    <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
 
-  <div slot="end" class="currency">
-    <IcpComponent
-      icp={neuronICP}
-      detailed
-      label={$snsTokenSymbolSelectedStore}
-    />
-  </div>
+    <div class="content">
+      <SnsNeuronAmount {neuron} />
 
-  <NeuronStateInfo {stateInfo} />
+      <NeuronStateInfo state={neuronState} />
+    </div>
 
-  <NeuronStateRemainingTime
-    state={getSnsNeuronState(neuron)}
-    timeInSeconds={dissolvingTime ?? lockedTime}
-  />
+    <SnsNeuronStateRemainingTime {neuron} />
 
-  <slot />
-</NeuronCardContainer>
+    <slot />
+  </NeuronCardContainer>
+</TestIdWrapper>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/card";
+  @use "../../themes/mixins/neuron";
 
-  .identifier {
-    @include card.stacked-title;
-    :global(h3) {
-      margin: 0;
-    }
-  }
-
-  .currency {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-
-    margin-bottom: var(--padding);
-
-    @include media.min-width(medium) {
-      margin-bottom: 0;
-    }
+  .content {
+    @include neuron.neuron-card-content;
   }
 </style>

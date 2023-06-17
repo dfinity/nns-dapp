@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Compares CI and local docker builds.
+
+	For a single commit, this:
+	* Searches for builds of the commit in CI and gets the build hashes.
+	* Checks out the commit, if it is not HEAD.
+	* Builds the commit locally in docker.
+	* Prints the results.
+
+	For a range of commits, this:
+	* Gets each commit in the range, optionally picking only every nth one.
+	* Checks out and compares builds of that commit.
+
+	Example: Checking consistent builds of the current commit
+	$(basename "$0")
+
+	Example: Scanning a range of commits:
+	$(basename "$0") -c fab6e718a13d58d23044b708c99910957a671a4d..main --limit 2000 --nth 10 |& tee ,max-search-3
+	Note: The |& ensures that stderr is also written to the file.  Sometimes fetching logs from github fails.
+	Warning: The script will check out each commit in turn.
+
+	Note: This searches through gihub logs.  Only fairly recent logs are readily accessible.
+	      Older runs may be found using high values for the '--limit' flag but this is very slow.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
+clap.define short=f long=file desc="The file to compare" variable=DFX_ASSET default="nns-dapp.wasm"
+clap.define short=c long=commit desc="The commit to check (will be checked out).  May be a range, as defined here: https://git-scm.com/docs/git-log" variable=DFX_COMMIT default="HEAD"
+clap.define short=n long=nth desc="Test every Nth commit" variable=DFX_NTH default="1"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+get_data() {
+  (
+    COMMIT="$(git rev-parse "$1")"
+    export COMMIT
+
+    printf '\n\n## Commit %s %s\n```\n' "$COMMIT" "$(git show -s --format=%ci "$COMMIT")"
+
+    build_hash_from_logs() {
+      grep -o -E '[a-z0-9]{64} +(\/build\/)?'"$DFX_ASSET" | tail -n1 | cut -d' ' -f1
+    }
+
+    echo "Build hashes for $DFX_ASSET:"
+    : CI builds:
+    LOG_END="$(($(date +%s) / 3600))"
+    logfile=",ci-builds-of-${DFX_LIMIT}-${LOG_END}.txt"
+    test -s "$logfile" || gh run list --workflow "Docker build" --limit "${DFX_LIMIT}" --json name,conclusion,databaseId,headSha >"$logfile"
+    readarray -t runs < <(jq '.[] | select(.headSha==env.COMMIT) | select(.conclusion=="success") | .databaseId' "$logfile")
+    for run in "${runs[@]}"; do
+      : Cache the logfile:
+      logfile=",ci-log-${DFX_LIMIT}-$run.log"
+      test -s "$logfile" || gh run view "$run" --log >"$logfile"
+      hash="$(grep 'Build mainnet nns-dapp Docker image' "$logfile" | build_hash_from_logs)"
+      echo "$hash $run"
+      : Get the assets
+      logfile=",ci-assets-$run"
+      test -d "$logfile" || (
+        rm -fr "$logfile.tmp"
+        mkdir "$logfile.tmp"
+        pushd "$logfile.tmp" >/dev/null
+        gh run download "$run" || true
+        popd >/dev/null
+        mv "$logfile.tmp" "$logfile"
+      )
+    done
+
+    : Local docker build
+    docker_hash="$(git checkout "$COMMIT" && ./scripts/docker-build |& build_hash_from_logs)"
+    printf "% 64s Local docker build\n" "${docker_hash:-}"
+
+    : Native build
+    #case "$DFX_ASSET" in
+    #assets.tar.xz)
+    #  native_hash="$({ rm -f "$DFX_ASSET" && DFX_NETWORK=mainnet ./config.sh && ./build-frontend.sh; } &>/dev/null && sha256sum "$DFX_ASSET")"
+    #  ;;
+    #esac
+    #printf "% 64s Local native build\n" "${native_hash:-}"
+
+    printf '```\n\n'
+  ) || true
+}
+
+if [[ "$DFX_COMMIT" == *..* ]]; then
+  git log --pretty=%P "$DFX_COMMIT" | awk -v nth="$DFX_NTH" '(NR%nth == 0)' | while read -r line; do get_data "$line"; done
+else
+  get_data "$DFX_COMMIT"
+fi

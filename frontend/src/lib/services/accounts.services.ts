@@ -1,59 +1,232 @@
-import type { Identity } from "@dfinity/agent";
-import { get } from "svelte/store";
 import {
   createSubAccount,
   getTransactions,
-  loadAccounts,
   renameSubAccount as renameSubAccountApi,
-} from "../api/accounts.api";
-import { sendICP } from "../api/ledger.api";
+} from "$lib/api/accounts.api";
+import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
+import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
+import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
+  AccountDetails,
   AccountIdentifierString,
+  HardwareWalletAccountDetails,
+  SubAccountDetails,
   Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "../constants/constants";
-import { AppPath } from "../constants/routes.constants";
-import type { LedgerIdentity } from "../identities/ledger.identity";
-import { getLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import type { AccountsStore } from "../stores/accounts.store";
-import { accountsStore } from "../stores/accounts.store";
-import { toastsStore } from "../stores/toasts.store";
-import type { Account } from "../types/account";
-import type { TransactionStore } from "../types/transaction.context";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
-  getAccountByPrincipal,
-  getAccountFromStore,
-} from "../utils/accounts.utils";
-import { getLastPathDetail, isRoutePath } from "../utils/app-path.utils";
-import { toToastError } from "../utils/error.utils";
-import { getIdentity } from "./auth.services";
+  SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+  SYNC_ACCOUNTS_RETRY_SECONDS,
+} from "$lib/constants/accounts.constants";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import type { LedgerIdentity } from "$lib/identities/ledger.identity";
+import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import {
+  accountsStore,
+  type SingleMutationAccountsStore,
+} from "$lib/stores/accounts.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import type { Account, AccountType } from "$lib/types/account";
+import type { NewTransaction } from "$lib/types/transaction";
+import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
+import { toToastError } from "$lib/utils/error.utils";
+import {
+  cancelPoll,
+  poll,
+  pollingCancelled,
+  pollingLimit,
+} from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
+import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
+// Exported for testing purposes
+export const getOrCreateAccount = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountDetails> => {
+  try {
+    return await queryAccount({ certified, identity });
+  } catch (error) {
+    if (error instanceof AccountNotFoundError) {
+      // Ensure account exists in NNSDapp Canister
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L271
+      // https://github.com/dfinity/nns-dapp/blob/main/rs/src/accounts_store.rs#L232
+      await addAccount(identity);
+      return queryAccount({ certified, identity });
+    }
+    throw error;
+  }
+};
+
+export const loadAccounts = async ({
+  identity,
+  certified,
+}: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountsStoreData> => {
+  // Helper
+  const getAccountBalance = (identifierString: string): Promise<bigint> =>
+    queryAccountBalance({
+      identity,
+      certified,
+      accountIdentifier: identifierString,
+    });
+
+  const mainAccount: AccountDetails = await getOrCreateAccount({
+    identity,
+    certified,
+  });
+
+  const mapAccount =
+    (type: AccountType) =>
+    async (
+      account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
+    ): Promise<Account> => ({
+      identifier: account.account_identifier,
+      balanceE8s: await getAccountBalance(account.account_identifier),
+      type,
+      ...("sub_account" in account && { subAccount: account.sub_account }),
+      ...("name" in account && { name: account.name }),
+      ...("principal" in account && { principal: account.principal }),
+    });
+
+  const [main, subAccounts, hardwareWallets] = await Promise.all([
+    mapAccount("main")(mainAccount),
+    Promise.all(mainAccount.sub_accounts.map(mapAccount("subAccount"))),
+    Promise.all(
+      mainAccount.hardware_wallet_accounts.map(mapAccount("hardwareWallet"))
+    ),
+  ]);
+
+  return {
+    main,
+    subAccounts,
+    hardwareWallets,
+    certified,
+  };
+};
+
+type SyncAccontsErrorHandler = (params: {
+  mutableStore: SingleMutationAccountsStore;
+  err: unknown;
+  certified: boolean;
+}) => void;
+
 /**
- * - sync: load the account data using the ledger and the nns dapp canister itself
+ * Default error handler for syncAccounts.
+ *
+ * Ignores non-certified errors.
+ * Resets accountsStore and shows toast for certified errors.
  */
-export const syncAccounts = (): Promise<void> => {
-  return queryAndUpdate<AccountsStore, unknown>({
+const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
+  mutableStore,
+  err,
+  certified,
+}: {
+  mutableStore: SingleMutationAccountsStore;
+  err: unknown;
+  certified: boolean;
+}) => {
+  if (!certified) {
+    return;
+  }
+
+  mutableStore.reset({ certified });
+
+  toastsError(
+    toToastError({
+      err,
+      fallbackErrorLabelKey: "error.accounts_not_found",
+    })
+  );
+};
+
+/**
+ * Loads the account data using the ledger and the nns dapp canister.
+ */
+const syncAccountsWithErrorHandler = (
+  errorHandler: SyncAccontsErrorHandler
+): Promise<void> => {
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+  return queryAndUpdate<AccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
-    onLoad: ({ response: accounts }) => accountsStore.set(accounts),
+    onLoad: ({ response: accounts }) => mutableStore.set(accounts),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      errorHandler({ mutableStore, err, certified });
+    },
+    logMessage: "Syncing Accounts",
+    strategy: FORCE_CALL_STRATEGY,
+  });
+};
+
+export const syncAccounts = () =>
+  syncAccountsWithErrorHandler(defaultErrorHandlerAccounts);
+
+const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
+
+/**
+ * This function is called on app load to sync the accounts.
+ *
+ * It ignores errors and does not show any toasts. Accounts will be synced again.
+ */
+export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
+
+/**
+ * Queries the balance of an account and loads it in the store.
+ *
+ * If `accountIdentifier` is not in the store, it will do nothing.
+ */
+export const loadBalance = async ({
+  accountIdentifier,
+}: {
+  accountIdentifier: string;
+}): Promise<void> => {
+  const strategy = FORCE_CALL_STRATEGY;
+  const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
+  return queryAndUpdate<bigint, unknown>({
+    request: ({ identity, certified }) =>
+      queryAccountBalance({ identity, certified, accountIdentifier }),
+    onLoad: ({ certified, response: balanceE8s }) => {
+      mutableStore.setBalance({
+        certified,
+        accountIdentifier,
+        balanceE8s,
+      });
+    },
+    onError: ({ error: err, certified }) => {
+      console.error(err);
+
+      if (!certified && strategy !== "query") {
         return;
       }
 
-      // Explicitly handle only UPDATE errors
-      accountsStore.reset();
-
-      toastsStore.error(
-        toToastError({
+      toastsError({
+        ...toToastError({
           err,
-          fallbackErrorLabelKey: "error.accounts_not_found",
-        })
-      );
+          fallbackErrorLabelKey: "error.query_balance",
+        }),
+        substitutions: { $accountId: accountIdentifier },
+      });
     },
-    logMessage: "Syncing Accounts",
+    logMessage: `Syncing Balance for ${accountIdentifier}`,
+    strategy,
   });
 };
 
@@ -63,13 +236,13 @@ export const addSubAccount = async ({
   name: string;
 }): Promise<void> => {
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await createSubAccount({ name, identity });
 
     await syncAccounts();
   } catch (err: unknown) {
-    toastsStore.error(
+    toastsError(
       toToastError({
         err,
         fallbackErrorLabelKey: "error__account.create_subaccount",
@@ -79,32 +252,35 @@ export const addSubAccount = async ({
 };
 
 export const transferICP = async ({
-  selectedAccount,
+  sourceAccount,
   destinationAddress: to,
   amount,
-}: TransactionStore): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
-    return transferError({ labelKey: "error.transaction_no_source_account" });
-  }
-
-  if (to === undefined) {
-    return transferError({
-      labelKey: "error.transaction_no_destination_address",
-    });
-  }
-
-  if (!amount) {
-    return transferError({ labelKey: "error.transaction_invalid_amount" });
-  }
-
+}: NewTransaction): Promise<{ success: boolean; err?: string }> => {
   try {
-    const { identifier, subAccount } = selectedAccount;
+    const { identifier, subAccount } = sourceAccount;
 
     const identity: Identity = await getAccountIdentity(identifier);
 
-    await sendICP({ identity, to, fromSubAccount: subAccount, amount });
+    const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
-    await syncAccounts();
+    await sendICP({
+      identity,
+      to,
+      fromSubAccount: subAccount,
+      amount: tokenAmount,
+    });
+
+    // Transfer can be to one of the user's account.
+    const toAccount = findAccount({
+      identifier: to,
+      accounts: get(nnsAccountsListStore),
+    });
+    await Promise.all([
+      loadBalance({ accountIdentifier: identifier }),
+      nonNullish(toAccount)
+        ? loadBalance({ accountIdentifier: to })
+        : Promise.resolve(),
+    ]);
 
     return { success: true };
   } catch (err) {
@@ -119,7 +295,7 @@ const transferError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,
@@ -127,27 +303,6 @@ const transferError = ({
   );
 
   return { success: false, err: labelKey };
-};
-
-/**
- * @param path current route path
- * @return an object containing either a valid account identifier or undefined if not provided for the wallet route or undefined if another route is currently accessed
- */
-export const routePathAccountIdentifier = (
-  path: string | undefined
-): { accountIdentifier: string | undefined } | undefined => {
-  if (!isRoutePath({ path: AppPath.Wallet, routePath: path })) {
-    return undefined;
-  }
-
-  const accountIdentifier: string | undefined = getLastPathDetail(path);
-
-  return {
-    accountIdentifier:
-      accountIdentifier !== undefined && accountIdentifier !== ""
-        ? accountIdentifier
-        : undefined,
-  };
 };
 
 export const getAccountTransactions = async ({
@@ -164,6 +319,7 @@ export const getAccountTransactions = async ({
   }) => void;
 }): Promise<void> =>
   queryAndUpdate<Transaction[], unknown>({
+    strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getTransactions({
         identity,
@@ -177,11 +333,11 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (certified !== true) {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
-      toastsStore.error({
+      toastsError({
         labelKey: "error.transactions_not_found",
         err,
       });
@@ -192,16 +348,16 @@ export const getAccountTransactions = async ({
 export const getAccountIdentity = async (
   identifier: string
 ): Promise<Identity | LedgerIdentity> => {
-  const account: Account | undefined = getAccountFromStore({
+  const account: Account | undefined = findAccount({
     identifier,
-    accountsStore: get(accountsStore),
+    accounts: get(nnsAccountsListStore),
   });
 
   if (account?.type === "hardwareWallet") {
     return getLedgerIdentityProxy(identifier);
   }
 
-  return getIdentity();
+  return getAuthenticatedIdentity();
 };
 
 export const getAccountIdentityByPrincipal = async (
@@ -236,7 +392,7 @@ export const renameSubAccount = async ({
   }
 
   try {
-    const identity: Identity = await getIdentity();
+    const identity: Identity = await getAuthenticatedIdentity();
 
     await renameSubAccountApi({
       newName,
@@ -259,7 +415,7 @@ const renameError = ({
   labelKey: string;
   err?: unknown;
 }): { success: boolean; err?: string } => {
-  toastsStore.error(
+  toastsError(
     toToastError({
       err,
       fallbackErrorLabelKey: labelKey,
@@ -268,3 +424,71 @@ const renameError = ({
 
   return { success: false, err: labelKey };
 };
+
+const ACCOUNTS_RETRY_MILLIS = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+const pollAccountsId = Symbol("poll-accounts");
+const pollLoadAccounts = async (params: {
+  identity: Identity;
+  certified: boolean;
+}): Promise<AccountsStoreData> =>
+  poll({
+    fn: () => loadAccounts(params),
+    // Any error is an unknown error and worth a retry
+    shouldExit: () => false,
+    pollId: pollAccountsId,
+    useExponentialBackoff: true,
+    maxAttempts: SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
+    millisecondsToWait: ACCOUNTS_RETRY_MILLIS,
+  });
+
+/**
+ * Loads accounts in the background and updates the store.
+ *
+ * If the accounts are already loaded and certified, it will skip the request.
+ *
+ * If the accounts are not certified or not present, it will poll the request until it succeeds.
+ *
+ * @param certified Whether the accounts should be requested as certified or not.
+ */
+export const pollAccounts = async (certified = true) => {
+  const overrideCertified = isForceCallStrategy() ? false : certified;
+  const accounts = get(accountsStore);
+
+  // Skip if accounts are already loaded and certified
+  // `certified` might be `undefined` if not yet loaded.
+  // Therefore, we compare with `true`.
+  if (
+    accounts.certified === true ||
+    (accounts.certified === false && isForceCallStrategy())
+  ) {
+    return;
+  }
+
+  const mutableStore =
+    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+  try {
+    const identity = await getAuthenticatedIdentity();
+    const certifiedAccounts = await pollLoadAccounts({
+      identity,
+      certified: overrideCertified,
+    });
+    mutableStore.set(certifiedAccounts);
+  } catch (err) {
+    mutableStore.cancel();
+    // Don't show error if polling was cancelled
+    if (pollingCancelled(err)) {
+      return;
+    }
+    const errorKey = pollingLimit(err)
+      ? "error.accounts_not_found_poll"
+      : "error.accounts_not_found";
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: errorKey,
+      })
+    );
+  }
+};
+
+export const cancelPollAccounts = () => cancelPoll(pollAccountsId);

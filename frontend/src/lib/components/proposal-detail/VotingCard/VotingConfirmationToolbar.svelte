@@ -1,43 +1,38 @@
 <script lang="ts">
-  import { type ProposalId, type ProposalInfo, Vote } from "@dfinity/nns";
+  import { Vote } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import VoteConfirmationModal from "../../../modals/proposals/VoteConfirmationModal.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { votingNeuronSelectStore } from "../../../stores/proposals.store";
-  import {
-    mapProposalInfo,
-    selectedNeuronsVotingPower,
-  } from "../../../utils/proposals.utils";
-  import { replacePlaceholders } from "../../../utils/i18n.utils";
-  import { busy } from "../../../stores/busy.store";
+  import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
+  import { Spinner, busy } from "@dfinity/gix-components";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
+  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 
   const dispatch = createEventDispatcher();
 
-  export let proposalInfo: ProposalInfo;
-
-  let id: ProposalId | undefined;
-  let topic: string | undefined;
-  let title: string | undefined;
-  $: ({ id, topic, title } = mapProposalInfo(proposalInfo));
+  export let voteRegistration: VoteRegistrationStoreEntry | undefined =
+    undefined;
 
   let total: bigint;
-  let disabled: boolean = true;
-  let showConfirmationModal: boolean = false;
-  let selectedVoteType: Vote = Vote.YES;
+  let disabled = true;
+  let showConfirmationModal = false;
+  let selectedVoteType: Vote = Vote.Yes;
 
   $: total = selectedNeuronsVotingPower({
     neurons: $votingNeuronSelectStore.neurons,
     selectedIds: $votingNeuronSelectStore.selectedIds,
-    proposal: proposalInfo,
   });
-  $: disabled = $votingNeuronSelectStore.selectedIds.length === 0 || $busy;
+  $: disabled =
+    $votingNeuronSelectStore.selectedIds.length === 0 ||
+    $busy ||
+    voteRegistration !== undefined;
 
   const showAdoptConfirmation = () => {
-    selectedVoteType = Vote.YES;
+    selectedVoteType = Vote.Yes;
     showConfirmationModal = true;
   };
   const showRejectConfirmation = () => {
-    selectedVoteType = Vote.NO;
+    selectedVoteType = Vote.No;
     showConfirmationModal = true;
   };
   const cancel = () => (showConfirmationModal = false);
@@ -49,27 +44,31 @@
   };
 </script>
 
-<p class="question">
-  {@html replacePlaceholders($i18n.proposal_detail__vote.accept_or_reject, {
-    $id: `${id ?? ""}`,
-    $title: `${title ?? ""}`,
-    $topic: topic ?? "",
-  })}
-</p>
-
-<div role="toolbar">
+<div role="toolbar" data-tid="voting-confirmation-toolbar">
   <button
     data-tid="vote-yes"
     {disabled}
     on:click={showAdoptConfirmation}
-    class="primary full-width">{$i18n.proposal_detail__vote.adopt}</button
+    class="success"
   >
+    {#if voteRegistration?.vote === Vote.Yes}
+      <Spinner size="small" />
+    {:else}
+      {$i18n.proposal_detail__vote.adopt}
+    {/if}
+  </button>
   <button
     data-tid="vote-no"
     {disabled}
     on:click={showRejectConfirmation}
-    class="danger full-width">{$i18n.proposal_detail__vote.reject}</button
+    class="danger"
   >
+    {#if voteRegistration?.vote === Vote.No}
+      <Spinner size="small" />
+    {:else}
+      {$i18n.proposal_detail__vote.reject}
+    {/if}
+  </button>
 </div>
 
 {#if showConfirmationModal}
@@ -82,15 +81,28 @@
 {/if}
 
 <style lang="scss">
-  [role="toolbar"] {
-    margin-top: var(--padding);
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
+  [role="toolbar"] {
     display: flex;
-    gap: var(--padding);
+
+    padding: var(--padding-2x) var(--padding-2x) 0;
+    justify-content: center;
+    gap: var(--padding-2x);
+
+    @include media.min-width(large) {
+      padding: 0;
+      justify-content: flex-start;
+      gap: var(--padding);
+    }
   }
 
-  .question {
-    margin: 0 0 var(--padding-2x);
-    word-break: break-word;
+  button {
+    min-width: calc(48px + (2 * var(--padding-2x)));
+    width: calc(100% - (2 * var(--padding)));
+
+    @include media.min-width(small) {
+      width: inherit;
+    }
   }
 </style>

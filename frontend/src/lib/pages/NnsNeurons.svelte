@@ -1,135 +1,66 @@
 <script lang="ts">
-  import Footer from "../components/common/Footer.svelte";
-  import { onDestroy } from "svelte";
-  import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { authStore } from "../stores/auth.store";
-  import type { AuthStore } from "../stores/auth.store";
-  import { i18n } from "../stores/i18n";
-  import Toolbar from "../components/ui/Toolbar.svelte";
-  import NeuronCard from "../components/neurons/NeuronCard.svelte";
-  import CreateNeuronModal from "../modals/neurons/CreateNeuronModal.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import type { NeuronId } from "@dfinity/nns";
-  import { neuronsStore, sortedNeuronStore } from "../stores/neurons.store";
-  import { routeStore } from "../stores/route.store";
-  import { AppPath } from "../constants/routes.constants";
-  import MergeNeuronsModal from "../modals/neurons/MergeNeuronsModal.svelte";
-  import SkeletonCard from "../components/ui/SkeletonCard.svelte";
-  import { MAX_NEURONS_MERGED } from "../constants/neurons.constants";
-  import Tooltip from "../components/ui/Tooltip.svelte";
-  import { isSpawning } from "../utils/neuron.utils";
-  import Value from "../components/ui/Value.svelte";
+  import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { isSpawning } from "$lib/utils/neuron.utils";
+  import { goto } from "$app/navigation";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { buildNeuronUrl } from "$lib/utils/navigation.utils";
+  import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
+  import { onMount } from "svelte";
+  import { listNeurons } from "$lib/services/neurons.services";
 
-  // Neurons are fetch on page load. No need to do it in the route.
-
-  let isLoading: boolean = false;
+  let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
 
-  let principalText: string = "";
+  onMount(() => {
+    listNeurons();
+  });
 
-  const unsubscribe: Unsubscriber = authStore.subscribe(
-    ({ identity }: AuthStore) =>
-      (principalText = identity?.getPrincipal().toText() ?? "")
-  );
-
-  onDestroy(unsubscribe);
-
-  type ModalKey = "stake-neuron" | "merge-neurons";
-  let showModal: ModalKey | undefined = undefined;
-  const openModal = (key: ModalKey) => (showModal = key);
-  const closeModal = () => (showModal = undefined);
-
-  const goToNeuronDetails = (id: NeuronId) => () => {
-    routeStore.navigate({
-      path: `${AppPath.NeuronDetail}/${id}`,
-    });
-  };
-
-  let enoughNeuronsToMerge: boolean;
-  $: enoughNeuronsToMerge = $sortedNeuronStore.length >= MAX_NEURONS_MERGED;
+  const goToNeuronDetails = async (id: NeuronId) =>
+    await goto(
+      buildNeuronUrl({
+        universe: $pageStore.universe,
+        neuronId: id,
+      })
+    );
 </script>
 
-<section data-tid="neurons-body">
-  <p class="description">{$i18n.neurons.text}</p>
-
-  <p class="description">
-    {$i18n.neurons.principal_is}
-    <Value>{principalText}</Value>
-  </p>
-
-  {#if isLoading}
-    <SkeletonCard />
-    <SkeletonCard />
-  {:else}
-    {#each $sortedNeuronStore as neuron}
-      {#if isSpawning(neuron)}
-        <Tooltip
-          id="spawning-neuron-card"
-          text={$i18n.neuron_detail.spawning_neuron_info}
-        >
-          <NeuronCard
-            disabled
+<TestIdWrapper testId="nns-neurons-component">
+  <div class="card-grid" data-tid="neurons-body">
+    {#if isLoading}
+      <SkeletonCard />
+      <SkeletonCard />
+    {:else}
+      {#each $sortedNeuronStore as neuron}
+        {#if isSpawning(neuron)}
+          <Tooltip
+            id="spawning-neuron-card"
+            text={$i18n.neuron_detail.spawning_neuron_info}
+          >
+            <NnsNeuronCard
+              disabled
+              ariaLabel={$i18n.neurons.aria_label_neuron_card}
+              {neuron}
+            />
+          </Tooltip>
+        {:else}
+          <NnsNeuronCard
+            role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
+            on:click={async () => await goToNeuronDetails(neuron.neuronId)}
             {neuron}
           />
-        </Tooltip>
-      {:else}
-        <NeuronCard
-          role="link"
-          ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={goToNeuronDetails(neuron.neuronId)}
-          {neuron}
-        />
-      {/if}
-    {/each}
-  {/if}
-</section>
-
-<Footer>
-  <Toolbar>
-    <button
-      data-tid="stake-neuron-button"
-      class="primary full-width"
-      on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
-    >
-    {#if enoughNeuronsToMerge}
-      <button
-        data-tid="merge-neurons-button"
-        class="primary full-width"
-        on:click={() => openModal("merge-neurons")}
-        >{$i18n.neurons.merge_neurons}</button
-      >
-    {:else}
-      <Tooltip id="merge-neurons-info" text={$i18n.neurons.need_two_to_merge}>
-        <button
-          disabled
-          data-tid="merge-neurons-button"
-          class="primary full-width"
-          on:click={() => openModal("merge-neurons")}
-          >{$i18n.neurons.merge_neurons}</button
-        >
-      </Tooltip>
+        {/if}
+      {/each}
     {/if}
-  </Toolbar>
-</Footer>
+  </div>
 
-{#if showModal === "stake-neuron"}
-  <CreateNeuronModal on:nnsClose={closeModal} />
-{/if}
-{#if showModal === "merge-neurons"}
-  <MergeNeuronsModal on:nnsClose={closeModal} />
-{/if}
-
-<style lang="scss">
-  p:last-of-type {
-    margin-bottom: var(--padding-3x);
-  }
-
-  :global(footer .tooltip-wrapper) {
-    --tooltip-width: 50%;
-  }
-
-  :global(footer .tooltip-wrapper button) {
-    width: 100%;
-  }
-</style>
+  {#if !isLoading && $sortedNeuronStore.length === 0}
+    <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
+  {/if}
+</TestIdWrapper>

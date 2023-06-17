@@ -1,45 +1,19 @@
-import { ICP } from "@dfinity/nns";
 import type {
   AccountIdentifierString,
-  Transaction,
-} from "../canisters/nns-dapp/nns-dapp.types";
-import type { Account } from "../types/account";
+  Transaction as NnsTransaction,
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Account } from "$lib/types/account";
+import type { Transaction } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  TransactionNetwork,
+} from "$lib/types/transaction";
+import { isNullish } from "@dfinity/utils";
+import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
-export enum AccountTransactionType {
-  Burn = "burn",
-  Mint = "mint",
-  Send = "send",
-  StakeNeuron = "stakeNeuron",
-  StakeNeuronNotification = "stakeNeuronNotification",
-  TopUpNeuron = "topUpNeuron",
-  CreateCanister = "createCanister",
-  TopUpCanister = "topUpCanister",
-}
-
-export const accountName = ({
-  account,
-  mainName,
-}: {
-  account: Account | undefined;
-  mainName: string;
-}): string =>
-  account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
-
-export interface AccountTransaction {
-  from: AccountIdentifierString;
-  to: AccountIdentifierString;
-  amount: ICP;
-  date: Date;
-  fee: ICP;
-  type: AccountTransactionType;
-  memo: bigint;
-  incomplete: boolean;
-  blockHeight: bigint;
-}
-
 export const transactionType = (
-  transaction: Transaction
+  transaction: NnsTransaction
 ): AccountTransactionType => {
   const { transaction_type } = transaction;
   if (transaction_type.length === 0) {
@@ -69,6 +43,8 @@ export const transactionType = (
     return AccountTransactionType.Burn;
   } else if ("Mint" in transaction_type[0]) {
     return AccountTransactionType.Mint;
+  } else if ("ParticipateSwap" in transaction_type[0]) {
+    return AccountTransactionType.ParticipateSwap;
   }
 
   throw new Error(
@@ -101,55 +77,47 @@ export const transactionDisplayAmount = ({
   fee,
 }: {
   useFee: boolean;
-  amount: ICP;
-  fee: ICP | undefined;
-}): ICP => {
+  amount: bigint;
+  fee: bigint | undefined;
+}): bigint => {
   if (useFee) {
-    if (fee === undefined) {
+    if (isNullish(fee)) {
       throw new Error("fee is not available");
     }
-    return ICP.fromE8s(amount.toE8s() + fee.toE8s());
+    return amount + fee;
   }
   return amount;
 };
 
-export const mapTransaction = ({
+export const mapNnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
 }: {
-  transaction: Transaction;
+  transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
-}): {
-  type: AccountTransactionType;
-  isReceive: boolean;
-  isSend: boolean;
-  from: AccountIdentifierString | undefined;
-  to: AccountIdentifierString | undefined;
-  displayAmount: ICP;
-  date: Date;
-} => {
+}): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
   let to: AccountIdentifierString | undefined;
-  let amount: ICP | undefined;
-  let fee: ICP | undefined;
+  let amount: bigint | undefined;
+  let fee: bigint | undefined;
 
   if ("Send" in transfer) {
     from = account.identifier;
     to = transfer.Send.to;
-    amount = ICP.fromE8s(transfer.Send.amount.e8s);
-    fee = ICP.fromE8s(transfer.Send.fee.e8s);
+    amount = transfer.Send.amount.e8s;
+    fee = transfer.Send.fee.e8s;
   } else if ("Receive" in transfer) {
     to = account.identifier;
     from = transfer.Receive.from;
-    amount = ICP.fromE8s(transfer.Receive.amount.e8s);
-    fee = ICP.fromE8s(transfer.Receive.fee.e8s);
+    amount = transfer.Receive.amount.e8s;
+    fee = transfer.Receive.fee.e8s;
   } else if ("Burn" in transfer) {
-    amount = ICP.fromE8s(transfer.Burn.amount.e8s);
+    amount = transfer.Burn.amount.e8s;
   } else if ("Mint" in transfer) {
-    amount = ICP.fromE8s(transfer.Mint.amount.e8s);
+    amount = transfer.Mint.amount.e8s;
   } else {
     throw new Error("Unsupported transfer type");
   }
@@ -176,30 +144,42 @@ export const mapTransaction = ({
   };
 };
 
+/**
+ * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
+ * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
+ */
 export const transactionName = ({
   type,
   isReceive,
   labels,
+  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
+  tokenSymbol: string;
 }): string =>
-  type === AccountTransactionType.Send
-    ? isReceive
-      ? labels.receive
-      : labels.send
-    : labels[type] ?? type;
+  replacePlaceholders(
+    type === AccountTransactionType.Send
+      ? isReceive
+        ? labels.receive
+        : labels.send
+      : labels[type] ?? type,
+    { $tokenSymbol: tokenSymbol }
+  );
 
-/** (from==to workaround) Set `mapToSelfTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = (
-  transactions: Transaction[]
-): { transaction: Transaction; toSelfTransaction: boolean }[] => {
+/** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
+export const mapToSelfTransaction = <T>(
+  transactions: T[]
+): { transaction: T; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.map((transaction) => ({
     transaction: { ...transaction },
     toSelfTransaction: false,
   }));
 
+  // We rely on self transactions to be one next to each other.
+  // We only set the first transaction to `toSelfTransaction: true`
+  // because the second one will be `toSelfTransaction: false` and it will be displayed as `Sent` transaction.
   for (let i = 0; i < resultTransactions.length - 1; i++) {
     const { transaction } = resultTransactions[i];
     const { transaction: nextTransaction } = resultTransactions[i + 1];
@@ -211,3 +191,9 @@ export const mapToSelfTransaction = (
 
   return resultTransactions;
 };
+
+export const isTransactionNetworkBtc = (
+  network: TransactionNetwork | undefined
+): boolean =>
+  TransactionNetwork.BTC_MAINNET === network ||
+  TransactionNetwork.BTC_TESTNET === network;

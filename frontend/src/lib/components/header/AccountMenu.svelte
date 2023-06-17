@@ -1,51 +1,56 @@
 <script lang="ts">
-  import Popover from "../ui/Popover.svelte";
-  import IconAccount from "../../icons/IconAccount.svelte";
+  import { IconUser, ThemeToggle, Popover } from "@dfinity/gix-components";
   import Logout from "./Logout.svelte";
-  import { i18n } from "../../stores/i18n";
-  import ThemeToggle from "./ThemeToggle.svelte";
+  import LoginIconOnly from "./LoginIconOnly.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import SettingsButton from "$lib/components/header/SettingsButton.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
+
+  const toggle = () => (visible = !visible);
 </script>
 
-<button
-  data-tid="account-menu"
-  class="icon-only toggle"
-  bind:this={button}
-  on:click={() => (visible = !visible)}
-  aria-label={$i18n.header.account_menu}
->
-  <IconAccount />
-</button>
+{#if $authSignedInStore}
+  <button
+    data-tid="account-menu"
+    class="icon-only toggle"
+    bind:this={button}
+    on:click={toggle}
+    aria-label={$i18n.header.account_menu}
+  >
+    <IconUser />
+  </button>
 
-<Popover bind:visible anchor={button} direction="rtl">
-  <div class="info">
-    <ThemeToggle />
-    <Logout />
-  </div>
-</Popover>
+  <Popover bind:visible anchor={button} direction="rtl">
+    <div class="info">
+      <ThemeToggle />
+
+      <SettingsButton on:nnsLink={() => (visible = false)} />
+
+      <Logout on:nnsLogoutTriggered={toggle} />
+    </div>
+  </Popover>
+{:else}
+  <LoginIconOnly />
+{/if}
 
 <style lang="scss">
-  @use "../../themes/mixins/overlay";
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/header";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/header";
 
   .info {
-    @include overlay.content;
+    width: 100%;
 
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
-
-    @include media.min-width(medium) {
-      gap: var(--padding-0_5x);
-    }
+    gap: var(--padding-3x);
   }
 
   .toggle {
     justify-self: flex-end;
 
-    @include header.button(--primary);
+    @include header.button(--primary-tint);
   }
 </style>

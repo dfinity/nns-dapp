@@ -1,12 +1,12 @@
-# NNS Dapp Frontend (Svelte)
+# NNS Dapp Frontend
 
-All the pages in the [NNS dapp](https://nns.ic0.app/) come from this project.
+All the pages in the [NNS dapp](https://nns.internetcomputer.org/) come from this project.
 
-- **Stack**: [Typescript](https://www.typescriptlang.org/), [Svelte](https://svelte.dev/), [Rollup](https://rollupjs.org/guide/en/), and [Jest](https://jestjs.io/).
+- **Stack**: [Typescript](https://www.typescriptlang.org/), [SvelteKit](https://kit.svelte.dev/) and [Jest](https://jestjs.io/).
 
-We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [nns-js](https://github.com/dfinity/nns-js).
+We are moving a lot of the logic for interfacing with the Internet Computer's Network Nervous System to its own open-source project: [ic-js](https://github.com/dfinity/ic-js).
 
-All the Internet computer interactions are done through nns-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
+All the Internet computer interactions are done through ic-js or the official [agent-JS](https://github.com/dfinity/agent-js) packages.
 
 ## Installation and local development
 
@@ -16,24 +16,7 @@ Clone the project on your computer and install the libraries:
 npm ci
 ```
 
-Run the local development server:
-
-```bash
-npm run dev
-```
-
-Visit `localhost:8080`.
-
-### Dependencies
-
-At the moment, pure local development is not supported. A testnet deployed, and working is needed.
-
-The environment variables in `env.config.mjs` need to point to the working testnet.
-
-There is usually no need to review the variables, but there are a few that might need to be checked if the deployment to testnet is done with new configuration parameters:
-
-- `IDENTITY_SERVICE_URL`: This is the Internet Identity URL to register and log in.
-- `OWN_CANISTER_ID`: The canister id of the NNS Dapp.
+Then proceed as displayed in the [HACKING.md](/HACKING.md) documentation.
 
 ## Testing
 
@@ -41,8 +24,8 @@ Every Pull Request needs unit tests.
 
 After installing the project, you can run the test suite:
 
-```
-npm test
+```bash
+npm run test
 ```
 
 There is also a project to run e2e tests [here](../e2e-tests/README.md).

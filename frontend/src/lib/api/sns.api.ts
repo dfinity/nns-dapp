@@ -1,196 +1,23 @@
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { DeployedSns, ICP, SnsWasmCanister } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type {
-  InitSnsWrapper,
-  SnsNeuron,
-  SnsNeuronId,
-  SnsNeuronPermissionType,
-  SnsSwapBuyerState,
-  SnsWrapper,
-} from "@dfinity/sns";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { HOST, WASM_CANISTER_ID } from "../constants/environment.constants";
-import {
-  importInitSnsWrapper,
-  importSnsWasmCanister,
-  type SnsWasmCanisterCreate,
-} from "../proxy/api.import.proxy";
-import { snsesCountStore } from "../stores/sns.store";
-import { ApiErrorKey } from "../types/api.errors";
-import type { SnsSwapCommitment } from "../types/sns";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
   QuerySnsMetadata,
   QuerySnsSwapState,
-} from "../types/sns.query";
-import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { getSwapCanisterAccount } from "../utils/sns.utils";
-import { ledgerCanister } from "./ledger.api";
-
-let snsQueryWrappers: Promise<Map<QueryRootCanisterId, SnsWrapper>> | undefined;
-let snsUpdateWrappers:
-  | Promise<Map<QueryRootCanisterId, SnsWrapper>>
-  | undefined;
-
-/**
- * List all deployed Snses - i.e list all Sns projects
- *
- * @param {Object} params
- * @param params.agent
- * @param params.certified
- * @return The list of root canister id of each deployed Sns project
- */
-const listSnses = async ({
-  agent,
-  certified,
-}: {
-  agent: HttpAgent;
-  certified: boolean;
-}): Promise<Principal[]> => {
-  logWithTimestamp(`Loading list of Snses certified:${certified} call...`);
-
-  const SnsWasmCanister: SnsWasmCanisterCreate = await importSnsWasmCanister();
-
-  const { listSnses }: SnsWasmCanister = SnsWasmCanister.create({
-    canisterId: Principal.fromText(WASM_CANISTER_ID),
-    agent,
-  });
-
-  const snses: DeployedSns[] = await listSnses({ certified });
-
-  logWithTimestamp(`Loading list of Snses certified:${certified} complete.`);
-
-  return snses.reduce(
-    (acc: Principal[], { root_canister_id }: DeployedSns) => [
-      ...acc,
-      ...root_canister_id,
-    ],
-    []
-  );
-};
-
-const initSns = async ({
-  agent,
-  rootCanisterId,
-  certified,
-}: {
-  agent: HttpAgent;
-  rootCanisterId: Principal;
-  certified: boolean;
-}): Promise<SnsWrapper> => {
-  logWithTimestamp(
-    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} call...`
-  );
-
-  const initSnsWrapper: InitSnsWrapper = await importInitSnsWrapper();
-
-  const snsWrapper: SnsWrapper = await initSnsWrapper({
-    rootOptions: {
-      canisterId: rootCanisterId,
-    },
-    agent,
-    certified,
-  });
-
-  logWithTimestamp(
-    `Initializing Sns ${rootCanisterId.toText()} certified:${certified} complete.`
-  );
-
-  return snsWrapper;
-};
-
-const loadSnsWrappers = async ({
-  identity,
-  certified,
-}: {
-  certified: boolean;
-  identity: Identity;
-}): Promise<SnsWrapper[]> => {
-  const agent = await createAgent({
-    identity,
-    host: HOST,
-  });
-
-  const rootCanisterIds: Principal[] = await listSnses({ agent, certified });
-
-  snsesCountStore.set(rootCanisterIds.length);
-
-  const results: PromiseSettledResult<SnsWrapper>[] = await Promise.allSettled(
-    rootCanisterIds.map((rootCanisterId: Principal) =>
-      initSns({ agent, rootCanisterId, certified })
-    )
-  );
-
-  // TODO(L2-837): do no throw an error but emit or display only an error while continuing loading and displaying Sns projects that could be successfully fetched
-  const error: boolean =
-    results.find(({ status }) => status === "rejected") !== undefined;
-  if (error) {
-    throw new ApiErrorKey("error__sns.init");
-  }
-
-  return results
-    .filter(({ status }) => status === "fulfilled")
-    .map(({ value: wrapper }: PromiseFulfilledResult<SnsWrapper>) => wrapper);
-};
-
-const initWrappers = async ({
-  identity,
-  certified,
-}: {
-  certified: boolean;
-  identity: Identity;
-}): Promise<Map<QueryRootCanisterId, SnsWrapper>> =>
-  new Map(
-    (await loadSnsWrappers({ identity, certified })).map(
-      (wrapper: SnsWrapper) => [
-        wrapper.canisterIds.rootCanisterId.toText(),
-        wrapper,
-      ]
-    )
-  );
-
-const wrappers = async ({
-  identity,
-  certified,
-}: {
-  certified: boolean;
-  identity: Identity;
-}): Promise<Map<QueryRootCanisterId, SnsWrapper>> => {
-  switch (certified) {
-    case false:
-      if (!snsQueryWrappers) {
-        snsQueryWrappers = initWrappers({ identity, certified: false });
-      }
-      return snsQueryWrappers;
-    default:
-      if (!snsUpdateWrappers) {
-        snsUpdateWrappers = initWrappers({ identity, certified: true });
-      }
-      return snsUpdateWrappers;
-  }
-};
-
-const wrapper = async ({
-  identity,
-  rootCanisterId,
-  certified,
-}: {
-  identity: Identity;
-  rootCanisterId: QueryRootCanisterId;
-  certified: boolean;
-}): Promise<SnsWrapper> => {
-  const snsWrapper: SnsWrapper | undefined = (
-    await wrappers({ identity, certified })
-  ).get(rootCanisterId);
-
-  if (snsWrapper === undefined) {
-    throw new ApiErrorKey("error__sns.undefined_project");
-  }
-
-  return snsWrapper;
-};
+} from "$lib/types/sns.query";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
+import { Principal } from "@dfinity/principal";
+import type {
+  SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
+  SnsNeuronId,
+  SnsSwapBuyerState,
+  SnsWrapper,
+} from "@dfinity/sns";
+import { wrapper, wrappers } from "./sns-wrapper.api";
 
 export const queryAllSnsMetadata = async ({
   identity,
@@ -309,14 +136,19 @@ export const querySnsSwapState = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<QuerySnsSwapState | undefined> => {
+}): Promise<QuerySnsSwapState> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap state certified:${certified} call...`
   );
 
   const {
     swapState,
-    canisterIds: { swapCanisterId },
+    canisterIds: {
+      swapCanisterId,
+      governanceCanisterId,
+      ledgerCanisterId,
+      indexCanisterId,
+    },
   }: SnsWrapper = await wrapper({
     rootCanisterId,
     identity,
@@ -332,6 +164,9 @@ export const querySnsSwapState = async ({
   return {
     rootCanisterId,
     swapCanisterId,
+    governanceCanisterId,
+    ledgerCanisterId,
+    indexCanisterId,
     swap,
     derived,
     certified,
@@ -410,148 +245,142 @@ export const querySnsSwapCommitment = async ({
   };
 };
 
-export const participateInSnsSwap = async ({
-  amount,
+export const querySnsDerivedState = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: QueryRootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsGetDerivedStateResponse | undefined> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap derived state certified:${certified} call...`
+  );
+
+  const { getDerivedState }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const derivedState: SnsGetDerivedStateResponse | undefined =
+    await getDerivedState({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} swap derived state certified:${certified} done.`
+  );
+
+  return derivedState;
+};
+
+export const querySnsLifecycle = async ({
+  rootCanisterId,
+  identity,
+  certified,
+}: {
+  rootCanisterId: QueryRootCanisterId;
+  identity: Identity;
+  certified: boolean;
+}): Promise<SnsGetLifecycleResponse | undefined> => {
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} call...`
+  );
+
+  const { getLifecycle }: SnsWrapper = await wrapper({
+    rootCanisterId,
+    identity,
+    certified,
+  });
+
+  const lifecycleResponse: SnsGetLifecycleResponse | undefined =
+    await getLifecycle({});
+
+  logWithTimestamp(
+    `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} done.`
+  );
+
+  return lifecycleResponse;
+};
+
+/**
+ * Stake SNS neuron.
+ *
+ * param.fee is mandatory to ensure that it's show for hardware wallets.
+ * Otherwise, the fee would not show in the device and the user would not know how much they are paying.
+ *
+ * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
+ */
+export const stakeNeuron = async ({
   controller,
-  identity,
+  stakeE8s,
   rootCanisterId,
-  fromSubAccount,
+  identity,
+  source,
+  fee,
 }: {
-  amount: ICP;
   controller: Principal;
-  identity: Identity;
+  stakeE8s: bigint;
   rootCanisterId: Principal;
-  fromSubAccount?: SubAccountArray;
-}): Promise<void> => {
-  logWithTimestamp("Participating in swap: call...");
+  identity: Identity;
+  source: IcrcAccount;
+  fee: bigint;
+}): Promise<SnsNeuronId> => {
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
 
-  const { canister: nnsLedger } = await ledgerCanister({ identity });
-  const {
-    canisterIds: { swapCanisterId },
-    notifyParticipation,
-  } = await wrapper({
+  const { stakeNeuron: stakeNeuronApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  const accountIdentifier = getSwapCanisterAccount({
-    swapCanisterId,
+
+  const createdAt = nowInBigIntNanoSeconds();
+  const newNeuronId = await stakeNeuronApi({
+    stakeE8s,
+    source,
     controller,
+    createdAt,
+    fee,
   });
 
-  // Send amount to the ledger
-  await nnsLedger.transfer({
-    amount,
-    fromSubAccount,
-    to: accountIdentifier,
-  });
-
-  // Notify participation
-  await notifyParticipation({ buyer: controller.toText() });
-
-  logWithTimestamp("Participating in swap: done");
+  logWithTimestamp(
+    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
+  return newNeuronId;
 };
 
-export const querySnsNeurons = async ({
-  identity,
-  rootCanisterId,
-  certified,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  certified: boolean;
-}): Promise<SnsNeuron[]> => {
-  logWithTimestamp("Getting sns neurons: call...");
-  const { listNeurons } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
-  const neurons = await listNeurons({
-    principal: identity.getPrincipal(),
-  });
-
-  logWithTimestamp("Getting sns neurons: done");
-  return neurons;
-};
-
-export const querySnsNeuron = async ({
-  identity,
-  rootCanisterId,
-  certified,
+export const increaseStakeNeuron = async ({
   neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  certified: boolean;
-  neuronId: SnsNeuronId;
-}): Promise<SnsNeuron> => {
-  logWithTimestamp("Getting sns neuron: call...");
-  const { getNeuron } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
-  const neuron = await getNeuron({
-    neuronId,
-  });
-
-  logWithTimestamp("Getting sns neuron: done");
-  return neuron;
-};
-
-export const addNeuronPermissions = async ({
-  identity,
+  stakeE8s,
   rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
+  identity,
+  source,
 }: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
   neuronId: SnsNeuronId;
+  stakeE8s: bigint;
+  rootCanisterId: Principal;
+  identity: Identity;
+  source: IcrcAccount;
 }): Promise<void> => {
-  logWithTimestamp("Adding neuron permissions: call...");
-  const { addNeuronPermissions } = await wrapper({
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
+  );
+
+  const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  await addNeuronPermissions({
-    permissions,
-    principal,
+
+  await increaseStakeNeuronApi({
+    stakeE8s,
+    source,
     neuronId,
   });
 
-  logWithTimestamp("Adding neuron permissions: done");
-};
-
-export const removeNeuronPermissions = async ({
-  identity,
-  rootCanisterId,
-  permissions,
-  principal,
-  neuronId,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  permissions: SnsNeuronPermissionType[];
-  principal: Principal;
-  neuronId: SnsNeuronId;
-}): Promise<void> => {
-  logWithTimestamp("Removing neuron permissions: call...");
-  const { removeNeuronPermissions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified: true,
-  });
-  await removeNeuronPermissions({
-    permissions,
-    principal,
-    neuronId,
-  });
-
-  logWithTimestamp("Removing neuron permissions: done");
+  logWithTimestamp(
+    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
+  );
 };

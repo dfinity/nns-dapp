@@ -1,50 +1,48 @@
 <script lang="ts">
-  import AddSubAccount from "../../components/accounts/AddSubAccount.svelte";
-  import AddAccountType from "../../components/accounts/AddAccountType.svelte";
-  import WizardModal from "../WizardModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Steps } from "../../stores/steps.state";
-  import type { Step } from "../../stores/steps.state";
-  import HardwareWalletName from "../../components/accounts/HardwareWalletName.svelte";
+  import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
+  import AddAccountType from "$lib/components/accounts/AddAccountType.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
   import { setContext, tick } from "svelte";
-  import HardwareWalletConnect from "../../components/accounts/HardwareWalletConnect.svelte";
+  import HardwareWalletConnect from "$lib/components/accounts/HardwareWalletConnect.svelte";
   import { writable } from "svelte/store";
   import type {
     AddAccountContext,
     AddAccountStore,
     AccountType,
-  } from "../../types/add-account.context";
-  import { ADD_ACCOUNT_CONTEXT_KEY } from "../../types/add-account.context";
-  import { debugAddAccountStore } from "../../stores/debug.store";
+  } from "$lib/types/add-account.context";
+  import { ADD_ACCOUNT_CONTEXT_KEY } from "$lib/types/add-account.context";
+  import { debugAddAccountStore } from "$lib/derived/debug.derived";
 
-  const subAccountSteps: Steps = [
+  const subAccountSteps: WizardSteps = [
     {
       name: "AddSubAccount",
       title: $i18n.accounts.new_linked_title,
-      showBackButton: true,
     },
   ];
 
-  const hardwareWalletSteps: Steps = [
+  const hardwareWalletSteps: WizardSteps = [
     {
       name: "HardwareWalletName",
       title: $i18n.accounts.attach_hardware_title,
-      showBackButton: true,
     },
     {
       name: "HardwareWalletConnect",
       title: $i18n.accounts.attach_hardware_title,
-      showBackButton: true,
     },
   ];
 
-  const startStep: Step = {
+  const startStep: WizardStep = {
     name: "AddAccountType",
     title: $i18n.accounts.add_account,
-    showBackButton: false,
   };
 
-  let steps: Steps = [startStep, ...subAccountSteps];
+  let steps: WizardSteps = [startStep, ...subAccountSteps];
 
   /**
    * A store that contains the type of account that will be added (subaccount or hardware wallet) and addition data that can be used across multiple steps of the wizard.
@@ -83,11 +81,17 @@
     back: () => modal?.back(),
   });
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  testId="add-account-modal-component"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.add_account}</svelte:fragment
   >

@@ -1,27 +1,25 @@
-import { GovernanceCanister, ICP, LedgerCanister } from "@dfinity/nns";
+/**
+ * @jest-environment jsdom
+ */
+import * as aggregatorApi from "$lib/api/sns-aggregator.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { initAppPrivateData } from "$lib/services/app.services";
+import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
+import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
+import { toastsStore } from "@dfinity/gix-components";
+import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
-import { initApp } from "../../../lib/services/app.services";
-import {
-  loadSnsSummaries,
-  loadSnsSwapCommitments,
-} from "../../../lib/services/sns.services";
-import { mockAccountDetails } from "../../mocks/accounts.store.mock";
-import { mockNeuron } from "../../mocks/neurons.mock";
+import { get } from "svelte/store";
 
-jest.mock("../../../lib/services/sns.services", () => {
-  return {
-    loadSnsSummaries: jest.fn().mockResolvedValue(Promise.resolve()),
-    loadSnsSwapCommitments: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
+jest.mock("$lib/api/sns-aggregator.api");
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
   const mockNNSDappCanister = mock<NNSDappCanister>();
-  const mockGovernanceCanister = mock<GovernanceCanister>();
 
   beforeEach(() => {
+    toastsStore.reset();
+    jest.clearAllMocks();
     jest
       .spyOn(LedgerCanister, "create")
       .mockImplementation((): LedgerCanister => mockLedgerCanister);
@@ -30,34 +28,20 @@ describe("app-services", () => {
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+
     jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-
-    mockCanisters();
-  });
-
-  const mockCanisters = () => {
-    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(
-      ICP.fromString("1") as ICP
-    );
-    mockGovernanceCanister.listNeurons.mockResolvedValue([mockNeuron]);
-  };
-
-  afterEach(() => {
-    jest.clearAllMocks();
+      .spyOn(aggregatorApi, "querySnsProjects")
+      .mockResolvedValue([aggregatorSnsMock, aggregatorSnsMock]);
   });
 
   it("should init Nns", async () => {
-    await initApp();
+    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    await initAppPrivateData();
 
     // query + update calls
     const numberOfCalls = 2;
-
-    await expect(mockNNSDappCanister.addAccount).toHaveBeenCalledTimes(
-      numberOfCalls
-    );
 
     await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
       numberOfCalls
@@ -68,10 +52,27 @@ describe("app-services", () => {
     );
   });
 
-  it("should init Sns", async () => {
-    await initApp();
+  it("shuold init SNS", async () => {
+    await initAppPrivateData();
 
-    await expect(loadSnsSummaries).toHaveBeenCalledTimes(1);
-    await expect(loadSnsSwapCommitments).toHaveBeenCalledTimes(1);
+    await expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
+  });
+
+  it("should not show errors if loading accounts fails", async () => {
+    mockNNSDappCanister.getAccount.mockRejectedValue(new Error("test"));
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    await initAppPrivateData();
+
+    // query + update calls
+    const numberOfCalls = 2;
+
+    await expect(mockNNSDappCanister.getAccount).toHaveBeenCalledTimes(
+      numberOfCalls
+    );
+
+    await expect(mockLedgerCanister.accountBalance).not.toBeCalled();
+
+    const toastData = get(toastsStore);
+    expect(toastData).toHaveLength(0);
   });
 });

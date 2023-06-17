@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import ProjectStatus from "../../../../lib/components/project-detail/ProjectStatus.svelte";
-import type { SnsSwapCommitment } from "../../../../lib/types/sns";
-import en from "../../../mocks/i18n.mock";
+import ProjectStatus from "$lib/components/project-detail/ProjectStatus.svelte";
+import type { SnsSwapCommitment } from "$lib/types/sns";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
-} from "../../../mocks/sns-projects.mock";
-import { renderContextCmp } from "../../../mocks/sns.mock";
+} from "$tests/mocks/sns-projects.mock";
+import { renderContextCmp } from "$tests/mocks/sns.mock";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectStatus", () => {
   it("should render accepting participation text when open", () => {
@@ -46,7 +46,7 @@ describe("ProjectStatus", () => {
     ).toBeInTheDocument();
   });
 
-  it("should render committed text when not yet open", () => {
+  it("should render committed text", () => {
     const { queryByText } = renderContextCmp({
       summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
@@ -55,6 +55,18 @@ describe("ProjectStatus", () => {
 
     expect(
       queryByText(en.sns_project_detail.status_committed)
+    ).toBeInTheDocument();
+  });
+
+  it("should render starting soon text", () => {
+    const { queryByText } = renderContextCmp({
+      summary: summaryForLifecycle(SnsSwapLifecycle.Adopted),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatus,
+    });
+
+    expect(
+      queryByText(en.sns_project_detail.status_adopted)
     ).toBeInTheDocument();
   });
 

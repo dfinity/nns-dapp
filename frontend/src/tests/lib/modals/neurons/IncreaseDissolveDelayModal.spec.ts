@@ -2,16 +2,17 @@
  * @jest-environment jsdom
  */
 
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
+import { updateDelay } from "$lib/services/neurons.services";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
-import { SECONDS_IN_YEAR } from "../../../../lib/constants/constants";
-import IncreaseDissolveDelayModal from "../../../../lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
-import { updateDelay } from "../../../../lib/services/neurons.services";
-import { renderModal } from "../../../mocks/modal.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import type { SvelteComponent } from "svelte";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     updateDelay: jest.fn().mockResolvedValue(undefined),
     getNeuronFromStore: jest.fn(),
@@ -21,7 +22,7 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 describe("IncreaseDissolveDelayModal", () => {
   const renderIncreaseDelayModal = async (
     neuron: NeuronInfo
-  ): Promise<RenderResult> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseDissolveDelayModal,
       props: { neuron },
@@ -85,9 +86,10 @@ describe("IncreaseDissolveDelayModal", () => {
   });
 
   it("should not be able to change dissolve delay below current value", async () => {
+    const currentNeuronDissoveDelay = SECONDS_IN_YEAR;
     const editableNeuron = {
       ...mockNeuron,
-      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      dissolveDelaySeconds: BigInt(currentNeuronDissoveDelay),
     };
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
@@ -101,18 +103,19 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR / 2 },
+        target: { value: currentNeuronDissoveDelay / 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
     );
+
     await waitFor(() =>
       expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull()
     );
     inputRange &&
       (await waitFor(() =>
-        expect(inputRange.value).toBe(String(SECONDS_IN_YEAR))
+        expect(inputRange.value).toBe(String(currentNeuronDissoveDelay))
       ));
   });
 });

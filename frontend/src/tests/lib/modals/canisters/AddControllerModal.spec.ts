@@ -2,12 +2,13 @@
  * @jest-environment jsdom
  */
 
+import { addController } from "$lib/services/canisters.services";
+import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { addController } from "../../../../lib/services/canisters.services";
-import { renderModal } from "../../../mocks/modal.mock";
+import type { SvelteComponent } from "svelte";
 import AddControllerModal from "./AddControllerModalTest.svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     addController: jest.fn().mockResolvedValue({ success: true }),
   };
@@ -16,7 +17,9 @@ jest.mock("../../../../lib/services/canisters.services", () => {
 describe("AddControllerModal", () => {
   const reloadMock = jest.fn();
 
-  const renderAddControllerModal = async (): Promise<RenderResult> => {
+  const renderAddControllerModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > => {
     return renderModal({
       component: AddControllerModal,
       props: { reloadDetails: reloadMock },

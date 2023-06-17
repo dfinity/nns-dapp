@@ -33,96 +33,22 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 }
 
 # Need to know which deployment we are building for:
-DFX_NETWORK="${DFX_NETWORK:-}"
-export DFX_NETWORK
-jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
-  echo "Which deployment? Set DFX_NETWORK to one of:"
-  jq -er '.networks | keys | join("  ")' dfx.json
-  exit 1
-} >&2
+. "$TOPLEVEL/scripts/require-dfx-network.sh"
+
+# Can we skip this here because build-frontend.sh now does it?
+# Or do we need the exports for the backend as well?
 
 # Assemble the configuration
-. config.sh
-export HOST
-export IDENTITY_SERVICE_URL
-export OWN_CANISTER_ID
-export OWN_CANISTER_URL
-export FETCH_ROOT_KEY
-export GOVERNANCE_CANISTER_ID
-export GOVERNANCE_CANISTER_URL
-export LEDGER_CANISTER_ID
-export LEDGER_CANISTER_URL
-export REDIRECT_TO_LEGACY
-export ENABLE_NEW_SPAWN_FEATURE
-export WASM_CANISTER_ID
-export ENABLE_SNS_NEURONS
+./config.sh
 
 set -x
 
 ###################
-# frontend # (output: frontend/public/)
+# frontend # (output: assets.tar.xz)
 ###################
-(cd "$TOPLEVEL/frontend" && npm ci && npm run build)
-
-#################
-# assets.tar.xz #
-#################
-
-# we need GNU tar (see below) so we check early
-if tar --help | grep GNU >/dev/null; then
-  echo "found GNU tar as tar"
-  tar="tar"
-elif command -v gtar >/dev/null; then
-  echo "found GNU tar as gtar"
-  tar="gtar"
-else
-  echo "did not find GNU tar, please install"
-  echo "  brew install gnu-tar"
-  exit 1
-fi
-
-if ! command -v xz >/dev/null; then
-  echo "did not find xz, please install"
-  echo "  brew install xz"
-  exit 1
-fi
-
-# We use a local directory, and we don't delete it after the build, so that
-# assets can be inspected.
-tarball_dir="$TOPLEVEL/web-assets"
-rm -rf "$tarball_dir"
-echo "using $tarball_dir for tarball directory"
-cp -R "$TOPLEVEL/frontend/public/" "$tarball_dir/"
-
-# Bundle into a tight tarball
-# On macOS you need to install gtar + xz
-# brew install gnu-tar
-# brew install xz
-cd "$tarball_dir"
-
-"$tar" cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f "$TOPLEVEL/assets.tar.xz" .
-
-cd "$TOPLEVEL"
-
-ls -sh "$TOPLEVEL/assets.tar.xz"
-sha256sum "$TOPLEVEL/assets.tar.xz"
+"$TOPLEVEL/build-frontend.sh"
 
 ###############
-# cargo build # (output: target/release/.../nns-dapp.wasm)
+# backend # (output: nns-dapp.wasm)
 ###############
-echo Compiling rust package
-cargo_args=(--target wasm32-unknown-unknown --release --package nns-dapp)
-if [[ $DFX_NETWORK != "mainnet" ]]; then
-  cargo_args+=(--features mock_conversion_rate)
-fi
-
-(cd "$TOPLEVEL" && cargo build "${cargo_args[@]}")
-
-####################
-# ic-cdk-optimizer # (output: nns-dapp.wasm)
-####################
-echo Optimising wasm
-cd "$TOPLEVEL"
-ic-cdk-optimizer ./target/wasm32-unknown-unknown/release/nns-dapp.wasm -o ./nns-dapp.wasm
-ls -sh ./nns-dapp.wasm
-sha256sum ./nns-dapp.wasm
+"$TOPLEVEL/build-backend.sh"

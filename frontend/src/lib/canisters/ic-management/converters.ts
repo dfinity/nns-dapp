@@ -1,10 +1,9 @@
-import { UnsupportedValueError } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { CanisterDetails } from "./ic-management.canister.types";
 import { CanisterStatus } from "./ic-management.canister.types";
 import type {
-  CanisterStatus as RawCanisterStatus,
   CanisterStatusResponse,
+  CanisterStatus as RawCanisterStatus,
 } from "./ic-management.types";
 
 const getCanisterStatus = (status: RawCanisterStatus): CanisterStatus => {
@@ -15,7 +14,7 @@ const getCanisterStatus = (status: RawCanisterStatus): CanisterStatus => {
   } else if ("running" in status) {
     return CanisterStatus.Running;
   }
-  throw new UnsupportedValueError(status);
+  throw new Error(status);
 };
 
 export const toCanisterDetails = ({

@@ -1,1 +1,21 @@
-src/lib/canisters/nns-dapp/*.js
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+/playwright*
+.env
+.env.*
+!.env.example
+
+# Ignore files for PNPM, NPM and YARN
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+static
+public
+scripts
+jest-setup.ts
+
+src/lib/canisters/nns-dapp/**/*

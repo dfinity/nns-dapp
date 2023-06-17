@@ -1,23 +1,22 @@
-import type { Signature } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
-import { LedgerError } from "@zondax/ledger-icp";
-import { get } from "svelte/store";
 import {
   ExtendedLedgerError,
   LEDGER_SIGNATURE_LENGTH,
   type AllLedgerError,
-} from "../constants/ledger.constants";
-import { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
-import { LedgerErrorKey, LedgerErrorMessage } from "../types/ledger.errors";
+} from "$lib/constants/ledger.constants";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { i18n } from "$lib/stores/i18n";
+import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
+import type { Signature } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
+import { get } from "svelte/store";
 import { replacePlaceholders } from "./i18n.utils";
 
-export const decodePublicKey = ({
+export const decodePublicKey = async ({
   principalText,
   publicKey: responsePublicKey,
   returnCode,
-}: ResponseAddress): Secp256k1PublicKey => {
+}: ResponseAddress): Promise<Secp256k1PublicKey> => {
   // See ledger.constants for more information about type casting
   const code: AllLedgerError = returnCode as AllLedgerError;
 
@@ -25,7 +24,9 @@ export const decodePublicKey = ({
     throw new LedgerErrorKey("error__ledger.please_open");
   }
 
-  if (code == LedgerError.TransactionRejected) {
+  const { LedgerError } = await import("@zondax/ledger-icp");
+
+  if (code === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey("error__ledger.locked");
   }
 
@@ -47,13 +48,14 @@ export const decodePublicKey = ({
   return publicKey;
 };
 
-export const decodeSignature = ({
+export const decodeSignature = async ({
   signatureRS,
   returnCode,
   errorMessage,
-}: ResponseSign): Signature => {
+}: ResponseSign): Promise<Signature> => {
   const labels = get(i18n);
 
+  const { LedgerError } = await import("@zondax/ledger-icp");
   if (returnCode === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey("error__ledger.user_rejected_transaction");
   }

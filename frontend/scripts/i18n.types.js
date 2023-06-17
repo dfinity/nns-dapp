@@ -1,17 +1,15 @@
 #!/usr/bin/env node
 
-const { writeFileSync } = require("fs");
-const prettier = require("prettier");
-const en = require("../src/lib/i18n/en.json");
+import { writeFileSync } from "fs";
+import prettier from "prettier";
+import en_governance from "../src/lib/i18n/en.governance.json" assert { type: "json" };
+import en from "../src/lib/i18n/en.json" assert { type: "json" };
 
-/**
- * Generate the TypeScript interfaces from the english translation file.
- *
- * Note: only supports "a one child depth" in the data structure.
- */
-const generate = () => {
-  const data = Object.keys(en).map((key) => {
-    const properties = Object.keys(en[key]).map((prop) => `${prop}: string;`);
+const mapKeys = (entries) =>
+  Object.keys(entries).map((key) => {
+    const properties = Object.keys(entries[key]).map(
+      (prop) => `${prop}: string;`
+    );
 
     return {
       key,
@@ -19,6 +17,30 @@ const generate = () => {
       properties,
     };
   });
+
+const assertUniqueKeys = ({ governance, core }) => {
+  const coreKeys = core.map(({ key }) => key);
+  const diff = governance.filter(({ key }) => coreKeys.includes(key));
+
+  if (diff.length) {
+    console.log("Duplicate keys:", diff.map(({ key }) => key).join(","));
+    throw new Error("Some i18n governance keys are declared in the core keys.");
+  }
+};
+
+/**
+ * Generate the TypeScript interfaces from the english translation file.
+ *
+ * Note: only supports "a one child depth" in the data structure.
+ */
+const generate = () => {
+  const rootData = mapKeys(en);
+  const governanceData = mapKeys(en_governance);
+
+  // Ensure there are no keys in en.governance.json that duplicates en.json
+  assertUniqueKeys({ governance: governanceData, core: rootData });
+
+  const data = [...rootData, ...governanceData];
 
   const lang = `lang: Languages;`;
 
@@ -38,4 +60,8 @@ const generate = () => {
   writeFileSync("./src/lib/types/i18n.d.ts", output);
 };
 
-generate();
+try {
+  generate();
+} catch (e) {
+  console.error(e);
+}

@@ -1,22 +1,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { listSnsProposals } from "../../services/sns.services";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
-    snsProposalsStore,
-  } from "../../stores/sns.store";
-  import { isNullish } from "../../utils/utils";
-  import CardGrid from "../ui/CardGrid.svelte";
-  import SkeletonProposalCard from "../ui/SkeletonProposalCard.svelte";
-  import ProposalCard from "./ProposalCard.svelte";
+    snsProposalsStoreIsLoading,
+  } from "$lib/stores/sns.store";
+  import SkeletonProposalCard from "$lib/components/ui/SkeletonProposalCard.svelte";
+  import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
+  import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 
-  let loading: boolean = false;
-  $: loading = isNullish($snsProposalsStore);
+  let loading = false;
+  $: loading = $snsProposalsStoreIsLoading;
 
   const load = () => {
-    if ($snsProposalsStore === undefined) {
-      listSnsProposals();
+    if ($snsProposalsStoreIsLoading) {
+      loadProposalsSnsCF();
     }
   };
 
@@ -24,23 +22,28 @@
 </script>
 
 {#if loading}
-  <CardGrid>
+  <div class="card-grid">
     <SkeletonProposalCard />
     <SkeletonProposalCard />
-  </CardGrid>
+  </div>
 {:else if $openSnsProposalsStore.length === 0}
-  <p class="no-proposals">{$i18n.voting.nothing_found}</p>
+  <p class="no-proposals description">{$i18n.sns_launchpad.no_proposals}</p>
 {:else}
-  <CardGrid>
+  <ul class="card-grid">
     {#each $openSnsProposalsStore as proposalInfo (proposalInfo.id)}
-      <ProposalCard {proposalInfo} />
+      <NnsProposalCard {proposalInfo} />
     {/each}
-  </CardGrid>
+  </ul>
 {/if}
 
 <style lang="scss">
   .no-proposals {
-    text-align: center;
-    margin: var(--padding-2x) 0;
+    margin: 0 0 var(--padding-2x);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 </style>

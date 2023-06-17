@@ -1,17 +1,21 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import { mergeNeurons } from "../../services/neurons.services";
-  import { busy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { toastsStore } from "../../stores/toasts.store";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
-  import { neuronStake } from "../../utils/neuron.utils";
-  import { valueSpan } from "../../utils/utils";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import {
+    mergeNeurons,
+    simulateMergeNeurons,
+  } from "$lib/services/neurons.services";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { ENABLE_SIMULATE_MERGE_NEURONS } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { Html, busy } from "@dfinity/gix-components";
+  import NnsNeuronInfo from "./NnsNeuronInfo.svelte";
 
   export let neurons: NeuronInfo[];
 
@@ -19,27 +23,48 @@
   $: {
     // Only MAX_NEURONS_MERGED neurons can be merged
     if (neurons.length !== MAX_NEURONS_MERGED) {
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unexpected_number_neurons_merge",
       });
       dispatcher("nnsClose");
     }
   }
 
+  let targetNeuron: NeuronInfo;
+  let sourceNeuron: NeuronInfo;
+  $: [sourceNeuron, targetNeuron] = neurons;
+
+  let simulationFailed = false;
+  let simulatedMergedNeuron: NeuronInfo | undefined;
+  $: {
+    if ($ENABLE_SIMULATE_MERGE_NEURONS) {
+      simulateMergeNeurons({
+        targetNeuronId: targetNeuron.neuronId,
+        sourceNeuronId: sourceNeuron.neuronId,
+      }).then((result) => {
+        simulatedMergedNeuron = result;
+        simulationFailed = isNullish(result);
+      });
+    }
+  }
+
+  let showMergeResult = false;
+  $: showMergeResult = $ENABLE_SIMULATE_MERGE_NEURONS && !simulationFailed;
+
   const merge = async () => {
     startBusyNeuron({
       initiator: "merge-neurons",
-      neuronId: neurons[0].neuronId,
+      neuronId: sourceNeuron.neuronId,
     });
     // We know that neurons has 2 neurons.
     // We have a check above that closes the modal if not.
     const id = await mergeNeurons({
-      targetNeuronId: neurons[0].neuronId,
-      sourceNeuronId: neurons[1].neuronId,
+      targetNeuronId: targetNeuron.neuronId,
+      sourceNeuronId: sourceNeuron.neuronId,
     });
 
     if (id !== undefined) {
-      toastsStore.success({
+      toastsSuccess({
         labelKey: "neuron_detail.merge_neurons_success",
       });
     }
@@ -47,76 +72,85 @@
     dispatcher("nnsClose");
     stopBusy("merge-neurons");
   };
-
-  const sectionTitleMapper = [
-    $i18n.neurons.merge_neurons_modal_title_2,
-    $i18n.neurons.merge_neurons_modal_with,
-  ];
 </script>
 
-<div class="wrapper">
-  <div>
-    {#each neurons as neuron, index}
-      <div class="main-info">
-        <h3>{sectionTitleMapper[index]}</h3>
-      </div>
-      <div>
-        <h5>{$i18n.neurons.neuron_id}</h5>
-        <p class="value">{neuron.neuronId}</p>
-      </div>
-      <div>
-        <h5>{$i18n.neurons.neuron_balance}</h5>
-        <p>
-          {@html replacePlaceholders($i18n.neurons.icp_stake, {
-            $amount: valueSpan(
-              formatICP({ value: neuronStake(neuron), detailed: true })
-            ),
-          })}
-        </p>
-      </div>
-    {/each}
-  </div>
-  <div>
-    <FooterModal>
-      <button class="secondary small" on:click={() => dispatcher("nnsBack")}>
-        {$i18n.neurons.merge_neurons_edit_selection}
-      </button>
-      <button
-        class="primary small"
-        data-tid="confirm-merge-neurons-button"
-        disabled={$busy}
-        on:click={merge}
-      >
-        {$i18n.neurons.merge_neurons_modal_confirm}
-      </button>
-    </FooterModal>
-    <p class="additional-text">
+<div class="wrapper" data-tid="confirm-neurons-merge-component">
+  <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
+
+  <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
+
+  <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
+
+  <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
+
+  {#if showMergeResult}
+    <div data-tid="merge-result-section">
+      <h3>{$i18n.neurons.expected_merge_result}</h3>
+
+      {#if isNullish(simulatedMergedNeuron)}
+        <SkeletonCard cardType="info" />
+      {:else}
+        <!-- TODO: Show more information about the neuron. -->
+        <NnsNeuronInfo
+          neuron={simulatedMergedNeuron}
+          testId="merged-neuron-info"
+        />
+      {/if}
+    </div>
+  {/if}
+
+  <div class="additional-text">
+    <p class="description">
+      <Html
+        text={replacePlaceholders(
+          $i18n.neurons.merge_neurons_source_neuron_disappear,
+          {
+            $neuronId: String(sourceNeuron.neuronId),
+          }
+        )}
+      />
+    </p>
+
+    <p class="description">
+      <Html text={$i18n.neurons.merge_neurons_more_info} />
+    </p>
+
+    <p class="description">
       {$i18n.neurons.irreversible_action}
     </p>
+  </div>
+
+  <div class="toolbar">
+    <button class="secondary" on:click={() => dispatcher("nnsBack")}>
+      {$i18n.neurons.merge_neurons_edit_selection}
+    </button>
+    <button
+      class="primary"
+      data-tid="confirm-merge-neurons-button"
+      disabled={$busy}
+      on:click={merge}
+    >
+      {$i18n.neurons.merge_neurons_modal_confirm}
+    </button>
   </div>
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
-  .wrapper {
-    height: 100%;
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: var(--padding);
+  h3 {
+    margin: 0;
+    line-height: var(--line-height-standard);
   }
 
-  .main-info {
+  .wrapper {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: var(--padding);
   }
 
   .additional-text {
     width: 100%;
-    margin-top: var(--padding-2x);
     text-align: center;
 
     @include media.min-width(medium) {

@@ -1,18 +1,71 @@
-export const DFX_NETWORK: string = String(process.env.DFX_NETWORK);
-export const HOST: string = process.env.HOST as string;
-export const ROLLUP_WATCH: boolean = process.env.ROLLUP_WATCH === "true";
-export const FETCH_ROOT_KEY: boolean = process.env.FETCH_ROOT_KEY === "true";
-export const ENABLE_NEW_SPAWN_FEATURE: boolean =
-  process.env.ENABLE_NEW_SPAWN_FEATURE === "true";
-export const WASM_CANISTER_ID: string = String(process.env.WASM_CANISTER_ID);
+import { getEnvVars } from "$lib/utils/env-vars.utils";
+import { addRawToUrl, isBrowser, isLocalhost } from "$lib/utils/env.utils";
 
-// SNS Canisters can't be deployed to e2e because we can't define subnets on local dfx
-// TODO: https://dfinity.atlassian.net/browse/L2-663
-// TODO: Rename - because generally speaking used to load snses - and enhance features flag to be an object
-export const ENABLE_SNS_NEURONS: boolean =
-  process.env.ENABLE_SNS_NEURONS === "true" && DFX_NETWORK !== "local";
+const envVars = getEnvVars();
+
+export const DFX_NETWORK = envVars.dfxNetwork;
+export const HOST = envVars.host;
+
+export const FETCH_ROOT_KEY: boolean = envVars.fetchRootKey === "true";
+
+const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
+const snsAggregatorUrl = (url: string) => {
+  try {
+    const { hostname } = new URL(url);
+    if (isLocalhost(hostname)) {
+      return url;
+    }
+
+    // If the nns-dapp is running in localhost, we need to add `raw` to the URL to avoid CORS issues.
+    if (isBrowser && isLocalhost(window.location.hostname)) {
+      return addRawToUrl(url);
+    }
+
+    return url;
+  } catch (e) {
+    console.error(`Invalid URL for SNS aggregator: ${url}`, e);
+    return undefined;
+  }
+};
+
+/**
+ * If you are on a different domain from the canister that you are calling, the service worker will not be loaded for that domain.
+ * If the service worker is not loaded then it will make a request to the boundary node directly which will fail CORS.
+ *
+ * Therefore, we add `raw` to the URL to avoid CORS issues in local development.
+ */
+export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
+  snsAggregatorUrl(snsAggregatorUrlEnv);
+
+export interface FeatureFlags<T> {
+  ENABLE_SNS_VOTING: T;
+  ENABLE_SNS_AGGREGATOR: T;
+  ENABLE_CKBTC: T;
+  ENABLE_CKTESTBTC: T;
+  ENABLE_SIMULATE_MERGE_NEURONS: T;
+  ENABLE_INSTANT_UNLOCK: T;
+  // Used only in tests and set up in jest-setup.ts
+  TEST_FLAG_EDITABLE: T;
+  TEST_FLAG_NOT_EDITABLE: T;
+}
+
+export type FeatureKey = keyof FeatureFlags<boolean>;
+
+/**
+ * DO NOT USE DIRECTLY
+ *
+ * @see feature-flags.store.ts to use feature flags
+ */
+export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
+  envVars?.featureFlags ??
+    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_INSTANT_UNLOCK": false}'
+);
 
 export const IS_TESTNET: boolean =
   DFX_NETWORK !== "mainnet" &&
   FETCH_ROOT_KEY === true &&
-  !HOST.includes(".ic0.app");
+  !(HOST.includes(".icp-api.io") || HOST.includes(".ic0.app"));
+
+// TODO: display test environment warning on mainnet according configuration
+// DFX_NETWORK === new_environment_to_be_configured
+export const IS_TEST_MAINNET = false;

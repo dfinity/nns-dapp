@@ -1,19 +1,18 @@
 <script lang="ts">
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { MAX_NEURONS_MERGED } from "../../constants/neurons.constants";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { accountsStore } from "../../stores/accounts.store";
-  import { i18n } from "../../stores/i18n";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import { translate } from "../../utils/i18n.utils";
+  import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
+  import { accountsStore } from "$lib/stores/accounts.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import { translate } from "$lib/utils/i18n.utils";
   import {
     mapMergeableNeurons,
     mapNeuronIds,
     type MergeableNeuron,
-  } from "../../utils/neuron.utils";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import NeuronCard from "./NeuronCard.svelte";
+  } from "$lib/utils/neuron.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import NnsNeuronCard from "./NnsNeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];
 
@@ -53,12 +52,13 @@
   $: isMaxSelection = selectedNeuronIds.length >= MAX_NEURONS_MERGED;
 </script>
 
-<div class="wrapper">
+<div class="wrapper legacy" data-tid="select-neurons-to-merge-component">
+  <p>{$i18n.neurons.merge_neurons_select_info}</p>
   <ul class="items">
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}
       <li>
         {#if mergeable}
-          <NeuronCard
+          <NnsNeuronCard
             on:click={() => toggleNeuronId(neuron.neuronId)}
             role="checkbox"
             {selected}
@@ -69,48 +69,34 @@
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
             text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
-            <NeuronCard disabled role="checkbox" {neuron} />
+            <NnsNeuronCard disabled role="checkbox" {neuron} />
           </Tooltip>
         {/if}
       </li>
     {/each}
   </ul>
-  <FooterModal>
-    <button on:click={() => dispatcher("nnsClose")} class="secondary small"
+
+  <div class="toolbar">
+    <button on:click={() => dispatcher("nnsClose")} class="secondary"
       >{$i18n.core.cancel}</button
     >
     <button
       on:click={confirmSelection}
-      class="primary small"
+      class="primary"
       data-tid="merge-neurons-confirm-selection-button"
       disabled={!isMaxSelection}
       >{$i18n.neurons.merge_neurons_modal_merge_button}</button
     >
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
-  .wrapper {
-    position: relative;
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-  }
-
   .items {
-    max-height: calc(100% - var(--padding-8x));
-    width: calc(100% - 2px);
-    overflow-y: scroll;
-
     padding: 0;
     list-style-type: none;
 
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     // Needed to have the outline of the NeuronCard visible when selected
     li {

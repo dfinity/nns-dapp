@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- CONTENT_SECURITY_POLICY -->
+
+    <!-- ROBOTS -->
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <title>NNS Dapp</title>
+
+    <meta
+      content="Dapp for Staking Neurons + Voting On-Chain"
+      name="description"
+    />
+    <meta content="NNS Dapp" property="og:title" />
+    <meta
+      content="Dapp for Staking Neurons + Voting On-Chain"
+      property="og:description"
+    />
+    <meta content="website" property="og:type" />
+    <meta content="https://nns.ic0.app/" property="og:url" />
+    <meta
+      content="https://nns.ic0.app/assets/social-image.png"
+      property="og:image"
+    />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="NNS Dapp" name="twitter:title" />
+    <meta
+      content="Dapp for Staking Neurons + Voting On-Chain"
+      name="twitter:description"
+    />
+    <meta
+      content="https://nns.ic0.app/assets/social-image.png"
+      name="twitter:image"
+    />
+    <meta content="@dfinity" name="twitter:creator" />
+
+    <link href="https://nns.ic0.app/" rel="canonical" />
+
+    <link rel="manifest" href="/manifest.json" crossorigin="anonymous" />
+
+    <link href="/sitemap.xml" rel="sitemap" type="application/xml" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="%sveltekit.assets%/assets/favicons/icon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="%sveltekit.assets%/assets/favicons/icon-16x16.png"
+    />
+    <link rel="shortcut icon" href="%sveltekit.assets%/favicon.ico" />
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#383c3c" />
+    <meta name="apple-mobile-web-app-title" content="NNS Dapp" />
+    <link
+      rel="apple-touch-icon"
+      href="%sveltekit.assets%/assets/favicons/apple-touch-icon.png"
+    />
+    <link
+      rel="mask-icon"
+      href="%sveltekit.assets%/assets/favicons/safari-pinned-tab.svg"
+      color="#12022E"
+    />
+
+    <!-- MS -->
+    <meta name="msapplication-TileColor" content="#12022E" />
+    <meta
+      name="msapplication-config"
+      content="%sveltekit.assets%/assets/favicons/browserconfig.xml"
+    />
+
+    <meta name="theme-color" content="#352652" />
+
+    <!-- Init theme as fast as possible -->
+    <script theme-loader>
+      try {
+        const isDarkPreferred = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const currentTheme =
+          localStorage.nnsTheme === null ||
+          localStorage.nnsTheme === undefined ||
+          localStorage.nnsTheme === ""
+            ? undefined
+            : JSON.parse(localStorage.nnsTheme);
+
+        // Attribute is the value of THEME_ATTRIBUTE constant
+        document.documentElement.setAttribute(
+          "theme",
+          currentTheme ?? (isDarkPreferred ? "dark" : "light")
+        );
+      } catch (error) {
+        console.error("Error initializing theme", error);
+      }
+    </script>
+
+    <!-- SCRIPT_LOADER -->
+    <!-- LINKS_PRELOADER -->
+
+    %sveltekit.head%
+  </head>
+  <body>
+    <div>%sveltekit.body%</div>
+  </body>
+</html>

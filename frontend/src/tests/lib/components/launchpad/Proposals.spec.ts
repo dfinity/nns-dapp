@@ -2,37 +2,37 @@
  * @jest-environment jsdom
  */
 
+import Proposals from "$lib/components/launchpad/Proposals.svelte";
+import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
+import { snsProposalsStore } from "$lib/stores/sns.store";
+import en from "$tests/mocks/i18n.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import Proposals from "../../../../lib/components/launchpad/Proposals.svelte";
-import { listSnsProposals } from "../../../../lib/services/sns.services";
-import { snsProposalsStore } from "../../../../lib/stores/sns.store";
-import en from "../../../mocks/i18n.mock";
-import { mockProposalInfo } from "../../../mocks/proposal.mock";
 
-jest.mock("../../../../lib/services/sns.services", () => {
+jest.mock("$lib/services/$public/sns.services", () => {
   return {
-    listSnsProposals: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadProposalsSnsCF: jest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
 describe("Proposals", () => {
   const mockProposals = (proposals: ProposalInfo[] | null) =>
     proposals === null
-      ? snsProposalsStore.setLoadingState()
+      ? snsProposalsStore.reset()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
   beforeEach(snsProposalsStore.reset);
 
   afterAll(jest.clearAllMocks);
 
-  it("should trigger listSnsProposals", () => {
+  it("should trigger loadProposalsSnsCF", () => {
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(loadProposalsSnsCF).toBeCalled();
   });
 
-  it("should not trigger listSnsProposals if already loaded", () => {
+  it("should not trigger loadProposalsSnsCF if already loaded", () => {
     snsProposalsStore.setProposals({
       proposals: [],
       certified: true,
@@ -40,7 +40,7 @@ describe("Proposals", () => {
 
     render(Proposals);
 
-    expect(listSnsProposals).toBeCalled();
+    expect(loadProposalsSnsCF).toBeCalled();
   });
 
   it("should display skeletons", async () => {
@@ -56,27 +56,23 @@ describe("Proposals", () => {
   });
 
   it("should display proposal cards", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { queryAllByTestId } = render(Proposals);
 
     await waitFor(() =>
-      expect(queryAllByTestId("sns-proposal-card").length).toBeGreaterThan(0)
+      expect(queryAllByTestId("proposal-card").length).toBeGreaterThan(0)
     );
   });
 
   it("should hide skeletons", async () => {
-    mockProposals([
-      { ...mockProposalInfo, status: ProposalStatus.PROPOSAL_STATUS_OPEN },
-    ]);
+    mockProposals([{ ...mockProposalInfo, status: ProposalStatus.Open }]);
 
     const { container } = render(Proposals);
 
     await waitFor(() =>
       expect(
-        container.querySelectorAll('[data-tid="sns-proposal-card"]').length
+        container.querySelectorAll('[data-tid="proposal-card"]').length
       ).toBeGreaterThan(0)
     );
 
@@ -89,7 +85,7 @@ describe("Proposals", () => {
     const { queryByText } = render(Proposals);
 
     await waitFor(() =>
-      expect(queryByText(en.voting.nothing_found)).toBeInTheDocument()
+      expect(queryByText(en.sns_launchpad.no_proposals)).toBeInTheDocument()
     );
   });
 });

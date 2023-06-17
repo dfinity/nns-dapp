@@ -83,7 +83,7 @@ get_binary() {
   OS="$(uname)"
   case "$OS" in
   Darwin)
-    curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/${FILENAME}.gz" | gunzip >"$TMP_FILE"
+    curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/${FILENAME}.gz" | gunzip >"$TMP_FILE"
     ;;
   Linux)
     curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/${FILENAME}.gz" | gunzip >"$TMP_FILE"
@@ -114,11 +114,15 @@ get_wasm() {
 
 get_binary ic-nns-init
 get_binary sns
+get_binary ic-admin
 get_wasm registry-canister.wasm
 get_wasm governance-canister.wasm
 get_wasm governance-canister_test.wasm
 get_wasm ledger-canister_notify-method.wasm
+get_wasm ic-icrc1-archive.wasm
+get_wasm ic-icrc1-index.wasm
 get_wasm ic-icrc1-ledger.wasm
+get_wasm ic-ckbtc-minter.wasm
 get_wasm root-canister.wasm
 get_wasm cycles-minting-canister.wasm
 get_wasm lifeline.wasm

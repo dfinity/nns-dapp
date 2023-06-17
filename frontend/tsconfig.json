@@ -1,20 +1,26 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "module": "es2020",
-    "lib": ["es2020", "webworker", "DOM", "DOM.Iterable"],
-    "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "strictNullChecks": true
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "paths": {
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"]
+    }
   },
-  "include": ["src/**/*"],
   "exclude": [
-    "node_modules/*",
-    "__sapper__/*",
-    "public/*",
     "**/*.spec.ts",
     "jest.setup.ts",
     "**/*.mock.ts",
-    "**/*Test.svelte"
+    "**/*.fake.ts",
+    "**/*.page-object.ts",
+    "**/*Test.svelte",
+    "**/*.test-utils.ts"
   ]
 }

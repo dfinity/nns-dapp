@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { LedgerIdentity } from "../../identities/ledger.identity";
+  import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { principalToAccountIdentifier } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
 
   export let ledgerIdentity: LedgerIdentity;
 
@@ -13,25 +13,27 @@
   );
 </script>
 
-<h5>{$i18n.core.principal}</h5>
-<p class="value">{principalText}</p>
-
-<h5>{$i18n.accounts.account_identifier}</h5>
-<p class="value">{accountIdentifier}</p>
+<div class="wrapper">
+  <div>
+    <p class="label" data-tid="hardware-wallet-principal">
+      {$i18n.core.principal}
+    </p>
+    <p class="value">{principalText}</p>
+  </div>
+  <div>
+    <p class="label">{$i18n.accounts.account_identifier}</p>
+    <p class="value">{accountIdentifier}</p>
+  </div>
+</div>
 
 <style lang="scss">
-  h5 {
-    margin: 0;
-    align-self: flex-start;
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
   }
 
   p {
-    margin: 0 0 var(--padding-0_5x);
     word-wrap: break-word;
-    align-self: flex-start;
-
-    &:first-of-type {
-      margin-bottom: var(--padding-2x);
-    }
   }
 </style>

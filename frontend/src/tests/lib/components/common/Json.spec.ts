@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
+import Json from "$lib/components/common/Json.svelte";
+import { bytesToHexString, stringifyJson } from "$lib/utils/utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import Json from "../../../../lib/components/common/Json.svelte";
-import { bytesToHexString, stringifyJson } from "../../../../lib/utils/utils";
-import { mockPrincipal } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
 
 // remove (array-index:|spaces|")
 export const simplifyJson = (json: string | null) =>
@@ -111,6 +111,16 @@ describe("Json", () => {
     expect(getByTitle(hash.join())).toBeInTheDocument();
   });
 
+  it("should not render empty root key element", () => {
+    const json = "test";
+    const { container, getByText } = render(Json, {
+      props: { json },
+    });
+
+    expect(getByText('"test"')).toBeInTheDocument();
+    expect(container.querySelector(".key")).toBeNull();
+  });
+
   it("should collaps and expand", async () => {
     const json = {
       obj: {
@@ -134,6 +144,34 @@ describe("Json", () => {
     expect(simplifyJson(container.textContent)).toBe(
       simplifyJson(stringifyJson(json))
     );
+  });
+
+  it("should keep focus on button when collapsed or expanded", async () => {
+    const json = {
+      obj: {
+        first: 1,
+        second: 2,
+      },
+    };
+    const { container, getAllByRole } = render(Json, {
+      props: { json },
+    });
+    const isCollapsed = () =>
+      simplifyJson(container.textContent) === "{obj:{...}}";
+
+    const button = () => getAllByRole("button")[1];
+
+    button().focus();
+    expect(button()).toHaveFocus();
+    expect(isCollapsed()).toBe(false);
+
+    await fireEvent.click(button());
+    expect(isCollapsed()).toBe(true);
+    expect(button()).toHaveFocus();
+
+    await fireEvent.click(button());
+    expect(isCollapsed()).toBe(false);
+    expect(button()).toHaveFocus();
   });
 
   it("should render role=button", async () => {

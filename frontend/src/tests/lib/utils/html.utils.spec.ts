@@ -1,10 +1,8 @@
 import {
   imageToLinkRenderer,
   markdownToHTML,
-  markdownToSanitizedHTML,
-  sanitize,
   targetBlankLinkRenderer,
-} from "../../../lib/utils/html.utils";
+} from "$lib/utils/html.utils";
 
 describe("markdown.utils", () => {
   describe("targetBlankLinkRenderer", () => {
@@ -94,7 +92,7 @@ describe("markdown.utils", () => {
     });
   });
 
-  describe("sanitize and markdown", () => {
+  describe("markdown", () => {
     let renderer: unknown;
     beforeAll(() => {
       function marked(...args) {
@@ -111,22 +109,10 @@ describe("markdown.utils", () => {
         }),
         { virtual: true }
       );
-
-      jest.mock(
-        "/assets/libs/purify.min.js",
-        () => ({
-          sanitize: (value: string) => value + "-sanitize",
-        }),
-        { virtual: true }
-      );
-    });
-
-    it("should call DOMPurify.sanitize", async () => {
-      expect((await sanitize())("test")).toBe("test-sanitize");
     });
 
     it("should call markedjs/marked", async () => {
-      expect((await markdownToHTML())("test")).toBe("test-markdown");
+      expect(await markdownToHTML("test")).toBe("test-markdown");
     });
 
     it("should call markedjs/marked with custom renderers", async () => {
@@ -136,12 +122,6 @@ describe("markdown.utils", () => {
           image: imageToLinkRenderer,
         },
       });
-    });
-
-    it("should sanitize and convert to HTML", async () => {
-      expect(await markdownToSanitizedHTML("text")).toBe(
-        "text-sanitize-markdown"
-      );
     });
   });
 });

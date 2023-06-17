@@ -1,6 +1,11 @@
-/node_modules/
-/public/
-
 .DS_Store
-
-coverage
+node_modules
+/build
+/.svelte-kit
+/package
+public
+.env
+.env.*
+!.env.example
+/e2e-tests-out/
+/playwright-report/

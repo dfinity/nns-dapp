@@ -1,31 +1,32 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import SetDissolveDelay from "../../components/neurons/SetDissolveDelay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
-  import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
-  import WizardModal from "../WizardModal.svelte";
-  import type { Step, Steps } from "../../stores/steps.state";
+  import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
 
-  const steps: Steps = [
+  const steps: WizardSteps = [
     {
       name: "SetDissolveDelay",
-      showBackButton: false,
       title: $i18n.neurons.set_dissolve_delay,
     },
     {
       name: "ConfirmDissolveDelay",
-      showBackButton: true,
       title: $i18n.neurons.confirm_dissolve_delay,
     },
   ];
 
-  let currentStep: Step;
+  let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
-  let delayInSeconds: number = Number(neuron.dissolveDelaySeconds);
+  let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
   const dispatcher = createEventDispatcher();
   const goNext = () => {
@@ -38,18 +39,20 @@
 
 <WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
-  {#if currentStep.name === "SetDissolveDelay"}
-    <SetDissolveDelay
+  {#if currentStep?.name === "SetDissolveDelay"}
+    <SetNnsDissolveDelay
       {neuron}
-      cancelButtonText={$i18n.core.cancel}
-      confirmButtonText={$i18n.neurons.update_delay}
-      minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
       on:nnsCancel={closeModal}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
-    />
+    >
+      <svelte:fragment slot="cancel">{$i18n.core.cancel}</svelte:fragment>
+      <svelte:fragment slot="confirm"
+        >{$i18n.neurons.update_delay}</svelte:fragment
+      >
+    </SetNnsDissolveDelay>
   {/if}
-  {#if currentStep.name === "ConfirmDissolveDelay"}
+  {#if currentStep?.name === "ConfirmDissolveDelay"}
     <ConfirmDissolveDelay
       confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}

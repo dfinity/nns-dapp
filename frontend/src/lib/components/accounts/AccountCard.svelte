@@ -1,35 +1,63 @@
 <script lang="ts">
-  import type { Account } from "../../types/account";
-  import Card from "../ui/Card.svelte";
-  import ICP from "../ic/ICP.svelte";
-  import Identifier from "../ui/Identifier.svelte";
-  import type { ICP as ICPType } from "@dfinity/nns";
+  import type { Account } from "$lib/types/account";
+  import { Card } from "@dfinity/gix-components";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import AccountBadge from "./AccountBadge.svelte";
+  import type { Token } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/nns";
 
   export let account: Account;
-  export let showCopy: boolean = false;
+  export let hash = false;
   export let role: "button" | "link" | undefined = undefined;
+  export let token: Token | undefined;
 
   let identifier: string;
-  let balance: ICPType;
+  let balanceE8s: bigint;
 
-  $: ({ identifier, balance } = account);
+  $: ({ identifier, balanceE8s } = account);
 </script>
 
 <Card on:click {role} testId="account-card">
   <div slot="start" class="title">
-    <h3 data-tid="account-name"><slot /></h3>
+    <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />
   </div>
-  <ICP slot="end" icp={balance} />
-  <Identifier {identifier} {showCopy} />
+
+  {#if nonNullish(token)}
+    <AmountDisplay
+      title
+      amount={TokenAmount.fromE8s({
+        amount: balanceE8s,
+        token,
+      })}
+    />
+  {/if}
+
+  {#if hash}
+    <IdentifierHash {identifier} />
+  {:else}
+    <Identifier {identifier} />
+  {/if}
 </Card>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .title {
-    @include card.stacked-title;
     @include card.title;
+  }
+
+  p {
+    margin: 0 0 var(--padding-0_5x);
+    @include fonts.standard(true);
+  }
+
+  .title {
+    min-height: 36px;
+    justify-content: flex-start;
   }
 </style>

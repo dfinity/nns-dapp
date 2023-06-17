@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
+import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
+import { addHotkey } from "$lib/services/neurons.services";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import AddHotkeyModal from "../../../../lib/modals/neurons/AddHotkeyModal.svelte";
-import { addHotkey } from "../../../../lib/services/neurons.services";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+import type { SvelteComponent } from "svelte";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     addHotkey: jest.fn().mockResolvedValue(BigInt(10)),
     getNeuronFromStore: jest.fn(),
@@ -16,11 +18,12 @@ jest.mock("../../../../lib/services/neurons.services", () => {
 });
 
 describe("AddHotkeyModal", () => {
-  const neuronId = BigInt(10);
-  const renderAddHotkeyModal = async (): Promise<RenderResult> => {
+  const renderAddHotkeyModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > => {
     return renderModal({
       component: AddHotkeyModal,
-      props: { neuronId },
+      props: { neuron: mockNeuron },
     });
   };
 

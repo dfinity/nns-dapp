@@ -1,31 +1,30 @@
-import type { Identity } from "@dfinity/agent";
-import { AccountIdentifier, ICP, SubAccount } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { CMCCanister } from "../canisters/cmc/cmc.canister";
-import { ProcessingError } from "../canisters/cmc/cmc.errors";
-import type { Cycles } from "../canisters/cmc/cmc.types";
-import { principalToSubAccount } from "../canisters/cmc/utils";
-import { ICManagementCanister } from "../canisters/ic-management/ic-management.canister";
+import { createAgent } from "$lib/api/agent.api";
+import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
   CanisterSettings,
-} from "../canisters/ic-management/ic-management.canister.types";
-import type { NNSDappCanister } from "../canisters/nns-dapp/nns-dapp.canister";
-import { CanisterAlreadyAttachedError } from "../canisters/nns-dapp/nns-dapp.errors";
+} from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { CanisterAlreadyAttachedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
-} from "../canisters/nns-dapp/nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
-} from "../constants/api.constants";
-import { CYCLES_MINTING_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { ApiErrorKey } from "../types/api.errors";
-import { createAgent } from "../utils/agent.utils";
-import { logWithTimestamp } from "../utils/dev.utils";
-import { poll, PollingLimitExceededError } from "../utils/utils";
+} from "$lib/constants/api.constants";
+import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { ApiErrorKey } from "$lib/types/api.errors";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { poll, pollingLimit } from "$lib/utils/utils";
+import type { Identity } from "@dfinity/agent";
+import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
+import { AccountIdentifier, SubAccount, TokenAmount } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { principalToSubAccount } from "@dfinity/utils";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 
@@ -131,9 +130,7 @@ export const detachCanister = async ({
   logWithTimestamp("Detaching canister call complete.");
 };
 
-const pollingLimit = (error: Error): boolean =>
-  error instanceof PollingLimitExceededError;
-const notProcessingError = (error: Error): boolean =>
+const notProcessingError = (error: unknown): boolean =>
   !(error instanceof ProcessingError);
 
 // Polls CMC waiting for a reponse that is not a ProcessingError.
@@ -152,10 +149,11 @@ const pollNotifyCreateCanister = async ({
         cmc.notifyCreateCanister({
           controller,
           block_index: blockHeight,
+          subnet_type: [],
         }),
       shouldExit: notProcessingError,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_creating_canister");
     }
@@ -170,7 +168,7 @@ export const createCanister = async ({
   fromSubAccount,
 }: {
   identity: Identity;
-  amount: ICP;
+  amount: TokenAmount;
   name?: string;
   fromSubAccount?: SubAccountArray;
 }): Promise<Principal> => {
@@ -186,6 +184,7 @@ export const createCanister = async ({
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   // Transfer the funds
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
@@ -193,6 +192,7 @@ export const createCanister = async ({
     to: recipient.toHex(),
     amount,
     fromSubAccount,
+    createdAt,
   });
 
   // If this fails or the client loses connection, nns dapp backend polls the transactions
@@ -213,7 +213,7 @@ export const createCanister = async ({
       name: name ?? "",
       canisterId,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     // If the background task finishes earlier, we might get CanisterAlreadyAttachedError.
     // Which can be safely ignored.
     if (!(error instanceof CanisterAlreadyAttachedError)) {
@@ -246,7 +246,7 @@ const pollNotifyTopUpCanister = async ({
         }),
       shouldExit: notProcessingError,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (pollingLimit(error)) {
       throw new ApiErrorKey("error.limit_exceeded_topping_up_canister.");
     }
@@ -262,7 +262,7 @@ export const topUpCanister = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-  amount: ICP;
+  amount: TokenAmount;
   fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
@@ -273,12 +273,14 @@ export const topUpCanister = async ({
     principal: CYCLES_MINTING_CANISTER_ID,
     subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
   });
+  const createdAt = nowInBigIntNanoSeconds();
   const blockHeight = await sendICP({
     memo: TOP_UP_CANISTER_MEMO,
     identity,
     amount,
     to: recipient.toHex(),
     fromSubAccount,
+    createdAt,
   });
 
   // If this fails or the client loses connection

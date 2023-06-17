@@ -1,5 +1,350 @@
 # Changelog
 
+## Proposal 122791
+
+* Improve Apple install to home screen look and feel.
+* Enable sns-voting.
+* Add a call to "update_balance" for ckBTC during the withdrawal account check process.
+* Improve participation UI.
+* Fix UI warning duplicate form field id in the same form.
+* Minor fixes.
+
+## Proposal 122747
+
+* Improve ICRC accounts loading performance.
+* Improve loading state UX.
+* Update (fav)icons.
+* Upgrade libraries.
+* Minor fixes and text changes.
+
+## Proposal 122614
+
+* Swap conditions.
+* Parameters loading optimisation.
+* Libraries loading optimisation.
+* Minor bugfixes and improvements.
+
+## Proposal 122512
+
+* Feat reload account and transactions regardless of ckBTC update balance success or error.
+
+## Proposal 122509
+
+* Fix ckBTC transfer status visibility.
+* Improve ckBTC transactions reload.
+
+## Proposal 122355
+
+* Improve participation UX.
+* Simplifications to reduce stress on the system during upcoming SNS swaps.
+* Fix metrics API.
+* Fix number formatting on max button click.
+* Minor fixes and UI improvements.
+
+## Proposal 122282
+
+* UI improvements.
+* Minor bugfixes.
+
+## Proposal 122267
+
+* Receive BTC.
+* Convert ckBTC to BTC.
+* Minor bugfixes.
+
+## Proposal 122210
+
+* Performance optimization (accounts).
+* Minor fixes and UI improvements.
+
+## Proposal 121690
+
+* Add BitcoinSetConfig proposal payload support.
+* Minor fixes and UI improvements.
+
+## Proposal 120468
+* UI fixes.
+* Testing improvements.
+* Minor configuration clean up.
+* Fix bug when filtering proposals.
+* Upgrade dependencies to IC to prepare for new NNS Proposal Action.
+* Improve modal width.
+* Some copy changes.
+
+## Proposal 119296
+* Display info text for Last Distribution.
+* Add new field to NNS payload to show arguments as hex string.
+* Accessibility improvement: colors and proposal payload/summary contrast.
+* Performance improvements (neuron caching).
+* Redesign and review of transaction confirmation step.
+* Narrowed modal design.
+* Modal wizard animation.
+* Make followees modal UI more compact.
+* Minor style fixes.
+* Fix settings title glitch.
+* Label updates.
+* Minor fixes.
+
+## Proposal 115271
+* Fix back to detail from "Settings" page.
+* UX improvements:
+  * Transaction edit submit form with "Enter".
+  * Back button from SNS Proposal Detail page keeps universe.
+* Minor bugfixes.
+
+## Proposal 114127
+* Select send and receive address by scanning a QR code.
+* "Receive" action added to main screen and "Add account" action moved as a card.
+* New settings page which displays user principal and session duration
+* New proposal payload.
+* New data in the project detail.
+* Better validations in address inputs.
+* Remove unnecessary calls when updating accounts after an action.
+
+## Proposal 112386
+* Remove button to increase stake for CF SNS neurons.
+* Improve validations in address inputs.
+
+## Proposal 111715
+* Upgrade agent-js.
+* Bugfixes and minor improvements.
+
+## Proposal 111317
+* Stake maturity for SNS neurons.
+* Reenable update calls.
+* Optimize project calls.
+* Minor text updates and fixes.
+* Fix bug after voting.
+* Upgrade Sveltekit.
+* Clean up unused state.
+
+## Proposal 110588
+* "high-load" warning fix.
+
+## Proposal 110166
+* SNS participation progress screen.
+* SNS aggregator improvements.
+* Network "high load" notification.
+* Polling and request optimization.
+* Minor UI and text updates
+
+## Proposal 110166
+* Enable SNS aggregator.
+* Switch to TVL canister.
+* Sale process improvement.
+* Minor fixes and improvements.
+
+## Proposal 109947
+* Performance improvements by delaying requests when needed.
+* Setup caching layer for neurons.
+* Payment flow upgrade.
+* SNS Aggregator improvements.
+* Derived state api.
+* Fixes and UI improvements.
+
+## Proposal 108160
+* Migration to nns.internetcomputer.org
+
+## Proposal 106377
+* Launch ckBTC wallet functionality!
+* Fix bug in transactions list.
+* Introduce GZIP encoding for assets.
+* Fetch data with "query" for not logged in users.
+
+## Proposal 105498
+* Remove dashboard routing fallback.
+* Login screen minor changes.
+* Extended dissolve delay input.
+* Payload rendering fix.
+* Text and style updates.
+
+## Proposal 104642
+* Fix bug encoding and decoding ICRC-1 subaccounts.
+
+## Proposal 104287
+* Auto-stake for non-controlled neurons.
+* Enable Merge HW controlled neurons.
+* Add "created at" parameter in transactions.
+* Poll and display canister status (cycles, memory and status).
+* Use new library "dfinity/ledger".
+* Update proposal rendering (new types).
+* Minor fixes and improvements.
+
+## Proposal 103049
+* Split layout and new token selector for "Accounts" and "Neurons".
+* Display TVL (total value locked) in USD.
+* Remove badge "new" next to menu entry "Launchpad".
+* Fixes and UI improvements.
+
+## Proposal 101945
+* Increase sns neuron stake.
+* Split sns neuron.
+* Permission update for sns hotkeys.
+* UX changes:
+  * Theme switcher on login screen.
+  * Improve proposal payment and summary rendering.
+* Bugfixes.
+
+## Proposal 99659
+* Fix disburse button in SNS neurons
+* Fix rounding error in sns transactions
+
+## Proposal 98559
+* Gzip wasm for proposal payload
+* Staking sns neuron.
+* Main “Login” page.
+* Update main menu entries.
+* Dependencies upgrade.
+* Minor bugfixes and UI improvements.
+
+## Proposal 98082
+* Enable stake maturity for HW.
+* Hide vote pane from detail page if proposal reward status has settled.
+* Update tcycles fee description.
+* Keep track of http agent (optimisation).
+* Label updates and bugfixes.
+
+## Proposal 95968
+* fix sns minimum dissolve delay description calculation
+* fix sns hotkeys permissions
+* minor styling and label update
+
+## Proposal 95714
+* Followees and dissolve delay in SNS neurons.
+* Improvements in rendering proposal payload.
+* Unspecific topic in sns.
+* Documentation update.
+* Tag releases in GitHub automatically.
+* Bugfixes.
+
+## Proposal 94588
+* UI Improvements in Wallet page.
+* UI Improvements in Neuron detail page.
+* UI Improvements in Canister detail page.
+* Show "undefined" properties in proposal payload.
+* Parse bytes from candid payloads and show them as hash.
+* UI improvements when showing the payload as JSON.
+* Change order of NNS topics when adding new followees.
+* Change in some colors.
+* Improved title in wallet and sns neuron detail page.
+* Fix calculation with voting power in dissolbe delay modal.
+* Use absolute path in meta image tag.
+* Fix issue with rounding of the amount in transactions.
+
+## Proposal 93596
+* Remove redirection in Launchpad page.
+
+## Proposal 93588
+* Enable Launchpad and SNS Sale pages.
+* Fix bug in voting power calculation.
+* UI improvements.
+
+## Proposal 93416
+* Fix bug on proposals public page.
+* Improvements in wording.
+* Improve error message on canister detail page.
+* UI improvements in neuron detail page.
+
+## Proposal 93366
+* UI redistribution in Neuron details.
+* New cards for neurons and accounts.
+* Proposals list and proposal details are now public.
+* UI improvements on automatic logout.
+
+## Proposal 92180
+* New design colors, spacing and layout
+* Link to sub-pages on main login screen
+* UI/UX fixes
+* Stake SNS neuron functionality
+* Improve Participate Button
+
+## Proposal 90917
+* New routing.
+* New login.
+* New public page for each tab.
+* UI improvements.
+* Fonts and font size update.
+* Fix bug in topics filter.
+
+## Proposal 89325
+* Text improvements in Maturity card.
+* Two new NNS Proposal topics.
+* Two new nnsFunctions.
+* Fix backwards compatibility of the CSP policy for older Android devices.
+
+## Proposal 87079
+* Support for new payload type.
+* Support for new proposal topic.
+* UI Improvements in Stake Maturity.
+* Reduce bundle by removing imported test script.
+
+## Proposal 86114
+* Enable Stake Maturity for II neurons.
+* Fix CSP 'strict-dynamic' issue on Firefox.
+
+## Proposal 86090
+* UI fixes for Modal in small devices.
+* Fix Buffer polyfill race condition.
+
+## Proposal 86037
+* SvelteKit implementation (without routing changes).
+* New Modal UI.
+* Bump agent-js to v0.14.0
+* New flow to top up neurons.
+* Fix overflow in proposal details.
+
+## Proposal 84936
+* New login page.
+* Minor UI improvements.
+* Clean unused code.
+
+## Proposal 84287
+* Upgrade nns-js, sns-js and utils-js.
+* Refactor to support multiple tokens in Accounts.
+* Extract CMC functionality to its own library cmc-js.
+* Add new proposal types.
+* UI fixes on iPad.
+* Add sitemap and robots.txt.
+
+## Proposal 81792
+* New Voting screens:
+  * refreshed design (new cards, new buttons’ color, etc.)
+  * information structure modified to present firstly “system information”
+  * better use of the space for a quicker and better overview
+  * ability to navigate from previous or to next proposal
+  * quicker access to voting actions notably on mobile devices thanks to a sticky bottom sheet
+* CSP fallback for old devices
+* New transaction flow.
+
+## Proposal 80618
+* Fix android issues with modal.
+* Add pending transaction state in canister.
+* Persist proposal filters in local storage
+* Upgrade agent-js v0.13.x (uses indexeddb instead of localstorage)
+* Upgrade nns-js
+* Improve CSP rules and script loader
+* Infinite scrolling observer modified to handle list of cards
+* Governance labels and descriptions reviewed
+* Console output moves to debug information
+
+## Proposal 77051
+* Fix android issues with modal.
+* Add pending transaction state in canister.
+
+## Proposal 76202
+* sanitize proposal title and account identifier for placeholders
+
+## Proposal 75912
+* Optimistic voting update
+* Toast redesign
+* Update nns-js, sns-js, agent-js (0.12.2) and integrate utils-js
+* bump IC to the latest version
+* extract some ui components and integrate gix-components
+* replace .ttf with .woff2 fonts
+* add org package.json "name" field
+* various improvements in build scripts
+* light cleanup of README.md
+
 ## Proposal 72733
 * Update on maturity text info.
 * Upgrade sns-js

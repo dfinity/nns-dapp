@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/../../.."
+
+NEURON_PATH="$HOME/.config/dfx/prod-neuron"
+if test -e "$NEURON_PATH"; then
+  NEURON="$(cat "$NEURON_PATH")"
+  echo "Neuron ID: $NEURON (from $NEURON_PATH)"
+else
+  read -rp "Please enter your Neuron ID: " NEURON
+  read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
+  [[ "$STORE_NEURON" != [yY] ]] || {
+    mkdir -p "$(dirname "$NEURON_PATH")"
+    printf "%s" "$NEURON" >"$NEURON_PATH"
+  }
+fi
+
+read -rp "HSM Pin: " DFX_HSM_PIN
+
+AGGREGATOR_CANISTER_ID="3r4gx-wqaaa-aaaaq-aaaia-cai"
+WASM="./release/docker/sns_aggregator.wasm"
+SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
+
+ARG_DID="./release/sns_aggregator_arg.did"
+ARG_PATH="./release/sns_aggregator_arg.bin"
+didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+
+set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+
+echo
+echo PLEASE REVIEW THIS COMMAND:
+echo
+echo "${@}"
+echo
+
+read -rp "Execute? (y/N)" COMMAND_OK
+if [[ "$COMMAND_OK" = [yY] ]]; then
+  "${@}"
+fi

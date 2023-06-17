@@ -1,36 +1,63 @@
 #!/usr/bin/env bash
-# vim: ft=bash
-# Build nns-dapp.wasm inside docker. This outputs a single file, nns-dapp.wasm,
-# in the top-level directory.
-
 set -euo pipefail
 
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-cd "$SCRIPTS_DIR/.."
-
-DFX_NETWORK=${DFX_NETWORK:-mainnet}
-
-case "$DFX_NETWORK" in
-mainnet)
-  OWN_CANISTER_ID=""
-  ;;
-"local")
-  OWN_CANISTER_ID=${OWN_CANISTER_ID:-rwlgt-iiaaa-aaaaa-aaaaa-cai}
-  ;;
-*)
-  echo "don't know how to set OWN_CANISTER_ID for DFX_NETWORK $DFX_NETWORK"
-  echo "please set the environment variable OWN_CANISTER_ID"
+(("${BASH_VERSINFO[0]}" >= 5)) || {
+  echo "ERROR:  Please use a newer version of bash.  The minimum supported bash version is 5.  Yours appears to be '${BASH_VERSINFO[0]}'" >&2
   exit 1
-  ;;
-esac
+}
 
-REDIRECT_TO_LEGACY=${REDIRECT_TO_LEGACY:-prod}
+if test -d scripts && test -e Dockerfile; then
+  : "OK: We appear to be in the root of the repo."
+else
+  echo "ERROR: Please run from the root of the nns-dapp repo." >&2
+  exit 1
+fi
+
+SOURCE_DIR="$PWD/scripts"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Build nns-dapp.wasm inside docker. This creates:
+	- An "out" directory in the project directory containing all build artefacts.
+	  Note: If the "out" directory already exists, it will be deleted and replaced.
+	- The following artefacts are also added to the project directory:
+	  - assets.tar.xz
+	  - nns-dapp.wasm
+	  - sns_aggregator.wasm
+	  - "nns-dapp-arg-${DFX_NETWORK}.did"
+	  - "nns-dapp-arg-${DFX_NETWORK}.bin"
+
+	EOF
+  print_docker_help
+}
+
+print_docker_help() {
+  cat <<-"EOF"
+	Note: If the docker build fails, it may help to build from a clean cache:
+
+	  ./scripts/docker-build -- --no-cache
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+clap.define short=t long=target desc="The target in the docker file" variable=DFX_TARGET default="scratch"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 echo "DFX_NETWORK: $DFX_NETWORK"
-echo "OWN_CANISTER_ID: $OWN_CANISTER_ID"
-echo "REDIRECT_TO_LEGACY: $REDIRECT_TO_LEGACY"
 echo "PWD: $PWD"
+
+if [[ "${CLAP_VERBOSE:-}" == "true" ]]; then
+  PROGRESS="--progress=plain"
+else
+  PROGRESS="--progress=auto"
+fi
 
 image_name="nns-dapp-$DFX_NETWORK"
 
@@ -43,31 +70,44 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # In normal production builds, only these files will be generated,
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
-assets=(assets.tar.xz nns-dapp.wasm build-inputs.txt)
+assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm "nns-dapp-arg-${DFX_NETWORK}.did" "nns-dapp-arg-${DFX_NETWORK}.bin")
+for file in "${assets[@]}"; do
+  rm -f "$file"
+done
+
+COMMIT="$(git rev-parse HEAD)"
 
 set -x
-DOCKER_BUILDKIT=1 docker build \
+docker build --target check-environment .
+
+if DOCKER_BUILDKIT=1 docker build \
   --target scratch \
+  "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
-  --build-arg OWN_CANISTER_ID="$OWN_CANISTER_ID" \
+  --build-arg COMMIT="$COMMIT" \
   -t "$image_name" \
-  -o "$OUTDIR" .
+  -o "$OUTDIR" . \
+  "${@+${@}}"; then
+  echo "SUCCESS: Docker build has succeeded."
+else
+  set +x
+  {
+    echo "ERROR: Docker build failed."
+    print_docker_help
+    exit 1
+  } >&2
+fi
 set +x
 
 for file in "${assets[@]}"; do
-  cp "$OUTDIR/$file" "$file"
-  shasum -a 256 "$file"
+  if test -d "$OUTDIR/$file"; then
+    shafile="$OUTDIR/$file.sha256sums"
+    find "$OUTDIR/$file" -type f | grep -v node_modules | awk '{print $2, $1}' | sort | xargs sha256sum >"$shafile"
+    echo "Shas for dir '$file' are in '$shafile'."
+  else
+    cp "$OUTDIR/$file" "$file"
+    shasum -a 256 "$file"
+  fi
 done
-
-untracked_inputs() {
-  comm -1 -3 <(git ls-files | sort) <(sort out/build-inputs.txt)
-}
-if untracked_inputs | grep -q .; then
-  echo WARNING: BUILD MAY NOT BE REPRODUCIBLE
-  echo The following files were included in the build but are not tracked by git:
-  untracked_inputs | sed 's/^/    /g'
-  echo Please remove or commit these files.
-  exit 2
-fi
 
 echo FIN

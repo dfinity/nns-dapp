@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+clap.define short=c long=ci desc="A link to the wasm build on CI" variable=CI default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+cd "$SOURCE_DIR/.."
+export DFX_NETWORK
+
+mkdir -p release/ci
+[[ "${CI:-}" != "" ]] || {
+  CI="$("$SOURCE_DIR/nns-dapp/ci-link" --commit tags/release-candidate | tail -n1 | grep .)"
+}
+WASM="release/ci/nns-dapp.wasm"
+if test -f "$WASM"; then
+  SHA="$(sha256sum "$WASM" | awk '{print $1}')"
+else
+  echo "Please populate ${WASM} and run this again."
+  exit 0
+fi
+cat <<EOF >release/PROPOSAL.md
+# Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
+Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
+
+## Change Log:
+
+* Write about...
+* ... what has changed
+* ... in simple bullet points
+
+## Commit log:
+
+\`\`\`
++ bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)"
+$(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)")
+\`\`\`
+
+## Wasm Verification
+
+To build the wasm module yourself and verify its hash, run the following commands from the root of the [nns-dapp repo](https://github.com/dfinity/nns-dapp):
+
+\`\`\`
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse tags/release-candidate)"
+./scripts/docker-build
+sha256sum nns-dapp.wasm
+\`\`\`
+EOF
+
+cat <<EOF >release/ROLLBACK.md
+# Downgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
+Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
+
+## Wasm Verification
+
+To build the wasm module yourself and verify its hash, run the following commands from the root of the nns-dapp repo:
+
+\`\`\`
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse tags/release-candidate)"
+./scripts/docker-build
+sha256sum nns-dapp.wasm
+\`\`\`
+
+You may also want to verify the canister arguments.  In the proposal they are binary, which is not very readable. Docker
+provides both binary and text formats and you can verify that the text format corresponds to the binary in the proposal.
+
+\`\`\`
+sha256sum nns-dapp-arg-${DFX_NETWORK}.bin
+didc encode "\$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p | sha256sum
+\`\`\`
+EOF
+
+./config.sh
+cp "nns-dapp-arg-${DFX_NETWORK}.did" "./release/nns-dapp-arg-${DFX_NETWORK}.did"

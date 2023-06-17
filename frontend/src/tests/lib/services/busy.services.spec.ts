@@ -1,12 +1,15 @@
-import { startBusyNeuron } from "../../../lib/services/busy.services";
-import { accountsStore } from "../../../lib/stores/accounts.store";
-import * as busyStore from "../../../lib/stores/busy.store";
-import { neuronsStore } from "../../../lib/stores/neurons.store";
+/**
+ * @jest-environment jsdom
+ */
+import { startBusyNeuron } from "$lib/services/busy.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import * as busyStore from "$lib/stores/busy.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "../../mocks/accounts.store.mock";
-import { mockFullNeuron, mockNeuron } from "../../mocks/neurons.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("busy-services", () => {
   const startBusySpy = jest
@@ -18,7 +21,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy without message if neuron is not controlled by hardware wallet", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
     });
     const neuron = {
@@ -38,7 +41,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy with message if neuron controlled by hardware wallet", async () => {
-    accountsStore.set({
+    accountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });

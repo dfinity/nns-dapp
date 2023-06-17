@@ -1,7 +1,7 @@
+import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
-import type { AuthStore } from "../../lib/stores/auth.store";
 import en from "./i18n.mock";
 
 export const mockPrincipalText =
@@ -12,6 +12,13 @@ export const mockPrincipal = Principal.fromText(mockPrincipalText);
 export const mockIdentity = {
   getPrincipal: () => mockPrincipal,
 } as unknown as Identity;
+
+export const createMockIdentity = (p: number) => {
+  const principal = Principal.fromHex(p.toString(16));
+  return {
+    getPrincipal: () => principal,
+  } as Identity;
+};
 
 export const mockIdentityErrorMsg = en.error.missing_identity;
 
@@ -32,9 +39,17 @@ export const mockGetIdentity = () => {
  * A static mock of the auth store. The component that uses it will be rendered for test with a value that is already defined on mount.
  */
 export const mockAuthStoreSubscribe = (
-  run: Subscriber<AuthStore>
+  run: Subscriber<AuthStoreData>
 ): (() => void) => {
   run({ identity: mockIdentity });
+
+  return () => undefined;
+};
+
+export const mockAuthStoreNoIdentitySubscribe = (
+  run: Subscriber<AuthStoreData>
+): (() => void) => {
+  run({ identity: undefined });
 
   return () => undefined;
 };
@@ -45,16 +60,16 @@ export const mockAuthStoreSubscribe = (
  */
 
 export class AuthStoreMock {
-  private _store: AuthStore = { identity: undefined };
+  private _store: AuthStoreData = { identity: undefined };
 
-  private _callback: (store: AuthStore) => void;
+  private _callback: (store: AuthStoreData) => void;
 
-  subscribe(callback: (store: AuthStore) => void) {
+  subscribe(callback: (store: AuthStoreData) => void) {
     this._callback = callback;
     this.emit();
   }
 
-  next(store: AuthStore) {
+  next(store: AuthStoreData) {
     this._store = { ...store };
     this.emit();
   }
@@ -67,9 +82,9 @@ export class AuthStoreMock {
 export const authStoreMock = new AuthStoreMock();
 
 export const mutableMockAuthStoreSubscribe = (
-  run: Subscriber<AuthStore>
+  run: Subscriber<AuthStoreData>
 ): (() => void) => {
-  authStoreMock.subscribe((store: AuthStore) => run(store));
+  authStoreMock.subscribe((store: AuthStoreData) => run(store));
 
   return () => undefined;
 };

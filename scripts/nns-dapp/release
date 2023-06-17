@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Creates an NNS proposal to upgrade the nns-dapp.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+clap.define short=u long=nns_url desc="The NNS_URL; typically a network provider" variable=DFX_NNS_URL
+clap.define short=N long=neuron desc="The neuron ID to propose with" variable=DFX_NEURON_ID
+clap.define short=k long=hsm_key_id desc="The HSM key ID" variable=DFX_HSM_KEY_ID default=""
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="$(dfx identity whoami)"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+cd "${SOURCE_DIR}/.."
+echo "Preparing release for network: $DFX_NETWORK"
+
+# Gets the neuron ID.
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+  # ... if saved in a file, get it:
+  NEURON_PATH="$HOME/.config/dfx/prod-neuron"
+  if test -e "$NEURON_PATH"; then
+    DFX_NEURON_ID="$(cat "$NEURON_PATH")"
+    echo "Neuron ID: $DFX_NEURON_ID (from $NEURON_PATH)"
+  else
+    read -rp "Please enter your Neuron ID: " DFX_NEURON_ID
+    read -rp "... Store the Neuron ID for future use? (y/N)" STORE_NEURON
+    [[ "$STORE_NEURON" != [yY] ]] || {
+      mkdir -p "$(dirname "$NEURON_PATH")"
+      printf "%s" "$DFX_NEURON_ID" >"$NEURON_PATH"
+    }
+  fi
+else
+  # If not specified, check whether it has been provided by snsdemo:
+  [[ "${DFX_NEURON_ID:-}" != "" ]] || {
+    DFX_NEURON_ID="$(dfx-neuron-id --identity "$DFX_IDENTITY" --network "$DFX_NETWORK" 2>/dev/null || true)"
+  }
+fi
+[[ "${DFX_NEURON_ID:-}" != "" ]] || {
+  echo "ERROR: Neuron ID not provided."
+  exit 1
+} >&2
+
+# Gets the HSM key id, if applicable
+# ... for mainnet we use an HSM and the key ID in the standard setup is 01:
+[[ "${DFX_HSM_KEY_ID:-}" != "" ]] || {
+  if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+    DFX_HSM_KEY_ID="01"
+  fi
+}
+# ... else look for an HSM in the dfx identity:
+[[ "${DFX_HSM_KEY_ID:-}" != "" ]] || {
+  DFX_HSM_KEY_ID="$(jq -re '.hsm.key_id // empty' "${HOME}/.config/dfx/identity/${DFX_IDENTITY}/identity.json")" || true
+}
+# ... else the neuron should be controlled by a pem file.
+
+# Gets the authentication mechanism
+PEM_PATH="$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.pem"
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]] || [[ "${DFX_HSM_KEY_ID:-}" != "" ]]; then
+  # Authenticate with an HSM
+  read -rp "HSM Pin: " DFX_HSM_PIN
+  export DFX_HSM_PIN # Needed for dfx canister id, for some strange reason.
+  AUTH_ARGS=(--use-hsm --pin "$DFX_HSM_PIN" --key-id "${DFX_HSM_KEY_ID}" --slot 0)
+elif test -e "$PEM_PATH"; then
+  # Authenticate with a pem file
+  [[ "$(jq .encryption "$HOME/.config/dfx/identity/${DFX_IDENTITY}/identity.json")" == "null" ]] || {
+    echo "ERROR: ic-admin does not support encrypted pem files."
+    exit 1
+  } >&2
+  AUTH_ARGS=(--secret-key-pem "$PEM_PATH")
+else
+  {
+    echo "ERROR: Please specify the HSM key ID (usually 01) or use a dfx identity with an unencrypted pem file."
+    exit 1
+  } >&2
+fi
+
+# Gets the nns-dapp canister ID
+NNS_DAPP_CANISTER_ID="$(dfx canister id nns-dapp --network "$DFX_NETWORK")"
+# ... just checking...
+if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+  [[ "${NNS_DAPP_CANISTER_ID:-}" == "qoctq-giaaa-aaaaa-aaaea-cai" ]] || {
+    echo "ERROR: Has the mainnet nns-dapp canister ID really changed?"
+    echo "       If so, please update this script: '${BASH_SOURCE[0]}'"
+    exit 1
+  } >&2
+fi
+
+# Gets the NNS URL
+[[ "${DFX_NNS_URL:-}" != "" ]] || {
+  if [[ "${DFX_NETWORK:-}" =~ mainnet|ic ]]; then
+    DFX_NNS_URL="https://ic0.app"
+  else
+    # Try to use the snsdemo script for getting the provider for testnets and local replicas.
+    DFX_NNS_URL="$(dfx-network-provider --network "$DFX_NETWORK")"
+  fi
+}
+[[ "${DFX_NNS_URL:-}" != "" ]] || {
+  echo "ERROR: Unable to determine the nns URL."
+  echo "       Please specify --nns_url as a command line argument."
+  exit 1
+} >&2
+
+# Gets the wasm
+# Note: If the wasm is not provided, the SHA will fail.
+# Note: Also, the template creation script will fail if the wasm is not provided.
+WASM="./release/ci/nns-dapp.wasm"
+SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
+
+# Gets the canister arguments
+ARG_DID="./release/nns-dapp-arg-${DFX_NETWORK}.did"
+ARG_PATH="./release/nns-dapp-arg-${DFX_NETWORK}.bin"
+test -e "$ARG_DID" || {
+  echo "ERROR: Arguments need to be provided in $ARG_DID"
+  exit 1
+} >&2
+didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+test -e "$ARG_PATH" || {
+  echo "ERROR: Failed to create arguments in $ARG_PATH"
+  exit 1
+} >&2
+
+# Gets the proposal text
+SUMMARY_FILE=./release/PROPOSAL.md
+test -e "${SUMMARY_FILE:-}" || {
+  echo "ERROR: Proposal text not found at: ${SUMMARY_FILE}"
+  exit 1
+} >&2
+
+# Prepares the command
+set ic-admin "${AUTH_ARGS[@]}" --nns-url "$DFX_NNS_URL" propose-to-change-nns-canister --proposer "$DFX_NEURON_ID" --canister-id "$NNS_DAPP_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$SUMMARY_FILE" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+# ... just checking...
+echo
+echo PLEASE REVIEW THIS COMMAND:
+echo
+echo "${@}"
+echo
+
+read -rp "Execute? (y/N) " COMMAND_OK
+if [[ "$COMMAND_OK" = [yY] ]]; then
+  "${@}"
+fi

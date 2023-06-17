@@ -1,14 +1,13 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
-  } from "../../types/add-account.context";
+  } from "$lib/types/add-account.context";
   import { getContext } from "svelte";
-  import InputWithError from "../ui/InputWithError.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "../../constants/accounts.constants";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { HARDWARE_WALLET_NAME_MIN_LENGTH } from "$lib/constants/accounts.constants";
 
   const context: AddAccountContext = getContext<AddAccountContext>(
     ADD_ACCOUNT_CONTEXT_KEY
@@ -16,7 +15,7 @@
 
   const { store, next, back }: AddAccountContext = context;
 
-  let hardwareWalletName: string = $store.hardwareWalletName ?? "";
+  let hardwareWalletName = $store.hardwareWalletName ?? "";
 
   const invalidInputLength = (): boolean =>
     hardwareWalletName.length < HARDWARE_WALLET_NAME_MIN_LENGTH;
@@ -28,7 +27,7 @@
   const showInvalidInputLength = () =>
     (invalidInputMessage =
       hardwareWalletName.length > 0 && invalidInputLength());
-  let invalidInputMessage: boolean = false;
+  let invalidInputMessage = false;
 
   const onSubmit = () => {
     store.update((data) => ({
@@ -40,15 +39,16 @@
   };
 </script>
 
-<form on:submit|preventDefault={onSubmit} class="wizard-wrapper">
+<form on:submit|preventDefault={onSubmit}>
   <div>
-    <h4>{$i18n.accounts.attach_hardware_enter_name}</h4>
+    <p class="label">{$i18n.accounts.attach_hardware_enter_name}</p>
     <InputWithError
       inputType="text"
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
       name="walletName"
       bind:value={hardwareWalletName}
       on:blur={showInvalidInputLength}
+      showInfo={false}
       errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {
             $length: `${HARDWARE_WALLET_NAME_MIN_LENGTH}`,
@@ -56,20 +56,20 @@
         : undefined}
     />
   </div>
-  <FooterModal>
-    <button class="secondary small" type="button" on:click={back}>
+
+  <div class="toolbar">
+    <button class="secondary" type="button" on:click={back} data-tid="back">
       {$i18n.core.back}
     </button>
-    <button class="primary small" type="submit" {disabled}>
+    <button class="primary" type="submit" {disabled}>
       {$i18n.core.continue}
     </button>
-  </FooterModal>
+  </div>
 </form>
 
 <style lang="scss">
-  @use "../../themes/mixins/modal";
-
-  form {
-    @include modal.wizard-single-input-form;
+  .label {
+    margin: 0;
+    padding-bottom: var(--padding);
   }
 </style>

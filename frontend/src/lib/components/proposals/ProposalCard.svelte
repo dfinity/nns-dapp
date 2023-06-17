@@ -1,85 +1,134 @@
 <script lang="ts">
-  import Card from "../ui/Card.svelte";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { ProposalStatus } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { routeStore } from "../../stores/route.store";
-  import { AppPath } from "../../constants/routes.constants";
-  import { proposalsFiltersStore } from "../../stores/proposals.store";
-  import { mapProposalInfo, hideProposal } from "../../utils/proposals.utils";
-  import type { ProposalId } from "@dfinity/nns";
-  import ProposalMeta from "./ProposalMeta.svelte";
-  import { definedNeuronsStore } from "../../stores/neurons.store";
-  import type { Color } from "../../types/theme";
-  import Tag from "../ui/Tag.svelte";
+  import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
+  import Countdown from "./Countdown.svelte";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
-  export let proposalInfo: ProposalInfo;
-  export let hidden: boolean = false;
-
-  let status: ProposalStatus = ProposalStatus.PROPOSAL_STATUS_UNKNOWN;
-  let id: ProposalId | undefined;
-  let title: string | undefined;
-  let color: Color | undefined;
-
-  $: ({ status, id, title, color } = mapProposalInfo(proposalInfo));
-
-  const showProposal = () => {
-    routeStore.navigate({
-      path: `${AppPath.ProposalDetail}/${id}`,
-    });
-  };
-
-  // HACK:
-  //
-  // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-  // 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
-  // 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
-  //
-  // That's why we hide and re-process these proposals delivered by the backend on the client side.
-  //
-  // We do not filter these types of proposals from the list but "only" hide these because removing them from the list is not compatible with an infinite scroll feature.
-  let hide: boolean;
-  $: hide = hideProposal({
-    filters: $proposalsFiltersStore,
-    proposalInfo,
-    neurons: $definedNeuronsStore,
-  });
+  export let hidden = false;
+  export let statusString: string | undefined;
+  export let id: bigint | undefined;
+  export let title: string | undefined;
+  export let color: ProposalStatusColor | undefined;
+  export let topic: string | undefined = undefined;
+  export let proposer: string | undefined;
+  export let type: string | undefined;
+  export let deadlineTimestampSeconds: bigint | undefined;
 </script>
 
-<!-- We hide the card but keep an element in DOM to preserve the infinite scroll feature -->
 <li class:hidden>
-  {#if !hide}
-    <Card role="link" on:click={showProposal} testId="proposal-card">
-      <div slot="start" class="title-container">
-        <p class="title" {title}>{title}</p>
-      </div>
-      <Tag slot="end" {color}>{$i18n.status[ProposalStatus[status]] ?? ""}</Tag>
+  <Card role="link" on:click testId="proposal-card" icon="arrow">
+    <div class="id" data-proposal-id={id}>
+      <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+    </div>
 
-      <ProposalMeta {proposalInfo} showTopic />
-    </Card>
-  {/if}
+    <div class="meta-data">
+      {#if type !== undefined}
+        <KeyValuePair testId="proposal-type">
+          <span slot="key">{$i18n.proposal_detail.type_prefix}</span>
+          <span
+            slot="value"
+            class="meta-data-value"
+            aria-label={$i18n.proposal_detail.type_prefix}>{type}</span
+          >
+        </KeyValuePair>
+      {/if}
+
+      {#if topic !== undefined}
+        <KeyValuePair>
+          <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
+          <span slot="value" class="meta-data-value">{topic ?? ""}</span>
+        </KeyValuePair>
+      {/if}
+
+      {#if proposer !== undefined}
+        <KeyValuePair>
+          <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
+          <span slot="value" class="meta-data-value"
+            >{shortenWithMiddleEllipsis(proposer, 5)}</span
+          >
+        </KeyValuePair>
+      {/if}
+    </div>
+
+    <blockquote class="title-placeholder">
+      <p class="description">{title}</p>
+    </blockquote>
+
+    <KeyValuePair>
+      <p slot="key" class={`${color ?? ""} status`}>
+        {statusString}
+      </p>
+      <Countdown slot="value" {deadlineTimestampSeconds} />
+    </KeyValuePair>
+  </Card>
 </li>
 
 <style lang="scss">
-  @use "../../themes/mixins/text";
-  @use "../../themes/mixins/card";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   li.hidden {
     visibility: hidden;
   }
 
-  .title-container {
-    @include card.stacked-title;
+  .id {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-bottom: var(--padding);
+
+    :global(.value) {
+      color: var(--tertiary);
+    }
   }
 
-  .title {
-    @include text.clamp(3);
+  .meta-data {
+    margin-bottom: var(--padding);
 
-    @include media.min-width(small) {
-      margin: 0 var(--padding-2x) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    // Prevent texts that need two lines leave space on the right side
+    & .meta-data-value {
+      text-align: right;
+    }
+  }
+
+  .title-placeholder {
+    flex-grow: 1;
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
+  }
+
+  /**
+   * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
+   */
+  .status {
+    // Default color: ProposalStatusColor.PRIMARY
+    --badge-color: var(--primary);
+    color: var(--badge-color);
+
+    margin-bottom: 0;
+
+    // ProposalStatusColor.WARNING
+    &.warning {
+      --badge-color: var(--warning-emphasis);
     }
 
-    color: var(--value-color);
+    // ProposalStatusColor.SUCCESS
+    &.success {
+      --badge-color: var(--positive-emphasis);
+    }
+
+    // ProposalStatusColor.ERROR
+    &.error {
+      --badge-color: var(--negative-emphasis-light);
+    }
   }
 </style>

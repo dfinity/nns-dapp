@@ -1,0 +1,100 @@
+name: Reproducible Assets
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  native_asset_build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-12, macos-13]
+        time: [now, future]
+    steps:
+      - name: Unbork mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+            brew install jq
+            brew install coreutils
+            brew install gzip
+            echo "/usr/local/bin" >> $GITHUB_PATH
+            echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          fi
+      - name: Install dependencies
+        run: |
+          case "$(uname)" in
+          Linux)
+                  sudo apt install faketime
+                  ;;
+          Darwin)
+                  brew install libfaketime
+                  ;;
+          *)
+                  echo Unsupported OS: $(uname)
+                  exit 1
+                  ;;
+          esac
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Show versions
+        run: |
+          for exec in bash dfx jq npm node gzip xz ; do
+            echo $exec --version
+            "$exec" --version
+          done
+      - name: Get dependencies
+        run: |
+          # Note: This is to make network access unnecessary during the time-shifted build.
+          cd frontend
+          npm ci
+      - name: Build
+        run: |
+          export DFX_NETWORK=mainnet
+          . config.sh
+          case "${{ matrix.time }}" in
+          future)
+            faketime -f "+5.5y 7m 9s" bash ./build-frontend.sh ;;
+          *)
+            ./build-frontend.sh ;;
+          esac
+          mkdir -p builds
+          cp assets.tar.xz "builds/assets_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
+          cp sourcemaps.tar.xz "builds/sourcemaps_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
+      - name: 'Upload assets'
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: builds
+          path: builds/*.tar.xz
+          retention-days: 1
+      - name: 'Output the hash'
+        run: |
+          mkdir -p hashes
+          sha256sum assets.tar.xz > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
+      - name: 'Upload hashes'
+        uses: actions/upload-artifact@v3
+        with:
+          name: hashes
+          path: hashes/*.txt
+  compare_hashes:
+    runs-on: ubuntu-latest
+    needs: [native_asset_build]
+    steps:
+      - name: Get hashes
+        uses: actions/download-artifact@v3
+        with:
+          name: hashes
+          path: hashes
+      - name: Print hashes
+        run: |
+          echo Hashes:
+          grep -r . hashes/ | awk -F: '{printf "%s: %s\n", $2, $1}' | sort
+          (( $(cat hashes/*.txt | sort | uniq | wc -l) == 1 ))

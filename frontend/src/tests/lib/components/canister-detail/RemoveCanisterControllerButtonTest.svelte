@@ -1,12 +1,13 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import RemoveCanisterControllerButton from "../../../../lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
+  import RemoveCanisterControllerButton from "$lib/components/canister-detail/RemoveCanisterControllerButton.svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../../../lib/types/canister-detail.context";
-  import { mockCanisterDetailsStore } from "../../../mocks/canisters.mock";
+  } from "$lib/types/canister-detail.context";
+  import { mockCanisterDetailsStore } from "$tests/mocks/canisters.mock";
+  import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
 
   export let reloadDetails: (canisterId: Principal) => Promise<void>;
   export let controller: string;
@@ -18,3 +19,5 @@
 </script>
 
 <RemoveCanisterControllerButton {controller} />
+
+<CanisterDetailModals />

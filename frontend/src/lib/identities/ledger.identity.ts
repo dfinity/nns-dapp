@@ -1,3 +1,13 @@
+import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
+import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { i18n } from "$lib/stores/i18n";
+import {
+  LedgerErrorKey,
+  LedgerErrorMessage,
+  type LedgerHQTransportError,
+} from "$lib/types/ledger.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
 import {
   Cbor,
   SignIdentity,
@@ -8,20 +18,13 @@ import {
   type Signature,
 } from "@dfinity/agent";
 import type Transport from "@ledgerhq/hw-transport";
-import TransportWebHID from "@ledgerhq/hw-transport-webhid";
-import type { ResponseAddress, ResponseVersion } from "@zondax/ledger-icp";
-import LedgerApp, { type ResponseSign } from "@zondax/ledger-icp";
+import type LedgerApp from "@zondax/ledger-icp";
+import type {
+  ResponseAddress,
+  ResponseSign,
+  ResponseVersion,
+} from "@zondax/ledger-icp";
 import { get } from "svelte/store";
-import { LEDGER_DEFAULT_DERIVE_PATH } from "../constants/ledger.constants";
-import type { Secp256k1PublicKey } from "../keys/secp256k1";
-import { i18n } from "../stores/i18n";
-import {
-  LedgerErrorKey,
-  LedgerErrorMessage,
-  type LedgerHQTransportError,
-} from "../types/ledger.errors";
-import { replacePlaceholders } from "../utils/i18n.utils";
-import { decodePublicKey, decodeSignature } from "../utils/ledger.utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq
 
@@ -106,7 +109,10 @@ export class LedgerIdentity extends SignIdentity {
     return this.executeWithApp<ResponseVersion>(callback);
   }
 
-  private static getTransport(): Promise<Transport> {
+  private static async getTransport(): Promise<Transport> {
+    const { default: TransportWebHID } = await import(
+      "@ledgerhq/hw-transport-webhid"
+    );
     return TransportWebHID.create();
   }
 
@@ -116,7 +122,12 @@ export class LedgerIdentity extends SignIdentity {
   }> {
     try {
       const transport = await this.getTransport();
-      const app = new LedgerApp(transport);
+
+      const { default: LedgerAppConstructor } = await import(
+        "@zondax/ledger-icp"
+      );
+      const app = new LedgerAppConstructor(transport);
+
       return { app, transport };
     } catch (err: unknown) {
       if (

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Gets stable data from an sns_aggregator.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=ic_commit desc="The IC commit to use" variable=DFX_IC_COMMIT default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+: "Make sure that DFX_IC_COMMIT is defined"
+[[ "${DFX_IC_COMMIT:-}" != "" ]] || {
+  echo "ERROR: Please specify which ic commit to use."
+  echo "  --ic_commit SOME_COMMIT"
+  exit 1
+} >&2
+
+: "Bump IC_COMMIT in dfx.json"
+{
+  NEW_CONFIG="$(DFX_IC_COMMIT="$DFX_IC_COMMIT" jq '.defaults.build.config.IC_COMMIT = (env.DFX_IC_COMMIT)' "$SOURCE_DIR/../dfx.json")"
+  [[ "$NEW_CONFIG" != "" ]] || {
+    echo "ERROR: Failed to set IC_COMMIT in dfx.json.  Please verify that dfx.json is valid JSON."
+    exit 1
+  } >&2
+  printf "%s\n" "$NEW_CONFIG" >"$SOURCE_DIR/../dfx.json"
+}
+
+: "Get the latest sns wasm and did files"
+{
+  : "Get the did and wasm files"
+  IC_URL="https://raw.githubusercontent.com/dfinity/ic/${DFX_IC_COMMIT}"
+  did_curl() {
+    local canister="$1"
+    local upstream_path="$2"
+    local local_path="declarations/${canister}/${canister}.did"
+    mkdir -p "$(dirname "$local_path")"
+    curl -sfL --retry 5 "$IC_URL$upstream_path" >"${local_path}"
+  }
+  did_curl sns_governance /rs/sns/governance/canister/governance.did
+  did_curl sns_root /rs/sns/root/canister/root.did
+  did_curl sns_swap /rs/sns/swap/canister/swap.did
+  did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
+  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
+}
+
+: "Derive Rust types from candid interfaces"
+time scripts/mk_nns_types.sh
+
+: "All done"
+echo FIN

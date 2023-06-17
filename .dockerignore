@@ -2,9 +2,11 @@
 .*
 !.rustfmt.toml
 !.gitignore
+!.dfx/**/*
 
 build-inputs.txt
 assets.tar.xz
+sourcemaps.tar.xz
 Dockerfile
 backend-tests
 node_modules
@@ -18,7 +20,11 @@ web-assets
 frontend/node_modules/
 frontend/public/build/
 frontend/public/assets/
-proxy
+frontend/src/tests/
+frontend/playwright*
+frontend/jest*
+frontend/tsconfig.spec.json
+frontend/.env
 e2e-tests
 **/*.wasm
 /deployment-config.json

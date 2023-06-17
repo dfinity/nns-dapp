@@ -1,5 +1,6 @@
+import type { WalletStore } from "$lib/types/wallet.context";
 import { writable } from "svelte/store";
-import type { HardwareWalletNeuronsStore } from "../../lib/types/hardware-wallet-neurons.context";
+import { mockMainAccount } from "./accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "./neurons.mock";
 
 export const mockNeuronStake = {
@@ -11,16 +12,16 @@ export const mockNeuronStake = {
   },
 };
 
-export const mockHardwareWalletNeuronsStore =
-  writable<HardwareWalletNeuronsStore>({
-    neurons: [
-      {
-        ...mockNeuron,
-        controlledByNNSDapp: true,
-      },
-      {
-        ...mockNeuronStake,
-        controlledByNNSDapp: false,
-      },
-    ],
-  });
+export const mockHardwareWalletNeuronsStore = writable<WalletStore>({
+  account: mockMainAccount,
+  neurons: [
+    {
+      ...mockNeuron,
+      controlledByNNSDapp: true,
+    },
+    {
+      ...mockNeuronStake,
+      controlledByNNSDapp: false,
+    },
+  ],
+});

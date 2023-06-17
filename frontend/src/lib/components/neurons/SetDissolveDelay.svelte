@@ -1,133 +1,185 @@
 <script lang="ts">
-  import { NeuronState } from "@dfinity/nns";
-  import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import Card from "../ui/Card.svelte";
-  import {
-    SECONDS_IN_EIGHT_YEARS,
-    SECONDS_IN_HALF_YEAR,
-  } from "../../constants/constants";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { formatICP } from "../../utils/icp.utils";
-  import {
-    formatVotingPower,
-    neuronStake,
-    votingPower,
-  } from "../../utils/neuron.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import InputRange from "../ui/InputRange.svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { valueSpan } from "../../utils/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
+  import { formatToken } from "$lib/utils/token.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { InputRange, Html } from "@dfinity/gix-components";
+  import { isDefined, valueSpan } from "$lib/utils/utils";
+  import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
+  import DayInput from "$lib/components/ui/DayInput.svelte";
+  import { daysToDuration } from "$lib/utils/date.utils";
+  import type { NeuronState, TokenAmount } from "@dfinity/nns";
+  import { SECONDS_IN_DAY } from "$lib/constants/constants";
 
-  export let neuron: NeuronInfo;
-  export let delayInSeconds: number = 0;
-  export let cancelButtonText: string;
-  export let confirmButtonText: string;
-  export let minDelayInSeconds: number = 0;
+  export let neuronState: NeuronState;
+  export let neuronDissolveDelaySeconds: bigint;
+  export let neuronStake: TokenAmount;
+  export let delayInSeconds = 0;
+  export let minDelayInSeconds = 0;
+  export let minProjectDelayInSeconds: number;
+  export let maxDelayInSeconds = 0;
+  // sns and nns calculates voting power differently
+  export let calculateVotingPower: (delayInSeconds: number) => number;
+  export let minDissolveDelayDescription = "";
 
-  const checkMinimum = () => {
-    if (delayInSeconds < minDelayInSeconds) {
-      delayInSeconds = minDelayInSeconds;
-    }
-  };
+  const dispatch = createEventDispatcher();
+
+  let delayInDays = 0;
+  $: delayInSeconds, (() => (delayInDays = secondsToDays(delayInSeconds)))();
+
+  let minDelayInDays = 0;
+  $: minDelayInDays = secondsToDays(minDelayInSeconds);
+
+  let maxDelayInDays = 0;
+  $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
+
+  let votingPower: number;
+  $: votingPower = calculateVotingPower(delayInSeconds);
+
+  let inputError: string | undefined;
 
   let disableUpdate: boolean;
   $: disableUpdate =
-    delayInSeconds < SECONDS_IN_HALF_YEAR ||
-    delayInSeconds <= minDelayInSeconds;
-  const dispatcher = createEventDispatcher();
-  const cancel = (): void => {
-    dispatcher("nnsCancel");
-  };
-  let neuronICP: bigint;
-  $: neuronICP = neuronStake(neuron);
+    delayInSeconds < minProjectDelayInSeconds ||
+    delayInSeconds <= minDelayInSeconds ||
+    delayInSeconds > maxDelayInSeconds;
 
-  const goToConfirmation = async () => {
-    dispatcher("nnsConfirmDelay");
+  const keepDelaysInBounds = () => {
+    if (delayInSeconds < minDelayInSeconds) {
+      delayInSeconds = minDelayInSeconds;
+    }
+
+    if (delayInSeconds > maxDelayInSeconds) {
+      delayInSeconds = maxDelayInSeconds;
+    }
   };
+  const setMin = () => {
+    delayInSeconds = Math.max(
+      minDelayInSeconds + SECONDS_IN_DAY,
+      minProjectDelayInSeconds
+    );
+    keepDelaysInBounds();
+  };
+  const setMax = () => {
+    delayInSeconds = maxDelayInSeconds;
+    keepDelaysInBounds();
+  };
+  const updateInputError = () => {
+    if (delayInDays > maxDelayInDays) {
+      inputError = $i18n.neurons.dissolve_delay_above_maximum;
+    } else if (delayInDays < minDelayInDays) {
+      inputError = $i18n.neurons.dissolve_delay_below_minimum;
+    } else if (isDefined(inputError)) {
+      // clear the error
+      inputError = undefined;
+    }
+
+    delayInSeconds = daysToSeconds(delayInDays);
+  };
+  const cancel = () => dispatch("nnsCancel");
+  const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
-<div class="wizard-wrapper wrapper">
+<div class="wrapper" data-tid="set-dissolve-delay-component">
   <div>
-    <h5>{$i18n.neurons.neuron_id}</h5>
-    <p class="value">{neuron.neuronId}</p>
-
-    <h5>{$i18n.neurons.neuron_balance}</h5>
-    <p data-tid="neuron-stake">
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
-      })}
-    </p>
-
-    {#if neuron.state === NeuronState.LOCKED && neuron.dissolveDelaySeconds}
-      <h5>{$i18n.neurons.current_dissolve_delay}</h5>
-      <p class="duration">
-        {@html valueSpan(secondsToDuration(neuron.dissolveDelaySeconds))} - {$i18n
-          .neurons.staked}
-      </p>
-    {/if}
+    <p class="label">{$i18n.neurons.neuron_id}</p>
+    <slot name="neuron-id" />
   </div>
 
-  <div class="delay">
-    <Card>
-      <div slot="start">
-        <h5>{$i18n.neurons.dissolve_delay_title}</h5>
-        <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
-      </div>
-      <div class="select-delay-container">
-        <InputRange
-          ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-          min={0}
-          max={SECONDS_IN_EIGHT_YEARS}
-          bind:value={delayInSeconds}
-          handleInput={checkMinimum}
-        />
-        <div class="details">
-          <div>
-            <h5>
-              {formatVotingPower(
-                votingPower({
-                  stake: neuronICP,
-                  dissolveDelayInSeconds: delayInSeconds,
-                })
-              )}
-            </h5>
-            <p>{$i18n.neurons.voting_power}</p>
-          </div>
-          <div>
-            {#if delayInSeconds > 0}
-              <h5>{secondsToDuration(BigInt(delayInSeconds))}</h5>
-            {:else}
-              <h5>{$i18n.neurons.no_delay}</h5>
-            {/if}
-            <p>{$i18n.neurons.dissolve_delay_title}</p>
-          </div>
+  <div>
+    <p class="label">{$i18n.neurons.neuron_balance}</p>
+    <p data-tid="neuron-stake">
+      <Html
+        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
+          $amount: valueSpan(
+            formatToken({ value: neuronStake.toE8s(), detailed: true })
+          ),
+          $token: neuronStake.token.symbol,
+        })}
+      />
+    </p>
+  </div>
+
+  {#if neuronDissolveDelaySeconds}
+    <div>
+      <p class="label">{$i18n.neurons.current_dissolve_delay}</p>
+      <NeuronStateRemainingTime
+        state={neuronState}
+        timeInSeconds={neuronDissolveDelaySeconds}
+        defaultGaps
+      />
+    </div>
+  {/if}
+
+  <div>
+    <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
+    <p class="description">{minDissolveDelayDescription}</p>
+  </div>
+  <div class="select-delay-container">
+    <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
+    <div>
+      <DayInput
+        bind:days={delayInDays}
+        on:nnsMin={setMin}
+        on:nnsMax={setMax}
+        on:nnsInput={updateInputError}
+        on:blur={updateInputError}
+        errorMessage={inputError}
+        placeholderLabelKey="neurons.dissolve_delay_placeholder"
+        name="dissolve_delay"
+      />
+    </div>
+    <div class="range">
+      <InputRange
+        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
+        min={0}
+        max={maxDelayInSeconds}
+        bind:value={delayInSeconds}
+        handleInput={keepDelaysInBounds}
+      />
+      <div class="details">
+        <div>
+          <p class="label">
+            {formatVotingPower(votingPower)}
+          </p>
+          <p>{$i18n.neurons.voting_power}</p>
+        </div>
+        <div>
+          {#if delayInSeconds > 0}
+            <p class="label">{daysToDuration(delayInDays)}</p>
+          {:else}
+            <p class="label">{$i18n.neurons.no_delay}</p>
+          {/if}
+          <p>{$i18n.neurons.dissolve_delay_title}</p>
         </div>
       </div>
-    </Card>
+    </div>
   </div>
 
-  <FooterModal>
-    <button
-      on:click={cancel}
-      data-tid="cancel-neuron-delay"
-      class="secondary small">{cancelButtonText}</button
+  <div class="toolbar">
+    <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
+      ><slot name="cancel" /></button
     >
     <button
-      class="primary small"
+      class="primary"
       disabled={disableUpdate}
       on:click={goToConfirmation}
-      data-tid="go-confirm-delay-button"
+      data-tid="go-confirm-delay-button"><slot name="confirm" /></button
     >
-      {confirmButtonText}
-    </button>
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
-  p {
-    margin-top: 0;
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
+  .range {
+    margin-top: var(--padding-2x);
   }
 
   .select-delay-container {
@@ -138,9 +190,5 @@
       display: flex;
       justify-content: space-around;
     }
-  }
-
-  .delay {
-    flex-grow: 1;
   }
 </style>

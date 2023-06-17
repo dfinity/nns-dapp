@@ -1,9 +1,9 @@
-import type { DerEncodedPublicKey } from "@dfinity/agent";
-import { Secp256k1PublicKey } from "../../../lib/keys/secp256k1";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import {
   fromHexString,
   testSecp256k1Vectors,
-} from "../../mocks/ledger.identity.mock";
+} from "$tests/mocks/ledger.identity.mock";
+import type { DerEncodedPublicKey } from "@dfinity/agent";
 
 // Copied from @dfinity/identity-ledgerhq
 

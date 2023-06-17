@@ -1,25 +1,26 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { logout } from "../../services/auth.services";
-  import IconExit from "../../icons/IconExit.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { logout } from "$lib/services/auth.services";
+  import { IconLogout } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatcher = createEventDispatcher();
+
+  const signOut = () => {
+    dispatcher("nnsLogoutTriggered");
+    logout({});
+  };
 </script>
 
-<button data-tid="logout" on:click={() => logout({})} class="text">
-  <IconExit />
+<button data-tid="logout" on:click={signOut} class="text">
+  <IconLogout />
   {$i18n.header.logout}
 </button>
 
 <style lang="scss">
+  @use "../../themes/mixins/account-menu";
+
   button {
-    margin: 0;
-
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-
-    :global(svg) {
-      width: var(--padding-3x);
-      height: var(--padding-3x);
-    }
+    @include account-menu.button;
   }
 </style>

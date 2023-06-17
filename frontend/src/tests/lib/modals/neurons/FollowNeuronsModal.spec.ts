@@ -2,19 +2,20 @@
  * @jest-environment jsdom
  */
 
+import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import FollowNeuronsModal from "../../../../lib/modals/neurons/FollowNeuronsModal.svelte";
-import en from "../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../mocks/neurons.mock";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     removeFollowee: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };
@@ -33,10 +34,19 @@ describe("FollowNeuronsModal", () => {
       ],
     },
   };
+
+  const fillNeuronStore = () =>
+    neuronsStore.setNeurons({
+      neurons: [neuronFollowing],
+      certified: true,
+    });
+
+  beforeAll(() => fillNeuronStore());
+
   it("renders title", () => {
     const { queryByText } = render(FollowNeuronsModal, {
       props: {
-        neuron: mockNeuron,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 
@@ -46,7 +56,7 @@ describe("FollowNeuronsModal", () => {
   it("renders badge with numbers of followees on the topic", () => {
     const { queryByTestId } = render(FollowNeuronsModal, {
       props: {
-        neuron: neuronFollowing,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 
@@ -68,7 +78,7 @@ describe("FollowNeuronsModal", () => {
   it("displays the followees of the user in specific topic", async () => {
     const { queryByTestId } = render(FollowNeuronsModal, {
       props: {
-        neuron: neuronFollowing,
+        neuronId: neuronFollowing.neuronId,
       },
     });
 

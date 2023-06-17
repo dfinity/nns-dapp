@@ -1,5 +1,5 @@
 {
-  "dfx": "0.11.2",
+  "dfx": "0.14.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -8,35 +8,47 @@
       "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
       "remote": {
         "id": {
-          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "testnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small06": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small11": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "small12": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          "staging": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+          "__default": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
     },
     "nns-dapp": {
       "type": "custom",
-      "candid": "rs/nns-dapp.did",
+      "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm",
-      "build": "./build.sh"
+      "build": "./build.sh",
+      "remote": {
+        "id": {
+          "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
+          "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
+        }
+      }
     },
     "internet_identity": {
       "type": "custom",
-      "wasm": "internet_identity.wasm",
+      "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm\" -o internet_identity.wasm"
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "remote": {
+        "id": {
+          "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
+        }
+      }
     },
-    "wasm_canister": {
+    "nns-sns-wasm": {
       "build": [
         "true"
       ],
       "candid": "target/ic/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
-      "type": "custom"
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "__default": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+        }
+      }
     },
     "sns_governance": {
       "build": [
@@ -54,6 +66,22 @@
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
+    "sns_archive": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-archive.did",
+      "wasm": "target/ic/ic-icrc1-archive.wasm",
+      "type": "custom"
+    },
+    "sns_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ic-icrc1-index.did",
+      "wasm": "target/ic/ic-icrc1-index.wasm",
+      "type": "custom"
+    },
     "sns_swap": {
       "build": [
         "true"
@@ -69,34 +97,102 @@
       "candid": "target/ic/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
+    },
+    "sns_aggregator": {
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
+      "candid": "rs/sns_aggregator/sns_aggregator.did",
+      "wasm": "sns_aggregator.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
+        }
+      }
+    },
+    "ckbtc_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_ledger.did",
+      "wasm": "target/ic/ckbtc_ledger.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
+        }
+      }
+    },
+    "ckbtc_minter": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_minter.did",
+      "wasm": "target/ic/ckbtc_minter.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
+        }
+      }
+    },
+    "ckbtc_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_index.did",
+      "wasm": "target/ic/ckbtc_index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
+        }
+      }
+    },
+    "tvl": {
+      "build": [
+        "true"
+      ],
+      "type": "custom",
+      "candid": "TODO-deploy-tvl-testnet",
+      "wasm": "TODO-deploy-tvl-testnet",
+      "remote": {
+        "id": {
+          "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
+        }
+      }
     }
   },
   "networks": {
     "mainnet": {
       "config": {
-        "BUILD": "release",
         "FETCH_ROOT_KEY": false,
-        "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
-        "HOST": "https://ic0.app",
-        "OWN_CANISTER_ID": "qoctq-giaaa-aaaaa-aaaea-cai",
-        "OWN_CANISTER_URL": "https://nns.ic0.app",
-        "IDENTITY_SERVICE_URL": "https://identity.ic0.app/"
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
+        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
       },
       "providers": [
-        "https://ic0.app/"
+        "https://icp-api.io/"
       ],
       "type": "persistent"
     },
     "staging": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": false,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
@@ -105,40 +201,43 @@
     },
     "testnet": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "prod",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://nnsdapp.dfinity.network"
+        "HOST": "https://nnsdapp.testnet.dfinity.network"
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
+    "nnsdapp": {
+      "config": {
+        "HOST": "https://nnsdapp.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small14": {
+      "config": {
+        "HOST": "https://small14.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:a4ff:fe4f:a75e]:8080"
       ],
       "type": "persistent"
     },
     "small13": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small13.dfinity.network"
+        "HOST": "https://small13.testnet.dfinity.network"
       },
       "providers": [
-        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
       ],
       "type": "persistent"
     },
     "small12": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small12.dfinity.network"
+        "HOST": "https://small12.testnet.dfinity.network"
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
@@ -147,26 +246,41 @@
     },
     "small11": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small11.dfinity.network"
+        "HOST": "https://small11.testnet.dfinity.network"
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
       ],
       "type": "persistent"
     },
+    "large02": {
+      "config": {
+        "HOST": "https://large02.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:78ff:fe1b:9a48]:8080",
+        "http://[2001:4d78:40d:0:5000:60ff:fe26:5213]:8080",
+        "http://[2602:fb2b:100:10:5000:8fff:fe36:740b]:8080",
+        "http://[2a00:fb01:400:42:5000:71ff:fe4d:c80e]:8080",
+        "http://[2607:f6f0:3004:1:5000:21ff:fea4:508e]:8080",
+        "http://[2001:4d78:40d:0:5000:d0ff:fe4e:f35e]:8080",
+        "http://[2602:fb2b:100:10:5000:cbff:fe70:b9e7]:8080",
+        "http://[2a00:fb01:400:42:5000:d6ff:feef:a597]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small09": {
+      "config": {
+        "HOST": "https://small09.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"
+      ],
+      "type": "persistent"
+    },
     "small06": {
       "config": {
-        "BUILD": "dev",
-        "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "both",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "https://small06.dfinity.network"
+        "HOST": "https://small06.testnet.dfinity.network"
       },
       "providers": [
         "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
@@ -175,15 +289,384 @@
     },
     "local": {
       "config": {
-        "BUILD": "dev",
         "FETCH_ROOT_KEY": true,
-        "REDIRECT_TO_LEGACY": "svelte",
-        "ENABLE_NEW_SPAWN_FEATURE": true,
-        "ENABLE_SNS_NEURONS": true,
-        "HOST": "http://localhost:8080"
+        "HOST": "http://localhost:8080",
+        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": false,
+          "ENABLE_CKTESTBTC": false
+        }
       },
       "bind": "127.0.0.1:8080",
       "type": "ephemeral"
+    },
+    "https___benchmarklarge_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://benchmarklarge.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___large01_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://large01.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___large02_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://large02.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___large03_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://large03.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___large04_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://large04.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___large05_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://large05.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium05_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium05.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium06_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium06.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium07_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium07.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium08_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium08.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium09_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium09.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "https___medium10_testnet_dfinity_network": {
+      "config": {
+        "HOST": "https://medium10.testnet.dfinity.network"
+      },
+      "type": "ephemeral"
+    },
+    "large01": {
+      "config": {
+        "HOST": "https://large01.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:f6ff:fef6:c05a]:8080",
+        "http://[2001:4d78:40d:0:5000:53ff:fe8a:5990]:8080",
+        "http://[2602:fb2b:100:10:5000:a8ff:fee0:e3dc]:8080",
+        "http://[2a00:fb01:400:42:5000:9fff:fef4:7014]:8080",
+        "http://[2607:f6f0:3004:1:5000:8aff:fe64:710b]:8080",
+        "http://[2001:4d78:40d:0:5000:b0ff:fe3d:2f1f]:8080",
+        "http://[2602:fb2b:100:10:5000:b7ff:fe7d:e6b4]:8080",
+        "http://[2a00:fb01:400:42:5000:38ff:fe58:e205]:8080"
+      ],
+      "type": "persistent"
+    },
+    "large03": {
+      "config": {
+        "HOST": "https://large03.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:bbff:fe41:e451]:8080",
+        "http://[2001:4d78:40d:0:5000:4dff:fe0b:d6a2]:8080",
+        "http://[2602:fb2b:100:10:5000:26ff:feeb:c89d]:8080",
+        "http://[2a00:fb01:400:42:5000:35ff:fe21:ba32]:8080",
+        "http://[2607:f6f0:3004:1:5000:2eff:fe3a:aa00]:8080",
+        "http://[2001:4d78:40d:0:5000:efff:fe65:333]:8080",
+        "http://[2602:fb2b:100:10:5000:6dff:fe62:98da]:8080",
+        "http://[2a00:fb01:400:42:5000:48ff:fe03:8e96]:8080"
+      ],
+      "type": "persistent"
+    },
+    "large04": {
+      "config": {
+        "HOST": "https://large04.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:3dff:fe4b:2aa0]:8080",
+        "http://[2001:4d78:40d:0:5000:67ff:fe59:7d35]:8080",
+        "http://[2602:fb2b:100:10:5000:45ff:fe1a:c4ae]:8080",
+        "http://[2a00:fb01:400:42:5000:28ff:fe9a:35fa]:8080",
+        "http://[2607:f6f0:3004:1:5000:6eff:fefd:ccdd]:8080",
+        "http://[2001:4d78:40d:0:5000:42ff:fe0f:b469]:8080",
+        "http://[2602:fb2b:100:10:5000:65ff:fe6a:b435]:8080",
+        "http://[2a00:fb01:400:42:5000:28ff:fec0:189a]:8080"
+      ],
+      "type": "persistent"
+    },
+    "large05": {
+      "config": {
+        "HOST": "https://large05.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:3dff:febf:9908]:8080",
+        "http://[2001:4d78:40d:0:5000:27ff:fea7:a1fe]:8080",
+        "http://[2602:fb2b:100:10:5000:b7ff:feb7:4bbb]:8080",
+        "http://[2a00:fb01:400:42:5000:9fff:fef4:10e0]:8080",
+        "http://[2607:f6f0:3004:1:5000:eaff:fe18:f5f6]:8080",
+        "http://[2001:4d78:40d:0:5000:69ff:fe10:ee13]:8080",
+        "http://[2602:fb2b:100:10:5000:3dff:fe68:9f95]:8080",
+        "http://[2a00:fb01:400:42:5000:58ff:fe36:c6b6]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium01": {
+      "config": {
+        "HOST": "https://medium01.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:fbff:feb9:875b]:8080",
+        "http://[2602:fb2b:100:10:5000:1fff:fefb:ac01]:8080",
+        "http://[2a00:fb01:400:42:5000:43ff:fe58:1cec]:8080",
+        "http://[2a00:fb01:400:42:5000:f0ff:fe75:5078]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium02": {
+      "config": {
+        "HOST": "https://medium02.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:c6ff:fe7c:8ac6]:8080",
+        "http://[2602:fb2b:100:10:5000:79ff:febf:fd27]:8080",
+        "http://[2a00:fb01:400:42:5000:30ff:fe0b:68d]:8080",
+        "http://[2a00:fb01:400:42:5000:5dff:fe30:d32e]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium03": {
+      "config": {
+        "HOST": "https://medium03.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:12ff:feec:cae3]:8080",
+        "http://[2602:fb2b:100:10:5000:6dff:fe9f:3530]:8080",
+        "http://[2a00:fb01:400:42:5000:c5ff:fe53:98c4]:8080",
+        "http://[2a00:fb01:400:42:5000:e0ff:fe77:a237]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium04": {
+      "config": {
+        "HOST": "https://medium04.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:d2ff:fe81:6264]:8080",
+        "http://[2602:fb2b:100:10:5000:63ff:fec2:8dae]:8080",
+        "http://[2a00:fb01:400:42:5000:9dff:feaf:edd3]:8080",
+        "http://[2a00:fb01:400:42:5000:4aff:fe5c:359b]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium05": {
+      "config": {
+        "HOST": "https://medium05.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:e6ff:fe0b:eca2]:8080",
+        "http://[2602:fb2b:100:10:5000:56ff:fe3b:a226]:8080",
+        "http://[2a00:fb01:400:42:5000:edff:fe6c:d1ec]:8080",
+        "http://[2a00:fb01:400:42:5000:8bff:fed7:7b01]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium06": {
+      "config": {
+        "HOST": "https://medium06.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:ffff:fe9e:83e5]:8080",
+        "http://[2602:fb2b:100:10:5000:bbff:fec3:69bc]:8080",
+        "http://[2a00:fb01:400:42:5000:dcff:fe2e:93d5]:8080",
+        "http://[2a00:fb01:400:42:5000:83ff:fef0:543e]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium07": {
+      "config": {
+        "HOST": "https://medium07.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:b4ff:fe50:57a0]:8080",
+        "http://[2602:fb2b:100:10:5000:d8ff:feb4:2a30]:8080",
+        "http://[2a00:fb01:400:42:5000:56ff:fe50:7df4]:8080",
+        "http://[2a00:fb01:400:42:5000:c5ff:fee9:21e9]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium08": {
+      "config": {
+        "HOST": "https://medium08.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:cdff:fe0f:4ff]:8080",
+        "http://[2602:fb2b:100:10:5000:8cff:fe0e:1fae]:8080",
+        "http://[2a00:fb01:400:42:5000:88ff:fe68:9323]:8080",
+        "http://[2a00:fb01:400:42:5000:78ff:fe3a:1f41]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium09": {
+      "config": {
+        "HOST": "https://medium09.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:73ff:fe41:db8e]:8080",
+        "http://[2602:fb2b:100:10:5000:d9ff:fe40:44be]:8080",
+        "http://[2a00:fb01:400:42:5000:64ff:fe75:4715]:8080",
+        "http://[2a00:fb01:400:42:5000:eeff:fe8b:e8bf]:8080"
+      ],
+      "type": "persistent"
+    },
+    "medium10": {
+      "config": {
+        "HOST": "https://medium10.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2602:fb2b:100:10:5000:71ff:fe1a:cf99]:8080",
+        "http://[2602:fb2b:100:10:5000:99ff:feeb:55a4]:8080",
+        "http://[2a00:fb01:400:42:5000:70ff:fe8f:f5a6]:8080",
+        "http://[2a00:fb01:400:42:5000:30ff:fef2:2886]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small01": {
+      "config": {
+        "HOST": "https://small01.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small02": {
+      "config": {
+        "HOST": "https://small02.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small03": {
+      "config": {
+        "HOST": "https://small03.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small04": {
+      "config": {
+        "HOST": "https://small04.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small05": {
+      "config": {
+        "HOST": "https://small05.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small07": {
+      "config": {
+        "HOST": "https://small07.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small08": {
+      "config": {
+        "HOST": "https://small08.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small10": {
+      "config": {
+        "HOST": "https://small10.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"
+      ],
+      "type": "persistent"
+    },
+    "small15": {
+      "config": {
+        "HOST": "https://small15.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"
+      ],
+      "type": "persistent"
+    },
+    "benchmarklarge": {
+      "config": {
+        "HOST": "https://benchmarklarge.testnet.dfinity.network"
+      },
+      "providers": [
+        "http://[2607:f6f0:3004:1:5000:84ff:fede:d302]:8080",
+        "http://[2001:4d78:40d:0:5000:8aff:febb:940]:8080",
+        "http://[2602:fb2b:100:10:5000:25ff:fea8:3102]:8080",
+        "http://[2a00:fb01:400:42:5000:47ff:fe24:18e3]:8080",
+        "http://[2607:f6f0:3004:1:5000:baff:fe21:1788]:8080",
+        "http://[2001:4d78:40d:0:5000:cbff:fe9f:7716]:8080",
+        "http://[2602:fb2b:100:10:5000:beff:fe60:7957]:8080",
+        "http://[2a00:fb01:400:42:5000:b7ff:fe18:16ee]:8080",
+        "http://[2607:f6f0:3004:1:5000:b7ff:fe39:7218]:8080",
+        "http://[2001:4d78:40d:0:5000:30ff:fe09:7347]:8080",
+        "http://[2602:fb2b:100:10:5000:a9ff:fe72:34d3]:8080",
+        "http://[2a00:fb01:400:42:5000:19ff:feba:4071]:8080",
+        "http://[2602:fb2b:100:10:5000:8fff:fe79:c97f]:8080",
+        "http://[2607:f6f0:3004:1:5000:8aff:fe15:9e70]:8080",
+        "http://[2a00:fb01:400:42:5000:3cff:fe52:9419]:8080",
+        "http://[2607:f6f0:3004:1:5000:ddff:fe03:161c]:8080",
+        "http://[2001:4d78:40d:0:5000:17ff:fe8f:1c33]:8080",
+        "http://[2602:fb2b:100:10:5000:88ff:feac:1e67]:8080",
+        "http://[2a00:fb01:400:42:5000:6eff:fe05:c0ee]:8080",
+        "http://[2607:f6f0:3004:1:5000:14ff:feaf:7279]:8080",
+        "http://[2001:4d78:40d:0:5000:92ff:fe4a:77af]:8080"
+      ],
+      "type": "persistent"
     }
   },
   "defaults": {
@@ -192,15 +675,29 @@
     },
     "network": {
       "config": {
+        "FETCH_ROOT_KEY": true,
         "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
-        "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": false,
+          "ENABLE_INSTANT_UNLOCK": false
+        }
       }
     },
     "build": {
       "config": {
-        "RUSTC_VERSION": "1.58.1",
+        "NODE_VERSION": "18.14.2",
+        "WASM_NM_VERSION": "0.2.0",
+        "IC_WASM_VERSION": "0.3.6",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IC_COMMIT": "54a57a1f6f1ed99e66d6cde3100a0565e826385f"
+        "IDL2JSON_VERSION": "0.8.5",
+        "OPTIMIZER_VERSION": "0.3.6",
+        "DIDC_VERSION": "2022-11-17",
+        "IC_COMMIT": "26b480f775222265f4369bc485d502a140f15564"
       },
       "packtool": ""
     }

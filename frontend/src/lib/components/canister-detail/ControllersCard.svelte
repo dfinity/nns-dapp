@@ -1,13 +1,13 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import { i18n } from "../../stores/i18n";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { i18n } from "$lib/stores/i18n";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import Value from "../ui/Value.svelte";
+  } from "$lib/types/canister-detail.context";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
+  import { Value } from "@dfinity/gix-components";
   import AddCanisterControllerButton from "./AddCanisterControllerButton.svelte";
   import RemoveCanisterControllerButton from "./RemoveCanisterControllerButton.svelte";
 
@@ -36,7 +36,8 @@
 </CardInfo>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+
   .actions {
     display: flex;
     justify-content: flex-end;

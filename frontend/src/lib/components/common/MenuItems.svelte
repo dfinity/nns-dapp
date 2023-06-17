@@ -1,83 +1,105 @@
 <script lang="ts">
-  import MenuItem from "../ui/MenuItem.svelte";
-  import IconWallet from "../../icons/IconWallet.svelte";
-  import IconLockOpen from "../../icons/IconLockOpen.svelte";
-  import IconHowToVote from "../../icons/IconHowToVote.svelte";
-  import IconSettingsApplications from "../../icons/IconSettingsApplications.svelte";
+  import {
+    IconExplore,
+    IconUsers,
+    IconPassword,
+    IconRocketLaunch,
+    IconWallet,
+    MenuItem,
+  } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import { i18n } from "../../stores/i18n";
-  import { baseHref } from "../../utils/route.utils";
-  import { isRoutePath } from "../../utils/app-path.utils";
-  import { AppPath } from "../../constants/routes.constants";
-  import { routeStore } from "../../stores/route.store";
-  import IconRocketLaunch from "../../icons/IconRocketLaunch.svelte";
-  import { IS_TESTNET } from "../../constants/environment.constants";
-  import BadgeNew from "../ui/BadgeNew.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import GetTokens from "$lib/components/ic/GetTokens.svelte";
+  import {
+    accountsPathStore,
+    canistersPathStore,
+    neuronsPathStore,
+    proposalsPathStore,
+  } from "$lib/derived/paths.derived";
+  import { keyOf } from "$lib/utils/utils";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
 
-  const baseUrl: string = baseHref();
-
-  const isSelectedPath = (paths: AppPath[]): boolean =>
-    paths.find((path: AppPath) =>
-      isRoutePath({ path, routePath: $routeStore.path })
-    ) !== undefined;
-
-  const routes: {
+  let routes: {
     context: string;
+    href: string;
     selected: boolean;
     label: string;
     icon: typeof SvelteComponent;
     statusIcon?: typeof SvelteComponent;
-  }[] = [
+  }[];
+  $: routes = [
     {
       context: "accounts",
-      selected: isSelectedPath([AppPath.Accounts, AppPath.Wallet]),
-      label: "accounts",
+      href: $accountsPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Accounts, AppPath.Wallet],
+      }),
+      label: "tokens",
       icon: IconWallet,
     },
     {
       context: "neurons",
-      selected: isSelectedPath([AppPath.Neurons, AppPath.NeuronDetail]),
+      href: $neuronsPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Neurons, AppPath.Neuron],
+      }),
       label: "neurons",
-      icon: IconLockOpen,
+      icon: IconPassword,
     },
     {
       context: "proposals",
-      selected: isSelectedPath([AppPath.Proposals, AppPath.ProposalDetail]),
+      href: $proposalsPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Proposals, AppPath.Proposal],
+      }),
       label: "voting",
-      icon: IconHowToVote,
+      icon: IconUsers,
+    },
+    {
+      context: "launchpad",
+      href: `${AppPath.Launchpad}`,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Launchpad, AppPath.Project],
+      }),
+      label: "launchpad",
+      icon: IconRocketLaunch,
     },
     {
       context: "canisters",
-      selected: isSelectedPath([AppPath.Canisters, AppPath.CanisterDetail]),
+      href: $canistersPathStore,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Canisters, AppPath.Canister],
+      }),
       label: "canisters",
-      icon: IconSettingsApplications,
+      icon: IconExplore,
     },
-    // Launchpad should not be visible on mainnet
-    ...(IS_TESTNET
-      ? [
-          {
-            context: "launchpad",
-            selected: isSelectedPath([
-              AppPath.Launchpad,
-              AppPath.ProjectDetail,
-            ]),
-            label: "launchpad",
-            icon: IconRocketLaunch,
-            statusIcon: BadgeNew,
-          },
-        ]
-      : []),
   ];
 </script>
 
-{#each routes as { context, label, icon, statusIcon, selected }}
-  <MenuItem
-    href={`${baseUrl}#/${context}`}
-    testId={`menuitem-${context}`}
-    {selected}
-  >
-    <svelte:component this={icon} slot="icon" />
-    <svelte:fragment>{$i18n.navigation[label]}</svelte:fragment>
-    <svelte:component this={statusIcon} slot="statusIcon" />
-  </MenuItem>
-{/each}
+<TestIdWrapper testId="menu-items-component">
+  {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
+    <MenuItem {href} testId={`menuitem-${context}`} {selected}>
+      <svelte:component this={icon} slot="icon" />
+      <svelte:fragment
+        >{keyOf({ obj: $i18n.navigation, key: label })}</svelte:fragment
+      >
+      <svelte:component this={statusIcon} slot="statusIcon" />
+    </MenuItem>
+  {/each}
+
+  {#if IS_TESTNET}
+    <GetTokens />
+  {/if}
+
+  <MenuMetrics />
+</TestIdWrapper>

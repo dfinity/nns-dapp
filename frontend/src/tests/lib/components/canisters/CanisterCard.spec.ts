@@ -2,9 +2,22 @@
  * @jest-environment jsdom
  */
 
+import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
+import { mockCanister } from "$tests/mocks/canisters.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import CanisterCard from "../../../../lib/components/canisters/CanisterCard.svelte";
-import { mockCanister } from "../../../mocks/canisters.mock";
+
+jest.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: jest.fn(() =>
+    Promise.resolve({
+      startCyclesTimer: () => {
+        // Do nothing
+      },
+      stopCyclesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
 
 describe("CanisterCard", () => {
   it("renders a Card", () => {
@@ -68,7 +81,7 @@ describe("CanisterCard", () => {
     const button = queryByRole("button");
 
     expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+      `Copy to clipboard: ${mockCanister.canister_id.toText()}`
     );
   });
 
@@ -82,7 +95,7 @@ describe("CanisterCard", () => {
     const button = queryByRole("button");
 
     expect(button?.getAttribute("aria-label")).toEqual(
-      `Copy "${mockCanister.canister_id.toText()}" to clipboard`
+      `Copy to clipboard: ${mockCanister.canister_id.toText()}`
     );
   });
 });

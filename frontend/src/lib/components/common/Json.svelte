@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { bytesToHexString, isHash } from "../../utils/utils";
-  import { isPrincipal } from "../../utils/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { isHash, stringifyJson } from "$lib/utils/utils";
+  import { isPrincipal } from "$lib/utils/utils";
+  import TestIdWrapper from "./TestIdWrapper.svelte";
 
   export let json: unknown | undefined = undefined;
-  export let defaultExpandedLevel: number = Infinity;
-  export let _key: string = "";
-  export let _level: number = 1;
+  export let defaultExpandedLevel = Infinity;
+  export let _key = "";
+  export let _level = 1;
   export let _collapsed: boolean | undefined = undefined;
 
   type ValueType =
@@ -27,38 +28,6 @@
     if (Array.isArray(json) && isHash(json)) return "hash";
     return typeof value;
   };
-  const stringify = (value: unknown): string | object => {
-    switch (typeof value) {
-      case "object": {
-        if (value === null) {
-          return "null";
-        }
-        // Represent Principals as strings rather than as byte arrays when serializing to JSON strings
-        if (isPrincipal(value)) {
-          const asText = value.toString();
-          if (asText !== "[object Object]") {
-            // To not stringify NOT-Principal object that contains _isPrincipal field
-            return `"${asText}"`;
-          }
-        }
-        // optimistic hash stringifying
-        if (Array.isArray(value) && isHash(value)) {
-          return bytesToHexString(value);
-        }
-        return value;
-      }
-      case "string":
-        return `"${value}"`;
-      case "bigint":
-        return value.toString();
-      case "function":
-        return "f () { ... }";
-      case "symbol":
-        return value.toString();
-      default:
-        return `${value}`;
-    }
-  };
 
   let valueType: ValueType;
   let value: unknown;
@@ -74,7 +43,7 @@
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
-    value = isExpandable ? json : stringify(json);
+    value = isExpandable ? json : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -88,76 +57,64 @@
   let title: string | undefined;
   $: title = valueType === "hash" ? (json as number[]).join() : undefined;
 
-  let collapsed: boolean = true;
+  let collapsed = true;
   $: collapsed =
     _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
   const toggle = () => (collapsed = !collapsed);
 </script>
 
-{#if isExpandable && hasChildren}
-  {#if collapsed}
-    <span
+<TestIdWrapper testId={root ? "json-root-component" : "json-component"}>
+  {#if isExpandable && hasChildren}
+    <button
       data-tid={testId}
       class="key"
       class:expanded={!collapsed}
       class:collapsed
       class:root
       class:arrow={isExpandable && hasChildren}
-      role="button"
       aria-label={$i18n.core.toggle}
       tabindex="0"
       on:click|stopPropagation={toggle}
       >{keyLabel}
-      <span class="bracket">{openBracket} ... {closeBracket}</span>
-    </span>
-  {:else}
-    <!-- key -->
-    <span
-      data-tid={testId}
-      class="key"
-      class:expanded={!collapsed}
-      class:collapsed
-      class:root
-      class:arrow={isExpandable && hasChildren}
-      role="button"
-      aria-label={$i18n.core.toggle}
-      tabindex="0"
-      on:click|stopPropagation={toggle}
-      >{keyLabel}<span class="bracket open">{openBracket}</span></span
+      {#if collapsed}
+        <span class="bracket">{openBracket} ... {closeBracket}</span>
+      {:else}
+        <span class="bracket open">{openBracket}</span>
+      {/if}
+    </button>
+    {#if !collapsed}
+      <!-- children -->
+      <ul>
+        {#each children as [key, value]}
+          <li>
+            <svelte:self
+              json={value}
+              _key={key}
+              {defaultExpandedLevel}
+              _level={_level + 1}
+            />
+          </li>
+        {/each}
+      </ul>
+      <span class="bracket close">{closeBracket}</span>
+    {/if}
+  {:else if isExpandable}
+    <!-- no childre -->
+    <span data-tid={testId} class="key" class:root
+      >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
     >
-    <!-- children -->
-    <ul>
-      {#each children as [key, value]}
-        <li>
-          <svelte:self
-            json={value}
-            _key={key}
-            {defaultExpandedLevel}
-            _level={_level + 1}
-          />
-        </li>
-      {/each}
-    </ul>
-    <span class="bracket close">{closeBracket}</span>
+  {:else}
+    <!-- key:value -->
+    <span data-tid={testId} class="key-value">
+      {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+        >{/if}<span class="value {valueType}" {title}>{value}</span></span
+    >
   {/if}
-{:else if isExpandable}
-  <!-- no childre -->
-  <span data-tid={testId} class="key" class:root
-    >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
-  >
-{:else}
-  <!-- key:value -->
-  <span data-tid={testId} class="key-value">
-    <span class="key" class:root>{keyLabel}</span><span
-      class="value {valueType}"
-      {title}>{value}</span
-    ></span
-  >
-{/if}
+</TestIdWrapper>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
   .root,
   .root ~ ul,
@@ -170,16 +127,22 @@
     margin: 0;
     padding: 0 0 0 var(--padding-1_5x);
     list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
   }
   .key {
     display: inline-block;
     position: relative;
 
     color: var(--label-color);
+
+    margin-right: var(--padding-0_5x);
   }
-  .key-value {
-    // word-wrap long values in it's column
-    display: inline-flex;
+  .value {
+    // Values can be strings of JSON and long. We want to break the value, so that the keys stay on the same line.
+    word-break: break-all;
   }
   .arrow {
     @include interaction.tappable;
@@ -209,9 +172,11 @@
       position: absolute;
       left: 0;
       top: 0;
+      // Move left to compensate for the padding of the ul
+      // Move down to componsate for the gap between li
       transform: translate(
         calc(-1 * var(--padding-1_5x)),
-        calc(0.3 * var(--padding))
+        calc(0.8 * var(--padding))
       );
       font-size: var(--padding);
     }
@@ -243,7 +208,6 @@
     color: var(--json-principal-color);
   }
   .value.hash {
-    word-break: break-all;
     color: var(--json-hash-color);
   }
   .value.bigint {

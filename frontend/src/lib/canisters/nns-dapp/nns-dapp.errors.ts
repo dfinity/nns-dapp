@@ -1,4 +1,4 @@
-import type { I18nSubstitutions } from "../../utils/i18n.utils";
+import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 
 export abstract class AccountTranslateError extends Error {
   // Optional substitutions values that can be used to fill the error message
@@ -66,3 +66,5 @@ export class UnknownProposalPayloadError extends Error {
 
 export class ProposalPayloadNotFoundError extends Error {}
 export class ProposalPayloadTooLargeError extends Error {}
+
+export class NotAuthorizedError extends Error {}

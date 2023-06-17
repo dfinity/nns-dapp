@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Deploys the NNS canisters with the following modifications:
+	- The nns-dapp wasm is built from the local codebase.
+	- The internet_identity is the one specified in dfx.json.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=f long=features desc="The feature set you would like in the test environment" variable=DFX_NETWORK_FEATURES default="nns"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+: "Inject the nns-dapp into the wasm cache."
+"$SOURCE_DIR"/dfx-software-nd-cache
+
+: "Get our chosen version of II and inject it into the wasm cache."
+"$SOURCE_DIR"/dfx-software-ii-cache
+
+case "$DFX_NETWORK_FEATURES" in
+nns)
+  : "Deploy nns-dapp with other NNS canisters"
+  dfx start --background --clean
+  dfx nns install
+  ;;
+sns)
+  : "Deploy nns-dapp with NNS and SNS canisters"
+  : "Note: This is done with a script from the snsdemo repository."
+  dfx-sns-demo --ic_commit "$(jq -r '.defaults.build.config.IC_COMMIT' "${SOURCE_DIR}/../dfx.json")"
+  ;;
+*)
+  {
+    echo "ERROR: Unsupported feature set: '$DFX_NETWORK_FEATURES'"
+    exit 1
+  } >&2
+  ;;
+esac
+
+: "Verify that deployment has the expected canisters"
+for canister_name in nns-dapp internet_identity; do
+  "$SOURCE_DIR/dfx-canister-check-wasm-hash" --canister "$canister_name"
+done

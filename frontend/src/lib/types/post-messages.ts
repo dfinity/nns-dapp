@@ -1,6 +1,25 @@
-import type { LocalStorageAuth } from "./auth";
+export type PostMessageRequest =
+  | "nnsStartIdleTimer"
+  | "nnsStopIdleTimer"
+  | "nnsStartMetricsTimer"
+  | "nnsStopMetricsTimer"
+  | "nnsStartCyclesTimer"
+  | "nnsStopCyclesTimer";
 
-export interface PostMessageEventData {
-  msg: "nnsStartIdleTimer" | "nnsStopIdleTimer" | "nnsSignOut";
-  data?: LocalStorageAuth;
+export type PostMessageResponse =
+  | "nnsSignOut"
+  | "nnsSyncMetrics"
+  | "nnsSyncCanister"
+  | "nnsDelegationRemainingTime";
+
+export type PostMessageData = object;
+
+export interface PostMessageDataActor extends PostMessageData {
+  host: string;
+  fetchRootKey: boolean;
+}
+
+export interface PostMessage<T extends PostMessageData> {
+  msg: PostMessageRequest | PostMessageResponse;
+  data: T;
 }

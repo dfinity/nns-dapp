@@ -1,11 +1,10 @@
 <script lang="ts">
   import { Vote } from "@dfinity/nns";
-  import IconThumbDown from "../../icons/IconThumbDown.svelte";
-  import IconThumbUp from "../../icons/IconThumbUp.svelte";
-  import { i18n } from "../../stores/i18n";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatVotingPower } from "../../utils/neuron.utils";
-  import ConfirmationModal from "../ConfirmationModal.svelte";
+  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import ConfirmationModal from "$lib/modals/common/ConfirmationModal.svelte";
 
   export let voteType: Vote;
   export let votingPower: bigint;
@@ -13,7 +12,7 @@
 
 <ConfirmationModal on:nnsClose on:nnsConfirm>
   <div>
-    {#if voteType === Vote.YES}
+    {#if voteType === Vote.Yes}
       <IconThumbUp />
       <h4>{$i18n.proposal_detail__vote.confirm_adopt_headline}</h4>
       <p>
@@ -34,8 +33,8 @@
 </ConfirmationModal>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
-  @use "../../themes/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   div {
     padding: var(--padding-2x) 0;

@@ -1,24 +1,25 @@
 /**
  * @jest-environment jsdom
  */
+import { LedgerConnectionState } from "$lib/constants/ledger.constants";
+import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
+import { addSubAccount } from "$lib/services/accounts.services";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import { LedgerConnectionState } from "../../../../lib/constants/ledger.constants";
-import AddAccountModal from "../../../../lib/modals/accounts/AddAccountModal.svelte";
-import { addSubAccount } from "../../../../lib/services/accounts.services";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+import type { SvelteComponent } from "svelte";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-jest.mock("../../../../lib/services/accounts.services", () => {
+jest.mock("$lib/services/accounts.services", () => {
   return {
     addSubAccount: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
     connectToHardwareWalletProxy: jest
       .fn()
@@ -48,7 +49,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateSubaccountStep = async ({
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.new_linked_title);
     expect(accountCard).not.toBeNull();
 
@@ -66,7 +67,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateHardwareWalletStep = async ({
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.attach_hardware_title);
     expect(accountCard).not.toBeNull();
 
@@ -169,8 +170,8 @@ describe("AddAccountModal", () => {
     await testSubaccount(extraChecks);
   });
 
-  const goBack = async ({ container, getByText, title }) => {
-    const back = container.querySelector("button.back") as HTMLButtonElement;
+  const goBack = async ({ getByTestId, getByText, title }) => {
+    const back = getByTestId("back") as HTMLButtonElement;
     fireEvent.click(back);
 
     await waitFor(() =>
@@ -181,7 +182,7 @@ describe("AddAccountModal", () => {
   const shouldNavigateHardwareWalletConnect = async ({
     container,
     queryByText,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const input = container.querySelector("input") as HTMLInputElement;
     await fireEvent.input(input, { target: { value: "test" } });
 
@@ -206,12 +207,12 @@ describe("AddAccountModal", () => {
     const renderResult = await renderModal({ component: AddAccountModal });
     await shouldNavigateSubaccountStep(renderResult);
 
-    const { container, getByText } = renderResult;
-    await goBack({ container, getByText, title: en.accounts.add_account });
+    const { getByTestId, getByText } = renderResult;
+    await goBack({ getByTestId, getByText, title: en.accounts.add_account });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
-    await goBack({ container, getByText, title: en.accounts.add_account });
+    await goBack({ getByTestId, getByText, title: en.accounts.add_account });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
@@ -221,7 +222,7 @@ describe("AddAccountModal", () => {
   const shouldAttachWallet = async ({
     getByTestId,
     component,
-  }: RenderResult) => {
+  }: RenderResult<SvelteComponent>) => {
     const connect = getByTestId("ledger-connect-button") as HTMLButtonElement;
 
     fireEvent.click(connect);

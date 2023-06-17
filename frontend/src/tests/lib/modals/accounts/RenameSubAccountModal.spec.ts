@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import RenameSubAccountModal from "../../../../lib/modals/accounts/RenameSubAccountModal.svelte";
-import type { Account } from "../../../../lib/types/account";
-import { mockSubAccount } from "../../../mocks/accounts.store.mock";
-import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModalSelectedAccountContextWrapper } from "../../../mocks/modal.mock";
+import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
+import type { Account } from "$lib/types/account";
+import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModalSelectedAccountContextWrapper } from "$tests/mocks/modal.mock";
 
 describe("RenameSubAccountModal", () => {
   const renderTestCmp = (account: Account | undefined) =>

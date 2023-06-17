@@ -77,7 +77,7 @@ const download = ({ filename, blob }: { filename: string; blob: Blob }) => {
   a.style.display = "none";
   document.body.appendChild(a);
 
-  const url: string = window.URL.createObjectURL(blob);
+  const url = window.URL.createObjectURL(blob);
 
   a.href = url;
   a.download = filename;

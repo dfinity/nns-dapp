@@ -1,5 +1,6 @@
 **/*.wasm
 assets.tar.xz
+sourcemaps.tar.xz
 build-inputs.txt
 out
 
@@ -97,12 +98,11 @@ out
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 
-proxy/build/
-proxy/node_modules
 canister_ids.json
-*-deployment-report.json
+canister_ids.json.*
 e2e-tests/node_modules
 /deployment-config.json
+nns-dapp-arg*
 release/
 
 .dfx/
@@ -110,5 +110,9 @@ target/
 dist/
 node_modules/
 web-assets/
+playwright-report/
+playwright-results/
 
 **/*.rs.bk
+
+tmp

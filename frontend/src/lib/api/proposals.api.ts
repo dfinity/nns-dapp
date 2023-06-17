@@ -1,18 +1,16 @@
+import { createAgent } from "$lib/api/agent.api";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
+import { HOST } from "$lib/constants/environment.constants";
+import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
+import { enumsExclude } from "$lib/utils/enum.utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   ListProposalsResponse,
-  NeuronId,
   ProposalId,
   ProposalInfo,
-  Vote,
 } from "@dfinity/nns";
 import { GovernanceCanister, Topic } from "@dfinity/nns";
-import { DEFAULT_LIST_PAGINATION_LIMIT } from "../constants/constants";
-import { HOST } from "../constants/environment.constants";
-import type { ProposalsFiltersStore } from "../stores/proposals.store";
-import { createAgent } from "../utils/agent.utils";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
-import { enumsExclude } from "../utils/enum.utils";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({
@@ -38,18 +36,18 @@ export const queryProposals = async ({
 
   const { rewards, status, topics }: ProposalsFiltersStore = filters;
 
-  // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
-  // sortedByDescending((element) => element.proposalTimestamp);
-  // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
-
   const { proposals }: ListProposalsResponse = await governance.listProposals({
     request: {
       limit: DEFAULT_LIST_PAGINATION_LIMIT,
       beforeProposal,
-      excludeTopic: enumsExclude<Topic>({
-        obj: Topic as unknown as Topic,
-        values: topics,
-      }),
+      excludeTopic:
+        // We want all topics if the filter is empty
+        topics.length === 0
+          ? []
+          : enumsExclude<Topic>({
+              obj: Topic as unknown as Topic,
+              values: topics,
+            }),
       includeRewardStatus: rewards,
       includeStatus: status,
     },
@@ -128,36 +126,4 @@ export const queryProposalPayload = async ({
   );
 
   return response;
-};
-
-export const registerVote = async ({
-  neuronId,
-  proposalId,
-  vote,
-  identity,
-}: {
-  neuronId: NeuronId;
-  proposalId: ProposalId;
-  vote: Vote;
-  identity: Identity;
-}): Promise<void> => {
-  logWithTimestamp(
-    `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
-  );
-
-  const governance: GovernanceCanister = GovernanceCanister.create({
-    agent: await createAgent({ identity, host: HOST }),
-  });
-
-  await governance.registerVote({
-    neuronId,
-    vote,
-    proposalId,
-  });
-
-  logWithTimestamp(
-    `Registering Vote (${hashCode(proposalId)}, ${hashCode(
-      neuronId
-    )}) complete.`
-  );
 };

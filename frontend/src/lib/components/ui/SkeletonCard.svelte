@@ -1,13 +1,14 @@
-<!-- adapted source: https://github.com/ionic-team/ionic-framework/tree/main/core/src/components/skeleton-text -->
 <script lang="ts">
-  import Card from "./Card.svelte";
+  import { Card } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
-  import SkeletonParagraph from "./SkeletonParagraph.svelte";
+  import { SkeletonText } from "@dfinity/gix-components";
   import type { SvelteComponent } from "svelte";
-  import type { CardType } from "../../types/card";
+  import type { CardType } from "$lib/types/card";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
-  export let size: "medium" | "large" = "medium";
+  export let size: "small" | "medium" | "large" = "small";
   export let cardType: CardType = "card";
+  export let separator = false;
 
   const cards: Record<CardType, typeof SvelteComponent> = {
     card: Card,
@@ -17,22 +18,30 @@
 
 <svelte:component this={cards[cardType]} testId="skeleton-card">
   <div class="small" slot="start">
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="small" slot="end">
-    <SkeletonParagraph />
+    <SkeletonText />
   </div>
   <div class="content">
-    <SkeletonParagraph />
-    <SkeletonParagraph />
+    <SkeletonText />
+    <SkeletonText />
+
+    {#if ["large", "medium"].includes(size)}
+      <SkeletonText />
+      <SkeletonText />
+    {/if}
+
     {#if size === "large"}
-      <SkeletonParagraph />
-      <SkeletonParagraph />
-      <SkeletonParagraph />
-      <SkeletonParagraph />
+      <SkeletonText />
+      <SkeletonText />
     {/if}
   </div>
 </svelte:component>
+
+{#if separator}
+  <Separator />
+{/if}
 
 <style lang="scss">
   .small {

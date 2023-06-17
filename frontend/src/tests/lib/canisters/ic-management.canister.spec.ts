@@ -1,17 +1,17 @@
-import type { ManagementCanisterRecord } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { toCanisterDetails } from "../../../lib/canisters/ic-management/converters";
-import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
-import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
-import type { CanisterStatusResponse } from "../../../lib/canisters/ic-management/ic-management.types";
-import { createAgent } from "../../../lib/utils/agent.utils";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+import { createAgent } from "$lib/api/agent.api";
+import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
+import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterId,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
+import type { ManagementCanisterRecord } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: ManagementCanisterRecord) => {

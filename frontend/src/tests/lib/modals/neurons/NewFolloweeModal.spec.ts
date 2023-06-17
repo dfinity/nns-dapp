@@ -2,32 +2,29 @@
  * @jest-environment jsdom
  */
 
-import { Topic } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import NewFolloweeModal from "../../../../lib/modals/neurons/NewFolloweeModal.svelte";
-import {
-  addFollowee,
-  removeFollowee,
-} from "../../../../lib/services/neurons.services";
-import { authStore } from "../../../../lib/stores/auth.store";
-import { knownNeuronsStore } from "../../../../lib/stores/knownNeurons.store";
-import { mockAuthStoreSubscribe } from "../../../mocks/auth.store.mock";
-import en from "../../../mocks/i18n.mock";
+import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
+import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
+import { authStore } from "$lib/stores/auth.store";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockFullNeuron,
   mockKnownNeuron,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { Topic } from "@dfinity/nns";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("../../../../lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
     addFollowee: jest.fn().mockResolvedValue(undefined),
     removeFollowee: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn(),
   };

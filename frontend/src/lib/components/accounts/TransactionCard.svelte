@@ -1,58 +1,39 @@
 <script lang="ts">
-  import type { Account } from "../../types/account";
-  import CardInfo from "../ui/CardInfo.svelte";
-  import DateSeconds from "../ui/DateSeconds.svelte";
-  import ICP from "../ic/ICP.svelte";
-  import Identifier from "../ui/Identifier.svelte";
-  import type { ICP as ICPType } from "@dfinity/nns";
+  import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import Identifier from "$lib/components/ui/Identifier.svelte";
+  import type { Token } from "@dfinity/nns";
+  import { i18n } from "$lib/stores/i18n";
+  import { transactionName } from "$lib/utils/transactions.utils";
+  import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
   import type {
-    AccountIdentifierString,
     Transaction,
-  } from "../../canisters/nns-dapp/nns-dapp.types";
-  import { i18n } from "../../stores/i18n";
-  import {
     AccountTransactionType,
-    mapTransaction,
-    transactionName,
-  } from "../../utils/transactions.utils";
-  import { toastsStore } from "../../stores/toasts.store";
+  } from "$lib/types/transaction";
+  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/nns";
 
-  export let account: Account;
   export let transaction: Transaction;
-  export let toSelfTransaction: boolean = false;
+  export let toSelfTransaction = false;
+  export let token: Token;
+  export let descriptions: Record<string, string> | undefined = undefined;
 
   let type: AccountTransactionType;
   let isReceive: boolean;
   let isSend: boolean;
-  let from: AccountIdentifierString | undefined;
-  let to: AccountIdentifierString | undefined;
-  let displayAmount: ICPType;
+  let from: string | undefined;
+  let to: string | undefined;
+  let displayAmount: bigint;
   let date: Date;
-
-  $: account,
-    transaction,
-    (() => {
-      try {
-        ({ type, isReceive, isSend, from, to, displayAmount, date } =
-          mapTransaction({
-            transaction,
-            toSelfTransaction,
-            account,
-          }));
-      } catch (err: unknown) {
-        toastsStore.error(
-          err instanceof Error
-            ? { labelKey: err.message }
-            : { labelKey: "error.unknown", err }
-        );
-      }
-    })();
+  $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
 
   let headline: string;
   $: headline = transactionName({
     type,
     isReceive: isReceive || toSelfTransaction,
     labels: $i18n.transaction_names,
+    tokenSymbol: token.symbol,
   });
 
   let label: string | undefined;
@@ -62,38 +43,132 @@
       : isSend
       ? $i18n.wallet.direction_to
       : undefined;
+
+  let description: string | undefined;
+  $: description = descriptions?.[type];
+
   let identifier: string | undefined;
   $: identifier = isReceive ? from : to;
+
   let seconds: number;
   $: seconds = date.getTime() / 1000;
 </script>
 
-<hr />
-
-<CardInfo testId="transaction-card">
-  <div slot="start" class="title">
-    <h3>{headline}</h3>
+<article data-tid="transaction-card">
+  <div class="icon" class:send={!isReceive}>
+    <IconNorthEast size="24px" />
   </div>
 
-  <ICP
-    slot="end"
-    icp={displayAmount}
-    sign={isReceive || toSelfTransaction ? "+" : "-"}
-    detailed
-  />
+  <div class="transaction">
+    <KeyValuePair>
+      <h3 slot="key" class="value title">{headline}</h3>
 
-  <DateSeconds {seconds} />
+      <AmountDisplay
+        slot="value"
+        amount={TokenAmount.fromE8s({ amount: displayAmount, token })}
+        sign={isReceive || toSelfTransaction ? "+" : "-"}
+        detailed
+        inline
+      />
+    </KeyValuePair>
 
-  {#if identifier !== undefined}
-    <Identifier size="medium" {label} {identifier} />
-  {/if}
-</CardInfo>
+    <ColumnRow>
+      <div slot="start" class="identifier">
+        {#if nonNullish(description)}
+          <p data-tid="transaction-description"><Html text={description} /></p>
+        {/if}
+
+        {#if nonNullish(identifier)}
+          <Identifier size="medium" {label} {identifier} />
+        {/if}
+      </div>
+
+      <div slot="end" class="date label" data-tid="transaction-date">
+        <DateSeconds {seconds} />
+      </div>
+    </ColumnRow>
+  </div>
+</article>
 
 <style lang="scss">
-  @use "../../themes/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  article {
+    padding-bottom: var(--padding-2x);
+
+    @include media.min-width(small) {
+      padding-bottom: var(--padding);
+    }
+
+    display: grid;
+    grid-template-columns: 48px auto;
+    align-items: flex-start;
+    column-gap: var(--padding-2x);
+
+    &:first-of-type {
+      margin-top: var(--padding-6x);
+    }
+  }
 
   .title {
-    @include card.stacked-title;
     @include card.title;
+    word-break: break-word;
+    --text-white-space: wrap;
+  }
+
+  .identifier {
+    @include media.min-width(small) {
+      max-width: 60%;
+    }
+  }
+
+  .date {
+    min-width: fit-content;
+    text-align: right;
+
+    @include media.min-width(small) {
+      margin-top: var(--padding);
+    }
+
+    :global(p) {
+      color: inherit;
+    }
+  }
+
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: rotate(90deg);
+
+    background: var(--positive-emphasis-light);
+    color: var(--positive-emphasis);
+
+    border-radius: var(--border-radius);
+
+    width: var(--padding-6x);
+    aspect-ratio: 1 / 1;
+
+    margin: var(--padding-0_5x) 0;
+
+    &.send {
+      transform: rotate(270deg);
+      background: var(--background);
+      color: var(--disable-contrast);
+    }
+  }
+
+  @include media.dark-theme {
+    .icon {
+      background: rgba(var(--positive-emphasis-rgb), 0.3);
+      color: var(--positive-emphasis);
+
+      &.send {
+        background: var(--card-background);
+        color: var(--disable-contrast);
+      }
+    }
   }
 </style>

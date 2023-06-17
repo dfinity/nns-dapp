@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
   import BallotSummary from "./BallotSummary.svelte";
-  import { i18n } from "../../../stores/i18n";
-  import { ballotsWithDefinedProposal } from "../../../utils/neuron.utils";
-  import InfiniteScroll from "../../ui/InfiniteScroll.svelte";
-  import { debounce } from "../../../utils/utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
+  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { debounce } from "@dfinity/utils";
 
   export let neuron: NeuronInfo | undefined;
 
@@ -14,21 +14,24 @@
   // Each `BallotSummary` fetches the proposal from the canister.
   // We want to avoid making too many calls, since a neuron can vote in many proposals.
   let ballotsToShow: Required<BallotInfo>[] = [];
-  let ballotsIndex: number = PAGE_LIMIT;
+  let ballotsIndex = PAGE_LIMIT;
   $: ballots = neuron === undefined ? [] : ballotsWithDefinedProposal(neuron);
   $: ballotsToShow = ballots.slice(0, ballotsIndex);
+
+  let disableInfiniteScroll = false;
 
   // We fake fetching the next `PAGE_LIMIT` ballots.
   const nextPage = debounce(() => {
     ballotsIndex += PAGE_LIMIT;
     fakeLoading = false;
   });
-  let fakeLoading: boolean = false;
+  let fakeLoading = false;
   const showMore = () => {
     if (fakeLoading) {
       return;
     }
     if (ballotsIndex >= ballots.length) {
+      disableInfiniteScroll = true;
       return;
     }
     fakeLoading = true;
@@ -45,7 +48,7 @@
       <span>{$i18n.neuron_detail.vote}</span>
     </h4>
 
-    <InfiniteScroll pageLimit={PAGE_LIMIT} on:nnsIntersect={showMore}>
+    <InfiniteScroll on:nnsIntersect={showMore} disabled={disableInfiniteScroll}>
       {#each ballotsToShow as ballot}
         <li>
           <BallotSummary {ballot} />

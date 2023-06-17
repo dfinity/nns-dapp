@@ -2,19 +2,20 @@
  * @jest-environment jsdom
  */
 
-import { Topic, type NeuronInfo } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
-import NeuronFollowingCard from "../../../../../lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
-import { listKnownNeurons } from "../../../../../lib/services/knownNeurons.services";
-import { authStore } from "../../../../../lib/stores/auth.store";
+import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
+import { listKnownNeurons } from "$lib/services/known-neurons.services";
+import { authStore } from "$lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-} from "../../../../mocks/auth.store.mock";
-import en from "../../../../mocks/i18n.mock";
-import { mockFullNeuron, mockNeuron } from "../../../../mocks/neurons.mock";
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { render } from "@testing-library/svelte";
+import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-jest.mock("../../../../../lib/services/knownNeurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
     listKnownNeurons: jest.fn().mockResolvedValue(undefined),
   };
@@ -47,9 +48,10 @@ describe("NeuronFollowingCard", () => {
   });
 
   it("should render texts", () => {
-    const { getByText } = render(NeuronFollowingCard, {
+    const { getByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: NeuronFollowingCard,
       },
     });
 
@@ -60,38 +62,45 @@ describe("NeuronFollowingCard", () => {
   });
 
   it("should render edit button", () => {
-    const { getByText } = render(NeuronFollowingCard, {
+    const { getByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: NeuronFollowingCard,
       },
     });
+
     expect(getByText(en.neuron_detail.follow_neurons)).toBeInTheDocument();
   });
 
   it("should render followees", () => {
-    const { getByText } = render(NeuronFollowingCard, {
+    const { getByText } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        testComponent: NeuronFollowingCard,
       },
     });
+
     followees.forEach((id) =>
       expect(getByText(id.toString())).toBeInTheDocument()
     );
   });
 
   it("should render no frame if no followees available", () => {
-    const { container } = render(NeuronFollowingCard, {
+    const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: NeuronFollowingCard,
       },
     });
+
     expect(container.querySelector(".frame")).toBeNull();
   });
 
   it("should trigger listKnownNeurons", async () => {
-    render(NeuronFollowingCard, {
+    render(NeuronContextActionsTest, {
       props: {
         neuron: mockNeuron,
+        testComponent: NeuronFollowingCard,
       },
     });
 

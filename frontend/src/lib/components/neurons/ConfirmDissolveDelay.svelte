@@ -1,20 +1,20 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { updateDelay } from "../../services/neurons.services";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { formatICP } from "../../utils/icp.utils";
+  import { updateDelay } from "$lib/services/neurons.services";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,
-    votingPower,
-  } from "../../utils/neuron.utils";
-  import { busy, stopBusy } from "../../stores/busy.store";
-  import { startBusyNeuron } from "../../services/busy.services";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { valueSpan } from "../../utils/utils";
+    neuronVotingPower,
+  } from "$lib/utils/neuron.utils";
+  import { stopBusy } from "$lib/stores/busy.store";
+  import { startBusyNeuron } from "$lib/services/busy.services";
+  import { valueSpan } from "$lib/utils/utils";
+  import { Html, busy } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -41,53 +41,61 @@
   };
 </script>
 
-<div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
+<div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
     <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
   </div>
   <div>
-    <h5>{$i18n.neurons.neuron_id}</h5>
+    <p class="label">{$i18n.neurons.neuron_id}</p>
     <p class="value">{neuron.neuronId}</p>
   </div>
   <div>
-    <h5>{$i18n.neurons.neuron_balance}</h5>
+    <p class="label">{$i18n.neurons.neuron_balance}</p>
     <p>
-      {@html replacePlaceholders($i18n.neurons.icp_stake, {
-        $amount: valueSpan(formatICP({ value: neuronICP, detailed: true })),
-      })}
+      <Html
+        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
+          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+        })}
+      />
     </p>
   </div>
   <div class="voting-power">
-    <h5>{$i18n.neurons.voting_power}</h5>
+    <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
       {formatVotingPower(
-        votingPower({
-          stake: neuronICP,
-          dissolveDelayInSeconds: delayInSeconds,
+        neuronVotingPower({
+          neuron,
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
         })
       )}
     </p>
   </div>
-  <FooterModal>
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       disabled={$busy}
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
     <button
-      class="primary small"
+      class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
       on:click={updateNeuron}
     >
       {confirmButtonText}
     </button>
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
   .main-info {
     display: flex;
     justify-content: center;

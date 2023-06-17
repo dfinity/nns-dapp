@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Usage: tarxzhash [ -k ] assets.tar.xz [ other_assets.tar.xz, ... ]
+#
+# For one or more given .tar.xz files it outputs the SHA256 of the original
+# .tar.xz file, the SHA256 of the uncompressed .tar file, and the SHA256 of the
+# contents.
+#
+# -k can be used to keep the temporary directory instead of deleting it.
+
+set -euo pipefail
+
+# Do we want to keep the temp directory with extracted/generated files?
+keep=false
+if [ "$1" == "-k" ]; then
+  shift
+  keep=true
+fi
+
+function do_hash {
+  tar_xz_file="$1"
+
+  if [ "$tar_xz_file" == "${tar_xz_file%.tar.xz}" ]; then
+    echo "Parameter should end with '.tar.xz'."
+    exit 1
+  fi
+
+  file_base=$(basename "${tar_xz_file%.tar.xz}")
+
+  tmpdir=$(mktemp -d -t "nns-dapp-$file_base" 2>/dev/null)
+  if [ "$keep" == "false" ]; then
+    trap 'rm -rf -- "$tmpdir"' EXIT
+  fi
+
+  echo "tmpdir = $tmpdir"
+
+  cp "$tar_xz_file" "$tmpdir"
+  pushd "$tmpdir" >/dev/null
+
+  tar_file="${file_base}.tar"
+  tar_xz_file="${tar_file}.xz"
+  content_file="$file_base.content"
+  hashfile="$content_file.hashes"
+
+  # SHA256 the original compressed tarball
+  sha256sum "$tar_xz_file"
+
+  # SHA256 the uncompressed tarball
+  unxz -k "$tar_xz_file"
+  sha256sum "$tar_file"
+
+  # List the contents in deterministic order.
+  mkdir content
+  pushd content >/dev/null
+  tar xf "../$tar_file"
+  find . -type f | LC_ALL=C sort >"../$content_file"
+
+  # SHA256 each individual file.
+  xargs sha256sum <"../$content_file" >"../$hashfile"
+  popd >/dev/null
+
+  # SHA256 the collection of all hashes of all files.
+  sha256sum "$hashfile"
+  popd >/dev/null
+
+  if [ "$keep" == "false" ]; then
+    rm -rf -- "$tmpdir"
+  fi
+}
+
+for file in "$@"; do
+  do_hash "$file"
+done

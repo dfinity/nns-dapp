@@ -2,19 +2,19 @@
  * @jest-environment jsdom
  */
 
+import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
+import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
-import { waitFor } from "@testing-library/svelte";
-import HardwareWalletListNeurons from "../../../../lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
-import { listNeuronsHardwareWalletProxy } from "../../../../lib/proxy/ledger.services.proxy";
-import { mockMainAccount } from "../../../mocks/accounts.store.mock";
-import { renderSelectedAccountContext } from "../../../mocks/context-wrapper.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockNeuron } from "../../../mocks/neurons.mock";
+import { render, waitFor } from "@testing-library/svelte";
+import WalletContextTest from "./WalletContextTest.svelte";
 
-jest.mock("../../../../lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
-  afterEach(() => {
+  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });
@@ -23,14 +23,18 @@ describe("HardwareWalletListNeuronsButton", () => {
 
   beforeAll(() => {
     spy = (listNeuronsHardwareWalletProxy as jest.Mock).mockImplementation(
-      async () => ({ neurons: [mockNeuron] })
+      async () => ({
+        neurons: [mockNeuron],
+      })
     );
   });
 
   const renderTestCmp = () =>
-    renderSelectedAccountContext({
-      Component: HardwareWalletListNeurons,
-      account: mockMainAccount,
+    render(WalletContextTest, {
+      props: {
+        account: mockMainAccount,
+        testComponent: HardwareWalletListNeurons,
+      },
     });
 
   it("should contain a closed modal per default", () => {
@@ -46,13 +50,13 @@ describe("HardwareWalletListNeuronsButton", () => {
   });
 
   it("should list neurons and open modal", async () => {
-    const { getByText, getByTestId } = renderTestCmp();
+    const { getByTestId, container } = renderTestCmp();
     await fireEvent.click(
       getByTestId("ledger-list-button") as HTMLButtonElement
     );
 
     await waitFor(() =>
-      expect(getByText(en.neurons.title)).toBeInTheDocument()
+      expect(container.querySelector("div.modal")).not.toBeNull()
     );
 
     expect(spy).toHaveBeenCalled();

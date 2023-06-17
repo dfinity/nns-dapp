@@ -1,32 +1,59 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
-  import { i18n } from "../../stores/i18n";
-  import { secondsToDuration } from "../../utils/date.utils";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { valueSpan } from "../../utils/utils";
-  import Value from "../ui/Value.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { Html, KeyValuePair } from "@dfinity/gix-components";
 
   export let state: NeuronState;
   export let timeInSeconds: bigint | undefined;
+  export let defaultGaps = false;
+  export let inline = true;
 </script>
 
 {#if timeInSeconds !== undefined}
-  {#if state === NeuronState.DISSOLVING || state === NeuronState.SPAWNING}
-    <p class="duration">
-      {@html replacePlaceholders($i18n.neurons.remaining, {
-        $duration: valueSpan(secondsToDuration(timeInSeconds)),
-      })}
-    </p>
-  {:else if state === NeuronState.LOCKED}
-    <p class="duration">
-      <Value>{secondsToDuration(timeInSeconds)}</Value>
-      - {$i18n.neurons.dissolve_delay_title}
-    </p>
+  {#if state === NeuronState.Dissolving || state === NeuronState.Spawning}
+    {#if inline}
+      <p class="duration label" class:default-gaps={defaultGaps}>
+        <Html
+          text={replacePlaceholders($i18n.neurons.inline_remaining, {
+            $duration: secondsToDuration(timeInSeconds),
+          })}
+        />
+      </p>
+    {:else}
+      <KeyValuePair>
+        <span slot="key" class="label">{$i18n.neurons.remaining}</span>
+        <span slot="value" class="value"
+          >{secondsToDuration(timeInSeconds)}</span
+        >
+      </KeyValuePair>
+    {/if}
+  {:else if state === NeuronState.Locked}
+    {#if inline}
+      <p class="duration label" class:default-gaps={defaultGaps}>
+        {secondsToDuration(timeInSeconds)} – {$i18n.neurons
+          .dissolve_delay_title}
+      </p>
+    {:else}
+      <KeyValuePair>
+        <span slot="key" class="label"
+          >{$i18n.neurons.dissolve_delay_title}</span
+        >
+        <span slot="value" class="value"
+          >{secondsToDuration(timeInSeconds)}</span
+        >
+      </KeyValuePair>
+    {/if}
   {/if}
 {/if}
 
 <style lang="scss">
   p {
-    margin: 0;
+    margin: var(--padding) 0 0;
+  }
+
+  .default-gaps {
+    margin-bottom: var(--padding);
   }
 </style>

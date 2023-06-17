@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
+import AmountInput from "$lib/components/ui/AmountInput.svelte";
+import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import AmountInput from "../../../../lib/components/ui/AmountInput.svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("AmountInput", () => {
   const props = { amount: 10.25, max: 11 };

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SNS aggregator</title>
+    <style>
+	.sns {
+	  display: flex;
+	  align-items: center;
+	}
+    </style>
+    <script>
+	    fetch('/v1/sns/list/latest/slow.json').then(response => response.json()).then(latest => {
+		    document.body.innerHTML +=latest.map(sns => `<div class="sns"><img src="/v1/sns/root/${sns.canister_ids.root_canister_id}/logo.png" width="100px" height="100px"></img><a href="/v1/sns/root/${sns.canister_ids.root_canister_id}/slow.json">${sns.meta.name}</a></div>`).join('')
+	    });
+    </script>
+  </head>
+  <body>
+	  <h1>SNS aggregator</h1>
+	  <p>The aggregator collects information on all deployed SNS and re-publishes aggegate values as certified query calls.  This data is intended for use by any canister that wishes to provide dashboards.  The data will typically be updated about once per minute.  Collecting the data from this aggregator will typically be much faster than collecting the same data directly from the SNSs.</p>
+	  <ul>
+		  <li><a href="/v1/sns/list/latest/slow.json">The latest SNSs</li>
+		  <li><a href="/v1/sns/list/page/0/slow.json">A paginated list of SNSs</a></li>
+          <li>Slow data for one SNS is at: /v1/sns/root/$CANISTER_ID/slow.json</li>
+          <li>The SNS logo is at: /v1/sns/root/$CANISTER_ID/logo.png</li>
+      </ul>
+      <h2>Recent SNSs</h2>
+  </body>
+</html>

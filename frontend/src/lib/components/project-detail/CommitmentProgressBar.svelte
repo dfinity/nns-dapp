@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
-
-  import { i18n } from "../../stores/i18n";
-  import Icp from "../ic/ICP.svelte";
-  import ProgressBar from "../ui/ProgressBar.svelte";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { i18n } from "$lib/stores/i18n";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { ProgressBar } from "@dfinity/gix-components";
 
   export let max: bigint;
   export let value: bigint;
@@ -17,47 +16,54 @@
       : undefined;
 </script>
 
-<div>
-  <ProgressBar max={Number(max)} value={Number(value)} color="yellow">
-    <div class="info" slot="top">
-      <p class="right">
-        <span>
-          {$i18n.sns_project_detail.max_commitment_goal}
-        </span>
+<ProgressBar max={Number(max)} value={Number(value)} color="warning">
+  <div class="info" slot="top">
+    <p class="right">
+      <span>
+        {$i18n.sns_project_detail.max_commitment_goal}
+      </span>
 
-        <span data-tid="commitment-max-indicator-value">
-          <Icp icp={ICP.fromE8s(max)} singleLine />
-        </span>
-      </p>
+      <span data-tid="commitment-max-indicator-value">
+        <AmountDisplay
+          amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
+          singleLine
+        />
+      </span>
+    </p>
+    <div class="indicator-wrapper">
+      <span
+        class="max-indicator triangle down"
+        data-tid="commitment-max-indicator"
+      />
+    </div>
+  </div>
+  <div class="info" bind:clientWidth={width} slot="bottom">
+    {#if minimumIndicator !== undefined}
       <div class="indicator-wrapper">
         <span
-          class="max-indicator triangle down"
-          data-tid="commitment-max-indicator"
+          class="min-indicator triangle up"
+          data-tid="commitment-min-indicator"
+          style={`left: calc(${minIndicatorPosition}px - var(--padding));`}
         />
       </div>
-    </div>
-    <div class="info" bind:clientWidth={width} slot="bottom">
-      {#if minimumIndicator !== undefined}
-        <div class="indicator-wrapper">
-          <span
-            class="min-indicator triangle up"
-            data-tid="commitment-min-indicator"
-            style={`left: calc(${minIndicatorPosition}px - var(--padding));`}
+      <p>
+        <span>
+          {$i18n.sns_project_detail.min_commitment_goal}
+        </span>
+        <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
+        <span data-tid="commitment-min-indicator-value">
+          <AmountDisplay
+            amount={TokenAmount.fromE8s({
+              amount: minimumIndicator,
+              token: ICPToken,
+            })}
+            singleLine
           />
-        </div>
-        <p>
-          <span>
-            {$i18n.sns_project_detail.min_commitment_goal}
-          </span>
-          <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
-          <span data-tid="commitment-min-indicator-value">
-            <Icp icp={ICP.fromE8s(minimumIndicator)} singleLine />
-          </span>
-        </p>
-      {/if}
-    </div>
-  </ProgressBar>
-</div>
+        </span>
+      </p>
+    {/if}
+  </div>
+</ProgressBar>
 
 <style lang="scss">
   p {

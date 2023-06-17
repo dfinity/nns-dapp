@@ -1,18 +1,17 @@
 <script lang="ts">
-  import AddControllerModal from "../../modals/canisters/AddControllerModal.svelte";
-  import { i18n } from "../../stores/i18n";
+  import { i18n } from "$lib/stores/i18n";
+  import { emit } from "$lib/utils/events.utils";
+  import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
-  let showModal: boolean = false;
-  const openModal = () => (showModal = true);
-  const close = () => (showModal = false);
+  const openModal = () =>
+    emit<CanisterDetailModal>({
+      message: "nnsCanisterDetailModal",
+      detail: { type: "add-controller" },
+    });
 </script>
 
 <button
   data-tid="add-canister-controller-button"
   on:click={openModal}
-  class="primary small">{$i18n.canister_detail.add_controller}</button
+  class="primary">{$i18n.canister_detail.add_controller}</button
 >
-
-{#if showModal}
-  <AddControllerModal on:nnsClose={close} />
-{/if}

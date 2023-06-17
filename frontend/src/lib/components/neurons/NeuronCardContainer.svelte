@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { CardType } from "../../types/card";
-  import Card from "../ui/Card.svelte";
-  import CardInfo from "../ui/CardInfo.svelte";
+  import type { CardType } from "$lib/types/card";
+  import { Card } from "@dfinity/gix-components";
+  import CardInfo from "$lib/components/ui/CardInfo.svelte";
 
   export let role: undefined | "link" | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
-  export let selected: boolean = false;
+  export let selected = false;
   export let disabled: boolean | undefined = undefined;
 
   export let cardType: CardType;

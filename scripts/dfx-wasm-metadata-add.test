@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Verifies that the git commit and service definition are available in wasms and from
+	deployed canisters.
+
+	This test requires that the canisters are deployed to localhost.  It neither starts,
+	stops, nor in any other way modifies the local network.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=o long=offline desc="Don't test deployed canisters" variable=OFFLINE nargs=0
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+COMMIT="$(git rev-parse HEAD)"
+check_commit() {
+  set -x
+  local stdin
+  stdin="$(cat)"
+  grep -qw "$COMMIT" <(echo "$stdin") || {
+    echo "ERROR: The $canister git_commit_id metadata should include a git commit."
+    echo "  EXPECTED: '$COMMIT'"
+    echo "  ACTUAL:   '$stdin'"
+    exit 1
+  }
+}
+check_service() {
+  local stdin
+  stdin="$(cat)"
+  grep -qw service <(echo "$stdin") || {
+    echo "ERROR: The $canister candid:service metadata should contain a service definition."
+    exit 1
+  }
+}
+
+(
+  echo "Canister wasms should have commit id and service definitions in their metadata"
+  for canister in nns-dapp sns_aggregator; do
+    wasm="$(c="$canister" jq -r '.canisters[env.c].wasm' dfx.json)"
+    test -e "$wasm" || {
+      echo "ERROR: Please build the wasms before running this test."
+      exit 1
+    }
+    gunzip <"$wasm" >"$wasm.unzipped"
+    ic-wasm "$wasm.unzipped" metadata git_commit_id | check_commit
+    ic-wasm "$wasm.unzipped" metadata candid:service | check_service
+    rm "$wasm.unzipped"
+  done
+)
+
+[[ "${OFFLINE:-}" == "true" ]] ||
+  (
+    echo "It should be possible to query metadata from the sns_aggregator and nns-dapp canisters"
+    for canister in nns-dapp sns_aggregator; do
+      dfx canister status "$canister" || {
+        echo "ERROR: Please deploy the $canister to the local network before running this test"
+        exit 1
+      }
+      : "Make sure that the correct wasm is deployed."
+      dfx canister metadata "$canister" git_commit_id | check_commit
+      dfx canister metadata "$canister" candid:service | check_service
+    done
+  )
+
+echo "$(basename "$0") PASSED"

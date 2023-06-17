@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+help_text() {
+  cat <<-EOF
+	Tests the SNS aggregator:
+	  - downgrading the local build to prod.
+	  - upgrading prod to the local build.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
+clap.define short=p long=prod_wasm desc="The production wasm." variable=PROD_WASM default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+verify_healthy() {
+  dfx canister call sns_aggregator get_canister_status
+}
+
+# Installs the current build of sns_aggregator
+upgrade_canister() {
+  dfx canister install --upgrade-unchanged sns_aggregator --wasm "$1" --mode upgrade
+}
+
+echo "Getting or building the local wasm..."
+test -n "${CURRENT_WASM:-}" || {
+  CURRENT_WASM="sns_aggregator.wasm"
+  echo "Building $CURRENT_WASM..."
+  DFX_NETWORK=local ./scripts/docker-build
+}
+test -e "$CURRENT_WASM" || {
+  echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
+  exit 1
+} >&2
+
+echo "Getting the prod wasm (if not supplied)..."
+test -n "${PROD_WASM:-}" || {
+  PROD_WASM="sns_aggregator_prod.wasm"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/aggregator-prod/sns_aggregator.wasm >"$PROD_WASM"
+}
+test -e "$PROD_WASM" || {
+  echo "ERROR: Prod wasm file not found at '$PROD_WASM'."
+  exit 1
+} >&2
+
+echo "Installing $CURRENT_WASM..."
+if dfx canister id sns_aggregator >/dev/null 2>/dev/null; then
+  upgrade_canister "$CURRENT_WASM"
+else
+  dfx canister create sns_aggregator
+  dfx canister install sns_aggregator --wasm "$CURRENT_WASM"
+fi
+echo "Checking that the current wasm is healthy..."
+verify_healthy
+echo "Downgrading to the prod wasm..."
+upgrade_canister "$PROD_WASM"
+echo "Checking that the rollback is healthy..."
+verify_healthy
+echo "Rolling forwards..."
+upgrade_canister "$CURRENT_WASM"
+echo "Checking that the upgrade is healthy..."
+verify_healthy
+echo SUCCESS

@@ -1,33 +1,39 @@
-import { SnsSwapLifecycle, type SnsSwapTimeWindow } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
-import type { SnsFullProject } from "../stores/projects.store";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { getDeniedCountries } from "$lib/getters/sns-summary";
+import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
   SnsSummarySwap,
   SnsSwapCommitment,
-} from "../types/sns";
+} from "$lib/types/sns";
+import type { StoreData } from "$lib/types/store";
+import type { TokenAmount } from "@dfinity/nns";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
+import type { I18nSubstitutions } from "./i18n.utils";
+import { getCommitmentE8s } from "./sns.utils";
+import { formatToken } from "./token.utils";
 
-const filterProjectsStatus = ({
+export const filterProjectsStatus = ({
   swapLifecycle,
   projects,
 }: {
   swapLifecycle: SnsSwapLifecycle;
-  projects: SnsFullProject[] | undefined;
-}) =>
-  projects?.filter(
+  projects: SnsFullProject[];
+}): SnsFullProject[] =>
+  projects.filter(
     ({
       summary: {
-        swap: {
-          state: { lifecycle },
-        },
+        swap: { lifecycle },
       },
     }) => swapLifecycle === lifecycle
   );
 
 export const filterCommittedProjects = (
-  projects: SnsFullProject[] | undefined
-) =>
+  projects: SnsFullProject[]
+): SnsFullProject[] =>
   filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Committed,
     projects,
@@ -40,75 +46,97 @@ export const filterCommittedProjects = (
  * - complete - we display completed project for a while to make the screen user-friendly
  * @param projects
  */
-export const filterActiveProjects = (projects: SnsFullProject[] | undefined) =>
+export const filterActiveProjects = (
+  projects: SnsFullProject[]
+): SnsFullProject[] =>
   projects?.filter(
     ({
       summary: {
-        swap: {
-          state: { lifecycle, open_time_window },
-        },
+        swap: { lifecycle },
       },
     }) =>
-      [SnsSwapLifecycle.Committed, SnsSwapLifecycle.Open].includes(lifecycle) ||
-      (SnsSwapLifecycle.Pending === lifecycle && open_time_window.length)
+      [
+        SnsSwapLifecycle.Committed,
+        SnsSwapLifecycle.Open,
+        SnsSwapLifecycle.Adopted,
+      ].includes(lifecycle)
   );
-
-export const openTimeWindow = ({
-  state: { open_time_window },
-}: SnsSummarySwap): SnsSwapTimeWindow | undefined =>
-  fromNullable(open_time_window);
 
 /**
  * Duration in seconds until the end of the swap if defined.
  * @param swap
  */
-export const durationTillSwapDeadline = (
-  swap: SnsSummarySwap
-): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { end_timestamp_seconds } = timeWindow;
-  return end_timestamp_seconds - BigInt(nowInSeconds());
-};
+export const durationTillSwapDeadline = ({
+  params: { swap_due_timestamp_seconds },
+}: SnsSummarySwap): bigint | undefined =>
+  swap_due_timestamp_seconds - BigInt(nowInSeconds());
 
 /**
- * If defined the duration of the swap in seconds - i.e. the duration from start till end
+ * Duration in seconds until the start of the swap if defined.
  * @param swap
  */
-export const swapDuration = (swap: SnsSummarySwap): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { start_timestamp_seconds, end_timestamp_seconds } = timeWindow;
-  return end_timestamp_seconds - start_timestamp_seconds;
-};
+export const durationTillSwapStart = ({
+  decentralization_sale_open_timestamp_seconds,
+}: SnsSummarySwap): bigint | undefined =>
+  decentralization_sale_open_timestamp_seconds !== undefined
+    ? decentralization_sale_open_timestamp_seconds - BigInt(nowInSeconds())
+    : undefined;
 
 /**
- * If defined the duration until the swap start in seconds
- * @param swap
+ * Returns the minimum between:
+ * - user remaining commitment to reach user maximum
+ * - remaining commitment to reach project maximum
  */
-export const durationTillSwapStart = (
-  swap: SnsSummarySwap
-): bigint | undefined => {
-  const timeWindow: SnsSwapTimeWindow | undefined = openTimeWindow(swap);
-
-  // e.g. proposal to start swap has not been accepted yet
-  if (timeWindow === undefined) {
-    return undefined;
-  }
-
-  const { start_timestamp_seconds } = timeWindow;
-  return BigInt(nowInSeconds()) - start_timestamp_seconds;
+export const currentUserMaxCommitment = ({
+  summary: { swap, derived },
+  swapCommitment,
+}: {
+  summary: SnsSummary;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+}): bigint => {
+  const remainingProjectCommitment =
+    swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
+  const remainingUserCommitment =
+    swap.params.max_participant_icp_e8s -
+    (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+  return remainingProjectCommitment < remainingUserCommitment
+    ? remainingProjectCommitment
+    : remainingUserCommitment;
 };
+
+export const projectRemainingAmount = ({ swap, derived }: SnsSummary): bigint =>
+  swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
+
+const isProjectOpen = (summary: SnsSummary): boolean =>
+  summary.swap.lifecycle === SnsSwapLifecycle.Open;
+// Checks whether the amount that the user wants to contribute is lower than the minimum for the project.
+// It takes into account the current commitment of the user.
+const commitmentTooSmall = ({
+  project: { summary, swapCommitment },
+  amount,
+}: {
+  project: SnsFullProject;
+  amount: TokenAmount;
+}): boolean =>
+  summary.swap.params.min_participant_icp_e8s >
+  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+const commitmentTooLarge = ({
+  summary,
+  amountE8s,
+}: {
+  summary: SnsSummary;
+  amountE8s: bigint;
+}): boolean => summary.swap.params.max_participant_icp_e8s < amountE8s;
+// Checks whether the amount that the user wants to contribute
+// plus the amount that all users have contributed so far
+// exceeds the maximum amount that the project can accept.
+export const commitmentExceedsAmountLeft = ({
+  summary,
+  amountE8s,
+}: {
+  summary: SnsSummary;
+  amountE8s: bigint;
+}): boolean => projectRemainingAmount(summary) < amountE8s;
 
 /**
  * To participate to a swap:
@@ -124,33 +152,223 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const {
-    swap: {
-      state: { lifecycle },
-      init: { max_participant_icp_e8s },
-    },
-  } =
-    summary ??
-    ({
-      swap: {
-        state: { lifecycle: SnsSwapLifecycle.Unspecified },
-        init: { max_participant_icp_e8s: undefined },
-      },
-    } as unknown as SnsSummary);
-
-  const myCommitment: bigint =
-    swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
 
   return (
-    [SnsSwapLifecycle.Open].includes(lifecycle) &&
-    max_participant_icp_e8s !== undefined &&
-    myCommitment < max_participant_icp_e8s
+    summary !== undefined &&
+    summary !== null &&
+    isProjectOpen(summary) &&
+    // Whether user can still participate with 1 e8
+    !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
   );
 };
+
+/**
+ * Returns whether the location of the user is needed to participate to the swap.
+ *
+ * Some projects might restrict participation in the swap to users from specific countries.
+ *
+ * Yet, we don't need to get the location of all users, only those who can to participate to the swap:
+ *
+ * - Same logic as canUserParticipateToSwap
+ * - User is logged in (this logic is assumed in the previous function)
+ * - Project has a deny_list of countries (TODO: add new fields in the swap params)
+ */
+export const userCountryIsNeeded = ({
+  summary,
+  swapCommitment,
+  loggedIn,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+  loggedIn: boolean;
+}): boolean =>
+  canUserParticipateToSwap({ summary, swapCommitment }) &&
+  loggedIn &&
+  nonNullish(summary) &&
+  getDeniedCountries(summary).length > 0;
 
 export const hasUserParticipatedToSwap = ({
   swapCommitment,
 }: {
   swapCommitment: SnsSwapCommitment | undefined | null;
-}): boolean =>
-  (swapCommitment?.myCommitment?.amount_icp_e8s ?? BigInt(0)) > BigInt(0);
+}): boolean => (getCommitmentE8s(swapCommitment) ?? BigInt(0)) > BigInt(0);
+
+export const validParticipation = ({
+  project,
+  amount,
+}: {
+  project: SnsFullProject | undefined;
+  amount: TokenAmount;
+}): {
+  valid: boolean;
+  labelKey?: string;
+  substitutions?: I18nSubstitutions;
+} => {
+  if (project === undefined) {
+    return { valid: false, labelKey: "error__sns.project_not_found" };
+  }
+  if (!isProjectOpen(project.summary)) {
+    return {
+      valid: false,
+      labelKey: "error__sns.project_not_open",
+    };
+  }
+  if (commitmentTooSmall({ project, amount })) {
+    return {
+      valid: false,
+      labelKey: "error__sns.not_enough_amount",
+      substitutions: {
+        $amount: formatToken({
+          value: project.summary.swap.params.min_participant_icp_e8s,
+        }),
+      },
+    };
+  }
+  const totalCommitment =
+    (getCommitmentE8s(project.swapCommitment) ?? BigInt(0)) + amount.toE8s();
+  if (
+    commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
+  ) {
+    return {
+      valid: false,
+      labelKey: "error__sns.commitment_too_large",
+      substitutions: {
+        $newCommitment: formatToken({ value: amount.toE8s() }),
+        $currentCommitment: formatToken({
+          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        }),
+        $maxCommitment: formatToken({
+          value: project.summary.swap.params.max_participant_icp_e8s,
+        }),
+      },
+    };
+  }
+  if (
+    commitmentExceedsAmountLeft({
+      summary: project.summary,
+      amountE8s: amount.toE8s(),
+    })
+  ) {
+    return {
+      valid: false,
+      labelKey: "error__sns.commitment_exceeds_current_allowed",
+      substitutions: {
+        $commitment: formatToken({ value: totalCommitment }),
+        $remainingCommitment: formatToken({
+          value:
+            project.summary.swap.params.max_icp_e8s -
+            project.summary.derived.buyer_total_icp_e8s,
+        }),
+      },
+    };
+  }
+  return { valid: true };
+};
+
+export type ParticipationButtonStatus =
+  | "disabled-max-participation"
+  | "disabled-not-eligible"
+  | "disabled-not-open"
+  | "enabled"
+  | "loading"
+  | "logged-out";
+
+/**
+ * Returns the status of the Participate Button.
+ *
+ * There are 6 possible statuses:
+ * - logged-out
+ * - loading
+ * - disabled-not-open
+ * - disabled-max-participation
+ * - disabled-not-eligible
+ * - enabled
+ *
+ * logged-out:
+ * - The user is not logged in.
+ *
+ * loading:
+ * - Fetching any of the data
+ * - Found an open ticket.
+ *
+ * disabled-max-participation:
+ * - The user has already participated to the swap with the maximum per user.
+ *
+ * disabled-not-eligible:
+ * - The user is in a restricted country.
+ *
+ * disabled-not-open:
+ * - The project is not open.
+ *
+ * enabled:
+ * - None of the above.
+ *
+ * @param {Object} params
+ * @param {SnsSummary | null | undefined} params.summary SNS Summary
+ * @param {SnsSwapCommitment | null | undefined} params.swapCommitment User's swap commitment
+ * @param {SnsSwapTicket | null | undefined} params.ticket The open ticket of the user. The meaning of the types is the same as in ticketsStore.
+ * @param {boolean} params.loggedIn Whether the user is logged in or not.
+ * @param {CountryCode | undefined | Error} params.userCountry The location of the user. The meaning of the types is the same as in userCountryStore.
+ * @returns {ParticipationButtonStatus} A string representing the status of the button.
+ */
+export const participateButtonStatus = ({
+  summary,
+  swapCommitment,
+  loggedIn,
+  ticket,
+  userCountry,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+  loggedIn: boolean;
+  ticket: SnsSwapTicket | undefined | null;
+  userCountry: StoreData<Country>;
+}): ParticipationButtonStatus => {
+  if (!loggedIn) {
+    return "logged-out";
+  }
+
+  const currentCommitment = getCommitmentE8s(swapCommitment);
+  if (isNullish(summary) || isNullish(currentCommitment)) {
+    return "loading";
+  }
+
+  if (!isProjectOpen(summary)) {
+    return "disabled-not-open";
+  }
+
+  // If `ticket` is undefined, it means that the ticket is still being fetched.
+  // If `ticket` is not null, it means there is an ongoing participation already.
+  if (ticket === undefined || ticket !== null) {
+    return "loading";
+  }
+
+  // Whether user can still participate with 1 e8
+  const userReachedMaxCommitment = commitmentTooLarge({
+    summary,
+    amountE8s: currentCommitment + BigInt(1),
+  });
+  if (userReachedMaxCommitment) {
+    return "disabled-max-participation";
+  }
+
+  const projectDeniedCountries = getDeniedCountries(summary);
+  if (projectDeniedCountries.length > 0) {
+    // We tried to get the user country but it failed.
+    // We don't want to block the user from participating.
+    if (userCountry instanceof Error) {
+      return "enabled";
+    }
+
+    if (userCountry === NOT_LOADED) {
+      return "loading";
+    }
+
+    if (projectDeniedCountries.includes(userCountry.isoCode)) {
+      return "disabled-not-eligible";
+    }
+  }
+
+  return "enabled";
+};

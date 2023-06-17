@@ -1,5 +1,5 @@
 import type { AccountIdentifier, BlockHeight } from "@dfinity/nns";
-import { ICP, LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/nns";
 
 // eslint-disable-next-line
 // @ts-ignore: test file
@@ -16,14 +16,14 @@ export class MockLedgerCanister extends LedgerCanister {
   public accountBalance = async (_: {
     accountIdentifier: AccountIdentifier;
     certified?: boolean | undefined;
-  }): Promise<ICP> => {
-    return ICP.fromE8s(BigInt(1));
+  }): Promise<bigint> => {
+    return BigInt(1);
   };
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   public transfer = async (_: {
     to: AccountIdentifier;
-    amount: ICP;
+    amount: bigint;
     memo?: bigint | undefined;
     fee?: bigint | undefined;
     fromSubAccount?: number[] | undefined;

@@ -1,6 +1,12 @@
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import {
+  concatenateUniqueProposals,
+  excludeProposals,
+  replaceAndConcatenateProposals,
+  replaceProposals,
+} from "$lib/utils/proposals.utils";
 import type {
-  NeuronId,
-  NeuronInfo,
   ProposalId,
   ProposalInfo,
   ProposalRewardStatus,
@@ -8,14 +14,7 @@ import type {
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../constants/proposals.constants";
-import {
-  concatenateUniqueProposals,
-  excludeProposals,
-  preserveNeuronSelectionAfterUpdate,
-  replaceAndConcatenateProposals,
-  replaceProposals,
-} from "../utils/proposals.utils";
+import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];
@@ -28,11 +27,6 @@ export interface ProposalsFiltersStore {
     | "rewards"
     | "status"
     | "excludeVotedProposals";
-}
-
-export interface NeuronSelectionStore {
-  neurons: NeuronInfo[];
-  selectedIds: NeuronId[];
 }
 
 export interface ProposalsStore {
@@ -105,6 +99,14 @@ const initProposalsStore = () => {
         certified,
       }));
     },
+
+    // Used in tests
+    reset(): void {
+      this.setProposals({
+        proposals: [],
+        certified: true,
+      });
+    },
   };
 };
 
@@ -120,13 +122,14 @@ const initProposalsStore = () => {
  * - filterTopics: set the filter topics (enum Topic)
  * - filterRewards: set the filter for the status of the rewards (enum ProposalRewardStatus)
  * - filterStatus: set the filter for the status of the proposals (enum ProposalStatus)
- * - excludeVotedProposals: "Hide "Open" proposals where all your neurons have voted or are ineligible to vote"
+ * - excludeVotedProposals: "Show only proposals you can still vote for"
  *
  */
 const initProposalsFiltersStore = () => {
-  const { subscribe, update, set } = writable<ProposalsFiltersStore>(
-    DEFAULT_PROPOSALS_FILTERS
-  );
+  const { subscribe, update, set } = writableStored<ProposalsFiltersStore>({
+    key: StoreLocalStorageKey.ProposalFilters,
+    defaultValue: DEFAULT_PROPOSALS_FILTERS,
+  });
 
   return {
     subscribe,
@@ -166,53 +169,9 @@ const initProposalsFiltersStore = () => {
     reset() {
       set(DEFAULT_PROPOSALS_FILTERS);
     },
-  };
-};
 
-/**
- * Contains available for voting neurons and their selection state
- */
-const initNeuronSelectStore = () => {
-  const { subscribe, update, set } = writable<NeuronSelectionStore>({
-    neurons: [],
-    selectedIds: [],
-  });
-
-  return {
-    subscribe,
-
-    set(neurons: NeuronInfo[]) {
-      set({
-        neurons: [...neurons],
-        selectedIds: neurons.map(({ neuronId }) => neuronId),
-      });
-    },
-
-    updateNeurons(neurons: NeuronInfo[]) {
-      update(({ neurons: currentNeurons, selectedIds }) => {
-        return {
-          neurons,
-          selectedIds: preserveNeuronSelectionAfterUpdate({
-            neurons: currentNeurons,
-            updatedNeurons: neurons,
-            selectedIds,
-          }),
-        };
-      });
-    },
-
-    reset() {
-      this.set([]);
-    },
-
-    toggleSelection(neuronId: NeuronId) {
-      update(({ neurons, selectedIds }) => ({
-        neurons,
-        selectedIds: selectedIds.includes(neuronId)
-          ? selectedIds.filter((id: NeuronId) => id !== neuronId)
-          : Array.from(new Set([...selectedIds, neuronId])),
-      }));
-    },
+    reload: () =>
+      update((state) => ({ ...state, lastAppliedFilter: undefined })),
   };
 };
 
@@ -254,6 +213,4 @@ const initProposalPayloadsStore = () => {
 
 export const proposalsStore = initProposalsStore();
 export const proposalsFiltersStore = initProposalsFiltersStore();
-
-export const votingNeuronSelectStore = initNeuronSelectStore();
 export const proposalPayloadsStore = initProposalPayloadsStore();

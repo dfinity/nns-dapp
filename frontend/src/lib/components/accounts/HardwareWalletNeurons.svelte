@@ -1,19 +1,16 @@
 <script lang="ts">
-  import { i18n } from "../../stores/i18n";
-  import { formatICP } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { formatToken } from "$lib/utils/token.utils";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
   import type {
     HardwareWalletNeuronInfo,
-    HardwareWalletNeuronsContext,
-  } from "../../types/hardware-wallet-neurons.context";
-  import { HARDWARE_WALLET_NEURONS_CONTEXT_KEY } from "../../types/hardware-wallet-neurons.context";
+    WalletContext,
+  } from "$lib/types/wallet.context";
+  import { WALLET_CONTEXT_KEY } from "$lib/types/wallet.context";
 
-  const context: HardwareWalletNeuronsContext =
-    getContext<HardwareWalletNeuronsContext>(
-      HARDWARE_WALLET_NEURONS_CONTEXT_KEY
-    );
-  const { store }: HardwareWalletNeuronsContext = context;
+  const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
+  const { store }: WalletContext = context;
 
   let neurons: HardwareWalletNeuronInfo[] = [];
 
@@ -32,7 +29,7 @@
     </p>
 
     <p>
-      {formatICP({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
+      {formatToken({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
     </p>
 
     <p class="hotkey">
@@ -46,7 +43,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .table {
     display: grid;

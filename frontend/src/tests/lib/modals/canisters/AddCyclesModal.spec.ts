@@ -1,36 +1,34 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
-} from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
+} from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsSuccess } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+} from "$tests/mocks/accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
     topUpCanister: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      success: jest.fn(),
-    },
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -161,7 +159,7 @@ describe("AddCyclesModal", () => {
     await waitFor(() => expect(done).toBeCalled());
     expect(topUpCanister).toBeCalled();
     expect(reloadDetails).toBeCalled();
-    expect(toastsStore.success).toBeCalled();
+    expect(toastsSuccess).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.

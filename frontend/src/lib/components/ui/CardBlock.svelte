@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Collapsible from "./Collapsible.svelte";
+  import { Collapsible } from "@dfinity/gix-components";
 
   export let expandable = false;
   export let limitHeight = true;
 
-  let expanded: boolean = expandable;
+  let expanded = expandable;
 
   const toggle = ({ detail }: { detail: { expanded: boolean } }) =>
     (expanded = detail.expanded);
@@ -27,8 +27,8 @@
 </article>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   article {
     text-decoration: none;

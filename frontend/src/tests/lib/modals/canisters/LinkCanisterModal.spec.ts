@@ -1,32 +1,30 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import LinkCanisterModal from "../../../../lib/modals/canisters/LinkCanisterModal.svelte";
-import { attachCanister } from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
+import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
+import { attachCanister } from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     attachCanister: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 

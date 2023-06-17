@@ -1,19 +1,20 @@
 <script lang="ts">
-  import RenameSubAccountAction from "../../components/accounts/RenameSubAccountAction.svelte";
-  import WizardModal from "../WizardModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Steps } from "../../stores/steps.state";
-  import type { Step } from "../../stores/steps.state";
+  import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
+  import {
+    WizardModal,
+    type WizardSteps,
+    type WizardStep,
+  } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
-  let steps: Steps = [
+  let steps: WizardSteps = [
     {
       name: "RenameSubAccount",
       title: $i18n.accounts.rename_linked_account,
-      showBackButton: false,
     },
   ];
 
-  let currentStep: Step | undefined;
+  let currentStep: WizardStep | undefined;
 </script>
 
 <WizardModal {steps} bind:currentStep on:nnsClose>
@@ -21,7 +22,5 @@
     >{$i18n.accounts.rename_linked_account}</svelte:fragment
   >
 
-  <svelte:fragment>
-    <RenameSubAccountAction on:nnsClose />
-  </svelte:fragment>
+  <RenameSubAccountAction on:nnsClose />
 </WizardModal>

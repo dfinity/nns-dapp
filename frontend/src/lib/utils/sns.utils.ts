@@ -1,40 +1,52 @@
-import { AccountIdentifier, SubAccount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type {
-  SnsGetMetadataResponse,
-  SnsSwap,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-  SnsSwapState,
-} from "@dfinity/sns";
-import {
-  SnsMetadataResponseEntries,
-  type SnsTokenMetadataResponse,
-} from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
+import type { PngDataUrl } from "$lib/types/assets";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { TicketStatus } from "$lib/types/sale";
 import type {
   SnsSummary,
   SnsSummaryMetadata,
-  SnsTokenMetadata,
-} from "../types/sns";
+  SnsSummarySwap,
+  SnsSwapCommitment,
+} from "$lib/types/sns";
 import type {
   QuerySns,
   QuerySnsMetadata,
   QuerySnsSwapState,
-} from "../types/sns.query";
+} from "$lib/types/sns.query";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import type {
+  SnsGetMetadataResponse,
+  SnsParams,
+  SnsSwap,
+  SnsSwapDerivedState,
+} from "@dfinity/sns";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { isPngAsset } from "./utils";
+
+type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
+  params?: SnsParams;
+};
 
 type OptionalSummary = QuerySns & {
   metadata?: SnsSummaryMetadata;
-  token?: SnsTokenMetadata;
-  swap?: SnsSwap;
+  token?: IcrcTokenMetadata;
+  swap?: OptionalSnsSummarySwap;
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
+  governanceCanisterId?: Principal;
+  ledgerCanisterId?: Principal;
+  indexCanisterId?: Principal;
 };
 
-type ValidSummary = Required<OptionalSummary>;
+type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
+  swap: SnsSummarySwap;
+};
 
 /**
- * Sort Sns summaries according their swap start dates. Sooner dates first.
+ * Sort Sns summaries according their swap end dates. Sooner end dates first.
  * @param summaries
  */
 const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
@@ -42,19 +54,15 @@ const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
     (
       {
         swap: {
-          state: { open_time_window: openTimeWindowA },
+          params: { swap_due_timestamp_seconds: endTimeWindowA },
         },
       }: SnsSummary,
       {
         swap: {
-          state: { open_time_window: openTimeWindowB },
+          params: { swap_due_timestamp_seconds: endTimeWindowB },
         },
       }: SnsSummary
-    ) =>
-      (openTimeWindowA[0]?.start_timestamp_seconds ?? 0) <
-      (openTimeWindowB[0]?.start_timestamp_seconds ?? 0)
-        ? -1
-        : 1
+    ) => (endTimeWindowA < endTimeWindowB ? -1 : 1)
   );
 
 /**
@@ -72,7 +80,6 @@ const mapOptionalMetadata = ({
   const nullishDescription = fromNullable(description);
 
   if (
-    nullishLogo === undefined ||
     nullishUrl === undefined ||
     nullishName === undefined ||
     nullishDescription === undefined
@@ -80,8 +87,12 @@ const mapOptionalMetadata = ({
     return undefined;
   }
 
+  // We have to check if the logo is a png asset for security reasons.
+  // Default logo can be svg.
   return {
-    logo: nullishLogo,
+    logo: isPngAsset(nullishLogo)
+      ? nullishLogo
+      : (DEFAULT_SNS_LOGO as PngDataUrl),
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
@@ -89,32 +100,21 @@ const mapOptionalMetadata = ({
 };
 
 /**
- * Token metadata is given only if the properties NNS-dapp needs (name and symbol) are defined.
+ * Maps the properties of the SnsSwap type to the properties of the SnsSummarySwap type.
+ * For now, the only property is extracted from candid optional type is `params`.
  */
-const mapOptionalToken = (
-  response: SnsTokenMetadataResponse
-): SnsTokenMetadata | undefined => {
-  const nullishToken: Partial<SnsTokenMetadata> = response.reduce(
-    (acc, [key, value]) => {
-      switch (key) {
-        case SnsMetadataResponseEntries.SYMBOL:
-          acc = { ...acc, ...("Text" in value && { symbol: value.Text }) };
-          break;
-        case SnsMetadataResponseEntries.NAME:
-          acc = { ...acc, ...("Text" in value && { name: value.Text }) };
-      }
-
-      return acc;
-    },
-    {}
-  );
-
-  if (nullishToken.name === undefined || nullishToken.symbol === undefined) {
-    return undefined;
-  }
-
-  return nullishToken as SnsTokenMetadata;
-};
+const mapOptionalSwap = (
+  swapData: SnsSwap | undefined
+): OptionalSnsSummarySwap | undefined =>
+  swapData === undefined
+    ? undefined
+    : {
+        ...swapData,
+        decentralization_sale_open_timestamp_seconds: fromNullable(
+          swapData.decentralization_sale_open_timestamp_seconds
+        ),
+        params: fromNullable(swapData.params),
+      };
 
 /**
  * 1. Concat Sns queries for metadata and swap state.
@@ -146,13 +146,18 @@ export const mapAndSortSnsQueryToSummaries = ({
         ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
           swapRootCanisterId === rootCanisterId
       );
+
+      const swapData = fromNullable(swapState?.swap ?? []);
       return {
         ...rest,
         rootCanisterId,
         metadata: mapOptionalMetadata(metadata),
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
-        swap: fromNullable(swapState?.swap ?? []),
+        governanceCanisterId: swapState?.governanceCanisterId,
+        ledgerCanisterId: swapState?.ledgerCanisterId,
+        indexCanisterId: swapState?.indexCanisterId,
+        swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
       };
     }
@@ -162,23 +167,20 @@ export const mapAndSortSnsQueryToSummaries = ({
   const validSwapSummaries: ValidSummary[] = allSummaries.filter(
     (entry: OptionalSummary): entry is ValidSummary =>
       entry.swap !== undefined &&
-      fromNullable(entry.swap.init) !== undefined &&
-      fromNullable(entry.swap.state) !== undefined &&
+      entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
+      entry.governanceCanisterId !== undefined &&
+      entry.ledgerCanisterId !== undefined &&
+      entry.indexCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
       entry.token !== undefined
   );
 
   return sortSnsSummaries(
-    validSwapSummaries.map(({ swap, rootCanisterId, ...rest }) => ({
+    validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
       rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
-      swap: {
-        // We know for sure that init and state are defined because we check in previous filter that there are not undefined
-        init: fromDefinedNullable<SnsSwapInit>(swap.init),
-        state: fromDefinedNullable<SnsSwapState>(swap.state),
-      },
     }))
   );
 };
@@ -197,4 +199,101 @@ export const getSwapCanisterAccount = ({
   });
 
   return accountIdentifier;
+};
+
+/**
+ * Returns `undefined` if swapCommitment is not present yet.
+ * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not present either.
+ * Returns commitment e8s if commitment is defined.
+ */
+export const getCommitmentE8s = (
+  swapCommitment: SnsSwapCommitment | null | undefined
+): bigint | undefined => {
+  if (isNullish(swapCommitment)) {
+    return undefined;
+  }
+  return (
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
+    BigInt(0)
+  );
+};
+
+/**
+ * Tests the error message against `refresh_buyer_token` canister function.
+ * This is the workaround before the api call provides nice error details.
+ *
+ * @param err
+ */
+export const isInternalRefreshBuyerTokensError = (err: unknown): boolean => {
+  if (!(err instanceof Error)) {
+    return false;
+  }
+
+  const { message } = err;
+  return [
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs
+    "The token amount can only be refreshed when the canister is in the OPEN state",
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L611
+    "The ICP target for this token swap has already been reached.",
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L649
+    "The swap has already reached its target",
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L658
+    "Amount transferred:",
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L697
+    "New balance:",
+    // https://github.com/dfinity/ic/blob/c3f45aef7c2aa734c0451eaed682036879e54775/rs/sns/swap/src/swap.rs#L718
+    "The available balance to be topped up",
+  ].some((text) => message.includes(text));
+};
+
+export const hasOpenTicketInProcess = ({
+  rootCanisterId,
+  ticketsStore,
+}: {
+  rootCanisterId?: Principal | null;
+  ticketsStore: SnsTicketsStoreData;
+}): { status: TicketStatus } => {
+  if (isNullish(rootCanisterId)) {
+    return { status: "unknown" };
+  }
+  const projectTicketData = ticketsStore[rootCanisterId.toText()];
+
+  if (isNullish(projectTicketData)) {
+    return { status: "unknown" };
+  }
+
+  // If we have a ticket, we have an open ticket in process.
+  if (nonNullish(projectTicketData.ticket)) {
+    return { status: "open" };
+  }
+
+  // `null` means that the user has no open tickets.
+  if (projectTicketData.ticket === null) {
+    return { status: "none" };
+  }
+
+  // As long as we don't have a known state, we assume we're fetching the data.
+  return { status: "loading" };
+};
+
+/**
+ * Parse the `sale_buyer_count` value from metrics text.
+ *
+ * @example text
+ * ...
+ * # TYPE sale_buyer_count gauge
+ * sale_buyer_count 33 1677707139456
+ * # HELP sale_cf_participants_count
+ * ...
+ */
+export const parseSnsSwapSaleBuyerCount = (
+  text: string
+): number | undefined => {
+  const value = Number(
+    text
+      .split("\n")
+      ?.find((line) => line.startsWith("sale_buyer_count "))
+      ?.split(/\s/)?.[1]
+  );
+  return isNaN(value) ? undefined : value;
 };

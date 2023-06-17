@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
+import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import AddPrincipal from "../../../../lib/components/common/AddPrincipal.svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
 
 describe("PrincipalInput", () => {
   it("should render an input and a button", () => {
@@ -51,7 +51,7 @@ describe("PrincipalInput", () => {
     const buttonElement = getByTestId("add-principal-button");
 
     await waitFor(() =>
-      expect(buttonElement.hasAttribute("disabled")).toBeFalsy()
+      expect(buttonElement.hasAttribute("disabled")).toBe(false)
     );
   });
 });

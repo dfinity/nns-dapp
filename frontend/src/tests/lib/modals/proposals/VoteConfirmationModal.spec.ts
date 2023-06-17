@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
+import en from "$tests/mocks/i18n.mock";
 import { Vote } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import VoteConfirmationModal from "../../../../lib/modals/proposals/VoteConfirmationModal.svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("VoteConfirmationModal", () => {
   it("should display Adopt state", () => {
     const { container, getByText } = render(VoteConfirmationModal, {
       props: {
-        voteType: Vote.YES,
+        voteType: Vote.Yes,
         votingPower: BigInt(4000000000),
       },
     });
@@ -26,7 +26,7 @@ describe("VoteConfirmationModal", () => {
   it("should display Reject state", () => {
     const { container, getByText } = render(VoteConfirmationModal, {
       props: {
-        voteType: Vote.NO,
+        voteType: Vote.No,
         votingPower: BigInt(4000000000),
       },
     });
@@ -41,7 +41,7 @@ describe("VoteConfirmationModal", () => {
   it("should have formatted votingPower", () => {
     const { getByText } = render(VoteConfirmationModal, {
       props: {
-        voteType: Vote.NO,
+        voteType: Vote.No,
         votingPower: BigInt(4000000000),
       },
     });
@@ -51,7 +51,7 @@ describe("VoteConfirmationModal", () => {
   it("should have confirmation buttons", () => {
     const { container } = render(VoteConfirmationModal, {
       props: {
-        voteType: Vote.NO,
+        voteType: Vote.No,
         votingPower: BigInt(4000000000),
       },
     });

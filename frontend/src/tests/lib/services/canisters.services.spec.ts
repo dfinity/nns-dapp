@@ -1,9 +1,6 @@
-import type { Identity } from "@dfinity/agent";
-import { ICP } from "@dfinity/nns";
-import { get } from "svelte/store";
-import * as api from "../../../lib/api/canisters.api";
-import { UserNotTheControllerError } from "../../../lib/canisters/ic-management/ic-management.errors";
-import { syncAccounts } from "../../../lib/services/accounts.services";
+import * as api from "$lib/api/canisters.api";
+import * as ledgerApi from "$lib/api/ledger.api";
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import {
   addController,
   attachCanister,
@@ -13,92 +10,89 @@ import {
   getIcpToCyclesExchangeRate,
   listCanisters,
   removeController,
-  routePathCanisterId,
   topUpCanister,
   updateSettings,
-} from "../../../lib/services/canisters.services";
-import { canistersStore } from "../../../lib/stores/canisters.store";
-import { toastsStore } from "../../../lib/stores/toasts.store";
-import { mockMainAccount } from "../../mocks/accounts.store.mock";
+} from "$lib/services/canisters.services";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
-  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
-} from "../../mocks/auth.store.mock";
+} from "$tests/mocks/auth.store.mock";
 import {
-  mockCanister,
   mockCanisterDetails,
-  mockCanisters,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+  mockCanisters,
+} from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
-let identity: Identity | undefined = mockIdentity;
-const setNoAccountIdentity = () => (identity = undefined);
-const resetAccountIdentity = () => (identity = mockIdentity);
-jest.mock("../../../lib/services/accounts.services", () => {
-  return {
-    syncAccounts: jest.fn().mockResolvedValue(undefined),
-    getAccountIdentity: jest.fn().mockImplementation(() => {
-      if (!identity) {
-        throw new Error(mockIdentityErrorMsg);
-      }
-
-      return Promise.resolve(identity);
-    }),
-  };
-});
-
-jest.mock("../../../lib/stores/toasts.store", () => {
-  return {
-    toastsStore: {
-      error: jest.fn(),
-      show: jest.fn(),
-      success: jest.fn(),
-    },
-  };
-});
+jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/canisters.api");
+const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
 
 describe("canisters-services", () => {
-  const spyQueryCanisters = jest
-    .spyOn(api, "queryCanisters")
-    .mockImplementation(() => Promise.resolve(mockCanisters));
+  blockAllCallsTo(blockedApiPaths);
 
-  const spyAttachCanister = jest
-    .spyOn(api, "attachCanister")
-    .mockImplementation(() => Promise.resolve(undefined));
-
-  const spyDetachCanister = jest
-    .spyOn(api, "detachCanister")
-    .mockImplementation(() => Promise.resolve(undefined));
-
-  const spyUpdateSettings = jest
-    .spyOn(api, "updateSettings")
-    .mockImplementation(() => Promise.resolve(undefined));
-
-  const spyCreateCanister = jest
-    .spyOn(api, "createCanister")
-    .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
-
-  const spyTopUpCanister = jest
-    .spyOn(api, "topUpCanister")
-    .mockImplementation(() => Promise.resolve(undefined));
-
-  const spyQueryCanisterDetails = jest
-    .spyOn(api, "queryCanisterDetails")
-    .mockImplementation(() => Promise.resolve(mockCanisterDetails));
-
+  const newBalanceE8s = BigInt(100_000_000);
   const exchangeRate = BigInt(10_000);
-  const spyGetExchangeRate = jest
-    .spyOn(api, "getIcpToCyclesExchangeRate")
-    .mockImplementation(() => Promise.resolve(exchangeRate));
+  let spyQueryCanisters: jest.SpyInstance;
+  let spyQueryAccountBalance: jest.SpyInstance;
+  let spyAttachCanister: jest.SpyInstance;
+  let spyDetachCanister: jest.SpyInstance;
+  let spyUpdateSettings: jest.SpyInstance;
+  let spyCreateCanister: jest.SpyInstance;
+  let spyTopUpCanister: jest.SpyInstance;
+  let spyQueryCanisterDetails: jest.SpyInstance;
+  let spyGetExchangeRate: jest.SpyInstance;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+    toastsStore.reset();
+    canistersStore.setCanisters({ canisters: [], certified: true });
+
+    spyQueryCanisters = jest
+      .spyOn(api, "queryCanisters")
+      .mockImplementation(() => Promise.resolve(mockCanisters));
+    spyQueryAccountBalance = jest
+      .spyOn(ledgerApi, "queryAccountBalance")
+      .mockResolvedValue(newBalanceE8s);
+    spyAttachCanister = jest
+      .spyOn(api, "attachCanister")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyDetachCanister = jest
+      .spyOn(api, "detachCanister")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyUpdateSettings = jest
+      .spyOn(api, "updateSettings")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyCreateCanister = jest
+      .spyOn(api, "createCanister")
+      .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
+
+    spyTopUpCanister = jest
+      .spyOn(api, "topUpCanister")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyQueryCanisterDetails = jest
+      .spyOn(api, "queryCanisterDetails")
+      .mockImplementation(() => Promise.resolve(mockCanisterDetails));
+
+    spyGetExchangeRate = jest
+      .spyOn(api, "getIcpToCyclesExchangeRate")
+      .mockImplementation(() => Promise.resolve(exchangeRate));
+  });
 
   describe("listCanisters", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      canistersStore.setCanisters({ canisters: [], certified: true });
-    });
-
     it("should list canisters", async () => {
       await listCanisters({});
 
@@ -120,11 +114,6 @@ describe("canisters-services", () => {
   });
 
   describe("attachCanister", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      canistersStore.setCanisters({ canisters: [], certified: true });
-    });
-
     it("should call api to attach canister and list canisters again", async () => {
       const response = await attachCanister(mockCanisterDetails.id);
       expect(response.success).toBe(true);
@@ -142,17 +131,16 @@ describe("canisters-services", () => {
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
   });
 
   describe("detachCanister", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      canistersStore.setCanisters({ canisters: [], certified: true });
-    });
-
     it("should call api to attach canister and list canisters again", async () => {
       const response = await detachCanister(mockCanisterDetails.id);
       expect(response.success).toBe(true);
@@ -170,16 +158,16 @@ describe("canisters-services", () => {
       expect(response.success).toBe(false);
       expect(spyDetachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
   });
 
   describe("updateSettings", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should call api to update settings", async () => {
       const response = await updateSettings({
         canisterId: mockCanisterDetails.id,
@@ -198,16 +186,16 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
   });
 
   describe("addController", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should call api to update the settings", async () => {
       const response = await addController({
         controller: "some-controller",
@@ -233,7 +221,14 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(
+          replacePlaceholders(en.error.controller_already_present, {
+            $principal: controller,
+          })
+        ),
+      });
     });
 
     it("should not update settings if no identity", async () => {
@@ -245,16 +240,16 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
   });
 
   describe("removeController", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
     it("should call api to update the settings", async () => {
       const controller = "aaaaa-aa";
       const canisterDetails = {
@@ -287,40 +282,35 @@ describe("canisters-services", () => {
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
-      expect(toastsStore.error).toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.controller_not_present),
+      });
     });
 
     it("should not update settings if no identity", async () => {
       setNoIdentity();
+      const controller = "aaaaa-aa";
+      const canisterDetails = {
+        ...mockCanisterDetails,
+        settings: {
+          ...mockCanisterDetails.settings,
+          controllers: [controller],
+        },
+      };
 
       const response = await removeController({
-        controller: "some-controller",
-        canisterDetails: mockCanisterDetails,
+        controller,
+        canisterDetails,
       });
       expect(response.success).toBe(false);
       expect(spyUpdateSettings).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
-    });
-  });
-
-  describe("routePathCanisterId", () => {
-    beforeAll(() => {
-      // Avoid to print errors during test
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    afterAll(() => jest.clearAllMocks());
-
-    it("should get canister id from valid path", () => {
-      expect(
-        routePathCanisterId(`/#/canister/${mockCanister.canister_id.toText()}`)
-      ).toEqual(mockCanister.canister_id.toText());
-    });
-
-    it("should not get canister id from invalid path", () => {
-      expect(routePathCanisterId("/#/canister/")).toBeUndefined();
-      expect(routePathCanisterId("/#/canisters")).toBeUndefined();
-      expect(routePathCanisterId(undefined)).toBeUndefined();
     });
   });
 
@@ -354,8 +344,6 @@ describe("canisters-services", () => {
   });
 
   describe("getIcpToCyclesExchangeRate", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call api to get conversion rate", async () => {
       const response = await getIcpToCyclesExchangeRate();
       expect(response).toBe(exchangeRate);
@@ -368,18 +356,20 @@ describe("canisters-services", () => {
       const response = await getIcpToCyclesExchangeRate();
       expect(response).toBeUndefined();
       expect(spyGetExchangeRate).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
       resetIdentity();
     });
   });
 
   describe("createCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balanceE8s: 500000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -388,13 +378,13 @@ describe("canisters-services", () => {
       expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
-      expect(syncAccounts).toBeCalled();
+      expect(spyQueryAccountBalance).toBeCalled();
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balanceE8s: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -403,24 +393,27 @@ describe("canisters-services", () => {
       expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
-      expect(syncAccounts).not.toBeCalled();
+      expect(spyQueryAccountBalance).not.toBeCalled();
     });
 
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balanceE8s: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
         account,
       });
       expect(canisterId).toBeUndefined();
-      expect(toastsStore.show).toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.insufficient_funds),
+      });
     });
 
     it("should return undefined if no identity", async () => {
-      setNoAccountIdentity();
+      setNoIdentity();
 
       const canisterId = await createCanister({
         amount: 3,
@@ -428,18 +421,20 @@ describe("canisters-services", () => {
       });
       expect(canisterId).toBeUndefined();
       expect(spyCreateCanister).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
-      resetAccountIdentity();
+      resetIdentity();
     });
   });
 
   describe("topUpCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("5") as ICP,
+        balanceE8s: 500000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -448,13 +443,13 @@ describe("canisters-services", () => {
       });
       expect(success).toBe(true);
       expect(spyTopUpCanister).toBeCalled();
-      expect(syncAccounts).toBeCalled();
+      expect(spyQueryAccountBalance).toBeCalled();
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balanceE8s: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -463,13 +458,13 @@ describe("canisters-services", () => {
       });
       expect(success).toBe(false);
       expect(spyTopUpCanister).not.toBeCalled();
-      expect(syncAccounts).not.toBeCalled();
+      expect(spyQueryAccountBalance).not.toBeCalled();
     });
 
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balance: ICP.fromString("2") as ICP,
+        balanceE8s: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -477,11 +472,14 @@ describe("canisters-services", () => {
         account,
       });
       expect(success).toBe(false);
-      expect(toastsStore.show).toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.insufficient_funds),
+      });
     });
 
     it("should return success false if no identity", async () => {
-      setNoAccountIdentity();
+      setNoIdentity();
 
       const { success } = await topUpCanister({
         amount: 3,
@@ -490,8 +488,12 @@ describe("canisters-services", () => {
       });
       expect(success).toBe(false);
       expect(spyTopUpCanister).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
 
-      resetAccountIdentity();
+      resetIdentity();
     });
   });
 });

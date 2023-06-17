@@ -1,27 +1,34 @@
-import type { Identity } from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
-import { writable } from "svelte/store";
+import { resetAgents } from "$lib/api/agent.api";
 import {
   AUTH_SESSION_DURATION,
   IDENTITY_SERVICE_URL,
-} from "../constants/identity.constants";
+  OLD_MAINNET_IDENTITY_SERVICE_URL,
+} from "$lib/constants/identity.constants";
+import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
+import { NNS_IC_APP_DERIVATION_ORIGIN } from "$lib/constants/origin.constants";
+import { createAuthClient } from "$lib/utils/auth.utils";
+import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
+import type { Identity } from "@dfinity/agent";
+import type { AuthClient } from "@dfinity/auth-client";
+import type { Readable } from "svelte/store";
+import { writable } from "svelte/store";
 
-export interface AuthStore {
+export interface AuthStoreData {
   identity: Identity | undefined | null;
 }
 
-/**
- * Create an AuthClient to manage authentication and identity.
- * - Session duration is 30min (AUTH_SESSION_DURATION).
- * - Disable idle manager that sign-out in case of inactivity after default 10min to avoid UX issues if multiple tabs are used as we observe the storage and sync the delegation on any changes
- */
-const createAuthClient = (): Promise<AuthClient> =>
-  AuthClient.create({
-    idleOptions: {
-      disableIdle: true,
-      disableDefaultIdleCallback: true,
-    },
-  });
+// We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
+// @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
+let authClient: AuthClient | undefined | null;
+
+const getIdentityProvider = () => {
+  // If we are in mainnet in the old domain, we use the old identity provider.
+  if (location.host === "nns.ic0.app") {
+    return OLD_MAINNET_IDENTITY_SERVICE_URL;
+  }
+
+  return IDENTITY_SERVICE_URL;
+};
 
 /**
  * A store to handle authentication and the identity of the user.
@@ -38,51 +45,75 @@ const createAuthClient = (): Promise<AuthClient> =>
  *
  * - signOut: call auth-client log out and set null in the store. started with a user interaction ("click on a button")
  *
- * note: clearing the local storage does not happen in the state management but afterwards in its caller function (see <Logout/>)
+ * note: clearing idb auth keys does not happen in the state management but afterwards in its caller function (see <Logout/>)
  *
  */
-const initAuthStore = () => {
-  const { subscribe, set, update } = writable<AuthStore>({
+export interface AuthStore extends Readable<AuthStoreData> {
+  sync: () => Promise<void>;
+  setForTesting: (identity: Identity) => void;
+  signIn: (onError: (error?: string) => void) => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
+const initAuthStore = (): AuthStore => {
+  const { subscribe, set, update } = writable<AuthStoreData>({
     identity: undefined,
   });
 
   return {
     subscribe,
 
+    setForTesting: (identity: Identity | undefined | null) => {
+      if (!IS_TEST_ENV) {
+        throw new Error(
+          "This function should only be used in test environment"
+        );
+      }
+
+      set({ identity });
+    },
+
     sync: async () => {
-      const authClient: AuthClient = await createAuthClient();
-      const isAuthenticated: boolean = await authClient.isAuthenticated();
+      authClient = authClient ?? (await createAuthClient());
+      const isAuthenticated = await authClient.isAuthenticated();
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,
       });
     },
 
-    signIn: () =>
-      new Promise<void>((resolve, reject) => {
-        createAuthClient().then((authClient: AuthClient) => {
-          authClient.login({
-            identityProvider: IDENTITY_SERVICE_URL,
-            maxTimeToLive: AUTH_SESSION_DURATION,
-            onSuccess: () => {
-              update((state: AuthStore) => ({
-                ...state,
-                identity: authClient.getIdentity(),
-              }));
+    signIn: async (onError: (error?: string) => void) => {
+      authClient = authClient ?? (await createAuthClient());
 
-              resolve();
-            },
-            onError: reject,
-          });
-        });
-      }),
+      await authClient?.login({
+        identityProvider: getIdentityProvider(),
+        ...(isNnsAlternativeOrigin() && {
+          derivationOrigin: NNS_IC_APP_DERIVATION_ORIGIN,
+        }),
+        maxTimeToLive: AUTH_SESSION_DURATION,
+        onSuccess: () => {
+          update((state: AuthStoreData) => ({
+            ...state,
+            identity: authClient?.getIdentity(),
+          }));
+        },
+        onError,
+      });
+    },
 
     signOut: async () => {
-      const authClient: AuthClient = await createAuthClient();
+      const client: AuthClient = authClient ?? (await createAuthClient());
 
-      await authClient.logout();
+      await client.logout();
 
-      update((state: AuthStore) => ({
+      resetAgents();
+
+      // We currently do not have issue because the all screen is reloaded after sign-out.
+      // But, if we wouldn't, then agent-js auth client would not be able to process next sign-in if object would be still in memory with previous partial information. That's why we reset it.
+      // This fix a "sign in -> sign out -> sign in again" flow without window reload.
+      authClient = null;
+
+      update((state: AuthStoreData) => ({
         ...state,
         identity: null,
       }));
@@ -91,3 +122,5 @@ const initAuthStore = () => {
 };
 
 export const authStore = initAuthStore();
+
+export const authRemainingTimeStore = writable<number | undefined>(undefined);

@@ -1,213 +1,249 @@
 name: CI Checks
-
 on:
   push:
-    branches:
-      - main
-  pull_request:
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash -euxlo pipefail {0}
 jobs:
-
   formatting:
     runs-on: ubuntu-20.04
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install shfmt
         run: sudo snap install --classic shfmt
-
-      - name: Install Rust
+      - name: Install yq
+        run: sudo snap install yq
+      - name: Format
+        run: ./scripts/fmt
+      - name: Check formatted
         run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup component add rustfmt
-
-      - name: Format rust
-        run: cargo fmt
-
-      - name: Format shell scripts
-        run: ./scripts/fmt-sh
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-      - name: Format frontend
-        run: npm run format
-        working-directory: ./frontend
-
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Format e2e-tests
-        run: npm run format
-        working-directory: ./e2e-tests
-
-      - name: Commit Formatting changes - will not trigger rebuild
-        uses: EndBug/add-and-commit@v7.2.0
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          add: .
-          author_name: Formatting Committer
-          author_email: "<nobody@example.com>"
-          message: "Updating frontend formatting"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
-
-  clippy:
-    needs: formatting
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Noop
-        run: echo clippy is run by the formatting step
-
-
+          test -z "$(git status --porcelain)" || {
+                  echo "FIX: Please run ./scripts/fmt"
+                  git diff
+                  exit 1
+          }
   cargo-tests:
-    needs: formatting
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        rust: [ '1.58.1' ]
-        os: [ ubuntu-20.04 ]
-
+        os: [ubuntu-20.04]
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
-
-      - name: Install Rust
-        run: |
-          rustup update ${{ matrix.rust }} --no-self-update
-          rustup default ${{ matrix.rust }}
-          rustup target add wasm32-unknown-unknown
-          rustup component add clippy
-
-      - name: Create fake assets
-        run : |
-          touch assets.tar.xz
-
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features -- -D warnings
-
+      - name: Lint rust code
+        run: ./scripts/lint-rs
       - name: Run Tests
         shell: bash
         run: |
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
-
   svelte-tests:
-    needs: formatting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest-m
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-      REDIRECT_TO_LEGACY: svelte
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
+        uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
         run: npm ci
-
-      - name: Compile typescript
-        run: npm run build
-
-      # Temporarily disabled:
-      #- name: Run linter
-      #  run: npm run check
-
+        working-directory: ./frontend
       - name: Test
         run: npm run test
-
+        working-directory: ./frontend
   svelte-lint:
-    needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
-        working-directory: ./frontend
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
+        uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
         run: npm ci
-
-      - name: Compile typescript
-        run: npm run build
-
+        working-directory: ./frontend
       - name: Run linter
         run: npm run check
-
+        working-directory: ./frontend
   e2e-lint:
-    needs: formatting
     runs-on: ubuntu-20.04
     defaults:
       run:
         shell: bash
     env:
       DFX_NETWORK: mainnet
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-
       - name: Provide a config
         run: ./config.sh
-
       - name: Install dependencies
         run: npm ci
         working-directory: ./e2e-tests
-
       - name: Run e2e linter
         run: npm run lint
         working-directory: ./e2e-tests
-
-
-
   shell-checks:
-    needs: formatting
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
-    - name: Run ShellCheck
-      uses: ludeeus/action-shellcheck@master
-      env:
-        SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
-
-  checks-pass:
-    needs: ["formatting", "clippy", "cargo-tests", "svelte-tests", "shell-checks"]
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+  ic-commit-consistency:
+    name: IC Commit
     runs-on: ubuntu-20.04
     steps:
-       - name: Checks workflow passes
-         run: echo OK
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Make didc support binstall, then use binstall here.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Run the ic_commit code generator
+        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+      - name: Verify that there are no code changes
+        run: |
+          if git diff | grep . ; then
+                  echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  exit 1
+          fi
+  release-templating-works:
+    name: Release template
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Use binstall, once didc supports it.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Verify template creation
+        run: |
+          echo Create a fake wasm
+          mkdir -p release/ci
+          touch release/ci/nns-dapp.wasm
+          echo Create a proposal template
+          scripts/nns-dapp/release-template
+          echo Check the proposal
+          ./scripts/nns-dapp/release-check
+  config-check:
+    name: Config check
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install tools
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from 2023-06-06 with dfx v0.14.1
+          ref: '0e61f618018db099a01b1686535fff8eff980d1c'
+      - name: Add SNS scripts to the path
+        run: |
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install tools
+        run: |
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Check config script
+        run: bash -x ./config.test
+  sns-aggregator-patches:
+    name: SNS aggregator patches
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Use binstall, once didc supports it.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Check didc
+        run: command -v didc
+      - name: Recreate and compare patches
+        run: scripts/mk_nns_patch.test
+  mainnet-config-stability-test:
+    name: Mainnet config is as expected
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Check mainnet config
+        run: scripts/nns-dapp/test-config
+  asset-chunking-works:
+    name: Asset chunking works
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test chunking
+        run: scripts/nns-dapp/split-assets.test
+  checks-pass:
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

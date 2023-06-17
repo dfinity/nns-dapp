@@ -1,67 +1,108 @@
 <script lang="ts">
-  import { ICP } from "@dfinity/nns";
-  import type { SnsSummary, SnsSummarySwap } from "../../types/sns";
+  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { getDeniedCountries } from "$lib/getters/sns-summary";
+  import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
+  import type { CountryCode } from "$lib/types/location";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
-  } from "../../types/project-detail.context";
-  import KeyValuePair from "../ui/KeyValuePair.svelte";
-  import Icp from "../ic/ICP.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { SnsSwapInit } from "@dfinity/sns";
-  import { openTimeWindow } from "../../utils/projects.utils";
-  import DateSeconds from "../ui/DateSeconds.svelte";
-  import type { SnsSwapTimeWindow } from "@dfinity/sns";
+  } from "$lib/types/project-detail.context";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import type { SnsParams } from "@dfinity/sns";
+  import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { nonNullish } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { formatNumber } from "$lib/utils/format.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swap: SnsSummarySwap;
   // type safety validation is done in ProjectDetail component
-  $: ({ swap } = $projectDetailStore.summary as SnsSummary);
+  let summary: SnsSummary;
+  $: summary = $projectDetailStore.summary as SnsSummary;
 
-  let init: SnsSwapInit;
-  $: ({ init } = swap);
+  let params: SnsParams;
+  let token: IcrcTokenMetadata;
+  $: ({
+    swap: { params },
+    token,
+  } = summary);
 
-  let timeWindow: SnsSwapTimeWindow | undefined;
-  $: timeWindow = openTimeWindow(swap);
-
-  let start_timestamp_seconds: bigint | undefined;
-  let end_timestamp_seconds: bigint | undefined;
-  $: ({ start_timestamp_seconds, end_timestamp_seconds } = timeWindow ?? {
-    start_timestamp_seconds: undefined,
-    end_timestamp_seconds: undefined,
+  let minCommitmentIcp: TokenAmount;
+  $: minCommitmentIcp = TokenAmount.fromE8s({
+    amount: params.min_participant_icp_e8s,
+    token: ICPToken,
+  });
+  let maxCommitmentIcp: TokenAmount;
+  $: maxCommitmentIcp = TokenAmount.fromE8s({
+    amount: params.max_participant_icp_e8s,
+    token: ICPToken,
   });
 
-  let minCommitmentIcp: ICP;
-  $: minCommitmentIcp = ICP.fromE8s(init.min_participant_icp_e8s);
-  let maxCommitmentIcp: ICP;
-  $: maxCommitmentIcp = ICP.fromE8s(init.max_participant_icp_e8s);
+  let snsTokens: TokenAmount;
+  $: snsTokens = TokenAmount.fromE8s({
+    amount: params.sns_token_e8s,
+    token,
+  });
+
+  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
+
+  let deniedCountryCodes: CountryCode[];
+  $: deniedCountryCodes = getDeniedCountries(summary);
+
+  let hasDeniedCountries: boolean;
+  $: hasDeniedCountries = deniedCountryCodes.length > 0;
+
+  let formattedDeniedCountryCodes: string;
+  $: formattedDeniedCountryCodes = deniedCountryCodes.join(", ");
 </script>
 
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-  <Icp slot="value" icp={minCommitmentIcp} singleLine />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
-  <Icp slot="value" icp={maxCommitmentIcp} singleLine />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.sale_start} </span>
-  <DateSeconds
-    slot="value"
-    seconds={Number(start_timestamp_seconds ?? BigInt(0))}
-    tagName="span"
-  />
-</KeyValuePair>
-<KeyValuePair>
-  <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
-  <DateSeconds
-    slot="value"
-    seconds={Number(end_timestamp_seconds ?? BigInt(0))}
-    tagName="span"
-  />
-</KeyValuePair>
+<TestIdWrapper testId="project-swap-details-component">
+  {#if nonNullish(snsTotalTokenSupply)}
+    <KeyValuePair testId="sns-total-token-supply">
+      <span slot="key">{$i18n.sns_project_detail.total_tokens_supply} </span>
+      <AmountDisplay slot="value" amount={snsTotalTokenSupply} singleLine />
+    </KeyValuePair>
+  {/if}
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
+    <AmountDisplay slot="value" amount={snsTokens} singleLine />
+  </KeyValuePair>
+  <KeyValuePair testId="project-swap-min-participants">
+    <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
+    <span slot="value"
+      >{formatNumber(params.min_participants, {
+        minFraction: 0,
+        maxFraction: 0,
+      })}</span
+    >
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
+    <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
+    <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
+  </KeyValuePair>
+  <KeyValuePair>
+    <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
+    <DateSeconds
+      slot="value"
+      seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
+      tagName="span"
+    />
+  </KeyValuePair>
+  {#if hasDeniedCountries}
+    <KeyValuePair testId="excluded-countries">
+      <span slot="key">{$i18n.sns_project_detail.persons_excluded} </span>
+      <span slot="value">{formattedDeniedCountryCodes}</span>
+    </KeyValuePair>
+  {/if}
+</TestIdWrapper>

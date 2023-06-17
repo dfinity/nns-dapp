@@ -1,42 +1,47 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import { NotEnoughAmountError } from "$lib/types/common.errors";
+import { LedgerErrorMessage } from "$lib/types/ledger.errors";
+import {
+  CannotBeMerged,
+  InvalidAmountError,
+  NotAuthorizedNeuronError,
+  NotFoundError,
+} from "$lib/types/neurons.errors";
+import type { ToastMsg } from "$lib/types/toast";
+import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
   InsufficientFundsError,
   InvalidAccountIDError,
-  InvalidPercentageError,
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import {
-  InvalidaTransactionError,
-  RefundedError,
-} from "../canisters/cmc/cmc.errors";
-import { UserNotTheControllerError } from "../canisters/ic-management/ic-management.errors";
-import { InsufficientAmountError } from "../types/common.errors";
-import { LedgerErrorMessage } from "../types/ledger.errors";
-import {
-  CannotBeMerged,
-  InvalidAmountError,
-  NotAuthorizedNeuronError,
-  NotFoundError,
-} from "../types/neurons.errors";
-import type { ToastMsg } from "../types/toast";
+import { SnsGovernanceError } from "@dfinity/sns";
+import { InvalidPercentageError } from "@dfinity/utils";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
-export const errorToString = (err?: unknown): string | undefined =>
-  typeof err === "string"
-    ? (err as string)
-    : err instanceof GovernanceError
-    ? (err as GovernanceError)?.detail?.error_message
-    : err instanceof Error
-    ? (err as Error).message
-    : undefined;
+export const errorToString = (err?: unknown): string | undefined => {
+  const text =
+    typeof err === "string"
+      ? (err as string)
+      : err instanceof GovernanceError
+      ? (err as GovernanceError)?.detail?.error_message
+      : err instanceof SnsGovernanceError
+      ? (err as SnsGovernanceError).message
+      : err instanceof Error
+      ? (err as Error).message
+      : undefined;
+
+  // replace with i18n version if available
+  return typeof text === "string" ? translate({ labelKey: text }) : text;
+};
 
 const factoryMappingErrorToToastMessage =
   (collection: Array<[Function, string]>) =>
-  (error: Error, fallbackKey?: string): ToastMsg => {
+  (error: Error | unknown, fallbackKey?: string): ToastMsg => {
     // Check toToastError first
     const testFallbackKey = "fallback";
     const toastError = toToastError({
@@ -78,7 +83,6 @@ const neuronMapper: Array<[Function, string]> = [
   [NotFoundError, "error.neuron_not_found"],
   [NotAuthorizedNeuronError, "error.not_authorized_neuron_action"],
   [InvalidAmountError, "error.amount_not_valid"],
-  [InsufficientAmountError, "error.amount_not_enough_stake_neuron"],
   [CouldNotClaimNeuronError, "error.neuron_not_found"],
   [InsufficientAmountNNSError, "error.amount_not_enough_stake_neuron"],
   [InvalidSenderError, "error.invalid_sender"],
@@ -89,16 +93,19 @@ const neuronMapper: Array<[Function, string]> = [
   [NotFoundError, "error.neuron_not_found"],
   [TransferError, "error.transfer_error"],
   [CannotBeMerged, "error.cannot_merge"],
+  // dapp errors
+  [NotEnoughAmountError, "error.amount_not_enough_stake_neuron"],
 ];
 export const mapNeuronErrorToToastMessage =
   factoryMappingErrorToToastMessage(neuronMapper);
 
 // Check CMC and IC Mgt Canister Errors
 const canisterMapper: Array<[Function, string]> = [
-  [InsufficientAmountError, "error.insufficient_funds"],
   [RefundedError, "error.canister_refund"],
   [InvalidaTransactionError, "error.canister_invalid_transaction"],
   [UserNotTheControllerError, "error.not_canister_controller_to_update"],
+  // dapp errors
+  [NotEnoughAmountError, "error.insufficient_funds"],
 ];
 export const mapCanisterErrorToToastMessage =
   factoryMappingErrorToToastMessage(canisterMapper);
@@ -115,11 +122,11 @@ export const toToastError = ({
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
 }): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
-  let errorKey: boolean = false;
+  let errorKey = false;
   const message: string | undefined = (err as Error)?.message;
 
   if (message !== undefined) {
-    const label: string = translate({ labelKey: message });
+    const label = translate({ labelKey: message });
     errorKey = label !== message;
   }
 

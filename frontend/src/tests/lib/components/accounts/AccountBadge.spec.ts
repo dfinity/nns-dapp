@@ -2,14 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { render } from "@testing-library/svelte";
-import AccountBadge from "../../../../lib/components/accounts/AccountBadge.svelte";
+import AccountBadge from "$lib/components/accounts/AccountBadge.svelte";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import en from "../../../mocks/i18n.mock";
+} from "$tests/mocks/accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import { render } from "@testing-library/svelte";
 
 describe("AccountBadge", () => {
   it("should render no badge", () => {

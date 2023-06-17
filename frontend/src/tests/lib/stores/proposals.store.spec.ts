@@ -1,14 +1,12 @@
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { get } from "svelte/store";
-import { DEFAULT_PROPOSALS_FILTERS } from "../../../lib/constants/proposals.constants";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
   proposalsStore,
-  votingNeuronSelectStore,
-} from "../../../lib/stores/proposals.store";
-import { mockNeuron } from "../../mocks/neurons.mock";
-import { generateMockProposals } from "../../mocks/proposal.mock";
+} from "$lib/stores/proposals.store";
+import { generateMockProposals } from "$tests/mocks/proposal.mock";
+import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 describe("proposals-store", () => {
   describe("proposals", () => {
@@ -129,8 +127,8 @@ describe("proposals-store", () => {
 
     it("should update topic rewards", () => {
       const filter = [
-        ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+        ProposalRewardStatus.AcceptVotes,
+        ProposalRewardStatus.ReadyToSettle,
       ];
       proposalsFiltersStore.filterRewards(filter);
 
@@ -143,10 +141,7 @@ describe("proposals-store", () => {
     });
 
     it("should update topic status", () => {
-      const filter = [
-        ProposalStatus.PROPOSAL_STATUS_OPEN,
-        ProposalStatus.PROPOSAL_STATUS_REJECTED,
-      ];
+      const filter = [ProposalStatus.Open, ProposalStatus.Rejected];
       proposalsFiltersStore.filterStatus(filter);
 
       const filters = get(proposalsFiltersStore);
@@ -176,44 +171,19 @@ describe("proposals-store", () => {
         excludeVotedProposals: false,
       });
     });
-  });
 
-  describe("votingNeuronSelectStore", () => {
-    const neuronIds = [0, 1, 2].map(BigInt);
-    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
+    it("should reload filters", () => {
+      const filter = [Topic.NetworkEconomics, Topic.SubnetManagement];
+      proposalsFiltersStore.filterTopics(filter);
 
-    it("should set neurons", () => {
-      votingNeuronSelectStore.set(neurons);
-      expect(get(votingNeuronSelectStore).neurons).toEqual(neurons);
-    });
+      proposalsFiltersStore.reload();
 
-    it("should select all on set", () => {
-      votingNeuronSelectStore.set(neurons);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual(neuronIds);
-    });
-
-    it("should preserve user selection", () => {
-      votingNeuronSelectStore.set(neurons);
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
-      votingNeuronSelectStore.updateNeurons([
-        ...neurons,
-        { ...mockNeuron, neuronId: BigInt(3) },
-      ]);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual(
-        [0, 2, 3].map(BigInt)
-      );
-    });
-
-    it("should toggle by neuronId", () => {
-      votingNeuronSelectStore.set(neurons);
-
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
-      votingNeuronSelectStore.toggleSelection(neuronIds[1]);
-      votingNeuronSelectStore.toggleSelection(neuronIds[2]);
-      expect(get(votingNeuronSelectStore).selectedIds).toEqual([
-        neuronIds[0],
-        neuronIds[1],
-      ]);
+      const filters = get(proposalsFiltersStore);
+      expect(filters).toEqual({
+        ...DEFAULT_PROPOSALS_FILTERS,
+        topics: filter,
+      });
+      expect(filters.lastAppliedFilter).toBeUndefined();
     });
   });
 

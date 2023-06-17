@@ -1,4 +1,6 @@
-import type { Transaction } from "../../lib/canisters/nns-dapp/nns-dapp.types";
+import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Transaction } from "$lib/types/transaction";
+import { AccountTransactionType } from "$lib/types/transaction";
 import { mockMainAccount, mockSubAccount } from "./accounts.store.mock";
 
 export const mockSentToSubAccountTransaction = {
@@ -13,7 +15,7 @@ export const mockSentToSubAccountTransaction = {
       amount: { e8s: BigInt(110000023) },
     },
   },
-} as Transaction;
+} as NnsTransaction;
 
 export const mockReceivedFromMainAccountTransaction = {
   transaction_type: [{ Transfer: null }],
@@ -27,4 +29,26 @@ export const mockReceivedFromMainAccountTransaction = {
       amount: { e8s: BigInt(110000000) },
     },
   },
-} as Transaction;
+} as NnsTransaction;
+
+const displayAmount = 11000000000000000n;
+
+export const mockTransactionReceiveDataFromMain: Transaction = {
+  type: AccountTransactionType.Send,
+  isReceive: true,
+  isSend: false,
+  from: "aaaaa-aa",
+  to: "bbbbb-bb",
+  displayAmount,
+  date: new Date("03-14-2021"),
+};
+
+export const mockTransactionSendDataFromMain: Transaction = {
+  type: AccountTransactionType.Send,
+  isReceive: false,
+  isSend: true,
+  from: "aaaaa-aa",
+  to: "bbbbb-bb",
+  displayAmount,
+  date: new Date("03-14-2021"),
+};

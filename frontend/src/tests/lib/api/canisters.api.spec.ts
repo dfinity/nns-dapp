@@ -1,11 +1,4 @@
 import {
-  AccountIdentifier,
-  ICP,
-  LedgerCanister,
-  SubAccount,
-} from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
-import {
   attachCanister,
   createCanister,
   detachCanister,
@@ -14,23 +7,31 @@ import {
   queryCanisters,
   topUpCanister,
   updateSettings,
-} from "../../../lib/api/canisters.api";
-import { CMCCanister } from "../../../lib/canisters/cmc/cmc.canister";
-import { ProcessingError } from "../../../lib/canisters/cmc/cmc.errors";
-import { principalToSubAccount } from "../../../lib/canisters/cmc/utils";
-import { ICManagementCanister } from "../../../lib/canisters/ic-management/ic-management.canister";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+} from "$lib/api/canisters.api";
+import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
-} from "../../../lib/constants/api.constants";
-import { CYCLES_MINTING_CANISTER_ID } from "../../../lib/constants/canister-ids.constants";
-import { mockSubAccount } from "../../mocks/accounts.store.mock";
-import { mockIdentity } from "../../mocks/auth.store.mock";
+} from "$lib/constants/api.constants";
+import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterSettings,
-} from "../../mocks/canisters.mock";
+} from "$tests/mocks/canisters.mock";
+import { CMCCanister, ProcessingError } from "@dfinity/cmc";
+import {
+  AccountIdentifier,
+  ICPToken,
+  LedgerCanister,
+  SubAccount,
+  TokenAmount,
+} from "@dfinity/nns";
+import { principalToSubAccount } from "@dfinity/utils";
+import { mock } from "jest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -38,7 +39,16 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
+  afterAll(() => {
+    jest.resetAllMocks();
+    jest.clearAllTimers();
+  });
+
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    const now = Date.now();
+    jest.useFakeTimers().setSystemTime(now);
+
     jest
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
@@ -180,7 +190,10 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -199,7 +212,10 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
       });
       expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
       expect(response).toEqual(mockCanisterDetails.id);
@@ -210,7 +226,10 @@ describe("canisters-api", () => {
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
-      const amount = ICP.fromString("3") as ICP;
+      const amount = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
 
       const response = await createCanister({
         identity: mockIdentity,
@@ -228,8 +247,9 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -245,7 +265,10 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: ICP.fromString("3") as ICP,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
@@ -268,7 +291,10 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
@@ -283,7 +309,10 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: ICP.fromString("3") as ICP,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
@@ -301,7 +330,10 @@ describe("canisters-api", () => {
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
 
-      const amount = ICP.fromString("3") as ICP;
+      const amount = TokenAmount.fromString({
+        amount: "3",
+        token: ICPToken,
+      }) as TokenAmount;
       await topUpCanister({
         identity: mockIdentity,
         amount,
@@ -312,8 +344,9 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount: mockSubAccount.subAccount,
+        createdAt: nowInBigIntNanoSeconds(),
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyTopUp).toBeCalled();
@@ -325,7 +358,10 @@ describe("canisters-api", () => {
       const call = () =>
         topUpCanister({
           identity: mockIdentity,
-          amount: ICP.fromString("3") as ICP,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
           canisterId: mockCanisterDetails.id,
         });
       expect(call).rejects.toThrow();

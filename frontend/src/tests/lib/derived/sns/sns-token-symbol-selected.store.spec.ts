@@ -1,30 +1,34 @@
-import { Principal } from "@dfinity/principal";
-import { SnsMetadataResponseEntries, SnsSwapLifecycle } from "@dfinity/sns";
+/**
+ * @jest-environment jsdom
+ */
+
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
+import { page } from "$mocks/$app/stores";
+import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { snsTokenSymbolSelectedStore } from "../../../../lib/derived/sns/sns-token-symbol-selected.store";
-import { snsProjectSelectedStore } from "../../../../lib/stores/projects.store";
-import { snsQueryStore } from "../../../../lib/stores/sns.store";
-import { snsResponsesForLifecycle } from "../../../mocks/sns-response.mock";
 
 describe("currentSnsTokenLabelStore", () => {
   const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Open],
+    lifecycles: [SnsSwapLifecycle.Committed],
     certified: true,
   });
-  afterEach(() => {
+
+  beforeEach(() => {
     snsQueryStore.reset();
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
+
   it("returns token symbol of current selected sns project", () => {
     snsQueryStore.setData(data);
     const [metadatas] = data;
-    snsProjectSelectedStore.set(
-      Principal.fromText(metadatas[0].rootCanisterId)
-    );
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const ledgerMetadata = metadatas[0].token;
     const symbolResponse = ledgerMetadata.find(
-      (metadata) => metadata[0] === SnsMetadataResponseEntries.SYMBOL
+      (metadata) => metadata[0] === IcrcMetadataResponseEntries.SYMBOL
     );
     const symbol =
       symbolResponse !== undefined && "Text" in symbolResponse[1]
@@ -32,12 +36,12 @@ describe("currentSnsTokenLabelStore", () => {
         : undefined;
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
-    expect(expectedToken).toBe(symbol);
+    expect(expectedToken?.symbol).toBe(symbol);
   });
 
   it("returns undefined if selected project is NNS", () => {
     snsQueryStore.setData(data);
-    snsProjectSelectedStore.set(OWN_CANISTER_ID);
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();
@@ -45,9 +49,7 @@ describe("currentSnsTokenLabelStore", () => {
 
   it("returns undefined if current selected project has no data", () => {
     const [metadatas] = data;
-    snsProjectSelectedStore.set(
-      Principal.fromText(metadatas[0].rootCanisterId)
-    );
+    page.mock({ data: { universe: metadatas[0].rootCanisterId } });
     const expectedToken = get(snsTokenSymbolSelectedStore);
 
     expect(expectedToken).toBeUndefined();

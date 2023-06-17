@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+	
+	Sanity checks a proposal.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+cd "$SOURCE_DIR/.."
+
+# The deployment converts the did file to binary at the last moment, like this:
+ARG_DID="./release/nns-dapp-arg-${DFX_NETWORK}.did"
+ARG_PATH="./release/nns-dapp-arg-${DFX_NETWORK}.bin"
+test -e "$ARG_DID" || {
+  echo "ERROR: Arguments need to be provided in $ARG_DID"
+  exit 1
+} >&2
+didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+# ... Check whether that produces a valid argument
+echo "Checking binary argument:"
+cargo run --bin nns-dapp-check-args -- "./release/nns-dapp-arg-${DFX_NETWORK}.bin"
+echo "Check passes"

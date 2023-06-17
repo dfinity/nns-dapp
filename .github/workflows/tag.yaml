@@ -1,0 +1,30 @@
+# Tags the latest main, to trigger a release.
+name: Tag main as tip
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  tag_tip:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Tag main as tip
+        run: |
+          git tag -f tip
+          git push origin tags/tip -f
+  tag_pass:
+    needs: ["tag_tip"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'

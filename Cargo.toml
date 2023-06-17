@@ -1,7 +1,11 @@
 [workspace]
 members = [
-    "rs"
+    "rs/backend",
+    "rs/sns_aggregator"
 ]
+
+[workspace.package]
+version = "2.0.37"
 
 [profile.release]
 lto = false

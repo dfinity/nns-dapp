@@ -1,6 +1,16 @@
-/* Do not edit.  Compiled with ./scripts/compile-idl-js from candid/nns_dapp.did */
+/* Do not edit.  Compiled with ./scripts/compile-idl-js from src/lib/canisters/nns-dapp/nns-dapp.did */
 export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
+  const SubAccount = IDL.Vec(IDL.Nat8);
+  const AddPendingNotifySwapRequest = IDL.Record({
+    swap_canister_id: IDL.Principal,
+    buyer_sub_account: IDL.Opt(SubAccount),
+    buyer: IDL.Principal,
+  });
+  const AddPendingTransactionResponse = IDL.Variant({
+    Ok: IDL.Null,
+    NotAuthorized: IDL.Null,
+  });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
     canister_id: IDL.Principal,
@@ -12,7 +22,6 @@ export const idlFactory = ({ IDL }) => {
     NameTooLong: IDL.Null,
     CanisterLimitExceeded: IDL.Null,
   });
-  const SubAccount = IDL.Vec(IDL.Nat8);
   const SubAccountDetails = IDL.Record({
     name: IDL.Text,
     sub_account: SubAccount,
@@ -49,23 +58,8 @@ export const idlFactory = ({ IDL }) => {
     canister_id: IDL.Principal,
   });
   const BlockHeight = IDL.Nat64;
-  const MultiPartTransactionError = IDL.Record({
-    error_message: IDL.Text,
-    block_height: BlockHeight,
-  });
   const CanisterId = IDL.Principal;
   const NeuronId = IDL.Nat64;
-  const MultiPartTransactionStatus = IDL.Variant({
-    Queued: IDL.Null,
-    Error: IDL.Text,
-    Refunded: IDL.Tuple(BlockHeight, IDL.Text),
-    CanisterCreated: CanisterId,
-    Complete: IDL.Null,
-    NotFound: IDL.Null,
-    NeuronCreated: NeuronId,
-    PendingSync: IDL.Null,
-    ErrorWithRefundPending: IDL.Text,
-  });
   const GetProposalPayloadResponse = IDL.Variant({
     Ok: IDL.Text,
     Err: IDL.Text,
@@ -93,10 +87,11 @@ export const idlFactory = ({ IDL }) => {
   const TransactionType = IDL.Variant({
     Burn: IDL.Null,
     Mint: IDL.Null,
-    Transfer: IDL.Null,
     StakeNeuronNotification: IDL.Null,
     TopUpCanister: CanisterId,
+    ParticipateSwap: CanisterId,
     CreateCanister: IDL.Null,
+    Transfer: IDL.Null,
     TopUpNeuron: IDL.Null,
     StakeNeuron: IDL.Null,
   });
@@ -164,6 +159,11 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     add_account: IDL.Func([], [AccountIdentifier], []),
+    add_pending_notify_swap: IDL.Func(
+      [AddPendingNotifySwapRequest],
+      [AddPendingTransactionResponse],
+      []
+    ),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
     attach_canister: IDL.Func(
       [AttachCanisterRequest],
@@ -178,22 +178,12 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], []),
-    get_multi_part_transaction_errors: IDL.Func(
-      [],
-      [IDL.Vec(MultiPartTransactionError)],
-      []
-    ),
-    get_multi_part_transaction_status: IDL.Func(
-      [IDL.Principal, BlockHeight],
-      [MultiPartTransactionStatus],
-      []
-    ),
-    get_stats: IDL.Func([], [Stats], []),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
       [GetProposalPayloadResponse],
       []
     ),
+    get_stats: IDL.Func([], [Stats], []),
     get_transactions: IDL.Func(
       [GetTransactionsRequest],
       [GetTransactionsResponse],

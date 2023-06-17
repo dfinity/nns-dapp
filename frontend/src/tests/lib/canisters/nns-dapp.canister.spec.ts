@@ -1,7 +1,5 @@
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
-import { NNSDappCanister } from "../../../lib/canisters/nns-dapp/nns-dapp.canister";
+import { createAgent } from "$lib/api/agent.api";
+import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
   CanisterAlreadyAttachedError,
@@ -11,23 +9,26 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
+  NotAuthorizedError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   UnknownProposalPayloadError,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.errors";
-import type { NNSDappService } from "../../../lib/canisters/nns-dapp/nns-dapp.idl";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
-} from "../../../lib/canisters/nns-dapp/nns-dapp.types";
-import { createAgent } from "../../../lib/utils/agent.utils";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
-} from "../../mocks/accounts.store.mock";
-import { mockIdentity, mockPrincipal } from "../../mocks/auth.store.mock";
-import { mockCanister, mockCanisters } from "../../mocks/canisters.mock";
+} from "$tests/mocks/accounts.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { mock } from "jest-mock-extended";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
@@ -43,7 +44,7 @@ describe("NNSDapp", () => {
 
   describe("NNSDapp.addAccount", () => {
     it("returns account identifier when success", async () => {
-      const response: string =
+      const response =
         "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
       const service = mock<NNSDappService>();
       service.add_account.mockResolvedValue(response);
@@ -162,6 +163,43 @@ describe("NNSDapp", () => {
     });
   });
 
+  describe("NNSDapp.addPendingNotifySwap", () => {
+    afterEach(() => jest.clearAllMocks());
+    it("should call add_pending_notify_swap successfully", async () => {
+      const service = mock<NNSDappService>();
+      service.add_pending_notify_swap.mockResolvedValue({ Ok: null });
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const res = await nnsDapp.addPendingNotifySwap({
+        swap_canister_id: mockCanister.canister_id,
+        buyer: mockPrincipal,
+        buyer_sub_account: [],
+      });
+
+      expect(res).toBeUndefined();
+      expect(service.add_pending_notify_swap).toBeCalled();
+    });
+
+    it("should raise error if add_pending_notify_swap returns error", async () => {
+      const service = mock<NNSDappService>();
+      service.add_pending_notify_swap.mockResolvedValue({
+        NotAuthorized: null,
+      });
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.addPendingNotifySwap({
+          swap_canister_id: mockCanister.canister_id,
+          buyer: mockPrincipal,
+          buyer_sub_account: [],
+        });
+
+      expect(call).rejects.toThrow(NotAuthorizedError);
+    });
+  });
+
   describe("NNSDapp.registerHardwareWallet", () => {
     it("should register hardware wallet", async () => {
       const service = mock<NNSDappService>();
@@ -210,7 +248,9 @@ describe("NNSDapp", () => {
         },
         new NameTooLongError(
           "error__attach_wallet.create_hardware_wallet_too_long",
-          { $accountName: "test" }
+          {
+            $accountName: "test",
+          }
         )
       ));
 

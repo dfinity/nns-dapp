@@ -1,15 +1,17 @@
+import type { Account } from "$lib/types/account";
+import {
+  WALLET_CONTEXT_KEY,
+  type WalletStore,
+} from "$lib/types/wallet.context";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import type { Account } from "../../lib/types/account";
-import {
-  SELECTED_ACCOUNT_CONTEXT_KEY,
-  type SelectedAccountStore,
-} from "../../lib/types/selected-account.context";
-import ContextWrapperTest from "../lib/components/ContextWrapperTest.svelte";
 
-const waitModalIntroEnd = async ({
+// TODO: rename and move this modal.mock.ts to modal.test-utils.ts
+
+export const waitModalIntroEnd = async ({
   container,
   selector,
 }: {
@@ -23,7 +25,7 @@ const waitModalIntroEnd = async ({
   await waitFor(() => expect(container.querySelector(selector)).not.toBeNull());
 };
 
-const modalToolbarSelector = "div.toolbar";
+export const modalToolbarSelector = "div.content";
 
 export const renderModal = async ({
   component,
@@ -32,7 +34,7 @@ export const renderModal = async ({
   component: typeof SvelteComponent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: Record<string, any>;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
   });
@@ -51,7 +53,7 @@ export const renderModalContextWrapper = async <T>({
   Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-}): Promise<RenderResult> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -72,13 +74,13 @@ export const renderModalSelectedAccountContextWrapper = ({
 }: {
   Component: typeof SvelteComponent;
   account: Account | undefined;
-}): Promise<RenderResult> =>
+}): Promise<RenderResult<SvelteComponent>> =>
   renderModalContextWrapper({
-    contextKey: SELECTED_ACCOUNT_CONTEXT_KEY,
+    contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
-      store: writable<SelectedAccountStore>({
+      store: writable<WalletStore>({
         account,
-        transactions: undefined,
+        neurons: [],
       }),
     },
     Component,

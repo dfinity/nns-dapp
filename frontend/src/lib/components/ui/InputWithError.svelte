@@ -1,14 +1,14 @@
 <script lang="ts">
-  import IconInfo from "../../icons/IconInfo.svelte";
+  import { IconInfo } from "@dfinity/gix-components";
   import Input from "./Input.svelte";
 
   // Same props as Input
   export let name: string;
-  export let inputType: "number" | "text" = "number";
-  export let required: boolean = true;
+  export let inputType: "number" | "text" | "icp" = "number";
+  export let required = true;
   export let spellcheck: boolean | undefined = undefined;
   export let step: number | "any" | undefined = undefined;
-  export let disabled: boolean = false;
+  export let disabled = false;
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
@@ -18,9 +18,11 @@
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
+  export let showInfo = true;
+  export let testId: string | undefined = undefined;
 </script>
 
-<div class="wrapper" class:error>
+<div class="wrapper" data-tid={testId} class:error>
   <Input
     {inputType}
     {required}
@@ -32,11 +34,15 @@
     {placeholderLabelKey}
     {max}
     {autocomplete}
+    {showInfo}
     bind:value
     on:blur
-    on:input
+    on:nnsInput
   >
-    <slot name="additional" slot="additional" />
+    <slot name="start" slot="start" />
+    <slot name="label" slot="label" />
+    <slot name="end" slot="end" />
+    <slot name="inner-end" slot="inner-end" />
   </Input>
 
   {#if error}
@@ -50,11 +56,13 @@
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .wrapper {
     position: relative;
     width: 100%;
+
+    padding: var(--input-error-wrapper-padding);
   }
 
   .error {

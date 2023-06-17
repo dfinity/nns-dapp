@@ -1,161 +1,95 @@
 <script lang="ts">
-  // Tested in EditFollowNeurons.spec.ts
-  import { type NeuronId, Topic, type NeuronInfo } from "@dfinity/nns";
-  import NewFolloweeModal from "../../modals/neurons/NewFolloweeModal.svelte";
-  import { removeFollowee } from "../../services/neurons.services";
-  import { startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
-  import { knownNeuronsStore } from "../../stores/knownNeurons.store";
-  import { followeesByTopic } from "../../utils/neuron.utils";
-  import Collapsible from "../ui/Collapsible.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { Collapsible } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
-  export let topic: Topic;
-  export let neuron: NeuronInfo;
+  export let id: string;
+  export let count: number;
 
-  let title: string;
-  $: title = $i18n.follow_neurons[`topic_${topic}_title`];
-  let subtitle: string;
-  $: subtitle = $i18n.follow_neurons[`topic_${topic}_subtitle`];
-  let id: string | undefined;
-  $: id = Topic[topic];
-
-  let showNewFolloweeModal: boolean = false;
-  type FolloweeData = {
-    neuronId: NeuronId;
-    name?: string;
-  };
-  let followees: FolloweeData[] = [];
-  $: {
-    const followesPerTopic = followeesByTopic({ neuron, topic });
-    const mapToKnownNeuron = (neuronId: NeuronId): FolloweeData => {
-      const knownNeuron = $knownNeuronsStore.find(
-        (currentNeuron) => currentNeuron.id === neuronId
-      );
-      return knownNeuron !== undefined
-        ? {
-            neuronId: knownNeuron.id,
-            name: knownNeuron.name,
-          }
-        : { neuronId };
-    };
-    // If we remove the last followee of that topic, followesPerTopic is undefined.
-    // and we need to reset the followees array
-    followees = followesPerTopic?.map(mapToKnownNeuron) ?? [];
-  }
-
-  const openNewFolloweeModal = () => (showNewFolloweeModal = true);
-  const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
-
-  const removeCurrentFollowee = async (followee: NeuronId) => {
-    startBusy({ initiator: "remove-followee" });
-    await removeFollowee({
-      neuronId: neuron.neuronId,
-      topic,
-      followee,
-    });
-    stopBusy("remove-followee");
+  const dispatcher = createEventDispatcher();
+  const open = () => {
+    dispatcher("nnsOpen");
   };
 </script>
 
-<article data-tid={`follow-topic-${topic}-section`}>
+<article data-tid={`follow-topic-${id}-section`}>
   <Collapsible {id} iconSize="medium">
     <div class="wrapper" slot="header">
-      <div>
-        <h3>{title}</h3>
-        <p class="subtitle description">{subtitle}</p>
-      </div>
-      <div class="toolbar">
-        <h3 class="badge" data-tid={`topic-${topic}-followees-badge`}>
-          {followees.length}
-        </h3>
-      </div>
+      <span class="value"><slot name="title" /></span>
+      <span class="badge" data-tid={`topic-${id}-followees-badge`}>
+        {count}
+      </span>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
-      <h5>{$i18n.follow_neurons.current_followees}</h5>
-      <ul>
-        {#each followees as followee}
-          <li data-tid="current-followee-item">
-            <p class="value">{followee.name ?? followee.neuronId}</p>
-            <button on:click={() => removeCurrentFollowee(followee.neuronId)}
-              >x</button
-            >
-          </li>
-        {/each}
-      </ul>
+      <p class="subtitle description"><slot name="subtitle" /></p>
+
+      {#if count > 0}
+        <p
+          class="description current-followees"
+          data-tid="current-followees-label"
+        >
+          {$i18n.follow_neurons.current_followees}
+        </p>
+      {/if}
+
+      <div class="followees-wrapper">
+        <slot />
+      </div>
       <div class="button-wrapper">
         <button
-          class="primary small"
+          class="primary"
           data-tid="open-new-followee-modal"
-          on:click={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
+          on:click={open}>{$i18n.follow_neurons.add}</button
         >
       </div>
     </div>
   </Collapsible>
-  {#if showNewFolloweeModal}
-    <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
-  {/if}
 </article>
 
 <style lang="scss">
-  @use "../../themes/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
   article {
-    :global(.collapsible-expand-icon) {
-      align-items: start;
-      padding-top: var(--padding-3x);
+    padding: 0 0 var(--padding-2x);
+
+    &:first-of-type {
+      margin-top: var(--padding-2x);
     }
   }
 
   .wrapper {
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: space-between;
     gap: var(--padding-2x);
-    width: 100%;
-  }
-
-  .subtitle {
-    margin: 0 0 var(--padding) 0;
-  }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding-right: var(--padding-2x);
-    margin-top: var(--padding-2x);
-    margin-right: var(--padding-2x);
+    width: calc(100% - var(--padding-4x));
   }
 
   .badge {
     background-color: var(--background-contrast);
     color: var(--background);
     border-radius: 50%;
-    padding: var(--padding);
-    width: var(--padding-2x);
-    height: var(--padding-2x);
+    padding: var(--padding-1_5x);
+    width: var(--padding-0_5x);
+    height: var(--padding-0_5x);
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
   }
 
-  .content {
-    .button-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--padding) 0;
-    }
+  .button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0 var(--padding-2x);
+  }
 
-    ul {
-      list-style-type: none;
-      padding: 0 var(--padding-3x);
-    }
+  .subtitle {
+    padding: 0 0 var(--padding) 0;
+  }
 
-    li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .current-followees {
+    padding: var(--padding) 0 0;
   }
 </style>

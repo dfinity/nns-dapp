@@ -1,6 +1,32 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "allowJs": true
-  }
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "$lib": ["src/lib"],
+      "$lib/*": ["src/lib/*"],
+      "$routes": ["src/routes"],
+      "$routes/*": ["src/routes/*"],
+      "$mocks": ["__mocks__"],
+      "$mocks/*": ["__mocks__/*"],
+      "$tests": ["src/tests"],
+      "$tests/*": ["src/tests/*"]
+    }
+  },
+  "include": [
+    ".svelte-kit/ambient.d.ts",
+    "./vite.config.ts",
+    "./src/**/*.js",
+    "./src/**/*.ts",
+    "./src/**/*.svelte"
+  ],
+  "exclude": ["./src/tests/e2e/**/*"]
 }

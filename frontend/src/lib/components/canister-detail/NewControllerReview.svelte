@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { busy, startBusy, stopBusy } from "../../stores/busy.store";
-  import { i18n } from "../../stores/i18n";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { busy } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher, getContext } from "svelte";
   import {
     CANISTER_DETAILS_CONTEXT_KEY,
     type CanisterDetailsContext,
-  } from "../../types/canister-detail.context";
-  import { toastsStore } from "../../stores/toasts.store";
-  import type { CanisterDetails } from "../../canisters/ic-management/ic-management.canister.types";
-  import { addController } from "../../services/canisters.services";
-  import FooterModal from "../../modals/FooterModal.svelte";
+  } from "$lib/types/canister-detail.context";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import { addController } from "$lib/services/canisters.services";
 
   export let controller: Principal;
 
@@ -22,7 +22,7 @@
     const canisterDetails: CanisterDetails | undefined = $store.details;
     if (canisterDetails === undefined) {
       // Edge case
-      toastsStore.error({
+      toastsError({
         labelKey: "error.unknown",
       });
       return;
@@ -44,45 +44,32 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={add}
-  class="wizard-wrapper"
-  data-tid="new-controller-review-screen"
->
+<form on:submit|preventDefault={add} data-tid="new-controller-review-screen">
   <div>
-    <h5>{$i18n.canisters.canister_id}</h5>
+    <p class="label">{$i18n.canisters.canister_id}</p>
     <p class="value">{$store.details?.id.toText()}</p>
-    <h5>{$i18n.canister_detail.new_controller}</h5>
+  </div>
+
+  <div>
+    <p class="label">{$i18n.canister_detail.new_controller}</p>
     <p class="value">{controller.toText()}</p>
   </div>
-  <FooterModal>
+
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       type="button"
       on:click={() => dispatcher("nnsBack")}
     >
       {$i18n.canister_detail.edit_controller}
     </button>
     <button
-      class="primary small"
+      class="primary"
       type="submit"
       disabled={$busy}
       data-tid="confirm-new-canister-controller-button"
     >
       {$i18n.accounts.confirm_and_send}
     </button>
-  </FooterModal>
+  </div>
 </form>
-
-<style lang="scss">
-  div {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  p {
-    margin-bottom: var(--padding-3x);
-  }
-</style>

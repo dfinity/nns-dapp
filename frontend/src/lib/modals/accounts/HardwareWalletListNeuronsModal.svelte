@@ -1,19 +1,13 @@
 <script lang="ts">
-  import Modal from "../Modal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import HardwareWalletNeurons from "../../components/accounts/HardwareWalletNeurons.svelte";
+  import { Modal } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
+  import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
 </script>
 
-<Modal on:nnsClose size="big">
+<Modal on:nnsClose>
   <span slot="title">{$i18n.neurons.title}</span>
 
   <div>
     <HardwareWalletNeurons />
   </div>
 </Modal>
-
-<style lang="scss">
-  div {
-    padding: var(--padding-2x);
-  }
-</style>

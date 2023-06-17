@@ -1,5 +1,4 @@
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
-import { Color } from "../types/theme";
 
 // TODO: suggest to move into the store and add typing
 export const DEFAULT_PROPOSALS_FILTERS = {
@@ -11,23 +10,36 @@ export const DEFAULT_PROPOSALS_FILTERS = {
     Topic.SubnetManagement,
     Topic.NetworkCanisterManagement,
     Topic.NodeProviderRewards,
+    Topic.SnsAndCommunityFund,
   ],
   rewards: [
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
-    ProposalRewardStatus.PROPOSAL_REWARD_STATUS_INELIGIBLE,
+    ProposalRewardStatus.AcceptVotes,
+    ProposalRewardStatus.ReadyToSettle,
+    ProposalRewardStatus.Settled,
+    ProposalRewardStatus.Ineligible,
   ],
-  status: [ProposalStatus.PROPOSAL_STATUS_OPEN],
+  status: [ProposalStatus.Open],
   excludeVotedProposals: false,
   lastAppliedFilter: undefined,
 };
 
-export const PROPOSAL_COLOR: Record<ProposalStatus, Color | undefined> = {
-  [ProposalStatus.PROPOSAL_STATUS_EXECUTED]: Color.SUCCESS,
-  [ProposalStatus.PROPOSAL_STATUS_OPEN]: Color.WARNING,
-  [ProposalStatus.PROPOSAL_STATUS_UNKNOWN]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_REJECTED]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_ACCEPTED]: undefined,
-  [ProposalStatus.PROPOSAL_STATUS_FAILED]: undefined,
+export enum ProposalStatusColor {
+  PRIMARY = "primary",
+  SUCCESS = "success",
+  WARNING = "warning",
+  ERROR = "error",
+}
+
+export const PROPOSAL_COLOR: Record<
+  ProposalStatus,
+  ProposalStatusColor | undefined
+> = {
+  [ProposalStatus.Executed]: ProposalStatusColor.SUCCESS,
+  [ProposalStatus.Open]: ProposalStatusColor.WARNING,
+  [ProposalStatus.Unknown]: undefined,
+  [ProposalStatus.Rejected]: ProposalStatusColor.ERROR,
+  [ProposalStatus.Accepted]: undefined,
+  [ProposalStatus.Failed]: ProposalStatusColor.ERROR,
 };
+
+export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];

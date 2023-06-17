@@ -1,10 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import FooterModal from "../../modals/FooterModal.svelte";
-  import { i18n } from "../../stores/i18n";
-  import type { Account } from "../../types/account";
-  import { formatNumber } from "../../utils/format.utils";
-  import { convertIcpToTCycles } from "../../utils/icp.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Account } from "$lib/types/account";
+  import { formatNumber } from "$lib/utils/format.utils";
+  import { convertIcpToTCycles } from "$lib/utils/token.utils";
+  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { ICPToken } from "@dfinity/nns";
 
   export let amount: number;
   export let account: Account;
@@ -25,69 +26,61 @@
   };
 </script>
 
-<div class="wizard-wrapper wrapper" data-tid="confirm-cycles-canister-screen">
-  <div class="content">
-    <div class="conversion">
-      <h3>{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</h3>
-      <p>{$i18n.core.icp}</p>
-      {#if tCyclesFormatted !== undefined}
-        <p>{$i18n.canisters.converted_to}</p>
-        <h3>
+<div class="wrapper" data-tid="confirm-cycles-canister-screen">
+  <p class="conversion">
+    <span
+      ><span class="value"
+        >{formatNumber(amount, { minFraction: 2, maxFraction: 2 })}</span
+      >
+      <span>{$i18n.core.icp}</span></span
+    >
+    {#if tCyclesFormatted !== undefined}
+      <span class="description">{$i18n.canisters.converted_to}</span>
+      <span
+        ><span class="value">
           {formatNumber(tCyclesFormatted, { minFraction: 2, maxFraction: 2 })}
-        </h3>
-        <p>{$i18n.canisters.t_cycles}</p>
-      {/if}
-    </div>
-    <div>
-      <h5>{$i18n.accounts.source}</h5>
-      <p class="value">{account.identifier}</p>
-    </div>
-    <slot />
+        </span>
+        <span>{$i18n.canisters.t_cycles}</span></span
+      >
+    {/if}
+  </p>
+  <div>
+    <TransactionSource {account} token={ICPToken} />
   </div>
-  <FooterModal>
+  <slot />
+
+  <div class="toolbar">
     <button
-      class="secondary small"
+      class="secondary"
       on:click={() => dispatcher("nnsBack")}
       data-tid="confirm-cycles-canister-button-back"
       >{$i18n.canisters.edit_cycles}</button
     >
     <button
-      class="primary small"
+      class="primary"
       on:click={confirm}
       data-tid="confirm-cycles-canister-button">{$i18n.core.confirm}</button
     >
-  </FooterModal>
+  </div>
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .wizard-wrapper.wrapper {
-    justify-content: space-between;
-  }
-
-  .content {
+  .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex: 1;
     gap: var(--padding);
   }
 
+  .value {
+    @include fonts.h3;
+  }
+
   .conversion {
-    margin-bottom: var(--padding-3x);
-
-    p,
-    h3 {
-      margin: 0;
-      display: inline-block;
-    }
-
-    @include media.min-width(small) {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: var(--padding);
-    }
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 </style>

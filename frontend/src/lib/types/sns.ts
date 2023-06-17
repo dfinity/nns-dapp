@@ -1,40 +1,54 @@
-import type { NeuronState } from "@dfinity/nns";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
+  CfParticipant,
+  SnsNeuronRecipe,
+  SnsParams,
   SnsSwapBuyerState,
   SnsSwapDerivedState,
   SnsSwapInit,
-  SnsSwapState,
+  SnsSwapTicket,
 } from "@dfinity/sns";
+import type { PngDataUrl } from "./assets";
+
+export type RootCanisterId = Principal;
+export type RootCanisterIdText = string;
 
 /**
  * Metadata are full optional in Candid files but mandatory currently in NNS-dapp
  */
 export interface SnsSummaryMetadata {
-  url: string;
+  url: PngDataUrl;
   logo: string;
   name: string;
   description: string;
 }
 
-/**
- * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.
- * That's why we have to map the data as well.
- */
-export interface SnsTokenMetadata {
-  name: string;
-  symbol: string;
-}
-
 export interface SnsSummarySwap {
-  init: SnsSwapInit;
-  state: SnsSwapState;
+  neuron_recipes: Array<SnsNeuronRecipe>;
+  cf_participants: Array<CfParticipant>;
+  decentralization_sale_open_timestamp_seconds?: bigint;
+  // We don't use it for now and keep it as the candid optional type
+  finalize_swap_in_progress: [] | [boolean];
+  // We don't use it for now and keep it as the candid optional type
+  init: [] | [SnsSwapInit];
+  lifecycle: number;
+  buyers: Array<[string, SnsSwapBuyerState]>;
+  params: SnsParams;
+  // We don't use it for now and keep it as the candid optional type
+  open_sns_token_swap_proposal_id: [] | [bigint];
 }
 
 export interface SnsSummary {
-  rootCanisterId: Principal;
+  rootCanisterId: RootCanisterId;
   // Used to calculate the account for the participation.
   swapCanisterId: Principal;
+  // Used to show destination when staking sns neurons.
+  governanceCanisterId: Principal;
+  // Used to observe accounts' balance
+  ledgerCanisterId: Principal;
+  // Used to observe accounts' transactions
+  indexCanisterId: Principal;
 
   /**
    * The metadata of the Sns project (title, description, etc.)
@@ -44,7 +58,7 @@ export interface SnsSummary {
   /**
    * The token metadata of the Sns project (name of the token and symbol)
    */
-  token: SnsTokenMetadata;
+  token: IcrcTokenMetadata;
 
   /**
    * The initial information of the sale (min-max ICP etc.) and its current state (pending, open, committed etc.)
@@ -57,9 +71,12 @@ export interface SnsSummary {
 }
 
 export interface SnsSwapCommitment {
-  rootCanisterId: Principal;
-  myCommitment: SnsSwapBuyerState | undefined; // e8s
+  rootCanisterId: RootCanisterId;
+  // sns swap canister doesn't return any `SnsSwapBuyerState` if user has no commitment
+  myCommitment: SnsSwapBuyerState | undefined;
 }
 
-// To differentiate SNS and NNS Neuron types, but for now, they have the same states.
-export type SnsNeuronState = NeuronState;
+export interface SnsTicket {
+  rootCanisterId: Principal;
+  ticket?: SnsSwapTicket;
+}

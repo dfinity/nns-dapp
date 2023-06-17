@@ -9,14 +9,14 @@ import { NAV_NEURONS_SELECTOR } from "../components/nav";
 import { NeuronsTab } from "../components/neurons-tab";
 
 describe("Verifies that neurons can be merged", () => {
-  let neuronId1: string = "";
-  let neuronId2: string = "";
-  const neuronIcp1 = 1;
-  const neuronIcp2 = 7;
-  const dissolveDelaySeconds1 = 3600 * 24 * 365 * 3;
-  const dissolveDelaySeconds2 = 3600 * 24 * 365 * 5;
-  let neuron1IcpBefore: number = NaN;
-  let neuron2IcpBefore: number = NaN;
+  let sourceNeuronId: string = "";
+  let targetNeuronId: string = "";
+  const sourceNeuronIcp = 1;
+  const targetNeuronIcp = 7;
+  const sourceDissolveDelaySeconds = 3600 * 24 * 365 * 3;
+  const targetDissolveDelaySeconds = 3600 * 24 * 365 * 5;
+  let sourceNeuronIcpBefore: number = NaN;
+  let targetNeuronIcpBefore: number = NaN;
 
   before(function () {
     skipUnlessBrowserIs.bind(this)(["chrome"]);
@@ -44,16 +44,16 @@ describe("Verifies that neurons can be merged", () => {
       description: "Go to the neurons view",
     });
     const neuronsTab = new NeuronsTab(browser);
-    neuronId1 = (
+    sourceNeuronId = (
       await neuronsTab.stakeNeuron({
-        icp: neuronIcp1,
-        dissolveDelay: dissolveDelaySeconds1,
+        icp: sourceNeuronIcp,
+        dissolveDelay: sourceDissolveDelaySeconds,
       })
     ).neuronId;
-    neuronId2 = (
+    targetNeuronId = (
       await neuronsTab.stakeNeuron({
-        icp: neuronIcp2,
-        dissolveDelay: dissolveDelaySeconds2,
+        icp: targetNeuronIcp,
+        dissolveDelay: targetDissolveDelaySeconds,
       })
     ).neuronId;
     // TODO: Sometimes an incorrect account balance is shown later.  This should be fixed in svelte.
@@ -63,25 +63,31 @@ describe("Verifies that neurons can be merged", () => {
 
   it("merges the neurons", async () => {
     const neuronsTab = new NeuronsTab(browser);
-    neuron1IcpBefore = await neuronsTab.getNeuronBalance(neuronId1);
-    neuron2IcpBefore = await neuronsTab.getNeuronBalance(neuronId2);
-    await neuronsTab.mergeNeurons(neuronId1, neuronId2);
+    sourceNeuronIcpBefore = await neuronsTab.getNeuronBalance(sourceNeuronId);
+    targetNeuronIcpBefore = await neuronsTab.getNeuronBalance(targetNeuronId);
+    await neuronsTab.mergeNeurons(sourceNeuronId, targetNeuronId);
   });
   it("Merged balances are correct", async () => {
     const neuronsTab = new NeuronsTab(browser);
-    const neuron1IcpAfter = await neuronsTab.getNeuronBalance(neuronId1);
-    const neuron2IcpAfter = await neuronsTab.getNeuronBalance(neuronId2);
-    expect(neuron2IcpAfter).toBe(0);
+    const targetNeuronIcpAfter = await neuronsTab.getNeuronBalance(
+      targetNeuronId
+    );
+    // Source neuron is not displayed because the stake is 0.
+    try {
+      await neuronsTab.getNeuronBalance(sourceNeuronId);
+      expect(true).toBe(false);
+    } catch (_) {
+      expect(true).toBe(true);
+    }
     const fees =
-      neuron1IcpBefore + neuron2IcpBefore - neuron1IcpAfter - neuron2IcpAfter;
+      sourceNeuronIcpBefore + targetNeuronIcpBefore - targetNeuronIcpAfter;
     const expectedMaxFees = 0.000101;
-    if (fees < 0 || fees > expectedMaxFees || neuron2IcpAfter !== 0) {
+    if (fees < 0 || fees > expectedMaxFees) {
       throw new Error(
         `Incorrect neuron values: ${JSON.stringify({
-          neuron1IcpBefore,
-          neuron2IcpBefore,
-          neuron1IcpAfter,
-          neuron2IcpAfter,
+          sourceNeuronIcpBefore,
+          targetNeuronIcpBefore,
+          targetNeuronIcpAfter,
           fees,
           expectedMaxFees,
         })}`

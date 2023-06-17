@@ -1,0 +1,1132 @@
+[
+  {
+    "index": 11,
+    "canister_ids": {
+      "root_canister_id": "4nwps-saaaa-aaaaa-aabjq-cai",
+      "governance_canister_id": "4yr67-tiaaa-aaaaa-aabka-cai",
+      "ledger_canister_id": "47qyl-6qaaa-aaaaa-aabkq-cai",
+      "swap_canister_id": "4wttx-iyaaa-aaaaa-aabla-cai",
+      "index_canister_id": "4rsvd-faaaa-aaaaa-aablq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "4nwps-saaaa-aaaaa-aabjq-cai",
+      "governance": "4yr67-tiaaa-aaaaa-aabka-cai",
+      "ledger": "47qyl-6qaaa-aaaaa-aabkq-cai",
+      "swap": "4wttx-iyaaa-aaaaa-aabla-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "4rsvd-faaaa-aaaaa-aablq-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "Community Fund Demo",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "decentralization_sale_open_timestamp_seconds": 1234,
+        "finalize_swap_in_progress": false,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "4yr67-tiaaa-aaaaa-aabka-cai",
+          "sns_ledger_canister_id": "47qyl-6qaaa-aaaaa-aabkq-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "4nwps-saaaa-aaaaa-aabjq-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000,
+          "confirmation_text": "I agree",
+          "restricted_countries": {
+            "iso_codes": ["US"]
+          }
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1674664463,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          },
+          "sale_delay_seconds": 1234
+        },
+        "open_sns_token_swap_proposal_id": 120
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0,
+        "cf_participant_count": 100,
+        "direct_participant_count": 300,
+        "cf_neuron_count": 200
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Community Fund Demo" }],
+      ["icrc1:symbol", { "Text": "CFD" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 1100000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 2.0,
+      "buyer_total_icp_e8s": 100500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 4,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 10,
+    "canister_ids": {
+      "root_canister_id": "66jms-2yaaa-aaaaa-aabha-cai",
+      "governance_canister_id": "6zikg-xaaaa-aaaaa-aabhq-cai",
+      "ledger_canister_id": "4eveo-eiaaa-aaaaa-aabia-cai",
+      "swap_canister_id": "4duc2-jqaaa-aaaaa-aabiq-cai",
+      "index_canister_id": "4kxjg-7yaaa-aaaaa-aabja-cai"
+    },
+    "list_sns_canisters": {
+      "root": "66jms-2yaaa-aaaaa-aabha-cai",
+      "governance": "6zikg-xaaaa-aaaaa-aabhq-cai",
+      "ledger": "4eveo-eiaaa-aaaaa-aabia-cai",
+      "swap": "4duc2-jqaaa-aaaaa-aabiq-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "4kxjg-7yaaa-aaaaa-aabja-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "Rehearse Community Fund Demo with Pete",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "6zikg-xaaaa-aaaaa-aabhq-cai",
+          "sns_ledger_canister_id": "4eveo-eiaaa-aaaaa-aabia-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "66jms-2yaaa-aaaaa-aabha-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1674497522,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 119
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Rehearse Community Fund Demo with Pete" }],
+      ["icrc1:symbol", { "Text": "PETE" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 1000000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 2.0,
+      "buyer_total_icp_e8s": 100500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 4,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 9,
+    "canister_ids": {
+      "root_canister_id": "6lo57-3qaaa-aaaaa-aabeq-cai",
+      "governance_canister_id": "6cnwd-nyaaa-aaaaa-aabfa-cai",
+      "ledger_canister_id": "6fmqx-aaaaa-aaaaa-aabfq-cai",
+      "swap_canister_id": "6qlb2-biaaa-aaaaa-aabga-cai",
+      "index_canister_id": "6xkho-mqaaa-aaaaa-aabgq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "6lo57-3qaaa-aaaaa-aabeq-cai",
+      "governance": "6cnwd-nyaaa-aaaaa-aabfa-cai",
+      "ledger": "6fmqx-aaaaa-aaaaa-aabfq-cai",
+      "swap": "6qlb2-biaaa-aaaaa-aabga-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "6xkho-mqaaa-aaaaa-aabgq-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "Rehearse Community Fund Demo I",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "6cnwd-nyaaa-aaaaa-aabfa-cai",
+          "sns_ledger_canister_id": "6fmqx-aaaaa-aaaaa-aabfq-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "6lo57-3qaaa-aaaaa-aabeq-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1674077307,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 111
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Rehearse Community Fund Demo I" }],
+      ["icrc1:symbol", { "Text": "NOT_CFD_I" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 900000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 1,
+      "buyer_total_icp_e8s": 100500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 4,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 8,
+    "canister_ids": {
+      "root_canister_id": "75ffu-oaaaa-aaaaa-aabbq-cai",
+      "governance_canister_id": "7icuz-piaaa-aaaaa-aabca-cai",
+      "ledger_canister_id": "7pdsn-cqaaa-aaaaa-aabcq-cai",
+      "swap_canister_id": "7gazr-uyaaa-aaaaa-aabda-cai",
+      "index_canister_id": "7bb7f-zaaaa-aaaaa-aabdq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "75ffu-oaaaa-aaaaa-aabbq-cai",
+      "governance": "7icuz-piaaa-aaaaa-aabca-cai",
+      "ledger": "7pdsn-cqaaa-aaaaa-aabcq-cai",
+      "swap": "7gazr-uyaaa-aaaaa-aabda-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "7bb7f-zaaaa-aaaaa-aabdq-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "Rehearse Community Fund Demo",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 4,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "7icuz-piaaa-aaaaa-aabca-cai",
+          "sns_ledger_canister_id": "7pdsn-cqaaa-aaaaa-aabcq-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "75ffu-oaaaa-aaaaa-aabbq-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": null,
+        "open_sns_token_swap_proposal_id": null
+      },
+      "derived": { "buyer_total_icp_e8s": 0, "sns_tokens_per_icp": 0.0 }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Rehearse Community Fund Demo" }],
+      ["icrc1:symbol", { "Text": "NOT_CFD" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 800000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 1,
+      "buyer_total_icp_e8s": 100500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 4,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 7,
+    "canister_ids": {
+      "root_canister_id": "unr2c-oyaaa-aaaaa-aaa7a-cai",
+      "governance_canister_id": "ukq4w-daaaa-aaaaa-aaa7q-cai",
+      "ledger_canister_id": "7ugoi-yiaaa-aaaaa-aabaa-cai",
+      "swap_canister_id": "7thi4-vqaaa-aaaaa-aabaq-cai",
+      "index_canister_id": "72eda-dyaaa-aaaaa-aabba-cai"
+    },
+    "list_sns_canisters": {
+      "root": "unr2c-oyaaa-aaaaa-aaa7a-cai",
+      "governance": "ukq4w-daaaa-aaaaa-aaa7q-cai",
+      "ledger": "7ugoi-yiaaa-aaaaa-aabaa-cai",
+      "swap": "7thi4-vqaaa-aaaaa-aabaq-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "72eda-dyaaa-aaaaa-aabba-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "Rehearse Community Fund Demo",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "ukq4w-daaaa-aaaaa-aaa7q-cai",
+          "sns_ledger_canister_id": "7ugoi-yiaaa-aaaaa-aabaa-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "unr2c-oyaaa-aaaaa-aaa7a-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1673737049,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 109
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Rehearse Community Fund Demo" }],
+      ["icrc1:symbol", { "Text": "NOT_CFD" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 700000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 2,
+      "buyer_total_icp_e8s": 200500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 4,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 6,
+    "canister_ids": {
+      "root_canister_id": "uywlp-pqaaa-aaaaa-aaa4q-cai",
+      "governance_canister_id": "urvat-zyaaa-aaaaa-aaa5a-cai",
+      "ledger_canister_id": "uwugh-uaaaa-aaaaa-aaa5q-cai",
+      "swap_canister_id": "udtxk-viaaa-aaaaa-aaa6a-cai",
+      "index_canister_id": "uesr6-yqaaa-aaaaa-aaa6q-cai"
+    },
+    "list_sns_canisters": {
+      "root": "uywlp-pqaaa-aaaaa-aaa4q-cai",
+      "governance": "urvat-zyaaa-aaaaa-aaa5a-cai",
+      "ledger": "uwugh-uaaaa-aaaaa-aaa5q-cai",
+      "swap": "udtxk-viaaa-aaaaa-aaa6a-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "uesr6-yqaaa-aaaaa-aaa6q-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "HAXOH",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "urvat-zyaaa-aaaaa-aaa5a-cai",
+          "sns_ledger_canister_id": "uwugh-uaaaa-aaaaa-aaa5q-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "uywlp-pqaaa-aaaaa-aaa4q-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1673731541,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 108
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "danielwongs awesome HAXOH" }],
+      ["icrc1:symbol", { "Text": "HAXOH" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 600000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 3,
+      "buyer_total_icp_e8s": 300500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 5,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 5,
+    "canister_ids": {
+      "root_canister_id": "vj4vq-xyaaa-aaaaa-aaaza-cai",
+      "governance_canister_id": "vo5te-2aaaa-aaaaa-aaazq-cai",
+      "ledger_canister_id": "v32cj-3iaaa-aaaaa-aaa2a-cai",
+      "swap_canister_id": "v43e5-wqaaa-aaaaa-aaa2q-cai",
+      "index_canister_id": "vvypb-ayaaa-aaaaa-aaa3a-cai"
+    },
+    "list_sns_canisters": {
+      "root": "vj4vq-xyaaa-aaaaa-aaaza-cai",
+      "governance": "vo5te-2aaaa-aaaaa-aaazq-cai",
+      "ledger": "v32cj-3iaaa-aaaaa-aaa2a-cai",
+      "swap": "v43e5-wqaaa-aaaaa-aaa2q-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "vvypb-ayaaa-aaaaa-aaa3a-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "RUSOW",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 4,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "vo5te-2aaaa-aaaaa-aaazq-cai",
+          "sns_ledger_canister_id": "v32cj-3iaaa-aaaaa-aaa2a-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "vj4vq-xyaaa-aaaaa-aaaza-cai",
+          "fallback_controller_principal_ids": [
+            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": null,
+        "open_sns_token_swap_proposal_id": null
+      },
+      "derived": { "buyer_total_icp_e8s": 0, "sns_tokens_per_icp": 0.0 }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "danielwongs awesome RUSOW" }],
+      ["icrc1:symbol", { "Text": "RUSOW" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 500000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 6,
+      "buyer_total_icp_e8s": 300500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 50,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 4,
+    "canister_ids": {
+      "root_canister_id": "w6ozc-gaaaa-aaaaa-aaarq-cai",
+      "governance_canister_id": "wljip-hiaaa-aaaaa-aaasa-cai",
+      "ledger_canister_id": "wmio3-kqaaa-aaaaa-aaasq-cai",
+      "swap_canister_id": "wflfh-4yaaa-aaaaa-aaata-cai",
+      "index_canister_id": "wckdt-raaaa-aaaaa-aaatq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "w6ozc-gaaaa-aaaaa-aaarq-cai",
+      "governance": "wljip-hiaaa-aaaaa-aaasa-cai",
+      "ledger": "wmio3-kqaaa-aaaaa-aaasq-cai",
+      "swap": "wflfh-4yaaa-aaaaa-aaata-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "wckdt-raaaa-aaaaa-aaatq-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "TALOD",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "wljip-hiaaa-aaaaa-aaasa-cai",
+          "sns_ledger_canister_id": "wmio3-kqaaa-aaaaa-aaasq-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "w6ozc-gaaaa-aaaaa-aaarq-cai",
+          "fallback_controller_principal_ids": [
+            "dn5nn-onqwe-obbpe-ae4jk-mcnuf-tempj-qjtoj-ktqla-kymyu-p5qn4-kqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1672927780,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 10
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "maxs awesome TALOD" }],
+      ["icrc1:symbol", { "Text": "TALOD" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 400000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 9,
+      "buyer_total_icp_e8s": 300500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 500,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 3,
+    "canister_ids": {
+      "root_canister_id": "tmxop-wyaaa-aaaaa-aaapa-cai",
+      "governance_canister_id": "tlwi3-3aaaa-aaaaa-aaapq-cai",
+      "ledger_canister_id": "wxns6-qiaaa-aaaaa-aaaqa-cai",
+      "swap_canister_id": "wqmuk-5qaaa-aaaaa-aaaqq-cai",
+      "index_canister_id": "wzp7w-lyaaa-aaaaa-aaara-cai"
+    },
+    "list_sns_canisters": {
+      "root": "tmxop-wyaaa-aaaaa-aaapa-cai",
+      "governance": "tlwi3-3aaaa-aaaaa-aaapq-cai",
+      "ledger": "wxns6-qiaaa-aaaaa-aaaqa-cai",
+      "swap": "wqmuk-5qaaa-aaaaa-aaaqq-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "wzp7w-lyaaa-aaaaa-aaara-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "PEKAP",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "tlwi3-3aaaa-aaaaa-aaapq-cai",
+          "sns_ledger_canister_id": "wxns6-qiaaa-aaaaa-aaaqa-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "tmxop-wyaaa-aaaaa-aaapa-cai",
+          "fallback_controller_principal_ids": [
+            "dn5nn-onqwe-obbpe-ae4jk-mcnuf-tempj-qjtoj-ktqla-kymyu-p5qn4-kqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1672927732,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 9
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "maxs awesome PEKAP" }],
+      ["icrc1:symbol", { "Text": "PEKAP" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 300000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 2.5,
+      "buyer_total_icp_e8s": 400500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 10,
+      "cf_neuron_count": 0
+    }
+  },
+  {
+    "index": 2,
+    "canister_ids": {
+      "root_canister_id": "tzq7c-xqaaa-aaaaa-aaamq-cai",
+      "governance_canister_id": "tqtu6-byaaa-aaaaa-aaana-cai",
+      "ledger_canister_id": "txssk-maaaa-aaaaa-aaanq-cai",
+      "swap_canister_id": "tcvdh-niaaa-aaaaa-aaaoa-cai",
+      "index_canister_id": "tfuft-aqaaa-aaaaa-aaaoq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "tzq7c-xqaaa-aaaaa-aaamq-cai",
+      "governance": "tqtu6-byaaa-aaaaa-aaana-cai",
+      "ledger": "txssk-maaaa-aaaaa-aaanq-cai",
+      "swap": "tcvdh-niaaa-aaaaa-aaaoa-cai",
+      "dapps": [],
+      "archives": [],
+      "index": "tfuft-aqaaa-aaaaa-aaaoq-cai"
+    },
+    "meta": {
+      "url": "https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/",
+      "name": "FEGEN",
+      "description": "This is my awesome project"
+    },
+    "parameters": {
+      "functions": [
+        {
+          "id": 0,
+          "name": "Unspecified",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ],
+      "reserved_ids": []
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "sns_governance_canister_id": "tqtu6-byaaa-aaaaa-aaana-cai",
+          "sns_ledger_canister_id": "txssk-maaaa-aaaaa-aaanq-cai",
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_root_canister_id": "tzq7c-xqaaa-aaaaa-aaamq-cai",
+          "fallback_controller_principal_ids": [
+            "dn5nn-onqwe-obbpe-ae4jk-mcnuf-tempj-qjtoj-ktqla-kymyu-p5qn4-kqe"
+          ],
+          "transaction_fee_e8s": 1000,
+          "neuron_minimum_stake_e8s": 1000000
+        },
+        "params": {
+          "min_participants": 1,
+          "min_icp_e8s": 5000000000,
+          "max_icp_e8s": 314100000000,
+          "min_participant_icp_e8s": 10000000,
+          "max_participant_icp_e8s": 314100000000,
+          "swap_due_timestamp_seconds": 1672927678,
+          "sns_token_e8s": 314100000000,
+          "neuron_basket_construction_parameters": {
+            "count": 2,
+            "dissolve_delay_interval_seconds": 2629800
+          }
+        },
+        "open_sns_token_swap_proposal_id": 8
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 314100000000,
+        "sns_tokens_per_icp": 1.0
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "maxs awesome FEGEN" }],
+      ["icrc1:symbol", { "Text": "FEGEN" }],
+      ["icrc1:fee", { "Nat": [1000] }]
+    ],
+    "icrc1_fee": [1000],
+    "icrc1_total_supply": 200000000000,
+    "derived_state": {
+      "sns_tokens_per_icp": 3,
+      "buyer_total_icp_e8s": 300500000010,
+      "cf_participant_count": 0,
+      "direct_participant_count": 20,
+      "cf_neuron_count": 0
+    }
+  }
+]

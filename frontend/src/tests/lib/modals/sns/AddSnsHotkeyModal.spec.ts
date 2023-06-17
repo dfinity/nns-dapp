@@ -2,14 +2,15 @@
  * @jest-environment jsdom
  */
 
+import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
+import { addHotkey } from "$lib/services/sns-neurons.services";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import en from "$tests/mocks/i18n.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import AddSnsHotkeyModal from "../../../../lib/modals/sns/AddSnsHotkeyModal.svelte";
-import { addHotkey } from "../../../../lib/services/sns-neurons.services";
-import { renderSelectedSnsNeuronContext } from "../../../mocks/context-wrapper.mock";
-import en from "../../../mocks/i18n.mock";
-import { mockSnsNeuron } from "../../../mocks/sns-neurons.mock";
+import type { SvelteComponent } from "svelte";
 
-jest.mock("../../../../lib/services/sns-neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
     addHotkey: jest.fn().mockResolvedValue({ success: true }),
   };
@@ -18,7 +19,9 @@ jest.mock("../../../../lib/services/sns-neurons.services", () => {
 describe("AddSnsHotkeyModal", () => {
   const reload = jest.fn();
 
-  const renderAddSnsHotkeyModal = async (): Promise<RenderResult> =>
+  const renderAddSnsHotkeyModal = async (): Promise<
+    RenderResult<SvelteComponent>
+  > =>
     renderSelectedSnsNeuronContext({
       Component: AddSnsHotkeyModal,
       reload,
@@ -83,6 +86,6 @@ describe("AddSnsHotkeyModal", () => {
     expect(addHotkey).toBeCalled();
 
     await waitFor(() => expect(onClose).toBeCalled());
-    expect(reload).toBeCalled();
+    expect(reload).toBeCalledWith();
   });
 });

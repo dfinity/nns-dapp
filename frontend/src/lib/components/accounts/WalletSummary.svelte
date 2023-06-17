@@ -1,22 +1,28 @@
 <script lang="ts">
-  import { accountName as getAccountName } from "../../utils/transactions.utils";
-  import { i18n } from "../../stores/i18n";
-  import ICPComponent from "../ic/ICP.svelte";
-  import Identifier from "../ui/Identifier.svelte";
-  import { isAccountHardwareWallet } from "../../utils/accounts.utils";
+  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { accountName as getAccountName } from "$lib/utils/accounts.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { getContext } from "svelte";
   import {
-    SELECTED_ACCOUNT_CONTEXT_KEY,
-    type SelectedAccountContext,
-  } from "../../types/selected-account.context";
-  import { formatICP } from "../../utils/icp.utils";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "../../utils/i18n.utils";
-  import { ICP } from "@dfinity/nns";
+    WALLET_CONTEXT_KEY,
+    type WalletContext,
+  } from "$lib/types/wallet.context";
+  import { formatToken } from "$lib/utils/token.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { nonNullish } from "@dfinity/utils";
 
-  const { store } = getContext<SelectedAccountContext>(
-    SELECTED_ACCOUNT_CONTEXT_KEY
-  );
+  export let detailedBalance = false;
+  export let token: Token | undefined;
+
+  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
   let accountName: string;
   $: accountName = getAccountName({
@@ -24,71 +30,96 @@
     mainName: $i18n.accounts.main,
   });
 
-  let accountBalance: ICP;
-  $: accountBalance = $store.account?.balance ?? (ICP.fromString("0") as ICP);
+  let accountBalance: bigint;
+  $: accountBalance = $store.account?.balanceE8s ?? 0n;
 
-  let detailedICP: string;
-  $: detailedICP = formatICP({
-    value: accountBalance.toE8s(),
+  let accountBalanceToken: TokenAmount | undefined;
+  $: accountBalanceToken = nonNullish(token)
+    ? (TokenAmount.fromE8s({
+        amount: accountBalance,
+        token,
+      }) as TokenAmount)
+    : undefined;
+
+  let detailedAccountBalance: string;
+  $: detailedAccountBalance = formatToken({
+    value: accountBalance,
     detailed: true,
   });
+
+  let tokenSymbol: string;
+  $: tokenSymbol = token?.symbol ?? "";
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    layoutTitleStore.set(
+      intersecting
+        ? $i18n.wallet.title
+        : `${accountName} – ${formatToken({
+            value: accountBalance,
+          })} ${tokenSymbol}`
+    );
+  };
 </script>
 
-<div class="title">
-  <h1>{accountName}</h1>
-  <Tooltip
-    id="wallet-detailed-icp"
-    text={replacePlaceholders($i18n.accounts.current_balance_detail, {
-      $amount: detailedICP,
-    })}
-  >
-    <ICPComponent icp={accountBalance} />
-  </Tooltip>
-</div>
-<div class="address">
-  <Identifier
-    identifier={$store.account?.identifier ?? ""}
-    label={$i18n.wallet.address}
-    showCopy
-    size="medium"
-  />
+<div class="content-cell-details">
+  <KeyValuePair>
+    <h3
+      slot="key"
+      data-tid="wallet-summary"
+      use:onIntersection
+      on:nnsIntersecting={updateLayoutTitle}
+    >
+      {accountName}
+    </h3>
+    <svelte:fragment slot="value">
+      {#if nonNullish(accountBalanceToken)}
+        <Tooltip
+          id="wallet-detailed-icp"
+          text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+            $amount: detailedAccountBalance,
+            $token: tokenSymbol,
+          })}
+        >
+          <AmountDisplay
+            copy
+            amount={accountBalanceToken}
+            inline
+            detailed={detailedBalance}
+          />
+        </Tooltip>
+      {/if}
+    </svelte:fragment>
+  </KeyValuePair>
+
+  <KeyValuePair>
+    <p slot="key" class="label">{$i18n.wallet.address}</p>
+    <p slot="value" class="value">
+      <IdentifierHash identifier={$store.account?.identifier ?? ""} />
+    </p>
+  </KeyValuePair>
+
   {#if isAccountHardwareWallet($store.account)}
-    <Identifier
-      identifier={$store.account?.principal?.toString() ?? ""}
-      label={$i18n.wallet.principal}
-      showCopy
-    />
+    <KeyValuePair>
+      <p slot="key" class="label">{$i18n.wallet.principal}</p>
+      <p slot="value" class="value">
+        <IdentifierHash
+          identifier={$store.account?.principal?.toString() ?? ""}
+        />
+      </p>
+    </KeyValuePair>
   {/if}
 </div>
 
 <style lang="scss">
-  @use "../../themes/mixins/media";
-
-  .title {
-    display: block;
-    width: 100%;
-
-    margin: 0 0 var(--padding-2x);
-
-    --icp-font-size: var(--font-size-h1);
-    --tooltip-display: inline-block;
-
-    // Minimum height of ICP value + ICP label (ICP component)
-    min-height: calc(
-      var(--line-height-standard) * (var(--icp-font-size) + 1rem)
-    );
-
-    @include media.min-width(medium) {
-      display: inline-flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
+  p {
+    margin: 0;
   }
 
-  .address {
-    margin-bottom: var(--padding-4x);
-    :global(p:first-of-type) {
-      margin-bottom: var(--padding);
-    }
+  div {
+    --token-font-size: var(--font-size-h3);
   }
 </style>

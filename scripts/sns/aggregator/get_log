@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+print_help() {
+  cat <<-EOF
+	Gets stable data from an sns_aggregator.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=l long=lines desc="The number of lines of output" variable=DFX_LINES default="${LINES:-1000000}"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+dfx canister call sns_aggregator tail_log --network "$DFX_NETWORK" |
+  idl2json | jq -r | tail -n "$DFX_LINES"

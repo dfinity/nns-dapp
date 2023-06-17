@@ -2,19 +2,26 @@
  * @jest-environment jsdom
  */
 
-import { AuthClient } from "@dfinity/auth-client";
-import { waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import {
   displayAndCleanLogoutMsg,
+  getCurrentIdentity,
   logout,
-} from "../../../lib/services/auth.services";
-import { toastsStore } from "../../../lib/stores/toasts.store";
-import * as routeUtils from "../../../lib/utils/route.utils";
+} from "$lib/services/auth.services";
+import { authStore } from "$lib/stores/auth.store";
+import * as busyStore from "$lib/stores/busy.store";
+import * as routeUtils from "$lib/utils/route.utils";
+import {
+  authStoreMock,
+  mockIdentity,
+  mutableMockAuthStoreSubscribe,
+} from "$tests/mocks/auth.store.mock";
+import { AnonymousIdentity } from "@dfinity/agent";
+import { AuthClient, IdbStorage } from "@dfinity/auth-client";
+import { toastsStore } from "@dfinity/gix-components";
+import { waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 describe("auth-services", () => {
-  const mockAuthClient = mock<AuthClient>();
-
   const { reload, href, search } = window.location;
 
   beforeAll(() => {
@@ -22,107 +29,158 @@ describe("auth-services", () => {
       writable: true,
       value: { reload: jest.fn(), href, search },
     });
-
-    jest
-      .spyOn(AuthClient, "create")
-      .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
   });
 
   afterAll(() => (window.location.reload = reload));
 
-  it("should call auth-client logout on logout", async () => {
-    const spy = jest.spyOn(mockAuthClient, "logout");
+  describe("auth-client", () => {
+    it("agent-js should clear indexeddb auth info on logout", async () => {
+      const idbStorage = new IdbStorage();
+      await idbStorage.set("delegation", "value");
 
-    await logout({});
+      const value = await idbStorage.get("delegation");
+      expect(value).not.toBeNull();
 
-    expect(spy).toHaveBeenCalled();
+      await logout({});
+
+      const valueCleared = await idbStorage.get("delegation");
+      expect(valueCleared).toBeNull();
+    });
   });
 
-  it("should clear storage", async () => {
-    const spy = jest.spyOn(Storage.prototype, "clear");
+  describe("auth-client-mocked", () => {
+    const mockAuthClient = mock<AuthClient>();
 
-    await logout({});
+    beforeAll(() =>
+      jest
+        .spyOn(AuthClient, "create")
+        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
+    );
 
-    expect(spy).toHaveBeenCalled();
-  });
+    it("should call auth-client logout on logout", async () => {
+      const spy = jest.spyOn(mockAuthClient, "logout");
 
-  it("should reload browser", async () => {
-    const spy = jest.spyOn(window.location, "reload");
+      await logout({});
 
-    await logout({});
-
-    await waitFor(() => expect(spy).toHaveBeenCalled());
-  });
-
-  it("should add msg to url", async () => {
-    const spy = jest.spyOn(routeUtils, "replaceHistory");
-
-    await logout({ msg: { labelKey: "test.key", level: "warn" } });
-
-    expect(spy).toHaveBeenCalled();
-
-    spy.mockClear();
-  });
-
-  it("should not add msg to url", async () => {
-    const spy = jest.spyOn(routeUtils, "replaceHistory");
-
-    await logout({});
-
-    expect(spy).not.toHaveBeenCalled();
-
-    spy.mockClear();
-  });
-
-  it("should not display msg from url", async () => {
-    const spy = jest.spyOn(toastsStore, "show");
-
-    await displayAndCleanLogoutMsg();
-
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it("should display msg from url", async () => {
-    const spy = jest.spyOn(toastsStore, "show");
-
-    const location = window.location;
-
-    Object.defineProperty(window, "location", {
-      writable: true,
-      value: { ...location, search: "msg=test.key&level=warn" },
+      expect(spy).toHaveBeenCalled();
     });
 
-    await displayAndCleanLogoutMsg();
+    it("should reload browser", async () => {
+      const spy = jest.spyOn(window.location, "reload");
 
-    expect(spy).toHaveBeenCalled();
+      await logout({});
 
-    Object.defineProperty(window, "location", {
-      writable: true,
-      value: { ...location },
+      await waitFor(() => expect(spy).toHaveBeenCalled());
     });
 
-    spy.mockClear();
+    it("should add msg to url", async () => {
+      const spy = jest.spyOn(routeUtils, "replaceHistory");
+
+      await logout({ msg: { labelKey: "test.key", level: "warn" } });
+
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockClear();
+    });
+
+    it("should not add msg to url", async () => {
+      const spy = jest.spyOn(routeUtils, "replaceHistory");
+
+      await logout({});
+
+      expect(spy).not.toHaveBeenCalled();
+
+      spy.mockClear();
+    });
+
+    it("should not display msg from url", async () => {
+      const spy = jest.spyOn(toastsStore, "show");
+
+      await displayAndCleanLogoutMsg();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("should display msg from url", async () => {
+      const spy = jest.spyOn(toastsStore, "show");
+
+      const location = window.location;
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location, search: "msg=test.key&level=warn" },
+      });
+
+      await displayAndCleanLogoutMsg();
+
+      expect(spy).toHaveBeenCalled();
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location },
+      });
+
+      spy.mockClear();
+    });
+
+    it("should clean msg from url", async () => {
+      const spy = jest.spyOn(routeUtils, "replaceHistory");
+
+      const location = window.location;
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location, search: "msg=test.key&level=warn" },
+      });
+
+      await displayAndCleanLogoutMsg();
+
+      expect(spy).toHaveBeenCalled();
+
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { ...location },
+      });
+
+      spy.mockClear();
+    });
+
+    it("should display a busy screen", async () => {
+      const spy = jest.spyOn(busyStore, "startBusy");
+
+      await logout({});
+
+      expect(spy).toHaveBeenCalled();
+
+      spy.mockClear();
+    });
   });
 
-  it("should clean msg from url", async () => {
-    const spy = jest.spyOn(routeUtils, "replaceHistory");
+  describe("getCurrentIdentity", () => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
-    const location = window.location;
+    afterAll(() => jest.clearAllMocks());
 
-    Object.defineProperty(window, "location", {
-      writable: true,
-      value: { ...location, search: "msg=test.key&level=warn" },
+    it("should returns anonymous identity", () => {
+      authStoreMock.next({
+        identity: undefined,
+      });
+
+      expect(getCurrentIdentity().getPrincipal().toText()).toEqual(
+        new AnonymousIdentity().getPrincipal().toText()
+      );
     });
 
-    await displayAndCleanLogoutMsg();
+    it("should returns signed-in identity", () => {
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
 
-    expect(spy).toHaveBeenCalled();
-
-    Object.defineProperty(window, "location", {
-      writable: true,
-      value: { ...location },
+      expect(getCurrentIdentity().getPrincipal().toText()).toEqual(
+        mockIdentity.getPrincipal().toText()
+      );
     });
-
-    spy.mockClear();
   });
 });

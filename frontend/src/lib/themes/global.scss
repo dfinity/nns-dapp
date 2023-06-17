@@ -1,0 +1,21 @@
+main.sign-in {
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    line-height: var(--line-height-standard);
+  }
+
+  p {
+    margin-bottom: var(--padding-3x);
+  }
+}
+
+// Workaround to not display twice the title of two pages while navigating between those.
+// Not perfect, as navigating from start/end page to an island page will have for effect to shift the title in the toolbar.
+// But still better than displaying twice a title.
+div.split-pane + div.split-pane {
+  .toolbar {
+    display: none;
+  }
+}

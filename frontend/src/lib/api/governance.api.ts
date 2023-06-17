@@ -1,31 +1,57 @@
+import { createAgent } from "$lib/api/agent.api";
+import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
+import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { HOST } from "$lib/constants/environment.constants";
+import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import type {
   E8s,
   KnownNeuron,
   NeuronId,
   NeuronInfo,
+  ProposalId,
   Topic,
+  Vote,
 } from "@dfinity/nns";
-import { GovernanceCanister, ICP } from "@dfinity/nns";
+import { GovernanceCanister, type RewardEvent } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SubAccountArray } from "../canisters/nns-dapp/nns-dapp.types";
-import { DFINITY_NEURON, IC_NEURON } from "../constants/api.constants";
-import { GOVERNANCE_CANISTER_ID } from "../constants/canister-ids.constants";
-import { HOST } from "../constants/environment.constants";
-import { isLedgerIdentityProxy } from "../proxy/ledger.services.proxy";
-import { createAgent } from "../utils/agent.utils";
-import { hashCode, logWithTimestamp } from "../utils/dev.utils";
 import { ledgerCanister as getLedgerCanister } from "./ledger.api";
+
+/**
+ * COMMON TYPES
+ */
+
+// Type for ANY call
+type ApiCallParams = {
+  identity: Identity;
+};
+
+// Type for read-only calls.
+export type ApiQueryParams = ApiCallParams & {
+  certified: boolean;
+};
+
+// Shared type for calls to manage a neuron
+export type ApiManageNeuronParams = ApiCallParams & {
+  neuronId: NeuronId;
+};
+
+/**
+ * API FUNCTIONS
+ */
+
+export type ApiQueryNeuronParams = ApiQueryParams & {
+  neuronId: NeuronId;
+};
 
 export const queryNeuron = async ({
   neuronId,
   identity,
   certified,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-  certified: boolean;
-}): Promise<NeuronInfo | undefined> => {
+}: ApiQueryNeuronParams): Promise<NeuronInfo | undefined> => {
   logWithTimestamp(
     `Querying Neuron(${hashCode(neuronId)}) certified:${certified} call...`
   );
@@ -41,15 +67,15 @@ export const queryNeuron = async ({
   return response;
 };
 
+export type ApiIncreaseDissolveDelayParams = ApiManageNeuronParams & {
+  dissolveDelayInSeconds: number;
+};
+
 export const increaseDissolveDelay = async ({
   neuronId,
   dissolveDelayInSeconds,
   identity,
-}: {
-  neuronId: NeuronId;
-  dissolveDelayInSeconds: number;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiIncreaseDissolveDelayParams): Promise<void> => {
   logWithTimestamp(
     `Increasing Dissolve Delay(${hashCode(neuronId)}, ${hashCode(
       dissolveDelayInSeconds
@@ -71,10 +97,7 @@ export const increaseDissolveDelay = async ({
 export const joinCommunityFund = async ({
   neuronId,
   identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Joining Community Fund (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -85,10 +108,7 @@ export const joinCommunityFund = async ({
 export const leaveCommunityFund = async ({
   neuronId,
   identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -96,17 +116,48 @@ export const leaveCommunityFund = async ({
   logWithTimestamp(`Leaving Community Fund (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiAutoStakeMaturityParams = ApiManageNeuronParams & {
+  autoStake: boolean;
+};
+
+export const autoStakeMaturity = async ({
+  neuronId,
+  autoStake,
+  identity,
+}: ApiAutoStakeMaturityParams): Promise<void> => {
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) call...`
+  );
+
+  const {
+    canister: { autoStakeMaturity: autoStakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await autoStakeMaturityApi({
+    neuronId,
+    autoStake,
+  });
+
+  logWithTimestamp(
+    `${autoStake ? "Enable" : "Disable"} auto stake maturity (${hashCode(
+      neuronId
+    )}) complete.`
+  );
+};
+
+export type ApiDisburseParams = ApiManageNeuronParams & {
+  toAccountId?: string;
+  amount?: E8s;
+};
+
 export const disburse = async ({
   neuronId,
   toAccountId,
   amount,
   identity,
-}: {
-  neuronId: NeuronId;
-  toAccountId?: string;
-  amount?: E8s;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiDisburseParams): Promise<void> => {
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -114,15 +165,15 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiMergeMaturityParams = ApiManageNeuronParams & {
+  percentageToMerge: number;
+};
+
 export const mergeMaturity = async ({
   neuronId,
   percentageToMerge,
   identity,
-}: {
-  neuronId: NeuronId;
-  percentageToMerge: number;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiMergeMaturityParams): Promise<void> => {
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -130,36 +181,57 @@ export const mergeMaturity = async ({
   logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiStakeMaturityParams = ApiManageNeuronParams & {
+  percentageToStake: number;
+};
+
+export const stakeMaturity = async ({
+  neuronId,
+  percentageToStake,
+  identity,
+}: ApiStakeMaturityParams): Promise<void> => {
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) call...`);
+
+  const {
+    canister: { stakeMaturity: stakeMaturityApi },
+  } = await governanceCanister({ identity });
+
+  await stakeMaturityApi({ neuronId, percentageToStake });
+
+  logWithTimestamp(`Stake maturity (${hashCode(neuronId)}) complete.`);
+};
+
+export type ApiSpawnNeuronParams = ApiManageNeuronParams & {
+  // percentageToSpawn is not yet supported by the ledger IC app
+  percentageToSpawn?: number;
+};
+
 export const spawnNeuron = async ({
   neuronId,
   percentageToSpawn,
   identity,
-}: {
-  neuronId: NeuronId;
-  // percentageToSpawn is not yet supported by the ledger IC app
-  percentageToSpawn?: number;
-  identity: Identity;
-}): Promise<NeuronId> => {
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) call...`);
+}: ApiSpawnNeuronParams): Promise<NeuronId> => {
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
   const newNeuronId = await canister.spawnNeuron({
     neuronId,
     percentageToSpawn,
   });
-  logWithTimestamp(`Spawn maturity (${hashCode(neuronId)}) complete.`);
+  logWithTimestamp(`Spawn neuron (${hashCode(neuronId)}) complete.`);
   return newNeuronId;
+};
+
+// Shared by addHotkey and removeHotkey
+export type ApiManageHotkeyParams = ApiManageNeuronParams & {
+  principal: Principal;
 };
 
 export const addHotkey = async ({
   neuronId,
   principal,
   identity,
-}: {
-  neuronId: NeuronId;
-  principal: Principal;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageHotkeyParams): Promise<void> => {
   logWithTimestamp(`Add hotkey (for neuron ${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -171,11 +243,7 @@ export const removeHotkey = async ({
   neuronId,
   principal,
   identity,
-}: {
-  neuronId: NeuronId;
-  principal: Principal;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageHotkeyParams): Promise<void> => {
   logWithTimestamp(`Remove hotkey (for neuron ${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -185,15 +253,15 @@ export const removeHotkey = async ({
   );
 };
 
+export type ApiSplitNeuronParams = ApiManageNeuronParams & {
+  amount: bigint;
+};
+
 export const splitNeuron = async ({
   neuronId,
   amount,
   identity,
-}: {
-  neuronId: NeuronId;
-  amount: ICP;
-  identity: Identity;
-}): Promise<NeuronId> => {
+}: ApiSplitNeuronParams): Promise<NeuronId> => {
   logWithTimestamp(`Splitting Neuron (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -205,15 +273,16 @@ export const splitNeuron = async ({
   return response;
 };
 
+export type ApiMergeNeuronsParams = ApiCallParams & {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+};
+
 export const mergeNeurons = async ({
   sourceNeuronId,
   targetNeuronId,
   identity,
-}: {
-  sourceNeuronId: NeuronId;
-  targetNeuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiMergeNeuronsParams): Promise<void> => {
   logWithTimestamp(
     `Merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
       targetNeuronId
@@ -232,13 +301,35 @@ export const mergeNeurons = async ({
   );
 };
 
+export const simulateMergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+  identity,
+}: ApiMergeNeuronsParams): Promise<NeuronInfo> => {
+  try {
+    logWithTimestamp(
+      `Simulating merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+        targetNeuronId
+      )}) call...`
+    );
+    const { canister } = await governanceCanister({ identity });
+    return await canister.simulateMergeNeurons({
+      sourceNeuronId,
+      targetNeuronId,
+    });
+  } finally {
+    logWithTimestamp(
+      `Simulating merging neurons (${hashCode(sourceNeuronId)}, ${hashCode(
+        targetNeuronId
+      )}) complete.`
+    );
+  }
+};
+
 export const startDissolving = async ({
   neuronId,
   identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Starting Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -249,10 +340,7 @@ export const startDissolving = async ({
 export const stopDissolving = async ({
   neuronId,
   identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<void> => {
+}: ApiManageNeuronParams): Promise<void> => {
   logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -260,17 +348,17 @@ export const stopDissolving = async ({
   logWithTimestamp(`Stopping Dissolving (${hashCode(neuronId)}) complete.`);
 };
 
+export type ApiSetFolloweesParams = ApiManageNeuronParams & {
+  topic: Topic;
+  followees: NeuronId[];
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
   topic,
   followees,
-}: {
-  identity: Identity;
-  neuronId: NeuronId;
-  topic: Topic;
-  followees: NeuronId[];
-}): Promise<void> => {
+}: ApiSetFolloweesParams): Promise<void> => {
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -285,10 +373,7 @@ export const setFollowees = async ({
 export const queryNeurons = async ({
   identity,
   certified,
-}: {
-  identity: Identity;
-  certified: boolean;
-}): Promise<NeuronInfo[]> => {
+}: ApiQueryParams): Promise<NeuronInfo[]> => {
   logWithTimestamp(`Querying Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -297,6 +382,13 @@ export const queryNeurons = async ({
   });
   logWithTimestamp(`Querying Neurons certified:${certified} complete.`);
   return response;
+};
+
+export type ApiStakeNeuronParams = ApiCallParams & {
+  stake: bigint;
+  controller: Principal;
+  ledgerCanisterIdentity: Identity;
+  fromSubAccount?: SubAccountArray;
 };
 
 /**
@@ -308,13 +400,7 @@ export const stakeNeuron = async ({
   ledgerCanisterIdentity,
   identity,
   fromSubAccount,
-}: {
-  stake: ICP;
-  controller: Principal;
-  ledgerCanisterIdentity: Identity;
-  identity: Identity;
-  fromSubAccount?: SubAccountArray;
-}): Promise<NeuronId> => {
+}: ApiStakeNeuronParams): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -323,11 +409,13 @@ export const stakeNeuron = async ({
     identity: ledgerCanisterIdentity,
   });
 
+  const createdAt = nowInBigIntNanoSeconds();
   const response = await canister.stakeNeuron({
-    stake,
+    stake: stake,
     principal: controller,
     fromSubAccount,
     ledgerCanister,
+    createdAt,
   });
   logWithTimestamp(`Staking Neuron complete.`);
   return response;
@@ -336,10 +424,7 @@ export const stakeNeuron = async ({
 export const queryKnownNeurons = async ({
   identity,
   certified,
-}: {
-  identity: Identity;
-  certified: boolean;
-}): Promise<KnownNeuron[]> => {
+}: ApiQueryParams): Promise<KnownNeuron[]> => {
   logWithTimestamp(`Querying Known Neurons certified:${certified} call...`);
   const { canister } = await governanceCanister({ identity });
 
@@ -360,10 +445,7 @@ export const queryKnownNeurons = async ({
 export const claimOrRefreshNeuron = async ({
   neuronId,
   identity,
-}: {
-  neuronId: NeuronId;
-  identity: Identity;
-}): Promise<NeuronId | undefined> => {
+}: ApiManageNeuronParams): Promise<NeuronId | undefined> => {
   logWithTimestamp(
     `ClaimingOrRefreshing Neurons (${hashCode(neuronId)}) call...`
   );
@@ -378,6 +460,62 @@ export const claimOrRefreshNeuron = async ({
   );
   return response;
 };
+
+export type RegisterVoteParams = {
+  neuronId: NeuronId;
+  proposalId: ProposalId;
+  vote: Vote;
+  identity: Identity;
+};
+export const registerVote = async ({
+  neuronId,
+  proposalId,
+  vote,
+  identity,
+}: RegisterVoteParams): Promise<void> => {
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(neuronId)}) call...`
+  );
+
+  const governance: GovernanceCanister = GovernanceCanister.create({
+    agent: await createAgent({ identity, host: HOST }),
+  });
+
+  await governance.registerVote({
+    neuronId,
+    vote,
+    proposalId,
+  });
+
+  logWithTimestamp(
+    `Registering Vote (${hashCode(proposalId)}, ${hashCode(
+      neuronId
+    )}) complete.`
+  );
+};
+
+export const queryLastestRewardEvent = async ({
+  identity,
+  certified,
+}: ApiQueryParams): Promise<RewardEvent> => {
+  logWithTimestamp(
+    `Getting latest reward event call certified: ${certified}...`
+  );
+
+  const { canister: governance } = await governanceCanister({ identity });
+
+  try {
+    return governance.getLastestRewardEvent(certified);
+  } finally {
+    logWithTimestamp(
+      `Getting latest reward event call certified: ${certified} complete.`
+    );
+  }
+};
+
+/**
+ * CANISTER SERVICE CREATION
+ */
 
 // TODO: Apply pattern to other canister instantiation L2-371
 export const governanceCanister = async ({

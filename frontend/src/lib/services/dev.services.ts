@@ -1,12 +1,24 @@
+import {
+  acquireICPTs,
+  acquireSnsTokens,
+  getTestAccountBalance,
+} from "$lib/api/dev.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import { accountsStore } from "$lib/stores/accounts.store";
+import {
+  snsAccountsStore,
+  type SnsAccountsStoreData,
+} from "$lib/stores/sns-accounts.store";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { acquireICPTs } from "../api/dev.api";
-import { E8S_PER_ICP } from "../constants/icp.constants";
-import type { AccountsStore } from "../stores/accounts.store";
-import { accountsStore } from "../stores/accounts.store";
 import { syncAccounts } from "./accounts.services";
+import { loadSnsAccounts } from "./sns-accounts.services";
+
+export const getTestBalance = getTestAccountBalance;
 
 export const getICPs = async (icps: number) => {
-  const { main }: AccountsStore = get(accountsStore);
+  const { main }: AccountsStoreData = get(accountsStore);
 
   if (!main) {
     throw new Error("No account found to get ICPs");
@@ -18,4 +30,31 @@ export const getICPs = async (icps: number) => {
   });
 
   await syncAccounts();
+};
+
+export const getTokens = async ({
+  tokens,
+  rootCanisterId,
+}: {
+  tokens: number;
+  rootCanisterId: Principal;
+}) => {
+  // Accounts are loaded when user visits the Accounts page, so we need to load them here.
+  await loadSnsAccounts({ rootCanisterId });
+  const store: SnsAccountsStoreData = get(snsAccountsStore);
+  const { accounts } = store[rootCanisterId.toText()];
+  const main = accounts.find((account) => account.type === "main");
+
+  if (!main) {
+    throw new Error("No account found to send tokens");
+  }
+
+  await acquireSnsTokens({
+    e8s: BigInt(tokens * E8S_PER_ICP),
+    account: main,
+    rootCanisterId,
+  });
+
+  // Reload accounts to sync tokens that have been transferred
+  await loadSnsAccounts({ rootCanisterId });
 };

@@ -1,27 +1,28 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
-import { NEW_CANISTER_MIN_T_CYCLES } from "../../../../lib/constants/canisters.constants";
-import CreateCanisterModal from "../../../../lib/modals/canisters/CreateCanisterModal.svelte";
+import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
   createCanister,
   getIcpToCyclesExchangeRate,
-} from "../../../../lib/services/canisters.services";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
-import { toastsStore } from "../../../../lib/stores/toasts.store";
+} from "$lib/services/canisters.services";
+import { accountsStore } from "$lib/stores/accounts.store";
+import { toastsShow } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
-import { mockCanister } from "../../../mocks/canisters.mock";
-import { renderModal } from "../../../mocks/modal.mock";
-import { clickByTestId } from "../../testHelpers/clickByTestId";
+} from "$tests/mocks/accounts.store.mock";
+import { mockCanister } from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { fireEvent } from "@testing-library/dom";
+import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
-jest.mock("../../../../lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
     createCanister: jest
@@ -30,12 +31,10 @@ jest.mock("../../../../lib/services/canisters.services", () => {
   };
 });
 
-jest.mock("../../../../lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsStore: {
-      show: jest.fn(),
-      success: jest.fn(),
-    },
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 
@@ -45,6 +44,7 @@ describe("CreateCanisterModal", () => {
     .mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
+
   it("should display modal", () => {
     const { container } = render(CreateCanisterModal);
 
@@ -52,10 +52,15 @@ describe("CreateCanisterModal", () => {
   });
 
   it("should create a canister from ICP and close modal", async () => {
-    const { queryByTestId, queryAllByTestId, container, component } =
-      await renderModal({
-        component: CreateCanisterModal,
-      });
+    const {
+      queryByTestId,
+      queryAllByTestId,
+      container,
+      component,
+      queryByText,
+    } = await renderModal({
+      component: CreateCanisterModal,
+    });
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
     // wait to update local variable with conversion rate
@@ -70,6 +75,10 @@ describe("CreateCanisterModal", () => {
     await waitFor(() =>
       expect(queryByTestId("select-cycles-screen")).toBeInTheDocument()
     );
+
+    expect(
+      queryByText(en.canisters.review_create_canister)
+    ).toBeInTheDocument();
 
     const icpInputElement = container.querySelector('input[name="icp-amount"]');
     expect(icpInputElement).not.toBeNull();
@@ -96,7 +105,7 @@ describe("CreateCanisterModal", () => {
 
     await waitFor(() => expect(done).toBeCalled());
     expect(createCanister).toBeCalled();
-    expect(toastsStore.show).toBeCalled();
+    expect(toastsShow).toBeCalled();
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.
