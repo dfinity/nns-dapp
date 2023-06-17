@@ -279,9 +279,9 @@ describe("sns.store", () => {
       const updatedDerivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [updatedSnsTokensPerIcp],
         buyer_total_icp_e8s: [updatedBuyerTotalIcps],
-        cf_participant_count: [],
-        direct_participant_count: [],
-        cf_neuron_count: [],
+        cf_participant_count: [10n],
+        direct_participant_count: [100n],
+        cf_neuron_count: [11n],
       };
 
       const initStore = get(snsQueryStore);
@@ -301,6 +301,15 @@ describe("sns.store", () => {
       });
       expect(updatedState?.buyer_total_icp_e8s).toEqual(updatedBuyerTotalIcps);
       expect(updatedState?.sns_tokens_per_icp).toEqual(updatedSnsTokensPerIcp);
+      expect(updatedState?.cf_neuron_count).toEqual(
+        updatedDerivedState.cf_neuron_count
+      );
+      expect(updatedState?.direct_participant_count).toEqual(
+        updatedDerivedState.direct_participant_count
+      );
+      expect(updatedState?.cf_participant_count).toEqual(
+        updatedDerivedState.cf_participant_count
+      );
     });
 
     it("should NOT update the derived state if sns_tokens_per_icp undefined", () => {

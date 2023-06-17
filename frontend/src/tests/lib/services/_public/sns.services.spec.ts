@@ -111,6 +111,7 @@ describe("SNS public services", () => {
       jest.spyOn(snsApi, "queryAllSnsMetadata").mockResolvedValue([]);
       jest.spyOn(snsApi, "querySnsSwapStates").mockResolvedValue([]);
     });
+
     it("loads sns stores with data", async () => {
       const spyQuerySnsProjects = jest
         .spyOn(aggregatorApi, "querySnsProjects")
@@ -174,6 +175,33 @@ describe("SNS public services", () => {
       expect(data).not.toBeUndefined();
       expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(totalSupply);
+    });
+
+    it("loads derived state from property derived state", async () => {
+      jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+
+      await loadSnsProjects();
+
+      const queryStore = get(snsQueryStore);
+      const derivedState = queryStore.swaps[0]?.derived[0];
+      const expectedDerivedState = aggregatorSnsMock.derived_state;
+      expect(derivedState.buyer_total_icp_e8s).toBe(
+        expectedDerivedState.buyer_total_icp_e8s[0]
+      );
+      expect(derivedState.sns_tokens_per_icp).toBe(
+        expectedDerivedState.sns_tokens_per_icp[0]
+      );
+      expect(derivedState.cf_neuron_count[0]).toBe(
+        expectedDerivedState.cf_neuron_count[0]
+      );
+      expect(derivedState.cf_participant_count[0]).toBe(
+        expectedDerivedState.cf_participant_count[0]
+      );
+      expect(derivedState.direct_participant_count[0]).toBe(
+        expectedDerivedState.direct_participant_count[0]
+      );
     });
   });
 });

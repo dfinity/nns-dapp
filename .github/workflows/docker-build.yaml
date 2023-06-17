@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - name: Build nns-dapp
+      - name: Build nns-dapp repo
         uses: ./.github/actions/build_nns_dapp
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
