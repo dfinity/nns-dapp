@@ -13,78 +13,63 @@ concurrency:
 jobs:
   assets:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        include:
-          - BUILD_NAME: "mainnet"
-            DFX_NETWORK: "mainnet"
     steps:
       - uses: actions/checkout@v3
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v2
-      # Build and upload testnet assets
-      - name: Build ${{ matrix.DFX_NETWORK }} nns-dapp Docker image
-        uses: docker/build-push-action@v3
+      - name: Build nns-dapp repo
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=${{ matrix.DFX_NETWORK }}
-            COMMIT=${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           no-cache: ${{ inputs.no_cache || false }}
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: ./${{ matrix.BUILD_NAME }}-out
       - name: Print the hash of all assets
-        run: find ${{ matrix.BUILD_NAME }}-out -type f | xargs sha256sum
+        run: find out -type f | xargs sha256sum
       - name: 'Record the git commit and any tags'
-        run: git log | head -n1 > ${{ matrix.BUILD_NAME }}-out/commit.txt
+        run: git log | head -n1 > out/commit.txt
       - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
-            ${{ matrix.BUILD_NAME }}-out/commit.txt
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
-            ${{ matrix.BUILD_NAME }}-out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
-            ${{ matrix.BUILD_NAME }}-out/frontend-config.sh
-            ${{ matrix.BUILD_NAME }}-out/deployment-config.json
-      - name: 'Upload ${{ matrix.BUILD_NAME }} sns_aggregator wasm module'
+            out/commit.txt
+            out/nns-dapp.wasm
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
+            out/frontend-config.sh
+            out/deployment-config.json
+      - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
-            ${{ matrix.BUILD_NAME }}-out/sns_aggregator.wasm
-            ${{ matrix.BUILD_NAME }}-out/sns_aggregator_dev.wasm
+            out/sns_aggregator.wasm
+            out/sns_aggregator_dev.wasm
       - name: Release
         uses: ./.github/actions/release_nns_dapp
         with:
-          assets_dir: '${{ matrix.BUILD_NAME }}-out'
+          assets_dir: 'out'
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'Upload ${{ matrix.BUILD_NAME }} frontend assets'
+      - name: 'Upload frontend assets'
         uses: actions/upload-artifact@v3
         with:
-          name: NNS ${{ matrix.BUILD_NAME }} frontend assets
+          name: NNS frontend assets
           path: |
-            ${{ matrix.BUILD_NAME }}-out/assets.tar.xz
-            ${{ matrix.BUILD_NAME }}-out/sourcemaps.tar.xz
+            out/assets.tar.xz
+            out/sourcemaps.tar.xz
       - name: "Link the build sha to this commit"
         run: |
           : Set up git
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           : Make a note of the WASM shasum.
-          NOTE="refs/notes/${{ matrix.DFX_NETWORK }}/wasm-sha"
-          SHA="$(sha256sum < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
+          NOTE="refs/notes/mainnet/wasm-sha"
+          SHA="$(sha256sum < "out/nns-dapp.wasm")"
           git fetch origin "+${NOTE}:${NOTE}"
-          if git notes --ref="${{ matrix.BUILD_NAME }}/wasm-sha" add -m "$SHA"
+          if git notes --ref="wasm-sha" add -m "$SHA"
           then git push origin "${NOTE}:${NOTE}" || true
           else echo SHA already set
           fi
       - name: "Verify that the WASM module is small enough to deploy"
         run: |
-          wasm_size="$(wc -c < "${{ matrix.BUILD_NAME }}-out/nns-dapp.wasm")"
+          wasm_size="$(wc -c < "out/nns-dapp.wasm")"
           max_size=3145728
           echo "WASM size:          $wasm_size"
           echo "Max supported size: $max_size"
