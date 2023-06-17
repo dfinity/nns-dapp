@@ -1,0 +1,29 @@
+{
+  "__Candid_UI": {
+    "staging": "sbzkb-zqaaa-aaaaa-aaaiq-cai"
+  },
+  "ckbtc_archive": {
+    "staging": "tlwi3-3aaaa-aaaaa-aaapq-cai"
+  },
+  "ckbtc_index": {
+    "staging": "si2b5-pyaaa-aaaaa-aaaja-cai"
+  },
+  "ckbtc_ledger": {
+    "staging": "q3fc5-haaaa-aaaaa-aaahq-cai"
+  },
+  "ckbtc_minter": {
+    "staging": "sgymv-uiaaa-aaaaa-aaaia-cai"
+  },
+  "internet_identity": {
+    "staging": "qhbym-qaaaa-aaaaa-aaafq-cai"
+  },
+  "nns-dapp": {
+    "staging": "kuwf5-5qaaa-aaaaa-aacqq-cai"
+  },
+  "nns-sns-wasm": {
+    "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+  },
+  "sns_aggregator": {
+    "staging": "uywlp-pqaaa-aaaaa-aaa4q-cai"
+  }
+}
