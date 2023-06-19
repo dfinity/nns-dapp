@@ -7,6 +7,17 @@ on:
     #   winter: 8pm Zurich time
     - cron: '0 18 * * 2'
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: The dfx canister install mode.  See `dfx canister install --help` for details.
+        options:
+          - install
+          - reinstall
+          - upgrade
+          - auto
+        default:
+          - upgrade
   push:
     branches:
       - "deploy-to-app"
@@ -68,7 +79,7 @@ jobs:
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
           scripts/nns-dapp/split-assets
-          dfx canister install --mode reinstall --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
+          dfx canister install --mode ${{ inputs.mode || upgrade }} --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
