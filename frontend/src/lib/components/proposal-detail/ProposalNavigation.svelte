@@ -7,20 +7,15 @@
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
-  let currentProposalIndex: number;
-  $: currentProposalIndex = proposalIds.indexOf(currentProposalId);
-
   let previousId: bigint | undefined;
-  $: previousId =
-    currentProposalIndex === -1
-      ? undefined
-      : proposalIds[currentProposalIndex - 1];
+  // TODO: switch to findLast() once it's available
+  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
+  $: previousId = ([...proposalIds].reverse() as bigint[]).find(
+    (id) => id > currentProposalId
+  );
 
   let nextId: bigint | undefined;
-  $: nextId =
-    currentProposalIndex === -1
-      ? undefined
-      : proposalIds[currentProposalIndex + 1];
+  $: nextId = proposalIds.find((id) => id < currentProposalId);
 
   const selectPrevious = () => {
     assertNonNullish(previousId);

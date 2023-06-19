@@ -1,3 +1,4 @@
+pub mod upload;
 use crate::arguments::{TemplateEngine, CANISTER_ARGUMENTS};
 use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};

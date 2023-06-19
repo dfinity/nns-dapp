@@ -1,19 +1,16 @@
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { Country } from "$lib/types/location";
+import type { StoreData } from "$lib/types/store";
 import { derived, writable } from "svelte/store";
 
-/**
- * - Not Loaded: "not loaded"
- * - Error: Error
- * - Success: Country
- */
-type UserCountryStore = Country | Error | "not loaded";
+type UserCountryStore = StoreData<Country>;
 
 // Stores the user's country code
-export const userCountryStore = writable<UserCountryStore>("not loaded");
+export const userCountryStore = writable<UserCountryStore>(NOT_LOADED);
 
 export const isUserCountryLoadedStore = derived(
   userCountryStore,
-  ($userCountry) => $userCountry !== "not loaded"
+  ($userCountry) => $userCountry !== NOT_LOADED
 );
 export const isUserCountryErrorStore = derived(
   userCountryStore,

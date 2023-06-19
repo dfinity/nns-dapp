@@ -1,6 +1,6 @@
-import { queryTVL } from "$lib/api/tvl.api.cjs";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
+import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 
@@ -16,7 +16,7 @@ jest.mock("@dfinity/agent", () => {
 
 jest.mock("$lib/constants/canister-ids.constants");
 
-describe("tvl api", () => {
+describe("tvl worker-api", () => {
   const tvlCanisterMock = mock<TVLCanister>();
   const params = {
     identity: new AnonymousIdentity(),
