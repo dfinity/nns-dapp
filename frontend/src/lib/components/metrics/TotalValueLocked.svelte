@@ -13,16 +13,18 @@
   $: currency = Object.keys($metricsStore?.tvl?.currency ?? {})[0] ?? "USD";
 
   // We do not use common `formatNumber` utils here because of the unique particularity of the display used nowhere else in the dapp
-  let formattedTotal = undefined;
-  $: formattedTotal = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-    maximumSignificantDigits: 7,
-  })
-    .format(total)
-    .replace(/,/g, "’");
+  let formattedTotal: string | undefined = undefined;
+  $: formattedTotal = nonNullish(total)
+    ? new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+        maximumSignificantDigits: 7,
+      })
+        .format(total)
+        .replace(/,/g, "’")
+    : undefined;
 </script>
 
 {#if nonNullish(total) && total > 0 && nonNullish(formattedTotal)}
