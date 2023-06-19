@@ -43,8 +43,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
-      expect(await po.getNextButtonPo().isPresent()).toBe(true);
+      expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+      expect(await po.getOlderButtonPo().isPresent()).toBe(true);
     });
 
     it("should enable both buttons", async () => {
@@ -54,8 +54,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(false);
-      expect(await po.isPreviousButtonHidden()).toBe(false);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
 
     it("should be visible even when the current proposal is not in the list", async () => {
@@ -65,8 +65,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(false);
-      expect(await po.isPreviousButtonHidden()).toBe(false);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
 
     it("should disable previous button when it's selected", async () => {
@@ -76,8 +76,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(false);
-      expect(await po.isPreviousButtonHidden()).toBe(true);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(true);
     });
 
     it("should disable next when it's selected", async () => {
@@ -87,8 +87,8 @@ describe("ProposalNavigation", () => {
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(true);
-      expect(await po.isPreviousButtonHidden()).toBe(false);
+      expect(await po.isOlderButtonHidden()).toBe(true);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
   });
 
@@ -100,7 +100,7 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickNext();
+    await po.clickOlder();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(1n);
@@ -114,7 +114,7 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickPrevious();
+    await po.clickNewer();
 
     expect(selectProposalSpy).toHaveBeenCalledTimes(1);
     expect(selectProposalSpy).toHaveBeenCalledWith(3n);
@@ -128,9 +128,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickPrevious();
+    await po.clickNewer();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(17n);
-    await po.clickNext();
+    await po.clickOlder();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
 
@@ -142,9 +142,9 @@ describe("ProposalNavigation", () => {
       selectProposal: selectProposalSpy,
     });
 
-    await po.clickPrevious();
+    await po.clickNewer();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(13n);
-    await po.clickNext();
+    await po.clickOlder();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
 });
