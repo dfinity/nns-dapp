@@ -177,7 +177,7 @@
   $: derivedStateHasBuyersCount = hasBuyersCount(
     $projectDetailStore?.summary?.derived
   );
-  let watchersSet = false;
+  let areWatchersSet = false;
 
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
@@ -185,7 +185,7 @@
     nonNullish(rootCanisterId) &&
     nonNullish(swapCanisterId) &&
     nonNullish(derivedStateHasBuyersCount) &&
-    !watchersSet
+    !areWatchersSet
   ) {
     // TODO: Remove once all SNS support the buyers count in derived state
     if (!derivedStateHasBuyersCount) {
@@ -195,7 +195,7 @@
         swapCanisterId,
         forceFetch: false,
       });
-      if (!derivedStateHasBuyersCount && enableOpenProjectWatchers) {
+      if (enableOpenProjectWatchers) {
         unsubscribeWatchMetrics?.();
         unsubscribeWatchMetrics = watchSnsMetrics({
           rootCanisterId: Principal.fromText(rootCanisterId),
@@ -205,7 +205,7 @@
     }
 
     if (enableOpenProjectWatchers) {
-      watchersSet = true;
+      areWatchersSet = true;
       unsubscribeWatchCommitment?.();
       unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
     }

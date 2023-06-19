@@ -40,13 +40,13 @@ describe("ProjectCommitment", () => {
         saleBuyerCount,
       },
     });
-    const summaryWithuotBuyers = createSummary({
+    const summaryWithoutBuyers = createSummary({
       lifecycle: SnsSwapLifecycle.Open,
       buyersCount: null,
     });
 
     const { queryByTestId } = renderContextCmp({
-      summary: summaryWithuotBuyers,
+      summary: summaryWithoutBuyers,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectCommitment,
     });

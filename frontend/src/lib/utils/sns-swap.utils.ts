@@ -20,6 +20,14 @@ export const swapSaleBuyerCount = ({
     : swapMetrics?.[rootCanisterId.toText()]?.saleBuyerCount;
 };
 
+/**
+ * Returns whether the derived state has a buyers count.
+ *
+ * It returns undefined if the derived state is undefined or null.
+ *
+ * If the field is not set, we want to trigger a call to the raw canister metrics.
+ * Therefore, we don't want to return `false` while the derived state is not present.
+ */
 export const hasBuyersCount = (
   derived: SnsSwapDerivedState | undefined | null
 ): undefined | boolean => {
