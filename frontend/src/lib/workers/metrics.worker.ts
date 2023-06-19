@@ -79,24 +79,24 @@ const syncMetrics = async ({
   syncInProgress = true;
 
   try {
-    // TODO: review or implement other randomize pattern
-    const random = Math.floor(1 + Math.random() * (5 - 1 + 1));
+    const randomCurrency = (): FiatCurrency | undefined => {
+      const random = Math.floor(1 + Math.random() * (5 - 1 + 1));
 
-    let currency: FiatCurrency | undefined = undefined;
-    switch (random) {
-      case 2:
-        currency = { CNY: null };
-        break;
-      case 3:
-        currency = { EUR: null };
-        break;
-      case 4:
-        currency = { GBP: null };
-        break;
-      case 5:
-        currency = { JPY: null };
-        break;
-    }
+      switch (random) {
+        case 2:
+          return { CNY: null };
+        case 3:
+          return { EUR: null };
+        case 4:
+          return { GBP: null };
+        case 5:
+          return { JPY: null };
+        default:
+          return undefined;
+      }
+    };
+
+    const currency = randomCurrency();
 
     const metrics = await Promise.all([
       syncTvl
