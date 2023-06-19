@@ -1,6 +1,6 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import type { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
+import type { IcrcWorkerState } from "$lib/stores/icrc-worker.store";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type {
   PostMessageDataRequestTransactions,
@@ -29,9 +29,9 @@ export type GetAccountsTransactionsResults = Omit<
 export const getAccountsTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
-  store,
+  state,
 }: TimerWorkerUtilsJobData<PostMessageDataRequestTransactions> & {
-  store: IcrcWorkerStore<TransactionsData>;
+  state: IcrcWorkerState<TransactionsData>;
 }): Promise<GetAccountsTransactionsResults[]> =>
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) => {
@@ -41,7 +41,7 @@ export const getAccountsTransactions = ({
         accountIdentifier,
         host,
         fetchRootKey,
-        state: store.state[accountIdentifier],
+        state: state[accountIdentifier],
       });
 
       return {

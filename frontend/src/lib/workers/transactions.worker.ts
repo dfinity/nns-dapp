@@ -47,7 +47,7 @@ const syncTransactions = async (
   try {
     const results = await getAccountsTransactions({
       ...params,
-      store,
+      state: store.state,
     });
 
     const newTransactions = results.filter(
