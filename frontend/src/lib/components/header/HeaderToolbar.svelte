@@ -4,13 +4,13 @@
 </script>
 
 <div>
-    <Sync />
-    <AccountMenu />
+  <Sync />
+  <AccountMenu />
 </div>
 
 <style lang="scss">
-    div {
-      display: flex;
-      justify-content: flex-end;
-    }
+  div {
+    display: flex;
+    justify-content: flex-end;
+  }
 </style>

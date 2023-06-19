@@ -1,6 +1,6 @@
 import {
-  type SyncStore,
   syncStore,
+  type SyncStore,
   type SyncStoreData,
 } from "$lib/stores/sync.store";
 import type { SyncState } from "$lib/types/sync";

@@ -1,4 +1,3 @@
-import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
 import type { IcrcWorkerData } from "$lib/stores/icrc-worker.store";
 import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
@@ -8,6 +7,7 @@ import type {
   PostMessageDataResponseBalances,
 } from "$lib/types/post-message.balances";
 import type { PostMessage } from "$lib/types/post-messages";
+import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import {
   TimerWorkerUtils,
   type TimerWorkerUtilsJobData,
