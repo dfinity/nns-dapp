@@ -1,13 +1,13 @@
-import type { TVLCanisterOptions } from "$lib/canisters/tvl/tvl.canister.types";
+import type {
+  GetTVLRequest,
+  GetTVLResult,
+  TVLCanisterOptions,
+} from "$lib/canisters/tvl/tvl.canister.types";
 import { Actor } from "@dfinity/agent";
-import { Canister, toNullable, type QueryParams } from "@dfinity/utils";
+import { Canister, nonNullish, toNullable } from "@dfinity/utils";
 import { idlFactory as certifiedIdlFactory } from "./tvl.certified.idl";
 import { idlFactory } from "./tvl.idl";
-import type {
-  _SERVICE as TVLService,
-  TvlRequest,
-  TvlResult,
-} from "./tvl.types";
+import type { _SERVICE as TVLService } from "./tvl.types";
 
 export class TVLCanister extends Canister<TVLService> {
   public static create(options: TVLCanisterOptions): TVLCanister {
@@ -32,16 +32,19 @@ export class TVLCanister extends Canister<TVLService> {
 
   public getTVL = async ({
     certified,
-    request,
-  }: QueryParams & { request?: TvlRequest }): Promise<TvlResult> => {
+    currency,
+  }: GetTVLRequest): Promise<GetTVLResult> => {
     const response = await this.caller({ certified }).get_tvl(
-      toNullable(request)
+      toNullable(nonNullish(currency) ? { currency } : undefined)
     );
 
     if ("Err" in response) {
       throw new Error(response.Err.message);
     }
 
-    return response.Ok;
+    return {
+      ...response.Ok,
+      currency,
+    };
   };
 }
