@@ -91,9 +91,17 @@ extract_did_from_wasm() {
 	ic-wasm "$(proposal_path).payload.wasm" metadata candid:service > "$(proposal_path).payload.wasm.did"
 }
 
+# Gets the sha256 hash of the arguments
+extract_arguments_hash() {
+	if [[ "${1:-}" == "--with-header" ]] ; then
+		printf "Arguments hash: "
+	fi
+  jq <"$(proposal_path).payload.json" -r '.arg' | xxd -r -p | sha256sum
+}
+
 # Extracts the arguments from the payload
-extract_arguments() {
-  jq <"$(proposal_path).payload.json" -r '.arg' | didc decode | idl2json ${ARGS_DIDFILE:+--init --did "$ARGS_DIDFILE"} | jq .
+extract_arguments_as_json() {
+  jq <"$(proposal_path).payload.json" -r '.arg' | didc decode | idl2json --bytes-as hex ${ARGS_DIDFILE:+--init --did "$ARGS_DIDFILE"} | jq .
 }
 
 get_did nns-governance
@@ -104,4 +112,5 @@ if extract_wasm && extract_did_from_wasm
 then ARGS_DIDFILE="$(proposal_path).payload.wasm.did"
 else ARGS_DIDFILE=""
 fi
-extract_arguments
+extract_arguments_as_json
+extract_arguments_hash --with-header
