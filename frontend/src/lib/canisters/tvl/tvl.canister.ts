@@ -14,18 +14,19 @@ export class TVLCanister extends Canister<TVLService> {
     const agent = options.agent;
     const canisterId = options.canisterId;
 
-    const service = Actor.createActor<TVLService>(idlFactory, {
-      agent,
-      canisterId,
-    });
-
-    const certifiedService = Actor.createActor<TVLService>(
-      certifiedIdlFactory,
-      {
+    const service =
+      options.serviceOverride ??
+      Actor.createActor<TVLService>(idlFactory, {
         agent,
         canisterId,
-      }
-    );
+      });
+
+    const certifiedService =
+      options.certifiedServiceOverride ??
+      Actor.createActor<TVLService>(certifiedIdlFactory, {
+        agent,
+        canisterId,
+      });
 
     return new TVLCanister(canisterId, service, certifiedService);
   }
