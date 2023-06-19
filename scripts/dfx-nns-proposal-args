@@ -78,24 +78,23 @@ determine_proposal_type() {
 
 # Gets the wasm from the payload
 extract_wasm() {
-  <"$(proposal_path).payload.json" jq -r '.wasm_module' | xxd -r -p > "$(proposal_path).payload.wasm"
-  if file "$(proposal_path).payload.wasm" | grep -q gzip
-  then
-	  mv "$(proposal_path).payload.wasm" "$(proposal_path).payload.wasm.gz"
-	  gunzip < "$(proposal_path).payload.wasm.gz" > "$(proposal_path).payload.wasm"
+  jq <"$(proposal_path).payload.json" -r '.wasm_module' | xxd -r -p >"$(proposal_path).payload.wasm"
+  if file "$(proposal_path).payload.wasm" | grep -q gzip; then
+    mv "$(proposal_path).payload.wasm" "$(proposal_path).payload.wasm.gz"
+    gunzip <"$(proposal_path).payload.wasm.gz" >"$(proposal_path).payload.wasm"
   fi
 }
 
 # Gets the did file from the wasm.  May fail: The wasm is allowed not to contain this metadata.
 extract_did_from_wasm() {
-	ic-wasm "$(proposal_path).payload.wasm" metadata candid:service > "$(proposal_path).payload.wasm.did"
+  ic-wasm "$(proposal_path).payload.wasm" metadata candid:service >"$(proposal_path).payload.wasm.did"
 }
 
 # Gets the sha256 hash of the arguments
 extract_arguments_hash() {
-	if [[ "${1:-}" == "--with-header" ]] ; then
-		printf "Arguments hash: "
-	fi
+  if [[ "${1:-}" == "--with-header" ]]; then
+    printf "Arguments hash: "
+  fi
   jq <"$(proposal_path).payload.json" -r '.arg' | xxd -r -p | sha256sum
 }
 
@@ -108,9 +107,10 @@ get_did nns-governance
 get_proposal
 determine_proposal_type
 extract_payload
-if extract_wasm && extract_did_from_wasm
-then ARGS_DIDFILE="$(proposal_path).payload.wasm.did"
-else ARGS_DIDFILE=""
+if extract_wasm && extract_did_from_wasm; then
+  ARGS_DIDFILE="$(proposal_path).payload.wasm.did"
+else
+  ARGS_DIDFILE=""
 fi
 extract_arguments_as_json
 extract_arguments_hash --with-header

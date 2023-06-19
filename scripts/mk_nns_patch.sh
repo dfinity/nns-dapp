@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Checks whether we have the .did file for a canister.
+#
+# # Input
+# - Canister names on stdin, one per line
+#
+# # Output
+# - Canister names, on eper line
+filter_has_canister_did() {
+  while read -r canister; do
+    if test -e "$SOURCE_DIR/../declarations/${canister}/${canister}.did"; then
+      echo "$canister"
+    fi
+  done
+}
 
 GIT_ROOT="$(git rev-parse --show-toplevel)"
-ALL_CANISTERS="$(ls "$GIT_ROOT/declarations")"
+# shellcheck disable=SC2012
+ALL_CANISTERS="$(ls "$GIT_ROOT/declarations" | filter_has_canister_did)"
 
 ##########################
 # Hjelpe meg!
