@@ -45,6 +45,7 @@
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
     swapMetrics: $snsSwapMetricsStore,
+    derivedState: derived,
   });
 </script>
 
