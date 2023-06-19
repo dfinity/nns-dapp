@@ -5,11 +5,11 @@ import type {
 import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
-import {
-  createCanisterCjs,
-  type CreateCanisterCjsParams,
-} from "$lib/worker-utils/canister.worker-utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import {
+  createCanisterWorker,
+  type CreateCanisterWorkerParams,
+} from "$lib/worker-utils/canister.worker-utils";
 import { IcrcIndexCanister } from "@dfinity/ledger";
 import { fromNullable } from "@dfinity/utils";
 
@@ -57,9 +57,9 @@ export const getIcrcTransactions = async ({
 const createCanister = (
   params: CanisterActorParams & { canisterId: CanisterId }
 ): Promise<IcrcIndexCanister> =>
-  createCanisterCjs<IcrcIndexCanister>({
+  createCanisterWorker<IcrcIndexCanister>({
     ...params,
-    create: ({ agent, canisterId }: CreateCanisterCjsParams) =>
+    create: ({ agent, canisterId }: CreateCanisterWorkerParams) =>
       IcrcIndexCanister.create({
         agent,
         canisterId: mapCanisterId(canisterId),
