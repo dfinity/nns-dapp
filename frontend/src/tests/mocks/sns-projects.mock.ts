@@ -274,11 +274,13 @@ export const createSummary = ({
   confirmationText = undefined,
   restrictedCountries = undefined,
   minParticipants = 20,
+  buyersCount = 300n,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
   restrictedCountries?: string[] | undefined;
   minParticipants?: number;
+  buyersCount?: bigint | null;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -291,6 +293,10 @@ export const createSummary = ({
     ...mockSnsParams,
     min_participants: minParticipants,
   };
+  const derived: SnsSwapDerivedState = {
+    ...mockDerived,
+    direct_participant_count: buyersCount === null ? [] : [buyersCount],
+  };
   const summary = summaryForLifecycle(lifecycle);
   return {
     ...summary,
@@ -299,6 +305,7 @@ export const createSummary = ({
       init: [init],
       params,
     },
+    derived,
   };
 };
 
