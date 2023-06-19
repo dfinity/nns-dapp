@@ -115,7 +115,7 @@ else
   ARGS_DIDFILE=""
 fi
 
-case "$DFX_FORMAT" in
+case "${DFX_FORMAT:-}" in
 all)
   extract_arguments_as_json
   extract_arguments_hash --with-header
@@ -123,7 +123,13 @@ all)
 json)
   extract_arguments_as_json
   ;;
-sha256sum)
+sha256)
   extract_arguments_hash
   ;;
+*)
+	{
+	   echo "ERROR: Unsupported format: '${DFX_FORMAT:-}'"
+		   exit 1
+	} >&2
+	;;
 esac
