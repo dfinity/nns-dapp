@@ -3,29 +3,36 @@
   import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
-  import { formatNumber } from "$lib/utils/format.utils";
 
   export let layout: "inline" | "stacked" = "inline";
 
   let total: number | undefined;
   $: total = Number($metricsStore?.tvl?.tvl ?? "0");
 
-  const format = (n: number): string =>
-    formatNumber(n, {
-      minFraction: 0,
-      maxFraction: 0,
-      maximumSignificantDigits: 7,
-    });
+  let currency = "USD";
+  $: currency = Object.keys($metricsStore?.tvl?.currency ?? {})[0] ?? "USD";
+
+  // We do not use common `formatNumber` utils here because of the unique particularity of the display used nowhere else in the dapp
+  let formattedTotal = undefined;
+  $: formattedTotal = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    maximumSignificantDigits: 7,
+  })
+    .format(total)
+    .replace(/,/g, "’");
 </script>
 
-{#if nonNullish(total) && total > 0}
+{#if nonNullish(total) && total > 0 && nonNullish(formattedTotal)}
   <div
     class="tvl"
     transition:fade={{ duration: 125 }}
     class:stacked={layout === "stacked"}
   >
     <span>{$i18n.metrics.tvl}</span>
-    <span data-tid="tvl-metric" class="total">${format(total)}</span>
+    <span data-tid="tvl-metric" class="total">{formattedTotal}</span>
   </div>
 {/if}
 
