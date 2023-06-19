@@ -76,15 +76,32 @@ determine_proposal_type() {
   esac
 }
 
+# Gets the wasm from the payload
+extract_wasm() {
+  <"$(proposal_path).payload.json" jq -r '.wasm_module' | xxd -r -p > "$(proposal_path).payload.wasm"
+  if file "$(proposal_path).payload.wasm" | grep -q gzip
+  then
+	  mv "$(proposal_path).payload.wasm" "$(proposal_path).payload.wasm.gz"
+	  gunzip < "$(proposal_path).payload.wasm.gz" > "$(proposal_path).payload.wasm"
+  fi
+}
+
+# Gets the did file from the wasm.  May fail: The wasm is allowed not to contain this metadata.
+extract_did_from_wasm() {
+	ic-wasm "$(proposal_path).payload.wasm" metadata candid:service > "$(proposal_path).payload.wasm.did"
+}
+
 # Extracts the arguments from the payload
 extract_arguments() {
-  jq <"$(proposal_path).payload.json" -r '.arg' | didc decode | idl2json | jq .
+  jq <"$(proposal_path).payload.json" -r '.arg' | didc decode | idl2json ${ARGS_DIDFILE:+--init --did "$ARGS_DIDFILE"} | jq .
 }
 
 get_did nns-governance
 get_proposal
 determine_proposal_type
 extract_payload
+if extract_wasm && extract_did_from_wasm
+then ARGS_DIDFILE="$(proposal_path).payload.wasm.did"
+else ARGS_DIDFILE=""
+fi
 extract_arguments
-
-# TODO: Represent maps naturally.
