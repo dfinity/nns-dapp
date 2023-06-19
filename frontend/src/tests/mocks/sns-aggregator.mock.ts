@@ -8,6 +8,7 @@ export const aggregatorTokenMock: IcrcTokenMetadata = {
   fee: BigInt(1000),
 };
 
+// It should match the converted response from sns-aggregator.mock.json with the same `index` value
 export const aggregatorSnsMock: CachedSns = {
   index: 11,
   canister_ids: {
@@ -150,6 +151,13 @@ export const aggregatorSnsMock: CachedSns = {
   ],
   icrc1_fee: aggregatorTokenMock.fee,
   icrc1_total_supply: BigInt(1100_000_000_000),
+  derived_state: {
+    sns_tokens_per_icp: [2.0],
+    buyer_total_icp_e8s: [100500000010n],
+    cf_participant_count: [0n],
+    direct_participant_count: [4n],
+    cf_neuron_count: [0n],
+  },
 };
 
 export const aggregatorSnsMockWith = ({
