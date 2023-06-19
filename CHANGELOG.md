@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXXX
+## Proposal 123006
 
 * Improvement in NNS proposal filters.
 * New field minimum participants in project detail page.
