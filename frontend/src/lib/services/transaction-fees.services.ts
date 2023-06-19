@@ -3,7 +3,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { toastsError } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
-import type { Principal } from "@dfinity/principal/lib/cjs";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
