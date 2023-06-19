@@ -12,10 +12,12 @@ print_help() {
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
+FORMAT_OPTIONS=(json sha256 all)
 # Define options
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 clap.define short=p long=proposal desc="The proposal number" variable=DFX_PROPOSAL
 clap.define short=c long=nocache desc="Do not use cached results" variable=DFX_NO_CACHE nargs=0
+clap.define short=f long=format desc="The format to emit.  Options: ${FORMAT_OPTIONS[*]}" variable=DFX_FORMAT default="all"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -95,7 +97,7 @@ extract_arguments_hash() {
   if [[ "${1:-}" == "--with-header" ]]; then
     printf "Arguments hash: "
   fi
-  jq <"$(proposal_path).payload.json" -r '.arg' | xxd -r -p | sha256sum
+  jq <"$(proposal_path).payload.json" -r '.arg' | xxd -r -p | sha256sum | awk '{print $1}'
 }
 
 # Extracts the arguments from the payload
@@ -112,5 +114,16 @@ if extract_wasm && extract_did_from_wasm; then
 else
   ARGS_DIDFILE=""
 fi
-extract_arguments_as_json
-extract_arguments_hash --with-header
+
+case "$DFX_FORMAT" in
+all)
+  extract_arguments_as_json
+  extract_arguments_hash --with-header
+  ;;
+json)
+  extract_arguments_as_json
+  ;;
+sha256sum)
+  extract_arguments_hash
+  ;;
+esac
