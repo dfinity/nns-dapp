@@ -127,9 +127,9 @@ sha256)
   extract_arguments_hash
   ;;
 *)
-	{
-	   echo "ERROR: Unsupported format: '${DFX_FORMAT:-}'"
-		   exit 1
-	} >&2
-	;;
+  {
+    echo "ERROR: Unsupported format: '${DFX_FORMAT:-}'"
+    exit 1
+  } >&2
+  ;;
 esac
