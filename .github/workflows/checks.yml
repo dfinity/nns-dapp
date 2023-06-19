@@ -238,8 +238,29 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
+  dfx-nns-proposal-args-works:
+    name: Can get NNS proposal args
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Make didc support binstall, then use binstall here.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Install binstall
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+      - name: Install idl2json
+        run: cargo binstall idl2json_cli && idl2json --version
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Test getting proposal args
+        run: scripts/dfx-nns-proposal-args.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
