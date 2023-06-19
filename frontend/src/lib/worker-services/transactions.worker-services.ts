@@ -13,11 +13,11 @@ import type {
   TimerWorkerUtilsJobData,
   TimerWorkerUtilsSyncParams,
 } from "$lib/worker-utils/timer.worker-utils";
-import { decodeIcrcAccount } from "@dfinity/ledger";
-import type {
-  TransactionWithId,
-  TxId,
-} from "@dfinity/ledger/dist/candid/icrc1_index";
+import {
+  decodeIcrcAccount,
+  type IcrcTransactionWithId,
+  type IcrcTxId,
+} from "@dfinity/ledger";
 import { nonNullish } from "@dfinity/utils";
 
 export type GetAccountsTransactionsResults = Omit<
@@ -55,7 +55,7 @@ export const getAccountsTransactions = ({
             ) !== undefined;
 
           return [...acc, ...(alreadyExist() ? [] : [value])];
-        }, [] as TransactionWithId[]),
+        }, [] as IcrcTransactionWithId[]),
         ...rest,
       };
     })
@@ -87,7 +87,7 @@ const getAccountTransactions = async ({
     state,
   });
 
-  const oldestTxId: TxId | undefined = [...transactions].sort(
+  const oldestTxId: IcrcTxId | undefined = [...transactions].sort(
     (
       { transaction: { timestamp: timestampA } },
       { transaction: { timestamp: timestampB } }
