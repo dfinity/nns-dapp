@@ -3,7 +3,6 @@
  */
 
 import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
-import TotalValueLocked from "$lib/components/metrics/TotalValueLocked.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
 import { nonNullish } from "@dfinity/utils";
