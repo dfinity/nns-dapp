@@ -6,30 +6,30 @@ on:
   #   summer: 11am Zurich time
   #   winter: noon Zurich time
   #- cron: '0 10 * * 3'
-  workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        description: The dfx canister install mode.  See `dfx canister install --help` for details.
-        options:
-          - install
-          - reinstall
-          - upgrade
-          - auto
-        default:
-          - upgrade
-          #      canisters:
-          #        type: choice
-          #        description: Which canisters to install
-          #        options:
-          #          - all
-          #          - nns-dapp
-          #          - sns_aggregator
-          #        default:
-          #          - all
-  push:
-    branches:
-      - "deploy-to-app"
+  #  workflow_dispatch:
+  #    inputs:
+  #      mode:
+  #        type: choice
+  #        description: The dfx canister install mode.  See `dfx canister install --help` for details.
+  #        options:
+  #          - install
+  #          - reinstall
+  #          - upgrade
+  #          - auto
+  #        default:
+  #          - upgrade
+  #      canisters:
+  #        type: choice
+  #        description: Which canisters to install
+  #        options:
+  #          - all
+  #          - nns-dapp
+  #          - sns_aggregator
+  #        default:
+  #          - all
+  #push:
+  #  branches:
+  #    - "deploy-to-app"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
