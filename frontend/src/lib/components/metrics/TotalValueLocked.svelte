@@ -37,7 +37,7 @@
 
     visibility: hidden;
     opacity: 0;
-    transition: opacity 150ms, visibility 150ms;
+    transition: opacity ease-out var(--animation-time-normal);
 
     &.visible {
       visibility: visible;
