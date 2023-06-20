@@ -111,7 +111,8 @@ jobs:
               printf "URL:    "
               dfx-canister-url --network "$DFX_NETWORK" "$canister"
               printf "Commit: "
-              dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id || echo "NONE"
+              dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id || printf "NONE"
+              echo
               dfx canister info --network "$DFX_NETWORK" "$canister"
               echo "---"
             } >> $GITHUB_STEP_SUMMARY || true
