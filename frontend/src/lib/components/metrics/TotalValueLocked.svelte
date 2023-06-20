@@ -34,7 +34,7 @@
   data-tid="total-value-locked-component"
 >
   <span>{$i18n.metrics.tvl}</span>
-  <span data-tid="tvl-metric" class="total">>{formattedTotal}</span>
+  <span data-tid="tvl-metric" class="total">{formattedTotal}</span>
 </div>
 
 <style lang="scss">
