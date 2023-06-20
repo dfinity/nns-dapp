@@ -103,16 +103,15 @@ jobs:
           dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
       - name: Canister info
         run: |
+          set -x
           for canister in nns-dapp sns_aggregator ; do
             {
-              echo "========================================"
-              printf "== %s\n" "$canister"
-              echo "========================================"
+              printf "## %s\n" "$canister"
               printf "URL:    "
               dfx-canister-url --network "$DFX_NETWORK" "$canister"
               printf "Commit: "
               dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id || echo "NONE"
               dfx canister info --network "$DFX_NETWORK" "$canister"
-              set +x
+              echo "---"
             } >> $GITHUB_STEP_SUMMARY || true
           done
