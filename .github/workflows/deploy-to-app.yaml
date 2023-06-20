@@ -93,7 +93,7 @@ jobs:
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
-          dfx canister install --mode reinstall --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
+          dfx canister install --mode "${{ inputs.mode || upgrade }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
       - name: Canister info
         run: |
           for canister in nns-dapp sns_aggregator ; do
