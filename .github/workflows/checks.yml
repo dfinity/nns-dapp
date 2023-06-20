@@ -258,6 +258,8 @@ jobs:
         run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Test getting proposal args
         run: scripts/dfx-nns-proposal-args.test
   checks-pass:
