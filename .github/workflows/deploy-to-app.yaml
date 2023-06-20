@@ -2,10 +2,10 @@
 name: Deploy to app
 on:
   schedule:
-    # Run every Tuesday:
-    #   summer: 7pm Zurich time
-    #   winter: 8pm Zurich time
-    - cron: '0 18 * * 2'
+    # Run every Wednesady:
+    #   summer: 11am Zurich time
+    #   winter: noon Zurich time
+    - cron: '0 10 * * 3'
   workflow_dispatch:
     inputs:
       mode:
