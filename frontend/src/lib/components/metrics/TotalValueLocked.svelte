@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { fade } from "svelte/transition";
   import { nonNullish } from "@dfinity/utils";
   import { metricsStore } from "$lib/stores/metrics.store";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -23,6 +22,7 @@
   class="tvl"
   class:visible={nonNullish(total) && total > 0}
   class:stacked={layout === "stacked"}
+  data-tid="total-value-locked-component"
 >
   <span>{$i18n.metrics.tvl}</span>
   <span data-tid="tvl-metric" class="total">${format(total ?? 0)}</span>
