@@ -5,9 +5,12 @@ export interface IcrcWorkerData {
   certified: boolean;
 }
 
-export type IcrcWorkerState<T> = Record<IcrcAccountIdentifierText, T>;
+export type IcrcWorkerState<T extends IcrcWorkerData> = Record<
+  IcrcAccountIdentifierText,
+  T
+>;
 
-export class IcrcWorkerStore<T> {
+export class IcrcWorkerStore<T extends IcrcWorkerData> {
   private readonly EMPTY_STATE: IcrcWorkerState<T> = {};
   private _state: IcrcWorkerState<T> = this.EMPTY_STATE;
 
@@ -22,7 +25,7 @@ export class IcrcWorkerStore<T> {
             ...rest,
           },
         }),
-        {} as T
+        {}
       ),
     };
   }
