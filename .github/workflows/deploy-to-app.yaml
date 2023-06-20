@@ -10,15 +10,15 @@ on:
     branches:
       - "deploy-to-app"
   workflow_dispatch:
-#    inputs:
-#      mode:
-#        type: choice
-#        description: The dfx canister install mode.  See `dfx canister install --help` for details.
-#        options:
-#          - install
-#          - reinstall
-#          - upgrade
-#          - auto
+    inputs:
+      mode:
+        type: choice
+        description: "The dfx canister install mode.  See `dfx canister install --help` for details."
+        options:
+          - install
+          - reinstall
+          - upgrade
+          - auto
 #        default:
 #          - upgrade
 #      canisters:
