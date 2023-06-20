@@ -1,36 +1,31 @@
-type InitArgs = record {
-    governance_id : principal;
-    xrc_id : principal;
-    update_period: nat64;
+// Generated from IC repo commit 3340e9da93c9edd724927ed4fc902b03b0ec6426 'rs/rosetta-api/tvl/tvl.did' by import-candid
+type FiatCurrency = variant {
+    EUR;
+    CNY;
+    JPY;
+    GBP;
 };
-
-type TimeseriesEntry = record {
-    time_sec: nat;
-    value: nat;
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec record { text; text };
 };
-
-type TimeseriesResult = record {
-    timeseries: vec TimeseriesEntry;
+type HttpResponse = record {
+  body : vec nat8;
+  headers : vec record { text; text };
+  status_code : nat16;
 };
-
-type TvlResult = record {
-    time_sec: nat;
-    tvl: nat;
+type Result = variant { Ok : TvlResult; Err : TvlResultError };
+type TvlResult = record { tvl : nat; time_sec : nat };
+type TvlResultError = record { message : text };
+type TvlRequest = record { currency: FiatCurrency; };
+type TvlArgs = record {
+  governance_id: opt principal;
+  xrc_id: opt principal;
+  update_period: opt nat64;
 };
-
-type TvlTimeseriesResult = record {
-    timeseries: vec TvlResult;
-};
-
-type TvlResultError = record {
-    message: text;
-};
-
-type Result_tvl = variant { Ok : TvlResult; Err : TvlResultError };
-
-service : (InitArgs) -> {
-    get_tvl : () -> (Result_tvl) query;
-    get_tvl_timeseries : () -> (TvlTimeseriesResult);
-    get_xr_timeseries : () -> (TimeseriesResult);
-    get_locked_e8s_timeseries : () -> (TimeseriesResult);
+service : (TvlArgs) -> {
+  get_tvl : (opt TvlRequest) -> (Result) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
 }

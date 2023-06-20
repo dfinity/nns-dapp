@@ -1,8 +1,8 @@
-import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
+import type { GetTVLResult } from "$lib/canisters/tvl/tvl.canister.types";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 
 export interface MetricsSync {
-  tvl?: TvlResult;
+  tvl?: GetTVLResult;
   transactionRate?: DashboardMessageExecutionRateResponse;
 }
 
