@@ -27,9 +27,9 @@ on:
       #          - sns_aggregator
       #        default:
       #          - all
-    - push:
-        branches:
-          - "deploy-to-app"
+  push:
+    branches:
+      - "deploy-to-app"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
