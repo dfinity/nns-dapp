@@ -19,8 +19,8 @@ on:
           - reinstall
           - upgrade
           - auto
-        default:
-          - upgrade
+#        default:
+#          - upgrade
 #      canisters:
 #        type: choice
 #        description: Which canisters to install
