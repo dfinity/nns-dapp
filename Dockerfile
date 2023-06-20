@@ -76,11 +76,9 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-RUN dfx --version
+RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
-RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
-RUN didc --version
+RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
 RUN cargo binstall --no-confirm "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm

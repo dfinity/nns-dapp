@@ -2,8 +2,10 @@
  * @jest-environment jsdom
  */
 
+import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
+import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
@@ -35,7 +37,13 @@ describe("TotalValueLocked", () => {
     time_sec: 123n,
   };
 
-  it("should render TVL", async () => {
+  const testRenderTVL = async ({
+    currency,
+    symbol,
+  }: {
+    currency?: FiatCurrency;
+    symbol: string;
+  }) => {
     const { getByTestId } = render(TotalValueLockedTest);
 
     // Wait for initialization of the callback
@@ -43,13 +51,38 @@ describe("TotalValueLocked", () => {
 
     metricsCallback?.({
       metrics: {
-        tvl,
+        tvl: {
+          ...tvl,
+          ...(nonNullish(currency) && { currency }),
+        },
       },
     });
 
     await waitFor(() =>
-      expect(getByTestId("tvl-metric")?.textContent).toEqual("$442’469’700")
+      expect(getByTestId("tvl-metric")?.textContent).toEqual(
+        `${symbol}442’469’700`
+      )
     );
+  };
+
+  it("should render TVL", async () => {
+    await testRenderTVL({ symbol: "$" });
+  });
+
+  it("should render TVL for CNY", async () => {
+    await testRenderTVL({ symbol: "CN¥", currency: { CNY: null } });
+  });
+
+  it("should render TVL for GBP", async () => {
+    await testRenderTVL({ symbol: "£", currency: { GBP: null } });
+  });
+
+  it("should render TVL for EUR", async () => {
+    await testRenderTVL({ symbol: "€", currency: { EUR: null } });
+  });
+
+  it("should render TVL for JPY", async () => {
+    await testRenderTVL({ symbol: "¥", currency: { JPY: null } });
   });
 
   it("should not render TVL on load", () => {
