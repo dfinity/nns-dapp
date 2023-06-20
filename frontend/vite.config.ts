@@ -80,6 +80,7 @@ const config: UserConfig = {
               "frontend/src/lib/utils",
               "frontend/src/lib/worker-api",
               "frontend/src/lib/worker-services",
+              "frontend/src/lib/worker-stores",
               "frontend/src/lib/worker-types",
               "frontend/src/lib/worker-utils",
               "frontend/src/lib/workers",

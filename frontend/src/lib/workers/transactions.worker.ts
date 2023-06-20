@@ -1,5 +1,5 @@
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
-import { IcrcWorkerStore } from "$lib/stores/icrc-worker.store";
+import { IcrcWorkerStore } from "$lib/worker-stores/icrc-worker.store";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,

@@ -1,6 +1,6 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import type { IcrcWorkerState } from "$lib/stores/icrc-worker.store";
+import type { IcrcWorkerState } from "$lib/worker-stores/icrc-worker.store";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type {
   PostMessageDataRequestTransactions,
