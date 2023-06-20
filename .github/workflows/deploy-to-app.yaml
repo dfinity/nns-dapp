@@ -19,17 +19,13 @@ on:
           - reinstall
           - upgrade
           - auto
-#        default:
-#          - upgrade
-#      canisters:
-#        type: choice
-#        description: Which canisters to install
-#        options:
-#          - all
-#          - nns-dapp
-#          - sns_aggregator
-#        default:
-#          - all
+      canisters:
+        type: choice
+        description: Which canisters to install
+        options:
+          - all
+          - nns-dapp
+          - sns_aggregator
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
