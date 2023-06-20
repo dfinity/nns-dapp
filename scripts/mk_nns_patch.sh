@@ -8,7 +8,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # - Canister names on stdin, one per line
 #
 # # Output
-# - Canister names, on eper line
+# - Canister names, one per line
 filter_has_canister_did() {
   while read -r canister; do
     if test -e "$SOURCE_DIR/../declarations/${canister}/${canister}.did"; then
