@@ -8,7 +8,6 @@ import type { MetricsCallback } from "$lib/services/$public/worker-metrics.servi
 import { metricsStore } from "$lib/stores/metrics.store";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
@@ -88,14 +87,16 @@ describe("TotalValueLocked", () => {
   });
 
   it("should not render TVL on load", () => {
-    const { getByTestId } = render(TotalValueLocked);
-    expect(() => getByTestId("tvl-metric")).toThrow();
+    const { getByTestId } = render(TotalValueLockedTest);
+
+    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
   });
 
   it("should not render TVL if response has zero metrics", async () => {
-    const { getByTestId } = render(TotalValueLocked);
+    const { getByTestId } = render(TotalValueLockedTest);
 
-    await tick();
+    // Wait for initialization of the callback
+    await waitFor(() => expect(metricsCallback).not.toBeUndefined());
 
     metricsCallback?.({
       metrics: {
@@ -103,6 +104,6 @@ describe("TotalValueLocked", () => {
       },
     });
 
-    await waitFor(() => expect(() => getByTestId("tvl-metric")).toThrow());
+    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
   });
 });

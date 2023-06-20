@@ -3008,8 +3008,9 @@ checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
 name = "idl2json"
-version = "0.8.1"
-source = "git+https://github.com/dfinity/idl2json?rev=c983dea6fc5666912218e7babf2b6b2f8b5648a4#c983dea6fc5666912218e7babf2b6b2f8b5648a4"
+version = "0.8.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7e69dd6459c97c3d68e234435e6587c0b49ca4b3e4ca72af171049a1bc7aa70c"
 dependencies = [
  "candid",
  "serde_json",
@@ -3324,7 +3325,7 @@ dependencies = [
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.37"
+version = "2.0.38"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
@@ -4477,7 +4478,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.37"
+version = "2.0.38"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
