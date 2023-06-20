@@ -14,7 +14,7 @@ export class IcrcWorkerStore<T extends IcrcWorkerData> {
   private readonly EMPTY_STATE: IcrcWorkerState<T> = {};
   private _state: IcrcWorkerState<T> = this.EMPTY_STATE;
 
-  update(data: IcrcWorkerData[]) {
+  update(data: T[]) {
     this._state = {
       ...this._state,
       ...data.reduce(
