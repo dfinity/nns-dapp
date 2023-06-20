@@ -8,7 +8,7 @@ use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -123,7 +123,7 @@ pub struct FailedUpdate {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetDappControllersResponse { failed_updates: Vec<FailedUpdate> }
 
-pub struct SERVICE(candid::Principal);
+pub struct SERVICE(pub candid::Principal);
 impl SERVICE{
   pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<
     (CanisterStatusResult,)

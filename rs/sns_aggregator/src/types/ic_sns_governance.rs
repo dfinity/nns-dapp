@@ -8,7 +8,7 @@ use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
 
@@ -290,7 +290,10 @@ pub struct FinalizeDisburseMaturity {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct MemoAndController { controller: Option<candid::Principal>, memo: u64 }
+pub struct MemoAndController {
+  pub  controller: Option<candid::Principal>,
+  pub  memo: u64,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum By { MemoAndController(MemoAndController), NeuronId(EmptyRecord) }
@@ -581,7 +584,10 @@ pub struct ClaimOrRefreshResponse { refreshed_neuron_id: Option<NeuronId> }
 pub struct StakeMaturityResponse { maturity_e8s: u64, staked_maturity_e8s: u64 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct MergeMaturityResponse { merged_maturity_e8s: u64, new_stake_e8s: u64 }
+pub struct MergeMaturityResponse {
+  pub  merged_maturity_e8s: u64,
+  pub  new_stake_e8s: u64,
+}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DisburseResponse { transfer_block_height: u64 }
@@ -612,7 +618,7 @@ pub struct SetMode { mode: i32 }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct set_mode_ret0 {}
 
-pub struct SERVICE(candid::Principal);
+pub struct SERVICE(pub candid::Principal);
 impl SERVICE{
   pub async fn claim_swap_neurons(
     &self,

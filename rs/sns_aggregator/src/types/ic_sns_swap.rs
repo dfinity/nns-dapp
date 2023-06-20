@@ -8,7 +8,7 @@ use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
@@ -384,7 +384,7 @@ pub struct RefreshBuyerTokensResponse {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct restore_dapp_controllers_arg0 {}
 
-pub struct SERVICE(candid::Principal);
+pub struct SERVICE(pub candid::Principal);
 impl SERVICE{
   pub async fn error_refund_icp(
     &self,
