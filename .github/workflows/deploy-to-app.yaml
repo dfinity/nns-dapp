@@ -1,35 +1,35 @@
 # App deployments are non-production deployments to mainnet.  They are public, can be used as staging, but e.g. funds are real.
 name: Deploy to app
 on:
-  #schedule:
-  # Run every Wednesady:
-  #   summer: 11am Zurich time
-  #   winter: noon Zurich time
-  #- cron: '0 10 * * 3'
-  #  workflow_dispatch:
-  #    inputs:
-  #      mode:
-  #        type: choice
-  #        description: The dfx canister install mode.  See `dfx canister install --help` for details.
-  #        options:
-  #          - install
-  #          - reinstall
-  #          - upgrade
-  #          - auto
-  #        default:
-  #          - upgrade
-  #      canisters:
-  #        type: choice
-  #        description: Which canisters to install
-  #        options:
-  #          - all
-  #          - nns-dapp
-  #          - sns_aggregator
-  #        default:
-  #          - all
-  #push:
-  #  branches:
-  #    - "deploy-to-app"
+  schedule:
+    # Run every Wednesday:
+    # Summer: 11am Zurich time
+    # Winter: noon Zurich time
+    - cron: '0 10 * * 3'
+      #  workflow_dispatch:
+      #    inputs:
+      #      mode:
+      #        type: choice
+      #        description: The dfx canister install mode.  See `dfx canister install --help` for details.
+      #        options:
+      #          - install
+      #          - reinstall
+      #          - upgrade
+      #          - auto
+      #        default:
+      #          - upgrade
+      #      canisters:
+      #        type: choice
+      #        description: Which canisters to install
+      #        options:
+      #          - all
+      #          - nns-dapp
+      #          - sns_aggregator
+      #        default:
+      #          - all
+      #push:
+      #  branches:
+      #    - "deploy-to-app"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
