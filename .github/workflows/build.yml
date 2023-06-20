@@ -19,38 +19,29 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build wasms
-        uses: docker/build-push-action@v3
+      - name: Build nns-dapp repo
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=local
-            COMMIT=${{ github.sha }}
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: .
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Rename nns-dapp.wasm for upload
-        run: cp nns-dapp.wasm nns-dapp_local.wasm
+        run: cp out/nns-dapp.wasm out/nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp_local
-          path: nns-dapp_local.wasm
+          path: out/nns-dapp_local.wasm
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator
-          path: sns_aggregator.wasm
+          path: out/sns_aggregator.wasm
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator_dev
-          path: sns_aggregator_dev.wasm
+          path: out/sns_aggregator_dev.wasm
           retention-days: 3
   test-playwright-e2e:
     needs: build
@@ -299,7 +290,7 @@ jobs:
           context: .
           file: Dockerfile
           build-args: |
-            DFX_NETWORK=mainnet
+            DFX_NETWORK=local
             COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
