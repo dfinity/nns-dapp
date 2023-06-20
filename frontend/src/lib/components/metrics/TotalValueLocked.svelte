@@ -18,16 +18,15 @@
     });
 </script>
 
-{#if nonNullish(total) && total > 0}
-  <div
-    class="tvl"
-    transition:fade={{ duration: 125 }}
-    class:stacked={layout === "stacked"}
-  >
-    <span>{$i18n.metrics.tvl}</span>
-    <span data-tid="tvl-metric" class="total">${format(total)}</span>
-  </div>
-{/if}
+<!-- DO NOT use a Svelte transition. It caused issues with navigation -->
+<div
+  class="tvl"
+  class:visible={nonNullish(total) && total > 0}
+  class:stacked={layout === "stacked"}
+>
+  <span>{$i18n.metrics.tvl}</span>
+  <span data-tid="tvl-metric" class="total">${format(total ?? 0)}</span>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
@@ -35,6 +34,15 @@
 
   .tvl {
     display: inline-block;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 150ms, visibility 150ms;
+
+    &.visible {
+      visibility: visible;
+      opacity: 1;
+    }
 
     text-align: center;
 
