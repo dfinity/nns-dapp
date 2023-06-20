@@ -91,7 +91,7 @@ jobs:
           scripts/nns-dapp/split-assets
           # Note: inputs.mode is set if this workflow is run manually, using workflow_dispatch defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
-          dfx canister install --mode "${{ inputs.mode || upgrade }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
@@ -104,7 +104,7 @@ jobs:
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
-          dfx canister install --mode "${{ inputs.mode || upgrade }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
       - name: Canister info
         run: |
           for canister in nns-dapp sns_aggregator ; do
