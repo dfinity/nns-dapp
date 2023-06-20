@@ -80,7 +80,7 @@ const syncMetrics = async ({
 
   try {
     const randomCurrency = (): FiatCurrency | undefined => {
-      const random = Math.floor(1 + Math.random() * (5 - 1 + 1));
+      const random = Math.floor(1 + Math.random() * 5);
 
       switch (random) {
         case 2:
