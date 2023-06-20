@@ -163,7 +163,7 @@ jobs:
       - name: Install ic-wasm
         if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
         run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
           command -v ic-wasm || {
             echo "ERROR: Failed to install ic-wasm"
