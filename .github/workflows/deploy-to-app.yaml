@@ -15,9 +15,9 @@ on:
         type: choice
         description: "The dfx canister install mode.  See `dfx canister install --help` for details."
         options:
-          - install
-          - reinstall
           - upgrade
+          - reinstall
+          - install
           - auto
       canisters:
         type: choice
@@ -77,7 +77,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
-        if: (inputs.mode == 'all') || (inputs.mode == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
+        if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |
           set -x
           CANISTER_NAME="nns-dapp"
@@ -92,7 +92,7 @@ jobs:
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
       - name: Deploy sns_aggregator
-        if: (inputs.mode == 'all') || (inputs.mode == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
+        if: (inputs.canisters == 'all') || (inputs.canisters == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
         run: |
           set -x
           CANISTER_NAME="sns_aggregator"
