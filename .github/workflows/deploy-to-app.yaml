@@ -21,11 +21,11 @@ on:
           - auto
         default:
           - upgrade
-      canisters:
-        type: choice
-        description: Which canisters to install
-        options:
-          - all
+#      canisters:
+#        type: choice
+#        description: Which canisters to install
+#        options:
+#          - all
 #          - nns-dapp
 #          - sns_aggregator
 #        default:
