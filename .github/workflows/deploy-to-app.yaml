@@ -18,6 +18,15 @@ on:
           - auto
         default:
           - upgrade
+      canisters:
+        type: choice
+        description: Which canisters to install
+        options:
+          - all
+          - nns-dapp
+          - sns_aggregator
+        default:
+          - all
   push:
     branches:
       - "deploy-to-app"
@@ -72,6 +81,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy nns-dapp
+        if: (inputs.mode == 'all') || (inputs.mode == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |
           set -x
           CANISTER_NAME="nns-dapp"
@@ -86,6 +96,7 @@ jobs:
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
       - name: Deploy sns_aggregator
+        if: (inputs.mode == 'all') || (inputs.mode == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
         run: |
           set -x
           CANISTER_NAME="sns_aggregator"
