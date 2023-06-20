@@ -38,7 +38,7 @@ pub struct CanisterStatusResult {
   pub  status: CanisterStatusType,
   pub  memory_size: candid::Nat,
   pub  settings: DefiniteCanisterSettings,
-  pub  module_hash: Option<Vec<u8>>,
+  pub  module_hash: Option<serde_bytes::ByteBuf>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -59,7 +59,7 @@ pub struct CanisterStatusResultV2 {
   pub  cycles: candid::Nat,
   pub  settings: DefiniteCanisterSettingsArgs,
   pub  idle_cycles_burned_per_day: candid::Nat,
-  pub  module_hash: Option<Vec<u8>>,
+  pub  module_hash: Option<serde_bytes::ByteBuf>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

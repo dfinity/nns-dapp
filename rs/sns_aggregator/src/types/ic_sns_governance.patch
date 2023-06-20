@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 28bc6ec98..fbcff33af 100644
+index 28bc6ec98..3c3a440de 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,20 +8,21 @@ use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
@@ -29,35 +29,7 @@ index 28bc6ec98..fbcff33af 100644
    GenericNervousSystemFunction(GenericNervousSystemFunction),
  }
  
-@@ -59,7 +60,7 @@ pub struct MaturityModulation {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct NeuronId { id: serde_bytes::ByteBuf }
-+pub struct NeuronId { id: Vec<u8> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Followees { followees: Vec<NeuronId> }
-@@ -104,12 +105,12 @@ pub struct NervousSystemParameters {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Version {
--  pub  archive_wasm_hash: serde_bytes::ByteBuf,
--  pub  root_wasm_hash: serde_bytes::ByteBuf,
--  pub  swap_wasm_hash: serde_bytes::ByteBuf,
--  pub  ledger_wasm_hash: serde_bytes::ByteBuf,
--  pub  governance_wasm_hash: serde_bytes::ByteBuf,
--  pub  index_wasm_hash: serde_bytes::ByteBuf,
-+  pub  archive_wasm_hash: Vec<u8>,
-+  pub  root_wasm_hash: Vec<u8>,
-+  pub  swap_wasm_hash: Vec<u8>,
-+  pub  ledger_wasm_hash: Vec<u8>,
-+  pub  governance_wasm_hash: Vec<u8>,
-+  pub  index_wasm_hash: Vec<u8>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -143,15 +144,15 @@ pub struct Ballot { vote: i32, cast_timestamp_seconds: u64, voting_power: u64 }
+@@ -143,7 +144,7 @@ pub struct Ballot { vote: i32, cast_timestamp_seconds: u64, voting_power: u64 }
  pub struct Tally { no: u64, yes: u64, total: u64, timestamp_seconds: u64 }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -65,9 +37,8 @@ index 28bc6ec98..fbcff33af 100644
 +pub struct RegisterDappCanisters { canister_ids: Vec<candid::Principal> }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct Subaccount { subaccount: serde_bytes::ByteBuf }
-+pub struct Subaccount { subaccount: Vec<u8> }
- 
+ pub struct Subaccount { subaccount: serde_bytes::ByteBuf }
+@@ -151,7 +152,7 @@ pub struct Subaccount { subaccount: serde_bytes::ByteBuf }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct TransferSnsTreasuryFunds {
    pub  from_treasury: i32,
@@ -76,17 +47,13 @@ index 28bc6ec98..fbcff33af 100644
    pub  to_subaccount: Option<Subaccount>,
    pub  memo: Option<u64>,
    pub  amount_e8s: u64,
-@@ -159,16 +160,16 @@ pub struct TransferSnsTreasuryFunds {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -161,14 +162,14 @@ pub struct TransferSnsTreasuryFunds {
  pub struct UpgradeSnsControlledCanister {
--  pub  new_canister_wasm: serde_bytes::ByteBuf,
-+  pub  new_canister_wasm: Vec<u8>,
+   pub  new_canister_wasm: serde_bytes::ByteBuf,
    pub  mode: Option<i32>,
 -  pub  canister_id: Option<Principal>,
--  pub  canister_upgrade_arg: Option<serde_bytes::ByteBuf>,
 +  pub  canister_id: Option<candid::Principal>,
-+  pub  canister_upgrade_arg: Option<Vec<u8>>,
+   pub  canister_upgrade_arg: Option<serde_bytes::ByteBuf>,
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -95,15 +62,6 @@ index 28bc6ec98..fbcff33af 100644
 -  pub  new_controllers: Vec<Principal>,
 +  pub  canister_ids: Vec<candid::Principal>,
 +  pub  new_controllers: Vec<candid::Principal>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -182,7 +183,7 @@ pub struct ManageSnsMetadata {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ExecuteGenericNervousSystemFunction {
-   pub  function_id: u64,
--  pub  payload: serde_bytes::ByteBuf,
-+  pub  payload: Vec<u8>,
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -239,7 +197,7 @@ index 28bc6ec98..fbcff33af 100644
  pub struct GetMetadataResponse {
    pub  url: Option<String>,
    pub  logo: Option<String>,
-@@ -477,24 +484,24 @@ pub enum CanisterStatusType { stopped, stopping, running }
+@@ -477,16 +484,16 @@ pub enum CanisterStatusType { stopped, stopping, running }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct DefiniteCanisterSettingsArgs {
@@ -258,17 +216,7 @@ index 28bc6ec98..fbcff33af 100644
 +  pub  controller: candid::Principal,
    pub  status: CanisterStatusType,
    pub  freezing_threshold: candid::Nat,
--  pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
-+  pub  balance: Vec<(Vec<u8>,candid::Nat,)>,
-   pub  memory_size: candid::Nat,
-   pub  cycles: candid::Nat,
-   pub  settings: DefiniteCanisterSettingsArgs,
-   pub  idle_cycles_burned_per_day: candid::Nat,
--  pub  module_hash: Option<serde_bytes::ByteBuf>,
-+  pub  module_hash: Option<Vec<u8>>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+   pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
 @@ -514,7 +521,7 @@ pub struct GetSnsInitializationParametersResponse {
    pub  sns_initialization_parameters: String,
  }
@@ -295,7 +243,7 @@ index 28bc6ec98..fbcff33af 100644
 -  pub  subaccount: serde_bytes::ByteBuf,
 -  pub  command: Option<Command>,
 -}
-+pub struct ManageNeuron { subaccount: Vec<u8>, command: Option<Command> }
++pub struct ManageNeuron { subaccount: serde_bytes::ByteBuf, command: Option<Command> }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SplitResponse { created_neuron_id: Option<NeuronId> }

@@ -150,12 +150,12 @@ pub struct CanisterStatusResultV2 {
   pub  controller: candid::Principal,
   pub  status: CanisterStatusType,
   pub  freezing_threshold: candid::Nat,
-  pub  balance: Vec<(Vec<u8>,candid::Nat,)>,
+  pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
   pub  memory_size: candid::Nat,
   pub  cycles: candid::Nat,
   pub  settings: DefiniteCanisterSettingsArgs,
   pub  idle_cycles_burned_per_day: candid::Nat,
-  pub  module_hash: Option<Vec<u8>>,
+  pub  module_hash: Option<serde_bytes::ByteBuf>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -191,7 +191,7 @@ pub struct get_open_ticket_arg0 {}
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Icrc1Account {
   pub  owner: Option<candid::Principal>,
-  pub  subaccount: Option<Vec<u8>>,
+  pub  subaccount: Option<serde_bytes::ByteBuf>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -245,7 +245,7 @@ pub struct GetSaleParametersResponse { params: Option<Params> }
 pub struct get_state_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct NeuronId { id: Vec<u8> }
+pub struct NeuronId { id: serde_bytes::ByteBuf }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronAttributes {
@@ -287,7 +287,7 @@ pub struct Swap {
   pub  init: Option<Init>,
   pub  purge_old_tickets_last_completion_timestamp_nanoseconds: Option<u64>,
   pub  lifecycle: i32,
-  pub  purge_old_tickets_next_principal: Option<Vec<u8>>,
+  pub  purge_old_tickets_next_principal: Option<serde_bytes::ByteBuf>,
   pub  buyers: Vec<(String,BuyerState,)>,
   pub  params: Option<Params>,
   pub  open_sns_token_swap_proposal_id: Option<u64>,
@@ -335,7 +335,7 @@ pub struct ListSnsNeuronRecipesRequest { offset: Option<u64>, limit: Option<u32>
 pub struct ListSnsNeuronRecipesResponse { sns_neuron_recipes: Vec<SnsNeuronRecipe> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct NewSaleTicketRequest { subaccount: Option<Vec<u8>>, amount_icp_e8s: u64 }
+pub struct NewSaleTicketRequest { subaccount: Option<serde_bytes::ByteBuf>, amount_icp_e8s: u64 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InvalidUserAmount {

@@ -19,16 +19,16 @@ pub struct SnsWasmCanisterInitPayload {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct SnsWasm { wasm: Vec<u8>, canister_type: i32 }
+pub struct SnsWasm { wasm: serde_bytes::ByteBuf, canister_type: i32 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct AddWasmRequest { hash: Vec<u8>, wasm: Option<SnsWasm> }
+pub struct AddWasmRequest { hash: serde_bytes::ByteBuf, wasm: Option<SnsWasm> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsWasmError { message: String }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result { Error(SnsWasmError), Hash(Vec<u8>) }
+pub enum Result { Error(SnsWasmError), Hash(serde_bytes::ByteBuf) }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmResponse { result: Option<Result> }
@@ -126,12 +126,12 @@ pub struct GetAllowedPrincipalsResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsVersion {
-  pub  archive_wasm_hash: Vec<u8>,
-  pub  root_wasm_hash: Vec<u8>,
-  pub  swap_wasm_hash: Vec<u8>,
-  pub  ledger_wasm_hash: Vec<u8>,
-  pub  governance_wasm_hash: Vec<u8>,
-  pub  index_wasm_hash: Vec<u8>,
+  pub  archive_wasm_hash: serde_bytes::ByteBuf,
+  pub  root_wasm_hash: serde_bytes::ByteBuf,
+  pub  swap_wasm_hash: serde_bytes::ByteBuf,
+  pub  ledger_wasm_hash: serde_bytes::ByteBuf,
+  pub  governance_wasm_hash: serde_bytes::ByteBuf,
+  pub  index_wasm_hash: serde_bytes::ByteBuf,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -150,7 +150,7 @@ pub struct get_sns_subnet_ids_arg0 {}
 pub struct GetSnsSubnetIdsResponse { sns_subnet_ids: Vec<candid::Principal> }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct GetWasmRequest { hash: Vec<u8> }
+pub struct GetWasmRequest { hash: serde_bytes::ByteBuf }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetWasmResponse { wasm: Option<SnsWasm> }

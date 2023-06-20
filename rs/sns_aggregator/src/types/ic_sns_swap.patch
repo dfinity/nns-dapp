@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 79a9b463e..fd282f942 100644
+index 79a9b463e..b373161c8 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -4,17 +4,17 @@
@@ -61,7 +61,7 @@ index 79a9b463e..fd282f942 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct TransferableAmount {
-@@ -138,24 +138,24 @@ pub enum CanisterStatusType { stopped, stopping, running }
+@@ -138,16 +138,16 @@ pub enum CanisterStatusType { stopped, stopping, running }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct DefiniteCanisterSettingsArgs {
@@ -80,28 +80,16 @@ index 79a9b463e..fd282f942 100644
 +  pub  controller: candid::Principal,
    pub  status: CanisterStatusType,
    pub  freezing_threshold: candid::Nat,
--  pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
-+  pub  balance: Vec<(Vec<u8>,candid::Nat,)>,
-   pub  memory_size: candid::Nat,
-   pub  cycles: candid::Nat,
-   pub  settings: DefiniteCanisterSettingsArgs,
-   pub  idle_cycles_burned_per_day: candid::Nat,
--  pub  module_hash: Option<serde_bytes::ByteBuf>,
-+  pub  module_hash: Option<Vec<u8>>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -190,8 +190,8 @@ pub struct get_open_ticket_arg0 {}
+   pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
+@@ -190,7 +190,7 @@ pub struct get_open_ticket_arg0 {}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct Icrc1Account {
 -  pub  owner: Option<Principal>,
--  pub  subaccount: Option<serde_bytes::ByteBuf>,
 +  pub  owner: Option<candid::Principal>,
-+  pub  subaccount: Option<Vec<u8>>,
+   pub  subaccount: Option<serde_bytes::ByteBuf>,
  }
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -217,13 +217,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_sale_parameters_arg0 {}
@@ -118,24 +106,6 @@ index 79a9b463e..fd282f942 100644
  pub struct Params {
    pub  min_participant_icp_e8s: u64,
    pub  neuron_basket_construction_parameters: Option<
-@@ -245,7 +245,7 @@ pub struct GetSaleParametersResponse { params: Option<Params> }
- pub struct get_state_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct NeuronId { id: serde_bytes::ByteBuf }
-+pub struct NeuronId { id: Vec<u8> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct NeuronAttributes {
-@@ -287,7 +287,7 @@ pub struct Swap {
-   pub  init: Option<Init>,
-   pub  purge_old_tickets_last_completion_timestamp_nanoseconds: Option<u64>,
-   pub  lifecycle: i32,
--  pub  purge_old_tickets_next_principal: Option<serde_bytes::ByteBuf>,
-+  pub  purge_old_tickets_next_principal: Option<Vec<u8>>,
-   pub  buyers: Vec<(String,BuyerState,)>,
-   pub  params: Option<Params>,
-   pub  open_sns_token_swap_proposal_id: Option<u64>,
 @@ -302,11 +302,8 @@ pub struct DerivedState {
    pub  cf_neuron_count: Option<u64>,
  }
@@ -188,7 +158,7 @@ index 79a9b463e..fd282f942 100644
 -  pub  subaccount: Option<serde_bytes::ByteBuf>,
 -  pub  amount_icp_e8s: u64,
 -}
-+pub struct NewSaleTicketRequest { subaccount: Option<Vec<u8>>, amount_icp_e8s: u64 }
++pub struct NewSaleTicketRequest { subaccount: Option<serde_bytes::ByteBuf>, amount_icp_e8s: u64 }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct InvalidUserAmount {

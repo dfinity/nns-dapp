@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index 4d2c3f61e..bf7b2ff79 100644
+index 4d2c3f61e..a8fc475ec 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-@@ -4,31 +4,31 @@
+@@ -4,18 +4,18 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -26,22 +26,6 @@ index 4d2c3f61e..bf7b2ff79 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct SnsWasm { wasm: serde_bytes::ByteBuf, canister_type: i32 }
-+pub struct SnsWasm { wasm: Vec<u8>, canister_type: i32 }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct AddWasmRequest { hash: serde_bytes::ByteBuf, wasm: Option<SnsWasm> }
-+pub struct AddWasmRequest { hash: Vec<u8>, wasm: Option<SnsWasm> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SnsWasmError { message: String }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub enum Result { Error(SnsWasmError), Hash(serde_bytes::ByteBuf) }
-+pub enum Result { Error(SnsWasmError), Hash(Vec<u8>) }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct AddWasmResponse { result: Option<Result> }
 @@ -38,7 +38,7 @@ pub struct TreasuryDistribution { total_e8s: u64 }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -74,7 +58,7 @@ index 4d2c3f61e..bf7b2ff79 100644
    pub  error: Option<SnsWasmError>,
    pub  canisters: Option<SnsCanisterIds>,
  }
-@@ -120,21 +120,23 @@ pub struct DeployNewSnsResponse {
+@@ -120,7 +120,9 @@ pub struct DeployNewSnsResponse {
  pub struct get_allowed_principals_arg0 {}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -85,19 +69,7 @@ index 4d2c3f61e..bf7b2ff79 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SnsVersion {
--  pub  archive_wasm_hash: serde_bytes::ByteBuf,
--  pub  root_wasm_hash: serde_bytes::ByteBuf,
--  pub  swap_wasm_hash: serde_bytes::ByteBuf,
--  pub  ledger_wasm_hash: serde_bytes::ByteBuf,
--  pub  governance_wasm_hash: serde_bytes::ByteBuf,
--  pub  index_wasm_hash: serde_bytes::ByteBuf,
-+  pub  archive_wasm_hash: Vec<u8>,
-+  pub  root_wasm_hash: Vec<u8>,
-+  pub  swap_wasm_hash: Vec<u8>,
-+  pub  ledger_wasm_hash: Vec<u8>,
-+  pub  governance_wasm_hash: Vec<u8>,
-+  pub  index_wasm_hash: Vec<u8>,
- }
+@@ -134,7 +136,7 @@ pub struct SnsVersion {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetNextSnsVersionRequest {
@@ -106,7 +78,7 @@ index 4d2c3f61e..bf7b2ff79 100644
    pub  current_version: Option<SnsVersion>,
  }
  
-@@ -145,10 +147,10 @@ pub struct GetNextSnsVersionResponse { next_version: Option<SnsVersion> }
+@@ -145,7 +147,7 @@ pub struct GetNextSnsVersionResponse { next_version: Option<SnsVersion> }
  pub struct get_sns_subnet_ids_arg0 {}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -114,11 +86,7 @@ index 4d2c3f61e..bf7b2ff79 100644
 +pub struct GetSnsSubnetIdsResponse { sns_subnet_ids: Vec<candid::Principal> }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetWasmRequest { hash: serde_bytes::ByteBuf }
-+pub struct GetWasmRequest { hash: Vec<u8> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetWasmResponse { wasm: Option<SnsWasm> }
+ pub struct GetWasmRequest { hash: serde_bytes::ByteBuf }
 @@ -162,7 +164,7 @@ pub struct SnsUpgrade {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct InsertUpgradePathEntriesRequest {

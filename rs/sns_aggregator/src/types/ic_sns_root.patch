@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 66c2d6742..b1f6d7027 100644
+index 66c2d6742..eb29aeae2 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -4,41 +4,41 @@
+@@ -4,37 +4,37 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -52,11 +52,6 @@ index 66c2d6742..b1f6d7027 100644
    pub  status: CanisterStatusType,
    pub  memory_size: candid::Nat,
    pub  settings: DefiniteCanisterSettings,
--  pub  module_hash: Option<serde_bytes::ByteBuf>,
-+  pub  module_hash: Option<Vec<u8>>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -47,7 +47,7 @@ pub struct GetSnsCanistersSummaryRequest { update_canister_list: Option<bool> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct DefiniteCanisterSettingsArgs {
@@ -66,14 +61,7 @@ index 66c2d6742..b1f6d7027 100644
    pub  memory_allocation: candid::Nat,
    pub  compute_allocation: candid::Nat,
  }
-@@ -59,13 +59,13 @@ pub struct CanisterStatusResultV2 {
-   pub  cycles: candid::Nat,
-   pub  settings: DefiniteCanisterSettingsArgs,
-   pub  idle_cycles_burned_per_day: candid::Nat,
--  pub  module_hash: Option<serde_bytes::ByteBuf>,
-+  pub  module_hash: Option<Vec<u8>>,
- }
- 
+@@ -65,7 +65,7 @@ pub struct CanisterStatusResultV2 {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct CanisterSummary {
    pub  status: Option<CanisterStatusResultV2>,
