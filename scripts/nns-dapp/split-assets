@@ -29,7 +29,7 @@ test -d "$OUTPUT_DIR" || {
 } >&2
 rm -fr "$OUTPUT_DIR/chunks"
 
-NUM_CHUNKS=2
+NUM_CHUNKS=3
 WORKDIR="$(mktemp -d)"
 
 (

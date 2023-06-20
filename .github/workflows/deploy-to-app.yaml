@@ -1,0 +1,114 @@
+# App deployments are non-production deployments to mainnet.  They are public, can be used as staging, but e.g. funds are real.
+name: Deploy to app
+on:
+  schedule:
+    # Run every Wednesday:
+    # Summer: 11am Zurich time
+    # Winter: noon Zurich time
+    - cron: '0 10 * * 3'
+  push:
+    branches:
+      - "deploy-to-app"
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "The dfx canister install mode.  See `dfx canister install --help` for details."
+        options:
+          - install
+          - reinstall
+          - upgrade
+          - auto
+      canisters:
+        type: choice
+        description: Which canisters to install
+        options:
+          - all
+          - nns-dapp
+          - sns_aggregator
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  deploy-app:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    env:
+      NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
+      SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "otgyv-wyaaa-aaaak-qcgba-cai"
+      DFX_NETWORK: ic
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+        # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
+      - name: Get versions
+        id: tool_versions
+        run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
+      - name: Set credentials
+        #        uses: aviate-labs/setup-dfx@v0.2.3
+        #with:
+        #  dfx-version: ${{ steps.tool_versions.outputs.dfx }}
+        #  dfx-disable-encryption: true
+        run: |
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
+          dfx identity use ci
+        env:
+          DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
+      - name: Get SNS scripts
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          # Version from 2023-06-06 with dfx v0.14.1
+          ref: '0e61f618018db099a01b1686535fff8eff980d1c'
+      - name: Set up SNS scripts
+        run: |
+          : Install more
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils
+          : Add scripts to the path
+          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Verify identity
+        run: |
+          dfx identity whoami
+          dfx identity get-principal
+      - name: Build wasms
+        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy nns-dapp
+        if: (inputs.mode == 'all') || (inputs.mode == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
+        run: |
+          set -x
+          CANISTER_NAME="nns-dapp"
+          export DFX_NETWORK CANISTER_NAME
+          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
+          scripts/nns-dapp/split-assets
+          # Note: inputs.mode is set if this workflow is run manually, using workflow_dispatch defined above.
+          #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm
+          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
+          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
+          ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
+      - name: Deploy sns_aggregator
+        if: (inputs.mode == 'all') || (inputs.mode == 'sns_aggregator') || ( github.event_name != 'workflow_dispatch' )
+        run: |
+          set -x
+          CANISTER_NAME="sns_aggregator"
+          export DFX_NETWORK CANISTER_NAME
+          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm
+      - name: Canister info
+        run: |
+          for canister in nns-dapp sns_aggregator ; do
+             echo "========================================"
+             printf "== % 34s ==\n" "$canister"
+             set -x
+             dfx-canister-url --network "$DFX_NETWORK" "$canister"
+             dfx canister info --network "$DFX_NETWORK" "$canister"
+             dfx canister metadata --network "$DFX_NETWORK" "$canister" git_commit_id
+             set +x
+          done
