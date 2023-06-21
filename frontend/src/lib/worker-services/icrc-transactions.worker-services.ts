@@ -89,10 +89,7 @@ const getIcrcAccountTransactions = async ({
   });
 
   const oldestTxId: IcrcTxId | undefined = [...transactions].sort(
-    (
-      { transaction: { timestamp: timestampA } },
-      { transaction: { timestamp: timestampB } }
-    ) => Number(timestampA - timestampB)
+    ({ id: idA }, { id: idB }) => Number(idA - idB)
   )[0]?.id;
 
   // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions

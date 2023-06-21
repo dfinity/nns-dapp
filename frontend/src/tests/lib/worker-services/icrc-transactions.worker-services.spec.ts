@@ -1,3 +1,4 @@
+import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import { getIcrcAccountsTransactions } from "$lib/worker-services/icrc-transactions.worker-services";
@@ -110,15 +111,12 @@ describe("transactions.worker-services", () => {
   });
 
   it("should prevent duplicating transactions in results", async () => {
-    const ids = [...Array(5)].map((_, i) => BigInt(i));
+    const ids = [...Array(5)].map((_, i) => BigInt(i)).reverse();
     const transactions = ids.map((id) => ({ transaction, id }));
 
     const getTransactionsSpy =
       indexCanisterMock.getTransactions.mockResolvedValue({
-        transactions: [
-            ...transactions,
-            ...transactions
-        ],
+        transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
       });
 
@@ -126,14 +124,6 @@ describe("transactions.worker-services", () => {
       ...request,
       accountIdentifiers: [mockSnsMainAccount.identifier],
     };
-
-    /** [mockSnsMainAccount.identifier]: {
-          key: mockSnsMainAccount.identifier,
-          transactions: transactions.slice(2),
-          mostRecentTxId: ids[ids.length - 1],
-          oldestTxId: undefined,
-          certified: true,
-        } */
 
     const results = await getIcrcAccountsTransactions({
       identity: mockIdentity,
@@ -147,7 +137,68 @@ describe("transactions.worker-services", () => {
       {
         accountIdentifier: mockSnsMainAccount.identifier,
         transactions,
-        mostRecentTxId: 0n,
+        mostRecentTxId: ids[0],
+        oldestTxId: undefined,
+      },
+    ]);
+  });
+
+  it("should fetch recursively all transactions", async () => {
+    const mostRecentTxId = 100n;
+
+    const ids = [...Array(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT + 5)]
+      .map((_, i) => BigInt(i) + mostRecentTxId)
+      .reverse();
+    const transactions = ids.map((id) => ({ transaction, id }));
+
+    let firstCall = true;
+
+    const getTransactionsSpy =
+      indexCanisterMock.getTransactions.mockImplementation(async () => {
+        if (firstCall) {
+          firstCall = false;
+
+          return {
+            transactions: transactions.slice(
+              0,
+              DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
+            ),
+            oldest_tx_id: [],
+          };
+        }
+
+        return {
+          transactions: transactions.slice(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+          oldest_tx_id: [],
+        };
+      });
+
+    const data: PostMessageDataRequestTransactions = {
+      ...request,
+      accountIdentifiers: [mockSnsMainAccount.identifier],
+    };
+
+    const results = await getIcrcAccountsTransactions({
+      identity: mockIdentity,
+      state: {
+        [mockSnsMainAccount.identifier]: {
+          key: mockSnsMainAccount.identifier,
+          transactions: [],
+          mostRecentTxId,
+          oldestTxId: undefined,
+          certified: true,
+        },
+      },
+      data,
+    });
+
+    expect(getTransactionsSpy).toHaveBeenCalledTimes(2);
+
+    expect(results).toEqual([
+      {
+        accountIdentifier: mockSnsMainAccount.identifier,
+        transactions,
+        mostRecentTxId: ids[0],
         oldestTxId: undefined,
       },
     ]);
