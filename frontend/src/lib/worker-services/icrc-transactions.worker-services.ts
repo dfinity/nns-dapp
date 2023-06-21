@@ -61,6 +61,7 @@ export const getIcrcAccountsTransactions = ({
 
       return {
         transactions: transactions.reduce((acc, value) => {
+          // Suppress duplicate transactions to provide the results
           const alreadyExist = (): boolean =>
             acc.find(
               (transaction) =>
