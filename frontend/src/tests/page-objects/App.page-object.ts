@@ -106,6 +106,14 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
+  async goToNeuronDetailsById(neuronId: string): Promise<void> {
+    await this.goToNeurons();
+    await (
+      await this.getNeuronsPo().getNnsNeuronsPo().getNeuronCardPo(neuronId)
+    ).click();
+    await this.getNeuronDetailPo().waitFor();
+  }
+
   async goToLaunchpad(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickLaunchpad();
