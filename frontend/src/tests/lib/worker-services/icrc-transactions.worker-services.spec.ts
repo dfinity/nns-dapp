@@ -246,4 +246,24 @@ describe("transactions.worker-services", () => {
       },
     ]);
   });
+
+  it("should bubbles call errors", async () => {
+    indexCanisterMock.getTransactions.mockImplementation(async () => {
+      throw new Error();
+    });
+
+    const data: PostMessageDataRequestTransactions = {
+      ...request,
+      accountIdentifiers: [mockSnsMainAccount.identifier],
+    };
+
+    const call = () =>
+      getIcrcAccountsTransactions({
+        identity: mockIdentity,
+        state: {},
+        data,
+      });
+
+    expect(call).rejects.toThrowError();
+  });
 });
