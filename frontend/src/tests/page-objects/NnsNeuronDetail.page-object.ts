@@ -14,6 +14,11 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return SkeletonCardPo.allUnder(this.root);
   }
 
+  async createDummyProposals(): Promise<void> {
+    await this.click("make-dummy-proposals-button");
+    await this.root.byTestId("spinner").waitForAbsent();
+  }
+
   async isContentLoaded(): Promise<boolean> {
     return (
       (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
