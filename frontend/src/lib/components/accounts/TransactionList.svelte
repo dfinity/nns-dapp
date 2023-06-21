@@ -34,7 +34,7 @@
     {$i18n.wallet.no_transactions}
   {:else}
     {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
-      <div animate:flip class="flip">
+      <div animate:flip="{{duration: 250}}" class="flip">
         <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
       </div>
     {/each}
