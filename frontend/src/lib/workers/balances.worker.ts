@@ -1,6 +1,4 @@
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
-import type { IcrcWorkerData } from "$lib/worker-stores/icrc.worker-store";
-import { IcrcWorkerStore } from "$lib/worker-stores/icrc.worker-store";
 import type {
   PostMessageDataRequestBalances,
   PostMessageDataResponseBalance,
@@ -8,6 +6,8 @@ import type {
 } from "$lib/types/post-message.balances";
 import type { PostMessage } from "$lib/types/post-messages";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
+import type { DictionaryWorkerData } from "$lib/worker-stores/dictionary.worker-store";
+import { DictionaryWorkerStore } from "$lib/worker-stores/dictionary.worker-store";
 import {
   TimerWorkerUtils,
   type TimerWorkerUtilsJobData,
@@ -18,11 +18,11 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 const worker = new TimerWorkerUtils();
 
 // A worker store to keep track of account balances
-interface BalanceData extends IcrcWorkerData {
+interface BalanceData extends DictionaryWorkerData {
   balance: bigint;
 }
 
-const store = new IcrcWorkerStore<BalanceData>();
+const store = new DictionaryWorkerStore<BalanceData>();
 
 onmessage = async ({
   data: dataMsg,
@@ -55,8 +55,7 @@ const syncBalances = async (
     });
 
     const changes = queries.filter(
-      ({ accountIdentifier, balance }) =>
-        balance !== store.state[accountIdentifier]?.balance
+      ({ key, balance }) => balance !== store.state[key]?.balance
     );
 
     if (changes.length === 0) {
@@ -80,8 +79,8 @@ const syncBalances = async (
     store.update(updates);
 
     emitBalances(
-      updates.map(({ accountIdentifier, balance }) => ({
-        accountIdentifier,
+      updates.map(({ key, balance }) => ({
+        accountIdentifier: key,
         balance,
       }))
     );
@@ -113,7 +112,7 @@ const getIcrcBalances = ({
 
       return {
         balance,
-        accountIdentifier,
+        key: accountIdentifier,
         certified,
       };
     })

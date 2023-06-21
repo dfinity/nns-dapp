@@ -1,5 +1,4 @@
 import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
-import { IcrcWorkerStore } from "$lib/worker-stores/icrc.worker-store";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
@@ -8,6 +7,7 @@ import type {
 import type { PostMessage } from "$lib/types/post-messages";
 import { jsonReplacer } from "$lib/utils/json.utils";
 import { getAccountsTransactions } from "$lib/worker-services/transactions.worker-services";
+import { DictionaryWorkerStore } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
 import {
   TimerWorkerUtils,
@@ -18,7 +18,7 @@ import {
 const worker = new TimerWorkerUtils();
 
 // A worker store to keep track of transactions
-const store = new IcrcWorkerStore<TransactionsData>();
+const store = new DictionaryWorkerStore<TransactionsData>();
 
 onmessage = async ({
   data: dataMsg,
@@ -63,10 +63,11 @@ const syncTransactions = async (
     console.log("NEW TRANSACTIONS", newTransactions);
 
     store.update(
-      newTransactions.map(({ accountIdentifier, mostRecentTxId }) => ({
-        accountIdentifier,
+      newTransactions.map(({ accountIdentifier, mostRecentTxId, ...rest }) => ({
+        key: accountIdentifier,
         certified: true,
         mostRecentTxId,
+        ...rest,
       }))
     );
 
