@@ -281,10 +281,10 @@ jobs:
           then echo "dockerfile_changed=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Set up docker buildx
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/setup-buildx-action@v2
       - name: Build wasms
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -296,28 +296,28 @@ jobs:
           # Exports the artefacts from the final stage
           outputs: ./out-mainnet
       - name: Get nns-dapp_local
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_local
           path: out-local
       - name: Remove _local suffix
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         run: mv out-local/nns-dapp_local.wasm.gz out-local/nns-dapp.wasm.gz
       - name: Get sns_aggregator
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator
           path: out-local
       - name: Get sns_aggregator_dev
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
           path: out-local
       - name: Compare wasms
-        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         run: |
           set -x
           ls -l

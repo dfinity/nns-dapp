@@ -1,0 +1,17 @@
+// Source: Derived manually from the Rust type declaration in the ic repo:
+// 0472cf2cc6cf174f3efc9531d5947ea10cd0109f (HEAD -> rc--2023-04-04_23-01, origin/rc--2023-04-04_23-01)
+// Date:   Tue Apr 4 21:03:14 2023 +0000
+
+type ChangeCanisterProposal = record {
+    stop_before_installing: bool;
+    mode: CanisterInstallMode;
+    canister_id: CanisterId;
+    wasm_module: vec nat8;
+    arg: vec nat8;
+    compute_allocation: opt nat;
+    memory_allocation: opt nat;
+    query_allocation: opt nat;
+    authz_changes: vec MethodAuthzChange;
+};
+
+service : () -> {}
