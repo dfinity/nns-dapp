@@ -1,4 +1,8 @@
+import { queryCanisters } from "$lib/api/canisters.api";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { queryAndUpdate } from "$lib/services/utils.services";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import { isNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
@@ -13,6 +17,30 @@ export interface CanistersStore extends Readable<CanistersStoreData> {
 }
 
 const stores: Record<string, CanistersStore> = {};
+
+const loadCanistersFactory =
+  (identity: Identity) => (set: (data: CanistersStoreData) => void) => {
+    queryAndUpdate<CanisterInfo[], unknown>({
+      request: (options) => queryCanisters(options),
+      identity,
+      strategy: FORCE_CALL_STRATEGY,
+      onLoad: ({ response: canisters, certified }) =>
+        set({ canisters, certified }),
+      onError: ({ error: err, certified }) => {
+        console.error(err);
+
+        if (!certified && notForceCallStrategy()) {
+          return;
+        }
+
+        // Explicitly handle only UPDATE errors
+        set({ canisters: [], certified: true });
+
+        // TODO: Error and loading states
+      },
+      logMessage: "Syncing Canisters",
+    });
+  };
 
 /**
  * A store that contains the canisters of the users
@@ -32,10 +60,13 @@ export const initCanistersStore = (
     return stores[storeKey];
   }
 
-  const { subscribe, set } = writable<CanistersStoreData>({
-    canisters: undefined,
-    certified: undefined,
-  });
+  const { subscribe, set } = writable<CanistersStoreData>(
+    {
+      canisters: undefined,
+      certified: undefined,
+    },
+    loadCanistersFactory(identity)
+  );
 
   const store = {
     subscribe,

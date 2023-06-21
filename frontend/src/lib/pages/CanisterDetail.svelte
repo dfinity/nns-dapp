@@ -3,10 +3,7 @@
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    getCanisterDetails,
-    listCanisters,
-  } from "$lib/services/canisters.services";
+  import { getCanisterDetails } from "$lib/services/canisters.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     initCanistersStore,
@@ -39,6 +36,7 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
   import { authStore } from "$lib/stores/auth.store";
+  import { nonNullish } from "@dfinity/utils";
 
   // BEGIN: loading and navigation
 
@@ -47,26 +45,6 @@
 
   let canistersStore: undefined | CanistersStore;
   $: canistersStore = initCanistersStore($authStore.identity);
-
-  // TODO: Remove this part
-  const canistersStoreReady = (): boolean => {
-    // We consider the canisters store as ready if it has been initialized once.
-    if (canistersReady) {
-      return true;
-    }
-
-    // At the moment we load the stores with query only.
-    return $canistersStore?.canisters !== undefined;
-  };
-
-  let canistersReady = false;
-  $: $canistersStore, (canistersReady = canistersStoreReady());
-
-  onMount(async () => {
-    if (!canistersStoreReady()) {
-      await listCanisters({ clearBeforeQuery: false });
-    }
-  });
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
 
@@ -132,8 +110,8 @@
 
   $: canisterId,
     selectedCanister,
-    canistersReady,
     (async () => {
+      const canistersReady = nonNullish($canistersStore?.canisters);
       // When detaching, this is also executed but there is no `canisterId`.
       if (!canistersReady || canisterId === undefined) {
         return;

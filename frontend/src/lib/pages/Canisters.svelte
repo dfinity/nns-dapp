@@ -29,19 +29,6 @@
   let canistersStore: undefined | CanistersStore;
   $: canistersStore = initCanistersStore($authStore.identity);
 
-  const loadCanisters = async () => {
-    try {
-      await listCanisters({
-        clearBeforeQuery: true,
-      });
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "error.list_canisters",
-        err,
-      });
-    }
-  };
-
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
@@ -52,8 +39,6 @@
     if (!reload) {
       return;
     }
-
-    await loadCanisters();
   });
 
   const goToCanisterDetails = (canisterId: CanisterId) => async () =>
