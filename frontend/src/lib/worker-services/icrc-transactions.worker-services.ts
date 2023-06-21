@@ -120,11 +120,6 @@ const getIcrcAccountTransactions = async ({
     );
   };
 
-  // Two transactions can have the same Id - e.g. a transaction from/to same account.
-  // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
-  // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
-  const nextTxId = (oldestTxId: bigint): bigint => oldestTxId;
-
   return {
     mostRecentTxId,
     ...rest,
@@ -136,7 +131,10 @@ const getIcrcAccountTransactions = async ({
               identity,
               indexCanisterId,
               accountIdentifier,
-              start: nextTxId(oldestTxId),
+              // Two transactions can have the same Id - e.g. a transaction from/to same account.
+              // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
+              // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
+              start: oldestTxId,
               fetchRootKey,
               host,
               state,
