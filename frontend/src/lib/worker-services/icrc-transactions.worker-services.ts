@@ -66,6 +66,8 @@ export const getIcrcAccountsTransactions = ({
             acc.find(
               (transaction) =>
                 value.id === transaction.id &&
+                // If a user transfer from / to same account, it's two transaction with same id
+                // Same approach as the one of the UI side to build the ICP wallet list of transactions
                 JSON.stringify(transaction, jsonReplacer) ===
                   JSON.stringify(value, jsonReplacer)
             ) !== undefined;
