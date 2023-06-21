@@ -11,6 +11,7 @@
     type WalletContext,
   } from "$lib/types/wallet.context";
   import { mapToSelfTransaction } from "$lib/utils/transactions.utils";
+  import { flip } from "svelte/animate";
 
   export let transactions: NnsTransaction[] | undefined;
 
@@ -33,7 +34,15 @@
     {$i18n.wallet.no_transactions}
   {:else}
     {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
-      <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
+      <div animate:flip class="flip">
+        <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
+      </div>
     {/each}
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  .flip:first-of-type {
+    padding-top: var(--padding);
+  }
+</style>
