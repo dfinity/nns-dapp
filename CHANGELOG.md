@@ -1,5 +1,30 @@
 # Changelog
 
+## Proposal XXXXXX
+
+Replace with summaries provided by authors:
+
+* Deploy to app (#2728)
+* Fixes and tweaks for the app deploy workflow (#2727)
+* Icrc worker store (#2725)
+* Update idl2json & use binstall (#2726)
+* Deploy to app (#2711)
+* TVL in various currencies (#2695)
+* Bump didc (#2559)
+* Fix: Navigate from SNS proposal to launchpad (#2723)
+* Utils to extend JSON stringify and parse (#2719)
+* Icrc balance and transactions api for workers (#2721)
+* Correct copy pasted titles (#2720)
+* Render proposal arguments with more than one field (#2716)
+* Chore: Enable SNS Voting (#2679)
+* Feat: Use derived state for buyers count (#2714)
+* Correct esm import path for type (#2707)
+* Feat: Render SNS Neuron age (#2698)
+* Remove builds for different networks in CI (#2640)
+* Feat: Support derived_state field in SNS Aggregator (#2713)
+* audit fix (#2704)
+
+
 ## Proposal 123006
 
 * Improvement in NNS proposal filters.
