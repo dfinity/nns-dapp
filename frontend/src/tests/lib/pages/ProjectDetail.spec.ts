@@ -9,6 +9,7 @@ import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
@@ -30,6 +31,7 @@ import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   snsResponseFor,
   snsResponsesForLifecycle,
@@ -80,7 +82,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsQueryStore.reset();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
-    userCountryStore.set("not loaded");
+    userCountryStore.set(NOT_LOADED);
 
     jest.clearAllTimers();
     const now = Date.now();
@@ -116,17 +118,20 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
-    describe("Open project", () => {
-      const responses = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
+    // TODO: Remove once all SNSes support buyers count in derived state
+    describe("Open project without buyers count on derived state", () => {
+      const rootCanisterId = mockCanisterId;
+      const response = snsResponseFor({
+        principal: rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Open,
+        directParticipantCount: [],
         certified: true,
       });
-      const rootCanisterId = responses[0][0].rootCanisterId;
       const props = {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(responses);
+        snsQueryStore.setData(response);
       });
 
       it("should start watching swap metrics and stop on unmounting", async () => {
@@ -160,6 +165,35 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
           expectedCalls
         );
+      });
+    });
+
+    describe("Open project with buyers count on derived state", () => {
+      const rootCanisterId = mockCanisterId;
+      const response = snsResponseFor({
+        principal: rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Open,
+        directParticipantCount: [30n],
+        certified: true,
+      });
+      const props = {
+        rootCanisterId: rootCanisterId.toText(),
+      };
+      beforeEach(() => {
+        snsQueryStore.setData(response);
+      });
+
+      it("should NOT start watching swap metrics", async () => {
+        render(ProjectDetail, props);
+
+        await runResolvedPromises();
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+        await advanceTime(retryDelay);
+        await runResolvedPromises();
+
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should start watching derived state and stop on unmounting", async () => {
@@ -208,17 +242,20 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
     });
 
-    describe("Committed project project", () => {
-      const responses = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
+    // TODO: Remove once all SNSes support buyers count in derived state
+    describe("Committed project without buyers in derived state", () => {
+      const rootCanisterId = mockCanisterId;
+      const response = snsResponseFor({
+        principal: rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        directParticipantCount: [],
         certified: true,
       });
-      const rootCanisterId = responses[0][0].rootCanisterId;
       const props = {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(responses);
+        snsQueryStore.setData(response);
       });
 
       it("should query metrics but not watch them", async () => {
@@ -233,6 +270,34 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         // Even after waiting a long time there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+      });
+    });
+
+    describe("Committed project with buyers count in derived state", () => {
+      const responses = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Committed],
+        certified: true,
+      });
+      const rootCanisterId = responses[0][0].rootCanisterId;
+      const props = {
+        rootCanisterId,
+      };
+      beforeEach(() => {
+        snsQueryStore.setData(responses);
+      });
+
+      it("should NOT query metrics nor watch them", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should not query total commitments, nor start watching them", async () => {
@@ -343,7 +408,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             true
           );
 
-          expect(get(userCountryStore)).toBe("not loaded");
+          expect(get(userCountryStore)).toBe(NOT_LOADED);
         });
 
         it("should show enabled button after getting user country", async () => {
@@ -523,6 +588,42 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     describe("Committed project", () => {
+      const rootCanisterId = mockCanisterId;
+      const response = snsResponseFor({
+        principal: rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        directParticipantCount: [],
+        certified: true,
+      });
+      const props = {
+        rootCanisterId: rootCanisterId.toText(),
+      };
+      beforeEach(() => {
+        snsQueryStore.setData(response);
+        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId,
+          myCommitment: {
+            icp: [],
+          },
+        });
+      });
+
+      it("should query metrics but not watch them", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+
+        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+      });
+    });
+
+    describe("Committed project with buyers count in state", () => {
       const responses = snsResponsesForLifecycle({
         lifecycles: [SnsSwapLifecycle.Committed],
         certified: true,
@@ -550,18 +651,18 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
       });
 
-      it("should query metrics but not watch them", async () => {
+      it("should NOT query metrics nor watch them", async () => {
         const { queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
 
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
 
         const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
 
         // Even after waiting a long time there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
       });
 
       it("should not query total commitments, nor start watching them", async () => {

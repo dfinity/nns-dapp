@@ -10,6 +10,7 @@ import type {
 } from "@dfinity/ledger";
 import type {
   SnsFunctionType,
+  SnsGetDerivedStateResponse,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsSwap,
@@ -61,6 +62,7 @@ export type CachedSns = {
    */
   icrc1_fee?: bigint;
   icrc1_total_supply: bigint;
+  derived_state: SnsGetDerivedStateResponse;
 };
 
 type CachedSnsMetadataDto = {
@@ -116,9 +118,9 @@ type CachedSnsSwapDto = {
 type CachedSnsSwapDerivedDto = {
   buyer_total_icp_e8s: number;
   sns_tokens_per_icp: number;
-  cf_participant_count: number | undefined;
-  direct_participant_count: number | undefined;
-  cf_neuron_count: number | undefined;
+  cf_participant_count: number | undefined | null;
+  direct_participant_count: number | undefined | null;
+  cf_neuron_count: number | undefined | null;
 };
 
 type CachedSnsTokenMetadataDto = [
@@ -147,6 +149,7 @@ type CachedSnsDto = {
   icrc1_metadata: CachedSnsTokenMetadataDto;
   icrc1_fee: [] | [number];
   icrc1_total_supply: number;
+  derived_state: CachedSnsSwapDerivedDto;
 };
 
 const convertOptionalNumToBigInt = (
@@ -261,6 +264,28 @@ const convertDerived = ({
     : [],
 });
 
+const convertDerivedToResponse = ({
+  sns_tokens_per_icp,
+  buyer_total_icp_e8s,
+  cf_participant_count,
+  direct_participant_count,
+  cf_neuron_count,
+}: CachedSnsSwapDerivedDto): SnsGetDerivedStateResponse => ({
+  sns_tokens_per_icp: toNullable(sns_tokens_per_icp),
+  buyer_total_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(buyer_total_icp_e8s)
+  ),
+  cf_participant_count: nonNullish(cf_participant_count)
+    ? toNullable(BigInt(cf_participant_count))
+    : [],
+  direct_participant_count: nonNullish(direct_participant_count)
+    ? toNullable(BigInt(direct_participant_count))
+    : [],
+  cf_neuron_count: nonNullish(cf_neuron_count)
+    ? toNullable(BigInt(cf_neuron_count))
+    : [],
+});
+
 const convertIcrc1Metadata = (
   icrc1Metadata: CachedSnsTokenMetadataDto
 ): IcrcTokenMetadataResponse => {
@@ -285,6 +310,7 @@ const convertSnsData = ({
   icrc1_metadata,
   icrc1_fee,
   icrc1_total_supply,
+  derived_state,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -301,6 +327,7 @@ const convertSnsData = ({
   icrc1_metadata: convertIcrc1Metadata(icrc1_metadata),
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
+  derived_state: convertDerivedToResponse(derived_state),
 });
 
 const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>

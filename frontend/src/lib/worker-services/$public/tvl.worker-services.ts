@@ -1,13 +1,16 @@
-import { queryTVL as queryTVLApi } from "$lib/api/tvl.api.cjs";
-import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
+import type {
+  GetTVLRequest,
+  GetTVLResult,
+} from "$lib/canisters/tvl/tvl.canister.types";
 import type { CanisterActorParams } from "$lib/types/worker";
+import { queryTVL as queryTVLApi } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 
 export const queryTVL = async (
   params: Omit<CanisterActorParams, "identity"> & {
     tvlCanisterId: string | undefined;
-  }
-): Promise<TvlResult | undefined> => {
+  } & Pick<GetTVLRequest, "currency">
+): Promise<GetTVLResult | undefined> => {
   try {
     const result = await queryTVLApi({
       // Because we use the service in a web worker.

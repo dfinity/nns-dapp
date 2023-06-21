@@ -120,6 +120,14 @@ export const loadSnsProjects = async (): Promise<void> => {
           {} as TokensStoreData
         )
     );
+    cachedSnses.forEach(
+      ({ canister_ids: { root_canister_id }, derived_state }) => {
+        snsQueryStore.updateDerivedState({
+          rootCanisterId: root_canister_id,
+          derivedState: derived_state,
+        });
+      }
+    );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     // If aggregator canister fails, fallback to the old way

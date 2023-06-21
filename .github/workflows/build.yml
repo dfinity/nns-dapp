@@ -19,38 +19,29 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build wasms
-        uses: docker/build-push-action@v3
+      - name: Build nns-dapp repo
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=local
-            COMMIT=${{ github.sha }}
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: .
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Rename nns-dapp.wasm for upload
-        run: cp nns-dapp.wasm nns-dapp_local.wasm
+        run: cp out/nns-dapp.wasm out/nns-dapp_local.wasm
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp_local
-          path: nns-dapp_local.wasm
+          path: out/nns-dapp_local.wasm
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator
-          path: sns_aggregator.wasm
+          path: out/sns_aggregator.wasm
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator_dev
-          path: sns_aggregator_dev.wasm
+          path: out/sns_aggregator_dev.wasm
           retention-days: 3
   test-playwright-e2e:
     needs: build
@@ -172,7 +163,7 @@ jobs:
       - name: Install ic-wasm
         if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
         run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
           command -v ic-wasm || {
             echo "ERROR: Failed to install ic-wasm"
@@ -272,43 +263,61 @@ jobs:
           rm -rf screenshots
   network_independent_wasm:
     name: "Same wasms for mainnet and local"
+    # Note: The dockerfile structure SHOULD guarantee that the network is not used in any wasm build commands.
+    #       As long as that holds, this test is not needed.
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest-m
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check dockerfile for changes
+        id: dockerfile_changed
+        run: |
+          common_parent_commit="$(git merge-base HEAD origin/main)"
+          if git diff "$common_parent_commit" Dockerfile | grep -q .
+          then echo "dockerfile_changed=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Set up docker buildx
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/setup-buildx-action@v2
       - name: Build wasms
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/build-push-action@v3
         with:
           context: .
           file: Dockerfile
           build-args: |
-            DFX_NETWORK=mainnet
+            DFX_NETWORK=local
             COMMIT=${{ github.sha }}
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./out-mainnet
       - name: Get nns-dapp_local
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_local
           path: out-local
       - name: Remove _local suffix
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         run: mv out-local/nns-dapp_local.wasm out-local/nns-dapp.wasm
       - name: Get sns_aggregator
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator
           path: out-local
       - name: Get sns_aggregator_dev
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
           path: out-local
       - name: Compare wasms
+        if: needs.dockerfile_changed.outputs.dockerfile_changed == 'true'
         run: |
           set -x
           ls -l

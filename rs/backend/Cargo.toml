@@ -49,7 +49,7 @@ ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-idl2json = { git = "https://github.com/dfinity/idl2json", rev="c983dea6fc5666912218e7babf2b6b2f8b5648a4" }
+idl2json = "0.8.7"
 flate2 = "1.0.25"
 regex = "1.7.1"
 

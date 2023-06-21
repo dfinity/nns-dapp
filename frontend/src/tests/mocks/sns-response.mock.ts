@@ -40,11 +40,13 @@ export const snsResponseFor = ({
   lifecycle,
   certified = false,
   restrictedCountries,
+  directParticipantCount,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
   certified?: boolean;
   restrictedCountries?: string[];
+  directParticipantCount?: [] | [bigint];
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
@@ -71,7 +73,13 @@ export const snsResponseFor = ({
           },
         ],
       }),
-      derived: [mockDerived] as [SnsSwapDerivedState],
+      derived: [
+        {
+          ...mockDerived,
+          direct_participant_count:
+            directParticipantCount ?? mockDerived.direct_participant_count,
+        },
+      ] as [SnsSwapDerivedState],
       certified,
     },
   ],
