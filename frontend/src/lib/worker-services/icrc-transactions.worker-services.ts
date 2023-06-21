@@ -7,7 +7,7 @@ import type {
   PostMessageDataResponseTransaction,
 } from "$lib/types/post-message.transactions";
 import { jsonReplacer } from "$lib/utils/json.utils";
-import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
+import { getIcrcTransactions as getIcrcIndexTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import type { DictionaryWorkerState } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
 import type {
@@ -27,7 +27,7 @@ export type GetAccountsTransactionsResults = Omit<
 > &
   Pick<GetTransactionsResponse, "transactions">;
 
-export const getAccountsTransactions = ({
+export const getIcrcAccountsTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
   state,
@@ -36,7 +36,7 @@ export const getAccountsTransactions = ({
 }): Promise<GetAccountsTransactionsResults[]> =>
   Promise.all(
     accountIdentifiers.map(async (accountIdentifier) => {
-      const { transactions, ...rest } = await getAccountTransactions({
+      const { transactions, ...rest } = await getIcrcAccountTransactions({
         identity,
         indexCanisterId,
         accountIdentifier,
@@ -69,7 +69,7 @@ type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
     state: TransactionsData | undefined;
   };
 
-const getAccountTransactions = async ({
+const getIcrcAccountTransactions = async ({
   identity,
   indexCanisterId,
   accountIdentifier,
@@ -78,7 +78,7 @@ const getAccountTransactions = async ({
   host,
   state,
 }: GetAccountTransactionsParams): Promise<GetAccountsTransactionsResults> => {
-  const { mostRecentTxId, transactions, ...rest } = await getTransactions({
+  const { mostRecentTxId, transactions, ...rest } = await getIcrcTransactions({
     identity,
     indexCanisterId,
     accountIdentifier,
@@ -117,7 +117,7 @@ const getAccountTransactions = async ({
       ...transactions,
       ...(fetchMore() && nonNullish(oldestTxId)
         ? (
-            await getAccountTransactions({
+            await getIcrcAccountTransactions({
               identity,
               indexCanisterId,
               accountIdentifier,
@@ -132,7 +132,7 @@ const getAccountTransactions = async ({
   };
 };
 
-const getTransactions = async ({
+const getIcrcTransactions = async ({
   identity,
   indexCanisterId,
   accountIdentifier,
@@ -141,7 +141,7 @@ const getTransactions = async ({
   host,
 }: GetAccountTransactionsParams): Promise<GetAccountsTransactionsResults> => {
   {
-    const { transactions, ...rest } = await getIcrcTransactions({
+    const { transactions, ...rest } = await getIcrcIndexTransactions({
       indexCanisterId,
       identity,
       account: decodeIcrcAccount(accountIdentifier),

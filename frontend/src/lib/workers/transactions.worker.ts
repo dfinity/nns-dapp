@@ -6,7 +6,7 @@ import type {
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
 import { jsonReplacer } from "$lib/utils/json.utils";
-import { getAccountsTransactions } from "$lib/worker-services/transactions.worker-services";
+import { getIcrcAccountsTransactions } from "$lib/worker-services/icrc-transactions.worker-services";
 import { DictionaryWorkerStore } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
 import {
@@ -45,7 +45,7 @@ const syncTransactions = async (
 ) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const results = await getAccountsTransactions({
+    const results = await getIcrcAccountsTransactions({
       ...params,
       state: store.state,
     });
