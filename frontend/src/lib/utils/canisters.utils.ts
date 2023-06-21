@@ -3,7 +3,7 @@ import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canis
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStoreData } from "$lib/stores/auth.store";
-import type { CanistersStore } from "$lib/stores/canisters.store";
+import type { CanistersStoreData } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
 import type { CanisterId } from "$lib/types/canister";
 import { Principal } from "@dfinity/principal";
@@ -12,12 +12,14 @@ import { formatNumber } from "./format.utils";
 
 export const getCanisterFromStore = ({
   canisterId,
-  canistersStore: { canisters },
+  canistersStore,
 }: {
   canisterId: string | undefined | null;
-  canistersStore: CanistersStore;
+  canistersStore: CanistersStoreData | undefined;
 }): CanisterInfo | undefined =>
-  canisters?.find(({ canister_id }) => canister_id.toText() === canisterId);
+  canistersStore?.canisters?.find(
+    ({ canister_id }) => canister_id.toText() === canisterId
+  );
 
 export const formatCyclesToTCycles = (cycles: bigint): string =>
   formatNumber(Number(cycles) / Number(ONE_TRILLION), {

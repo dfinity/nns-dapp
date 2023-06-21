@@ -4,7 +4,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { listCanisters } from "$lib/services/canisters.services";
-  import { canistersStore } from "$lib/stores/canisters.store";
+  import {
+    initCanistersStore,
+    type CanistersStore,
+  } from "$lib/stores/canisters.store";
   import { AppPath } from "$lib/constants/routes.constants";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
@@ -19,8 +22,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let referrerPath: AppPath | undefined = undefined;
+
+  let canistersStore: undefined | CanistersStore;
+  $: canistersStore = initCanistersStore($authStore.identity);
 
   const loadCanisters = async () => {
     try {
@@ -39,7 +46,7 @@
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
       effectivePreviousPath: referrerPath,
-      currentData: $canistersStore.canisters,
+      currentData: $canistersStore?.canisters,
     });
 
     if (!reload) {
@@ -58,9 +65,9 @@
     );
 
   let loading: boolean;
-  $: loading = $canistersStore.canisters === undefined;
+  $: loading = $canistersStore?.canisters === undefined;
   let noCanisters: boolean;
-  $: noCanisters = !loading && $canistersStore.canisters?.length === 0;
+  $: noCanisters = !loading && $canistersStore?.canisters?.length === 0;
 
   type ModalKey = "CreateCanister" | "LinkCanister";
   let modal: ModalKey | undefined = undefined;
@@ -74,7 +81,7 @@
   </Summary>
 
   <div class="card-grid">
-    {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
+    {#each $canistersStore?.canisters ?? [] as canister (canister.canister_id)}
       <CanisterCard
         role="link"
         ariaLabel={$i18n.canisters.aria_label_canister_card}

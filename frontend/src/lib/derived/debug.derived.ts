@@ -1,7 +1,6 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { accountsStore } from "$lib/stores/accounts.store";
-import { canistersStore } from "$lib/stores/canisters.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -97,12 +96,12 @@ export const debugSnsProposalStore = (
 export const initDebugStore = () =>
   derived(
     [
+      // TODO: Add canisters store
       // TODO (L2-611): anonymize wallet id and neuron ids
       busyStore,
       accountsStore,
       neuronsStore,
       knownNeuronsStore,
-      canistersStore,
       proposalsStore,
       proposalsFiltersStore,
       votingNeuronSelectStore,
@@ -129,7 +128,6 @@ export const initDebugStore = () =>
       $accountsStore,
       $neuronsStore,
       $knownNeuronsStore,
-      $canistersStore,
       $proposalsStore,
       $proposalsFiltersStore,
       $votingNeuronSelectStore,
@@ -155,7 +153,6 @@ export const initDebugStore = () =>
       accounts: $accountsStore,
       neurons: $neuronsStore,
       knownNeurons: $knownNeuronsStore,
-      canisters: $canistersStore,
       proposals: $proposalsStore,
       proposalsFilters: $proposalsFiltersStore,
       votingNeuronSelect: $votingNeuronSelectStore,

@@ -6,6 +6,8 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import type { Identity } from "@dfinity/agent";
 import { tick } from "svelte";
 
 describe("api-utils", () => {
@@ -36,6 +38,28 @@ describe("api-utils", () => {
           });
 
         expect(call).rejects.toThrowError();
+      });
+
+      it("should use the identity passed", async () => {
+        const request = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve({ certified: true }));
+        const onLoad = jest.fn();
+        const onError = jest.fn();
+        const identity = mockIdentity;
+
+        await queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+          identity,
+        });
+
+        expect(request).toHaveBeenCalledTimes(2);
+        expect(request).toHaveBeenCalledWith({
+          certified: true,
+          identity,
+        });
       });
     });
 
@@ -236,6 +260,30 @@ describe("api-utils", () => {
         });
 
         expect(log).toBeCalled();
+      });
+
+      it("should use the identity passed", async () => {
+        const request = jest
+          .fn()
+          .mockImplementation(() => Promise.resolve({ certified: true }));
+        const onLoad = jest.fn();
+        const onError = jest.fn();
+        const identity = {
+          getPrincipal: () => principal(2),
+        } as unknown as Identity;
+
+        await queryAndUpdate<number, unknown>({
+          request,
+          onLoad,
+          onError,
+          identity,
+        });
+
+        expect(request).toHaveBeenCalledTimes(2);
+        expect(request).toHaveBeenCalledWith({
+          certified: false,
+          identity,
+        });
       });
     });
   });

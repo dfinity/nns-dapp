@@ -14,7 +14,7 @@ import type {
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { canistersStore } from "$lib/stores/canisters.store";
+import { initCanistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -27,8 +27,9 @@ import {
 } from "$lib/utils/error.utils";
 import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 import { getAccountIdentity, loadBalance } from "./accounts.services";
-import { getAuthenticatedIdentity } from "./auth.services";
+import { getAuthenticatedIdentity, getCurrentIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({
@@ -36,6 +37,11 @@ export const listCanisters = async ({
 }: {
   clearBeforeQuery?: boolean;
 }) => {
+  const identity = getCurrentIdentity();
+  const canistersStore = initCanistersStore(identity);
+  if (isNullish(canistersStore)) {
+    return;
+  }
   if (clearBeforeQuery === true) {
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   }

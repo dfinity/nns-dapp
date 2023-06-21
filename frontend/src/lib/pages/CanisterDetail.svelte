@@ -8,7 +8,10 @@
     listCanisters,
   } from "$lib/services/canisters.services";
   import { i18n } from "$lib/stores/i18n";
-  import { canistersStore } from "$lib/stores/canisters.store";
+  import {
+    initCanistersStore,
+    type CanistersStore,
+  } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { SkeletonText, busy, Island } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
@@ -35,12 +38,17 @@
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import { authStore } from "$lib/stores/auth.store";
 
   // BEGIN: loading and navigation
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
   // Therefore we can probably refactor this to generic function.
 
+  let canistersStore: undefined | CanistersStore;
+  $: canistersStore = initCanistersStore($authStore.identity);
+
+  // TODO: Remove this part
   const canistersStoreReady = (): boolean => {
     // We consider the canisters store as ready if it has been initialized once.
     if (canistersReady) {
@@ -48,7 +56,7 @@
     }
 
     // At the moment we load the stores with query only.
-    return $canistersStore.canisters !== undefined;
+    return $canistersStore?.canisters !== undefined;
   };
 
   let canistersReady = false;

@@ -38,6 +38,7 @@ export const queryAndUpdate = async <R, E>({
   strategy,
   logMessage,
   identityType = "authorized",
+  identity,
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
@@ -45,20 +46,22 @@ export const queryAndUpdate = async <R, E>({
   onError?: QueryAndUpdateOnError<E>;
   strategy?: QueryAndUpdateStrategy;
   identityType?: QueryAndUpdateIdentity;
+  identity?: Identity;
 }): Promise<void> => {
   let certifiedDone = false;
   let requests: Array<Promise<void>>;
   let logPrefix: string;
 
-  const identity: Identity =
-    identityType === "anonymous"
+  const requestIdentity: Identity =
+    identity ??
+    (identityType === "anonymous"
       ? getAnonymousIdentity()
       : identityType === "current"
       ? getCurrentIdentity()
-      : await getAuthenticatedIdentity();
+      : await getAuthenticatedIdentity());
 
   if (
-    identity.getPrincipal().isAnonymous() &&
+    requestIdentity.getPrincipal().isAnonymous() &&
     strategy !== undefined &&
     strategy !== "query"
   ) {
@@ -67,7 +70,7 @@ export const queryAndUpdate = async <R, E>({
     );
   }
 
-  const currentStrategy = identity.getPrincipal().isAnonymous()
+  const currentStrategy = requestIdentity.getPrincipal().isAnonymous()
     ? "query"
     : strategy ?? "query_and_update";
 
@@ -80,7 +83,7 @@ export const queryAndUpdate = async <R, E>({
   };
 
   const queryOrUpdate = (certified: boolean) =>
-    request({ certified, identity })
+    request({ certified, identity: requestIdentity })
       .then((response) => {
         if (certifiedDone) return;
         onLoad({ certified, response });
@@ -88,7 +91,7 @@ export const queryAndUpdate = async <R, E>({
       })
       .catch((error: E) => {
         if (certifiedDone) return;
-        onError?.({ certified, error, identity });
+        onError?.({ certified, error, identity: requestIdentity });
       })
       .finally(() => (certifiedDone = certifiedDone || certified));
 

@@ -7,7 +7,7 @@ import {
   CKBTC_INDEX_CANISTER_ID,
   CKBTC_MINTER_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import type { CanistersStore } from "$lib/stores/canisters.store";
+import type { CanistersStoreData } from "$lib/stores/canisters.store";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import { Principal } from "@dfinity/principal";
 import { writable, type Subscriber } from "svelte/store";
@@ -49,7 +49,7 @@ export const mockCanisterDetails: CanisterDetails = {
 };
 
 export const mockCanistersStoreSubscribe = (
-  run: Subscriber<CanistersStore>
+  run: Subscriber<CanistersStoreData>
 ): (() => void) => {
   run({ canisters: mockCanisters, certified: true });
 
