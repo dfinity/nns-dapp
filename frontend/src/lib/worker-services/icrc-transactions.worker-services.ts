@@ -103,6 +103,7 @@ const getIcrcAccountTransactions = async ({
     state,
   });
 
+  // We compare IDs because we effectively want to sort and find the oldest transaction ID
   const oldestTxId: IcrcTxId | undefined = [...transactions].sort(
     ({ id: idA }, { id: idB }) => Number(idA - idB)
   )[0]?.id;
@@ -163,6 +164,7 @@ const getIcrcTransactions = async ({
       host,
     });
 
+    // Similar to `icrc-transactions.utils.getOldestTxIdFromStore`
     const mostRecentTxId = transactions.sort(
       (
         { transaction: { timestamp: timestampA } },
