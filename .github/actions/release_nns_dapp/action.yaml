@@ -21,6 +21,14 @@ runs:
         daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm.gz"
         cp nns-dapp.wasm.gz "$daily_build_name"
         artefacts=(nns-dapp.wasm.gz sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz assets.tar.xz "$daily_build_name")
+        # For backwards compatibility we publish the wasms with a .wasm suffix as well:
+        for file in "${artefacts[@]}" ; do
+          [[ "${file}" == "${file%.wasm.gz}" ]]  || {
+            old_name="${file%.gz}"
+            cp "$file" "$old_name"
+            artefacts+=("$old_name")
+          }
+        done
         ls -l "${artefacts[@]}"
         for tag in $(git tag --points-at HEAD) ; do
           : Creates or updates a release for the tag
