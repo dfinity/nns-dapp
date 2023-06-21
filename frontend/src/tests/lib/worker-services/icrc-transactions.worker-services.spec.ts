@@ -108,4 +108,48 @@ describe("transactions.worker-services", () => {
       },
     ]);
   });
+
+  it("should prevent duplicating transactions in results", async () => {
+    const ids = [...Array(5)].map((_, i) => BigInt(i));
+    const transactions = ids.map((id) => ({ transaction, id }));
+
+    const getTransactionsSpy =
+      indexCanisterMock.getTransactions.mockResolvedValue({
+        transactions: [
+            ...transactions,
+            ...transactions
+        ],
+        oldest_tx_id: [],
+      });
+
+    const data: PostMessageDataRequestTransactions = {
+      ...request,
+      accountIdentifiers: [mockSnsMainAccount.identifier],
+    };
+
+    /** [mockSnsMainAccount.identifier]: {
+          key: mockSnsMainAccount.identifier,
+          transactions: transactions.slice(2),
+          mostRecentTxId: ids[ids.length - 1],
+          oldestTxId: undefined,
+          certified: true,
+        } */
+
+    const results = await getIcrcAccountsTransactions({
+      identity: mockIdentity,
+      state: {},
+      data,
+    });
+
+    expect(getTransactionsSpy).toHaveBeenCalledTimes(1);
+
+    expect(results).toEqual([
+      {
+        accountIdentifier: mockSnsMainAccount.identifier,
+        transactions,
+        mostRecentTxId: 0n,
+        oldestTxId: undefined,
+      },
+    ]);
+  });
 });

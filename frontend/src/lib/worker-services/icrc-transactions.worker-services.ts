@@ -49,8 +49,8 @@ export const getIcrcAccountsTransactions = ({
         transactions: transactions.reduce((acc, value) => {
           const alreadyExist = (): boolean =>
             acc.find(
-              ({ id, transaction }) =>
-                value.id === id &&
+              (transaction) =>
+                value.id === transaction.id &&
                 JSON.stringify(transaction, jsonReplacer) ===
                   JSON.stringify(value, jsonReplacer)
             ) !== undefined;
