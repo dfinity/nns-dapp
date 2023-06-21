@@ -27,6 +27,20 @@ export type GetAccountsTransactionsResults = Omit<
 > &
   Pick<GetTransactionsResponse, "transactions">;
 
+/**
+ * Collect the ICRC transactions for a list of accounts.
+ *
+ * For each account provided as a parameter, the service ensures that no duplicate transactions are returned and handles fetching all transactions recursively, taking into account the pagination of the backend API calls.
+ *
+ * @param object TimerWorkerUtilsJobData<PostMessageDataRequestTransactions> & { state: DictionaryWorkerState<TransactionsData>; }
+ * @param object.identity
+ * @param object.data
+ * @param object.data.accountIdentifiers
+ * @param object.data.indexCanisterId
+ * @param object.data.host
+ * @param object.data.fetchRootKey
+ * @param object.state
+ */
 export const getIcrcAccountsTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
