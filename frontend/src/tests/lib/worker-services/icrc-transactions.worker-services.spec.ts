@@ -203,4 +203,47 @@ describe("transactions.worker-services", () => {
       },
     ]);
   });
+
+  it("should return most recent transaction id", async () => {
+    const ids = [...Array(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT)]
+      .map((_, i) => BigInt(i) + 250n)
+      .reverse();
+    const transactions = ids.map((id) => ({ transaction, id }));
+
+    const getTransactionsSpy =
+      indexCanisterMock.getTransactions.mockResolvedValue({
+        transactions: [...transactions, ...transactions],
+        oldest_tx_id: [],
+      });
+
+    const data: PostMessageDataRequestTransactions = {
+      ...request,
+      accountIdentifiers: [mockSnsMainAccount.identifier],
+    };
+
+    const results = await getIcrcAccountsTransactions({
+      identity: mockIdentity,
+      state: {
+        [mockSnsMainAccount.identifier]: {
+          key: mockSnsMainAccount.identifier,
+          transactions: [],
+          mostRecentTxId: undefined,
+          oldestTxId: undefined,
+          certified: true,
+        },
+      },
+      data,
+    });
+
+    expect(getTransactionsSpy).toHaveBeenCalledTimes(1);
+
+    expect(results).toEqual([
+      {
+        accountIdentifier: mockSnsMainAccount.identifier,
+        transactions,
+        mostRecentTxId: ids[0],
+        oldestTxId: undefined,
+      },
+    ]);
+  });
 });
