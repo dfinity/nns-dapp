@@ -177,7 +177,7 @@ jobs:
         run: |
           echo Create a fake wasm
           mkdir -p release/ci
-          touch release/ci/nns-dapp.wasm
+          touch release/ci/nns-dapp.wasm.gz
           echo Create a proposal template
           scripts/nns-dapp/release-template
           echo Check the proposal

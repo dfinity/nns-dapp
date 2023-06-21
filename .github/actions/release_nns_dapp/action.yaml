@@ -18,9 +18,9 @@ runs:
       run: |
         set -euxo pipefail
         cd "${{ inputs.assets_dir }}"
-        daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm"
-        cp nns-dapp.wasm "$daily_build_name"
-        artefacts=(nns-dapp.wasm sns_aggregator.wasm sns_aggregator_dev.wasm assets.tar.xz "$daily_build_name")
+        daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm.gz"
+        cp nns-dapp.wasm.gz "$daily_build_name"
+        artefacts=(nns-dapp.wasm.gz sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz assets.tar.xz "$daily_build_name")
         ls -l "${artefacts[@]}"
         for tag in $(git tag --points-at HEAD) ; do
           : Creates or updates a release for the tag

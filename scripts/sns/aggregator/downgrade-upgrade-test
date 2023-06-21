@@ -30,7 +30,7 @@ upgrade_canister() {
 
 echo "Getting or building the local wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="sns_aggregator.wasm"
+  CURRENT_WASM="sns_aggregator.wasm.gz"
   echo "Building $CURRENT_WASM..."
   DFX_NETWORK=local ./scripts/docker-build
 }
@@ -41,8 +41,8 @@ test -e "$CURRENT_WASM" || {
 
 echo "Getting the prod wasm (if not supplied)..."
 test -n "${PROD_WASM:-}" || {
-  PROD_WASM="sns_aggregator_prod.wasm"
-  curl -sL https://github.com/dfinity/nns-dapp/releases/download/aggregator-prod/sns_aggregator.wasm >"$PROD_WASM"
+  PROD_WASM="sns_aggregator_prod.wasm.gz"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/aggregator-prod/sns_aggregator.wasm.gz >"$PROD_WASM"
 }
 test -e "$PROD_WASM" || {
   echo "ERROR: Prod wasm file not found at '$PROD_WASM'."
