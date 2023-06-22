@@ -125,6 +125,7 @@ interface I18nError {
   adding_permissions: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
+  qrcode_token_incompatible: string;
 }
 
 interface I18nWarning {
