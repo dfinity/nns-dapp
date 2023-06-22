@@ -1,4 +1,4 @@
-# Use this with
+# Use this with:
 #
 # docker build . -t nns-dapp
 # container_id=$(docker create nns-dapp no-op)
