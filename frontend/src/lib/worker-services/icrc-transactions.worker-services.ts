@@ -118,7 +118,7 @@ const getIcrcAccountTransactions = async ({
   )[0]?.id;
 
   // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
-  const fetchMore = (): boolean => {
+  const fetchMoreTransactions = (): boolean => {
     const stateMostRecentTxId = state?.mostRecentTxId;
     return (
       nonNullish(stateMostRecentTxId) &&
@@ -132,7 +132,7 @@ const getIcrcAccountTransactions = async ({
     ...rest,
     transactions: [
       ...transactions,
-      ...(fetchMore() && nonNullish(oldestTxId)
+      ...(fetchMoreTransactions() && nonNullish(oldestTxId)
         ? (
             await getIcrcAccountTransactions({
               identity,
