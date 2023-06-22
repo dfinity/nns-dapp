@@ -74,7 +74,7 @@
     "@dfinity/gix-components": "next",
     "@dfinity/ic-management": "next",
     "@dfinity/identity": "^0.15.4",
-    "@dfinity/ledger": "file:../../ic-js/packages/ledger",
+    "@dfinity/ledger": "next",
     "@dfinity/nns": "next",
     "@dfinity/nns-proto": "next",
     "@dfinity/principal": "^0.15.4",
