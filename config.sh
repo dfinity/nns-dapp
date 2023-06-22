@@ -38,12 +38,6 @@ first_not_null() {
   echo "null"
 }
 
-api_host() {
-  first_not_null \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
-}
-
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
