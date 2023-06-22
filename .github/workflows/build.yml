@@ -6,6 +6,12 @@ name: Build and test
 # date before merge. It's also nice to have CI running on branches without PRs.
 on:
   push:
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'no-cache'
+        default: false
+        type: boolean
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

@@ -1,13 +1,7 @@
 name: Empty shell of docker buildruns-on: ubuntu-20.04
 on:
   push:
-  workflow_dispatch:
-    inputs:
-      no_cache:
-        description: 'no-cache'
-        default: false
-        type: boolean
-concurrency:
+oncurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
