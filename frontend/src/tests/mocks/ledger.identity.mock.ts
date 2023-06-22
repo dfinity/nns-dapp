@@ -1,6 +1,7 @@
 import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import type { Principal } from "@dfinity/principal";
 import type { ResponseVersion } from "@zondax/ledger-icp";
 
 export const fromHexString = (hexString: string): ArrayBuffer => {
@@ -23,11 +24,13 @@ export const mockLedgerIdentifier =
 
 type MockIdentityOptions = {
   version?: ResponseVersion;
+  principal?: Principal;
 };
 // eslint-disable-next-line
 // @ts-ignore: test file
 export class MockLedgerIdentity extends LedgerIdentity {
-  constructor({ version }: MockIdentityOptions = {}) {
+  private readonly principal: Principal;
+  constructor({ version, principal }: MockIdentityOptions = {}) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - we do not use the service for mocking purpose
     super(
@@ -37,6 +40,10 @@ export class MockLedgerIdentity extends LedgerIdentity {
 
     if (version !== undefined) {
       this.getVersion = () => Promise.resolve(version);
+    }
+
+    if (principal !== undefined) {
+      this.getPrincipal = () => principal;
     }
   }
 
