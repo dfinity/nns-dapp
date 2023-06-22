@@ -14,7 +14,6 @@ import {
   getLedgerIdentity,
   listNeuronsHardwareWallet,
   registerHardwareWallet,
-  resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/ledger.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -43,7 +42,6 @@ import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
   beforeEach(() => {
-    resetIdentitiesCachedForTesting();
     jest.clearAllMocks();
   });
 
