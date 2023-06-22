@@ -286,6 +286,7 @@
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
+    "vestion_period": "Remaining vesting period",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
