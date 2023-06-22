@@ -1,7 +1,6 @@
 import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
-import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -10,6 +9,7 @@ import {
   getManagementCanisterWorker,
 } from "$lib/worker-utils/canister.worker-utils";
 import type { ManagementCanisterRecord } from "@dfinity/agent";
+import type { CanisterStatusResponse } from "@dfinity/ic-management";
 
 export const queryCanisterDetails = async ({
   identity,
