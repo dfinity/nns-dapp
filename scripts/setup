@@ -101,9 +101,16 @@ install_brew_maybe() {
   }
 }
 
+check_coreutils() {
+  : Checks that everything we need from coreutils is installed
+  for command in sha256sum date; do
+    "$command" --version | grep 'GNU coreutils' || return 1
+  done
+}
 install_coreutils_darwin() {
   echo "Installing coreutils..."
   brew install coreutils
+  append_to_profile "export PATH=\"/opt/homebrew/opt/coreutils/libexec/gnubin:\$PATH\""
 }
 install_coreutils_linux() {
   echo "Installing coreutils..."
@@ -285,7 +292,7 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
-command -v sha256sum || "install_coreutils_$OS"
+check_coreutils || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
