@@ -120,7 +120,8 @@
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code."
+    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",

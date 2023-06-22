@@ -25,7 +25,7 @@ else
 fi
 
 WASM_PATH="$(jq -rc '.canisters["nns-dapp"].wasm' dfx.json)"
-WASM_FILENAME="nns-dapp.wasm"
+WASM_FILENAME="nns-dapp.wasm.gz"
 UNZIP_TMPDIR="$(mktemp -d)"
 mkdir -p "$(dirname "$WASM_PATH")"
 cp "$DOWNLOAD_PATH" "$UNZIP_TMPDIR"
@@ -34,6 +34,6 @@ unzip "$DOWNLOAD_FILENAME"
 popd
 mv "$UNZIP_TMPDIR/$WASM_FILENAME" "$WASM_PATH"
 rm -fr "${UNZIP_TMPDIR}"
-NNS_DAPP_WASM="${PWD}/nns-dapp.wasm" dfx deploy --network testnet
+NNS_DAPP_WASM="${PWD}/nns-dapp.wasm.gz" dfx deploy --network testnet
 
 echo "Deployed to: https://$(jq -jc '.["nns-dapp"].testnet' canister_ids.json).nnsdapp.dfinity.network"

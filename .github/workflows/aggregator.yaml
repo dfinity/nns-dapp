@@ -32,7 +32,8 @@ jobs:
       - name: Install tools
         run: |
           dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Get test environment
         run: |
           curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
@@ -41,9 +42,9 @@ jobs:
           dfx-sns-demo-healthcheck
       - name: Upgrade to the current aggregator
         run: |
-          cp out/sns_aggregator_dev.wasm sns_aggregator.wasm
+          cp out/sns_aggregator_dev.wasm.gz sns_aggregator.wasm.gz
           # Note: Pretty much any argument values will do; the canister will be reconfigured.
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm --mode reinstall --yes --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
+          dfx canister install sns_aggregator --wasm sns_aggregator.wasm.gz --mode reinstall --yes --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
           dfx canister call sns_aggregator get_canister_config
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
@@ -95,7 +96,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
       - name: Expect the first page of data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -128,7 +129,7 @@ jobs:
           git fetch --depth 1 origin tag aggregator-prod
           diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
           if test -n "${diff:-}"
-          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm --verbose
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Stop replica

@@ -1,8 +1,8 @@
-# Use this with
+# Use this with:
 #
 # docker build . -t nns-dapp
 # container_id=$(docker create nns-dapp no-op)
-# docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
+# docker cp $container_id:nns-dapp.wasm.gz nns-dapp.wasm.gz
 # docker rm --volumes $container_id
 
 # Check the memory available to docker.
@@ -79,7 +79,7 @@ WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
-RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
 RUN cargo binstall --no-confirm "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
@@ -203,14 +203,14 @@ WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
-RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
+RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
-RUN for wasm in sns_aggregator.wasm sns_aggregator_dev.wasm ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
+RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
@@ -218,9 +218,9 @@ COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
-COPY --from=build_nnsdapp /build/nns-dapp.wasm /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm /nns-dapp_noassets.wasm
+COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_aggregate /build/sns_aggregator.wasm /
-COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
+COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /
+COPY --from=build_aggregate /build/sns_aggregator_dev.wasm.gz /
