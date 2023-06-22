@@ -16,7 +16,7 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
   import { decodePayment } from "@dfinity/ledger";
-  import {toastsError} from "$lib/stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
@@ -102,7 +102,11 @@
 
     // if we can successfully decode a payment from the QR code, we can validate that it corresponds to the same token and also set the amount, in addition to populating the destination address.
     if (nonNullish(payment)) {
-      const {token: paymentToken, identifier, amount: paymentAmount} = payment;
+      const {
+        token: paymentToken,
+        identifier,
+        amount: paymentAmount,
+      } = payment;
 
       if (paymentToken !== token.symbol.toLowerCase()) {
         toastsError({
