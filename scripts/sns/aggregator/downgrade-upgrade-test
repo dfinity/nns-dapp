@@ -25,11 +25,6 @@ verify_healthy() {
 
 # Installs the current build of sns_aggregator
 upgrade_canister() {
-  : Diagnose downgrade upgrade flakiness
-  dfx --version
-  file "$1"
-  dfx-canister-nm "$1"
-  : Actually install
   dfx canister install --upgrade-unchanged sns_aggregator --wasm "$1" --mode upgrade
 }
 
