@@ -1,5 +1,5 @@
 # Verify that the aggregator gets the required data
-name: Aggregator aggregates
+name: Empty aggregator
 on:
   push:
 concurrency:

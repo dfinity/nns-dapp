@@ -1,4 +1,4 @@
-name: Docker build
+name: Empty shell of docker buildruns-on: ubuntu-20.04
 on:
   push:
   workflow_dispatch:
@@ -11,16 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  # TODO: Move to the file of unit tests.
-  docker-build-cli-flags:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: docker-build prints help
-        run: ./scripts/docker-build --help | grep -i usage
   # TODO: Once this is merged, remove this as a merge requirement and delete this file.
   docker-build-passes:
-    needs: ["docker-build-cli-flags"]
+    needs: ["]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
