@@ -337,7 +337,7 @@ defaults:
   run:
     shell: bash -euxlo pipefail {0}
 jobs:
-  curl_test:
+  aggregator_test:
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
@@ -463,7 +463,7 @@ jobs:
       - name: Stop replica
         run: dfx stop
   build-pass:
-    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm", "curl_test"]
+    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm", "aggregator_test"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
