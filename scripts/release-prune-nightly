@@ -17,7 +17,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=y long=yes desc="Delete releases without confirmation" variable=DFX_YES
+clap.define short=y long=yes desc="Delete releases without confirmation" variable=DFX_YES nargs=0
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
