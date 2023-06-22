@@ -461,6 +461,7 @@ jobs:
         run: dfx stop
   assets:
     name: "Upload assets"
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
