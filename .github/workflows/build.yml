@@ -23,25 +23,25 @@ jobs:
         uses: ./.github/actions/build_nns_dapp
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Rename nns-dapp.wasm for upload
-        run: cp out/nns-dapp.wasm out/nns-dapp_local.wasm
+      - name: Rename nns-dapp.wasm.gz for upload
+        run: cp out/nns-dapp.wasm.gz out/nns-dapp_local.wasm.gz
       - name: 'Upload nns-dapp_local wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp_local
-          path: out/nns-dapp_local.wasm
+          path: out/nns-dapp_local.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator
-          path: out/sns_aggregator.wasm
+          path: out/sns_aggregator.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
         uses: actions/upload-artifact@v3
         with:
           name: sns_aggregator_dev
-          path: out/sns_aggregator_dev.wasm
+          path: out/sns_aggregator_dev.wasm.gz
           retention-days: 3
   test-playwright-e2e:
     needs: build
@@ -64,8 +64,8 @@ jobs:
           # Version from 2023-06-06 with dfx v 0.14.1
           snsdemo_ref: '0e61f618018db099a01b1686535fff8eff980d1c'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz
-          nns_dapp_wasm: 'nns-dapp_local.wasm'
-          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
+          nns_dapp_wasm: 'nns-dapp_local.wasm.gz'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Generate .env configuration for Playwright end-to-end tests
         run: |
           DFX_NETWORK=local ./config.sh
@@ -122,8 +122,8 @@ jobs:
           # Version from 2023-06-06 with dfx v0.14.1
           snsdemo_ref: '0e61f618018db099a01b1686535fff8eff980d1c'
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz
-          nns_dapp_wasm: 'nns-dapp_local.wasm'
-          sns_aggregator_wasm: 'sns_aggregator_dev.wasm'
+          nns_dapp_wasm: 'nns-dapp_local.wasm.gz'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -178,14 +178,14 @@ jobs:
           } >&2
       - name: Check that metadata is present
         run: |
-          # dfx-wasm-metadata-add.test expects nns-dapp.wasm
-          cp nns-dapp_local.wasm nns-dapp.wasm
+          # dfx-wasm-metadata-add.test expects nns-dapp.wasm.gz
+          cp nns-dapp_local.wasm.gz nns-dapp.wasm.gz
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
           if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_local.wasm.gz
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Release
@@ -193,8 +193,8 @@ jobs:
           for tag in $(git tag --points-at HEAD) ; do
             : Creates or updates a release for the tag
             if gh release view "$tag"
-            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
-            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm.gz || true
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm.gz
             fi
             : If the tag is for a proposal or nightly, make it public
             [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
@@ -225,7 +225,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp_local.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp_local.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
@@ -303,7 +303,7 @@ jobs:
           path: out-local
       - name: Remove _local suffix
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        run: mv out-local/nns-dapp_local.wasm out-local/nns-dapp.wasm
+        run: mv out-local/nns-dapp_local.wasm.gz out-local/nns-dapp.wasm.gz
       - name: Get sns_aggregator
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
@@ -321,7 +321,7 @@ jobs:
         run: |
           set -x
           ls -l
-          artefacts="sns_aggregator_dev.wasm sns_aggregator.wasm nns-dapp.wasm"
+          artefacts="sns_aggregator_dev.wasm.gz sns_aggregator.wasm.gz nns-dapp.wasm.gz"
           networks=(mainnet local)
           for network in "${networks[@]}" ; do
             ls -l "out-$network"

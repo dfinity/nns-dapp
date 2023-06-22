@@ -114,7 +114,7 @@ fi
 # Gets the wasm
 # Note: If the wasm is not provided, the SHA will fail.
 # Note: Also, the template creation script will fail if the wasm is not provided.
-WASM="./release/ci/nns-dapp.wasm"
+WASM="./release/ci/nns-dapp.wasm.gz"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
 # Gets the canister arguments

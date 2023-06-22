@@ -16,7 +16,7 @@
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
-      "wasm": "nns-dapp.wasm",
+      "wasm": "nns-dapp.wasm.gz",
       "build": "./build.sh",
       "remote": {
         "id": {
@@ -103,7 +103,7 @@
         "./build-sns-aggregator.sh"
       ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
-      "wasm": "sns_aggregator.wasm",
+      "wasm": "sns_aggregator.wasm.gz",
       "type": "custom",
       "remote": {
         "id": {
