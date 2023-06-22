@@ -7,6 +7,7 @@ import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
+import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -26,6 +27,10 @@ export class AppPo extends BasePageObject {
 
   getNeuronDetailPo(): NeuronDetailPo {
     return NeuronDetailPo.under(this.root);
+  }
+
+  getProposalsPo(): ProposalsPo {
+    return ProposalsPo.under(this.root);
   }
 
   getLaunchpadPo(): LaunchpadPo {
@@ -112,6 +117,13 @@ export class AppPo extends BasePageObject {
       await this.getNeuronsPo().getNnsNeuronsPo().getNeuronCardPo(neuronId)
     ).click();
     await this.getNeuronDetailPo().waitFor();
+  }
+
+  async goToProposals(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickProposals();
+    // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
   }
 
   async goToLaunchpad(): Promise<void> {
