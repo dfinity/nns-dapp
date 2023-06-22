@@ -42,6 +42,7 @@
           >
           <span
             class="voting-power value"
+            data-tid="voting-neuron-select-voting-power"
             aria-label={replacePlaceholders(
               $i18n.proposal_detail__vote.cast_vote_votingPower,
               {

@@ -14,6 +14,10 @@
 #                                                           │ ic-cdk-optimizer
 #                                                           │
 #                                                      nns-dapp.wasm
+#                                                           ▲
+#                                                           │ gzip
+#                                                           │
+#                                                      nns-dapp.wasm.gz
 
 set -euo pipefail
 

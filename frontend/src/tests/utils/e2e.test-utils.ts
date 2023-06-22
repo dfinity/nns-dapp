@@ -10,7 +10,7 @@ export const step = async (description: string) => {
   resolvePreviousStep();
   await previousStep;
   previousStep = test.step(description, () => {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       resolvePreviousStep = resolve;
     });
   });

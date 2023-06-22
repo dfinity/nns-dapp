@@ -1,30 +1,29 @@
 import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
-import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
-import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
+import type { CanisterActorParams } from "$lib/types/worker";
+import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity, ManagementCanisterRecord } from "@dfinity/agent";
-/**
- * HTTP-Agent explicit CJS import for compatibility with web worker - avoid "window undefined" issues
- */
-import { getManagementCanister, HttpAgent } from "@dfinity/agent/lib/cjs/index";
-import { Principal } from "@dfinity/principal";
+import {
+  HttpAgentWorker,
+  getManagementCanisterWorker,
+} from "$lib/worker-utils/canister.worker-utils";
+import type { ManagementCanisterRecord } from "@dfinity/agent";
+import type { CanisterStatusResponse } from "@dfinity/ic-management";
 
 export const queryCanisterDetails = async ({
   identity,
   canisterId,
-}: {
-  identity: Identity;
-  canisterId: string;
-}): Promise<CanisterDetails> => {
+  host,
+  fetchRootKey,
+}: { canisterId: string } & CanisterActorParams): Promise<CanisterDetails> => {
   logWithTimestamp(`Getting canister ${canisterId} details call...`);
   const {
     icMgtService: { canister_status },
-  } = await canisters(identity);
+  } = await canisters({ identity, host, fetchRootKey });
 
   try {
-    const canister_id = Principal.fromText(canisterId);
+    const canister_id = mapCanisterId(canisterId);
 
     const rawResponse: CanisterStatusResponse = await canister_status({
       canister_id,
@@ -43,21 +42,23 @@ export const queryCanisterDetails = async ({
   }
 };
 
-const canisters = async (
-  identity: Identity
-): Promise<{
+const canisters = async ({
+  identity,
+  host,
+  fetchRootKey,
+}: CanisterActorParams): Promise<{
   icMgtService: ManagementCanisterRecord;
 }> => {
-  const agent = new HttpAgent({
+  const agent = new HttpAgentWorker({
     identity,
-    host: HOST,
+    host,
   });
 
-  if (FETCH_ROOT_KEY) {
+  if (fetchRootKey) {
     await agent.fetchRootKey();
   }
 
-  const icMgtService = getManagementCanister({ agent });
+  const icMgtService = getManagementCanisterWorker({ agent });
 
   return { icMgtService };
 };

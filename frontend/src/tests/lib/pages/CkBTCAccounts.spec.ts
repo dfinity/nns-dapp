@@ -33,6 +33,18 @@ jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-minter.services", () => {
+  return {
+    updateBalance: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
 describe("CkBTCAccounts", () => {
   const goToWallet = async () => {
     // Do nothing

@@ -44,6 +44,7 @@ export const writableStored = <T>({
 
     // Do not break UI if local storage fails
     try {
+      // TODO: can / should we replace this replacer with json.utils.jsonReplacer? is it possible without breaking changes?
       const bigintStringify = (_key: string, value: unknown): unknown =>
         typeof value === "bigint" ? `${value}` : value;
 

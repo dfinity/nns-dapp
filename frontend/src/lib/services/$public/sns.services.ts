@@ -14,6 +14,7 @@ import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
@@ -67,6 +68,10 @@ export const loadSnsProjects = async (): Promise<void> => {
         governanceCanisterId: Principal.fromText(
           sns.canister_ids.governance_canister_id
         ),
+        ledgerCanisterId: Principal.fromText(
+          sns.canister_ids.ledger_canister_id
+        ),
+        indexCanisterId: Principal.fromText(sns.canister_ids.index_canister_id),
         swap: toNullable(sns.swap_state.swap),
         derived: toNullable(sns.swap_state.derived),
       })),
@@ -115,6 +120,14 @@ export const loadSnsProjects = async (): Promise<void> => {
           {} as TokensStoreData
         )
     );
+    cachedSnses.forEach(
+      ({ canister_ids: { root_canister_id }, derived_state }) => {
+        snsQueryStore.updateDerivedState({
+          rootCanisterId: root_canister_id,
+          derivedState: derived_state,
+        });
+      }
+    );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     // If aggregator canister fails, fallback to the old way
@@ -143,7 +156,7 @@ export const loadSnsSummaries = (): Promise<void> => {
       if (
         certified ||
         identity.getPrincipal().isAnonymous() ||
-        FORCE_CALL_STRATEGY === "query"
+        isForceCallStrategy()
       ) {
         snsQueryStore.reset();
 
@@ -181,7 +194,7 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
       if (
         certified ||
         identity.getPrincipal().isAnonymous() ||
-        FORCE_CALL_STRATEGY === "query"
+        isForceCallStrategy()
       ) {
         snsProposalsStore.reset();
 
@@ -241,7 +254,7 @@ export const loadSnsNervousSystemFunctions = async (
       if (
         certified ||
         identity.getPrincipal().isAnonymous() ||
-        FORCE_CALL_STRATEGY === "query"
+        isForceCallStrategy()
       ) {
         toastsError({
           labelKey: "error__sns.sns_load_functions",

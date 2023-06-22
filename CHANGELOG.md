@@ -1,5 +1,30 @@
 # Changelog
 
+## Proposal 123006
+
+* Improvement in NNS proposal filters.
+* New field minimum participants in project detail page.
+* Mobile experience improvements.
+* Use minter info to retrieve ckBTC parameters (retrieve min amount, kit fee and number of confirmations).
+* Fix for Dragginz SNS metrics.
+
+## Proposal 122791
+
+* Improve Apple install to home screen look and feel.
+* Enable sns-voting.
+* Add a call to "update_balance" for ckBTC during the withdrawal account check process.
+* Improve participation UI.
+* Fix UI warning duplicate form field id in the same form.
+* Minor fixes.
+
+## Proposal 122747
+
+* Improve ICRC accounts loading performance.
+* Improve loading state UX.
+* Update (fav)icons.
+* Upgrade libraries.
+* Minor fixes and text changes.
+
 ## Proposal 122614
 
 * Swap conditions.

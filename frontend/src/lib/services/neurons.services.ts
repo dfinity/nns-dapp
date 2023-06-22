@@ -30,6 +30,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -256,7 +257,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -454,22 +455,12 @@ export const simulateMergeNeurons = async ({
   targetNeuronId: NeuronId;
 }): Promise<NeuronInfo | undefined> => {
   try {
-    const { targetNeuron } = await checkCanBeMerged({
+    await checkCanBeMerged({
       sourceNeuronId,
       targetNeuronId,
     });
 
-    const accounts = get(accountsStore);
-    if (
-      isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
-    ) {
-      // Simulating is not yet supported for HW controlled neurons.
-      return undefined;
-    }
-
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      targetNeuronId
-    );
+    const identity: Identity = await getAuthenticatedIdentity();
 
     return await governanceApiService.simulateMergeNeurons({
       sourceNeuronId,
@@ -958,7 +949,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
       catchError(error);

@@ -132,6 +132,7 @@ while [ \$# -ne 0 ]; do
                         usage
                         exit 0;;
 		--verbose)
+			CLAP_VERBOSE=true
 			set -x;;
 		--)
 			break ;;

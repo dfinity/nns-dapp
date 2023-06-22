@@ -5,7 +5,7 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
-use crate::assets::{hash_bytes, insert_asset, Asset};
+use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
@@ -300,6 +300,22 @@ pub fn add_stable_asset() {
             }
         }
     });
+}
+
+/// Add assets to be served by the canister.
+///
+/// # Panics
+/// - Permission to upload may be denied; see `may_upload()` for details.
+#[export_name = "canister_update add_assets_tar_xz"]
+pub fn add_assets_tar_xz() {
+    over(candid_one, |asset_bytes: Vec<u8>| {
+        let caller = ic_cdk::caller();
+        let is_controller = ic_cdk::api::is_controller(&caller);
+        assets::upload::may_upload(&caller, is_controller)
+            .map_err(|e| format!("Permission to upload denied: {}", e))
+            .unwrap();
+        insert_tar_xz(asset_bytes);
+    })
 }
 
 #[derive(CandidType)]

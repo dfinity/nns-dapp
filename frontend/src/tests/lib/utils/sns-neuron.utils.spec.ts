@@ -1,4 +1,4 @@
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -37,6 +37,7 @@ import {
   isUserHotkey,
   minNeuronSplittable,
   needsRefresh,
+  neuronAge,
   neuronCanBeSplit,
   nextMemo,
   snsNeuronVotingPower,
@@ -2038,7 +2039,7 @@ describe("sns-neuron utils", () => {
           {
             vote: SnsVote.Yes,
             cast_timestamp_seconds: 0n,
-            voting_power: 321n,
+            voting_power: 324n,
           },
         ],
         [
@@ -2052,22 +2053,21 @@ describe("sns-neuron utils", () => {
       ],
     };
 
-    it("should return an sns neuron vote", () => {
+    it("should return an sns neuron vote with ballot voting power", () => {
       expect(
         votedSnsNeuronDetails({
           neurons: [testVotedNeuronA, testVotedNeuronB, testNotVotedNeuron],
           proposal: testProposal,
-          snsParameters: snsNervousSystemParametersMock,
         })
       ).toEqual([
         {
           idString: "010203",
-          votingPower: 0n,
+          votingPower: 324n,
           vote: Vote.Yes,
         },
         {
           idString: "010101",
-          votingPower: 0n,
+          votingPower: 321n,
           vote: Vote.No,
         },
       ]);
@@ -2123,6 +2123,32 @@ describe("sns-neuron utils", () => {
           reason: "short",
         },
       ]);
+    });
+  });
+
+  describe("neuronAge", () => {
+    const now = 1686806749421;
+    const nowSeconds = Math.floor(now / 1000);
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns 0 if age_since is in the future", () => {
+      expect(
+        neuronAge({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds + 1000),
+        })
+      ).toEqual(0n);
+    });
+
+    it("returns age if age_since is in the past", () => {
+      expect(
+        neuronAge({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds - SECONDS_IN_MONTH),
+        })
+      ).toEqual(BigInt(SECONDS_IN_MONTH));
     });
   });
 });

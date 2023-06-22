@@ -1,3 +1,4 @@
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -1047,7 +1048,7 @@ describe("project-utils", () => {
         loggedIn: false,
         summary,
         swapCommitment: userNoCommitment,
-        userCountry: "not loaded",
+        userCountry: NOT_LOADED,
         ticket: null,
       });
       expect(expected).toBe("logged-out");
@@ -1153,7 +1154,7 @@ describe("project-utils", () => {
           loggedIn: true,
           summary: summaryNoRestricted,
           swapCommitment: userNoCommitment,
-          userCountry: "not loaded",
+          userCountry: NOT_LOADED,
           ticket: null,
         })
       ).toBe("enabled");
@@ -1187,7 +1188,7 @@ describe("project-utils", () => {
             loggedIn: true,
             summary: summaryUsRestricted,
             swapCommitment: userNoCommitment,
-            userCountry: "not loaded",
+            userCountry: NOT_LOADED,
             ticket: null,
           })
         ).toBe("loading");

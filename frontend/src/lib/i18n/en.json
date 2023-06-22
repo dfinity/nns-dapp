@@ -120,7 +120,8 @@
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code."
+    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
@@ -258,6 +259,7 @@
     "merge_neurons_modal_merge_button": "Merge Neurons",
     "merge_neurons_modal_title_2": "Merge neuron",
     "merge_neurons_modal_into": "into",
+    "expected_merge_result": "Expected merge result:",
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
     "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
@@ -630,6 +632,7 @@
     "total_tokens_supply": "Total Supply",
     "min_commitment": "Minimum Commitment",
     "max_commitment": "Maximum Commitment",
+    "min_participants": "Minimum Participants",
     "current_overall_commitment": "Current Overall Commitment",
     "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
@@ -654,6 +657,7 @@
     "status_completed": "Status",
     "completed": "Completed",
     "sale_end": "Swap End",
+    "persons_excluded": "Persons Excluded",
     "max_user_commitment_reached": "Maximum commitment reached",
     "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
@@ -878,7 +882,7 @@
     "about_thirty_minutes": "Typically 30-60min",
     "transaction_success_about_thirty_minutes": "Transaction completed. Estimated time ≈30 minutes.",
     "loading_address": "Loading the address",
-    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require 12 confirmations. Then click",
+    "incoming_bitcoin_network_part_1": "Incoming Bitcoin network transactions require $min confirmations. Then click",
     "incoming_bitcoin_network_part_2": "to update your ckBTC balance. Check status on a",
     "block_explorer": "block explorer",
     "refresh_balance": "Refresh Balance",
@@ -894,6 +898,7 @@
     "no_new_utxo": "There are no new UTXOs to process.",
     "temporary_unavailable": "The minter is temporary unavailable.",
     "no_minter_defined": "No minter canister is defined.",
+    "info_not_found": "Sorry, there was an error loading the ckBTC minter information.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
     "get_btc_no_account": "An account should be provided to execute this feature",
     "get_btc_no_universe": "A ckBTC environment should be provided to execute this feature",
@@ -907,7 +912,9 @@
     "retrieve_btc_unknown": "Sorry, retrieving BTC failed for an unknown reason.",
     "estimated_fee": "Sorry, the Bitcoin estimated fee cannot be fetched.",
     "deposit_fee": "Sorry, the Inter-network Fee cannot be fetched.",
-    "retrieve_btc_min_amount": "The amount is below the $amount ckBTC minimum for converting to BTC."
+    "retrieve_btc_min_amount": "The amount falls below the minimum of $amount ckBTC required for converting to BTC.",
+    "retrieve_btc_min_amount_unknown": "The minimum amount of ckBTC required for converting to BTC is unknown.",
+    "wait_ckbtc_info_parameters_certified": "Please wait until the ckBTC parameters have been certified."
   },
   "feature_flags_prompt": {
     "override_true": "Enter the number for the feature you want to enable.",

@@ -158,6 +158,7 @@
 </script>
 
 <WizardModal
+  testId="nns-stake-neuron-modal-component"
   {steps}
   bind:currentStep
   bind:this={modal}
