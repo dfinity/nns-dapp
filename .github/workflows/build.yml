@@ -339,10 +339,11 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Get sns_aggregator_dev
+      - name: Get docker build outputs
         uses: actions/download-artifact@v3
         with:
-          name: sns_aggregator_dev
+          name: out
+          path: out
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
