@@ -343,10 +343,10 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Build sns_aggregator
-        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: sns_aggregator_dev
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
