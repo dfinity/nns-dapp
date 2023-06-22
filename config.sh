@@ -109,7 +109,7 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
-  : "Get the governance canister ID and URL - they should be defined"
+  : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
