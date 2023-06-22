@@ -27,6 +27,20 @@ export type GetAccountsTransactionsResults = Omit<
 > &
   Pick<GetTransactionsResponse, "transactions">;
 
+/**
+ * Collect the ICRC transactions for a list of accounts.
+ *
+ * For each account provided as a parameter, the service ensures that no duplicate transactions are returned and handles fetching all transactions recursively, taking into account the pagination of the backend API calls.
+ *
+ * @param object TimerWorkerUtilsJobData<PostMessageDataRequestTransactions> & { state: DictionaryWorkerState<TransactionsData>; }
+ * @param object.identity
+ * @param object.data
+ * @param object.data.accountIdentifiers
+ * @param object.data.indexCanisterId
+ * @param object.data.host
+ * @param object.data.fetchRootKey
+ * @param object.state
+ */
 export const getIcrcAccountsTransactions = ({
   identity,
   data: { accountIdentifiers, indexCanisterId, host, fetchRootKey },
@@ -47,10 +61,13 @@ export const getIcrcAccountsTransactions = ({
 
       return {
         transactions: transactions.reduce((acc, value) => {
+          // Suppress duplicate transactions to provide the results
           const alreadyExist = (): boolean =>
             acc.find(
               (transaction) =>
                 value.id === transaction.id &&
+                // If a user transfer from / to same account, it's two transaction with same id
+                // Same approach as the one of the UI side to build the ICP wallet list of transactions
                 JSON.stringify(transaction, jsonReplacer) ===
                   JSON.stringify(value, jsonReplacer)
             ) !== undefined;
@@ -88,12 +105,20 @@ const getIcrcAccountTransactions = async ({
     state,
   });
 
+  // We compare IDs because we want to sort and find the oldest transaction ID to notice if we have fetched all new transactions or if there is a remaining gap.
+  //
+  // For example:
+  // New transactions [100, 99, 98]
+  // Most recent transaction ID 95
+  // Therefore, we still need to get between 95 and 98
+  //
+  // Note that  we do not perform a sort based on the timestamp but on the ID for simplicity reason as we do not really care here if two transactions have the same ID, we are just looking for the oldest ID.
   const oldestTxId: IcrcTxId | undefined = [...transactions].sort(
     ({ id: idA }, { id: idB }) => Number(idA - idB)
   )[0]?.id;
 
   // Did we fetch all new transactions or there were more transactions than the batch size (DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT) since last time the worker fetched the transactions
-  const fetchMore = (): boolean => {
+  const fetchMoreTransactions = (): boolean => {
     const stateMostRecentTxId = state?.mostRecentTxId;
     return (
       nonNullish(stateMostRecentTxId) &&
@@ -102,23 +127,21 @@ const getIcrcAccountTransactions = async ({
     );
   };
 
-  // Two transactions can have the same Id - e.g. a transaction from/to same account.
-  // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
-  // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
-  const nextTxId = (oldestTxId: bigint): bigint => oldestTxId;
-
   return {
     mostRecentTxId,
     ...rest,
     transactions: [
       ...transactions,
-      ...(fetchMore() && nonNullish(oldestTxId)
+      ...(fetchMoreTransactions() && nonNullish(oldestTxId)
         ? (
             await getIcrcAccountTransactions({
               identity,
               indexCanisterId,
               accountIdentifier,
-              start: nextTxId(oldestTxId),
+              // Two transactions can have the same Id - e.g. a transaction from/to same account.
+              // That is why we fetch the next batch of transactions starting from the same Id and not Id - 1n because otherwise there would be a chance that we might miss one.
+              // Note: when "start" is provided, getIcrcTransactions search from "start" and returns "start" included in the results.
+              start: oldestTxId,
               fetchRootKey,
               host,
               state,
@@ -148,6 +171,7 @@ const getIcrcTransactions = async ({
       host,
     });
 
+    // Similar to `icrc-transactions.utils.getOldestTxIdFromStore`
     const mostRecentTxId = transactions.sort(
       (
         { transaction: { timestamp: timestampA } },
