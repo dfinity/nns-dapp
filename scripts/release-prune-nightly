@@ -16,19 +16,18 @@ print_help() {
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
-URL_TYPES=(static api)
 # Define options
 clap.define short=y long=yes desc="Delete releases without confirmation" variable=DFX_YES
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 list_removal_candidates() {
-	for tag_name_prefix in $(seq "${FROM_MONTHS}" "${UNTIL_MONTHS}" | xargs -I{} date -d "{} months ago" +'nightly-%Y-%m'); do grep -Eo "\\<${tag_name_prefix}-[0-9]*\\>" ,release_list; done | sort | uniq
+  for tag_name_prefix in $(seq "${FROM_MONTHS}" "${UNTIL_MONTHS}" | xargs -I{} date -d "{} months ago" +'nightly-%Y-%m'); do grep -Eo "\\<${tag_name_prefix}-[0-9]*\\>" ,release_list; done | sort | uniq
 }
 
 gh release list --limit 500 >,release_list
 for release_name in $(list_removal_candidates); do
-	gh release delete ${DFX_YES:+--yes} "$release_name" || true
+  gh release delete ${DFX_YES:+--yes} "$release_name" || true
 done
 cat <<EOF
 
