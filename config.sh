@@ -76,11 +76,8 @@ local_deployment_data="$(
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
-  IDENTITY_SERVICE_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
-  )"
+  IDENTITY_SERVICE_URL="$(dfx-canister-url --network "$DFX_NETWORK" internet_identity)"
   export IDENTITY_SERVICE_URL
-  test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
 
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
@@ -92,11 +89,8 @@ local_deployment_data="$(
 
   : "Try to find the SNS aggregator URL"
   : "- may be deployed locally"
-  SNS_AGGREGATOR_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
-  )"
+  SNS_AGGREGATOR_URL="$(dfx-canister-url --network "$DFX_NETWORK" sns_aggregator)"
   export SNS_AGGREGATOR_URL
-  test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
 
   : "Try to find the ckBTC canister IDs"
   CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"
