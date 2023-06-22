@@ -134,7 +134,7 @@ YQ_VERSION="4.33.1"
 install_yq_darwin() {
   echo "Installing yq..."
   tempfile="$(mktemp ,yq-XXXXXXXX)"
-  curl -Lf "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_darwin_${ARCH}" >"$tempfile"
+  curl -Lf "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_darwin_${ARCH/arm/arm64}" >"$tempfile"
   install -m 755 "$tempfile" "$USER_BIN/yq"
   rm "$tempfile"
 }
@@ -158,6 +158,10 @@ install_rust() {
   append_to_profile 'export CARGO_BUILD_JOBS=2'
 }
 
+install_binstall() {
+  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+}
+
 install_xz_darwin() {
   brew install xz
 }
@@ -174,7 +178,7 @@ install_tar_linux() {
 
 install_ic_cdk_optimizer() {
   # Nit: Needs rust to be in a working state.
-  cargo install --version 0.3.2 ic-cdk-optimizer
+  cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
 }
 
 is_docker_installed() {
@@ -217,7 +221,7 @@ install_ic_admin_linux() {
   chmod +x "$USER_BIN/ic-admin"
 }
 install_ic_admin_darwin() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/ic-admin.gz" | gunzip >"$USER_BIN/ic-admin"
   chmod +x "$USER_BIN/ic-admin"
   # shellcheck disable=SC2016
   command -v ic-admin ||
@@ -229,7 +233,7 @@ install_sns_linux() {
   chmod +x "$USER_BIN/sns"
 }
 install_sns_darwin() {
-  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/nix-release/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
+  curl "https://download.dfinity.systems/ic/${IC_COMMIT}/openssl-static-binaries/x86_64-darwin/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
   # shellcheck disable=SC2016
   command -v sns ||
@@ -251,17 +255,22 @@ install_idl2json() {
 }
 
 install_didc_linux() {
-  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-linux64 | install -m 755 /dev/stdin "$USER_BIN/didc"
+  local version
+  version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+  # TODO: Use binstall
+  curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
 }
 install_didc_darwin() {
+  local version
+  version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
   tempfile="$(mktemp ,didc-XXXXXXXX)"
-  curl -Lf https://github.com/dfinity/candid/releases/download/2022-11-17/didc-macos >"$tempfile"
+  curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-macos" >"$tempfile"
   install -m 755 "$tempfile" "$USER_BIN/didc"
   rm "$tempfile"
 }
 
 install_wasm_nm() {
-  cargo install wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
+  cargo binstall --no-confirm wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
 }
 
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
@@ -276,12 +285,13 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
-command -v realpath || "install_coreutils_$OS"
+command -v sha256sum || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
+cargo binstall -V || install_binstall
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx

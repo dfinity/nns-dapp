@@ -39,6 +39,7 @@
   } from "$lib/utils/neuron.utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isForceCallStrategy } from "$lib/utils/env.utils";
 
   export let proposalInfo: ProposalInfo;
 
@@ -103,7 +104,9 @@
     }
 
     return (
-      $neuronsStore.neurons !== undefined && $neuronsStore.certified === true
+      $neuronsStore.neurons !== undefined &&
+      ($neuronsStore.certified === true ||
+        ($neuronsStore.certified === false && isForceCallStrategy()))
     );
   };
 

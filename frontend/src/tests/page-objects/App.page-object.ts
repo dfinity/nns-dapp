@@ -1,5 +1,6 @@
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
+import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
@@ -54,6 +55,10 @@ export class AppPo extends BasePageObject {
     return this.getButton("menu-toggle");
   }
 
+  getBusyScreenPo(): BusyScreenPo {
+    return BusyScreenPo.under(this.root);
+  }
+
   toggleMenu(): Promise<void> {
     return this.getMenuTogglePo().click();
   }
@@ -98,12 +103,14 @@ export class AppPo extends BasePageObject {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
     // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
   }
 
   async goToLaunchpad(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickLaunchpad();
     // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
   }
 
   async getTokens(amount: number): Promise<void> {
@@ -114,5 +121,9 @@ export class AppPo extends BasePageObject {
 
   goBack(): Promise<void> {
     return this.getButton("back").click();
+  }
+
+  waitForNotBusy(): Promise<void> {
+    return this.getBusyScreenPo().waitForAbsent();
   }
 }

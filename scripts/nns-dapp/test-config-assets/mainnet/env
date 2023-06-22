@@ -1,0 +1,16 @@
+VITE_DFX_NETWORK=mainnet
+VITE_CYCLES_MINTING_CANISTER_ID=rkp4c-7iaaa-aaaaa-aaaca-cai
+VITE_WASM_CANISTER_ID=qaa6y-5yaaa-aaaaa-aaafa-cai
+VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai
+VITE_TVL_CANISTER_ID=ewh3f-3qaaa-aaaap-aazjq-cai
+VITE_LEDGER_CANISTER_ID=ryjl3-tyaaa-aaaaa-aaaba-cai
+VITE_OWN_CANISTER_ID=qoctq-giaaa-aaaaa-aaaea-cai
+VITE_OWN_CANISTER_URL=https://nns.internetcomputer.org
+VITE_FETCH_ROOT_KEY=false
+VITE_FEATURE_FLAGS="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_INSTANT_UNLOCK\":false,\"ENABLE_SIMULATE_MERGE_NEURONS\":false,\"ENABLE_SNS_AGGREGATOR\":true,\"ENABLE_SNS_VOTING\":true}"
+VITE_HOST=https://icp-api.io
+VITE_IDENTITY_SERVICE_URL=https://identity.internetcomputer.org/
+VITE_AGGREGATOR_CANISTER_URL=https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io
+VITE_CKBTC_LEDGER_CANISTER_ID=mxzaz-hqaaa-aaaar-qaada-cai
+VITE_CKBTC_MINTER_CANISTER_ID=mqygn-kiaaa-aaaar-qaadq-cai
+VITE_CKBTC_INDEX_CANISTER_ID=n5wcd-faaaa-aaaar-qaaea-cai

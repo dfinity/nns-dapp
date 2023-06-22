@@ -8,25 +8,13 @@ import {
   neuronNeedsRefresh,
 } from "$lib/services/sns-neurons-check-balances.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import {
-  mockSnsNeuron,
-  snsNervousSystemParametersMock,
-} from "$tests/mocks/sns-neurons.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("sns-neurons-check-balances-services", () => {
-  beforeEach(() => {
-    snsParametersStore.setParameters({
-      rootCanisterId: mockPrincipal,
-      certified: true,
-      parameters: snsNervousSystemParametersMock,
-    });
-  });
-
   describe("checkSnsNeuronBalances", () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -56,6 +44,7 @@ describe("sns-neurons-check-balances-services", () => {
       await checkSnsNeuronBalances({
         rootCanisterId: mockPrincipal,
         neurons: [neuron],
+        neuronMinimumStake: 100000000n,
       });
 
       await waitFor(() => expect(spyNeuronBalance).toBeCalled());
@@ -94,6 +83,7 @@ describe("sns-neurons-check-balances-services", () => {
       await checkSnsNeuronBalances({
         rootCanisterId: mockPrincipal,
         neurons: [neuron],
+        neuronMinimumStake: 100000000n,
       });
 
       await waitFor(() => expect(spyRefreshNeuron).toBeCalled());
@@ -130,6 +120,7 @@ describe("sns-neurons-check-balances-services", () => {
       await checkSnsNeuronBalances({
         rootCanisterId: mockPrincipal,
         neurons: [neuron],
+        neuronMinimumStake: 100000000n,
       });
 
       await waitFor(() => expect(spyRefreshNeuron).toBeCalled());

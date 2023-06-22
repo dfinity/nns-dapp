@@ -1,5 +1,5 @@
 {
-  "dfx": "0.13.1",
+  "dfx": "0.14.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -197,7 +197,7 @@
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
         "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
@@ -210,9 +210,9 @@
     },
     "staging": {
       "config": {
-        "HOST": "https://nnsdapp.testnet.dfinity.network",
+        "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": false,
+          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
@@ -704,7 +704,9 @@
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKTESTBTC": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": false,
+          "ENABLE_INSTANT_UNLOCK": false
         }
       }
     },
@@ -714,9 +716,9 @@
         "WASM_NM_VERSION": "0.2.0",
         "IC_WASM_VERSION": "0.3.6",
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
-        "IDL2JSON_VERSION": "0.8.5",
+        "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2022-11-17",
+        "DIDC_VERSION": "2023-05-26",
         "IC_COMMIT": "26b480f775222265f4369bc485d502a140f15564"
       },
       "packtool": ""

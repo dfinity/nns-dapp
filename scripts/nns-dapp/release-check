@@ -17,9 +17,9 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-cd ""
+cd "$SOURCE_DIR/.."
 
-# The deployment converts the did file to bianry at the last moment, like this:
+# The deployment converts the did file to binary at the last moment, like this:
 ARG_DID="./release/nns-dapp-arg-${DFX_NETWORK}.did"
 ARG_PATH="./release/nns-dapp-arg-${DFX_NETWORK}.bin"
 test -e "$ARG_DID" || {

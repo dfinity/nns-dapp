@@ -53,8 +53,8 @@ describe("ckbtc-accounts-balance.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + ckBTC + ckTESTBTC
     expect(Object.keys(store)).toHaveLength(3);
-    expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].balance.toE8s()).toEqual(
-      mockCkBTCMainAccount.balance.toE8s()
+    expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].balanceE8s).toEqual(
+      mockCkBTCMainAccount.balanceE8s
     );
     expect(spyQuery).toBeCalled();
   });

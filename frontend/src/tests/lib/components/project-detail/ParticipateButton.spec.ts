@@ -3,7 +3,7 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
-import * as summaryGetters from "$lib/getters/sns-summary";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -17,6 +17,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
+  createSummary,
   createTransferableAmount,
   mockSnsFullProject,
   mockSnsParams,
@@ -49,9 +50,7 @@ describe("ParticipateButton", () => {
       });
       snsTicketsStore.reset();
       jest.clearAllMocks();
-      // TODO: GIX-1545 Remove mock and create a summary accordingly
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue([]);
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
     });
 
     it("should render a text to increase participation", () => {
@@ -187,11 +186,13 @@ describe("ParticipateButton", () => {
     });
 
     it("should display spinner while loading location if project has restricted countries and user has no ticket", async () => {
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: ["US"],
+      });
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
       const { queryByTestId, getByTestId, container } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
@@ -202,13 +203,15 @@ describe("ParticipateButton", () => {
     });
 
     it("should not display spinner if project has restricted countries, user location is loaded and user has no open ticket", async () => {
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["US"]);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: ["US"],
+      });
       userCountryStore.set({ isoCode: "US" });
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
 
       const { queryByTestId } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
@@ -237,12 +240,35 @@ describe("ParticipateButton", () => {
 
     it("should enable button if from a non-restricted country", async () => {
       snsTicketsStore.setNoTicket(rootCanisterIdMock);
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest.spyOn(summaryGetters, "getDeniedCountries").mockReturnValue(["CH"]);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: ["CH"],
+      });
       userCountryStore.set({ isoCode: "US" });
 
       const { queryByTestId } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        summary,
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ParticipateButton,
+      });
+
+      const button = queryByTestId(
+        "sns-project-participate-button"
+      ) as HTMLButtonElement;
+
+      await waitFor(() => expect(button.getAttribute("disabled")).toBeNull());
+    });
+
+    it("should enable button if there was an error fetching the country of the user", async () => {
+      snsTicketsStore.setNoTicket(rootCanisterIdMock);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: ["CH"],
+      });
+      userCountryStore.set(new Error("Error loading country"));
+
+      const { queryByTestId } = renderContextCmp({
+        summary,
         swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
         Component: ParticipateButton,
       });
@@ -282,16 +308,16 @@ describe("ParticipateButton", () => {
 
     it("should disable button if user is from a restricted country", async () => {
       const userCountry = "CH";
-      // TODO: GIX-1545 Remove mock and create a summary with deny list
-      jest
-        .spyOn(summaryGetters, "getDeniedCountries")
-        .mockReturnValue([userCountry]);
+      const summary = createSummary({
+        lifecycle: SnsSwapLifecycle.Open,
+        restrictedCountries: [userCountry],
+      });
       userCountryStore.set({ isoCode: userCountry });
       const mock = mockSnsFullProject.swapCommitment as SnsSwapCommitment;
       snsTicketsStore.setNoTicket(mock.rootCanisterId);
 
       const { queryByTestId, container } = renderContextCmp({
-        summary: summaryForLifecycle(SnsSwapLifecycle.Open),
+        summary,
         swapCommitment: {
           rootCanisterId: mock.rootCanisterId,
           myCommitment: undefined,

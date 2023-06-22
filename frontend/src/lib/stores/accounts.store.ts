@@ -1,6 +1,5 @@
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
 import type { Account } from "$lib/types/account";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { queuedStore } from "./queued-store";
@@ -81,13 +80,9 @@ const initAccountsStore = (): AccountsStore => {
               // Ignore update if the main account is not set.
               return { main, subAccounts, hardwareWallets };
             }
-            const newBalance = TokenAmount.fromE8s({
-              amount: balanceE8s,
-              token: ICPToken,
-            });
             const mapNewBalance = (account: Account) => {
               return account.identifier === accountIdentifier
-                ? { ...account, balance: newBalance }
+                ? { ...account, balanceE8s }
                 : account;
             };
             return {

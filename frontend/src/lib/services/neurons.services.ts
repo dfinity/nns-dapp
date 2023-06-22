@@ -30,6 +30,7 @@ import {
   assertEnoughAccountFunds,
   isAccountHardwareWallet,
 } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import {
   errorToString,
   mapNeuronErrorToToastMessage,
@@ -256,7 +257,7 @@ export const listNeurons = async ({
       callback?.(certified);
     },
     onError: ({ error, certified }) => {
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -379,6 +380,28 @@ export const toggleAutoStakeMaturity = async (
   }
 };
 
+const checkCanBeMerged = async ({
+  sourceNeuronId,
+  targetNeuronId,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+}): Promise<{ sourceNeuron: NeuronInfo; targetNeuron: NeuronInfo }> => {
+  const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
+    sourceNeuronId
+  );
+  const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
+    targetNeuronId
+  );
+  const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
+  if (!isValid) {
+    throw new CannotBeMerged(
+      translate({ labelKey: messageKey ?? "error.governance_error" })
+    );
+  }
+  return { sourceNeuron, targetNeuron };
+};
+
 export const mergeNeurons = async ({
   sourceNeuronId,
   targetNeuronId,
@@ -388,18 +411,10 @@ export const mergeNeurons = async ({
 }): Promise<NeuronId | undefined> => {
   let success = false;
   try {
-    const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
-      sourceNeuronId
-    );
-    const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
-      targetNeuronId
-    );
-    const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
-    if (!isValid) {
-      throw new CannotBeMerged(
-        translate({ labelKey: messageKey ?? "error.governance_error" })
-      );
-    }
+    const { targetNeuron } = await checkCanBeMerged({
+      sourceNeuronId,
+      targetNeuronId,
+    });
 
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       targetNeuronId
@@ -429,6 +444,33 @@ export const mergeNeurons = async ({
 
     // To inform there was an error
     return success ? targetNeuronId : undefined;
+  }
+};
+
+export const simulateMergeNeurons = async ({
+  sourceNeuronId,
+  targetNeuronId,
+}: {
+  sourceNeuronId: NeuronId;
+  targetNeuronId: NeuronId;
+}): Promise<NeuronInfo | undefined> => {
+  try {
+    await checkCanBeMerged({
+      sourceNeuronId,
+      targetNeuronId,
+    });
+
+    const identity: Identity = await getAuthenticatedIdentity();
+
+    return await governanceApiService.simulateMergeNeurons({
+      sourceNeuronId,
+      targetNeuronId,
+      identity,
+    });
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+    // To inform there was an error
+    return undefined;
   }
 };
 
@@ -907,7 +949,7 @@ export const loadNeuron = ({
     onError: ({ error, certified }) => {
       console.error(error);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
       catchError(error);

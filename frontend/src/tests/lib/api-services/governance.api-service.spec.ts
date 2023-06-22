@@ -834,6 +834,36 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("simulateMergeNeurons", () => {
+    const params = {
+      identity: mockIdentity,
+      sourceNeuronId: BigInt(3),
+      targetNeuronId: BigInt(21),
+    };
+
+    it("should call simulateMergeNeurons api", () => {
+      governanceApiService.simulateMergeNeurons(params);
+      expect(api.simulateMergeNeurons).toHaveBeenCalledWith(params);
+      expect(api.simulateMergeNeurons).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.simulateMergeNeurons,
+        apiServiceFunc: governanceApiService.simulateMergeNeurons,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.simulateMergeNeurons,
+        apiServiceFunc: governanceApiService.simulateMergeNeurons,
+        params,
+      });
+    });
+  });
+
   describe("spawnNeuron", () => {
     const params = {
       neuronId,

@@ -1,61 +1,63 @@
 #!/usr/bin/env bash
-# vim: ft=bash
-# Build nns-dapp.wasm inside docker. This outputs a single file, nns-dapp.wasm,
-# in the top-level directory.
-
 set -euo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
-SCRIPTS_DIR="$(pwd)"
+(("${BASH_VERSINFO[0]}" >= 5)) || {
+  echo "ERROR:  Please use a newer version of bash.  The minimum supported bash version is 5.  Yours appears to be '${BASH_VERSINFO[0]}'" >&2
+  exit 1
+}
 
-cd "$SCRIPTS_DIR/.."
+if test -d scripts && test -e Dockerfile; then
+  : "OK: We appear to be in the root of the repo."
+else
+  echo "ERROR: Please run from the root of the nns-dapp repo." >&2
+  exit 1
+fi
 
-# Note: This script is intended to be extremely robust and work on many platforms
-#       so we parse arguments manually rather than using a clever, feature-rich but
-#       fragile general purpose argument parser.
+SOURCE_DIR="$PWD/scripts"
+PATH="$SOURCE_DIR:$PATH"
+
 print_help() {
-  cat <<-EOF
-	Builds the nns-dapp wasm and artifacts in docker.
+  cat <<-"EOF"
 
-	Usage: $(basename "$0") [--network <network>] [--verbose] [--help] [-- <docker flags>]
+	Build nns-dapp.wasm inside docker. This creates:
+	- An "out" directory in the project directory containing all build artefacts.
+	  Note: If the "out" directory already exists, it will be deleted and replaced.
+	- The following artefacts are also added to the project directory:
+	  - assets.tar.xz
+	  - nns-dapp.wasm
+	  - sns_aggregator.wasm
+	  - "nns-dapp-arg-${DFX_NETWORK}.did"
+	  - "nns-dapp-arg-${DFX_NETWORK}.bin"
 
-	<docker flags>
-	  Any flags that are to be passed on to Docker.  A common example is --no-cache.
-	  A full list is here: https://docs.docker.com/engine/reference/commandline/build/#options
+	EOF
+  print_docker_help
+}
+
+print_docker_help() {
+  cat <<-"EOF"
+	Note: If the docker build fails, it may help to build from a clean cache:
+
+	  ./scripts/docker-build -- --no-cache
+
 	EOF
 }
-DFX_NETWORK=${DFX_NETWORK:-mainnet}
-PROGRESS="--progress=auto"
-while (($# > 0)); do
-  arg="$1"
-  shift 1
-  case "$arg" in
-  --network)
-    DFX_NETWORK="$1"
-    shift 1
-    ;;
-  --verbose)
-    PROGRESS="--progress=plain"
-    ;;
-  --help)
-    print_help
-    exit 0
-    ;;
-  --)
-    break
-    ;;
-  *)
-    {
-      echo "ERROR: Unsupported flag: '$arg'"
-      print_help
-    } >&2
-    exit 1
-    ;;
-  esac
-done
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+clap.define short=t long=target desc="The target in the docker file" variable=DFX_TARGET default="scratch"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 echo "DFX_NETWORK: $DFX_NETWORK"
 echo "PWD: $PWD"
+
+if [[ "${CLAP_VERBOSE:-}" == "true" ]]; then
+  PROGRESS="--progress=plain"
+else
+  PROGRESS="--progress=auto"
+fi
 
 image_name="nns-dapp-$DFX_NETWORK"
 
@@ -73,14 +75,28 @@ for file in "${assets[@]}"; do
   rm -f "$file"
 done
 
+COMMIT="$(git rev-parse HEAD)"
+
 set -x
-DOCKER_BUILDKIT=1 docker build \
+docker build --target check-environment .
+
+if DOCKER_BUILDKIT=1 docker build \
   --target scratch \
   "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
+  --build-arg COMMIT="$COMMIT" \
   -t "$image_name" \
   -o "$OUTDIR" . \
-  "${@+${@}}"
+  "${@+${@}}"; then
+  echo "SUCCESS: Docker build has succeeded."
+else
+  set +x
+  {
+    echo "ERROR: Docker build failed."
+    print_docker_help
+    exit 1
+  } >&2
+fi
 set +x
 
 for file in "${assets[@]}"; do

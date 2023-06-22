@@ -1,7 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish } from "@dfinity/utils";
 
-// Most page objects should extends BasePageObject instead.
+// Most page objects should extend BasePageObject instead.
 export class SimpleBasePageObject {
   readonly root: PageObjectElement;
 

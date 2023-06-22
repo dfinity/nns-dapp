@@ -3,11 +3,11 @@ import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { sumTokenAmounts } from "$lib/utils/token.utils";
+import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import { TokenAmount, checkAccountId } from "@dfinity/nns";
+import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
@@ -187,7 +187,7 @@ export const assertEnoughAccountFunds = ({
   account: Account;
   amountE8s: bigint;
 }): void => {
-  if (account.balance.toE8s() < amountE8s) {
+  if (account.balanceE8s < amountE8s) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
@@ -211,21 +211,21 @@ export const accountName = ({
 
 export const sumNnsAccounts = (
   accounts: AccountsStoreData | undefined
-): TokenAmount | undefined =>
-  accounts?.main?.balance !== undefined
-    ? sumTokenAmounts(
-        accounts?.main?.balance,
-        ...(accounts?.subAccounts || []).map(({ balance }) => balance),
-        ...(accounts?.hardwareWallets || []).map(({ balance }) => balance)
+): bigint | undefined =>
+  accounts?.main?.balanceE8s !== undefined
+    ? sumAmountE8s(
+        accounts?.main?.balanceE8s,
+        ...(accounts?.subAccounts || []).map(({ balanceE8s }) => balanceE8s),
+        ...(accounts?.hardwareWallets || []).map(({ balanceE8s }) => balanceE8s)
       )
     : undefined;
 
 export const sumAccounts = (
   accounts: Account[] | undefined
-): TokenAmount | undefined =>
+): bigint | undefined =>
   isNullish(accounts) || accounts.length === 0
     ? undefined
-    : sumTokenAmounts(...accounts.map(({ balance }) => balance));
+    : sumAmountE8s(...accounts.map(({ balanceE8s }) => balanceE8s));
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;

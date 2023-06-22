@@ -7,7 +7,6 @@
     type CkBTCBTCWithdrawalAccount,
     ckBTCWithdrawalAccountsStore,
   } from "$lib/stores/ckbtc-withdrawal-accounts.store";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { Spinner, IconClock, IconCheck } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -17,6 +16,38 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CkBTCWalletModal } from "$lib/types/ckbtc-accounts.modal";
   import type { Account } from "$lib/types/account";
+  import { updateBalance as updateBalanceService } from "$lib/services/ckbtc-minter.services";
+
+  let loadingBalance = false;
+
+  /**
+   * Calling updateBalance has nothing to do with the withdrawal account but, because users are confused about when and how to call it, product required to add this additional call within this process.
+   * That way, when user navigate once per session to the ckBTC accounts page, the call is also triggered.
+   *
+   * TODO(GIX-1320): to be removed when ckBTC update_balance is replaced by track_balance
+   */
+  const updateBalance = async () => {
+    const canisters = nonNullish($selectedCkBTCUniverseIdStore)
+      ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+      : undefined;
+
+    if (isNullish(canisters)) {
+      return;
+    }
+
+    loadingBalance = true;
+
+    const { minterCanisterId } = canisters;
+
+    // Because updateBalance is not related to withdrawal account, we do not really care if the call succeed or not except displaying potential errors in a toast.
+    await updateBalanceService({
+      minterCanisterId,
+      reload: undefined,
+      uiIndicators: false,
+    });
+
+    loadingBalance = false;
+  };
 
   const loadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -32,9 +63,12 @@
       return;
     }
 
-    await loadCkBTCWithdrawalAccount({
-      universeId: $selectedCkBTCUniverseIdStore,
-    });
+    await Promise.all([
+      loadCkBTCWithdrawalAccount({
+        universeId: $selectedCkBTCUniverseIdStore,
+      }),
+      updateBalance(),
+    ]);
   };
 
   onMount(loadAccount);
@@ -47,17 +81,16 @@
 
   let loading = false;
   $: loading =
-    nonNullish(account) &&
-    (isNullish(account.balance) || isNullish(account.identifier));
+    loadingBalance ||
+    (nonNullish(account) &&
+      (isNullish(account.balanceE8s) || isNullish(account.identifier)));
 
-  let accountBalance: TokenAmount;
-  $: accountBalance =
-    account?.balance ??
-    (TokenAmount.fromString({ amount: "0", token: ICPToken }) as TokenAmount);
+  let accountBalance: bigint;
+  $: accountBalance = account?.balanceE8s ?? 0n;
 
   let detailedAccountBalance: string;
   $: detailedAccountBalance = formatToken({
-    value: accountBalance.toE8s(),
+    value: accountBalance,
     detailed: true,
   });
 
@@ -66,7 +99,7 @@
     loading,
     (() => {
       transfersToBeCompleted =
-        loading || isNullish(account) ? undefined : accountBalance.toE8s() > 0n;
+        loading || isNullish(account) ? undefined : accountBalance > 0n;
     })();
 
   // Important: We do not explicitely use Svelte transition because according our test, use these here leads to breaking the routing.

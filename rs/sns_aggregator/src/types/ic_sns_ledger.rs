@@ -8,18 +8,18 @@ use crate::types::{CandidType, Deserialize, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 // use ic_cdk::api::call::CallResult;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum MetadataValue {
   Int(candid::Int),
   Nat(candid::Nat),
-  Blob(Vec<u8>),
+  Blob(serde_bytes::ByteBuf),
   Text(String),
 }
 
-pub type Subaccount = Vec<u8>;
+pub type Subaccount = serde_bytes::ByteBuf;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
 
@@ -71,7 +71,7 @@ pub enum Value {
   Map(Map),
   Nat(candid::Nat),
   Nat64(u64),
-  Blob(Vec<u8>),
+  Blob(serde_bytes::ByteBuf),
   Text(String),
   Array(Vec<Box<Value>>),
 }
@@ -90,7 +90,7 @@ pub struct GetBlocksResponse_archived_blocks_inner {
 
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponse {
-  pub  certificate: Option<Vec<u8>>,
+  pub  certificate: Option<serde_bytes::ByteBuf>,
   pub  first_index: BlockIndex,
   pub  blocks: Vec<Block>,
   pub  chain_length: u64,
@@ -98,7 +98,7 @@ pub struct GetBlocksResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DataCertificate { certificate: Option<Vec<u8>>, hash_tree: Vec<u8> }
+pub struct DataCertificate { certificate: Option<serde_bytes::ByteBuf>, hash_tree: serde_bytes::ByteBuf }
 
 pub type TxIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -107,7 +107,7 @@ pub struct GetTransactionsRequest { start: TxIndex, length: candid::Nat }
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Transaction_burn_inner {
   pub  from: Account,
-  pub  memo: Option<Vec<u8>>,
+  pub  memo: Option<serde_bytes::ByteBuf>,
   pub  created_at_time: Option<u64>,
   pub  amount: candid::Nat,
 }
@@ -115,7 +115,7 @@ pub struct Transaction_burn_inner {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Transaction_mint_inner {
   pub  to: Account,
-  pub  memo: Option<Vec<u8>>,
+  pub  memo: Option<serde_bytes::ByteBuf>,
   pub  created_at_time: Option<u64>,
   pub  amount: candid::Nat,
 }
@@ -125,7 +125,7 @@ pub struct Transaction_transfer_inner {
   pub  to: Account,
   pub  fee: Option<candid::Nat>,
   pub  from: Account,
-  pub  memo: Option<Vec<u8>>,
+  pub  memo: Option<serde_bytes::ByteBuf>,
   pub  created_at_time: Option<u64>,
   pub  amount: candid::Nat,
 }
@@ -169,7 +169,7 @@ pub type Timestamp = u64;
 pub struct TransferArg {
   pub  to: Account,
   pub  fee: Option<Tokens>,
-  pub  memo: Option<Vec<u8>>,
+  pub  memo: Option<serde_bytes::ByteBuf>,
   pub  from_subaccount: Option<Subaccount>,
   pub  created_at_time: Option<Timestamp>,
   pub  amount: Tokens,
@@ -190,7 +190,7 @@ pub enum TransferError {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum TransferResult { Ok(BlockIndex), Err(TransferError) }
 
-pub struct SERVICE(candid::Principal);
+pub struct SERVICE(pub candid::Principal);
 impl SERVICE{
   pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<
     (GetBlocksResponse,)

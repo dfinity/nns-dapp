@@ -1,3 +1,5 @@
+import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
+import { AdditionalInfoReviewPo } from "$tests/page-objects/AdditionalInfoReview.page-object";
 import { InProgressPo } from "$tests/page-objects/InProgress.page-object";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,6 +13,14 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
     );
   }
 
+  getAdditionalInfoFormPo(): AdditionalInfoFormPo {
+    return AdditionalInfoFormPo.under(this.root);
+  }
+
+  getAdditionalInfoReviewPo(): AdditionalInfoReviewPo {
+    return AdditionalInfoReviewPo.under(this.root);
+  }
+
   getInProgressPo(): InProgressPo {
     return InProgressPo.under(this.root);
   }
@@ -19,12 +29,21 @@ export class ParticipateSwapModalPo extends TransactionModalPo {
     return this.getInProgressPo().isPresent();
   }
 
-  async participate({ amount }: { amount: number }): Promise<void> {
+  async participate({
+    amount,
+    acceptConditions,
+  }: {
+    amount: number;
+    acceptConditions: boolean;
+  }): Promise<void> {
     const formPo = this.getTransactionFormPo();
     await formPo.enterAmount(amount);
+    const info = this.getAdditionalInfoFormPo();
+    if (acceptConditions) {
+      await info.toggleConditionsAccepted();
+    }
     await formPo.clickContinue();
-    const review = this.getTransactionReviewPo();
-    await review.clickCheckbox();
-    await review.clickSend();
+    await this.getAdditionalInfoReviewPo().clickCheckbox();
+    await this.getTransactionReviewPo().clickSend();
   }
 }
