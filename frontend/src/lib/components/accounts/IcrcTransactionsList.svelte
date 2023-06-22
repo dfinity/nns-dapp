@@ -27,7 +27,7 @@
   {:else}
     <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
       {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
-        <div animate:flip="{{duration: 250}}">
+        <div animate:flip={{ duration: 250 }}>
           <IcrcTransactionCard
             transactionWithId={transaction}
             {toSelfTransaction}
