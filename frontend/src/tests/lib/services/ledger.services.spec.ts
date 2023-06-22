@@ -41,14 +41,14 @@ import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
+  const callback = jest.fn();
+  const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe("connect hardware wallet", () => {
-    const callback = jest.fn();
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
     describe("success", () => {
       beforeEach(() => {
         jest
@@ -193,8 +193,6 @@ describe("ledger-services", () => {
   });
 
   describe("get ledger identity", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
     beforeEach(() => {
       jest
         .spyOn(LedgerIdentity, "create")
@@ -225,8 +223,6 @@ describe("ledger-services", () => {
   });
 
   describe("show info on ledger", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
     let spy;
 
     beforeAll(() => {
@@ -268,7 +264,6 @@ describe("ledger-services", () => {
   });
 
   describe("query neurons", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
     const mockNeurons = [mockNeuron];
 
     beforeAll(() => {
