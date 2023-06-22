@@ -1,17 +1,11 @@
-name: Empty shell of docker buildruns-on: ubuntu-20.04
+name: Empty shell of docker build
 on:
   push:
-oncurrency:
+concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  # TODO: Once this is merged, remove this as a merge requirement and delete this file.
   docker-build-passes:
-    needs: ["]
-    if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/needs_success
-        with:
-          needs: '${{ toJson(needs) }}'
+      - run: echo Nothing to do here

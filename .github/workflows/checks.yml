@@ -267,7 +267,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: docker-build prints help
-        run: ./scripts/docker-build --help | grep -i usage    
+        run: ./scripts/docker-build --help | grep -i usage
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
     if: ${{ always() }}
