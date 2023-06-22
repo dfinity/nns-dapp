@@ -26,6 +26,7 @@
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
@@ -81,6 +82,8 @@
       <SnsNeuronAge {neuron} />
 
       <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+      <SnsNeuronVestingPeriodRemaining {neuron} />
 
       <div class="buttons">
         {#if allowedToSplit}
