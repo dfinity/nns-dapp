@@ -41,23 +41,21 @@ import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 
 describe("ledger-services", () => {
+  const callback = jest.fn();
+  const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe("connect hardware wallet", () => {
-    const callback = jest.fn();
-
     describe("success", () => {
-      const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
-      beforeAll(() => {
+      beforeEach(() => {
         jest
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
           );
-      });
-
-      afterAll(() => {
-        jest.clearAllMocks();
-        jest.restoreAllMocks();
       });
 
       it("should set connecting state before connecting", async () => {
@@ -79,7 +77,14 @@ describe("ledger-services", () => {
     });
 
     describe("error", () => {
+      beforeEach(() => {
+        jest.spyOn(console, "error").mockImplementation(jest.fn());
+      });
+
       it("should set not connected state on error", async () => {
+        jest.spyOn(LedgerIdentity, "create").mockImplementation(() => {
+          throw new Error("Not connected");
+        });
         await connectToHardwareWallet(callback);
 
         expect(callback).toHaveBeenNthCalledWith(2, {
@@ -88,6 +93,9 @@ describe("ledger-services", () => {
       });
 
       it("should display a toast for the error assuming the browser is not supported", async () => {
+        jest.spyOn(LedgerIdentity, "create").mockImplementation(() => {
+          throw new LedgerErrorKey("error__ledger.browser_not_supported");
+        });
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
         await connectToHardwareWallet(callback);
@@ -128,11 +136,6 @@ describe("ledger-services", () => {
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
         .mockImplementation(() => Promise.resolve(mockGetIdentity()));
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
     });
 
     describe("success", () => {
@@ -190,19 +193,12 @@ describe("ledger-services", () => {
   });
 
   describe("get ledger identity", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
-    beforeAll(() =>
+    beforeEach(() => {
       jest
         .spyOn(LedgerIdentity, "create")
         .mockImplementation(
           async (): Promise<LedgerIdentity> => mockLedgerIdentity
-        )
-    );
-
-    afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
+        );
     });
 
     it("should return ledger identity", async () => {
@@ -227,8 +223,6 @@ describe("ledger-services", () => {
   });
 
   describe("show info on ledger", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
-
     let spy;
 
     beforeAll(() => {
@@ -239,11 +233,6 @@ describe("ledger-services", () => {
         );
 
       spy = jest.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
-      jest.restoreAllMocks();
     });
 
     describe("success", () => {
@@ -275,7 +264,6 @@ describe("ledger-services", () => {
   });
 
   describe("query neurons", () => {
-    const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
     const mockNeurons = [mockNeuron];
 
     beforeAll(() => {
