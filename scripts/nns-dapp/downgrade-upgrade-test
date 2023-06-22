@@ -32,7 +32,7 @@ get_current_wasm() {
 }
 
 get_prod_wasm() {
-  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm.gz >"$PROD_WASM"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
 # Installs the current build of nns-dapp
