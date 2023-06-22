@@ -14,6 +14,7 @@ import {
   getLedgerIdentity,
   listNeuronsHardwareWallet,
   registerHardwareWallet,
+  resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/ledger.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -45,6 +46,7 @@ describe("ledger-services", () => {
   const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
 
   beforeEach(() => {
+    resetIdentitiesCachedForTesting();
     jest.clearAllMocks();
   });
 
@@ -208,6 +210,18 @@ describe("ledger-services", () => {
       expect(principalToAccountIdentifier(identity.getPrincipal())).toEqual(
         mockLedgerIdentifier
       );
+    });
+
+    it("should cache ledger identity", async () => {
+      const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity1).not.toBeNull();
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+      const identity2 = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity2).toBe(identity1);
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
     });
 
     it("should throw an error if identifier does not match", async () => {
