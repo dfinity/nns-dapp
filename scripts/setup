@@ -66,7 +66,9 @@ mkdir -p "$USER_BIN"
 NEW_TERMINAL_NEEDED=false
 append_to_profile() {
   printf '\n%s\n' "$1" >>"$USER_PROFILE"
+  set +eu
   . "$USER_PROFILE"
+  set -eu
   NEW_TERMINAL_NEEDED=true
 }
 
