@@ -11,77 +11,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  assets:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build nns-dapp repo
-        uses: ./.github/actions/build_nns_dapp
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          no-cache: ${{ inputs.no_cache || false }}
-      - name: Print the hash of all assets
-        run: find out -type f | xargs sha256sum
-      - name: 'Record the git commit and any tags'
-        run: git log | head -n1 > out/commit.txt
-      - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: nns-dapp for ${{ matrix.BUILD_NAME }}
-          path: |
-            out/commit.txt
-            out/nns-dapp.wasm.gz
-            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
-            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
-            out/frontend-config.sh
-            out/deployment-config.json
-      - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: sns_aggregator for ${{ matrix.BUILD_NAME }}
-          path: |
-            out/sns_aggregator.wasm.gz
-            out/sns_aggregator_dev.wasm.gz
-      - name: Release
-        uses: ./.github/actions/release_nns_dapp
-        with:
-          assets_dir: 'out'
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v3
-        with:
-          name: NNS frontend assets
-          path: |
-            out/assets.tar.xz
-            out/sourcemaps.tar.xz
-      - name: "Link the build sha to this commit"
-        run: |
-          : Set up git
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-          : Make a note of the WASM shasum.
-          NOTE="refs/notes/mainnet/wasm-sha"
-          SHA="$(sha256sum < "out/nns-dapp.wasm.gz")"
-          git fetch origin "+${NOTE}:${NOTE}"
-          if git notes --ref="wasm-sha" add -m "$SHA"
-          then git push origin "${NOTE}:${NOTE}" || true
-          else echo SHA already set
-          fi
-      - name: "Verify that the WASM module is small enough to deploy"
-        run: |
-          wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
-          max_size=3145728
-          echo "WASM size:          $wasm_size"
-          echo "Max supported size: $max_size"
-          (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
+  # TODO: Move to the file of unit tests.
   docker-build-cli-flags:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
+  # TODO: Once this is merged, remove this as a merge requirement and delete this file.
   docker-build-passes:
-    needs: ["assets", "docker-build-cli-flags"]
+    needs: ["docker-build-cli-flags"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
