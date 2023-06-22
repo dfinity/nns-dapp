@@ -17,8 +17,6 @@ runs:
       shell: bash
       run: |
         set -euxo pipefail
-        # TODO: Create the local arguments as part of a standardized build.
-        DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
         cd "${{ inputs.assets_dir }}"
         daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm.gz"
         cp nns-dapp.wasm.gz "$daily_build_name"
