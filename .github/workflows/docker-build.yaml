@@ -30,7 +30,7 @@ jobs:
           name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
             out/commit.txt
-            out/nns-dapp.wasm
+            out/nns-dapp.wasm.gz
             out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
             out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
             out/frontend-config.sh
@@ -40,8 +40,8 @@ jobs:
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
-            out/sns_aggregator.wasm
-            out/sns_aggregator_dev.wasm
+            out/sns_aggregator.wasm.gz
+            out/sns_aggregator_dev.wasm.gz
       - name: Release
         uses: ./.github/actions/release_nns_dapp
         with:
@@ -61,7 +61,7 @@ jobs:
           git config user.email "<>"
           : Make a note of the WASM shasum.
           NOTE="refs/notes/mainnet/wasm-sha"
-          SHA="$(sha256sum < "out/nns-dapp.wasm")"
+          SHA="$(sha256sum < "out/nns-dapp.wasm.gz")"
           git fetch origin "+${NOTE}:${NOTE}"
           if git notes --ref="wasm-sha" add -m "$SHA"
           then git push origin "${NOTE}:${NOTE}" || true
@@ -69,7 +69,7 @@ jobs:
           fi
       - name: "Verify that the WASM module is small enough to deploy"
         run: |
-          wasm_size="$(wc -c < "out/nns-dapp.wasm")"
+          wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
           max_size=3145728
           echo "WASM size:          $wasm_size"
           echo "Max supported size: $max_size"

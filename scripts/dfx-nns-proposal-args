@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Gets the arguments of a given proposal number.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+FORMAT_OPTIONS=(json sha256 all)
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=p long=proposal desc="The proposal number" variable=DFX_PROPOSAL
+clap.define short=c long=nocache desc="Do not use cached results" variable=DFX_NO_CACHE nargs=0
+clap.define short=f long=format desc="The format to emit.  Options: ${FORMAT_OPTIONS[*]}" variable=DFX_FORMAT default="all"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+test -n "${DFX_PROPOSAL:-}" || {
+  echo "ERROR: Proposal number should be provided."
+  echo "       Please use --proposal <NUM>"
+  exit 1
+} >&2
+
+export DFX_NETWORK
+CACHE_DIR="$HOME/.cache/dfinity/networks/${DFX_NETWORK}"
+
+# Determines whether a given file can be used from cache
+cache_hit() {
+  local path
+  path="$1"
+  test -z "${DFX_NO_CACHE:-}" && test -e "$path"
+}
+
+# The location of a proposal in the cache.
+proposal_path() {
+  echo "$CACHE_DIR/proposals/$DFX_PROPOSAL"
+}
+
+# The location of a canister .did file in the cache
+did_path() {
+  canister="$1"
+  echo "$CACHE_DIR/candid/$canister.did"
+}
+
+# Gets the .did file from a deployed canister's metadata
+get_did() {
+  canister="$1"
+  path="$(did_path "$canister")"
+  mkdir -p "$(dirname "$path")"
+  cache_hit "$path" || dfx canister metadata "$canister" --network "$DFX_NETWORK" candid:service >"$path"
+}
+
+# Downloads and parses the proposal info from the network
+get_proposal() {
+  mkdir -p "$CACHE_DIR/proposals"
+  cache_hit "$(proposal_path).did" || dfx canister call nns-governance --network "$DFX_NETWORK" get_proposal_info "($DFX_PROPOSAL : nat64)" --query | sponge "$(proposal_path).did"
+  cache_hit "$(proposal_path).json" || idl2json <"$(proposal_path).did" --did "$(did_path nns-governance)" -t '(opt ProposalData)' --bytes-as hex | sponge "$(proposal_path).json"
+}
+
+# Extracts and parses the payload bytes from the proposal info
+extract_payload() {
+  jq -r '.[0][0].proposal[0].action[0].ExecuteNnsFunction.payload' "$(proposal_path).json" | didc decode | sponge "$(proposal_path).payload.did"
+  idl2json <"$(proposal_path).payload.did" -d "$SOURCE_DIR/../declarations/nns_governance/proposals.did" -t "${NNS_FUNCTION_TYPE:-()}" --bytes-as hex | sponge "$(proposal_path).payload.json"
+}
+
+# Determine proposal function type, setting the NNS_FUNCTION_TYPE variable
+determine_proposal_type() {
+  case "$(jq '.[0][0].proposal[0].action[0].ExecuteNnsFunction.nns_function' "$(proposal_path).json")" in
+  4) NNS_FUNCTION_TYPE=ChangeCanisterProposal ;;
+  # TODO: Get the did from the wasm in the proposal; this can be used to render keys in the arguments.
+  *) NNS_FUNCTION_TYPE="" ;;
+  esac
+}
+
+# Gets the wasm from the payload
+extract_wasm() {
+  jq <"$(proposal_path).payload.json" -r '.wasm_module' | xxd -r -p >"$(proposal_path).payload.wasm"
+  if file "$(proposal_path).payload.wasm" | grep -q gzip; then
+    mv "$(proposal_path).payload.wasm" "$(proposal_path).payload.wasm.gz"
+    gunzip <"$(proposal_path).payload.wasm.gz" >"$(proposal_path).payload.wasm"
+  fi
+}
+
+# Gets the did file from the wasm.  May fail: The wasm is allowed not to contain this metadata.
+extract_did_from_wasm() {
+  ic-wasm "$(proposal_path).payload.wasm" metadata candid:service >"$(proposal_path).payload.wasm.did"
+}
+
+# Gets the sha256 hash of the arguments
+extract_arguments_hash() {
+  if [[ "${1:-}" == "--with-header" ]]; then
+    printf "Arguments hash: "
+  fi
+  jq <"$(proposal_path).payload.json" -r '.arg' | xxd -r -p | sha256sum | awk '{print $1}'
+}
+
+# Extracts the arguments from the payload
+extract_arguments_as_json() {
+  jq <"$(proposal_path).payload.json" -r '.arg' | didc decode | idl2json --bytes-as hex ${ARGS_DIDFILE:+--init --did "$ARGS_DIDFILE"} | jq .
+}
+
+get_did nns-governance
+get_proposal
+determine_proposal_type
+extract_payload
+if extract_wasm && extract_did_from_wasm; then
+  ARGS_DIDFILE="$(proposal_path).payload.wasm.did"
+else
+  ARGS_DIDFILE=""
+fi
+
+case "${DFX_FORMAT:-}" in
+all)
+  extract_arguments_as_json
+  extract_arguments_hash --with-header
+  ;;
+json)
+  extract_arguments_as_json
+  ;;
+sha256)
+  extract_arguments_hash
+  ;;
+*)
+  {
+    echo "ERROR: Unsupported format: '${DFX_FORMAT:-}'"
+    exit 1
+  } >&2
+  ;;
+esac

@@ -18,7 +18,7 @@ fi
 read -rp "HSM Pin: " DFX_HSM_PIN
 
 AGGREGATOR_CANISTER_ID="3r4gx-wqaaa-aaaaq-aaaia-cai"
-WASM="./release/docker/sns_aggregator.wasm"
+WASM="./release/docker/sns_aggregator.wasm.gz"
 SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 
 ARG_DID="./release/sns_aggregator_arg.did"
