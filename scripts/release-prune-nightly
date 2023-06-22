@@ -30,4 +30,12 @@ gh release list --limit 500 >,release_list
 for release_name in $(list_removal_candidates); do
 	gh release delete ${DFX_YES:+--yes} "$release_name" || true
 done
-rm ,release_list
+cat <<EOF
+
+Finished deleting old nightly builds.
+
+Please also consider reviewing draft releases.  Some may have been
+created for testing and may no longer be needed.
+
+EOF
+grep Draft ,release_list
