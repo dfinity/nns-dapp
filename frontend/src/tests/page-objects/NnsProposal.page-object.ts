@@ -1,6 +1,6 @@
 import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
 import { SkeletonDetailsPo } from "$tests/page-objects/SkeletonDetails.page-object";
-import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
+import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -16,8 +16,8 @@ export class NnsProposalPo extends BasePageObject {
     return SkeletonDetailsPo.under(this.root);
   }
 
-  getVotingPo(): SnsProposalVotingSectionPo {
-    return SnsProposalVotingSectionPo.under(this.root);
+  getVotesResultPo(): VotesResultPo {
+    return VotesResultPo.under(this.root);
   }
 
   getProposalSummaryPo(): ProposalSummarySectionPo {
