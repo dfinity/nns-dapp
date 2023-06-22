@@ -844,17 +844,6 @@ export const snsNeuronsToIneligibleNeuronData = ({
   }));
 
 /**
- * Returns whether the neuron is still vesting.
- */
-export const isVesting = ({
-  created_timestamp_seconds,
-  vesting_period_seconds,
-}: SnsNeuron): boolean =>
-  nowInSeconds() <
-  Number(created_timestamp_seconds) +
-    Number(fromNullable(vesting_period_seconds) ?? 0n);
-
-/**
  * Returns how long until the vesting period ends in seconds.
  *
  * If the vesting period has ended, returns 0.
@@ -871,3 +860,9 @@ export const vestingInSeconds = ({
       0
     )
   );
+
+/**
+ * Returns whether the neuron is still vesting.
+ */
+export const isVesting = (neuron: SnsNeuron): boolean =>
+  vestingInSeconds(neuron) > 0n;
