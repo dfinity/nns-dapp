@@ -13,7 +13,7 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=w long=wasm desc="The location of the nns-dapp wasm." variable=DFX_WASM_PATH default="nns-dapp.wasm"
+clap.define short=w long=wasm desc="The location of the nns-dapp wasm." variable=DFX_WASM_PATH default="nns-dapp.wasm.gz"
 clap.define short=u long=update-golden desc="Update the exports golden file" variable=UPDATE_GOLDEN nargs=0 default="false"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"

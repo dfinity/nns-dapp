@@ -13,7 +13,7 @@ get_canister_id >/dev/null || {
   exit 1
 }
 
-WASM_FILE=nns-dapp.wasm
+WASM_FILE=nns-dapp.wasm.gz
 test -e "$WASM_FILE" || DFX_NETWORK="$DFX_NETWORK" ./scripts/docker-build
 SHA="$(sha256sum "$WASM_FILE" | awk '{print $1}')"
 CANISTER_ID="$(get_canister_id)"

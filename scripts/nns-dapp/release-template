@@ -17,7 +17,7 @@ mkdir -p release/ci
 [[ "${CI:-}" != "" ]] || {
   CI="$("$SOURCE_DIR/nns-dapp/ci-link" --commit tags/release-candidate | tail -n1 | grep .)"
 }
-WASM="release/ci/nns-dapp.wasm"
+WASM="release/ci/nns-dapp.wasm.gz"
 if test -f "$WASM"; then
   SHA="$(sha256sum "$WASM" | awk '{print $1}')"
 else
@@ -49,7 +49,7 @@ To build the wasm module yourself and verify its hash, run the following command
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse tags/release-candidate)"
 ./scripts/docker-build
-sha256sum nns-dapp.wasm
+sha256sum nns-dapp.wasm.gz
 \`\`\`
 EOF
 
@@ -65,7 +65,7 @@ To build the wasm module yourself and verify its hash, run the following command
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse tags/release-candidate)"
 ./scripts/docker-build
-sha256sum nns-dapp.wasm
+sha256sum nns-dapp.wasm.gz
 \`\`\`
 
 You may also want to verify the canister arguments.  In the proposal they are binary, which is not very readable. Docker
