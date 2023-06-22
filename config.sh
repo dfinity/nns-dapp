@@ -109,9 +109,17 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
-  : "Get the governance canister ID - it should be defined"
+  : "Get the governance canister ID and URL - they should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
+
+  : "Get the ledger canister ID -it should be defined"
+  LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
+  export LEDGER_CANISTER_ID
+
+  : "Get the minter canister ID - it should be defined"
+  CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
+  export CYCLES_MINTING_CANISTER_ID
 
   : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
@@ -132,9 +140,11 @@ local_deployment_data="$(
     OWN_CANISTER_ID: env.CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
+    LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
+    CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,

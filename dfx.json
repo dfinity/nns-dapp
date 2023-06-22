@@ -13,6 +13,30 @@
         }
       }
     },
+    "nns-ledger": {
+      "type": "custom",
+      "candid": "target/ic/ic-icrc1-ledger.did",
+      "wasm": "target/ic/ic-icrc1-ledger.wasm",
+      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "remote": {
+        "id": {
+          "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "__default": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+        }
+      }
+    },
+    "nns-cycles-minting": {
+      "build": "",
+      "candid": "target/ic/nns-cycles-minting.did",
+      "remote": {
+        "id": {
+          "mainnet": "rkp4c-7iaaa-aaaaa-aaaca-cai",
+          "__default": "rkp4c-7iaaa-aaaaa-aaaca-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": ""
+    },
     "nns-dapp": {
       "type": "custom",
       "candid": "rs/backend/nns-dapp.did",
@@ -676,8 +700,6 @@
     "network": {
       "config": {
         "FETCH_ROOT_KEY": true,
-        "CYCLES_MINTING_CANISTER_ID": "rkp4c-7iaaa-aaaaa-aaaca-cai",
-        "LEDGER_CANISTER_ID": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
