@@ -19,6 +19,7 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
+export PATH="$PWD/scripts:$PATH"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
