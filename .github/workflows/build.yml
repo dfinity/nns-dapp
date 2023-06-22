@@ -326,18 +326,8 @@ jobs:
           diff local_hashes.txt mainnet_hashes.txt  || {
             echo "ERROR: wasm hashes differ between mainnet and local."
           }
-# Verify that the aggregator gets the required data
-name: Aggregator aggregates
-on:
-  push:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-defaults:
-  run:
-    shell: bash -euxlo pipefail {0}
-jobs:
   aggregator_test:
+    needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 60
     steps:
