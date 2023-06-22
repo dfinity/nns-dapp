@@ -116,7 +116,7 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  async goToNeuronDetailsById(neuronId: string): Promise<void> {
+  async goToNeuronDetails(neuronId: string): Promise<void> {
     await this.goToNeurons();
     await (
       await this.getNeuronsPo().getNnsNeuronsPo().getNeuronCardPo(neuronId)
