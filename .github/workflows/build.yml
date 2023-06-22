@@ -1,4 +1,4 @@
-name: E2e test
+name: Build and test
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
