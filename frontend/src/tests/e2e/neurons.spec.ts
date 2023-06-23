@@ -3,6 +3,9 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
+const neuronIds = async (appPo: AppPo) =>
+  await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
+
 test("Test neuron management", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
@@ -30,35 +33,47 @@ test("Test neuron management", async ({ page, context }) => {
     .getNnsNeuronsFooterPo()
     .stakeNeuron({ amount: stake });
 
+  const idsAfterFirstNeuronCreation = await neuronIds(appPo);
+  expect(idsAfterFirstNeuronCreation.length).toBe(1);
+
   step("Stake neuron B (for dummy proposals creation)");
   await appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
     .stakeNeuron({ amount: stake });
+  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+
+  // get neurons
+  const idsAfterSecondNeuronCreation = await neuronIds(appPo);
+
+  expect(idsAfterSecondNeuronCreation.length).toBe(2);
+
+  const neuronAId = idsAfterFirstNeuronCreation[0];
+  const neuronBId = idsAfterSecondNeuronCreation.find((id) => id !== neuronAId);
+
+  step("Open neuron A details");
+  await appPo.goToNeuronDetails(neuronAId);
+
+  step("Get neuron A voting power");
+  const neuronAVotingPower = await appPo
+    .getNeuronDetailPo()
+    .getNnsNeuronDetailPo()
+    .getNnsNeuronMetaInfoCardPageObjectPo()
+    .getVotingPower();
+  // back to neurons otherwise the menu is not available
+  await appPo.goBack();
 
   step("Open neuron B details");
-
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
-  const ids = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
-
-  if (ids.length === 0) {
-    throw new Error("No neuron cards found");
-  }
-
-  // goto first neuron since it should be the one we just created
-  await appPo.goToNeuronDetails(ids[0]);
+  await appPo.goToNeuronDetails(neuronBId);
 
   step("Create dummy proposal with neuron B");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().createDummyProposals();
 
   step("Open proposals list");
-
-  // back to /neurons otherwise the menu is not available
+  // back to neurons otherwise the menu is not available
   await appPo.goBack();
   await appPo.goToProposals();
-
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
   const proposalIds = await appPo
     .getProposalsPo()
     .getNnsProposalListPo()
@@ -70,25 +85,21 @@ test("Test neuron management", async ({ page, context }) => {
   await (
     await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardPos()
   )[0].click();
-
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();
-
   const initialAdoptVotingPower = await proposalDetails
     .getVotesResultPo()
     .getAdoptVotingPower();
 
   step("Vote for proposal");
-
   await proposalDetails.getVotingCardPo().voteYes();
 
   step("Compare voting power before and after voting");
-
   const changedAdoptVotingPower = await proposalDetails
     .getVotesResultPo()
     .getAdoptVotingPower();
 
-  expect(Number(changedAdoptVotingPower)).toBeGreaterThan(
-    Number(initialAdoptVotingPower)
+  expect(Number(changedAdoptVotingPower)).toEqual(
+    Number(initialAdoptVotingPower) + Number(neuronAVotingPower)
   );
 });
