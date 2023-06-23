@@ -11,6 +11,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 #### Changed
 #### Deprecated
 #### Removed
@@ -26,9 +27,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 #### Fixed
 #### Security
-
-## Unreleased
-* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 
 ## Proposal 123006
 
