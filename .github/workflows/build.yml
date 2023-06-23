@@ -309,9 +309,6 @@ jobs:
         with:
           name: nns-dapp
           path: out-local
-      - name: Remove _local suffix
-        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        run: mv out-local/nns-dapp.wasm.gz out-local/nns-dapp.wasm.gz
       - name: Get sns_aggregator
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: actions/download-artifact@v3
