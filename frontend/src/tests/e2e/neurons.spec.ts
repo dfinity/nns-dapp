@@ -49,8 +49,6 @@ test("Test neuron management", async ({ page, context }) => {
   await appPo.goToNeuronDetails(ids[0]);
 
   step("Create dummy proposal with neuron B");
-
-  // create dummy proposals
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().createDummyProposals();
 
   step("Open proposals list");
@@ -66,9 +64,7 @@ test("Test neuron management", async ({ page, context }) => {
     .getNnsProposalListPo()
     .getProposalIds();
 
-  if (proposalIds.length === 0) {
-    throw new Error("No proposal cards found");
-  }
+  expect(proposalIds.length).toBeGreaterThan(0);
 
   step("Open first proposal");
   await (
@@ -78,7 +74,6 @@ test("Test neuron management", async ({ page, context }) => {
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();
 
-  await page.waitForSelector("[data-tid='adopt']");
   const initialAdoptVotingPower = await proposalDetails
     .getVotesResultPo()
     .getAdoptVotingPower();

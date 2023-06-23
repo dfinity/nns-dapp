@@ -16,6 +16,6 @@ export class ProposalCardPo extends BasePageObject {
   }
 
   getProposalId(): Promise<string> {
-    return this.root.byTestId("proposal-id").getText();
+    return this.getText("proposal-id");
   }
 }
