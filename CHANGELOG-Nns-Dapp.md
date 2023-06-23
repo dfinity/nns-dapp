@@ -8,13 +8,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 ## Unreleased
 
-### Added
-### Changed
-### Fixed
-### Security
-### Not Published
-### Removed
-### Deprecated
+### Application
+
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+#### Not Published
+
+### Operations
+
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
 
 ## Proposal 123006
 
