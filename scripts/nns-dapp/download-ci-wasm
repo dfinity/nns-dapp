@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+DEFAULT_WASM_FILENAME="nns-dapp.wasm"
+
+print_help() {
+  cat <<-EOF
+
+  Downloads the $DEFAULT_WASM_FILENAME for the given commit from GitHub CI.
+
+	EOF
+}
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit to download wasm for" variable=COMMIT default="tags/release-candidate"
+clap.define short=d long=dir desc="Directory to put the wasm in" variable=OUTPUT_DIR default="$TOP_DIR/release/ci"
+clap.define short=l long=limit desc="--limit passed to gh run list" variable=LIMIT default="200"
+clap.define short=w long=wasm-filename desc="The name of the WASM file in the
+download" variable=WASM_FILENAME default="$DEFAULT_WASM_FILENAME"
+
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+COMMIT="$(git rev-parse "$COMMIT")"
+
+docker_build_run_id="$(gh run list --workflow "Docker build" --limit "$LIMIT" --status success --json databaseId,headSha | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit)' | jq -r '.databaseId' | tail -1)"
+
+if ! [ "$docker_build_run_id" ]; then
+  (
+    echo "No successful Docker build run found for commit $COMMIT."
+    echo "If the commit is too new, the run may not have finished yet."
+    echo "If the commit is too old, increasing --limit (was $LIMIT) may help."
+  ) >&2
+  exit 1
+fi
+
+tmp_dir="$(mktemp -d)"
+trap "rm -rf $tmp_dir" EXIT
+gh run download "$docker_build_run_id" --dir "$tmp_dir"
+
+mkdir -p "$OUTPUT_DIR"
+dst_wasm_file="$OUTPUT_DIR/$WASM_FILENAME"
+src_wasm_file="$(find "$tmp_dir" -name "$WASM_FILENAME")"
+
+if ! [ "$src_wasm_file" ]; then
+  echo "No $WASM_FILENAME found in $tmp_dir" >&2
+  trap "echo Leaving $tmp_dir for debugging" EXIT
+  exit 1
+fi
+
+mv "$src_wasm_file" "$dst_wasm_file"
+
+sha256sum "$dst_wasm_file"
