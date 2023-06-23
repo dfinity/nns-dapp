@@ -40,7 +40,7 @@ if ! [ "$docker_build_run_id" ]; then
 fi
 
 tmp_dir="$(mktemp -d)"
-trap "rm -rf $tmp_dir" EXIT
+trap 'rm -rf $tmp_dir' EXIT
 gh run download "$docker_build_run_id" --dir "$tmp_dir"
 
 mkdir -p "$OUTPUT_DIR"
@@ -49,7 +49,7 @@ src_wasm_file="$(find "$tmp_dir" -name "$WASM_FILENAME")"
 
 if ! [ "$src_wasm_file" ]; then
   echo "No $WASM_FILENAME found in $tmp_dir" >&2
-  trap "echo Leaving $tmp_dir for debugging" EXIT
+  trap 'echo Leaving $tmp_dir for debugging' EXIT
   exit 1
 fi
 
