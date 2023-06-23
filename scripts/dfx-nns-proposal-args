@@ -33,7 +33,7 @@ print_help() {
 	                                          \            /
 	                                           \          /
 	                                            \        /
-	                                             \      /
+	                                             \ PARSE/
 	                                              V    V
 	                                       [ProposalPayload.did]
 	                                        /                 \
@@ -49,7 +49,7 @@ print_help() {
 	                                           \           /       |
 	                                            \         /        |
 	                                             \       /         |
-	                                              \     /          |
+	                                              \PARSE/          |
 	                                               V   V           V
 	                                             [args.did]  [args.sha256]
 
