@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+
 ## Proposal 123006
 
 * Improvement in NNS proposal filters.
