@@ -15,6 +15,7 @@
     hasPermissionToDisburse,
     hasPermissionToDissolve,
     isCommunityFund,
+    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { NeuronState } from "@dfinity/nns";
@@ -39,7 +40,8 @@
     hasPermissionToDissolve({
       neuron,
       identity: $authStore.identity,
-    });
+    }) &&
+    !isVesting(neuron);
 
   let allowedToDisburse: boolean;
   $: allowedToDisburse =
@@ -47,7 +49,8 @@
     hasPermissionToDisburse({
       neuron,
       identity: $authStore.identity,
-    });
+    }) &&
+    !isVesting(neuron);
 
   let canDissolve = false;
   $: canDissolve =
