@@ -1,6 +1,6 @@
 # Changelog
 
-## Proposal XXXXXX
+## Proposal 123245
 
 * Render the SNS Neuron age
 * Fix navigation issue from SNS proposal to the Launchpad
