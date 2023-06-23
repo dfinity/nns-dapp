@@ -126,10 +126,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
-      - name: Test download CI wasm
-        run: |
-          MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
-          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT" --expected-wasm nns-dapp.wasm.gz
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
@@ -142,6 +138,12 @@ jobs:
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+      - name: Test download CI wasm
+        run: |
+          MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
+          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
