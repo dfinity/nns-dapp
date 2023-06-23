@@ -14,6 +14,7 @@ import {
   getLedgerIdentity,
   listNeuronsHardwareWallet,
   registerHardwareWallet,
+  resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/ledger.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -25,6 +26,7 @@ import {
   mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
+  mockPrincipal,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
@@ -43,8 +45,13 @@ import { mock } from "jest-mock-extended";
 describe("ledger-services", () => {
   const callback = jest.fn();
   const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
+  const ledgerPrincipal2 = mockPrincipal;
+  const mockLedgerIdentity2: MockLedgerIdentity = new MockLedgerIdentity({
+    principal: ledgerPrincipal2,
+  });
 
   beforeEach(() => {
+    resetIdentitiesCachedForTesting();
     jest.clearAllMocks();
   });
 
@@ -208,6 +215,41 @@ describe("ledger-services", () => {
       expect(principalToAccountIdentifier(identity.getPrincipal())).toEqual(
         mockLedgerIdentifier
       );
+    });
+
+    it("should cache ledger identity for same identifier", async () => {
+      const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity1).not.toBeNull();
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+      const identity2 = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity2).toBe(identity1);
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not return cached ledger identity for different account", async () => {
+      jest
+        .spyOn(LedgerIdentity, "create")
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        )
+        .mockImplementationOnce(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity2
+        );
+
+      const identity1 = await getLedgerIdentity(mockLedgerIdentifier);
+
+      expect(identity1).not.toBeNull();
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+      const identity2 = await getLedgerIdentity(
+        principalToAccountIdentifier(ledgerPrincipal2)
+      );
+
+      expect(identity2).not.toBe(identity1);
+      expect(LedgerIdentity.create).toHaveBeenCalledTimes(2);
     });
 
     it("should throw an error if identifier does not match", async () => {

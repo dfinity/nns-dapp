@@ -9,6 +9,7 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
     hasPermissionToSplit,
+    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { E8s, NeuronState, Token } from "@dfinity/nns";
@@ -26,6 +27,7 @@
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
@@ -46,7 +48,8 @@
     hasPermissionToSplit({
       neuron,
       identity: $authStore.identity,
-    });
+    }) &&
+    !isVesting(neuron);
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -67,7 +70,7 @@
 
 <TestIdWrapper testId="sns-neuron-meta-info-card-component">
   {#if nonNullish(neuron) && nonNullish(neuronState)}
-    <div class="content-cell-details">
+    <div class="content-cell-details" data-tid="sns-neuron-meta-info-content">
       <KeyValuePair>
         <SnsNeuronCardTitle
           tagName="h3"
@@ -81,6 +84,8 @@
       <SnsNeuronAge {neuron} />
 
       <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+      <SnsNeuronVestingPeriodRemaining {neuron} />
 
       <div class="buttons">
         {#if allowedToSplit}
