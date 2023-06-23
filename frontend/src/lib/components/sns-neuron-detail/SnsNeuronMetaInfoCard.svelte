@@ -9,6 +9,7 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
     hasPermissionToSplit,
+    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { E8s, NeuronState, Token } from "@dfinity/nns";
@@ -47,7 +48,8 @@
     hasPermissionToSplit({
       neuron,
       identity: $authStore.identity,
-    });
+    }) &&
+    !isVesting(neuron);
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -68,7 +70,7 @@
 
 <TestIdWrapper testId="sns-neuron-meta-info-card-component">
   {#if nonNullish(neuron) && nonNullish(neuronState)}
-    <div class="content-cell-details">
+    <div class="content-cell-details" data-tid="sns-neuron-meta-info-content">
       <KeyValuePair>
         <SnsNeuronCardTitle
           tagName="h3"

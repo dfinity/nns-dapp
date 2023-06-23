@@ -1,4 +1,31 @@
-# Changelog
+# Changelog NNS Dapp
+
+All notable changes to the NNS Dapp will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
+
+## Unreleased
+
+### Application
+
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+#### Not Published
+
+### Operations
+
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
 
 ## Unreleased
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
