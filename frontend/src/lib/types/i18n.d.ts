@@ -296,6 +296,7 @@ interface I18nNeurons {
   inline_remaining: string;
   remaining: string;
   age: string;
+  vestion_period: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
