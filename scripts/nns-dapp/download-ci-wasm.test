@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+WASM_FILENAME="nns-dapp.wasm.gz"
+
+print_help() {
+  cat <<-EOF
+
+  Test scripts/nns-dapp/download-ci-wasm
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit to download wasm for" variable=COMMIT default="main"
+clap.define short=w long=expected-wasm desc="Expected wasm for comparison" variable=EXPECTED_WASM_FILE default="./$WASM_FILENAME"
+
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+COMMIT="$(git rev-parse "$COMMIT")"
+
+tmp_dir="$(mktemp -d)"
+"$SOURCE_DIR/download-ci-wasm" --commit "$COMMIT" --dir "$tmp_dir"
+
+if ! diff "$EXPECTED_WASM_FILE" "$tmp_dir/$WASM_FILENAME"; then
+  exit 1
+fi
+
+echo "SUCCESS: Correct wasm was downloaded"

@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-DEFAULT_WASM_FILENAME="nns-dapp.wasm"
+DEFAULT_WASM_FILENAME="nns-dapp.wasm.gz"
+ARTIFACT_WORKFLOW="Build and test"
 
 print_help() {
   cat <<-EOF
@@ -28,7 +29,7 @@ source "$(clap.build)"
 
 COMMIT="$(git rev-parse "$COMMIT")"
 
-docker_build_run_id="$(gh run list --workflow "Docker build" --limit "$LIMIT" --status success --json databaseId,headSha | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit)' | jq -r '.databaseId' | tail -1)"
+docker_build_run_id="$(gh run list --workflow "$ARTIFACT_WORKFLOW" --limit "$LIMIT" --status success --json databaseId,headSha | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit)' | jq -r '.databaseId' | tail -1)"
 
 if ! [ "$docker_build_run_id" ]; then
   (
@@ -45,7 +46,7 @@ gh run download "$docker_build_run_id" --dir "$tmp_dir"
 
 mkdir -p "$OUTPUT_DIR"
 dst_wasm_file="$OUTPUT_DIR/$WASM_FILENAME"
-src_wasm_file="$(find "$tmp_dir" -name "$WASM_FILENAME")"
+src_wasm_file="$(find "$tmp_dir" -name "$WASM_FILENAME" | head -1)"
 
 if ! [ "$src_wasm_file" ]; then
   echo "No $WASM_FILENAME found in $tmp_dir" >&2

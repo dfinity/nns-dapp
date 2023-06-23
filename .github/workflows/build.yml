@@ -126,6 +126,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
+      - name: Test download CI wasm
+        run: scripts/nns-dapp-download-ci-wasm.test --commit main --expected-wasm nns-dapp.wasm.gz
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
