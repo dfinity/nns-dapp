@@ -55,11 +55,15 @@ test("Test neuron management", async ({ page, context }) => {
   await appPo.goToNeuronDetails(neuronAId);
 
   step("Get neuron A voting power");
-  const neuronAVotingPower = await appPo
-    .getNeuronDetailPo()
-    .getNnsNeuronDetailPo()
-    .getNnsNeuronMetaInfoCardPageObjectPo()
-    .getVotingPower();
+  const neuronAVotingPower = Number(
+    await appPo
+      .getNeuronDetailPo()
+      .getNnsNeuronDetailPo()
+      .getNnsNeuronMetaInfoCardPageObjectPo()
+      .getVotingPower()
+  );
+  // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
+  expect(neuronAVotingPower).toBe(stake * 2);
   // back to neurons otherwise the menu is not available
   await appPo.goBack();
 
