@@ -37,11 +37,15 @@ export class VotesResultPo extends BasePageObject {
 
   /** @returns formatted text */
   async getAdoptVotingPower(): Promise<number> {
-    return Number(assertNonNullish(this.root.byTestId("adopt").getText()));
+    return Number(
+      await assertNonNullish(this.root.byTestId("adopt").getText())
+    );
   }
 
   /** @returns formatted text */
   async getRejectVotingPower(): Promise<number> {
-    return Number(assertNonNullish(this.root.byTestId("reject").getText()));
+    return Number(
+      await assertNonNullish(this.root.byTestId("reject").getText())
+    );
   }
 }

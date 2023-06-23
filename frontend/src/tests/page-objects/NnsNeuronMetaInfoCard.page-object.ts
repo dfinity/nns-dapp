@@ -11,6 +11,6 @@ export class NnsNeuronMetaInfoCardPageObjectPo extends BasePageObject {
   }
 
   async getVotingPower(): Promise<number> {
-    return Number(this.getText("voting-power-value"));
+    return Number(await this.getText("voting-power-value"));
   }
 }
