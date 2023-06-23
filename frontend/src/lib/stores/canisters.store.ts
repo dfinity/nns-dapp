@@ -16,7 +16,11 @@ export interface CanistersStore extends Readable<CanistersStoreData> {
   setCanisters(data: CanistersStoreData): void;
 }
 
-const stores: Record<string, CanistersStore> = {};
+let stores: Record<string, CanistersStore> = {};
+
+export const resetCanistersStoresCacheForTesting = () => {
+  stores = {};
+};
 
 const loadCanistersFactory =
   (identity: Identity) => (set: (data: CanistersStoreData) => void) => {
@@ -49,7 +53,7 @@ const loadCanistersFactory =
  *
  * TODO: Error and loading states
  */
-export const initCanistersStore = (
+export const getOrCreateCanistersStore = (
   identity: Identity | undefined | null
 ): CanistersStore | undefined => {
   if (isNullish(identity)) {

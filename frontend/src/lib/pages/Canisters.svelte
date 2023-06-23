@@ -2,10 +2,8 @@
   import Footer from "$lib/components/layout/Footer.svelte";
   import { onMount } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { listCanisters } from "$lib/services/canisters.services";
   import {
-    initCanistersStore,
+    getOrCreateCanistersStore,
     type CanistersStore,
   } from "$lib/stores/canisters.store";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -27,7 +25,7 @@
   export let referrerPath: AppPath | undefined = undefined;
 
   let canistersStore: undefined | CanistersStore;
-  $: canistersStore = initCanistersStore($authStore.identity);
+  $: canistersStore = getOrCreateCanistersStore($authStore.identity);
 
   onMount(async () => {
     const reload = reloadRouteData({

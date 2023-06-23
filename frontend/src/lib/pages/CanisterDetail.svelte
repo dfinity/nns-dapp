@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { onMount, setContext } from "svelte";
+  import { setContext } from "svelte";
   import type { Principal } from "@dfinity/principal";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { AppPath } from "$lib/constants/routes.constants";
   import { getCanisterDetails } from "$lib/services/canisters.services";
   import { i18n } from "$lib/stores/i18n";
   import {
-    initCanistersStore,
+    getOrCreateCanistersStore,
     type CanistersStore,
   } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
@@ -44,7 +44,7 @@
   // Therefore we can probably refactor this to generic function.
 
   let canistersStore: undefined | CanistersStore;
-  $: canistersStore = initCanistersStore($authStore.identity);
+  $: canistersStore = getOrCreateCanistersStore($authStore.identity);
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
 
