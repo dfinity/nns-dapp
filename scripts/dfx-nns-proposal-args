@@ -4,9 +4,56 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
-  cat <<-EOF
+  cat <<-"EOF"
 
-	Gets the arguments of a given proposal number.
+	Gets the arguments of a given canister upgrade proposal.
+
+	This works as follows:
+
+	1) Get the proposal from the governance canister.
+
+	2) Parse the payload:
+
+	                       [governance canister]
+	                        |              |
+	                        V              V
+	           [ProposalInfo.bin]       [governance.did]
+	                        |              |
+	                        \             /
+	                         \           /
+	                          \         /
+	                           \ PARSE /
+	                            V     V
+	                         [ProposalInfo.did]
+	                               |
+	                          EXTRACT-FIELD
+	                               |
+	                               V
+	                         [ProposalPayload.bin]       [proposals.did (static file)]
+	                                          \            /
+	                                           \          /
+	                                            \        /
+	                                             \      /
+	                                              V    V
+	                                       [ProposalPayload.did]
+	                                        /                 \
+	                                       /                   \
+	                                      /                     \
+	                                     /                       \
+	                            [canister.wasm.gz]           [args.bin]
+	                                    |                       /  |
+	                             [canister.did]                /   |                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+	                                        \                 /    |
+	                                         \               /     |
+	                                          \             /      |
+	                                           \           /       |
+	                                            \         /        |
+	                                             \       /         |
+	                                              \     /          |
+	                                               V   V           V
+	                                             [args.did]  [args.sha256]
+
+	3) Print args.did and/or args.sha256.
 	EOF
 }
 
