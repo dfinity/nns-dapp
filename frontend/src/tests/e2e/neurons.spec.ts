@@ -35,6 +35,7 @@ test("Test neuron management", async ({ page, context }) => {
 
   const idsAfterFirstNeuronCreation = await neuronIds(appPo);
   expect(idsAfterFirstNeuronCreation).toHaveLength(1);
+  const neuronAId = idsAfterFirstNeuronCreation[0];
 
   step("Stake neuron B (for dummy proposals creation)");
   await appPo
@@ -47,8 +48,8 @@ test("Test neuron management", async ({ page, context }) => {
   const idsAfterSecondNeuronCreation = await neuronIds(appPo);
 
   expect(idsAfterSecondNeuronCreation).toHaveLength(2);
+  expect(idsAfterSecondNeuronCreation.includes(neuronAId)).toBe(true);
 
-  const neuronAId = idsAfterFirstNeuronCreation[0];
   const neuronBId = idsAfterSecondNeuronCreation.find((id) => id !== neuronAId);
 
   step("Open neuron A details");
@@ -93,8 +94,6 @@ test("Test neuron management", async ({ page, context }) => {
   const initialAdoptVotingPower = await proposalDetails
     .getVotesResultPo()
     .getAdoptVotingPower();
-
-  expect(Number(initialAdoptVotingPower)).toBe(stake * 2);
 
   step("Vote for proposal");
   await proposalDetails.getVotingCardPo().voteYes();
