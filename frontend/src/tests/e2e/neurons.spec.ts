@@ -34,7 +34,7 @@ test("Test neuron management", async ({ page, context }) => {
     .stakeNeuron({ amount: stake });
 
   const idsAfterFirstNeuronCreation = await neuronIds(appPo);
-  expect(idsAfterFirstNeuronCreation.length).toBe(1);
+  expect(idsAfterFirstNeuronCreation).toHaveLength(1);
 
   step("Stake neuron B (for dummy proposals creation)");
   await appPo
@@ -46,7 +46,7 @@ test("Test neuron management", async ({ page, context }) => {
   // get neurons
   const idsAfterSecondNeuronCreation = await neuronIds(appPo);
 
-  expect(idsAfterSecondNeuronCreation.length).toBe(2);
+  expect(idsAfterSecondNeuronCreation).toHaveLength(2);
 
   const neuronAId = idsAfterFirstNeuronCreation[0];
   const neuronBId = idsAfterSecondNeuronCreation.find((id) => id !== neuronAId);
