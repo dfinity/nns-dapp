@@ -21,7 +21,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   async createDummyProposals(): Promise<void> {
     await this.click("make-dummy-proposals-button");
-    await this.root.byTestId("spinner").waitForAbsent();
+    await this.root
+      .byTestId("make-dummy-proposals-button")
+      .byTestId("spinner")
+      .waitForAbsent();
   }
 
   async isContentLoaded(): Promise<boolean> {
