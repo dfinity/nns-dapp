@@ -14,7 +14,7 @@ import type {
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { getOrCreateCanistersStore } from "$lib/stores/canisters.store";
+import { getOrCreateFullCanistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -38,7 +38,7 @@ export const listCanisters = async ({
   clearBeforeQuery?: boolean;
 }) => {
   const identity = getCurrentIdentity();
-  const canistersStore = getOrCreateCanistersStore(identity);
+  const canistersStore = getOrCreateFullCanistersStore(identity);
   if (isNullish(canistersStore)) {
     return;
   }
