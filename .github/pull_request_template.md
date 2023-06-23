@@ -9,3 +9,7 @@
 # Tests
 
 <!-- Please provide any information or screenshots about the tests that have been done -->
+
+# Todos
+
+- [ ] Add entry to changelog (if necessary).
