@@ -51,6 +51,17 @@ git checkout "$(git rev-parse tags/release-candidate)"
 ./scripts/docker-build
 sha256sum nns-dapp.wasm
 \`\`\`
+
+## Arguments Verification
+
+\`\`\`
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse tags/release-candidate)"
+DFX_NETWORK=${DFX_NETWORK} ./config.sh
+didc encode "\$(cat nns-dapp-arg-mainnet.did)"
+\`\`\`
+
+Compare the output with the \`arg_hex\` field below.
 EOF
 
 cat <<EOF >release/ROLLBACK.md
@@ -68,13 +79,16 @@ git checkout "$(git rev-parse tags/release-candidate)"
 sha256sum nns-dapp.wasm
 \`\`\`
 
-You may also want to verify the canister arguments.  In the proposal they are binary, which is not very readable. Docker
-provides both binary and text formats and you can verify that the text format corresponds to the binary in the proposal.
+## Arguments Verification
 
 \`\`\`
-sha256sum nns-dapp-arg-${DFX_NETWORK}.bin
-didc encode "\$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p | sha256sum
+git fetch  # to ensure you have the latest changes.
+git checkout "$(git rev-parse tags/release-candidate)"
+DFX_NETWORK=${DFX_NETWORK} ./config.sh
+didc encode "\$(cat nns-dapp-arg-mainnet.did)"
 \`\`\`
+
+Compare the output with the \`arg_hex\` field below.
 EOF
 
 ./config.sh
