@@ -1,7 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-// visible proposal card
 export class ProposalCardPo extends BasePageObject {
   private static readonly TID = "proposal-card";
 
