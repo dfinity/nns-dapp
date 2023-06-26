@@ -53,7 +53,7 @@ describe("initBalancesWorker", () => {
     worker.stopBalancesTimer();
 
     expect(spyPostMessage).toBeCalledWith({
-      msg: "nnsStopTransactionsTimer",
+      msg: "nnsStopBalancesTimer",
     });
   });
 });
