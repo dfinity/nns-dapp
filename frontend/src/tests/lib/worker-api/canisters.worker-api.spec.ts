@@ -4,7 +4,7 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 
-jest.mock("@dfinity/agent/lib/cjs/index");
+jest.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -24,7 +24,7 @@ describe("canisters-worker-api", () => {
 
   beforeEach(async () => {
     jest.resetAllMocks();
-    const module = await import("@dfinity/agent/lib/cjs/index");
+    const module = await import("@dfinity/agent");
     module.HttpAgent = MockHttpAgent;
     module.getManagementCanister = jest.fn().mockReturnValue({
       canister_status: async () => response,
