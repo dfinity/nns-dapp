@@ -39,7 +39,7 @@ describe("SnsProposalVotingSection", () => {
     const votesResultsPo = await po.getVotingsResultsPo();
 
     expect(await votesResultsPo.isPresent()).toBeTruthy();
-    expect(await votesResultsPo.getAdoptVotingPower()).toEqual("10.00");
-    expect(await votesResultsPo.getRejectVotingPower()).toEqual("20.00");
+    expect(await votesResultsPo.getAdoptVotingPower()).toEqual(10);
+    expect(await votesResultsPo.getRejectVotingPower()).toEqual(20);
   });
 });
