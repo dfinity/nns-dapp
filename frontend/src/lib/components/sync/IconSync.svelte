@@ -1,5 +1,5 @@
 <!-- https://fonts.google.com/icons?selected=Material%20Icons%20Sharp%3Async%3A -->
-<!-- Tweaked and animated -->
+<!-- Mirrored and animated -->
 <svg
   width="24"
   height="24"
