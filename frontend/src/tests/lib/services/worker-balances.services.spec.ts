@@ -46,4 +46,14 @@ describe("initBalancesWorker", () => {
       },
     });
   });
+
+  it("should stop worker", async () => {
+    const worker = await initBalancesWorker();
+
+    worker.stopBalancesTimer();
+
+    expect(spyPostMessage).toBeCalledWith({
+      msg: "nnsStopTransactionsTimer",
+    });
+  });
 });
