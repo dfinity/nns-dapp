@@ -49,8 +49,7 @@
     hasPermissionToSplit({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   const updateLayoutTitle = ($event: Event) => {
     const {

@@ -40,8 +40,7 @@
     hasPermissionToDissolve({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   let allowedToDisburse: boolean;
   $: allowedToDisburse =
@@ -49,8 +48,7 @@
     hasPermissionToDisburse({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   let canDissolve = false;
   $: canDissolve =
@@ -73,7 +71,7 @@
 
     <div class="buttons">
       {#if allowedToDissolve}
-        <IncreaseSnsDissolveDelayButton />
+        <IncreaseSnsDissolveDelayButton {neuron} />
       {/if}
       {#if isIncreaseStakeAllowed}
         <SnsIncreaseStakeButton />
@@ -81,7 +79,7 @@
       {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
         <DisburseSnsButton />
       {:else if canDissolve}
-        <DissolveSnsNeuronButton {neuronState} />
+        <DissolveSnsNeuronButton {neuron} />
       {/if}
     </div>
 

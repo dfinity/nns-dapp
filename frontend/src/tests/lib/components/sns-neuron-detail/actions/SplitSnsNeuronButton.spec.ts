@@ -9,6 +9,7 @@ import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
+  createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
@@ -53,6 +54,22 @@ describe("SplitSnsNeuronButton", () => {
     const button = getByTestId("split-neuron-button");
     expect(button).toBeInTheDocument();
     expect(button.hasAttribute("disabled")).toBe(false);
+  });
+
+  it("should display disabled button when neuron is vesting", async () => {
+    const { getByTestId } = render(SplitSnsNeuronButton, {
+      props: {
+        ...props,
+        neuron: createMockSnsNeuron({
+          id: [1],
+          vesting: true,
+        }),
+      },
+    });
+
+    const button = getByTestId("split-neuron-button");
+    expect(button).toBeInTheDocument();
+    expect(button.hasAttribute("disabled")).toBe(true);
   });
 
   it("should open split neuron modal", async () => {
