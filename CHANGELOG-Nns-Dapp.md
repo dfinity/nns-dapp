@@ -11,6 +11,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 #### Changed
 #### Deprecated
 #### Removed
@@ -28,6 +29,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
 #### Fixed
 #### Security
+
+## Proposal 123245
+
+* Render the SNS Neuron age.
+* Fix navigation issue from SNS proposal to the Launchpad.
+* Use the count of participants from the derived state instead of using the
+* SNS governance raw metrics.
+* TVL in various currencies.
 
 ## Proposal 123006
 

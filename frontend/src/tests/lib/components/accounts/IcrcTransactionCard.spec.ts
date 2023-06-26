@@ -22,8 +22,8 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
-import type { Token } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { Token } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionCard", () => {

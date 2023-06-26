@@ -10,7 +10,7 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
-  import type { Token, TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount, Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";

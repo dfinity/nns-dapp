@@ -9,7 +9,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
-  import type { Token } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
   import { updateDelay } from "$lib/services/sns-neurons.services";

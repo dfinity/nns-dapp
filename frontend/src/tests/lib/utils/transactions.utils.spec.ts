@@ -24,7 +24,7 @@ import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {
