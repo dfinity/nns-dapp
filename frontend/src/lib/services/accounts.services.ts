@@ -43,8 +43,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
-import { nonNullish } from "@dfinity/utils";
+import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";

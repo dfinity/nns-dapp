@@ -57,9 +57,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
 import {
-  ICPToken,
   InsufficientFundsError,
-  TokenAmount,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
@@ -74,7 +72,12 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  toNullable,
+} from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
 

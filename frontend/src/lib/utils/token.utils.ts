@@ -4,7 +4,7 @@ import {
   ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001

@@ -29,7 +29,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { E8s } from "@dfinity/nns";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import type { Token } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { nonNullish } from "@dfinity/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";

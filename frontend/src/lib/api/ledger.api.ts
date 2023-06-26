@@ -6,8 +6,9 @@ import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
-import type { BlockHeight, TokenAmount } from "@dfinity/nns";
+import type { BlockHeight } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/utils";
 
 /**
  * Transfer ICP between accounts.

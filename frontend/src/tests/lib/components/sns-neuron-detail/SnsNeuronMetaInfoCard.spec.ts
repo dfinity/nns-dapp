@@ -24,9 +24,9 @@ import {
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { Token } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
+import type { Token } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

@@ -10,7 +10,7 @@
   } from "$lib/derived/universes-tokens.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
   export let data: CkBTCTransactionModalData;

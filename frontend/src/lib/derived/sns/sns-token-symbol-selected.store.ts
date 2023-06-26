@@ -1,6 +1,6 @@
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSummariesStore } from "$lib/stores/sns.store";
-import type { Token } from "@dfinity/nns";
+import type { Token } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 /**

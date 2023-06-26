@@ -1,5 +1,5 @@
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { derived } from "svelte/store";
 
 export const mainTransactionFeeStoreAsToken = derived(
