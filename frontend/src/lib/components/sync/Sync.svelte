@@ -63,7 +63,7 @@
     bind:this={button}
     on:click={toggle}
     aria-label={label}
-    class:error={$workersSyncStore === "idle"}
+    class:error={$workersSyncStore === "error"}
   >
     <svelte:component this={icon} />
   </button>
