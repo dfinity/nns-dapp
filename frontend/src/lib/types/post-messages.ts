@@ -5,10 +5,10 @@ export type PostMessageRequest =
   | "nnsStopMetricsTimer"
   | "nnsStartCyclesTimer"
   | "nnsStopCyclesTimer"
-  | "nnsStartBalancesTimer"
-  | "nnsStopBalancesTimer"
   | "nnsStartTransactionsTimer"
-  | "nnsStopTransactionsTimer";
+  | "nnsStopTransactionsTimer"
+  | "nnsStartBalancesTimer"
+  | "nnsStopBalancesTimer";
 
 export type PostMessageResponse =
   | "nnsSignOut"

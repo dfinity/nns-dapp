@@ -3,7 +3,7 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
@@ -12,7 +12,7 @@
     AccountTransactionType,
   } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
   export let transaction: Transaction;

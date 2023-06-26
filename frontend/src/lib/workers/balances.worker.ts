@@ -1,4 +1,4 @@
-import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import { SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS } from "$lib/constants/accounts.constants";
 import type {
   PostMessageDataRequestBalances,
   PostMessageDataResponseBalance,
@@ -31,7 +31,7 @@ onmessage = async ({
       return;
     case "nnsStartBalancesTimer":
       await worker.start<PostMessageDataRequestBalances>({
-        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS,
         job: syncBalances,
         data,
       });

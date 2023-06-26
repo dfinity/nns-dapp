@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let disableSelection = false;
   export let filterIdentifier: string | undefined = undefined;

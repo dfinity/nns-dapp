@@ -3,7 +3,7 @@
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { Value } from "@dfinity/gix-components";
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
 
   export let feeOnly = false;
   export let source: string;

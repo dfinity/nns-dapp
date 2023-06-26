@@ -46,4 +46,14 @@ describe("initTransactionsWorker", () => {
       },
     });
   });
+
+  it("should stop worker", async () => {
+    const worker = await initTransactionsWorker();
+
+    worker.stopTransactionsTimer();
+
+    expect(spyPostMessage).toBeCalledWith({
+      msg: "nnsStopTransactionsTimer",
+    });
+  });
 });

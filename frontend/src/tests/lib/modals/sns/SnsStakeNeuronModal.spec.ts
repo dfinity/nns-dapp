@@ -23,9 +23,9 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
-import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
+import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 

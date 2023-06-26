@@ -1,4 +1,4 @@
-import { SYNC_ACCOUNTS_TIMER_INTERVAL } from "$lib/constants/accounts.constants";
+import { SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS } from "$lib/constants/accounts.constants";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
@@ -32,7 +32,7 @@ onmessage = async ({
       return;
     case "nnsStartTransactionsTimer":
       await worker.start<PostMessageDataRequestTransactions>({
-        interval: SYNC_ACCOUNTS_TIMER_INTERVAL,
+        interval: SYNC_ACCOUNTS_TIMER_INTERVAL_MILLIS,
         job: syncTransactions,
         data,
       });
@@ -43,7 +43,6 @@ onmessage = async ({
 const syncTransactions = async (
   params: TimerWorkerUtilsJobData<PostMessageDataRequestTransactions>
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const results = await getIcrcAccountsTransactions({
       ...params,
