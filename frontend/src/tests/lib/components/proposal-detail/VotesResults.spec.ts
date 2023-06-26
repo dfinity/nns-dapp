@@ -8,7 +8,9 @@ import { render } from "@testing-library/svelte";
 
 describe("VotesResults", () => {
   const yesCount = 2;
+  const yesFormatted = "2.00";
   const noCount = 3;
+  const noFormatted = "3.00";
   const totalValue = 5;
   const renderComponent = () => {
     const { container } = render(VotesResults, {
@@ -24,12 +26,12 @@ describe("VotesResults", () => {
 
   it('should render "Adopt" value', async () => {
     const votesResultPo = renderComponent();
-    expect(await votesResultPo.getAdoptVotingPower()).toEqual(yesCount);
+    expect(await votesResultPo.getAdoptVotingPower()).toEqual(yesFormatted);
   });
 
   it('should render "Reject" value', async () => {
     const votesResultPo = renderComponent();
-    expect(await votesResultPo.getRejectVotingPower()).toEqual(noCount);
+    expect(await votesResultPo.getRejectVotingPower()).toEqual(noFormatted);
   });
 
   it("should render progressbar", async () => {

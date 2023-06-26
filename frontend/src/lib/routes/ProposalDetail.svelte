@@ -11,7 +11,7 @@
   export let proposalIdText: string | null | undefined;
 </script>
 
-<main data-tid="proposal-detail-component">
+<main>
   {#if $isNnsUniverseStore || !$ENABLE_SNS_VOTING}
     <NnsProposalDetail {referrerPath} {proposalIdText} />
   {:else if nonNullish($snsProjectSelectedStore) && $ENABLE_SNS_VOTING}

@@ -7,7 +7,6 @@
   import LoadingProposals from "./LoadingProposals.svelte";
   import ListLoader from "./ListLoader.svelte";
   import { building } from "$app/environment";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let nothingFound: boolean;
   export let hidden: boolean;
@@ -21,28 +20,26 @@
   $: display = !building;
 </script>
 
-<TestIdWrapper testId="nns-proposal-list-component">
-  <NnsProposalsFilters />
+<NnsProposalsFilters />
 
-  {#if display}
-    <ListLoader loading={loadingAnimation === "spinner"}>
-      <InfiniteScroll
-        on:nnsIntersect
-        layout="grid"
-        disabled={disableInfiniteScroll || loading}
-      >
-        {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-          <NnsProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
-    </ListLoader>
-  {/if}
+{#if display}
+  <ListLoader loading={loadingAnimation === "spinner"}>
+    <InfiniteScroll
+      on:nnsIntersect
+      layout="grid"
+      disabled={disableInfiniteScroll || loading}
+    >
+      {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+        <NnsProposalCard {hidden} {proposalInfo} />
+      {/each}
+    </InfiniteScroll>
+  </ListLoader>
+{/if}
 
-  {#if nothingFound}
-    <NoProposals />
-  {/if}
+{#if nothingFound}
+  <NoProposals />
+{/if}
 
-  {#if loadingAnimation === "skeleton"}
-    <LoadingProposals />
-  {/if}
-</TestIdWrapper>
+{#if loadingAnimation === "skeleton"}
+  <LoadingProposals />
+{/if}

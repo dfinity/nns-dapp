@@ -13,7 +13,6 @@
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -23,42 +22,40 @@
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 </script>
 
-<TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined}
-    <ProposalNavigation
-      currentProposalId={$store.proposal.id}
-      {proposalIds}
-      selectProposal={navigateToProposal}
-    />
+{#if $store?.proposal?.id !== undefined}
+  <ProposalNavigation
+    currentProposalId={$store.proposal.id}
+    {proposalIds}
+    selectProposal={navigateToProposal}
+  />
 
-    <div class="content-grid" data-tid="proposal-details-grid">
-      <div class="content-a content-cell-island">
-        <ProposalSystemInfoSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-b expand-content-b">
-        <ProposalVotingSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-c proposal-data-section">
-        <NnsProposalSummarySection proposalInfo={$store.proposal} />
+  <div class="content-grid" data-tid="proposal-details-grid">
+    <div class="content-a content-cell-island">
+      <ProposalSystemInfoSection proposalInfo={$store.proposal} />
+    </div>
+    <div class="content-b expand-content-b">
+      <ProposalVotingSection proposalInfo={$store.proposal} />
+    </div>
+    <div class="content-c proposal-data-section">
+      <NnsProposalSummarySection proposalInfo={$store.proposal} />
 
-        <NnsProposalProposerActionsEntry proposal={$store.proposal.proposal} />
+      <NnsProposalProposerActionsEntry proposal={$store.proposal.proposal} />
 
-        <NnsProposalProposerPayloadEntry
-          proposal={$store.proposal.proposal}
-          proposalId={$store.proposalId}
-        />
+      <NnsProposalProposerPayloadEntry
+        proposal={$store.proposal.proposal}
+        proposalId={$store.proposalId}
+      />
+    </div>
+  </div>
+{:else}
+  <div class="content-grid" data-tid="proposal-details-grid">
+    <div class="content-a">
+      <div class="skeleton">
+        <SkeletonDetails />
       </div>
     </div>
-  {:else}
-    <div class="content-grid" data-tid="proposal-details-grid">
-      <div class="content-a">
-        <div class="skeleton">
-          <SkeletonDetails />
-        </div>
-      </div>
-    </div>
-  {/if}
-</TestIdWrapper>
+  </div>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
