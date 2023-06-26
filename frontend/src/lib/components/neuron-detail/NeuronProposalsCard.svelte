@@ -15,7 +15,6 @@
       on:click
       class={`primary ${loading ? "icon-only" : ""}`}
       disabled={loading}
-      data-tid="make-dummy-proposals-button"
     >
       {#if loading}
         <Spinner inline size="small" />
