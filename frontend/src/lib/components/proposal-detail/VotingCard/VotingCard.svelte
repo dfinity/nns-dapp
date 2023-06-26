@@ -129,11 +129,7 @@
 </script>
 
 <BottomSheet>
-  <div
-    class="container"
-    class:signedIn={$authSignedInStore}
-    data-tid="voting-card-component"
-  >
+  <div class="container" class:signedIn={$authSignedInStore}>
     <SignInGuard>
       {#if $definedNeuronsStore.length > 0}
         {#if neuronsReady}

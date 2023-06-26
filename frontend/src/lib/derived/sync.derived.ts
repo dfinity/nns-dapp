@@ -6,7 +6,11 @@ import {
 import type { SyncState } from "$lib/types/sync";
 import { derived } from "svelte/store";
 
-export const workersSyncStore = derived<SyncStore, SyncState>(
+/**
+ * A derived store for the sync status that returns a global status.
+ * If any sync is in error, it returns error. Likewise for progress and idle.
+ */
+export const syncOverallStatusStore = derived<SyncStore, SyncState>(
   syncStore,
   ({ transactions, balances }: SyncStoreData) => {
     if (transactions === "error" || balances === "error") {
