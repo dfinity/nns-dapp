@@ -1,5 +1,5 @@
 import type { AccountIdentifierText } from "$lib/types/account";
-import type { Token } from "@dfinity/nns";
+import type { Token } from "@dfinity/utils";
 
 /**
  * Token metadata are to some extension optional and provided in Candid in a way the frontend cannot really use.

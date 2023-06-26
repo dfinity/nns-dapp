@@ -24,8 +24,8 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   fireEvent,
   render,

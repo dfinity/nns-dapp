@@ -42,7 +42,7 @@
   import Summary from "$lib/components/summary/Summary.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   onMount(() => {
     pollAccounts();

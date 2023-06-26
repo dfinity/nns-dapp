@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";

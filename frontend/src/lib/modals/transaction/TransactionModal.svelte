@@ -4,7 +4,7 @@
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
-  import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
+  import { TokenAmount, ICPToken, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type {
     TransactionInit,

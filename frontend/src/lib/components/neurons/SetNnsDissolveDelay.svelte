@@ -11,7 +11,7 @@
   } from "$lib/utils/neuron.utils";
 
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;

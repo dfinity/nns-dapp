@@ -16,7 +16,7 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 
 describe("ProjectSwapDetails", () => {
   beforeEach(() => {

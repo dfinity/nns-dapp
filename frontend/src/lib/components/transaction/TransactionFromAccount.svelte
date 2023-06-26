@@ -5,8 +5,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
-  import type { Token } from "@dfinity/nns";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
