@@ -65,8 +65,6 @@ const syncBalances = async (
       return;
     }
 
-    console.log("BALANCES", changes);
-
     // Update store with queries
     store.update(changes);
 
@@ -85,8 +83,10 @@ const syncBalances = async (
       }))
     );
   } catch (err: unknown) {
-    // TODO: postMessage error
-    // TODO: reset
+    postMessage({
+      msg: "nnsSyncErrorBalances",
+      data: err,
+    });
 
     // Bubble errors
     throw err;

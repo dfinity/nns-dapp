@@ -60,8 +60,6 @@ const syncTransactions = async (
       return;
     }
 
-    console.log("NEW TRANSACTIONS", newTransactions);
-
     store.update(
       newTransactions.map(({ accountIdentifier, mostRecentTxId, ...rest }) => ({
         key: accountIdentifier,
@@ -78,8 +76,10 @@ const syncTransactions = async (
       }))
     );
   } catch (err: unknown) {
-    // TODO: postMessage error
-    // TODO: reset
+    postMessage({
+      msg: "nnsSyncErrorTransactions",
+      data: err,
+    });
 
     // Bubble errors
     throw err;
