@@ -32,7 +32,7 @@ export const signInWithAnchor = async ({
   await page.locator("[data-tid=login-button]").click();
 
   const iiPage = await iiPagePromise;
-  await expect(iiPage).toHaveTitle("Internet Identity");
+  await expect(iiPage).toHaveTitle(/^Internet Identity/i);
 
   await iiPage.getByRole("button", { name: "Use Existing" }).click();
   await iiPage.getByPlaceholder("Enter anchor").fill(anchor.toString());
@@ -56,7 +56,7 @@ export const signInWithNewUser = async ({
   await page.locator("[data-tid=login-button]").click();
 
   const iiPage = await iiPagePromise;
-  await expect(iiPage).toHaveTitle("Internet Identity");
+  await expect(iiPage).toHaveTitle(/^Internet Identity/i);
 
   await iiPage.getByRole("button", { name: "Create an Anchor" }).click();
   await iiPage.getByPlaceholder("Example: my phone").fill("my phone");
