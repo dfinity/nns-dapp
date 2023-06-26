@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.38",
+  "version": "2.0.39",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
