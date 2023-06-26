@@ -43,7 +43,6 @@ onmessage = async ({
 const syncTransactions = async (
   params: TimerWorkerUtilsJobData<PostMessageDataRequestTransactions>
 ) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const results = await getIcrcAccountsTransactions({
       ...params,
