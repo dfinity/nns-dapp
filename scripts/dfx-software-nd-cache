@@ -26,5 +26,4 @@ LOCAL_ND_WASM="$(jq -r '.canisters["nns-dapp"].wasm' dfx.json)"
 
 : "Put the wasm into the cache, for use by 'dfx nns install'"
 mkdir -p "$DFX_WASMS_DIR"
-cp "$LOCAL_ND_WASM" nns-dapp_local.wasm
-cp nns-dapp_local.wasm "$DFX_WASMS_DIR"
+cp "$LOCAL_ND_WASM" "$DFX_WASMS_DIR"
