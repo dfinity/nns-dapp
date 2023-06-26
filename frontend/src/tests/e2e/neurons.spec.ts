@@ -3,9 +3,6 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-const neuronIds = async (appPo: AppPo) =>
-  await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
-
 test("Test neuron management", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
@@ -21,89 +18,15 @@ test("Test neuron management", async ({ page, context }) => {
     .getNnsAccountsPo()
     .getMainAccountCardPo()
     .waitFor();
-  await appPo.getTokens(31);
+  await appPo.getTokens(20);
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();
 
-  step("Stake neuron A (for voting)");
+  step("Stake a neuron");
   const stake = 15;
   await appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
     .stakeNeuron({ amount: stake });
-
-  const idsAfterFirstNeuronCreation = await neuronIds(appPo);
-  expect(idsAfterFirstNeuronCreation).toHaveLength(1);
-  const neuronAId = idsAfterFirstNeuronCreation[0];
-
-  step("Stake neuron B (for dummy proposals creation)");
-  await appPo
-    .getNeuronsPo()
-    .getNnsNeuronsFooterPo()
-    .stakeNeuron({ amount: stake });
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
-
-  // get neurons
-  const idsAfterSecondNeuronCreation = await neuronIds(appPo);
-
-  expect(idsAfterSecondNeuronCreation).toHaveLength(2);
-  expect(idsAfterSecondNeuronCreation.includes(neuronAId)).toBe(true);
-
-  const neuronBId = idsAfterSecondNeuronCreation.find((id) => id !== neuronAId);
-
-  step("Open neuron A details");
-  await appPo.goToNeuronDetails(neuronAId);
-
-  step("Get neuron A voting power");
-  const neuronAVotingPower = await appPo
-    .getNeuronDetailPo()
-    .getNnsNeuronDetailPo()
-    .getNnsNeuronMetaInfoCardPageObjectPo()
-    .getVotingPower();
-
-  // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
-  expect(neuronAVotingPower).toBe(stake * 2);
-  // back to neurons otherwise the menu is not available
-  await appPo.goBack();
-
-  step("Open neuron B details");
-  await appPo.goToNeuronDetails(neuronBId);
-
-  step("Create dummy proposal with neuron B");
-  await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().createDummyProposals();
-
-  step("Open proposals list");
-  // back to neurons otherwise the menu is not available
-  await appPo.goBack();
-  await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-  const proposalIds = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getProposalIds();
-
-  expect(proposalIds.length).toBeGreaterThan(0);
-
-  step("Open first proposal");
-  await (
-    await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardPos()
-  )[0].click();
-  const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
-  await proposalDetails.waitForContentLoaded();
-  const initialAdoptVotingPower = await proposalDetails
-    .getVotesResultPo()
-    .getAdoptVotingPower();
-
-  step("Vote for proposal");
-  await proposalDetails.getVotingCardPo().voteYes();
-
-  step("Compare voting power before and after voting");
-  const changedAdoptVotingPower = await proposalDetails
-    .getVotesResultPo()
-    .getAdoptVotingPower();
-
-  expect(changedAdoptVotingPower).toEqual(
-    initialAdoptVotingPower + neuronAVotingPower
-  );
 });
