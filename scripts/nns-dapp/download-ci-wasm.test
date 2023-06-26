@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+WASM_FILENAME="nns-dapp.wasm.gz"
+
+print_help() {
+  cat <<-EOF
+
+  Test that scripts/nns-dapp/download-ci-wasm downloads what appears to be a
+  gzipped nns-dapp wasm file.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit to download wasm for" variable=COMMIT default="main"
+
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+COMMIT="$(git rev-parse "$COMMIT")"
+
+tmp_dir="$(mktemp -d)"
+"$SOURCE_DIR/download-ci-wasm" --commit "$COMMIT" --dir "$tmp_dir"
+
+if ! file "$tmp_dir/$WASM_FILENAME" | grep gzip; then
+  echo "ERROR: Downloaded file is not a gzipped file" >&2
+  exit 1
+fi
+
+echo "PASSED"
+rm -rf "$tmp_dir"
