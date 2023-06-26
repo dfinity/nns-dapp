@@ -9,7 +9,6 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
     hasPermissionToSplit,
-    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { E8s, NeuronState } from "@dfinity/nns";

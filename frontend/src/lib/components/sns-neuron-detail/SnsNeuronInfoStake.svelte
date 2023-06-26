@@ -15,7 +15,6 @@
     hasPermissionToDisburse,
     hasPermissionToDissolve,
     isCommunityFund,
-    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { NeuronState } from "@dfinity/nns";
