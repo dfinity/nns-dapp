@@ -1,4 +1,5 @@
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
+import { NnsNeuronMetaInfoCardPageObjectPo } from "$tests/page-objects/NnsNeuronMetaInfoCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -12,6 +13,18 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
+  }
+
+  getNnsNeuronMetaInfoCardPageObjectPo(): NnsNeuronMetaInfoCardPageObjectPo {
+    return NnsNeuronMetaInfoCardPageObjectPo.under(this.root);
+  }
+
+  async createDummyProposals(): Promise<void> {
+    await this.click("make-dummy-proposals-button");
+    await this.root
+      .byTestId("make-dummy-proposals-button")
+      .byTestId("spinner")
+      .waitForAbsent();
   }
 
   async isContentLoaded(): Promise<boolean> {
