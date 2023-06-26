@@ -10,8 +10,8 @@ export class NnsNeuronsPo extends BasePageObject {
     return new NnsNeuronsPo(element.byTestId(NnsNeuronsPo.TID));
   }
 
-  getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
-    return SkeletonCardPo.allUnder(this.root);
+  getSkeletonCardPo(): SkeletonCardPo {
+    return SkeletonCardPo.under(this.root);
   }
 
   getNeuronCardPos(): Promise<NnsNeuronCardPo[]> {
@@ -20,12 +20,30 @@ export class NnsNeuronsPo extends BasePageObject {
 
   async isContentLoaded(): Promise<boolean> {
     return (
-      (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
+      (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
     );
+  }
+
+  async waitForContentLoaded(): Promise<void> {
+    await this.waitFor();
+    await this.getSkeletonCardPo().waitForAbsent();
   }
 
   async getNeuronIds(): Promise<string[]> {
     const cards = await this.getNeuronCardPos();
     return Promise.all(cards.map((card) => card.getNeuronId()));
+  }
+
+  async getNeuronCardPo(neuronId: string): Promise<NnsNeuronCardPo> {
+    const neuronCards = await this.getNeuronCardPos();
+
+    for (const neuronCard of neuronCards) {
+      const id = await neuronCard.getNeuronId();
+      if (id === neuronId) {
+        return neuronCard;
+      }
+    }
+
+    throw new Error(`Neuron card with id ${neuronId} not found`);
   }
 }
