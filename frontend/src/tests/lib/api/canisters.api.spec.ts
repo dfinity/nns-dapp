@@ -23,14 +23,8 @@ import {
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  SubAccount,
-  TokenAmount,
-} from "@dfinity/nns";
-import { principalToSubAccount } from "@dfinity/utils";
+import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
+import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 
 describe("canisters-api", () => {

@@ -4,7 +4,7 @@
   import { mapNnsTransaction } from "$lib/utils/transactions.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
   import type { Transaction } from "$lib/types/transaction";
 
   export let account: Account;

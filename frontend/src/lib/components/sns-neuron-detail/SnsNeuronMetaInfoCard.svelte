@@ -12,7 +12,8 @@
     isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { E8s, NeuronState, Token } from "@dfinity/nns";
+  import type { E8s, NeuronState } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";

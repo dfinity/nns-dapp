@@ -7,9 +7,10 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { E8s, Token } from "@dfinity/nns";
+  import type { E8s } from "@dfinity/nns";
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import type { Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;

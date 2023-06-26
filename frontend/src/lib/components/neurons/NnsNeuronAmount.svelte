@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";

@@ -78,9 +78,7 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
-  ICPToken,
   NeuronState,
-  TokenAmount,
   Topic,
   Vote,
   type BallotInfo,
@@ -88,6 +86,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {

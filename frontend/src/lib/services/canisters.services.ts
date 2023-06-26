@@ -25,8 +25,8 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";

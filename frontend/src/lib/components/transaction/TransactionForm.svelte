@@ -11,7 +11,7 @@
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, type Token } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";

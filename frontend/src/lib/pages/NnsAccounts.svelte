@@ -11,7 +11,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 

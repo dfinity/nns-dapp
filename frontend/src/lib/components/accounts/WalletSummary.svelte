@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { accountName as getAccountName } from "$lib/utils/accounts.utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";

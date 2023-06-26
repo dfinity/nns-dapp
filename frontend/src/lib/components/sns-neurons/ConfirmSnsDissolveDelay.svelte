@@ -13,7 +13,7 @@
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import type { Token } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
