@@ -1,4 +1,34 @@
-# Changelog
+# Changelog NNS Dapp
+
+All notable changes to the NNS Dapp will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
+
+## Unreleased
+
+### Application
+
+#### Added
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+#### Not Published
+
+### Operations
+
+#### Added
+#### Changed
+- Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
+#### Deprecated
+#### Removed
+- Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
+#### Fixed
+#### Security
 
 ## Proposal 123245
 

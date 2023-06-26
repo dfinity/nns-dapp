@@ -3,7 +3,7 @@
  */
 
 import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
-import { SECONDS_IN_MONTH } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { authStore } from "$lib/stores/auth.store";
@@ -17,6 +17,7 @@ import {
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
+  createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
@@ -88,17 +89,57 @@ describe("SnsNeuronMetaInfoCard", () => {
   });
 
   it("should render split neuron button", () => {
-    const { getByTestId } = renderSnsNeuronCmp([
-      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT,
-    ]);
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      vesting: false,
+    });
+    const { getByTestId } = renderSnsNeuronCmp(
+      [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
+      neuron
+    );
 
     expect(getByTestId("split-neuron-button")).toBeInTheDocument();
   });
 
-  it("should hide split neuron button", () => {
+  it("should hide split neuron button if user doesn't have permission to split", () => {
     const { queryByTestId } = renderSnsNeuronCmp();
 
     expect(queryByTestId("split-neuron-button")).toBeNull();
+  });
+
+  it("should hide split neuron button if neuron is vesting", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      vesting: true,
+    });
+    const { container } = renderSnsNeuronCmp(
+      [SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT],
+      neuron
+    );
+
+    const po = SnsNeuronMetaInfoCardPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getVestingPeriod()).toBe("29 days, 10 hours");
+  });
+
+  it("should render vesting period if neuron still vesting", async () => {
+    const yesterday = BigInt(nowSeconds - SECONDS_IN_DAY);
+    const neuronWithPositiveAge: SnsNeuron = {
+      ...mockSnsNeuron,
+      created_timestamp_seconds: yesterday,
+      vesting_period_seconds: [BigInt(SECONDS_IN_MONTH)],
+    };
+
+    const { container } = renderSnsNeuronCmp([], neuronWithPositiveAge);
+
+    const po = SnsNeuronMetaInfoCardPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.isContentLoaded()).toBe(true);
+    expect(await po.hasSplitButton()).toBe(false);
   });
 
   it("should render neuron age if greater than 0", async () => {

@@ -1,8 +1,8 @@
 name: 'Release the nns-dapp'
 description: |
   Builds the artefacts for a standard nns-dapp release, including:
-          * `nns-dapp.wasm` (for all networks)
-          * `sns_aggregator.wasm` (for all networks)
+          * `nns-dapp.wasm.gz` (for all networks)
+          * `sns_aggregator.wasm.gz` (for all networks)
           * arguments for mainnet and local
           * other potentially useful files.
 inputs:
