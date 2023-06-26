@@ -11,7 +11,7 @@
   export let referrerPath: AppPath | undefined = undefined;
 </script>
 
-<main>
+<main data-tid="proposals-component">
   {#if $ENABLE_SNS_VOTING}
     <SummaryUniverse />
   {/if}

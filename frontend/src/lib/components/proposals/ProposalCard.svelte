@@ -19,7 +19,9 @@
 <li class:hidden>
   <Card role="link" on:click testId="proposal-card" icon="arrow">
     <div class="id" data-proposal-id={id}>
-      <Value ariaLabel={$i18n.proposal_detail.id_prefix}>{id}</Value>
+      <Value ariaLabel={$i18n.proposal_detail.id_prefix} testId="proposal-id"
+        >{id}</Value
+      >
     </div>
 
     <div class="meta-data">
