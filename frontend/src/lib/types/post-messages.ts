@@ -14,7 +14,8 @@ export type PostMessageResponse =
   | "nnsSyncCanister"
   | "nnsDelegationRemainingTime"
   | "nnsSyncTransactions"
-  | "nnsSyncErrorTransactions";
+  | "nnsSyncErrorTransactions"
+  | "nnsSyncStatus";
 
 export type PostMessageData = object;
 
