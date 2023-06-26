@@ -6,9 +6,9 @@
   import {
     getCanisterDetails,
     listCanisters,
+    getCanistersStore,
   } from "$lib/services/canisters.services";
   import { i18n } from "$lib/stores/i18n";
-  import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { SkeletonText, busy, Island } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
@@ -36,6 +36,8 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
+  const canistersStore = getCanistersStore();
+
   // BEGIN: loading and navigation
 
   // TODO: checking if ready is similar to what's done in <ProposalDetail /> for the neurons.
@@ -53,12 +55,6 @@
 
   let canistersReady = false;
   $: $canistersStore, (canistersReady = canistersStoreReady());
-
-  onMount(async () => {
-    if (!canistersStoreReady()) {
-      await listCanisters({ clearBeforeQuery: false });
-    }
-  });
 
   const goBack = (): Promise<void> => goto(AppPath.Canisters);
 

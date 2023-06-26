@@ -30,6 +30,7 @@ import type { Principal } from "@dfinity/principal";
 import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
+import { get } from "svelte/store";
 
 export const listCanisters = async ({
   clearBeforeQuery,
@@ -63,6 +64,13 @@ export const listCanisters = async ({
     logMessage: "Syncing Canisters",
   });
 };
+
+export const getCanistersStore = () => {
+  if (get(canistersStore).canisters === undefined) {
+    listCanisters({ clearBeforeQuery: false });
+  }
+  return canistersStore;
+}
 
 export const createCanister = async ({
   amount,
