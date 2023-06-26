@@ -4,13 +4,18 @@ export type PostMessageRequest =
   | "nnsStartMetricsTimer"
   | "nnsStopMetricsTimer"
   | "nnsStartCyclesTimer"
-  | "nnsStopCyclesTimer";
+  | "nnsStopCyclesTimer"
+  | "nnsStartTransactionsTimer"
+  | "nnsStopTransactionsTimer";
 
 export type PostMessageResponse =
   | "nnsSignOut"
   | "nnsSyncMetrics"
   | "nnsSyncCanister"
-  | "nnsDelegationRemainingTime";
+  | "nnsDelegationRemainingTime"
+  | "nnsSyncTransactions"
+  | "nnsSyncErrorTransactions"
+  | "nnsSyncStatus";
 
 export type PostMessageData = object;
 

@@ -30,6 +30,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 #### Security
 
+## Proposal 123245
+
+* Render the SNS Neuron age.
+* Fix navigation issue from SNS proposal to the Launchpad.
+* Use the count of participants from the derived state instead of using the
+* SNS governance raw metrics.
+* TVL in various currencies.
+
 ## Proposal 123006
 
 * Improvement in NNS proposal filters.
