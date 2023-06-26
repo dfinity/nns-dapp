@@ -1,4 +1,8 @@
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_MONTH,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -35,8 +39,10 @@ import {
   isEnoughAmountToSplit,
   isSnsNeuron,
   isUserHotkey,
+  isVesting,
   minNeuronSplittable,
   needsRefresh,
+  neuronAge,
   neuronCanBeSplit,
   nextMemo,
   snsNeuronVotingPower,
@@ -44,6 +50,7 @@ import {
   snsNeuronsToIneligibleNeuronData,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
+  vestingInSeconds,
   votableSnsNeurons,
   votedSnsNeuronDetails,
   votedSnsNeurons,
@@ -151,6 +158,12 @@ const testNotVotedNeuron: SnsNeuron = {
 };
 
 describe("sns-neuron utils", () => {
+  const now = 1686806749421;
+  const nowSeconds = Math.floor(now / 1000);
+  const yesterday = BigInt(nowSeconds - SECONDS_IN_DAY);
+  const monthAgo = BigInt(nowSeconds - SECONDS_IN_MONTH);
+  const oneWeek = BigInt(SECONDS_IN_DAY * 7);
+
   describe("sortNeuronsByCreatedTimestamp", () => {
     it("should sort neurons by created_timestamp_seconds", () => {
       const neuron1 = {
@@ -2038,7 +2051,7 @@ describe("sns-neuron utils", () => {
           {
             vote: SnsVote.Yes,
             cast_timestamp_seconds: 0n,
-            voting_power: 321n,
+            voting_power: 324n,
           },
         ],
         [
@@ -2052,22 +2065,21 @@ describe("sns-neuron utils", () => {
       ],
     };
 
-    it("should return an sns neuron vote", () => {
+    it("should return an sns neuron vote with ballot voting power", () => {
       expect(
         votedSnsNeuronDetails({
           neurons: [testVotedNeuronA, testVotedNeuronB, testNotVotedNeuron],
           proposal: testProposal,
-          snsParameters: snsNervousSystemParametersMock,
         })
       ).toEqual([
         {
           idString: "010203",
-          votingPower: 0n,
+          votingPower: 324n,
           vote: Vote.Yes,
         },
         {
           idString: "010101",
-          votingPower: 0n,
+          votingPower: 321n,
           vote: Vote.No,
         },
       ]);
@@ -2123,6 +2135,102 @@ describe("sns-neuron utils", () => {
           reason: "short",
         },
       ]);
+    });
+  });
+
+  describe("neuronAge", () => {
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns 0 if age_since is in the future", () => {
+      expect(
+        neuronAge({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds + 1000),
+        })
+      ).toEqual(0n);
+    });
+
+    it("returns age if age_since is in the past", () => {
+      expect(
+        neuronAge({
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds - SECONDS_IN_MONTH),
+        })
+      ).toEqual(BigInt(SECONDS_IN_MONTH));
+    });
+  });
+
+  describe("isVesting", () => {
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns true if still vesting", () => {
+      expect(
+        isVesting({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: yesterday,
+          vesting_period_seconds: [BigInt(SECONDS_IN_MONTH)],
+        })
+      ).toEqual(true);
+    });
+
+    it("returns false if no vesting", () => {
+      expect(
+        isVesting({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: yesterday,
+          vesting_period_seconds: [],
+        })
+      ).toEqual(false);
+    });
+
+    it("returns false if vesting finished", () => {
+      expect(
+        isVesting({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: monthAgo,
+          vesting_period_seconds: [oneWeek],
+        })
+      ).toEqual(false);
+    });
+  });
+
+  describe("vestingInSeconds", () => {
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns remaining vesting if still vesting", () => {
+      expect(
+        vestingInSeconds({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: yesterday,
+          vesting_period_seconds: [BigInt(SECONDS_IN_MONTH)],
+        })
+      ).toEqual(2543400n);
+    });
+
+    it("returns 0n if no vesting", () => {
+      expect(
+        vestingInSeconds({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: yesterday,
+          vesting_period_seconds: [],
+        })
+      ).toEqual(0n);
+    });
+
+    it("returns 0n if vesting finished", () => {
+      expect(
+        vestingInSeconds({
+          ...mockSnsNeuron,
+          created_timestamp_seconds: monthAgo,
+          vesting_period_seconds: [oneWeek],
+        })
+      ).toEqual(0n);
     });
   });
 });

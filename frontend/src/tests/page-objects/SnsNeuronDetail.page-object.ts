@@ -79,4 +79,12 @@ export class SnsNeuronDetailPo extends BasePageObject {
     await modal.addHotkey(principal);
     await modal.waitForAbsent();
   }
+
+  removeHotkey(principal: string): Promise<void> {
+    return this.getHotkeysCardPo().removeHotkey(principal);
+  }
+
+  getHotkeyPrincipals(): Promise<string[]> {
+    return this.getHotkeysCardPo().getHotkeyPrincipals();
+  }
 }

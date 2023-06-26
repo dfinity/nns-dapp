@@ -6,7 +6,8 @@ RUN apt -yq update && \
     apt autoremove --purge -y && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN cargo install --version 0.3.2 ic-cdk-optimizer
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
 
 ARG IC_COMMIT
 

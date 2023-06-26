@@ -3,7 +3,7 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token, TokenAmount } from "@dfinity/nns";
+  import type { Token } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
   import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
@@ -12,6 +12,8 @@
     AccountTransactionType,
   } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/nns";
+  import { fade } from "svelte/transition";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -23,7 +25,7 @@
   let isSend: boolean;
   let from: string | undefined;
   let to: string | undefined;
-  let displayAmount: TokenAmount;
+  let displayAmount: bigint;
   let date: Date;
   $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
 
@@ -53,7 +55,7 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card">
+<article data-tid="transaction-card" transition:fade>
   <div class="icon" class:send={!isReceive}>
     <IconNorthEast size="24px" />
   </div>
@@ -64,7 +66,7 @@
 
       <AmountDisplay
         slot="value"
-        amount={displayAmount}
+        amount={TokenAmount.fromE8s({ amount: displayAmount, token })}
         sign={isReceive || toSelfTransaction ? "+" : "-"}
         detailed
         inline
@@ -104,10 +106,6 @@
     grid-template-columns: 48px auto;
     align-items: flex-start;
     column-gap: var(--padding-2x);
-
-    &:first-of-type {
-      margin-top: var(--padding-6x);
-    }
   }
 
   .title {

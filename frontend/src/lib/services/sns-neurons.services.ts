@@ -31,6 +31,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
@@ -123,7 +124,7 @@ export const syncSnsNeurons = async (
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 

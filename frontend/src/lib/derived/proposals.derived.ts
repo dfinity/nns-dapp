@@ -40,8 +40,7 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
 // HACK:
 //
 // 1. the governance canister does not implement a filter to hide proposals where all neurons have voted or are ineligible.
-// 2. the governance canister interprets queries with empty filter (e.g. topics=[]) has "any" queries and returns proposals anyway. On the contrary, the Flutter app displays nothing if one filter is empty.
-// 3. the Flutter app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
+// 2. the app does not simply display nothing when a filter is empty but re-filter the results provided by the backend.
 //
 // In addition, we have implemented an "optimistic voting" feature.
 //

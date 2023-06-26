@@ -31,13 +31,12 @@ export const getCkBTCAccount = async ({
   logWithTimestamp("Getting ckBTC account: call...");
 
   const {
-    canister: { metadata, balance },
+    canister: { balance },
   } = await ckBTCLedgerCanister({ identity, canisterId });
 
   const callParams = {
     certified,
     getBalance: balance,
-    getMetadata: metadata,
   };
 
   const account = await getIcrcAccount({

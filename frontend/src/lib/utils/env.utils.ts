@@ -1,3 +1,4 @@
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { NNS_IC_ORG_ALTERNATIVE_ORIGIN } from "$lib/constants/origin.constants";
 
 /**
@@ -43,3 +44,8 @@ export const addRawToUrl = (urlString: string): string => {
 
 export const isLocalhost = (hostname: string) =>
   hostname.includes("localhost") || hostname.includes("127.0.0.1");
+
+export const isForceCallStrategy = (): boolean =>
+  FORCE_CALL_STRATEGY === "query";
+
+export const notForceCallStrategy = (): boolean => !isForceCallStrategy();

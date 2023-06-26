@@ -1,97 +1,40 @@
 <script lang="ts">
   import { IconWest, IconEast } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import {
-    filteredProposals,
-    uiProposals,
-  } from "$lib/derived/proposals.derived";
-  import { onDestroy } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import { assertNonNullish, isNullish } from "@dfinity/utils";
 
-  export let proposalInfo: ProposalInfo | undefined;
+  export let currentProposalId: bigint;
+  export let proposalIds: bigint[] = [];
+  export let selectProposal: (proposalId: bigint) => void;
 
-  const next = async () => {
-    // Type safety check only
-    if (nextProposal === undefined || nextProposal.id === undefined) {
-      return;
-    }
+  let previousId: bigint | undefined;
+  // TODO: switch to findLast() once it's available
+  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
+  $: previousId = ([...proposalIds].reverse() as bigint[]).find(
+    (id) => id > currentProposalId
+  );
 
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: nextProposal.id,
-      })
-    );
+  let nextId: bigint | undefined;
+  $: nextId = proposalIds.find((id) => id < currentProposalId);
+
+  const selectPrevious = () => {
+    assertNonNullish(previousId);
+    selectProposal(previousId);
   };
-
-  const previous = async () => {
-    // Type safety check only
-    if (previousProposal === undefined || previousProposal.id === undefined) {
-      return;
-    }
-
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: previousProposal.id,
-      })
-    );
+  const selectNext = () => {
+    assertNonNullish(nextId);
+    selectProposal(nextId);
   };
-
-  let previousProposal: ProposalInfo | undefined;
-  let nextProposal: ProposalInfo | undefined;
-
-  const reset = () => {
-    nextProposal = undefined;
-    previousProposal = undefined;
-  };
-
-  $: proposalInfo,
-    (() => {
-      if (proposalInfo === undefined) {
-        reset();
-        return;
-      }
-
-      // TODO: replace [...array].reverse().find() with findLast() once Firefox >= v104 is widely adopted - https://caniuse.com/?search=findlast
-      previousProposal = [...$filteredProposals.proposals]
-        .reverse()
-        .find(
-          ({ id }) =>
-            proposalInfo?.id !== undefined &&
-            id !== undefined &&
-            id > proposalInfo.id
-        );
-      nextProposal = $filteredProposals.proposals.find(
-        ({ id }) =>
-          proposalInfo?.id !== undefined &&
-          id !== undefined &&
-          id < proposalInfo.id
-      );
-    })();
-
-  onDestroy(reset);
-
-  let lastProposal: boolean;
-  $: lastProposal =
-    proposalInfo !== undefined &&
-    nextProposal === undefined &&
-    previousProposal === undefined;
 </script>
 
-{#if $uiProposals.proposals.length > 0 && !lastProposal}
-  <div role="toolbar">
+{#if proposalIds.length > 1}
+  <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.newer}
-      on:click={previous}
-      class:hidden={proposalInfo !== undefined &&
-        previousProposal === undefined}
-      disabled={proposalInfo !== undefined && previousProposal === undefined}
+      on:click={selectPrevious}
+      class:hidden={isNullish(previousId)}
       data-tid="proposal-nav-previous"
     >
       <IconWest />
@@ -102,9 +45,8 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.older}
-      on:click={next}
-      class:hidden={proposalInfo !== undefined && nextProposal === undefined}
-      disabled={proposalInfo !== undefined && nextProposal === undefined}
+      on:click={selectNext}
+      class:hidden={isNullish(nextId)}
       data-tid="proposal-nav-next"
     >
       {$i18n.proposal_detail.older_short}

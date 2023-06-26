@@ -30,6 +30,10 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import { nonNullish } from "@dfinity/utils";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -66,7 +70,6 @@
       : TransactionNetwork.BTC_MAINNET
     : undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  let kytEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep | undefined;
 
@@ -157,6 +160,9 @@
 
   let userAmount: number | undefined = undefined;
 
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
   let validateAmount: ValidateAmountFn;
   $: validateAmount = ({ amount, selectedAccount }) => {
     assertCkBTCUserInputAmount({
@@ -164,6 +170,7 @@
       sourceAccount: selectedAccount,
       amount,
       transactionFee: fee.toE8s(),
+      infoData,
     });
 
     return undefined;
@@ -200,17 +207,14 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-    <BitcoinKYTFee
-      {selectedNetwork}
-      minterCanisterId={canisters.minterCanisterId}
-      bind:kytFee={kytEstimatedFee}
-    />
+    {#if networkBtc}
+      <BitcoinKYTFee {universeId} />
+    {/if}
   </svelte:fragment>
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
-        {kytEstimatedFee}
         {universeId}
         amount={userAmount}
       />

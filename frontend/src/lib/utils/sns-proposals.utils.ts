@@ -5,16 +5,12 @@ import {
 } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { VotingNeuron } from "$lib/types/proposals";
-import {
-  getSnsNeuronIdAsHexString,
-  snsNeuronVotingPower,
-} from "$lib/utils/sns-neuron.utils";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import type { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
-  SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
@@ -352,18 +348,37 @@ export const proposalActionFields = (
 export const snsProposalIdString = (proposal: SnsProposalData): string =>
   fromDefinedNullable(proposal.id).id.toString();
 
+export const snsProposalId = (proposal: SnsProposalData): bigint =>
+  fromDefinedNullable(proposal.id).id;
+
 export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
   proposal.decided_timestamp_seconds === 0n;
 
+/**
+ * Returns the voting power of a neuron for a proposal.
+ */
+export const ballotVotingPower = ({
+  proposal,
+  neuron,
+}: {
+  proposal: SnsProposalData;
+  neuron: SnsNeuron;
+}): bigint =>
+  BigInt(
+    proposal.ballots.find(
+      ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
+    )?.[1].voting_power || 0
+  );
+
 export const snsNeuronToVotingNeuron = ({
   neuron,
-  snsParameters,
+  proposal,
 }: {
   neuron: SnsNeuron;
-  snsParameters: SnsNervousSystemParameters;
+  proposal: SnsProposalData;
 }): VotingNeuron => ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
-  votingPower: BigInt(snsNeuronVotingPower({ neuron, snsParameters })),
+  votingPower: ballotVotingPower({ proposal, neuron }),
 });
 
 /** To have the logic in one place */

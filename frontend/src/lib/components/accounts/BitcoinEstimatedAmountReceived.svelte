@@ -8,11 +8,20 @@
   import type { Token } from "@dfinity/nns";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  export let kytEstimatedFee: bigint | undefined | null = undefined;
   export let universeId: UniverseCanisterId;
+
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
+  let kytEstimatedFee: bigint | undefined = undefined;
+  $: kytEstimatedFee = infoData?.info.kyt_fee;
 
   let bitcoinLabel: string;
   $: bitcoinLabel = isUniverseCkTESTBTC(universeId)

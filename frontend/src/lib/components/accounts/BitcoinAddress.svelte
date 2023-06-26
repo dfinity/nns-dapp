@@ -15,6 +15,8 @@
   import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+  import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
@@ -45,11 +47,17 @@
     })
   );
 
+  let minConfirmations: number | undefined;
+  $: minConfirmations =
+    $ckBTCInfoStore[universeId.toText()]?.info.min_confirmations;
+
   // TODO: incoming_bitcoin_network_part_1 comes before incoming_bitcoin_network_part_2. It would be more worth creating a component or directive that can replace placeholders of the i18n with Svelte components
 </script>
 
 <p class="description">
-  {$i18n.ckbtc.incoming_bitcoin_network_part_1}
+  {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network_part_1, {
+    $min: `${minConfirmations ?? ""}`,
+  })}
 
   <CkBTCWalletActions inline {minterCanisterId} {reload} />
 

@@ -3,6 +3,7 @@
  */
 
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -49,7 +50,7 @@ describe("ParticipateButton", () => {
       });
       snsTicketsStore.reset();
       jest.clearAllMocks();
-      userCountryStore.set("not loaded");
+      userCountryStore.set(NOT_LOADED);
     });
 
     it("should render a text to increase participation", () => {

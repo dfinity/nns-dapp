@@ -31,6 +31,10 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
   cancelPoll,
@@ -67,7 +71,6 @@ export const getOrCreateAccount = async ({
   }
 };
 
-// Exported for testing
 export const loadAccounts = async ({
   identity,
   certified,
@@ -76,16 +79,12 @@ export const loadAccounts = async ({
   certified: boolean;
 }): Promise<AccountsStoreData> => {
   // Helper
-  const getAccountBalance = async (
-    identifierString: string
-  ): Promise<TokenAmount> => {
-    const e8sBalance = await queryAccountBalance({
+  const getAccountBalance = (identifierString: string): Promise<bigint> =>
+    queryAccountBalance({
       identity,
       certified,
       accountIdentifier: identifierString,
     });
-    return TokenAmount.fromE8s({ amount: e8sBalance, token: ICPToken });
-  };
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
     identity,
@@ -98,7 +97,7 @@ export const loadAccounts = async ({
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
     ): Promise<Account> => ({
       identifier: account.account_identifier,
-      balance: await getAccountBalance(account.account_identifier),
+      balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),
@@ -334,7 +333,7 @@ export const getAccountTransactions = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && FORCE_CALL_STRATEGY !== "query") {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -452,7 +451,7 @@ const pollLoadAccounts = async (params: {
  * @param certified Whether the accounts should be requested as certified or not.
  */
 export const pollAccounts = async (certified = true) => {
-  const overrideCertified = FORCE_CALL_STRATEGY === "query" ? false : certified;
+  const overrideCertified = isForceCallStrategy() ? false : certified;
   const accounts = get(accountsStore);
 
   // Skip if accounts are already loaded and certified
@@ -460,7 +459,7 @@ export const pollAccounts = async (certified = true) => {
   // Therefore, we compare with `true`.
   if (
     accounts.certified === true ||
-    (accounts.certified === false && FORCE_CALL_STRATEGY === "query")
+    (accounts.certified === false && isForceCallStrategy())
   ) {
     return;
   }

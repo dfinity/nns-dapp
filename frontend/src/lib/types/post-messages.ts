@@ -1,6 +1,3 @@
-import type { CanisterSync } from "$lib/types/canister";
-import type { MetricsSync } from "$lib/types/metrics";
-
 export type PostMessageRequest =
   | "nnsStartIdleTimer"
   | "nnsStopIdleTimer"
@@ -9,25 +6,20 @@ export type PostMessageRequest =
   | "nnsStartCyclesTimer"
   | "nnsStopCyclesTimer";
 
-export interface PostMessageDataRequest {
-  canisterId: string;
-}
-
-export interface PostMessageDataResponse {
-  metrics?: MetricsSync;
-  canister?: CanisterSync;
-  authRemainingTime?: number;
-}
-
 export type PostMessageResponse =
   | "nnsSignOut"
   | "nnsSyncMetrics"
   | "nnsSyncCanister"
   | "nnsDelegationRemainingTime";
 
-export interface PostMessage<
-  T extends PostMessageDataResponse | PostMessageDataRequest
-> {
+export type PostMessageData = object;
+
+export interface PostMessageDataActor extends PostMessageData {
+  host: string;
+  fetchRootKey: boolean;
+}
+
+export interface PostMessage<T extends PostMessageData> {
   msg: PostMessageRequest | PostMessageResponse;
   data: T;
 }

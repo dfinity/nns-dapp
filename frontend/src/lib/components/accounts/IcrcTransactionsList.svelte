@@ -6,6 +6,8 @@
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { IcrcTransactionData } from "$lib/types/transaction";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { flip } from "svelte/animate";
 
   export let account: Account;
   export let transactions: IcrcTransactionData[];
@@ -13,9 +15,10 @@
   export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
   export let descriptions: Record<string, string> | undefined = undefined;
+  export let token: IcrcTokenMetadata | undefined;
 </script>
 
-<div data-tid="transactions-list">
+<div data-tid="transactions-list" class="container">
   {#if transactions.length === 0 && !loading}
     {$i18n.wallet.no_transactions}
   {:else if transactions.length === 0 && loading}
@@ -24,13 +27,16 @@
   {:else}
     <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
       {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
-        <IcrcTransactionCard
-          transactionWithId={transaction}
-          {toSelfTransaction}
-          {account}
-          {governanceCanisterId}
-          {descriptions}
-        />
+        <div animate:flip={{ duration: 250 }}>
+          <IcrcTransactionCard
+            transactionWithId={transaction}
+            {toSelfTransaction}
+            {account}
+            {governanceCanisterId}
+            {descriptions}
+            {token}
+          />
+        </div>
       {/each}
     </InfiniteScroll>
     {#if loading}
@@ -38,3 +44,9 @@
     {/if}
   {/if}
 </div>
+
+<style lang="scss">
+  .container {
+    padding-top: var(--padding);
+  }
+</style>

@@ -29,20 +29,20 @@
 
 <FiltersWrapper>
   <FiltersButton
-    testId="filters-by-status"
-    totalFilters={filtersStore?.decisionStatus.length ?? 0}
-    activeFilters={filtersStore?.decisionStatus.filter(({ checked }) => checked)
-      .length ?? 0}
-    on:nnsFilter={() => openFilters("status")}
-    >{$i18n.voting.status}</FiltersButton
-  >
-  <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
     activeFilters={filtersStore?.rewardStatus.filter(({ checked }) => checked)
       .length ?? 0}
     on:nnsFilter={() => openFilters("rewards")}
     >{$i18n.voting.rewards}</FiltersButton
+  >
+  <FiltersButton
+    testId="filters-by-status"
+    totalFilters={filtersStore?.decisionStatus.length ?? 0}
+    activeFilters={filtersStore?.decisionStatus.filter(({ checked }) => checked)
+      .length ?? 0}
+    on:nnsFilter={() => openFilters("status")}
+    >{$i18n.voting.status}</FiltersButton
   >
 </FiltersWrapper>
 

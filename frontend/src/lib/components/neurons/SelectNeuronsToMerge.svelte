@@ -52,7 +52,7 @@
   $: isMaxSelection = selectedNeuronIds.length >= MAX_NEURONS_MERGED;
 </script>
 
-<div class="wrapper legacy">
+<div class="wrapper legacy" data-tid="select-neurons-to-merge-component">
   <p>{$i18n.neurons.merge_neurons_select_info}</p>
   <ul class="items">
     {#each neurons as { neuron, selected, mergeable, messageKey } (neuron.neuronId)}

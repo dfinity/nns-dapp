@@ -176,7 +176,7 @@ is the one that will be used. So we first need to remove the canister from the
 cache and then run `dfx nns install`.
 
 **Note**: If the last step below (`dfx nns install`) gives an error because it
-can't download some canister (for example `lifeline.wasm`), you can copy that
+can't download some canister (for example `lifeline.wasm.gz`), you can copy that
 canister back from the backup directory into the cache directory and try
 again, as long as it isn't the governance canister itself.
 
@@ -241,7 +241,7 @@ If the file/directory doesn't exist at all, create it with that content.
 Then deploy `nns-dapp`:
 
 1. Build the wasm. E.g.: `DFX_NETWORK=local ./build.sh`
-2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
+2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
 
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.
