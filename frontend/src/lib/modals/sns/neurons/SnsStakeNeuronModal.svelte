@@ -8,7 +8,7 @@
   } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { Token, TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount, Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";

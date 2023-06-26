@@ -1,7 +1,7 @@
 <script lang="ts">
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 

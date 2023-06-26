@@ -14,7 +14,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { ICPToken, type Token } from "@dfinity/nns";
+  import { ICPToken, type Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";

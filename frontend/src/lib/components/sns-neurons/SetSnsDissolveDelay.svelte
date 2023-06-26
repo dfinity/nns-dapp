@@ -15,7 +15,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";

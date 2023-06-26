@@ -1,4 +1,4 @@
-import { TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsSelectedTransactionFeeStoreSubscribe =

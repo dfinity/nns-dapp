@@ -36,9 +36,7 @@ import {
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
-  ICPToken,
   InsufficientFundsError,
-  TokenAmount,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
@@ -58,6 +56,8 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import {
+  ICPToken,
+  TokenAmount,
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,

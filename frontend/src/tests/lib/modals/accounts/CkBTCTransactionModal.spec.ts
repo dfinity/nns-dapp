@@ -34,7 +34,7 @@ import {
   testTransferTokens,
 } from "$tests/utils/transaction-modal.test.utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";

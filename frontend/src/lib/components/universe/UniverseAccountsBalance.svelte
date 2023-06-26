@@ -2,7 +2,7 @@
   import { nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
   import { tokensStore } from "$lib/stores/tokens.store";

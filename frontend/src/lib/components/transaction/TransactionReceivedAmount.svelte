@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
 
   export let amount: number;
