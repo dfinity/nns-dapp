@@ -5,22 +5,34 @@
   import { IconError, Popover } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { workersSyncStore } from "$lib/derived/sync.derived";
-  import {nonNullish} from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;
 
   let label: string;
+  let description: string;
   let icon: typeof SvelteComponent | undefined;
 
   const syncLabel = (): string => {
     switch ($workersSyncStore) {
       case "error":
-        return "Error";
+        return $i18n.sync.status_error;
       case "in_progress":
-        return "In progress";
+        return $i18n.sync.status_in_progress;
       default:
-        return "Idle";
+        return $i18n.sync.status_idle;
+    }
+  };
+
+  const syncDescription = (): string => {
+    switch ($workersSyncStore) {
+      case "error":
+        return $i18n.sync.status_error_detailed;
+      case "in_progress":
+        return $i18n.sync.status_in_progress_detailed;
+      default:
+        return $i18n.sync.status_idle_detailed;
     }
   };
 
@@ -36,7 +48,10 @@
     return undefined;
   };
 
-  $: $workersSyncStore, (label = syncLabel()), (icon = syncIcon());
+  $: $workersSyncStore,
+    (label = syncLabel()),
+    (icon = syncIcon()),
+    (description = syncDescription());
 
   const toggle = () => (visible = !visible);
 </script>
@@ -47,14 +62,14 @@
     class="icon-only"
     bind:this={button}
     on:click={toggle}
-    aria-label={$i18n.header.account_menu}
+    aria-label={label}
     class:error={$workersSyncStore === "idle"}
   >
     <svelte:component this={icon} />
   </button>
 
   <Popover bind:visible anchor={button} direction="rtl">
-    An information about the sync status...
+    {description}
   </Popover>
 {/if}
 

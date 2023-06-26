@@ -927,5 +927,13 @@
     "your_principal_description": "Your ID for the NNS dapp. Created by your Internet Identity.",
     "your_session": "Your session expires in",
     "your_session_description": "All sessions last 30 minutes. After 30 minutes, you will need to authenticate again with Internet Identity."
+  },
+  "sync": {
+    "status_idle": "Synchronization is currently idle.",
+    "status_error": "An error occurred while synchronizing data.",
+    "status_in_progress": "Data synchronization is in progress.",
+    "status_idle_detailed": "Synchronization is currently idle.",
+    "status_error_detailed": "An error occurred while synchronizing data. Please try reloading the page. If the problem persists, please contact support for further assistance.",
+    "status_in_progress_detailed": "Data synchronization is in progress. NNS dapp is checking for the availability of new data."
   }
 }
