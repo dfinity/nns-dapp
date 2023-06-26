@@ -6,7 +6,9 @@ export type PostMessageRequest =
   | "nnsStartCyclesTimer"
   | "nnsStopCyclesTimer"
   | "nnsStartTransactionsTimer"
-  | "nnsStopTransactionsTimer";
+  | "nnsStopTransactionsTimer"
+  | "nnsStartBalancesTimer"
+  | "nnsStopBalancesTimer";
 
 export type PostMessageResponse =
   | "nnsSignOut"
@@ -15,6 +17,8 @@ export type PostMessageResponse =
   | "nnsDelegationRemainingTime"
   | "nnsSyncTransactions"
   | "nnsSyncErrorTransactions"
+  | "nnsSyncBalances"
+  | "nnsSyncErrorBalances"
   | "nnsSyncStatus";
 
 export type PostMessageData = object;
