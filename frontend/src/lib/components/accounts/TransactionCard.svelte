@@ -13,6 +13,7 @@
   } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
   import { TokenAmount } from "@dfinity/nns";
+  import { fade } from "svelte/transition";
 
   export let transaction: Transaction;
   export let toSelfTransaction = false;
@@ -54,7 +55,7 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card">
+<article data-tid="transaction-card" transition:fade>
   <div class="icon" class:send={!isReceive}>
     <IconNorthEast size="24px" />
   </div>
@@ -105,10 +106,6 @@
     grid-template-columns: 48px auto;
     align-items: flex-start;
     column-gap: var(--padding-2x);
-
-    &:first-of-type {
-      margin-top: var(--padding-6x);
-    }
   }
 
   .title {
