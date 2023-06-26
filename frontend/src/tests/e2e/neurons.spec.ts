@@ -66,6 +66,7 @@ test("Test neuron management", async ({ page, context }) => {
   expect(neuronAVotingPower).toBe(stake * 2);
   // back to neurons otherwise the menu is not available
   await appPo.goBack();
+  await page.waitForTimeout(1);
 
   step("Open neuron B details");
   await appPo.goToNeuronDetails(neuronBId);
@@ -76,6 +77,7 @@ test("Test neuron management", async ({ page, context }) => {
   step("Open proposals list");
   // back to neurons otherwise the menu is not available
   await appPo.goBack();
+  await page.waitForTimeout(1);
   await appPo.goToProposals();
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
   const proposalIds = await appPo
