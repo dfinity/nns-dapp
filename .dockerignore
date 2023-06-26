@@ -27,4 +27,5 @@ frontend/tsconfig.spec.json
 frontend/.env
 e2e-tests
 **/*.wasm
+**/*.wasm.gz
 /deployment-config.json
