@@ -11,7 +11,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmount } from "@dfinity/utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { NeuronState, Token } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isNullish } from "@dfinity/utils";

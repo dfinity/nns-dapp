@@ -1,7 +1,7 @@
 <script lang="ts" xmlns:svelte="http://www.w3.org/1999/html">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import { Modal, Value, busy } from "@dfinity/gix-components";
-  import { type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
