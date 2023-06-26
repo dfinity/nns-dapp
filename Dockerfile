@@ -2,7 +2,7 @@
 #
 # docker build . -t nns-dapp
 # container_id=$(docker create nns-dapp no-op)
-# docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
+# docker cp $container_id:nns-dapp.wasm.gz nns-dapp.wasm.gz
 # docker rm --volumes $container_id
 
 # Check the memory available to docker.
@@ -89,6 +89,8 @@ RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && comma
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
@@ -103,6 +105,8 @@ RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-a
 FROM builder AS mainnet_configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh /build/
+COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/clap.bash /build/scripts/clap.bash
 WORKDIR /build
 RUN mkdir -p frontend
 ENV DFX_NETWORK=mainnet
@@ -203,14 +207,14 @@ WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
-RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
+RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
-RUN for wasm in sns_aggregator.wasm sns_aggregator_dev.wasm ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
+RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
@@ -218,9 +222,9 @@ COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
-COPY --from=build_nnsdapp /build/nns-dapp.wasm /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm /nns-dapp_noassets.wasm
+COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_aggregate /build/sns_aggregator.wasm /
-COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
+COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /
+COPY --from=build_aggregate /build/sns_aggregator_dev.wasm.gz /

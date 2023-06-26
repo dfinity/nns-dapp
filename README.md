@@ -89,10 +89,10 @@ When you have the tools installed, you can build the container with:
   ```
 * You can verify that you have the same output as another user with:
   ```sh
-  sha256sum nns-dapp.wasm
+  sha256sum nns-dapp.wasm.gz
   ```
 
-The resulting `nns-dapp.wasm` is ready for deployment as
+The resulting `nns-dapp.wasm.gz` is ready for deployment as
 `qoctq-giaaa-aaaaa-aaaea-cai`, which is the reserved principal for this service.
 
 Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact from [a release](https://github.com/dfinity/nns-dapp/releases?q=proposal&expanded=true).
