@@ -6,7 +6,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { syncOverallStatusStore } from "$lib/derived/sync.derived";
   import { nonNullish } from "@dfinity/utils";
-  import { SyncState } from "$lib/types/sync";
+  import type { SyncState } from "$lib/types/sync";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;
