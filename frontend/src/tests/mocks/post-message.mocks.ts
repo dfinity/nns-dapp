@@ -8,8 +8,6 @@ export class PostMessageMock<T extends MessageEvent> {
   }
 
   emit(params: T) {
-
-
     this._callback?.(params);
   }
 

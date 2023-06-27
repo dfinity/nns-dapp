@@ -129,7 +129,7 @@
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore)}
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore)}
         <SnsWalletBalancesObserver
           universeId={$snsOnlyProjectStore}
           account={$selectedAccountStore.account}

@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { BalancesObserverData } from "$lib/types/icrc.observer";
   import { nonNullish } from "@dfinity/utils";
-  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
@@ -37,13 +36,11 @@
     });
   };
 
-  let data: BalancesObserverData | undefined;
-  $: data = nonNullish($snsProjectSelectedStore)
-    ? {
-        account,
-        ledgerCanisterId: ledgerCanisterId.toText(),
-      }
-    : undefined;
+  let data: BalancesObserverData;
+  $: data = {
+    account,
+    ledgerCanisterId: ledgerCanisterId.toText(),
+  };
 </script>
 
 {#if nonNullish(data)}
