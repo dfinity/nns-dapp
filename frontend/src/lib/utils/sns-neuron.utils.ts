@@ -427,7 +427,7 @@ export const isEnoughAmountToSplit = ({
   neuronMinimumStake: E8s;
 }): boolean => amount >= neuronMinimumStake + fee;
 
-export const neuronCanBeSplit = ({
+export const hasEnoughStakeToSplit = ({
   neuron,
   fee,
   neuronMinimumStake,

@@ -33,7 +33,7 @@
   });
 </script>
 
-<!-- We do this to avoid getting an "unknown propo passed" warning -->
+<!-- We do this to avoid getting an "unknown prop passed" warning -->
 {#if passPropNeuron}
   <svelte:component this={testComponent} {neuron} />
 {:else}

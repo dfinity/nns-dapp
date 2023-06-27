@@ -2,7 +2,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { isVesting, neuronCanBeSplit } from "$lib/utils/sns-neuron.utils";
+  import {
+    isVesting,
+    hasEnoughStakeToSplit,
+  } from "$lib/utils/sns-neuron.utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
@@ -23,15 +26,15 @@
     parameters.neuron_minimum_stake_e8s
   );
 
-  let splittable: boolean;
-  $: splittable = neuronCanBeSplit({
+  let enoughStakeToSplit: boolean;
+  $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
     fee: transactionFee,
     neuronMinimumStake,
   });
 </script>
 
-{#if splittable}
+{#if enoughStakeToSplit}
   <VestingTooltipWrapper {neuron}>
     <button
       class="secondary"
