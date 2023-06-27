@@ -63,10 +63,6 @@ export class AppPo extends BasePageObject {
     return this.getMenuTogglePo().click();
   }
 
-  waitForHeaderLoaded(): Promise<void> {
-    return this.root.byTestId("header-component").waitFor();
-  }
-
   async openMenu(): Promise<void> {
     await this.toggleMenu();
     await this.getBackdropPo().waitFor();
