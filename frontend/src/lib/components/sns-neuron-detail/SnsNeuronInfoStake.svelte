@@ -76,7 +76,7 @@
         <SnsIncreaseStakeButton />
       {/if}
       {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-        <DisburseSnsButton />
+        <DisburseSnsButton {neuron} />
       {:else if canDissolve}
         <DissolveSnsNeuronButton {neuron} />
       {/if}
