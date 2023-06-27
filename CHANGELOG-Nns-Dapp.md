@@ -15,6 +15,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Add vesting information in SNS neuron detail.
 * Disable functionality buttons while SNS neuron is vesting.
+* Updated `bitcoin-canister` revision for proposal payload support.
 
 #### Deprecated
 #### Removed
