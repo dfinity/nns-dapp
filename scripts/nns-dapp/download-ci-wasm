@@ -3,7 +3,6 @@ set -euo pipefail
 
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEFAULT_WASM_FILENAME="nns-dapp.wasm.gz"
-ARTIFACT_WORKFLOW="Build and test"
 
 print_help() {
   cat <<-EOF
@@ -29,20 +28,11 @@ source "$(clap.build)"
 
 COMMIT="$(git rev-parse "$COMMIT")"
 
-docker_build_run_id="$(gh run list --workflow "$ARTIFACT_WORKFLOW" --limit "$LIMIT" --status success --json databaseId,headSha | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit)' | jq -r '.databaseId' | tail -1)"
-
-if ! [ "$docker_build_run_id" ]; then
-  (
-    echo "No successful Docker build run found for commit $COMMIT."
-    echo "If the commit is too new, the run may not have finished yet."
-    echo "If the commit is too old, increasing --limit (was $LIMIT) may help."
-  ) >&2
-  exit 1
-fi
+ci_build_run_id="$("$SOURCE_DIR/get-ci-build-run" --commit "$COMMIT" --limit "$LIMIT")"
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf $tmp_dir' EXIT
-gh run download "$docker_build_run_id" --dir "$tmp_dir"
+gh run download "$ci_build_run_id" --dir "$tmp_dir"
 
 mkdir -p "$OUTPUT_DIR"
 dst_wasm_file="$OUTPUT_DIR/$WASM_FILENAME"
