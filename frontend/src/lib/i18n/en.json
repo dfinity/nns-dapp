@@ -931,9 +931,9 @@
   "sync": {
     "status_idle": "Synchronization is currently idle.",
     "status_error": "An error occurred while synchronizing data.",
-    "status_in_progress": "Data synchronization is in progress.",
+    "status_in_progress": "Synchronization is in progress.",
     "status_idle_detailed": "Synchronization is currently idle.",
     "status_error_detailed": "An error occurred while synchronizing data. Please try reloading the page. If the problem persists, please contact support for further assistance.",
-    "status_in_progress_detailed": "Data synchronization is in progress. NNS dapp is checking for the availability of new data."
+    "status_in_progress_detailed": "Synchronization is in progress. NNS dapp is checking for the availability of new transactions."
   }
 }
