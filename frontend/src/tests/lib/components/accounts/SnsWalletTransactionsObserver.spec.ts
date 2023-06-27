@@ -5,17 +5,20 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { syncStore } from "$lib/stores/sync.store";
-import type { Account } from "$lib/types/account";
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
+import { jsonReplacer } from "$lib/utils/json.utils";
 import { page } from "$mocks/$app/stores";
 import SnsWalletTransactionsObserverTest from "$tests/lib/components/accounts/SnsWalletTransactionsObserverTest.svelte";
+import {
+  mockIcrcTransactionMint,
+  mockIcrcTransactionWithId,
+} from "$tests/mocks/icrc-transactions.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
@@ -35,6 +38,14 @@ describe("SnsWalletTransactionsObserver", () => {
 
   let postMessageMock: PostMessageMock<TransactionsMessageEvent>;
 
+  const transaction = {
+    canisterId: rootCanisterIdMock,
+    transactions: [mockIcrcTransactionWithId],
+    accountIdentifier: mockSnsMainAccount.identifier,
+    oldestTxId: BigInt(10),
+    completed: false,
+  };
+
   beforeEach(() => {
     jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
@@ -45,12 +56,7 @@ describe("SnsWalletTransactionsObserver", () => {
       ])
     );
 
-    const accounts: Account[] = [mockSnsMainAccount];
-    snsAccountsStore.setAccounts({
-      rootCanisterId: rootCanisterIdMock,
-      accounts,
-      certified: true,
-    });
+    icrcTransactionsStore.addTransactions(transaction);
 
     page.mock({
       routeId: AppPath.Wallet,
@@ -85,13 +91,20 @@ describe("SnsWalletTransactionsObserver", () => {
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
   });
 
-  xit("should update account store on new sync message", async () => {
+  it("should update account store on new sync message", async () => {
     const { getByTestId } = render(SnsWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
     const transactionsStore = get(icrcTransactionsStore);
-    expect(transactionsStore[mockSnsMainAccount.identifier]).toEqual({});
+
+    expect(transactionsStore[rootCanisterIdMock.toText()]).toEqual({
+      [mockSnsMainAccount.identifier]: {
+        transactions: transaction.transactions,
+        completed: transaction.completed,
+        oldestTxId: transaction.oldestTxId,
+      },
+    });
 
     await waitFor(() => expect(postMessageMock.ready).toBeTruthy());
 
@@ -99,16 +112,29 @@ describe("SnsWalletTransactionsObserver", () => {
       data: {
         msg: "nnsSyncTransactions",
         data: {
-          transactions: [],
+          transactions: [
+            {
+              accountIdentifier: mockSnsMainAccount.identifier,
+              transactions: JSON.stringify(
+                [mockIcrcTransactionMint],
+                jsonReplacer
+              ),
+              oldestTxId: BigInt(11),
+            },
+          ],
         },
       },
     } as TransactionsMessageEvent);
 
     await waitFor(() => {
       const updatedStore = get(icrcTransactionsStore);
-      expect(updatedStore[mockSnsMainAccount.identifier]).toEqual([
-        { ...mockSnsMainAccount, balanceE8s: 123456n },
-      ]);
+      expect(updatedStore[rootCanisterIdMock.toText()]).toEqual({
+        [mockSnsMainAccount.identifier]: {
+          transactions: [...transaction.transactions, mockIcrcTransactionMint],
+          completed: true,
+          oldestTxId: transaction.oldestTxId,
+        },
+      });
     });
   });
 
