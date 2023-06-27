@@ -1,6 +1,6 @@
 <script lang="ts">
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import Sync from "$lib/components/sync/Sync.svelte";
+  import Sync from "$lib/components/header/Sync.svelte";
 </script>
 
 <div>

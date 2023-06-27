@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SvelteComponent } from "svelte";
-  import IconSync from "$lib/components/sync/IconSync.svelte";
+  import { IconSync } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { IconError, Popover } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -74,7 +74,7 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/header";
+  @use "header";
 
   button {
     @include header.button(--primary-tint);
