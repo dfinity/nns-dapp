@@ -81,6 +81,8 @@ if [ "$command" = "import" ]; then
 fi
 
 if [ "$command" = "remove" ]; then
+  # ShellCheck misfires, thinking $CANISTER isn't set.
+  # shellcheck disable=SC2153
   old_canister_id="$(jq -r --arg network "$NETWORK" --arg canister "$CANISTER" '.[$canister][$network]' "$JSON_FILE")"
 
   if ! [ "$old_canister_id" ]; then
