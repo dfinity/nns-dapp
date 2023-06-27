@@ -1,7 +1,7 @@
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import {fromDefinedNullable, nonNullish} from "@dfinity/utils";
 import { errorToString } from "./error.utils";
 
 export const isPrincipal = (value: unknown): value is Principal =>
@@ -390,3 +390,21 @@ export const expandObject = (
     }
     return acc;
   }, {} as Record<string, unknown>);
+
+// Recursively apply fromDefinedNullable to all values in an array when the value the length of the array is 1
+export const fromDefinedNullableRecursive = (root: unknown): unknown => {
+  // unwrap s.c. defined nullable values
+  if (Array.isArray(root) && root.length === 1) {
+    return fromDefinedNullableRecursive(fromDefinedNullable(root as [unknown]));
+  }
+
+  if (typeof root === "object" && root !== null) {
+    // apply to all values in the object
+    for (const [key, value] of Object.entries(root)) {
+        (root as {[key: string]: unknown})[key] = fromDefinedNullableRecursive(value);
+    }
+  }
+
+  // return the value
+  return root;
+}
