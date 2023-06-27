@@ -6,6 +6,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { syncOverallStatusStore } from "$lib/derived/sync.derived";
   import { nonNullish } from "@dfinity/utils";
+  import { SyncState } from "$lib/types/sync";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;
@@ -14,8 +15,8 @@
   let description: string;
   let icon: typeof SvelteComponent | undefined;
 
-  const syncLabel = (): string => {
-    switch ($syncOverallStatusStore) {
+  const syncLabel = (state: SyncState): string => {
+    switch (state) {
       case "error":
         return $i18n.sync.status_error;
       case "in_progress":
@@ -25,8 +26,8 @@
     }
   };
 
-  const syncDescription = (): string => {
-    switch ($syncOverallStatusStore) {
+  const syncDescription = (state: SyncState): string => {
+    switch (state) {
       case "error":
         return $i18n.sync.status_error_detailed;
       case "in_progress":
@@ -36,8 +37,8 @@
     }
   };
 
-  const syncIcon = (): typeof SvelteComponent | undefined => {
-    switch ($syncOverallStatusStore) {
+  const syncIcon = (state: SyncState): typeof SvelteComponent | undefined => {
+    switch (state) {
       case "error":
         return IconError;
       case "in_progress":
@@ -47,10 +48,9 @@
     }
   };
 
-  $: $syncOverallStatusStore,
-    (label = syncLabel()),
-    (icon = syncIcon()),
-    (description = syncDescription());
+  $: label = syncLabel($syncOverallStatusStore);
+  $: icon = syncIcon($syncOverallStatusStore);
+  $: description = syncDescription($syncOverallStatusStore);
 
   const toggle = () => (visible = !visible);
 </script>
