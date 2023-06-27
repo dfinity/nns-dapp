@@ -81,7 +81,7 @@ const initSnsAccountsStore = (): SnsAccountsStore => {
           accounts: [
             ...(currentState[rootCanisterId.toText()]?.accounts ?? []).filter(
               ({ identifier }) =>
-                accounts.find(({ identifier: i }) => identifier === i) !==
+                accounts.find(({ identifier: i }) => identifier === i) ===
                 undefined
             ),
             ...accounts,
