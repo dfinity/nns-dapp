@@ -31,7 +31,7 @@ describe("balances.worker-services", () => {
       accountIdentifiers,
       ledgerCanisterId: ledgerCanisterIdMock.toText(),
       host: HOST,
-      fetchRootKey: true,
+      fetchRootKey: false,
     },
     certified: true,
   };
