@@ -37,7 +37,6 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/header";
 
   .info {
@@ -49,8 +48,6 @@
   }
 
   .toggle {
-    justify-self: flex-end;
-
     @include header.button(--primary-tint);
   }
 </style>

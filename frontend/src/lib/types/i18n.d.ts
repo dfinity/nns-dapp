@@ -980,6 +980,15 @@ interface I18nSettings {
   your_session_description: string;
 }
 
+interface I18nSync {
+  status_idle: string;
+  status_error: string;
+  status_in_progress: string;
+  status_idle_detailed: string;
+  status_error_detailed: string;
+  status_in_progress_detailed: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1223,6 +1232,7 @@ interface I18n {
   error__ckbtc: I18nError__ckbtc;
   feature_flags_prompt: I18nFeature_flags_prompt;
   settings: I18nSettings;
+  sync: I18nSync;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { SplitContent } from "@dfinity/gix-components";
   import Title from "$lib/components/header/Title.svelte";
-  import AccountMenu from "$lib/components/header/AccountMenu.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
+  import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
 </script>
 
 <SplitContent>
@@ -10,7 +10,7 @@
 
   <Title slot="title" />
 
-  <AccountMenu slot="toolbar-end" />
+  <HeaderToolbar slot="toolbar-end" />
 
   <slot slot="end" />
 </SplitContent>
