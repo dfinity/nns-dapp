@@ -11,8 +11,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
+
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 #### Changed
+
+* Add vesting information in SNS neuron detail.
+* Disable functionality buttons while SNS neuron is vesting.
+
 #### Deprecated
 #### Removed
 #### Fixed
