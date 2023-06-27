@@ -1,10 +1,10 @@
 <script lang="ts">
   import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-  import SyncIndicator from "$lib/components/header/SyncIndicator.svelte";
+  import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
 </script>
 
 <div>
-  <SyncIndicator />
+  <AccountSyncIndicator />
   <AccountMenu />
 </div>
 

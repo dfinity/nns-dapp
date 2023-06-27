@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SyncIndicator from "$lib/components/header/SyncIndicator.svelte";
+import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { syncStore } from "$lib/stores/sync.store";
 import {
@@ -13,7 +13,7 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-describe("SyncIndicator", () => {
+describe("AccountSyncIndicator", () => {
   jest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
@@ -30,7 +30,7 @@ describe("SyncIndicator", () => {
     });
 
     it("should not render an indicator", () => {
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(() => getByTestId("sync-indicator")).toThrow();
     });
 
@@ -40,7 +40,7 @@ describe("SyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(() => getByTestId("sync-indicator")).toThrow();
     });
   });
@@ -53,7 +53,7 @@ describe("SyncIndicator", () => {
     });
 
     it("should not render an indicator if idle", () => {
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(() => getByTestId("sync-indicator")).toThrow();
     });
 
@@ -63,7 +63,7 @@ describe("SyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator")).not.toBeNull();
     });
 
@@ -73,12 +73,12 @@ describe("SyncIndicator", () => {
         state: "error",
       });
 
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator")).not.toBeNull();
     });
 
     it("should render an indicator if state updates", async () => {
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(() => getByTestId("sync-indicator")).toThrow();
 
       syncStore.setState({
@@ -90,7 +90,7 @@ describe("SyncIndicator", () => {
     });
 
     it("should hide the indicator if state updates back to idle", async () => {
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(() => getByTestId("sync-indicator")).toThrow();
 
       syncStore.setState({
@@ -116,7 +116,7 @@ describe("SyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
         en.sync.status_in_progress
       );
@@ -128,14 +128,15 @@ describe("SyncIndicator", () => {
         state: "error",
       });
 
-      const { getByTestId } = render(SyncIndicator);
+      const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
         en.sync.status_error
       );
     });
 
     const testPopover = async (label: string) => {
-      const { getByTestId, queryByRole, getByText } = render(SyncIndicator);
+      const { getByTestId, queryByRole, getByText } =
+        render(AccountSyncIndicator);
 
       await fireEvent.click(getByTestId("sync-indicator"));
 
