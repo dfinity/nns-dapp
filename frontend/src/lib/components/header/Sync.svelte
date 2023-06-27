@@ -74,7 +74,7 @@
 {/if}
 
 <style lang="scss">
-  @use "header";
+  @use "@dfinity/gix-components/dist/styles/mixins/header";
 
   button {
     @include header.button(--primary-tint);
