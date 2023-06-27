@@ -3,6 +3,7 @@
   import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
   import TestIdWrapper from "./TestIdWrapper.svelte";
+  import {Html} from "@dfinity/gix-components";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -21,11 +22,14 @@
     | "hash"
     | "string"
     | "symbol"
+    | "base64_encoding"
     | "undefined";
   const getValueType = (value: unknown): ValueType => {
     if (value === null) return "null";
     if (isPrincipal(value)) return "principal";
     if (Array.isArray(json) && isHash(json)) return "hash";
+    // not null was already checked above
+    if (typeof value === 'object' && Object.keys(value as object)[0] === "base64_encoding") return "base64_encoding";
     return typeof value;
   };
 
@@ -43,7 +47,7 @@
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
-    value = isExpandable ? json : stringifyJson(json);
+    value = isExpandable ? json : (valueType === "base64_encoding" ? json["base64_encoding"] : stringifyJson(json));
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -105,11 +109,18 @@
       >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
     >
   {:else}
-    <!-- key:value -->
-    <span data-tid={testId} class="key-value">
+    {#if valueType === "base64_encoding"}
+      <!-- base64 encoded image -->
+      <span data-tid={testId} class="key-value">
       {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+      >{/if}<Html text={`<img class="value ${valueType}" alt="${keyLabel}" src="${value}" />`} /></span>
+    {:else}
+      <!-- key:value -->
+      <span data-tid={testId} class="key-value">
+        {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
         >{/if}<span class="value {valueType}" {title}>{value}</span></span
-    >
+      >
+    {/if}
   {/if}
 </TestIdWrapper>
 
