@@ -108,6 +108,8 @@ describe("SnsWalletTransactionsObserver", () => {
 
     await waitFor(() => expect(postMessageMock.ready).toBeTruthy());
 
+    const oldestTxId = transaction.oldestTxId - 1n;
+
     postMessageMock.emit({
       data: {
         msg: "nnsSyncTransactions",
@@ -119,7 +121,7 @@ describe("SnsWalletTransactionsObserver", () => {
                 [mockIcrcTransactionMint],
                 jsonReplacer
               ),
-              oldestTxId: BigInt(11),
+              oldestTxId,
             },
           ],
         },
@@ -132,7 +134,7 @@ describe("SnsWalletTransactionsObserver", () => {
         [mockSnsMainAccount.identifier]: {
           transactions: [...transaction.transactions, mockIcrcTransactionMint],
           completed: true,
-          oldestTxId: transaction.oldestTxId,
+          oldestTxId,
         },
       });
     });
