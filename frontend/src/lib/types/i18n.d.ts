@@ -1070,6 +1070,7 @@ interface I18nActions {
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
+  CreateServiceNervousSystem: string;
 }
 
 interface I18nActions_description {
@@ -1084,6 +1085,7 @@ interface I18nActions_description {
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
+  CreateServiceNervousSystem: string;
 }
 
 interface I18nNns_functions {
