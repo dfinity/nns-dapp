@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+test_json_file=$(mktemp)
+
+cat > "$test_json_file" <<-EOF
+{
+  "__Candid_UI": {
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+  },
+  "internet_identity": {
+    "staging": "wflfh-4yaaa-aaaaa-aaata-cai"
+  },
+  "nns-dapp": {
+    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+    "staging": "4yr67-tiaaa-aaaaa-aabka-cai"
+  }
+}
+EOF
+
+trap 'rm $test_json_file' EXIT
+
+
+: Test export
+
+if ! diff <("$SOURCE_DIR/canister_ids" --export --network staging --json-file "$test_json_file") <(cat <<-EOF
+{
+  "__Candid_UI": {
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+  },
+  "internet_identity": {
+    "staging": "wflfh-4yaaa-aaaaa-aaata-cai"
+  },
+  "nns-dapp": {
+    "staging": "4yr67-tiaaa-aaaaa-aabka-cai"
+  }
+}
+EOF
+); then
+  echo "ERROR: See output of diff above."
+  exit 1
+fi
+
+
+: Test import
+
+"$SOURCE_DIR/canister_ids" --import --json-file "$test_json_file" <<-EOF
+{
+  "internet_identity": {
+    "staging": "new-ii-id"
+  },
+  "nns-dapp": {
+    "staging": "new-nns-dapp-id"
+  }
+}
+EOF
+
+if ! diff "$test_json_file" <(cat <<-EOF
+{
+  "__Candid_UI": {
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+  },
+  "internet_identity": {
+    "staging": "new-ii-id"
+  },
+  "nns-dapp": {
+    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+    "staging": "new-nns-dapp-id"
+  }
+}
+EOF
+); then
+  echo "ERROR: See output of diff above."
+  exit 1
+fi
+
+: Test remove
+
+"$SOURCE_DIR/canister_ids" --remove --canister nns-dapp --network mainnet --json-file "$test_json_file"
+
+# The removed entry was backed up with a key depending on the date/time so
+# remove it before comapring.
+if ! diff <(grep -v '"mainnet-before-........-......"' "$test_json_file") <(cat <<-EOF
+{
+  "__Candid_UI": {
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+  },
+  "internet_identity": {
+    "staging": "new-ii-id"
+  },
+  "nns-dapp": {
+    "staging": "new-nns-dapp-id",
+  }
+}
+EOF
+); then
+  echo "ERROR: See output of diff above."
+  exit 1
+fi

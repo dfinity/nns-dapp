@@ -1,37 +1,70 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
-usage() {
-  echo "Usage: $0 export <network> (outputs to stdout)"
-  echo "       $0 import           (reads from stdin)"
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Manage canister_ids.json.
+
+	Usage: $0 --export --network <network> (outputs to stdout)"
+	       $0 --import                     (reads from stdin)"
+	       $0 --remove --network <network> --canister <canister>"
+	EOF
 }
 
-top_dir=$(git rev-parse --show-toplevel)
-ids_file="$top_dir/canister_ids.json"
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=e long=export desc="Export canister IDs" variable=EXPORT nargs=0 default="false"
+clap.define short=i long=import desc="Import canister IDs from stdin" variable=IMPORT nargs=0 default="false"
+clap.define short=r long=remove desc="Remove canister ID" variable=REMOVE nargs=0 default="false"
+clap.define short=n long=network desc="dfx network to use" variable=NETWORK default="staging"
+clap.define short=c long=canister desc="canister to remove" variable=CANISTER default="nns-dapp"
+clap.define short=j long=json-file desc="Path to the canister_ids.json file" variable=JSON_FILE default="./canister_ids.json"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
-if ! [ -f "$ids_file" ]; then
-  echo "$ids_file is missing."
+if ! [ -f "$JSON_FILE" ]; then
+  echo "$JSON_FILE is missing."
   exit 1
 fi
 
-command="${1-}"
+if [ "$EXPORT" = "true" ]; then
+  command="export"
+fi
 
-if [ "$command" = "export" ]; then
-  network="${2-}"
-  if [ -z "$network" ]; then
-    usage
+if [ "$IMPORT" = "true" ]; then
+  if [ "${command:-}" ]; then
+    echo "Only specify one of --import, --export, --remove" >&2
     exit 1
   fi
+  command="import"
+fi
 
+if [ "$REMOVE" = "true" ]; then
+  if [ "${command:-}" ]; then
+    echo "Only specify one of --import, --export, --remove" >&2
+    exit 1
+  fi
+  command="remove"
+fi
+
+if ! [ "${command:-}" ]; then
+  print_help
+  exit 0
+fi
+
+if [ "$command" = "export" ]; then
   # This whole block can be done in a single line of jq script but it woudn't
   # be readable.
-  canisters=$(jq -r 'keys|join(" ")' "$ids_file")
+  canisters=$(jq -r 'keys|join(" ")' "$JSON_FILE")
   output="{}"
   for canister in $canisters; do
-    id=$(jq -r ".[\"$canister\"][\"$network\"]?" "$ids_file")
+    id=$(jq -r --arg network "$NETWORK" --arg canister "$canister" '.[$canister][$network]?' "$JSON_FILE")
     if [ "$id" != "null" ]; then
-      new_output=$(echo "$output" | jq ".[\"$canister\"][\"$network\"]=\"$id\"")
+      new_output=$(echo "$output" | jq --arg network "$NETWORK" --arg canister "$canister" --arg id "$id" '.[$canister][$network]=$id')
       output="$new_output"
     fi
   done
@@ -42,9 +75,24 @@ fi
 if [ "$command" = "import" ]; then
   echo "Reading from stdin..."
   input="$(cat)"
-  output="$(jq --argjson input "$input" '. * $input' "$ids_file")"
-  echo "$output" >"$ids_file"
+  output="$(jq --argjson input "$input" '. * $input' "$JSON_FILE")"
+  echo "$output" >"$JSON_FILE"
   exit
 fi
 
-usage
+if [ "$command" = "remove" ]; then
+  old_canister_id="$(jq -r --arg network "$NETWORK" --arg canister "$CANISTER" '.[$canister][$network]' "$JSON_FILE")"
+
+  if ! [ "$old_canister_id" ]; then
+    echo "$CANISTER already didn't have an ID for $NETWORK."
+    exit
+  fi
+
+  new_name="$NETWORK-before-$(date +%Y%m%d-%H%M%S)"
+  tmp_file="$(mktemp)"
+  jq --arg network "$NETWORK" --arg canister "$CANISTER" --arg new_name "$new_name" '.[$canister][$new_name] = .[$canister][$network] | del(.[$canister][$network])' "$JSON_FILE" > "$tmp_file"
+  mv "$tmp_file" "$JSON_FILE"
+
+  echo "Renameed $CANISTER.$NETWORK to $new_name."
+  exit
+fi
