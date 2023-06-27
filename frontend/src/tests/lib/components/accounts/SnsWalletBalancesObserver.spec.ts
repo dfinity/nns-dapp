@@ -5,6 +5,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { syncStore } from "$lib/stores/sync.store";
 import type { Account } from "$lib/types/account";
 import type {
   PostMessageDataRequestBalances,
@@ -81,7 +82,7 @@ describe("SnsWalletBalancesObserver", () => {
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
   });
 
-  it("should update account store on new message", async () => {
+  it("should update account store on new sync message", async () => {
     const { getByTestId } = render(SnsWalletBalancesObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
@@ -112,6 +113,34 @@ describe("SnsWalletBalancesObserver", () => {
       expect(updatedStore[rootCanisterIdMock.toText()].accounts).toEqual([
         { ...mockSnsMainAccount, balanceE8s: 123456n },
       ]);
+    });
+  });
+
+  it("should populate error to sync store on error message from worker", async () => {
+    const { getByTestId } = render(SnsWalletBalancesObserverTest);
+
+    await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
+
+    const store = get(syncStore);
+    expect(store).toEqual({
+      balances: "idle",
+      transactions: "idle",
+    });
+
+    await waitFor(() => expect(postMessageMock.ready).toBeTruthy());
+
+    postMessageMock.emit({
+      data: {
+        msg: "nnsSyncErrorBalances",
+      },
+    } as BalancesMessageEvent);
+
+    await waitFor(() => {
+      const updatedStore = get(syncStore);
+      expect(updatedStore).toEqual({
+        balances: "error",
+        transactions: "idle",
+      });
     });
   });
 });
