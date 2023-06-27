@@ -86,5 +86,7 @@ describe("SnsWalletBalancesObserver", () => {
     const { getByTestId } = render(SnsWalletBalancesObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
+
+
   });
 });

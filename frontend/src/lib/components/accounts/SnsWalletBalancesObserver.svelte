@@ -2,16 +2,17 @@
   import type { BalancesObserverData } from "$lib/types/icrc.observer";
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { getContext } from "svelte";
-  import {
-    WALLET_CONTEXT_KEY,
-    type WalletContext,
-  } from "$lib/types/wallet.context";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
+  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { Account } from "$lib/types/account";
+  import type { CanisterId } from "$lib/types/canister";
 
-  const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
+  export let universeId: UniverseCanisterId;
+  export let ledgerCanisterId: CanisterId;
+  export let account: Account;
 
   const callback: BalancesCallback = ({ balances }) => {
     const accounts = balances
@@ -29,23 +30,20 @@
       })
       .filter(nonNullish);
 
-    for (const account of accounts) {
-      store.set({
-        account,
-        neurons: [],
-      });
-    }
+    snsAccountsStore.updateAccounts({
+      accounts,
+      rootCanisterId: universeId,
+      certified: true,
+    });
   };
 
   let data: BalancesObserverData | undefined;
-  $: data =
-    nonNullish($store.account) && nonNullish($snsProjectSelectedStore)
-      ? {
-          account: $store.account,
-          ledgerCanisterId:
-            $snsProjectSelectedStore.summary.ledgerCanisterId.toText(),
-        }
-      : undefined;
+  $: data = nonNullish($snsProjectSelectedStore)
+    ? {
+        account,
+        ledgerCanisterId: ledgerCanisterId.toText(),
+      }
+    : undefined;
 </script>
 
 {#if nonNullish(data)}
