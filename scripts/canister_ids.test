@@ -5,7 +5,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 test_json_file=$(mktemp)
 
-cat > "$test_json_file" <<-EOF
+cat >"$test_json_file" <<-EOF
 {
   "__Candid_UI": {
     "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
@@ -22,10 +22,10 @@ EOF
 
 trap 'rm $test_json_file' EXIT
 
-
 : Test export
 
-if ! diff <("$SOURCE_DIR/canister_ids" --export --network staging --json-file "$test_json_file") <(cat <<-EOF
+if ! diff <("$SOURCE_DIR/canister_ids" --export --network staging --json-file "$test_json_file") <(
+  cat <<-EOF
 {
   "__Candid_UI": {
     "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
@@ -43,7 +43,6 @@ EOF
   exit 1
 fi
 
-
 : Test import
 
 "$SOURCE_DIR/canister_ids" --import --json-file "$test_json_file" <<-EOF
@@ -57,7 +56,8 @@ fi
 }
 EOF
 
-if ! diff "$test_json_file" <(cat <<-EOF
+if ! diff "$test_json_file" <(
+  cat <<-EOF
 {
   "__Candid_UI": {
     "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
@@ -82,7 +82,8 @@ fi
 
 # The removed entry was backed up with a key depending on the date/time so
 # remove it before comapring.
-if ! diff <(grep -v '"mainnet-before-........-......"' "$test_json_file") <(cat <<-EOF
+if ! diff <(grep -v '"mainnet-before-........-......"' "$test_json_file") <(
+  cat <<-EOF
 {
   "__Candid_UI": {
     "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
@@ -99,3 +100,5 @@ EOF
   echo "ERROR: See output of diff above."
   exit 1
 fi
+
+echo PASSED
