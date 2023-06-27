@@ -153,7 +153,7 @@ describe("SyncIndicator", () => {
       await testPopover(en.sync.status_in_progress_detailed);
     });
 
-    it("should render aria label for indicator in error", async () => {
+    it("should render a description in a popover for indicator in error", async () => {
       syncStore.setState({
         key: "balances",
         state: "error",
