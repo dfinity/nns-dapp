@@ -20,6 +20,7 @@ import {
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
+import { NeuronState } from "@dfinity/nns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -78,11 +79,12 @@ describe("SnsNeuronInfoStake", () => {
     expect(await po.hasDisburseButton()).toBe(false);
   });
 
-  it("should not render disburse button if neuron is still vesting", async () => {
+  it("should render disabled disburse button if neuron is still vesting", async () => {
     const neuron: SnsNeuron = createMockSnsNeuron({
       permissions: allPermissions,
       vesting: true,
       id: [1],
+      state: NeuronState.Dissolved,
     });
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
@@ -92,7 +94,7 @@ describe("SnsNeuronInfoStake", () => {
     const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
-    expect(await po.hasDisburseButton()).toBe(false);
+    expect(await po.getDisburseButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render dissolve button", async () => {
@@ -133,8 +135,13 @@ describe("SnsNeuronInfoStake", () => {
     expect(await po.hasDissolveButton()).toBe(false);
   });
 
-  it("should not render dissolve button if neuron is vesting", async () => {
-    const neuron = mockSnsNeuronWithPermissions([]);
+  it("should render disabled dissolve button if neuron is vesting", async () => {
+    const neuron: SnsNeuron = createMockSnsNeuron({
+      permissions: allPermissions,
+      vesting: true,
+      id: [1],
+      state: NeuronState.Locked,
+    });
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronInfoStake,
       neuron,
@@ -143,7 +150,7 @@ describe("SnsNeuronInfoStake", () => {
     const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
-    expect(await po.hasDissolveButton()).toBe(false);
+    expect(await po.getDissolveButtonPo().isDisabled()).toBe(true);
   });
 
   it("renders increase dissolve delay button", async () => {
@@ -173,7 +180,7 @@ describe("SnsNeuronInfoStake", () => {
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
   });
 
-  it("should not render increase dissolve delay button if neuron is vesting", async () => {
+  it("should render disabled increase dissolve delay button if neuron is vesting", async () => {
     const neuron: SnsNeuron = createMockSnsNeuron({
       permissions: allPermissions,
       vesting: true,
@@ -187,7 +194,7 @@ describe("SnsNeuronInfoStake", () => {
     const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
-    expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
+    expect(await po.getIncreaseDissolveDelayButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render increase state button if neuron doesn't belong to the Community Fund", async () => {

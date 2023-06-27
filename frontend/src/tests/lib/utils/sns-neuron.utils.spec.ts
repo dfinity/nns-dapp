@@ -26,6 +26,7 @@ import {
   getSnsNeuronState,
   getSnsNeuronVote,
   hasEnoughMaturityToStake,
+  hasEnoughStakeToSplit,
   hasPermissionToDisburse,
   hasPermissionToDissolve,
   hasPermissionToSplit,
@@ -43,7 +44,6 @@ import {
   minNeuronSplittable,
   needsRefresh,
   neuronAge,
-  neuronCanBeSplit,
   nextMemo,
   snsNeuronVotingPower,
   snsNeuronsIneligibilityReasons,
@@ -1179,10 +1179,10 @@ describe("sns-neuron utils", () => {
     });
   });
 
-  describe("neuronCanBeSplit", () => {
+  describe("hasEnoughStakeToSplit", () => {
     it("returns true if enough", () => {
       expect(
-        neuronCanBeSplit({
+        hasEnoughStakeToSplit({
           neuron: {
             ...mockSnsNeuron,
             cached_neuron_stake_e8s: 2100n,
@@ -1196,7 +1196,7 @@ describe("sns-neuron utils", () => {
 
     it("returns false if not enough", () => {
       expect(
-        neuronCanBeSplit({
+        hasEnoughStakeToSplit({
           neuron: {
             ...mockSnsNeuron,
             cached_neuron_stake_e8s: 2099n,
