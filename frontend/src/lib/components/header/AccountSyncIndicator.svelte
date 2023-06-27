@@ -37,15 +37,14 @@
   };
 
   const syncIcon = (): typeof SvelteComponent | undefined => {
-    if ($syncOverallStatusStore === "in_progress") {
-      return IconSync;
+    switch ($syncOverallStatusStore) {
+      case "error":
+        return IconError;
+      case "in_progress":
+        return IconSync;
+      default:
+        return undefined;
     }
-
-    if ($syncOverallStatusStore === "error") {
-      return IconError;
-    }
-
-    return undefined;
   };
 
   $: $syncOverallStatusStore,
