@@ -20,19 +20,13 @@ jest.mock("$lib/utils/modals.utils", () => ({
   openSnsNeuronModal: jest.fn(),
 }));
 
-let canBeSplit = true;
-jest.mock("$lib/utils/sns-neuron.utils", () => ({
-  ...jest.requireActual("$lib/utils/sns-neuron.utils"),
-  neuronCanBeSplit: () => canBeSplit,
-  minNeuronSplittable: () => 0n,
-}));
-
 describe("SplitSnsNeuronButton", () => {
   const transactionFee = 100n;
-  const neuronMinimumStake = 0n;
+  const neuronMinimumStake = 100_000_000n;
   const props = {
     neuron: {
       ...mockSnsNeuron,
+      stake: neuronMinimumStake * 2n,
     },
     parameters: {
       ...snsNervousSystemParametersMock,
@@ -89,18 +83,18 @@ describe("SplitSnsNeuronButton", () => {
   });
 
   it("should display tooltip and disabled button when neuron can't be split", async () => {
-    canBeSplit = false;
+    const { getByText, queryByTestId } = render(SplitSnsNeuronButton, {
+      props: {
+        ...props,
+        neuron: createMockSnsNeuron({
+          id: [1],
+          vesting: true,
+          stake: neuronMinimumStake - 10_000n,
+        }),
+      },
+    });
 
-    const { getByText, container, queryByTestId } = render(
-      SplitSnsNeuronButton,
-      {
-        props,
-      }
-    );
-
-    expect(queryByTestId("split-neuron-button")).toBeNull();
-
-    const button = container.querySelector("button");
+    const button = queryByTestId("split-neuron-button");
     expect(button).toBeInTheDocument();
     expect(button.hasAttribute("disabled")).toBeTruthy();
 

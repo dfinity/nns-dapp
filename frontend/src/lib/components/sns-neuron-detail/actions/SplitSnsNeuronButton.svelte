@@ -60,7 +60,7 @@
       }
     )}
   >
-    <button class="secondary" disabled
+    <button class="secondary" data-tid="split-neuron-button" disabled
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>
