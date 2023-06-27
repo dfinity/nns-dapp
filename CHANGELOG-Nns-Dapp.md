@@ -11,8 +11,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
-* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 #### Changed
+
+* Add vesting information in SNS neuron detail.
+* Disable functionality buttons while SNS neuron is vesting.
+
 #### Deprecated
 #### Removed
 #### Fixed
@@ -23,6 +26,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 - A script to get the WASM hash from the GitHub CI build log.
+
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+
 #### Changed
 - Made per-network configuration in dfx.json optional.
 - Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
