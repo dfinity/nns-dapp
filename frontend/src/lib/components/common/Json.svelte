@@ -110,7 +110,7 @@
     >
   {:else}
     {#if valueType === "base64_encoding"}
-      <!-- base64 encoded image -->
+      <!-- base64 encoded image (use <Html> to sanitize the content) -->
       <span data-tid={testId} class="key-value">
       {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
       >{/if}<Html text={`<img class="value ${valueType}" alt="${keyLabel}" src="${value}" />`} /></span>
