@@ -14,13 +14,13 @@ import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import type { PostMessage } from "$lib/types/post-messages";
 import { page } from "$mocks/$app/stores";
 import SnsWalletBalancesObserverTest from "$tests/lib/components/accounts/SnsWalletBalancesObserverTest.svelte";
+import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -29,25 +29,7 @@ describe("SnsWalletBalancesObserver", () => {
     PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
   >;
 
-  class PostMessageMock {
-    private _callback:
-      | ((params: BalancesMessageEvent) => Promise<void>)
-      | undefined;
-
-    subscribe(callback: (params: BalancesMessageEvent) => Promise<void>) {
-      this._callback = callback;
-    }
-
-    emit(params: BalancesMessageEvent) {
-      this._callback?.(params);
-    }
-
-    get ready(): boolean {
-      return nonNullish(this._callback);
-    }
-  }
-
-  let postMessageMock: PostMessageMock;
+  let postMessageMock: PostMessageMock<BalancesMessageEvent>;
 
   beforeEach(() => {
     jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
@@ -86,13 +68,7 @@ describe("SnsWalletBalancesObserver", () => {
           // Nothing here
         }
 
-        onmessage = async (
-          _params: MessageEvent<
-            PostMessage<
-              PostMessageDataResponseBalances | PostMessageDataResponseSync
-            >
-          >
-        ) => {
+        onmessage = async (_params: BalancesMessageEvent) => {
           // Nothing here
         };
       };
