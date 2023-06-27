@@ -111,6 +111,14 @@
 
     close();
   };
+
+  const toggleAll = ({
+    detail: { check },
+  }: CustomEvent<{
+    check: boolean;
+  }>) => {
+    selectedFilters = check ? filtersValues.map(({ value }) => value) : [];
+  };
 </script>
 
 <FilterModal
@@ -118,6 +126,7 @@
   on:nnsClose={close}
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
+  on:nnsToggleAll={toggleAll}
   filters={filtersValues}
 >
   <span slot="title"

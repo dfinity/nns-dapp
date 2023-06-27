@@ -381,6 +381,8 @@
     "rewards": "Reward Status",
     "status": "Proposal Status",
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
+    "check_all": "Check All",
+    "uncheck_all": "Uncheck All",
     "nothing_found": "No proposals found for the filters."
   },
   "canisters": {

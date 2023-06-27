@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { check } from "prettier";
+
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import { Checkbox } from "@dfinity/gix-components";
@@ -43,6 +45,15 @@
   const filter = () => {
     dispatch("nnsConfirm");
   };
+
+  let hasMoreHalfCheck: boolean;
+  $: hasMoreHalfCheck = isNullish(filters)
+    ? false
+    : filters.filter(({ checked }) => checked).length >= filters.length / 2;
+
+  const toggleAll = () => {
+    dispatch("nnsToggleAll", { check: !hasMoreHalfCheck });
+  };
 </script>
 
 {#if !loading}
@@ -51,6 +62,13 @@
 
     {#if filters}
       <div class="filters">
+        <div class="toggle-all-wrapper">
+          <button on:click={toggleAll}
+            >{hasMoreHalfCheck
+              ? $i18n.voting.uncheck_all
+              : $i18n.voting.check_all}</button
+          >
+        </div>
         {#each filters as { id, name, checked } (id)}
           <Checkbox inputId={id} {checked} on:nnsChange={() => onChange(id)}
             >{name}</Checkbox
@@ -80,5 +98,11 @@
 <style lang="scss">
   .filters {
     --checkbox-padding: var(--padding-2x) var(--padding) var(--padding-2x);
+  }
+
+  .toggle-all-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--padding);
   }
 </style>

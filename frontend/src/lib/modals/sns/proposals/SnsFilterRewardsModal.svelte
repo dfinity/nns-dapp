@@ -44,12 +44,21 @@
       ...(filter.checked ? [] : [filter.value]),
     ];
   };
+
+  const toggleAll = ({
+    detail: { check },
+  }: CustomEvent<{
+    check: boolean;
+  }>) => {
+    selectedFilters = check ? filters.map(({ value }) => value) : [];
+  };
 </script>
 
 <FilterModal
   on:nnsClose
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
+  on:nnsToggleAll={toggleAll}
   filters={filtersValues}
 >
   <span slot="title">{$i18n.voting.rewards}</span>
