@@ -1547,7 +1547,7 @@ dependencies = [
 [[package]]
 name = "ic-btc-interface"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/bitcoin-canister?rev=2c91aaae834dace5f1826ef41a910500d133d35e#2c91aaae834dace5f1826ef41a910500d133d35e"
+source = "git+https://github.com/dfinity/bitcoin-canister?rev=b1693619e3d4dbc00d8c79e9b6886e1db48b21f7#b1693619e3d4dbc00d8c79e9b6886e1db48b21f7"
 dependencies = [
  "candid",
  "serde",
@@ -3339,7 +3339,7 @@ dependencies = [
  "futures",
  "hex",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-btc-interface 0.1.0 (git+https://github.com/dfinity/bitcoin-canister?rev=2c91aaae834dace5f1826ef41a910500d133d35e)",
+ "ic-btc-interface 0.1.0 (git+https://github.com/dfinity/bitcoin-canister?rev=b1693619e3d4dbc00d8c79e9b6886e1db48b21f7)",
  "ic-cdk 0.8.1",
  "ic-cdk-macros 0.6.10",
  "ic-certified-map 0.3.4",
