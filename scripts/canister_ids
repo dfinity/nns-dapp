@@ -8,9 +8,9 @@ print_help() {
 
 	Manage canister_ids.json.
 
-	Usage: $0 --export --network <network> (outputs to stdout)"
-	       $0 --import                     (reads from stdin)"
-	       $0 --remove --network <network> --canister <canister>"
+	Usage: $(basename $0) --export --network <network> (outputs to stdout)
+	       $(basename $0) --import                     (reads from stdin)
+	       $(basename $0) --remove --network <network> --canister <canister>
 	EOF
 }
 
@@ -91,10 +91,8 @@ if [ "$command" = "remove" ]; then
   fi
 
   new_name="$NETWORK-before-$(date +%Y%m%d-%H%M%S)"
-  tmp_file="$(mktemp)"
-  jq --arg network "$NETWORK" --arg canister "$CANISTER" --arg new_name "$new_name" '.[$canister][$new_name] = .[$canister][$network] | del(.[$canister][$network])' "$JSON_FILE" >"$tmp_file"
-  mv "$tmp_file" "$JSON_FILE"
+  jq --arg network "$NETWORK" --arg canister "$CANISTER" --arg new_name "$new_name" '.[$canister][$new_name] = .[$canister][$network] | del(.[$canister][$network])' "$JSON_FILE" | sponge "$JSON_FILE"
 
-  echo "Renameed $CANISTER.$NETWORK to $new_name."
+  echo "Renamed $CANISTER.$NETWORK to $new_name."
   exit
 fi

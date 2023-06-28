@@ -16,6 +16,9 @@ cat >"$test_json_file" <<-EOF
   "nns-dapp": {
     "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
     "staging": "4yr67-tiaaa-aaaaa-aabka-cai"
+  },
+  "nns-governance": {
+    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
   }
 }
 EOF
@@ -39,7 +42,7 @@ if ! diff <("$SOURCE_DIR/canister_ids" --export --network staging --json-file "$
 }
 EOF
 ); then
-  echo "ERROR: See output of diff above."
+  echo "ERROR exporting: See output of diff above."
   exit 1
 fi
 
@@ -68,11 +71,14 @@ if ! diff "$test_json_file" <(
   "nns-dapp": {
     "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
     "staging": "new-nns-dapp-id"
+  },
+  "nns-governance": {
+    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
   }
 }
 EOF
 ); then
-  echo "ERROR: See output of diff above."
+  echo "ERROR importing: See output of diff above."
   exit 1
 fi
 
@@ -93,11 +99,14 @@ if ! diff <(grep -v '"mainnet-before-........-......"' "$test_json_file") <(
   },
   "nns-dapp": {
     "staging": "new-nns-dapp-id",
+  },
+  "nns-governance": {
+    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
   }
 }
 EOF
 ); then
-  echo "ERROR: See output of diff above."
+  echo "ERROR removing: See output of diff above."
   exit 1
 fi
 
