@@ -5,9 +5,6 @@
 
   export let actionKey: string | undefined;
   export let actionFields: [string, unknown][] = [];
-
-  let isOneProposal = false;
-  $: isOneProposal = actionKey === "CreateServiceNervousSystem";
 </script>
 
 <div
@@ -30,7 +27,7 @@
         <span slot="key">{key}</span>
         <span class="value" slot="value">
           {#if typeof value === "object"}
-            <Json json={isOneProposal ? fromDefinedNullableRecursive(value) : value} />
+            <Json json={fromDefinedNullableRecursive(value)} />
           {:else}
             {value}
           {/if}
