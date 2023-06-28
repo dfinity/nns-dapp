@@ -19,7 +19,10 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
@@ -29,6 +32,7 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import SnsWalletBalancesObserver from "$lib/components/accounts/SnsWalletBalancesObserver.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -125,18 +129,24 @@
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if $selectedAccountStore.account !== undefined && $snsOnlyProjectStore !== undefined}
-        <Summary />
-
-        <WalletSummary {token} />
-
-        <Separator />
-
-        <SnsTransactionsList
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore)}
+        <SnsWalletBalancesObserver
           rootCanisterId={$snsOnlyProjectStore}
           account={$selectedAccountStore.account}
-          {token}
-        />
+          ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
+        >
+          <Summary />
+
+          <WalletSummary {token} />
+
+          <Separator />
+
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
+        </SnsWalletBalancesObserver>
       {:else}
         <Spinner />
       {/if}

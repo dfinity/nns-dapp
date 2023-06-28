@@ -19,8 +19,8 @@ describe("IcrcBalancesObserver", () => {
     jest.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         postMessage(data: {
-          msg: "nnsStartBalancesTimer";
-          data: PostMessageDataRequestBalances;
+          msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
+          data?: PostMessageDataRequestBalances;
         }) {
           spyPostMessage(data);
         }

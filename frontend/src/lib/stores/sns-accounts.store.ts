@@ -20,6 +20,11 @@ export interface SnsAccountsStore extends Readable<SnsAccountsStoreData> {
     accounts: Account[];
     certified: boolean;
   }) => void;
+  updateAccounts: (data: {
+    rootCanisterId: Principal;
+    accounts: Account[];
+    certified: boolean;
+  }) => void;
   resetProject: (rootCanisterId: Principal) => void;
   reset: () => void;
 }
@@ -56,6 +61,31 @@ const initSnsAccountsStore = (): SnsAccountsStore => {
         ...currentState,
         [rootCanisterId.toText()]: {
           accounts,
+          certified,
+        },
+      }));
+    },
+
+    updateAccounts({
+      rootCanisterId,
+      accounts,
+      certified,
+    }: {
+      rootCanisterId: Principal;
+      accounts: Account[];
+      certified: boolean;
+    }) {
+      update((currentState: SnsAccountsStoreData) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          accounts: [
+            ...(currentState[rootCanisterId.toText()]?.accounts ?? []).filter(
+              ({ identifier }) =>
+                accounts.find(({ identifier: i }) => identifier === i) ===
+                undefined
+            ),
+            ...accounts,
+          ],
           certified,
         },
       }));
