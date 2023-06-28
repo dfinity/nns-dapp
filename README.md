@@ -16,21 +16,21 @@
 
 ---
 
-[NNS Dapp](https://nns.internetcomputer.org/) provides a user friendly way to interact with the [Network Nervous System (NNS)](https://internetcomputer.org/nns) of the Internet Computer. With it, you can:
+[NNS Dapp](https://nns.ic0.app) offers a user-friendly platform for interacting with the [Network Nervous System (NNS)](https://internetcomputer.org/nns) of the Internet Computer. With this application, you can easily perform the following actions:
 
-- Send/receive ICP
+- Send and receive ICP
 - Stake neurons
-- Vote on the governance of the IC
-- Participate to SNS decentralization
+- Vote on the governance of the Internet Computer
+- Participate in SNS decentralization
 - Create and top up canisters
 
 ## Links
 
 Some useful links:
 
-- [HACKING](/HACKING.md) document for some information about local development
-- [BUILD.md](/BUILD.md) information about build reproducibility, tools and pipelines
-- URL to the [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/) a back-end canister that provides fast, certified data about SNS canisters
+- The [HACKING](/HACKING.md) document provides information about local development and can be a helpful resource.
+- If you're interested in build reproducibility, tools, and pipelines, you can check out the [BUILD.md](/BUILD.md) document.
+- The [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/) is a back-end canister that provides fast, certified data about Service Nervous Systems (SNS).
 
 ## Getting Help
 
