@@ -5,11 +5,10 @@
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-  import type { UniverseCanisterId } from "$lib/types/universe";
   import type { Account } from "$lib/types/account";
   import type { CanisterId } from "$lib/types/canister";
 
-  export let universeId: UniverseCanisterId;
+  export let rootCanisterId: CanisterId;
   export let ledgerCanisterId: CanisterId;
   export let account: Account;
 
@@ -31,7 +30,7 @@
 
     snsAccountsStore.updateAccounts({
       accounts,
-      rootCanisterId: universeId,
+      rootCanisterId: rootCanisterId,
       certified: true,
     });
   };
