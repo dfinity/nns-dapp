@@ -5,7 +5,9 @@
     <img src="./frontend/static/assets/favicons/icon-512x512.png" width="180px" alt="NNS dapp logo" role="presentation"/>
   </a>
 
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/dfinity/nns-dapp/build.yml?logo=github&label=Build%20and%20test)
+<br/>
+
+[![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/dfinity/nns-dapp/build.yml?logo=github&label=Build%20and%20test)](https://github.com/dfinity/nns-dapp/actions/workflows/build.yml)
 <a href="https://github.com/dfinity/nns-dapp/releases"><img src="https://img.shields.io/github/downloads/dfinity/nns-dapp/total?label=downloads&logo=github" alt="GitHub all releases"></a>
 [![Chat on Discord](https://img.shields.io/badge/chat-Discord-lightgrey?logo=Discord&style=flat-square)](https://discord.gg/E9FxceAg2j)
 
