@@ -6,6 +6,7 @@
   </a>
 
 <br/>
+<br/>
 
 [![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/dfinity/nns-dapp/build.yml?logo=github&label=Build%20and%20test)](https://github.com/dfinity/nns-dapp/actions/workflows/build.yml)
 <a href="https://github.com/dfinity/nns-dapp/releases"><img src="https://img.shields.io/github/downloads/dfinity/nns-dapp/total?label=downloads&logo=github" alt="GitHub all releases"></a>
