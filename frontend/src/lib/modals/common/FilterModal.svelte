@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { check } from "prettier";
-
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import { Checkbox } from "@dfinity/gix-components";
