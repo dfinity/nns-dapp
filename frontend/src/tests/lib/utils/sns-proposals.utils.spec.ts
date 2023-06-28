@@ -1,4 +1,5 @@
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   isAccepted,
@@ -8,15 +9,18 @@ import {
   proposalOnlyActionKey,
   snsDecisionStatus,
   snsNeuronToVotingNeuron,
+  snsProposalAcceptingVotes,
   snsProposalId,
   snsProposalIdString,
-  snsProposalOpen,
   snsRewardStatus,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import {
+  createSnsProposal,
+  mockSnsProposal,
+} from "$tests/mocks/sns-proposals.mock";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -468,21 +472,40 @@ describe("sns-proposals utils", () => {
     });
   });
 
-  describe("snsProposalOpen", () => {
-    it("should return true when proposal is in open state", () => {
-      const testProposal: SnsProposalData = {
-        ...mockSnsProposal,
-        decided_timestamp_seconds: 0n,
-      };
-      expect(snsProposalOpen(testProposal)).toBe(true);
+  describe("snsProposalAcceptingVotes", () => {
+    it("should return true when proposals is still accepting votes", () => {
+      const decisionStatus = enumValues(SnsProposalDecisionStatus);
+      const proposals = decisionStatus.map((status) =>
+        createSnsProposal({
+          status,
+          rewardStatus:
+            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+          proposalId: 123n,
+        })
+      );
+      const openProposals = proposals
+        .map(snsProposalAcceptingVotes)
+        .filter(Boolean);
+      expect(openProposals.length).toBe(proposals.length);
     });
 
-    it("should return false when proposal is not in open state", () => {
-      const testProposal: SnsProposalData = {
-        ...mockSnsProposal,
-        decided_timestamp_seconds: 123n,
-      };
-      expect(snsProposalOpen(testProposal)).toBe(false);
+    it("should return false when proposal is ready to settle", () => {
+      const testProposal: SnsProposalData = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
+        proposalId: 123n,
+      });
+      expect(snsProposalAcceptingVotes(testProposal)).toBe(false);
+    });
+
+    it("should return false when proposal is settled", () => {
+      const testProposal: SnsProposalData = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+        rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
+        proposalId: 123n,
+      });
+      expect(snsProposalAcceptingVotes(testProposal)).toBe(false);
     });
   });
 
