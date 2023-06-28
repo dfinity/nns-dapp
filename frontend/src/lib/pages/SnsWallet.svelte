@@ -131,7 +131,7 @@
     <section>
       {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore)}
         <SnsWalletBalancesObserver
-          universeId={$snsOnlyProjectStore}
+          rootCanisterId={$snsOnlyProjectStore}
           account={$selectedAccountStore.account}
           ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
         >
