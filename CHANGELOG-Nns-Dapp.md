@@ -27,6 +27,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Removed
 #### Fixed
+
+* Enable voting for proposals that are decided but still accepting votes.
+
 #### Security
 #### Not Published
 
