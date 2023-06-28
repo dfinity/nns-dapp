@@ -8,9 +8,9 @@ print_help() {
 
 	Manage canister_ids.json.
 
-	Usage: $(basename $0) --export --network <network> (outputs to stdout)
-	       $(basename $0) --import                     (reads from stdin)
-	       $(basename $0) --remove --network <network> --canister <canister>
+	Usage: $(basename "$0") --export --network <network> (outputs to stdout)
+	       $(basename "$0") --import                     (reads from stdin)
+	       $(basename "$0") --remove --network <network> --canister <canister>
 	EOF
 }
 
