@@ -46,13 +46,12 @@
     dispatch("nnsConfirm");
   };
 
-  let hasMoreHalfCheck: boolean;
-  $: hasMoreHalfCheck = isNullish(filters)
-    ? false
-    : filters.filter(({ checked }) => checked).length >= filters.length / 2;
+  const selectAll = () => {
+    dispatch("nnsSelectAll");
+  };
 
-  const toggleAll = () => {
-    dispatch("nnsToggleAll", { check: !hasMoreHalfCheck });
+  const clearSelection = () => {
+    dispatch("nnsClearSelection");
   };
 </script>
 
@@ -60,15 +59,24 @@
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
     <slot slot="title" name="title" />
 
+    <div slot="sub-title" class="toggle-all-wrapper">
+      <p><slot name="filter-by" /></p>
+      <div>
+        <button
+          class="text"
+          data-tid="filter-modal-select-all"
+          on:click={selectAll}>{$i18n.voting.check_all}</button
+        >
+        <button
+          class="text"
+          data-tid="filter-modal-clear"
+          on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
+        >
+      </div>
+    </div>
+
     {#if filters}
       <div class="filters">
-        <div class="toggle-all-wrapper">
-          <button on:click={toggleAll}
-            >{hasMoreHalfCheck
-              ? $i18n.voting.uncheck_all
-              : $i18n.voting.check_all}</button
-          >
-        </div>
         {#each filters as { id, name, checked } (id)}
           <Checkbox inputId={id} {checked} on:nnsChange={() => onChange(id)}
             >{name}</Checkbox
@@ -102,7 +110,8 @@
 
   .toggle-all-wrapper {
     display: flex;
-    justify-content: center;
-    margin-bottom: var(--padding);
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 var(--padding-2x);
   }
 </style>

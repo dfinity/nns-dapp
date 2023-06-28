@@ -380,9 +380,13 @@
     "topics": "Topics",
     "rewards": "Reward Status",
     "status": "Proposal Status",
+    "filter_by_topics": "Filter by topic",
+    "filter_by_rewards": "Filter by reward status",
+    "filter_by_status": "Filter by proposal status",
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
-    "check_all": "Check All",
-    "uncheck_all": "Uncheck All",
+    "check_all": "Select All",
+    "uncheck_all": "Clear",
+    "filter_by": "Filter by $field",
     "nothing_found": "No proposals found for the filters."
   },
   "canisters": {

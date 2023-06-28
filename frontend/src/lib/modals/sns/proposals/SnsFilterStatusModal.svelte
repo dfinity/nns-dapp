@@ -45,12 +45,12 @@
     ];
   };
 
-  const toggleAll = ({
-    detail: { check },
-  }: CustomEvent<{
-    check: boolean;
-  }>) => {
-    selectedFilters = check ? filters.map(({ value }) => value) : [];
+  const clear = () => {
+    selectedFilters = [];
+  };
+
+  const selectAll = () => {
+    selectedFilters = filters.map(({ value }) => value);
   };
 </script>
 
@@ -58,8 +58,10 @@
   on:nnsClose
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
-  on:nnsToggleAll={toggleAll}
+  on:nnsSelectAll={selectAll}
+  on:nnsClearSelection={clear}
   filters={filtersValues}
 >
   <span slot="title">{$i18n.voting.status}</span>
+  <span slot="filter-by">{$i18n.voting.filter_by_status}</span>
 </FilterModal>
