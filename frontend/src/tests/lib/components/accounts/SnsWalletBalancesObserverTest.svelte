@@ -9,7 +9,7 @@
 
 <SnsWalletBalancesObserver
   account={mockSnsMainAccount}
-  universeId={rootCanisterIdMock}
+  rootCanisterId={rootCanisterIdMock}
   ledgerCanisterId={ledgerCanisterIdMock}
 >
   <div data-tid="test-observer" />
