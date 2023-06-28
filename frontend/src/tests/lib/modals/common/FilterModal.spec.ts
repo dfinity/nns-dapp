@@ -78,4 +78,30 @@ describe("FilterModal", () => {
     const button = queryByTestId("apply-filters");
     button && fireEvent.click(button);
   });
+
+  it("should trigger nnsSelectAll when select all button is clicked", (done) => {
+    const { queryByTestId, component } = render(FilterModal, {
+      props,
+    });
+
+    component.$on("nnsSelectAll", () => {
+      done();
+    });
+
+    const button = queryByTestId("filter-modal-select-all");
+    button && fireEvent.click(button);
+  });
+
+  it("should trigger nnsClearSelection when clear button is clicked", (done) => {
+    const { queryByTestId, component } = render(FilterModal, {
+      props,
+    });
+
+    component.$on("nnsClearSelection", () => {
+      done();
+    });
+
+    const button = queryByTestId("filter-modal-clear");
+    button && fireEvent.click(button);
+  });
 });
