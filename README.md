@@ -1,5 +1,5 @@
 <div align="center" style="display:flex;flex-direction:column;">
-  <h1>NNS Dapp</h1>
+  <h1 style="border-bottom: none;">NNS Dapp</h1>
 
   <a href="https://nns.ic0.app/">
     <img src="./frontend/static/assets/favicons/icon-512x512.png" width="180px" alt="NNS dapp logo" role="presentation"/>
