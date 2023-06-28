@@ -56,7 +56,7 @@ describe("LinkCanisterModal", () => {
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
 
-    await clickByTestId(queryByTestId, "attach-canister-button");
+    await clickByTestId(queryByTestId, "add-principal-button");
     expect(attachCanister).toBeCalled();
 
     await waitFor(() => expect(onClose).toBeCalled());
@@ -78,7 +78,7 @@ describe("LinkCanisterModal", () => {
 
     expect(queryByText(en.error.principal_not_valid)).toBeInTheDocument();
 
-    const buttonElement = queryByTestId("attach-canister-button");
+    const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
     expect(buttonElement?.hasAttribute("disabled")).toBe(true);
   });
