@@ -26,6 +26,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 - A script to get the WASM hash from the GitHub CI build log.
+- CreateServiceNervousSystem proposal support.
+- Base64 image support for payload rendering.
 
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 
