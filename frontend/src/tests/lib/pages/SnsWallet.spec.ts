@@ -7,6 +7,7 @@ import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
+import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -255,6 +256,19 @@ describe("SnsWallet", () => {
       const spy = jest.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsWallet, props);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    // TODO: to activate in next PR when worker transactions is implemented
+    it.skip("should init worker that sync the transactions", async () => {
+      const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
+
+      const { queryByTestId } = render(SnsWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("transactions-list")).toBeInTheDocument()
+      );
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
