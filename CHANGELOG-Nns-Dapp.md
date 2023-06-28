@@ -35,6 +35,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 - Made per-network configuration in dfx.json optional.
 - Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
+- Increased timeout on end-to-end tests running on CI.
 #### Deprecated
 #### Removed
 - Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
