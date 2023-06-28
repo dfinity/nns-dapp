@@ -62,6 +62,18 @@ describe("LinkCanisterModal", () => {
     await waitFor(() => expect(onClose).toBeCalled());
   });
 
+  it("should close modal on cancel", async () => {
+    const { queryByTestId, component } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+
+    await clickByTestId(queryByTestId, "cancel-button");
+    await waitFor(() => expect(onClose).toBeCalled());
+  });
+
   it("should show an error and have disabled button if the principal is not valid", async () => {
     const { queryByTestId, queryByText, container } = await renderModal({
       component: LinkCanisterModal,
