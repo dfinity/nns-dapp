@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+WORKFLOW_NAME="Build and test"
+
+print_help() {
+  cat <<-EOF
+
+  Get the GitHub CI successful build run number for a commit.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit to get build run for" variable=COMMIT default="tags/release-candidate"
+clap.define short=l long=limit desc="--limit passed to gh run list" variable=LIMIT default="200"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+COMMIT="$(git rev-parse "$COMMIT")"
+
+ci_build_run_id="$(gh run list --workflow "$WORKFLOW_NAME" --limit "$LIMIT" --json databaseId,headSha,conclusion | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit and .conclusion == "success")' | jq -r '.databaseId' | tail -1)"
+
+if ! [ "$ci_build_run_id" ]; then
+  (
+    echo "No successful $WORKFLOW_NAME run found for commit $COMMIT."
+    echo "If the commit is too new, the run may not have finished yet."
+    echo "If the commit is too old, increasing --limit (was $LIMIT) may help."
+  ) >&2
+  exit 1
+fi
+
+echo "$ci_build_run_id"

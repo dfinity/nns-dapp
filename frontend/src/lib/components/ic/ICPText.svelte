@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
   import AmountDisplay from "./AmountDisplay.svelte";
 
   export let amount: TokenAmount;

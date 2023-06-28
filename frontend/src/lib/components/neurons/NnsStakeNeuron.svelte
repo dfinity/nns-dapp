@@ -16,7 +16,7 @@
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let account: Account | undefined;
   let amount: number;

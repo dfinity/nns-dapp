@@ -1,4 +1,58 @@
-# Changelog
+# Changelog NNS Dapp
+
+All notable changes to the NNS Dapp will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
+
+## Unreleased
+
+### Application
+
+#### Added
+
+* Add "Select All" and "Clear" selection in proposal filters.
+* Add vesting information in SNS neuron detail.
+
+#### Changed
+
+* Disable functionality buttons while SNS neuron is vesting.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+* Enable voting for proposals that are decided but still accepting votes.
+
+#### Security
+#### Not Published
+
+### Operations
+
+#### Added
+- A script to get the WASM hash from the GitHub CI build log.
+
+* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+
+#### Changed
+- Made per-network configuration in dfx.json optional.
+- Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
+- Increased timeout on end-to-end tests running on CI.
+#### Deprecated
+#### Removed
+- Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
+#### Fixed
+- Script to download WASM from CI no longer relies on broken `gh --status` flag.
+#### Security
+
+## Proposal 123245
+
+* Render the SNS Neuron age.
+* Fix navigation issue from SNS proposal to the Launchpad.
+* Use the count of participants from the derived state instead of using the
+* SNS governance raw metrics.
+* TVL in various currencies.
 
 ## Proposal 123006
 

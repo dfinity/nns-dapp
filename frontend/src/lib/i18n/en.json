@@ -120,7 +120,8 @@
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
-    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code."
+    "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
@@ -285,6 +286,7 @@
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
     "age": "Age",
+    "vestion_period": "Remaining vesting period",
     "aria_label_neuron_card": "Go to neuron details",
     "neuron_id": "Neuron ID",
     "neuron_balance": "Balance",
@@ -378,7 +380,13 @@
     "topics": "Topics",
     "rewards": "Reward Status",
     "status": "Proposal Status",
+    "filter_by_topics": "Filter by topic",
+    "filter_by_rewards": "Filter by reward status",
+    "filter_by_status": "Filter by proposal status",
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
+    "check_all": "Select All",
+    "uncheck_all": "Clear",
+    "filter_by": "Filter by $field",
     "nothing_found": "No proposals found for the filters."
   },
   "canisters": {
@@ -673,6 +681,7 @@
   "sns_neuron_detail": {
     "header": "Neuron",
     "all_topics": "All topics",
+    "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
     "community_fund_section": "Neurons' Fund",
     "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
@@ -925,5 +934,13 @@
     "your_principal_description": "Your ID for the NNS dapp. Created by your Internet Identity.",
     "your_session": "Your session expires in",
     "your_session_description": "All sessions last 30 minutes. After 30 minutes, you will need to authenticate again with Internet Identity."
+  },
+  "sync": {
+    "status_idle": "Synchronization is currently idle.",
+    "status_error": "An error occurred while synchronizing data.",
+    "status_in_progress": "Checking for new transactions.",
+    "status_idle_detailed": "Synchronization is currently idle.",
+    "status_error_detailed": "An error occurred while synchronizing data. Please try reloading the page. If the problem persists, please contact support for further assistance.",
+    "status_in_progress_detailed": "Checking for new transactions."
   }
 }

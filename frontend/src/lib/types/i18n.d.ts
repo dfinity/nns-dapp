@@ -125,6 +125,7 @@ interface I18nError {
   adding_permissions: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
+  qrcode_token_incompatible: string;
 }
 
 interface I18nWarning {
@@ -295,6 +296,7 @@ interface I18nNeurons {
   inline_remaining: string;
   remaining: string;
   age: string;
+  vestion_period: string;
   aria_label_neuron_card: string;
   neuron_id: string;
   neuron_balance: string;
@@ -391,7 +393,13 @@ interface I18nVoting {
   topics: string;
   rewards: string;
   status: string;
+  filter_by_topics: string;
+  filter_by_rewards: string;
+  filter_by_status: string;
   hide_unavailable_proposals: string;
+  check_all: string;
+  uncheck_all: string;
+  filter_by: string;
   nothing_found: string;
 }
 
@@ -701,6 +709,7 @@ interface I18nSns_sale {
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
+  vesting_period_tooltip: string;
   community_fund_section: string;
   community_fund_section_description: string;
   add_hotkey_info: string;
@@ -978,6 +987,15 @@ interface I18nSettings {
   your_session_description: string;
 }
 
+interface I18nSync {
+  status_idle: string;
+  status_error: string;
+  status_in_progress: string;
+  status_idle_detailed: string;
+  status_error_detailed: string;
+  status_in_progress_detailed: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1221,6 +1239,7 @@ interface I18n {
   error__ckbtc: I18nError__ckbtc;
   feature_flags_prompt: I18nFeature_flags_prompt;
   settings: I18nSettings;
+  sync: I18nSync;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

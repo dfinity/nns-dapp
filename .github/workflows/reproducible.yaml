@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: nns-dapp-mainnet-wasm-${{ matrix.os }}
-          path: nns-dapp.wasm
+          path: nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
@@ -56,7 +56,7 @@ jobs:
       - name: 'Output the wasm hash'
         run: |
           mkdir -p hashes
-          sha256sum nns-dapp.wasm > "hashes/nns-dapp-wasm_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
+          sha256sum nns-dapp.wasm.gz > "hashes/nns-dapp-wasm_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
       - name: 'Output the assets hash'
         run: |
           sha256sum assets.tar.xz > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"

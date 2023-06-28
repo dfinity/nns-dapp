@@ -29,8 +29,8 @@ import {
   principal,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("project-utils", () => {
   const summaryUsRestricted: SnsSummary = createSummary({

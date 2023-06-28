@@ -98,6 +98,16 @@ export const registerHardwareWallet = async ({
 const createLedgerIdentity = (): Promise<LedgerIdentity> =>
   LedgerIdentity.create();
 
+// Used to cache the identities.
+// The identity is an instance of the class LedgerIdentity.
+// This identity is used in other layers and then cached. If this returns a new one it's not necessarily used.
+// For example, the `createAgent` cached the agents which has the identity inside.
+// We had the issue that the `neuronStakeFlag` was not being set because the agent was using a cached identity.
+let identities: Record<string, LedgerIdentity> = {};
+
+// For testing purposes
+export const resetIdentitiesCachedForTesting = () => (identities = {});
+
 /**
  * Unlike getIdentity(), getting the ledger identity does not automatically logout if no identity is found - i.e. if errors happen.
  * User might need several tries to attach properly the ledger to the computer.
@@ -105,7 +115,12 @@ const createLedgerIdentity = (): Promise<LedgerIdentity> =>
 export const getLedgerIdentity = async (
   identifier: string
 ): Promise<LedgerIdentity> => {
+  if (identities[identifier]) {
+    return identities[identifier];
+  }
   const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+
+  identities[identifier] = ledgerIdentity;
 
   const ledgerIdentifier = principalToAccountIdentifier(
     ledgerIdentity.getPrincipal()

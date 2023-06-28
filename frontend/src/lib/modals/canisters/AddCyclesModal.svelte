@@ -28,7 +28,7 @@
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {

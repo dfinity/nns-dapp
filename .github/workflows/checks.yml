@@ -1,4 +1,4 @@
-name: CI Checks
+name: Unit Tests
 on:
   push:
 concurrency:
@@ -177,7 +177,7 @@ jobs:
         run: |
           echo Create a fake wasm
           mkdir -p release/ci
-          touch release/ci/nns-dapp.wasm
+          touch release/ci/nns-dapp.wasm.gz
           echo Create a proposal template
           scripts/nns-dapp/release-template
           echo Check the proposal
@@ -262,8 +262,24 @@ jobs:
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Test getting proposal args
         run: scripts/dfx-nns-proposal-args.test
+  docker-build-cli-flags:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker-build prints help
+        run: ./scripts/docker-build --help | grep -i usage
+  download-nns-dapp-ci-wasm:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download NNS-dapp CI wasm
+        run: |
+          MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
+          scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
+    env:
+      GH_TOKEN: ${{ github.token }}
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

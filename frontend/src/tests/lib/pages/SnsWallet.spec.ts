@@ -6,6 +6,8 @@ import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-transactions.services";
+import * as workerBalances from "$lib/services/worker-balances.services";
+import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -39,6 +41,32 @@ jest.mock("$lib/services/sns-transactions.services", () => {
     loadSnsAccountTransactions: jest.fn().mockResolvedValue(undefined),
   };
 });
+
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
 
 describe("SnsWallet", () => {
   const props = {
@@ -109,9 +137,9 @@ describe("SnsWallet", () => {
       });
 
       page.mock({ data: { universe: rootCanisterIdText } });
-    });
 
-    afterAll(() => jest.clearAllMocks());
+      jest.clearAllMocks();
+    });
 
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
@@ -222,6 +250,26 @@ describe("SnsWallet", () => {
       });
 
       expect(getByText(title)).toBeInTheDocument();
+    });
+
+    it("should init worker that sync the balance", async () => {
+      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+
+      render(SnsWallet, props);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should init worker that sync the transactions", async () => {
+      const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
+
+      const { queryByTestId } = render(SnsWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("transactions-list")).toBeInTheDocument()
+      );
+
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });

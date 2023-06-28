@@ -427,7 +427,7 @@ export const isEnoughAmountToSplit = ({
   neuronMinimumStake: E8s;
 }): boolean => amount >= neuronMinimumStake + fee;
 
-export const neuronCanBeSplit = ({
+export const hasEnoughStakeToSplit = ({
   neuron,
   fee,
   neuronMinimumStake,
@@ -842,3 +842,27 @@ export const snsNeuronsToIneligibleNeuronData = ({
       identity,
     }),
   }));
+
+/**
+ * Returns how long until the vesting period ends in seconds.
+ *
+ * If the vesting period has ended, returns 0.
+ */
+export const vestingInSeconds = ({
+  created_timestamp_seconds,
+  vesting_period_seconds,
+}: SnsNeuron): bigint =>
+  BigInt(
+    Math.max(
+      Number(created_timestamp_seconds) +
+        Number(fromNullable(vesting_period_seconds) ?? 0n) -
+        nowInSeconds(),
+      0
+    )
+  );
+
+/**
+ * Returns whether the neuron is still vesting.
+ */
+export const isVesting = (neuron: SnsNeuron): boolean =>
+  vestingInSeconds(neuron) > 0n;
