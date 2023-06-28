@@ -14,7 +14,7 @@ import type {
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import type { PostMessage } from "$lib/types/post-messages";
 import { page } from "$mocks/$app/stores";
-import SnsWalletBalancesObserverTest from "$tests/lib/components/accounts/SnsWalletBalancesObserverTest.svelte";
+import SnsBalancesObserverTest from "$tests/lib/components/accounts/SnsBalancesObserverTest.svelte";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
@@ -77,13 +77,13 @@ describe("SnsWalletBalancesObserver", () => {
   });
 
   it("should init data and render slotted content", async () => {
-    const { getByTestId } = render(SnsWalletBalancesObserverTest);
+    const { getByTestId } = render(SnsBalancesObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
   });
 
   it("should update account store on new sync message", async () => {
-    const { getByTestId } = render(SnsWalletBalancesObserverTest);
+    const { getByTestId } = render(SnsBalancesObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
@@ -117,7 +117,7 @@ describe("SnsWalletBalancesObserver", () => {
   });
 
   it("should populate error to sync store on error message from worker", async () => {
-    const { getByTestId } = render(SnsWalletBalancesObserverTest);
+    const { getByTestId } = render(SnsBalancesObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
