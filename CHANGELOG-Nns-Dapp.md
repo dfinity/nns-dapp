@@ -40,6 +40,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 - Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
 #### Fixed
+- Script to download WASM from CI no longer relies on broken `gh --status` flag.
 #### Security
 
 ## Proposal 123245
