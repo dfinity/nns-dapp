@@ -1,9 +1,9 @@
 <div align="center" style="display:flex;flex-direction:column;">
-  <a href="https://nns.ic0.app/">
-    <img src="./frontend/static/assets/favicons/mstile-150x150.png" width="380px" alt="Juno" role="presentation"/>
-  </a>
-
   <h1>NNS Dapp</h1>
+
+  <a href="https://nns.ic0.app/">
+    <img src="./frontend/static/assets/favicons/icon-512x512.png" width="180px" alt="NNS dapp logo" role="presentation"/>
+  </a>
 
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/dfinity/nns-dapp/build.yml?logo=github&label=Build%20and%20test)
 <a href="https://github.com/dfinity/nns-dapp/releases"><img src="https://img.shields.io/github/downloads/dfinity/nns-dapp/total?label=downloads&logo=github" alt="GitHub all releases"></a>
