@@ -11,9 +11,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
+
+* Add "Select All" and "Clear" selection in proposal filters.
+* Add vesting information in SNS neuron detail.
+
 #### Changed
 
-* Add vesting information in SNS neuron detail.
 * Disable functionality buttons while SNS neuron is vesting.
 
 #### Deprecated
