@@ -28,6 +28,7 @@
     <button
       class="secondary"
       type="button"
+      data-tid="cancel-button"
       on:click={() => dispatcher("nnsClose")}
     >
       {$i18n.core.cancel}
