@@ -1,7 +1,6 @@
 <script lang="ts">
   import Json from "../common/Json.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import {fromDefinedNullableRecursive} from "$lib/utils/utils";
 
   export let actionKey: string | undefined;
   export let actionFields: [string, unknown][] = [];
@@ -27,7 +26,7 @@
         <span slot="key">{key}</span>
         <span class="value" slot="value">
           {#if typeof value === "object"}
-            <Json json={fromDefinedNullableRecursive(value)} />
+            <Json json={value} />
           {:else}
             {value}
           {/if}

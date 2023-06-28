@@ -2,7 +2,7 @@ import {
   bytesToHexString,
   cancelPoll,
   createChunks,
-  expandObject, fromDefinedNullableRecursive,
+  expandObject,
   hexStringToBytes,
   isDefined,
   isHash,
@@ -833,46 +833,6 @@ describe("utils", () => {
     it("should parse JSON strings", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
-    });
-  });
-
-  describe("fromDefinedNullableRecursive", () => {
-    it("should return basic types w/o changes", () => {
-      expect(fromDefinedNullableRecursive(0)).toEqual(0);
-      expect(fromDefinedNullableRecursive(0n)).toEqual(0n);
-      expect(fromDefinedNullableRecursive("string")).toEqual("string");
-      expect(fromDefinedNullableRecursive(null)).toEqual(null);
-      expect(fromDefinedNullableRecursive(undefined)).toEqual(undefined);
-    });
-
-    it("should unwrap length=1 arrays", () => {
-      expect(fromDefinedNullableRecursive([0])).toEqual(0);
-      expect(fromDefinedNullableRecursive([undefined])).toEqual(undefined);
-      expect(fromDefinedNullableRecursive([null])).toEqual(null);
-      expect(fromDefinedNullableRecursive(["string"])).toEqual("string");
-    });
-
-    it("should keep other arrays", () => {
-      expect(fromDefinedNullableRecursive([])).toEqual([]);
-      expect(fromDefinedNullableRecursive([1,2])).toEqual([1,2]);
-    });
-
-    it("should traverse an array", () => {
-      expect(fromDefinedNullableRecursive([[1], [2]])).toEqual([1,2]);
-    });
-
-    it("should traverse an object", () => {
-      expect(fromDefinedNullableRecursive({
-        a: ["a"]
-      })).toEqual({a: "a"});
-    });
-
-    it("should traverse mixed types", () => {
-      expect(fromDefinedNullableRecursive([{
-        a: [[3], {
-          b: [4]
-        }]
-      }])).toEqual({a: [3, {b: 4}]});
     });
   });
 });
