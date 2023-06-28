@@ -11,7 +11,6 @@ import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger";
-import type { Token } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
@@ -23,6 +22,7 @@ import {
   type SnsSwapInit,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
+import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 

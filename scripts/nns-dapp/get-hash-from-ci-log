@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+DEFAULT_WASM_FILENAME="nns-dapp.wasm.gz"
+
+print_help() {
+  cat <<-EOF
+
+  Get the hash of a build artifact from GitHub CI log.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit to get hash for" variable=COMMIT default="tags/release-candidate"
+clap.define short=l long=limit desc="--limit passed to gh run list" variable=LIMIT default="200"
+clap.define short=f long=filename desc="The name of the file to get the hash for" variable=FILENAME default="$DEFAULT_WASM_FILENAME"
+
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+ci_build_run_id="$("$SOURCE_DIR/get-ci-build-run" --commit "$COMMIT" --limit "$LIMIT")"
+
+tmp_file=$(mktemp)
+
+gh run view "$ci_build_run_id" --log >"$tmp_file"
+# We don't escape filename so hopefully it doesn't contain any regex special
+# characters that interfere with the result.
+grep "out/$FILENAME$" "$tmp_file" | grep -o '[0-9a-f]\{64\}' | head -1
+
+rm "$tmp_file"

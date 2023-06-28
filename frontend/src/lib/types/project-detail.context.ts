@@ -1,4 +1,4 @@
-import type { TokenAmount } from "@dfinity/nns";
+import type { TokenAmount } from "@dfinity/utils";
 import type { Writable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "./sns";
 

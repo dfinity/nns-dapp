@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { getDeniedCountries } from "$lib/getters/sns-summary";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";

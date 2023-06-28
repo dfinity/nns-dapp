@@ -24,7 +24,7 @@ import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 import {
   fireEvent,
   render,

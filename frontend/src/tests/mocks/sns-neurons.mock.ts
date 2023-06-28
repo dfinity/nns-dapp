@@ -38,10 +38,6 @@ export const createMockSnsNeuron = ({
   // `false` means vesting period has passed
   vesting?: boolean;
 }): SnsNeuron => {
-  // Neurons are in Locked state if vesting
-  if (vesting) {
-    state = NeuronState.Locked;
-  }
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
     permissions,
@@ -54,7 +50,7 @@ export const createMockSnsNeuron = ({
     aging_since_timestamp_seconds: BigInt(100),
     voting_power_percentage_multiplier: BigInt(1),
     dissolve_state:
-      state === undefined
+      state === undefined || state === NeuronState.Dissolved
         ? []
         : [
             state === NeuronState.Dissolving

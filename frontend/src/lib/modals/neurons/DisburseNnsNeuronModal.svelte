@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
     WizardModal,
     type WizardSteps,

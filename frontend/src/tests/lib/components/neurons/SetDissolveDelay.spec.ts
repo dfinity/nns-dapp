@@ -8,7 +8,8 @@ import {
 } from "$lib/constants/constants";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { ICPToken, NeuronState, TokenAmount } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("SetDissolveDelay", () => {

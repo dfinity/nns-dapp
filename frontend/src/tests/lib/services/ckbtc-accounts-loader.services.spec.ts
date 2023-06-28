@@ -18,7 +18,7 @@ import {
   mockCkBTCWithdrawalIcrcAccount,
   mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import { TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ckbtc-accounts-loader-services", () => {

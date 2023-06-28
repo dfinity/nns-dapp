@@ -1,7 +1,7 @@
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { TokenAmount } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("mainTransactionFeeStoreAsToken", () => {

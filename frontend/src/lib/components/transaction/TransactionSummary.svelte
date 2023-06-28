@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { Token } from "@dfinity/nns";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";

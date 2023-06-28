@@ -1,3 +1,4 @@
+import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
@@ -30,13 +31,13 @@ export type IcrcTransactionsStoreData = Record<
 
 export interface IcrcTransactionsStore
   extends Readable<IcrcTransactionsStoreData> {
-  addTransactions: (data: {
-    accountIdentifier: string;
-    canisterId: UniverseCanisterId;
-    transactions: IcrcTransactionWithId[];
-    oldestTxId?: bigint;
-    completed: boolean;
-  }) => void;
+  addTransactions: (
+    data: {
+      accountIdentifier: string;
+      canisterId: UniverseCanisterId;
+      completed: boolean;
+    } & GetTransactionsResponse
+  ) => void;
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;
   resetAccount: (params: {

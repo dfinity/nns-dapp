@@ -3,9 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
-  import { TokenAmount } from "@dfinity/nns";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import type { Token } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import {
