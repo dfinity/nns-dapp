@@ -26,7 +26,7 @@
 
   const callback: TransactionsCallback = ({ transactions }) => {
     if (isNullish(universeId)) {
-      // Cannot be undefined
+      // With current usage, can unlikely be undefined here
       return;
     }
 
