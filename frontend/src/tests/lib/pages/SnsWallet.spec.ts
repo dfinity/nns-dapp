@@ -260,8 +260,7 @@ describe("SnsWallet", () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    // TODO: to activate in next PR when worker transactions is implemented
-    it.skip("should init worker that sync the transactions", async () => {
+    it("should init worker that sync the transactions", async () => {
       const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
 
       const { queryByTestId } = render(SnsWallet, props);
