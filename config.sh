@@ -131,7 +131,7 @@ local_deployment_data="$(
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
+  (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST |
