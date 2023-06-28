@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
+* Nns voting e2e test.
 
 #### Changed
 
