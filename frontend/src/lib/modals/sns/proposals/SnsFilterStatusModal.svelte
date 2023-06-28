@@ -44,13 +44,24 @@
       ...(filter.checked ? [] : [filter.value]),
     ];
   };
+
+  const clear = () => {
+    selectedFilters = [];
+  };
+
+  const selectAll = () => {
+    selectedFilters = filters.map(({ value }) => value);
+  };
 </script>
 
 <FilterModal
   on:nnsClose
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
+  on:nnsSelectAll={selectAll}
+  on:nnsClearSelection={clear}
   filters={filtersValues}
 >
   <span slot="title">{$i18n.voting.status}</span>
+  <span slot="filter-by">{$i18n.voting.filter_by_status}</span>
 </FilterModal>
