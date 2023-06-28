@@ -31,3 +31,11 @@ Some useful links:
 - [HACKING](/HACKING.md) document for some information about local development
 - [BUILD.md](/BUILD.md) information about build reproducibility, tools and pipelines
 - URL to the [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/) a back-end canister that provides fast, certified data about SNS canisters
+
+## Getting Help
+
+Here are some ways you can reach out for help or share your best ideas to improve the dapp:
+
+- [Issue Tracker](https://github.com/dfinity/nns-dapp/issues): Create a new ticket if you encounter a bug using NNS Dapp, or if an issue arises when you try to run or build the code.
+- [DFINITY Forum](https://forum.dfinity.org/): The forum is a great place to look for information.
+- [Support](https://support.dfinity.org/hc/en-us/requests/new): Create a support request if you'd like to get a personalized help.
