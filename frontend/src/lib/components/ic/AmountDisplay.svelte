@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
 

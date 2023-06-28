@@ -7,8 +7,6 @@ import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
-import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object";
-import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -28,14 +26,6 @@ export class AppPo extends BasePageObject {
 
   getNeuronDetailPo(): NeuronDetailPo {
     return NeuronDetailPo.under(this.root);
-  }
-
-  getProposalsPo(): ProposalsPo {
-    return ProposalsPo.under(this.root);
-  }
-
-  getProposalDetailPo(): ProposalDetailPo {
-    return ProposalDetailPo.under(this.root);
   }
 
   getLaunchpadPo(): LaunchpadPo {
@@ -73,60 +63,19 @@ export class AppPo extends BasePageObject {
     return this.getMenuTogglePo().click();
   }
 
-  waitForHeaderLoaded(): Promise<void> {
-    return this.root.byTestId("header-component").waitFor();
-  }
-
   async openMenu(): Promise<void> {
-    // On large viewports, the menu is always open, but on smaller windows, we
-    // need to click the menu toggle to open the menu. So we check if the menu toggle is
-    // there and wait for the menu to open if necessary.
-
-    // If the header isn't loaded yet, it looks like the menu toggle isn't
-    // there but it's just not there *yet*.
-    await this.waitForHeaderLoaded();
-    const isTogglePresent = await this.getMenuTogglePo().isPresent();
-    if (isTogglePresent) {
-      const backdrop = this.getBackdropPo();
-      if (await backdrop.isPresent()) {
-        throw Error("Menu is already open");
-      }
-      await this.toggleMenu();
-      await backdrop.waitFor();
-    }
+    await this.toggleMenu();
+    await this.getBackdropPo().waitFor();
   }
 
   async closeMenu(): Promise<void> {
-    // Whether the menu needs to be closed depends on the size of the viewport.
-    const isTogglePresent = await this.getMenuTogglePo().isPresent();
-    if (isTogglePresent) {
-      const backdrop = this.getBackdropPo();
-      if (!(await backdrop.isPresent())) {
-        throw Error("Menu is already closed");
-      }
-      await this.toggleMenu();
-      await backdrop.waitForAbsent();
-    }
+    await this.toggleMenu();
+    await this.getBackdropPo().waitForAbsent();
   }
 
   async goToNeurons(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
-    // Menu closes automatically.
-    await this.getBackdropPo().waitForAbsent();
-  }
-
-  async goToNeuronDetails(neuronId: string): Promise<void> {
-    await this.goToNeurons();
-    await (
-      await this.getNeuronsPo().getNnsNeuronsPo().getNeuronCardPo(neuronId)
-    ).click();
-    await this.getNeuronDetailPo().waitFor();
-  }
-
-  async goToProposals(): Promise<void> {
-    await this.openMenu();
-    await this.getMenuItemsPo().clickProposals();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
   }
@@ -144,8 +93,9 @@ export class AppPo extends BasePageObject {
     await this.closeMenu();
   }
 
-  goBack(): Promise<void> {
-    return this.getButton("back").click();
+  async goBack(): Promise<void> {
+    await this.getButton("back").click();
+    await this.getButton("back").waitForAbsent();
   }
 
   waitForNotBusy(): Promise<void> {

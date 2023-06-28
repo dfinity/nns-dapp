@@ -5,9 +5,8 @@
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import AccountBadge from "./AccountBadge.svelte";
-  import type { Token } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
 
   export let account: Account;
   export let hash = false;

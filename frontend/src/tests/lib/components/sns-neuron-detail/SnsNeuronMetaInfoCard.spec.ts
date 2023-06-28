@@ -24,9 +24,9 @@ import {
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { Token } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
+import type { Token } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -107,7 +107,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     expect(queryByTestId("split-neuron-button")).toBeNull();
   });
 
-  it("should hide split neuron button if neuron is vesting", async () => {
+  it("should render disabled split neuron button if neuron is vesting", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       vesting: true,
@@ -121,7 +121,7 @@ describe("SnsNeuronMetaInfoCard", () => {
       new JestPageObjectElement(container)
     );
 
-    expect(await po.getVestingPeriod()).toBe("29 days, 10 hours");
+    expect(await po.getSplitButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render vesting period if neuron still vesting", async () => {

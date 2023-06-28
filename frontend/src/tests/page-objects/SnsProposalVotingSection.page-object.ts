@@ -1,7 +1,7 @@
-import { SnsVotingCardPo } from "$tests/page-objects/SnsVotingCard.page-object";
-import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SnsVotingCardPo } from "./SnsVotingCard.page-object";
 
 export class SnsProposalVotingSectionPo extends BasePageObject {
   private static readonly TID = "sns-proposal-voting-section-component";
@@ -16,7 +16,7 @@ export class SnsProposalVotingSectionPo extends BasePageObject {
     );
   }
 
-  getVotingsResultsPo(): VotesResultPo {
+  async getVotingsResultsPo(): Promise<VotesResultPo> {
     return VotesResultPo.under(this.root);
   }
 

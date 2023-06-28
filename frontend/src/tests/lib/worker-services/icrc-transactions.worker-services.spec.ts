@@ -31,7 +31,7 @@ describe("transactions.worker-services", () => {
     "accountIdentifiers"
   > = {
     host: HOST,
-    fetchRootKey: true,
+    fetchRootKey: false,
     indexCanisterId: mockCanisterId.toText(),
   };
 
