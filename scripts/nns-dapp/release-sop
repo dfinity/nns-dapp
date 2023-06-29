@@ -146,8 +146,8 @@ checklist_add() {
   name="$1"
   value="$2"
   temp_file="$CHECKLIST_FILE.tmp"
-  jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' $CHECKLIST_FILE > $temp_file
-  mv $temp_file $CHECKLIST_FILE
+  jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' "$CHECKLIST_FILE" >"$temp_file"
+  mv "$temp_file" "$CHECKLIST_FILE"
   echo "$name: $value"
 }
 
@@ -185,14 +185,11 @@ confirm_cmd() {
     echo
   ) >&2
   if ! [ "${MOCK_JSON:-}" ]; then
-    read
-    (
-      bash -c "$cmd"
-    ) >&2
-  fi
-  if [ "$?" != "0" ]; then
-    echo "Command failed." >&2
-    exit 1
+    read -r
+    if ! (bash -c "$cmd") >&2; then
+      echo "Command failed." >&2
+      exit 1
+    fi
   fi
   checklist_add "$cmd" "Done"
 }
@@ -259,7 +256,7 @@ cargo_audit() {
 }
   
 no_html_in_templates() {
-  if find "$TOP_DIR/frontend/src" -name '*.svelte' | xargs grep '@html'; then
+  if find frontend/src -name '*.svelte' -exec grep @html {} +; then
     (
       echo
       echo "Found @html in templates."
