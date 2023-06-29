@@ -54,7 +54,7 @@
     value = isExpandable
       ? json
       : valueType === "base64_encoding"
-      ? (json as {[key: string]: unknown})["base64_encoding"]
+      ? (json as { [key: string]: unknown })["base64_encoding"]
       : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
