@@ -72,7 +72,7 @@ struct NamedHardwareWalletAccount {
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
 pub struct NamedCanister {
     name: String,
     canister_id: CanisterId,
@@ -827,19 +827,18 @@ impl AccountsStore {
                     }
                 }
 
-                let mut response = RenameCanisterResponse::Ok;
-
                 if let Some(index) = Self::find_canister_index(account, request.canister_id) {
                     account.canisters.remove(index);
-                    account.canisters.push(NamedCanister {
+                    let new_element = NamedCanister {
                         name: request.name,
                         canister_id: request.canister_id,
-                    });
+                    };
+                    let index = account.canisters.binary_search(&new_element).unwrap_or_else(|e| e);
+                    account.canisters.insert(index, new_element);
+                    RenameCanisterResponse::Ok
                 } else {
-                    response = RenameCanisterResponse::CanisterNotFound;
+                    RenameCanisterResponse::CanisterNotFound
                 }
-                sort_canisters(&mut account.canisters);
-                response
             } else {
                 RenameCanisterResponse::AccountNotFound
             }
