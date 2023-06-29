@@ -39,6 +39,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 - A script to get the WASM hash from the GitHub CI build log.
+- `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 
