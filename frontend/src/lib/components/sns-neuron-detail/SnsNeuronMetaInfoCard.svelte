@@ -106,4 +106,12 @@
   .content-cell-details {
     gap: var(--padding-1_5x);
   }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--padding-1_5x);
+  }
 </style>

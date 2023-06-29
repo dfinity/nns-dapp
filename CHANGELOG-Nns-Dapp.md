@@ -29,6 +29,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Enable voting for proposals that are decided but still accepting votes.
+* Misplaced tooltip for disabled SNS neuron split button.
 
 #### Security
 #### Not Published
