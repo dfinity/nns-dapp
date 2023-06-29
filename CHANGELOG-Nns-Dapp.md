@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Periodically check for new transactions and updated balances of the SNS tokens/accounts.
+* Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
 
@@ -20,6 +22,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Disable functionality buttons while SNS neuron is vesting.
 
 #### Deprecated
+
+* Web Workers have been migrated to ES modules, which means that Firefox users using versions [prior to v114](https://caniuse.com/?search=worker%20module) won't be able to read certain data in the UI, such as TVL and canisters' cycles, unless they upgrade their browser to a more recent release.  
+
 #### Removed
 #### Fixed
 
