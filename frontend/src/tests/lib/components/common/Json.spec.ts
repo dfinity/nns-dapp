@@ -208,7 +208,9 @@ describe("Json", () => {
 
   it("should render base 64 images", async () => {
     const json = {
-      logo: "data:image/png;base64,xxx",
+      logo: {
+        base64_encoding: "data:image/png;base64,xxx",
+      },
     };
     const { getByAltText } = render(Json, {
       props: { json },

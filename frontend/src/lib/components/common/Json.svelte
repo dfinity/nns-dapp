@@ -121,7 +121,7 @@
     <span data-tid={testId} class="key-value">
       {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
         >{/if}<Html
-        text={`<img class="value ${valueType}" alt="${keyLabel}" src="${value}" />`}
+        text={`<img class="value ${valueType}" alt="${_key}" src="${value}" />`}
       /></span
     >
   {:else}
