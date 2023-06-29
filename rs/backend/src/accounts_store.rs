@@ -218,6 +218,21 @@ pub enum AttachCanisterResponse {
 }
 
 #[derive(CandidType, Deserialize)]
+pub struct RenameCanisterRequest {
+    name: String,
+    canister_id: CanisterId,
+}
+
+#[derive(CandidType)]
+pub enum RenameCanisterResponse {
+    Ok,
+    NameAlreadyTaken,
+    NameTooLong,
+    AccountNotFound,
+    CanisterNotFound,
+}
+
+#[derive(CandidType, Deserialize)]
 pub struct DetachCanisterRequest {
     canister_id: CanisterId,
 }
@@ -789,18 +804,55 @@ impl AccountsStore {
         }
     }
 
+    fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
+        account.canisters
+            .iter()
+            .enumerate()
+            .find(|(_, canister)| canister.canister_id == canister_id)
+            .map(|(index, _)| index)
+    }
+
+    pub fn rename_canister(&mut self, caller: PrincipalId, request: RenameCanisterRequest) -> RenameCanisterResponse {
+        if !Self::validate_canister_name(&request.name) {
+            RenameCanisterResponse::NameTooLong
+        } else {
+            let account_identifier = AccountIdentifier::from(caller).to_vec();
+
+            if self.accounts.get(&account_identifier.to_vec()).is_some() {
+                let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+                for c in account.canisters.iter() {
+                    if !request.name.is_empty() && c.name == request.name {
+                        return RenameCanisterResponse::NameAlreadyTaken;
+                    }
+                }
+
+                let mut response = RenameCanisterResponse::Ok;
+
+                if let Some(index) = Self::find_canister_index(&account, request.canister_id)
+                {
+                    account.canisters.remove(index);
+                    account.canisters.push(NamedCanister {
+                        name: request.name,
+                        canister_id: request.canister_id,
+                    });
+                } else {
+                    response = RenameCanisterResponse::CanisterNotFound;
+                }
+                sort_canisters(&mut account.canisters);
+                response
+            } else {
+                RenameCanisterResponse::AccountNotFound
+            }
+        }
+    }
+
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let mut response = DetachCanisterResponse::Ok;
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            if let Some(index) = account
-                .canisters
-                .iter()
-                .enumerate()
-                .find(|(_, canister)| canister.canister_id == request.canister_id)
-                .map(|(index, _)| index)
+            if let Some(index) = Self::find_canister_index(&account, request.canister_id)
             {
                 account.canisters.remove(index);
             } else {
