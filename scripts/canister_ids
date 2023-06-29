@@ -91,7 +91,9 @@ if [ "$command" = "remove" ]; then
   fi
 
   new_name="$NETWORK-before-$(date +%Y%m%d-%H%M%S)"
-  jq --arg network "$NETWORK" --arg canister "$CANISTER" --arg new_name "$new_name" '.[$canister][$new_name] = .[$canister][$network] | del(.[$canister][$network])' "$JSON_FILE" | sponge "$JSON_FILE"
+  tmp_file="$(mktemp)"
+  jq --arg network "$NETWORK" --arg canister "$CANISTER" --arg new_name "$new_name" '.[$canister][$new_name] = .[$canister][$network] | del(.[$canister][$network])' "$JSON_FILE" >"$tmp_file"
+  mv "$tmp_file" "$JSON_FILE"
 
   echo "Renamed $CANISTER.$NETWORK to $new_name."
   exit
