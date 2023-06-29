@@ -1,9 +1,4 @@
-use crate::accounts_store::{
-    AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
-    AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
-    GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
-};
+use crate::accounts_store::{AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType};
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
@@ -207,6 +202,17 @@ pub fn attach_canister() {
 fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = dfn_core::api::caller();
     STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
+}
+
+/// Renames a canister of the user.
+#[export_name = "canister_update rename_canister"]
+pub fn rename_canister() {
+    over(candid_one, rename_canister_impl);
+}
+
+fn rename_canister_impl(request: RenameCanisterRequest) -> RenameCanisterResponse {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().rename_canister(principal, request))
 }
 
 /// Detaches a canister from the user's account.
