@@ -11,7 +11,30 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Application
 
 #### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+#### Not Published
 
+### Operations
+
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+
+## Proposal XXXXXX
+
+### Application
+
+#### Added
+
+* Periodically check for new transactions and updated balances of the SNS tokens/accounts.
+* Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
 
@@ -20,31 +43,40 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Disable functionality buttons while SNS neuron is vesting.
 
 #### Deprecated
-#### Removed
+
+* Web Workers have been migrated to ES modules, which means that Firefox users using versions [prior to v114](https://caniuse.com/?search=worker%20module) won't be able to read certain data in the UI, such as TVL and canisters' cycles, unless they upgrade their browser to a more recent release.
+
 #### Fixed
 
 * Enable voting for proposals that are decided but still accepting votes.
-
-#### Security
-#### Not Published
+* Title of Ledger device transaction when staking two neurons on a row.
 
 ### Operations
 
 #### Added
-- A script to get the WASM hash from the GitHub CI build log.
 
+* Added a command line tool to get the arguments of a canister upgrade proposal, for verification purposes.
+* Publish the arguments used in every release.
+* A script to download the WASM from GitHub CI build.
+* A script to get the WASM hash from the GitHub CI build log.
+* Instructions to verify canister args in proposal.
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 
 #### Changed
-- Made per-network configuration in dfx.json optional.
-- Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
-- Increased timeout on end-to-end tests running on CI.
-#### Deprecated
+
+* Refactored CI tests to reduce network load related failures.
+* Fix coreutils installation issues on M1 apple laptops.
+* Made per-network configuration in dfx.json optional.
+* Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
+* Increased timeout on end-to-end tests running on CI.
+
 #### Removed
-- Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
+
+* Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
+
 #### Fixed
-- Script to download WASM from CI no longer relies on broken `gh --status` flag.
-#### Security
+
+* Script to download WASM from CI no longer relies on broken `gh --status` flag.
 
 ## Proposal 123245
 
