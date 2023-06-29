@@ -46,7 +46,7 @@ execute() {
     "$@"
     return
   fi
-  if [ "$1" = "echo"  ]; then
+  if [ "$1" = "echo" ]; then
     "$@"
     return
   fi
@@ -69,7 +69,7 @@ branch_exists() {
   execute git show-ref --quiet --verify "refs/heads/${branch_name}"
 }
 
-if [ "$IS_NEW_RELEASE" = "true" ];  then
+if [ "$IS_NEW_RELEASE" = "true" ]; then
   if [ -z "${BRANCH_NAME:-}" ]; then
     BRANCH_NAME="Release-$(execute date +%Y-%m-%d)"
   elif ! [[ "$BRANCH_NAME" =~ ^Release-....-..-.. ]]; then
@@ -77,7 +77,7 @@ if [ "$IS_NEW_RELEASE" = "true" ];  then
       echo "Release name must start with Release-YYYY-MM-DD"
     ) >&2
     exit 1
-  fi;
+  fi
 
   if branch_exists "$BRANCH_NAME"; then
     (
@@ -98,7 +98,7 @@ if [ "$IS_NEW_RELEASE" = "true" ];  then
     exit 1
   fi
 
-  echo "[]" > "$CHECKLIST_FILE"
+  echo "[]" >"$CHECKLIST_FILE"
 else
 
   if [ "${BRANCH_NAME:-}" ]; then
@@ -222,9 +222,9 @@ verify() {
   fi
   if [ "$current_value" != "$previous_value" ]; then
     (
-    echo "Values don't match!"
-    echo "$previous_label: $previous_value"
-    echo "$label: $current_value"
+      echo "Values don't match!"
+      echo "$previous_label: $previous_value"
+      echo "$label: $current_value"
     ) >&2
     exit 1
   fi
@@ -250,11 +250,11 @@ npm_audit() {
   npm audit
   popd >&2
 }
-  
+
 cargo_audit() {
   cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")' || true
 }
-  
+
 no_html_in_templates() {
   if find frontend/src -name '*.svelte' -exec grep @html {} +; then
     (
@@ -277,7 +277,7 @@ get_dfx_identity() {
       echo "A replica is running."
       echo "Please stop it because it might interfere with your dfx identities."
     ) >&2
-    exit 1;
+    exit 1
   fi
   echo "$(dfx identity whoami): $(dfx identity get-principal)"
 }
@@ -290,7 +290,7 @@ remove_staging_nns_dapp_from_canister_ids_json() {
   fi
 
   new_name="staging-before-$(execute date +%Y%m%d-%H%M%S)"
-  jq --arg new_name "$new_name" '."nns-dapp"[$new_name] = ."nns-dapp".staging | del(."nns-dapp".staging)' canister_ids.json > canister_ids.json.new
+  jq --arg new_name "$new_name" '."nns-dapp"[$new_name] = ."nns-dapp".staging | del(."nns-dapp".staging)' canister_ids.json >canister_ids.json.new
   mv canister_ids.json.new canister_ids.json
 
   #checklist_add "$label" "\"$new_name\": \"$old_canister_id\""

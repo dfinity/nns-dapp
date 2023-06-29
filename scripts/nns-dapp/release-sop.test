@@ -11,7 +11,7 @@ test_with_data() {
   mapfile -t args < <(jq -r '.args[]' "$json_file")
 
   set +e
-  actualOutput="$("$SOURCE_DIR/release-sop" "${args[@]}" --mock-json "$json_file" 2>&1 )"
+  actualOutput="$("$SOURCE_DIR/release-sop" "${args[@]}" --mock-json "$json_file" 2>&1)"
   actualExitCode="$?"
   set -e
 
