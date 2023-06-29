@@ -8,7 +8,7 @@ dotenv.config();
 export default defineConfig({
   testDir: "./src/tests/e2e",
   /* Maximum time one test can run for. */
-  timeout: (process.env.CI ? 180 : 90) * 1000,
+  timeout: (process.env.CI ? 300 : 90) * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.

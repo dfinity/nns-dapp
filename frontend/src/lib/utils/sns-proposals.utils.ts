@@ -351,8 +351,9 @@ export const snsProposalIdString = (proposal: SnsProposalData): string =>
 export const snsProposalId = (proposal: SnsProposalData): bigint =>
   fromDefinedNullable(proposal.id).id;
 
-export const snsProposalOpen = (proposal: SnsProposalData): boolean =>
-  proposal.decided_timestamp_seconds === 0n;
+export const snsProposalAcceptingVotes = (proposal: SnsProposalData): boolean =>
+  snsRewardStatus(proposal) ===
+  SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
 
 /**
  * Returns the voting power of a neuron for a proposal.

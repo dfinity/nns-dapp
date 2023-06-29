@@ -19,8 +19,8 @@ describe("IcrcBalancesObserver", () => {
     jest.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         postMessage(data: {
-          msg: "nnsStartBalancesTimer";
-          data: PostMessageDataRequestBalances;
+          msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
+          data?: PostMessageDataRequestBalances;
         }) {
           spyPostMessage(data);
         }
@@ -30,7 +30,7 @@ describe("IcrcBalancesObserver", () => {
 
   const data: BalancesObserverData = {
     ledgerCanisterId: ledgerCanisterIdMock.toText(),
-    account: mockMainAccount,
+    accounts: [mockMainAccount],
   };
 
   it("should init worker with parameters", async () => {
@@ -46,7 +46,7 @@ describe("IcrcBalancesObserver", () => {
         msg: "nnsStartBalancesTimer",
         data: {
           ledgerCanisterId: data.ledgerCanisterId,
-          accountIdentifiers: [data.account.identifier],
+          accountIdentifiers: data.accounts.map(({ identifier }) => identifier),
           host: HOST,
           fetchRootKey: FETCH_ROOT_KEY,
         },

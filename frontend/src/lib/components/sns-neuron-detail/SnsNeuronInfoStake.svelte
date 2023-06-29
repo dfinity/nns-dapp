@@ -15,7 +15,6 @@
     hasPermissionToDisburse,
     hasPermissionToDissolve,
     isCommunityFund,
-    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { NeuronState } from "@dfinity/nns";
@@ -40,8 +39,7 @@
     hasPermissionToDissolve({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   let allowedToDisburse: boolean;
   $: allowedToDisburse =
@@ -49,8 +47,7 @@
     hasPermissionToDisburse({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   let canDissolve = false;
   $: canDissolve =
@@ -73,15 +70,15 @@
 
     <div class="buttons">
       {#if allowedToDissolve}
-        <IncreaseSnsDissolveDelayButton />
+        <IncreaseSnsDissolveDelayButton {neuron} />
       {/if}
       {#if isIncreaseStakeAllowed}
         <SnsIncreaseStakeButton />
       {/if}
       {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-        <DisburseSnsButton />
+        <DisburseSnsButton {neuron} />
       {:else if canDissolve}
-        <DissolveSnsNeuronButton {neuronState} />
+        <DissolveSnsNeuronButton {neuron} />
       {/if}
     </div>
 

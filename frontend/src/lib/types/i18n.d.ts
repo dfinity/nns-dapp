@@ -393,7 +393,13 @@ interface I18nVoting {
   topics: string;
   rewards: string;
   status: string;
+  filter_by_topics: string;
+  filter_by_rewards: string;
+  filter_by_status: string;
   hide_unavailable_proposals: string;
+  check_all: string;
+  uncheck_all: string;
+  filter_by: string;
   nothing_found: string;
 }
 
@@ -703,6 +709,7 @@ interface I18nSns_sale {
 interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
+  vesting_period_tooltip: string;
   community_fund_section: string;
   community_fund_section_description: string;
   add_hotkey_info: string;

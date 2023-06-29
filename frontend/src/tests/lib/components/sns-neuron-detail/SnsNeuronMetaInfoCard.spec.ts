@@ -107,7 +107,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     expect(queryByTestId("split-neuron-button")).toBeNull();
   });
 
-  it("should hide split neuron button if neuron is vesting", async () => {
+  it("should render disabled split neuron button if neuron is vesting", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       vesting: true,
@@ -121,7 +121,7 @@ describe("SnsNeuronMetaInfoCard", () => {
       new JestPageObjectElement(container)
     );
 
-    expect(await po.getVestingPeriod()).toBe("29 days, 10 hours");
+    expect(await po.getSplitButtonPo().isDisabled()).toBe(true);
   });
 
   it("should render vesting period if neuron still vesting", async () => {

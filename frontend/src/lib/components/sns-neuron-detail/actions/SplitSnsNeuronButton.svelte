@@ -2,7 +2,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { neuronCanBeSplit } from "$lib/utils/sns-neuron.utils";
+  import {
+    isVesting,
+    hasEnoughStakeToSplit,
+  } from "$lib/utils/sns-neuron.utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
@@ -11,6 +14,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import type { Token } from "@dfinity/utils";
+  import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
@@ -22,20 +26,23 @@
     parameters.neuron_minimum_stake_e8s
   );
 
-  let splittable: boolean;
-  $: splittable = neuronCanBeSplit({
+  let enoughStakeToSplit: boolean;
+  $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
     fee: transactionFee,
     neuronMinimumStake,
   });
 </script>
 
-{#if splittable}
-  <button
-    class="secondary"
-    on:click={() => openSnsNeuronModal({ type: "split-neuron" })}
-    data-tid="split-neuron-button">{$i18n.neuron_detail.split_neuron}</button
-  >
+{#if enoughStakeToSplit}
+  <VestingTooltipWrapper {neuron}>
+    <button
+      class="secondary"
+      disabled={isVesting(neuron)}
+      on:click={() => openSnsNeuronModal({ type: "split-neuron" })}
+      data-tid="split-neuron-button">{$i18n.neuron_detail.split_neuron}</button
+    >
+  </VestingTooltipWrapper>
 {:else}
   <Tooltip
     id="split-neuron-button"
@@ -53,7 +60,7 @@
       }
     )}
   >
-    <button class="secondary" disabled
+    <button class="secondary" data-tid="split-neuron-button" disabled
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>

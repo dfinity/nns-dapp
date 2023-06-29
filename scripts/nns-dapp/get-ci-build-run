@@ -22,7 +22,7 @@ source "$(clap.build)"
 
 COMMIT="$(git rev-parse "$COMMIT")"
 
-ci_build_run_id="$(gh run list --workflow "$WORKFLOW_NAME" --limit "$LIMIT" --status success --json databaseId,headSha | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit)' | jq -r '.databaseId' | tail -1)"
+ci_build_run_id="$(gh run list --workflow "$WORKFLOW_NAME" --limit "$LIMIT" --json databaseId,headSha,conclusion | jq --arg commit "$COMMIT" '.[] | select(.headSha == $commit and .conclusion == "success")' | jq -r '.databaseId' | tail -1)"
 
 if ! [ "$ci_build_run_id" ]; then
   (

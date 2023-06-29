@@ -9,7 +9,6 @@
     getSnsNeuronIdAsHexString,
     getSnsNeuronState,
     hasPermissionToSplit,
-    isVesting,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { E8s, NeuronState } from "@dfinity/nns";
@@ -49,8 +48,7 @@
     hasPermissionToSplit({
       neuron,
       identity: $authStore.identity,
-    }) &&
-    !isVesting(neuron);
+    });
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -106,6 +104,14 @@
 
 <style lang="scss">
   .content-cell-details {
+    gap: var(--padding-1_5x);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
     gap: var(--padding-1_5x);
   }
 </style>

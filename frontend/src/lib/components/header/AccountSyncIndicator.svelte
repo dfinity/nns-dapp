@@ -53,6 +53,16 @@
   $: description = syncDescription($syncOverallStatusStore);
 
   const toggle = () => (visible = !visible);
+
+  const close = (state: SyncState) => {
+    if (!visible || state !== "idle") {
+      return;
+    }
+
+    toggle();
+  };
+
+  $: close($syncOverallStatusStore);
 </script>
 
 {#if $authSignedInStore && nonNullish(icon)}

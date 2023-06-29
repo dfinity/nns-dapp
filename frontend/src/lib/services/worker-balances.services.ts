@@ -41,6 +41,12 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
           state: (data.data as PostMessageDataResponseSync).state,
         });
         return;
+      case "nnsSyncErrorBalances":
+        syncStore.setState({
+          key: "balances",
+          state: "error",
+        });
+        return;
     }
   };
 
