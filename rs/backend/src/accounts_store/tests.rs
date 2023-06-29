@@ -1032,7 +1032,7 @@ fn rename_to_long_name_fails() {
     let response = store.rename_canister(
         principal,
         RenameCanisterRequest {
-            name: long_name.clone(),
+            name: long_name,
             canister_id,
         },
     );
