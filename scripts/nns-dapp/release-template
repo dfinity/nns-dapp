@@ -15,7 +15,7 @@ export DFX_NETWORK
 
 mkdir -p release/ci
 [[ "${CI:-}" != "" ]] || {
-  CI="$("$SOURCE_DIR/nns-dapp/ci-link" --commit tags/release-candidate | grep .)"
+  CI="$("$SOURCE_DIR/nns-dapp/ci-link" --commit tags/release-candidate | tail -n1 | grep .)"
 }
 WASM="release/ci/nns-dapp.wasm.gz"
 if test -f "$WASM"; then
