@@ -9,7 +9,7 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
-  import TextInputScreen from "../common/TextInputScreen.svelte";
+  import TextInputForm from "../common/TextInputForm.svelte";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
@@ -33,7 +33,7 @@
   };
 </script>
 
-<TextInputScreen
+<TextInputForm
   on:nnsConfirmText={createNewSubAccount}
   on:nnsClose
   bind:text={newAccountName}
@@ -48,4 +48,4 @@
   >
   <svelte:fragment slot="cancel-text">{$i18n.core.cancel}</svelte:fragment>
   <svelte:fragment slot="confirm-text">{$i18n.accounts.rename}</svelte:fragment>
-</TextInputScreen>
+</TextInputForm>

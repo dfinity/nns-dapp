@@ -9,12 +9,12 @@
   export let testId: string | undefined = undefined;
 
   const dispatcher = createEventDispatcher();
-  const confirmText = () => {
-    dispatcher("nnsConfirmText");
-  };
 </script>
 
-<form on:submit|preventDefault={confirmText} data-tid={testId}>
+<form
+  on:submit|preventDefault={() => dispatcher("nnsConfirmText")}
+  data-tid={testId}
+>
   <div>
     <p class="label"><slot name="label" /></p>
     <Input

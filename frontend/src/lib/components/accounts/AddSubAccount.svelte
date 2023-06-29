@@ -8,7 +8,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
-  import TextInputScreen from "../common/TextInputScreen.svelte";
+  import TextInputForm from "../common/TextInputForm.svelte";
 
   let newAccountName = "";
 
@@ -33,7 +33,7 @@
   };
 </script>
 
-<TextInputScreen
+<TextInputForm
   testId="add-sub-account-component"
   on:nnsConfirmText={createNewSubAccount}
   on:nnsClose={back}
@@ -47,4 +47,4 @@
   >
   <svelte:fragment slot="cancel-text">{$i18n.core.back}</svelte:fragment>
   <svelte:fragment slot="confirm-text">{$i18n.core.create}</svelte:fragment>
-</TextInputScreen>
+</TextInputForm>

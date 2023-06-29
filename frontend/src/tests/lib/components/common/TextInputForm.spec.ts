@@ -2,17 +2,17 @@
  * @jest-environment jsdom
  */
 
-import TextInputScreen from "$lib/components/common/TextInputScreen.svelte";
+import TextInputForm from "$lib/components/common/TextInputForm.svelte";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 
-describe("PrincipalInput", () => {
+describe("TextInputForm", () => {
   const mandatoryProps = {
     placeholderLabelKey: "test",
   };
 
   it("should render an input and a button", () => {
-    const { getByTestId } = render(TextInputScreen, {
+    const { getByTestId } = render(TextInputForm, {
       props: mandatoryProps,
     });
 
@@ -22,7 +22,7 @@ describe("PrincipalInput", () => {
 
   it("should render text in the input field", () => {
     const text = "test";
-    const { getByTestId } = render(TextInputScreen, {
+    const { getByTestId } = render(TextInputForm, {
       props: { ...mandatoryProps, text },
     });
 
@@ -32,7 +32,7 @@ describe("PrincipalInput", () => {
   });
 
   it("should render an disabled button if disabled is passed", async () => {
-    const { getByTestId } = render(TextInputScreen, {
+    const { getByTestId } = render(TextInputForm, {
       props: { ...mandatoryProps, disabledConfirm: true },
     });
 
@@ -42,7 +42,7 @@ describe("PrincipalInput", () => {
   });
 
   it("should render an disabled input while busy", async () => {
-    const { getByTestId } = render(TextInputScreen, {
+    const { getByTestId } = render(TextInputForm, {
       props: { ...mandatoryProps, busy: true },
     });
 
@@ -52,7 +52,7 @@ describe("PrincipalInput", () => {
   });
 
   it("should trigger nnsClose when cancel is clicked", () => {
-    const { getByTestId, component } = render(TextInputScreen, {
+    const { getByTestId, component } = render(TextInputForm, {
       props: mandatoryProps,
     });
 
@@ -63,7 +63,7 @@ describe("PrincipalInput", () => {
   });
 
   it("should trigger nnsConfirmText when confirm is clicked", () => {
-    const { getByTestId, component } = render(TextInputScreen, {
+    const { getByTestId, component } = render(TextInputForm, {
       props: mandatoryProps,
     });
 
