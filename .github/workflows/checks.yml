@@ -284,6 +284,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: scripts/canister_ids.test
+  release-sop:
+    name: Test release-sop script
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: scripts/nns-dapp/release-sop.test
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
     if: ${{ always() }}
