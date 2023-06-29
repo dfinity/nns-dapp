@@ -1,4 +1,4 @@
-import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
