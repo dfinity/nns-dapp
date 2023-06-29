@@ -805,7 +805,8 @@ impl AccountsStore {
     }
 
     fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
-        account.canisters
+        account
+            .canisters
             .iter()
             .enumerate()
             .find(|(_, canister)| canister.canister_id == canister_id)
@@ -828,8 +829,7 @@ impl AccountsStore {
 
                 let mut response = RenameCanisterResponse::Ok;
 
-                if let Some(index) = Self::find_canister_index(&account, request.canister_id)
-                {
+                if let Some(index) = Self::find_canister_index(account, request.canister_id) {
                     account.canisters.remove(index);
                     account.canisters.push(NamedCanister {
                         name: request.name,
@@ -852,8 +852,7 @@ impl AccountsStore {
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let mut response = DetachCanisterResponse::Ok;
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            if let Some(index) = Self::find_canister_index(&account, request.canister_id)
-            {
+            if let Some(index) = Self::find_canister_index(account, request.canister_id) {
                 account.canisters.remove(index);
             } else {
                 response = DetachCanisterResponse::CanisterNotFound
