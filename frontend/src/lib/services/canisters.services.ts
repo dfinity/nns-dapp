@@ -5,6 +5,7 @@ import {
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
+  renameCanister as renameCanisterApi,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
 } from "$lib/api/canisters.api";
@@ -94,6 +95,30 @@ export const createCanister = async ({
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
     return;
+  }
+};
+
+export const renameCanister = async ({
+  name,
+  canisterId,
+}: {
+  name: string;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+    await renameCanisterApi({
+      identity,
+      name,
+      canisterId,
+    });
+    await listCanisters({ clearBeforeQuery: false });
+    return { success: true };
+  } catch (error: unknown) {
+    toastsShow(
+      mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
+    );
+    return { success: false };
   }
 };
 

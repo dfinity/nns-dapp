@@ -271,6 +271,39 @@ export class NNSDappCanister {
     throw new Error(`Error attaching canister ${JSON.stringify(response)}`);
   };
 
+  public renameCanister = async ({
+    name,
+    canisterId,
+  }: {
+    name: string;
+    canisterId: Principal;
+  }): Promise<void> => {
+    const response = await this.certifiedService.rename_canister({
+      name,
+      canister_id: canisterId,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    if ("NameAlreadyTaken" in response && response.NameAlreadyTaken === null) {
+      throw new CanisterNameAlreadyTakenError("error__canister.name_taken", {
+        $name: name,
+      });
+    }
+    if ("NameTooLong" in response && response.NameTooLong === null) {
+      throw new CanisterNameTooLongError("error__canister.name_too_long", {
+        $name: name,
+      });
+    }
+    if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
+      throw new CanisterNotFoundError("error__canister.unlink_not_found", {
+        $canisterId: canisterId.toText(),
+      });
+    }
+    // Edge case
+    throw new Error(`Error renaming canister ${JSON.stringify(response)}`);
+  };
+
   public detachCanister = async (canisterId: Principal): Promise<void> => {
     const response = await this.certifiedService.detach_canister({
       canister_id: canisterId,
