@@ -6,7 +6,7 @@ export type BalancesObserverData = Pick<
   PostMessageDataRequestBalances,
   "ledgerCanisterId"
 > & {
-  account: Account;
+  accounts: Account[];
 };
 
 export type TransactionsObserverData = Pick<

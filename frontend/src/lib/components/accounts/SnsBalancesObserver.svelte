@@ -10,7 +10,7 @@
 
   export let rootCanisterId: CanisterId;
   export let ledgerCanisterId: CanisterId;
-  export let account: Account;
+  export let accounts: Account[];
 
   const callback: BalancesCallback = ({ balances }) => {
     const accounts = balances
@@ -37,7 +37,7 @@
 
   let data: BalancesObserverData;
   $: data = {
-    account,
+    accounts,
     ledgerCanisterId: ledgerCanisterId.toText(),
   };
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SnsWalletBalancesObserver from "$lib/components/accounts/SnsWalletBalancesObserver.svelte";
+  import SnsBalancesObserver from "$lib/components/accounts/SnsBalancesObserver.svelte";
   import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
   import {
     ledgerCanisterIdMock,
@@ -7,10 +7,10 @@
   } from "$tests/mocks/sns.api.mock";
 </script>
 
-<SnsWalletBalancesObserver
-  account={mockSnsMainAccount}
+<SnsBalancesObserver
+  accounts={[mockSnsMainAccount]}
   rootCanisterId={rootCanisterIdMock}
   ledgerCanisterId={ledgerCanisterIdMock}
 >
   <div data-tid="test-observer" />
-</SnsWalletBalancesObserver>
+</SnsBalancesObserver>
