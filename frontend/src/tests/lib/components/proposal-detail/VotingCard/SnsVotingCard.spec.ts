@@ -19,11 +19,17 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { NeuronState, Vote } from "@dfinity/nns";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
-import { SnsNeuronPermissionType, SnsVote, type SnsBallot } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  SnsProposalDecisionStatus,
+  SnsProposalRewardStatus,
+  SnsVote,
+  type SnsBallot,
+} from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent, screen } from "@testing-library/dom";
@@ -58,9 +64,13 @@ describe("SnsVotingCard", () => {
     ],
   ];
   const testProposal: SnsProposalData = {
-    ...mockSnsProposal,
-    ballots: testBallots,
-    proposal_creation_timestamp_seconds: BigInt(Date.now()),
+    ...createSnsProposal({
+      proposalId: 123n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      ballots: testBallots,
+      createdAt: BigInt(Math.round(Date.now() / 1000)),
+    }),
   };
   const permissionsWithTypeVote = [
     {
@@ -91,10 +101,10 @@ describe("SnsVotingCard", () => {
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
   const spyOnReloadProposal = jest.fn();
-  const renderVotingCard = () =>
+  const renderVotingCard = (proposal = testProposal) =>
     render(SnsVotingCard, {
       props: {
-        proposal: testProposal,
+        proposal,
         reloadProposal: spyOnReloadProposal,
       },
     });
@@ -202,8 +212,27 @@ describe("SnsVotingCard", () => {
       neurons: testNeurons,
       certified: true,
     });
-    const { container } = renderVotingCard();
-    expect(container.querySelector("button[disabled]")).toBeNull();
+    const { queryByTestId } = renderVotingCard();
+    expect(queryByTestId("vote-yes")).toBeInTheDocument();
+    expect(queryByTestId("vote-no")).toBeInTheDocument();
+  });
+
+  it("should enable action buttons when neurons are selected for executed proposals", async () => {
+    const executedProposal = createSnsProposal({
+      proposalId: 123n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      ballots: testBallots,
+      createdAt: BigInt(Math.round(Date.now() / 1000)),
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: testNeurons,
+      certified: true,
+    });
+    const { queryByTestId } = renderVotingCard(executedProposal);
+    expect(queryByTestId("vote-yes")).toBeInTheDocument();
+    expect(queryByTestId("vote-no")).toBeInTheDocument();
   });
 
   it("should display my votes", async () => {

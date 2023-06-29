@@ -49,6 +49,12 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
           state: (data.data as PostMessageDataResponseSync).state,
         });
         return;
+      case "nnsSyncErrorTransactions":
+        syncStore.setState({
+          key: "transactions",
+          state: "error",
+        });
+        return;
     }
   };
 
