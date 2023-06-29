@@ -117,7 +117,7 @@
       >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
     >
   {:else if valueType === "base64_encoding"}
-    <!-- base64 encoded image (use <Html> to sanitize the content) -->
+    <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
     <span data-tid={testId} class="key-value">
       {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
         >{/if}<Html
