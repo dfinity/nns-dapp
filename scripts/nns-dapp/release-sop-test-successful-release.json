@@ -16,6 +16,18 @@
       "exitCode": 1
     },
     {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
       "command": "git diff --quiet --exit-code",
       "stdout": "",
       "stderr": "",
@@ -58,7 +70,7 @@
       "exitCode": 0
     },
     {
-      "command": "sha256 /Users/dskloet/dev/nns-dapp/tree2/release/ci/nns-dapp.wasm.gz",
+      "command": "sha256 /home/runner/work/nns-dapp/release/ci/nns-dapp.wasm.gz",
       "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
       "stderr": "",
       "exitCode": 0
@@ -134,9 +146,9 @@
     "Security test: no HTML in templates: Checked",
     "Press enter to run the following command:",
     "",
-    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /Users/dskloet/dev/nns-dapp/tree2/release/ci --wasm-filename nns-dapp.wasm.gz",
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz",
     "",
-    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /Users/dskloet/dev/nns-dapp/tree2/release/ci --wasm-filename nns-dapp.wasm.gz: Done",
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Done",
     "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
     "Local WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
     "Press enter to run the following command:",

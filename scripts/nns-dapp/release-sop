@@ -122,8 +122,8 @@ else
   CHECKLIST_FILE="${SOURCE_DIR}/${BRANCH_NAME}.json"
 fi
 
-TOP_DIR=$(git rev-parse --show-toplevel)
-cd "$TOP_DIR"
+TOP_DIR=$(execute git rev-parse --show-toplevel)
+execute cd "$TOP_DIR"
 
 checklist_get() {
   local name
