@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Input from "$lib/components/ui/Input.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
   import { addSubAccount } from "$lib/services/accounts.services";
@@ -9,6 +8,7 @@
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,
   } from "$lib/types/add-account.context";
+  import TextInputForm from "../common/TextInputForm.svelte";
 
   let newAccountName = "";
 
@@ -33,38 +33,18 @@
   };
 </script>
 
-<form
-  on:submit|preventDefault={createNewSubAccount}
-  data-tid="add-sub-account-component"
+<TextInputForm
+  testId="add-sub-account-component"
+  on:nnsConfirmText={createNewSubAccount}
+  on:nnsClose={back}
+  bind:text={newAccountName}
+  placeholderLabelKey="accounts.new_linked_account_placeholder"
+  busy={$busy}
+  disabledConfirm={newAccountName.length === 0 || $busy}
 >
-  <div>
-    <p class="label">{$i18n.accounts.new_linked_account_enter_name}</p>
-    <Input
-      inputType="text"
-      placeholderLabelKey="accounts.new_linked_account_placeholder"
-      name="newAccount"
-      bind:value={newAccountName}
-      disabled={$busy}
-    />
-  </div>
-
-  <div class="toolbar">
-    <button class="secondary" type="button" on:click={back} data-tid="back">
-      {$i18n.core.back}
-    </button>
-    <button
-      class="primary"
-      data-tid="create-account-button"
-      type="submit"
-      disabled={newAccountName.length === 0 || $busy}
-    >
-      {$i18n.core.create}
-    </button>
-  </div>
-</form>
-
-<style lang="scss">
-  .label {
-    margin: 0;
-  }
-</style>
+  <svelte:fragment slot="label"
+    >{$i18n.accounts.new_linked_account_enter_name}</svelte:fragment
+  >
+  <svelte:fragment slot="cancel-text">{$i18n.core.back}</svelte:fragment>
+  <svelte:fragment slot="confirm-text">{$i18n.core.create}</svelte:fragment>
+</TextInputForm>

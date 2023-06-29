@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Input from "$lib/components/ui/Input.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
   import { renameSubAccount } from "$lib/services/accounts.services";
@@ -10,6 +9,7 @@
     WALLET_CONTEXT_KEY,
     type WalletContext,
   } from "$lib/types/wallet.context";
+  import TextInputForm from "../common/TextInputForm.svelte";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
@@ -33,41 +33,19 @@
   };
 </script>
 
-<form on:submit|preventDefault={createNewSubAccount}>
-  <div>
-    <p class="label">{$i18n.accounts.rename_account_enter_new_name}</p>
-    <Input
-      inputType="text"
-      placeholderLabelKey="accounts.rename_new_name_placeholder"
-      name="newAccountName"
-      bind:value={newAccountName}
-      disabled={$busy}
-    />
-  </div>
-
-  <div class="toolbar">
-    <button
-      class="secondary"
-      type="button"
-      on:click={() => dispatcher("nnsClose")}
-    >
-      {$i18n.core.cancel}
-    </button>
-    <button
-      class="primary"
-      type="submit"
-      data-tid="rename-subaccount-button"
-      disabled={newAccountName.length === 0 ||
-        $busy ||
-        selectedAccount === undefined}
-    >
-      {$i18n.accounts.rename}
-    </button>
-  </div>
-</form>
-
-<style lang="scss">
-  .label {
-    margin: 0;
-  }
-</style>
+<TextInputForm
+  on:nnsConfirmText={createNewSubAccount}
+  on:nnsClose
+  bind:text={newAccountName}
+  placeholderLabelKey="accounts.rename_new_name_placeholder"
+  busy={$busy}
+  disabledConfirm={newAccountName.length === 0 ||
+    $busy ||
+    selectedAccount === undefined}
+>
+  <svelte:fragment slot="label"
+    >{$i18n.accounts.rename_account_enter_new_name}</svelte:fragment
+  >
+  <svelte:fragment slot="cancel-text">{$i18n.core.cancel}</svelte:fragment>
+  <svelte:fragment slot="confirm-text">{$i18n.accounts.rename}</svelte:fragment>
+</TextInputForm>

@@ -37,6 +37,6 @@ describe("RenameSubAccountModal", () => {
   it("should render rename action", async () => {
     const { getByTestId } = await renderTestModalCmp(mockSubAccount);
 
-    expect(getByTestId("rename-subaccount-button")).not.toBeNull();
+    expect(getByTestId("confirm-text-input-screen-button")).not.toBeNull();
   });
 });
