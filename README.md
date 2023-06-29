@@ -16,12 +16,12 @@
 
 ---
 
-[NNS Dapp](https://nns.ic0.app) offers a user-friendly platform for interacting with the [Network Nervous System (NNS)](https://internetcomputer.org/nns) of the Internet Computer. With this decentralized application, you can easily perform the following actions:
+[NNS Dapp](https://nns.ic0.app) offers a user-friendly platform for interacting with the [Network Nervous System (NNS)](https://internetcomputer.org/nns) and any [SNS](https://internetcomputer.org/docs/current/developer-docs/integrations/sns/introduction/sns-intro-high-level/) of the Internet Computer. With this decentralized application, you can easily perform the following actions:
 
-- Send and receive ICP
+- Send and receive tokens (ICP, ckBTC, CHAT etc.)
 - Stake and manage neurons
-- Vote on the governance of the Internet Computer
-- Participate in SNS decentralization
+- Vote on the governance of the Internet Computer and SNSes
+- Participate in decentralization swaps
 - Create and top up canisters
 
 ## Links
