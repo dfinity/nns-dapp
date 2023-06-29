@@ -1,0 +1,360 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+
+print_help() {
+  cat <<-EOF
+
+	Performs or guides the steps in the nns-dapp release SOP checklist.
+
+	To start a new release process, run:
+	  ./release-sop.sh --new
+
+	To start a new release process on the same day as a previous release, run:
+	  ./release-sop.sh --new --name Release-\$(date +%Y-%m-%d)-v2
+
+	To continue an existing release process, make sure the release branch is
+	checked out and run:
+	  ./release-sop.sh --continue
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=n long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
+clap.define short=c long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
+clap.define short=b long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
+clap.define short=m long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
+# Source the output file ------------------------------------------------------
+source "$(clap.build)"
+
+if [ "$IS_NEW_RELEASE" = "true" ] && [ "$CONTINUE" = "true" ]; then
+  echo "Cannot specify both --new and --continue" >&2
+  exit 1
+fi
+
+if [ "$IS_NEW_RELEASE" = "false" ] && [ "$CONTINUE" = "false" ]; then
+  echo "Must specify either --new or --continue" >&2
+  exit 1
+fi
+
+execute() {
+  if ! [ "${MOCK_JSON:-}" ]; then
+    "$@"
+    return
+  fi
+  if [ "$1" = "echo"  ]; then
+    "$@"
+    return
+  fi
+  cmd=$(printf "%q " "$@" | sed 's/ $//')
+  entry="$(jq --arg command "$cmd" '.behavior[] | select(.command == $command)' "$MOCK_JSON")"
+  if ! [ "$entry" ]; then
+    echo "No mock behavior for: $cmd" >&2
+    exit 1
+  fi
+  stdout="$(echo "$entry" | jq -r .stdout | tr -d '\n')"
+  stderr="$(echo "$entry" | jq -r .stderr | tr -d '\n')"
+  echo -n "$stdout"
+  echo -n "$stderr" >&2
+  exitCode="$(echo "$entry" | jq -r .exitCode)"
+  return "$exitCode"
+}
+
+branch_exists() {
+  branch_name="$1"
+  execute git show-ref --quiet --verify "refs/heads/${branch_name}"
+}
+
+if [ "$IS_NEW_RELEASE" = "true" ];  then
+  if [ -z "${BRANCH_NAME:-}" ]; then
+    BRANCH_NAME="Release-$(execute date +%Y-%m-%d)"
+  elif ! [[ "$BRANCH_NAME" =~ ^Release-....-..-.. ]]; then
+    (
+      echo "Release name must start with Release-YYYY-MM-DD"
+    ) >&2
+    exit 1
+  fi;
+
+  if branch_exists "$BRANCH_NAME"; then
+    (
+      echo "Branch $BRANCH_NAME already exists."
+      echo "Specify a different branch name with --new --name <name>,"
+      echo "or use --continue to continue with an existing release branch."
+    ) >&2
+    exit 1
+  fi
+
+  CHECKLIST_FILE="${SOURCE_DIR}/${BRANCH_NAME}.json"
+
+  if ! execute git diff --quiet --exit-code; then
+    (
+      echo "There are changes in the working directory."
+      echo "Please commit or stash them before starting a new release."
+    ) >&2
+    exit 1
+  fi
+
+  echo "[]" > "$CHECKLIST_FILE"
+else
+
+  if [ "${BRANCH_NAME:-}" ]; then
+    (
+      echo "--name can only be used with --new"
+      echo "With --continue, go to the release branch first and try again."
+    ) >&2
+    exit 1
+  fi
+
+  BRANCH_NAME="$(execute git branch --show-current)"
+
+  if ! [[ "$BRANCH_NAME" =~ ^Release-....-..-.. ]]; then
+    (
+      echo "Current branch $BRANCH_NAME is not a release branch."
+      echo "With --continue, go to the release branch first and try again."
+    ) >&2
+    exit 1
+  fi
+
+  CHECKLIST_FILE="${SOURCE_DIR}/${BRANCH_NAME}.json"
+fi
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+cd "$TOP_DIR"
+
+checklist_get() {
+  local name
+  name="$1"
+  jq -r --arg name "$name" '.[] | select(.name == $name) | .value' "$CHECKLIST_FILE"
+}
+
+checklist_must_get() {
+  name="$1"
+  value="$(checklist_get "$name")"
+  if ! [ "$value" ]; then
+    echo "'$name' not found in checklist" >&2
+    exit 1
+  fi
+  echo "$value"
+}
+
+checklist_add() {
+  local name value temp_file
+  name="$1"
+  value="$2"
+  temp_file="$CHECKLIST_FILE.tmp"
+  jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' $CHECKLIST_FILE > $temp_file
+  mv $temp_file $CHECKLIST_FILE
+  echo "$name: $value"
+}
+
+# This script is designed to be run multiple times. Steps that have been
+# performed are recorded in a checklist and not repeated except for
+# verification steps.
+
+# There are 3 types of steps in the checklist: confirm_cmd, record and verify.
+# * confirm_cmd: Takes a command and runs it after asking for confirmation.
+#   Then records "Done" in the checklist. On reruns of the script, these steps
+#   are skipped. For example: Download the WASM from CI.
+# * record: Takes label and a command and records the command's stdout in the
+#   checklist for the given label. Output that should not be recorded should
+#   go to stderr. On reruns of the script, these steps are skipped. For
+#   example: Get the WASM hash from CI log.
+# * verify: Takes a label of a previous step, a new label, and a command. It
+#   runs the command and expects the output to match the recorded value from the
+#   previous step. It also records the value with the new label, to have a
+#   record of the verification. Verification steps are never skipped, but are
+#   only recorded the first time.
+#   For example: Verify that the downloaded WASM hash matches the one from CI.
+
+confirm_cmd() {
+  local cmd
+  cmd=$(printf "%q " "$@" | sed 's/ $//')
+  value="$(checklist_get "$cmd")"
+  if [ "$value" ]; then
+    echo "$cmd: Was already done. Skipping."
+    return
+  fi
+  (
+    echo "Press enter to run the following command:"
+    echo
+    echo "$cmd"
+    echo
+  ) >&2
+  if ! [ "${MOCK_JSON:-}" ]; then
+    read
+    (
+      bash -c "$cmd"
+    ) >&2
+  fi
+  if [ "$?" != "0" ]; then
+    echo "Command failed." >&2
+    exit 1
+  fi
+  checklist_add "$cmd" "Done"
+}
+
+record() {
+  local label value
+  label="$1"
+  shift
+  value="$(checklist_get "$label")"
+  if [ "$value" ]; then
+    echo "$label: Was already: $value"
+    return
+  fi
+  if ! value="$(execute "$@")"; then
+    echo "$label: Failed"
+    exit 1
+  fi
+  checklist_add "$label" "$value"
+}
+
+verify() {
+  local previous_label label previous_value current_value value
+  previous_label="$1"
+  label="$2"
+  shift 2
+  previous_value="$(checklist_must_get "$previous_label")"
+  if ! current_value="$(execute "$@")"; then
+    echo "$label: Failed"
+    exit 1
+  fi
+  if [ "$current_value" != "$previous_value" ]; then
+    (
+    echo "Values don't match!"
+    echo "$previous_label: $previous_value"
+    echo "$label: $current_value"
+    ) >&2
+    exit 1
+  fi
+  value="$(checklist_get "$label")"
+  if ! [ "$value" ]; then
+    checklist_add "$label" "$current_value"
+  else
+    echo "$label: $current_value"
+  fi
+}
+
+npm_audit() {
+  local audit
+  pushd "$TOP_DIR/frontend" >&2
+  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(",")')"
+  if [ "$audit" ]; then
+    echo "$audit"
+    exit
+  fi
+  # Either there were no vulnerabilities or the format changed.
+  # If there were none, we'll let `npm audit` output "0 vulnerabilities found"
+  # If the format changed, we'll find out because `npm audit` will fail.
+  npm audit
+  popd >&2
+}
+  
+cargo_audit() {
+  cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")' || true
+}
+  
+no_html_in_templates() {
+  if find "$TOP_DIR/frontend/src" -name '*.svelte' | xargs grep '@html'; then
+    (
+      echo
+      echo "Found @html in templates."
+    ) >&2
+    exit 1
+  fi
+  echo "Checked"
+}
+
+sha256() {
+  sha256sum "$1" | awk '{print $1}'
+}
+
+get_dfx_identity() {
+  if pgrep replica; then
+    (
+      echo
+      echo "A replica is running."
+      echo "Please stop it because it might interfere with your dfx identities."
+    ) >&2
+    exit 1;
+  fi
+  echo "$(dfx identity whoami): $(dfx identity get-principal)"
+}
+
+remove_staging_nns_dapp_from_canister_ids_json() {
+  old_canister_id="$(jq -r '."nns-dapp".staging' canister_ids.json)"
+  if ! [ "$old_canister_id" ]; then
+    checklist_add "$label" "Was already not there"
+    return
+  fi
+
+  new_name="staging-before-$(execute date +%Y%m%d-%H%M%S)"
+  jq --arg new_name "$new_name" '."nns-dapp"[$new_name] = ."nns-dapp".staging | del(."nns-dapp".staging)' canister_ids.json > canister_ids.json.new
+  mv canister_ids.json.new canister_ids.json
+
+  #checklist_add "$label" "\"$new_name\": \"$old_canister_id\""
+}
+
+get_module_hash_from_network() {
+  local network
+  network="$1"
+  module_hash=$(dfx canister --network "$network" info nns-dapp | grep "Module hash:" | awk '{print $NF}')
+  echo "${module_hash#0x}"
+}
+
+post_on_slack() {
+  STAGING_URL="$(checklist_must_get "Staging URL")"
+  COMMIT="$(checklist_must_get "Release commit")"
+  WASM_HASH="$(checklist_must_get "CI NNS-dapp WASM hash")"
+  (
+    echo
+    echo "Post the following on #eng-gix-private:"
+    echo
+    echo ":rocket: *New RC ${BRANCH_NAME}* : $STAGING_URL"
+    echo "Commit: $COMMIT"
+    echo "WASM hash: $WASM_HASH"
+    echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$STAGING_URL)"
+    echo "Please try it out."
+    echo
+    echo -n "Then enter the Slack link: "
+  ) >&2
+  read -r SLACK_LINK
+  echo "$SLACK_LINK"
+}
+
+echo Checklist file: "$CHECKLIST_FILE"
+
+record "Start time" date +"%Y-%m-%d %H:%M:%S"
+confirm_cmd git fetch --tags --force
+confirm_cmd git checkout -b "$BRANCH_NAME" origin/main
+record "Release branch" echo "$BRANCH_NAME"
+verify "Release branch" "Current branch" echo "$BRANCH_NAME"
+confirm_cmd git push origin "$BRANCH_NAME"
+record "Release branch URL" echo "https://github.com/dfinity/nns-dapp/tree/$BRANCH_NAME"
+confirm_cmd git tag -f release-candidate
+record "Release commit" git rev-parse release-candidate
+verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
+confirm_cmd git push origin -f tags/release-candidate
+record "Security test: npm audit" npm_audit
+verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+record "Security test: cargo audit" cargo_audit
+verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044"
+record "Security test: no HTML in templates" no_html_in_templates
+confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
+record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
+verify "CI NNS-dapp WASM hash" "Local WASM hash" sha256 "$TOP_DIR/release/ci/nns-dapp.wasm.gz"
+confirm_cmd scripts/canister_ids --remove --network staging --canister nns-dapp
+record "dfx identity" get_dfx_identity
+confirm_cmd dfx canister create nns-dapp --network staging
+record "NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
+verify "NNS-dapp staging canister ID" "Current NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
+CANISTER_ID="$(checklist_must_get "NNS-dapp staging canister ID")"
+confirm_cmd DFX_NETWORK=staging ./config.sh
+confirm_cmd dfx canister install nns-dapp --argument "$(execute cat nns-dapp-arg-staging.did)" --network staging --wasm ./release/ci/nns-dapp.wasm.gz
+record "Staging URL" echo "https://$CANISTER_ID.nnsdapp.dfinity.network/"
+verify "CI NNS-dapp WASM hash" "Staging WASM hash" get_module_hash_from_network staging
+record "Post on Slack" post_on_slack
