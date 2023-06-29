@@ -6,6 +6,7 @@ import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.d
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+import * as workerBalances from "$lib/services/worker-balances.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -31,6 +32,19 @@ import type { ComponentProps } from "svelte/types/runtime";
 
 jest.mock("$lib/services/sns-accounts.services");
 
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("SnsAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
@@ -55,13 +69,13 @@ describe("SnsAccounts", () => {
   const hasAmountRendered = (container: HTMLElement): boolean =>
     nonNullish(container.querySelector(".value"));
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+
     jest
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
-  });
 
-  beforeEach(() => {
     snsQueryStore.reset();
     snsQueryStore.setData(
       snsResponseFor({
@@ -131,6 +145,14 @@ describe("SnsAccounts", () => {
     it("should render a token amount component", async () => {
       const { container } = await renderAndFinishLoading({ goToWallet });
       expect(hasAmountRendered(container)).toBe(true);
+    });
+
+    it("should init worker that sync the balance", async () => {
+      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+
+      render(SnsAccounts, { goToWallet });
+
+      await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
     });
   });
 
