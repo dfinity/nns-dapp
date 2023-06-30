@@ -441,6 +441,7 @@ interface I18nCanister_detail {
   top_up_canister: string;
   top_up_successful: string;
   unlink: string;
+  rename: string;
   confirm_unlink_title: string;
   confirm_unlink_description_1: string;
   confirm_unlink_description_2: string;

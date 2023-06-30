@@ -426,6 +426,7 @@
     "top_up_canister": "Top Up Canister",
     "top_up_successful": "Cycles added successfully",
     "unlink": "Unlink",
+    "rename": "Rename",
     "confirm_unlink_title": "Confirm Unlinking",
     "confirm_unlink_description_1": "This will unlink the canister from your account, it does not change the controller.",
     "confirm_unlink_description_2": "If you control the canister, ensure you have its identifier stored securely.",
