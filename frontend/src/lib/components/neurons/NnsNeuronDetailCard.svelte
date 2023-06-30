@@ -10,10 +10,11 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { Card, KeyValuePair } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { ICPToken, TokenAmount } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
-  export let testId: string = "nns-neuron-detail-card-component";
+  export let testId = "nns-neuron-detail-card-component";
 
   let stake: TokenAmount;
   $: stake = TokenAmount.fromE8s({

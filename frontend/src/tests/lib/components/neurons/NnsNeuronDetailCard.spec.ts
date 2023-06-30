@@ -11,7 +11,6 @@ import { render } from "@testing-library/svelte";
 describe("NnsNeuronDetailCard", () => {
   const renderComponent = (neuron) => {
     const { container } = render(NnsNeuronDetailCard, { neuron });
-    //console.log('dskloetx container', container.innerHTML);
     return NnsNeuronDetailCardPo.under({
       element: new JestPageObjectElement(container),
     });

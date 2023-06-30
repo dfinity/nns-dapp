@@ -1,5 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { NnsNeuronDetailCardPo } from "$tests/page-objects/NnsNeuronDetailCard.page-object";
+import { NnsNeuronInfoPo } from "$tests/page-objects/NnsNeuronInfo.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -13,10 +14,24 @@ export class ConfirmNeuronsMergePo extends BasePageObject {
     );
   }
 
+  getSourceNeuronInfoPo(): NnsNeuronInfoPo {
+    return NnsNeuronInfoPo.under({
+      element: this.root,
+      testId: "source-neuron-info",
+    });
+  }
+
   getSourceNeuronDetailCardPo(): NnsNeuronDetailCardPo {
     return NnsNeuronDetailCardPo.under({
       element: this.root,
       testId: "source-neuron-card",
+    });
+  }
+
+  getTargetNeuronInfoPo(): NnsNeuronInfoPo {
+    return NnsNeuronInfoPo.under({
+      element: this.root,
+      testId: "target-neuron-info",
     });
   }
 

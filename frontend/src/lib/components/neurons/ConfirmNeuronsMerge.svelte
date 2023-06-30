@@ -78,11 +78,19 @@
 <div class="wrapper" data-tid="confirm-neurons-merge-component">
   <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-  <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
+  {/if}
 
   <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
+  {/if}
 
   {#if showMergeResult}
     <div data-tid="merge-result-section">

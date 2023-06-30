@@ -216,6 +216,26 @@ describe("MergeNeuronsModal", () => {
         .getConfirmSelectionButtonPo()
         .click();
 
+      expect(await po.getConfirmNeuronsMergePo().isPresent()).toBe(true);
+      expect(
+        await po.getConfirmNeuronsMergePo().getSourceNeuronInfoPo().isPresent()
+      ).toBe(true);
+      expect(
+        await po
+          .getConfirmNeuronsMergePo()
+          .getSourceNeuronDetailCardPo()
+          .isPresent()
+      ).toBe(false);
+      expect(
+        await po.getConfirmNeuronsMergePo().getTargetNeuronInfoPo().isPresent()
+      ).toBe(true);
+      expect(
+        await po
+          .getConfirmNeuronsMergePo()
+          .getTargetNeuronDetailCardPo()
+          .isPresent()
+      ).toBe(false);
+
       await runResolvedPromises();
       expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
         false
@@ -246,6 +266,26 @@ describe("MergeNeuronsModal", () => {
         .getSelectNeuronsToMergePo()
         .getConfirmSelectionButtonPo()
         .click();
+
+      expect(await po.getConfirmNeuronsMergePo().isPresent()).toBe(true);
+      expect(
+        await po.getConfirmNeuronsMergePo().getSourceNeuronInfoPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po
+          .getConfirmNeuronsMergePo()
+          .getSourceNeuronDetailCardPo()
+          .isPresent()
+      ).toBe(true);
+      expect(
+        await po.getConfirmNeuronsMergePo().getTargetNeuronInfoPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po
+          .getConfirmNeuronsMergePo()
+          .getTargetNeuronDetailCardPo()
+          .isPresent()
+      ).toBe(true);
 
       await runResolvedPromises();
       expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
