@@ -145,13 +145,13 @@ export class NNSDappCanister {
     const response: RegisterHardwareWalletResponse =
       await this.certifiedService.register_hardware_wallet(request);
 
-    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+    if ("AccountNotFound" in response) {
       throw new AccountNotFoundError(
         "error__attach_wallet.register_hardware_wallet"
       );
     }
 
-    if ("NameTooLong" in response && response.NameTooLong === null) {
+    if ("NameTooLong" in response) {
       throw new NameTooLongError(
         "error__attach_wallet.create_hardware_wallet_too_long",
         {
@@ -160,19 +160,13 @@ export class NNSDappCanister {
       );
     }
 
-    if (
-      "HardwareWalletAlreadyRegistered" in response &&
-      response.HardwareWalletAlreadyRegistered === null
-    ) {
+    if ("HardwareWalletAlreadyRegistered" in response) {
       throw new HardwareWalletAttachError(
         "error__attach_wallet.already_registered"
       );
     }
 
-    if (
-      "HardwareWalletLimitExceeded" in response &&
-      response.HardwareWalletLimitExceeded === null
-    ) {
+    if ("HardwareWalletLimitExceeded" in response) {
       throw new HardwareWalletAttachError(
         "error__attach_wallet.limit_exceeded"
       );
@@ -185,7 +179,7 @@ export class NNSDappCanister {
     const response: RenameSubAccountResponse =
       await this.certifiedService.rename_sub_account(request);
 
-    if ("AccountNotFound" in response && response.AccountNotFound === null) {
+    if ("AccountNotFound" in response) {
       throw new AccountNotFoundError(
         "error__account.rename_account_not_found",
         {
@@ -194,16 +188,13 @@ export class NNSDappCanister {
       );
     }
 
-    if (
-      "SubAccountNotFound" in response &&
-      response.SubAccountNotFound === null
-    ) {
+    if ("SubAccountNotFound" in response) {
       throw new AccountNotFoundError("error__account.subaccount_not_found", {
         $account_identifier: request.account_identifier,
       });
     }
 
-    if ("NameTooLong" in response && response.NameTooLong === null) {
+    if ("NameTooLong" in response) {
       throw new NameTooLongError("error__account.subaccount_too_long", {
         $subAccountName: request.new_name,
       });
@@ -240,10 +231,7 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    if (
-      "CanisterAlreadyAttached" in response &&
-      response.CanisterAlreadyAttached === null
-    ) {
+    if ("CanisterAlreadyAttached" in response) {
       throw new CanisterAlreadyAttachedError(
         "error__canister.already_attached",
         {
@@ -251,20 +239,17 @@ export class NNSDappCanister {
         }
       );
     }
-    if ("NameAlreadyTaken" in response && response.NameAlreadyTaken === null) {
+    if ("NameAlreadyTaken" in response) {
       throw new CanisterNameAlreadyTakenError("error__canister.name_taken", {
         $name: name,
       });
     }
-    if ("NameTooLong" in response && response.NameTooLong === null) {
+    if ("NameTooLong" in response) {
       throw new CanisterNameTooLongError("error__canister.name_too_long", {
         $name: name,
       });
     }
-    if (
-      "CanisterLimitExceeded" in response &&
-      response.CanisterLimitExceeded === null
-    ) {
+    if ("CanisterLimitExceeded" in response) {
       throw new CanisterLimitExceededError("error__canister.limit_exceeded");
     }
     // Edge case
@@ -285,17 +270,17 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    if ("NameAlreadyTaken" in response && response.NameAlreadyTaken === null) {
+    if ("NameAlreadyTaken" in response) {
       throw new CanisterNameAlreadyTakenError("error__canister.name_taken", {
         $name: name,
       });
     }
-    if ("NameTooLong" in response && response.NameTooLong === null) {
+    if ("NameTooLong" in response) {
       throw new CanisterNameTooLongError("error__canister.name_too_long", {
         $name: name,
       });
     }
-    if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
+    if ("CanisterNotFound" in response) {
       throw new CanisterNotFoundError("error__canister.unlink_not_found", {
         $canisterId: canisterId.toText(),
       });
@@ -311,7 +296,7 @@ export class NNSDappCanister {
     if ("Ok" in response) {
       return;
     }
-    if ("CanisterNotFound" in response && response.CanisterNotFound === null) {
+    if ("CanisterNotFound" in response) {
       throw new CanisterNotFoundError("error__canister.unlink_not_found", {
         $canisterId: canisterId.toText(),
       });
