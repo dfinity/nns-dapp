@@ -441,6 +441,7 @@ interface I18nCanister_detail {
   top_up_canister: string;
   top_up_successful: string;
   unlink: string;
+  rename: string;
   confirm_unlink_title: string;
   confirm_unlink_description_1: string;
   confirm_unlink_description_2: string;
@@ -710,6 +711,7 @@ interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
   vesting_period_tooltip: string;
+  voting_power_tooltip_with_stake: string;
   community_fund_section: string;
   community_fund_section_description: string;
   add_hotkey_info: string;
