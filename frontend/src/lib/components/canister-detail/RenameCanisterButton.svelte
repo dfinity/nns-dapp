@@ -16,7 +16,7 @@
   type="button"
   on:click={openModal}
   disabled={$busy}
-  data-tid="rename-canister-button"
+  data-tid="rename-canister-button-component"
 >
   {$i18n.canister_detail.rename}
 </button>

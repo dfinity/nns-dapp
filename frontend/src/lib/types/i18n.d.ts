@@ -455,6 +455,7 @@ interface I18nCanister_detail {
   confirm_remove_controller_user_description_2: string;
   confirm_remove_last_controller_description: string;
   unlink_success: string;
+  rename_success: string;
   confirm_new_controller: string;
   enter_controller: string;
   edit_controller: string;

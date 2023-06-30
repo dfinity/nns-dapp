@@ -55,6 +55,15 @@ describe("CanisterDetail", () => {
       ).toEqual(mockCanister.canister_id.toText());
     });
 
+    it("should render rename button", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+      await waitFor(() =>
+        expect(
+          queryByTestId("rename-canister-button-component")
+        ).toBeInTheDocument()
+      );
+    });
+
     it("should render cards", async () => {
       const { queryByTestId } = render(CanisterDetail, props);
 
@@ -128,4 +137,33 @@ describe("CanisterDetail", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe("if user is not the controller", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(canisterApi, "queryCanisterDetails")
+        .mockRejectedValue(new UserNotTheControllerError());
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: "",
+        },
+      ]);
+    });
+
+    it("should not render cards if user is not the controller", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("canister-details-error-card")).toBeInTheDocument()
+      );
+      // Waiting for the one above is enough
+      expect(queryByTestId("canister-cycles-card")).not.toBeInTheDocument();
+      expect(
+        queryByTestId("canister-controllers-card")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // TODO: Add tests that renames the canister
 });

@@ -440,6 +440,7 @@
     "confirm_remove_controller_user_description_2": "You will lose access to the canister.",
     "confirm_remove_last_controller_description": "This is the last remaining controller. If you remove it, nobody will be able to control the canister.",
     "unlink_success": "Canister successfully unlinked",
+    "rename_success": "Canister successfully renamed to \"$name\"",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",
