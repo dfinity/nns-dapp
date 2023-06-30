@@ -203,7 +203,7 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
     max: SECONDS_IN_FOUR_YEARS,
   });
 
-const bonusMultiplier = ({
+export const bonusMultiplier = ({
   amount,
   multiplier,
   max,
