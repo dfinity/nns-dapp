@@ -23,7 +23,3 @@ clap.define short=c long=commit desc="The commit, tag or reference to find" vari
 source "$(clap.build)"
 
 "$SOURCE_DIR/nns-dapp/get-ci-build-run" --commit "$DFX_COMMIT" --limit "$DFX_LIMIT" --all | sed 's!.*!https://github.com/dfinity/nns-dapp/actions/runs/&!g'
-
-for id in $ci_build_run_ids; do
-  echo "https://github.com/dfinity/nns-dapp/actions/runs/$id"
-done
