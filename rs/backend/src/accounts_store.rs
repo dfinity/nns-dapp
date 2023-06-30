@@ -821,10 +821,8 @@ impl AccountsStore {
 
             if self.accounts.get(&account_identifier.to_vec()).is_some() {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-                for c in account.canisters.iter() {
-                    if !request.name.is_empty() && c.name == request.name {
-                        return RenameCanisterResponse::NameAlreadyTaken;
-                    }
+                if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
+                  return RenameCanisterResponse::NameAlreadyTaken;
                 }
 
                 if let Some(index) = Self::find_canister_index(account, request.canister_id) {
