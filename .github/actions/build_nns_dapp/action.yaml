@@ -13,6 +13,9 @@ inputs:
     description: 'no-cache'
     default: false
     type: boolean
+  network:
+    description: 'The network to build for'
+    default: mainnet
 runs:
   using: "composite"
   steps:
@@ -24,7 +27,7 @@ runs:
         context: .
         file: Dockerfile
         build-args: |
-          DFX_NETWORK=mainnet
+          DFX_NETWORK=${{ inputs.network }}
           COMMIT=${{ github.sha }}
         cache-from: type=gha,scope=cached-stage
         no-cache: ${{ inputs.no-cache || false }}

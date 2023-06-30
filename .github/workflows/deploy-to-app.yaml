@@ -72,18 +72,31 @@ jobs:
         run: |
           dfx identity whoami
           dfx identity get-principal
-      - name: Build wasms
-        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy nns-dapp
-        if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
+      - name: Set nns-dapp canister ID
         run: |
           set -x
           CANISTER_NAME="nns-dapp"
           export DFX_NETWORK CANISTER_NAME
           jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
           dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$NNS_DAPP_APP_SUBNET_CANISTER_ID"
+      - name: Set sns_aggregator canister ID
+        run: |
+          set -x
+          CANISTER_NAME="sns_aggregator"
+          export DFX_NETWORK CANISTER_NAME
+          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
+          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
+      - name: Build wasms and config
+        uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          network: ic
+      - name: Deploy nns-dapp
+        if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
+        run: |
+          set -x
+          CANISTER_NAME="nns-dapp"
           scripts/nns-dapp/split-assets
           # Note: inputs.mode is set if this workflow is run manually, using workflow_dispatch defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
@@ -96,10 +109,6 @@ jobs:
         run: |
           set -x
           CANISTER_NAME="sns_aggregator"
-          export DFX_NETWORK CANISTER_NAME
-          jq 'del(.canisters[env.CANISTER_NAME].remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
-          DFX_NETWORK="$DFX_NETWORK" jq 'del(.canisters.internet_identity.remote.id[env.DFX_NETWORK])' dfx.json | sponge dfx.json
-          dfx-canister set-id --network "$DFX_NETWORK" --canister_name "$CANISTER_NAME" --canister_id "$SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID"
           dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm.gz
       - name: Canister info
         run: |
