@@ -35,6 +35,7 @@
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import RenameCanisterButton from "$lib/components/canister-detail/RenameCanisterButton.svelte";
 
   // BEGIN: loading and navigation
 
@@ -191,6 +192,7 @@
         <CanisterCardSubTitle canister={canisterInfo} />
         <div class="actions">
           <UnlinkCanisterButton canisterId={canisterInfo.canister_id} />
+          <RenameCanisterButton />
         </div>
       {:else}
         <div class="loader-title">
@@ -233,6 +235,7 @@
     margin-bottom: var(--padding-3x);
     display: flex;
     justify-content: end;
+    gap: var(--padding-2x);
   }
 
   .error-message {

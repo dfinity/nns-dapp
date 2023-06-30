@@ -460,6 +460,9 @@ interface I18nCanister_detail {
   edit_controller: string;
   new_controller: string;
   add_controller: string;
+  rename_canister: string;
+  rename_canister_title: string;
+  rename_canister_placeholder: string;
   status_stopped: string;
   status_stopping: string;
   status_running: string;

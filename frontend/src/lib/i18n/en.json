@@ -445,6 +445,9 @@
     "edit_controller": "Edit Controller",
     "new_controller": "New Controller",
     "add_controller": "Add Controller",
+    "rename_canister": "Rename Canister",
+    "rename_canister_title": "Enter New Canister Name",
+    "rename_canister_placeholder": "Canister Name",
     "status_stopped": "Stopped",
     "status_stopping": "Stopping",
     "status_running": "Running"
