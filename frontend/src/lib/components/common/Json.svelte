@@ -22,7 +22,7 @@
     | "hash"
     | "string"
     | "symbol"
-    | "base64_encoding"
+    | "base64Encoding"
     | "undefined";
   const getValueType = (value: unknown): ValueType => {
     if (value === null) return "null";
@@ -31,9 +31,9 @@
     // not null was already checked above
     if (
       typeof value === "object" &&
-      Object.keys(value as object)[0] === "base64_encoding"
+      Object.keys(value as object)[0] === "base64Encoding"
     )
-      return "base64_encoding";
+      return "base64Encoding";
     return typeof value;
   };
 
@@ -53,8 +53,8 @@
     isExpandable = valueType === "object";
     value = isExpandable
       ? json
-      : valueType === "base64_encoding"
-      ? (json as { [key: string]: unknown })["base64_encoding"]
+      : valueType === "base64Encoding"
+      ? (json as { [key: string]: unknown })["base64Encoding"]
       : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
@@ -116,7 +116,7 @@
     <span data-tid={testId} class="key" class:root
       >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
     >
-  {:else if valueType === "base64_encoding"}
+  {:else if valueType === "base64Encoding"}
     <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
     <span data-tid={testId} class="key-value">
       {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
