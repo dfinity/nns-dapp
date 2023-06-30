@@ -17,11 +17,13 @@
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
 
+  // If the neuron has voting power percentage multiplier of 100
+  // the voting power calculation matches the calculation for NNS neurons
   let votingPowerMessage: string;
   $: votingPowerMessage =
-    neuron.voting_power_percentage_multiplier < 100
-      ? $i18n.sns_neuron_detail.voting_power_tooltip_with_stake
-      : $i18n.neuron_detail.voting_power_tooltip_with_stake;
+    neuron.voting_power_percentage_multiplier === 100n
+      ? $i18n.neuron_detail.voting_power_tooltip_with_stake
+      : $i18n.sns_neuron_detail.voting_power_tooltip_with_stake;
 </script>
 
 <TestIdWrapper testId="sns-neuron-voting-power-explanation-component">
