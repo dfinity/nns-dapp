@@ -91,7 +91,7 @@ jobs:
         uses: ./.github/actions/build_nns_dapp # Builds sns_aggregator as well.
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          network: ic
+          network: ${{ env.DFX_NETWORK }}
       - name: Deploy nns-dapp
         if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |
@@ -100,7 +100,8 @@ jobs:
           scripts/nns-dapp/split-assets
           # Note: inputs.mode is set if this workflow is run manually, using workflow_dispatch defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
-          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$(cat out/nns-dapp-arg-mainnet.did)" --wasm out/nns-dapp_noassets.wasm.gz
+          ARGUMENT="$(cat "out/nns-dapp-arg-${DFX_NETWORK}.did")"
+          dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm out/nns-dapp_noassets.wasm.gz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xaa.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xab.tar.xz
           ./scripts/nns-dapp/upload-asset-tarball --network "$DFX_NETWORK" --chunk out/chunks/assets.xac.tar.xz
