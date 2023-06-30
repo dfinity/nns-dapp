@@ -37,6 +37,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Security
 #### Not Published
 
+* Progress on merge neurons preview, behind a flag.
+
 ### Operations
 
 #### Added
