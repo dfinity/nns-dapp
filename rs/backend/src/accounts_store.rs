@@ -827,19 +827,17 @@ impl AccountsStore {
                     }
                 }
 
-                let mut response = RenameCanisterResponse::Ok;
-
                 if let Some(index) = Self::find_canister_index(account, request.canister_id) {
                     account.canisters.remove(index);
                     account.canisters.push(NamedCanister {
                         name: request.name,
                         canister_id: request.canister_id,
                     });
+                    sort_canisters(&mut account.canisters);
+                    RenameCanisterResponse::Ok
                 } else {
-                    response = RenameCanisterResponse::CanisterNotFound;
+                    RenameCanisterResponse::CanisterNotFound
                 }
-                sort_canisters(&mut account.canisters);
-                response
             } else {
                 RenameCanisterResponse::AccountNotFound
             }
