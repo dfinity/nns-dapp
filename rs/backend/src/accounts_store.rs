@@ -72,10 +72,40 @@ struct NamedHardwareWalletAccount {
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq, Ord, PartialOrd)]
+/// A canister ID with a, possibly blank, name.
+///
+/// ## Note on ordering
+/// This will sort the canisters such that those with names specified will appear first and will be
+/// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
+#[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct NamedCanister {
     name: String,
     canister_id: CanisterId,
+}
+impl NamedCanister {
+    /// A value used to decide how `NamedCanister`s are sorted.
+    ///
+    /// Note: This allocates a string, so for sorting long lists this will be slow.
+    /// - Consider using `sort_by_cached_key(|x| x.sorting_key())`, if allowed in canisters.
+    /// - Determine whether the native ordering of principals is acceptable.  If so, the key can
+    ///   be of type (bool, &str, &Principal) where the string is the name.
+    fn sorting_key(&self) -> (bool, String) {
+        if c.name.is_empty() {
+            (true, c.canister_id.to_string())
+        } else {
+            (false, c.name.clone())
+        }
+    }
+}
+impl Ord for NamedCanister {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.sorting_key().cmp(&other.sorting_key())
+    }
+}
+impl PartialOrd for NamedCanister {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -796,7 +826,7 @@ impl AccountsStore {
                     name: request.name,
                     canister_id: request.canister_id,
                 });
-                sort_canisters(&mut account.canisters);
+                account.canisters.sort();
                 AttachCanisterResponse::Ok
             } else {
                 AttachCanisterResponse::AccountNotFound
@@ -882,7 +912,7 @@ impl AccountsStore {
                 name: "".to_string(),
                 canister_id,
             });
-            sort_canisters(&mut account.canisters);
+            account.canisters.sort();
         }
     }
 
@@ -1571,18 +1601,6 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
     let mut bytes = [0u8; 32];
     bytes[31] = byte;
     Subaccount(bytes)
-}
-
-/// This will sort the canisters such that those with names specified will appear first and will be
-/// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
-fn sort_canisters(canisters: &mut [NamedCanister]) {
-    canisters.sort_unstable_by_key(|c| {
-        if c.name.is_empty() {
-            (true, c.canister_id.to_string())
-        } else {
-            (false, c.name.clone())
-        }
-    });
 }
 
 #[derive(CandidType, Deserialize)]
