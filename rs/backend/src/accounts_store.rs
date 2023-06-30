@@ -4,6 +4,7 @@ use crate::state::StableState;
 use crate::stats::Stats;
 use crate::time::time_millis;
 use candid::CandidType;
+use core::cmp::Ordering;
 use dfn_candid::Candid;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
@@ -90,10 +91,10 @@ impl NamedCanister {
     /// - Determine whether the native ordering of principals is acceptable.  If so, the key can
     ///   be of type (bool, &str, &Principal) where the string is the name.
     fn sorting_key(&self) -> (bool, String) {
-        if c.name.is_empty() {
-            (true, c.canister_id.to_string())
+        if self.name.is_empty() {
+            (true, self.canister_id.to_string())
         } else {
-            (false, c.name.clone())
+            (false, self.name.clone())
         }
     }
 }
@@ -851,12 +852,9 @@ impl AccountsStore {
 
             if self.accounts.get(&account_identifier.to_vec()).is_some() {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-                for c in account.canisters.iter() {
-                    if !request.name.is_empty() && c.name == request.name {
-                        return RenameCanisterResponse::NameAlreadyTaken;
-                    }
+                if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
+                    return RenameCanisterResponse::NameAlreadyTaken;
                 }
-
                 if let Some(index) = Self::find_canister_index(account, request.canister_id) {
                     account.canisters.remove(index);
                     let new_element = NamedCanister {
