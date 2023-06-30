@@ -128,6 +128,4 @@ describe("CanisterDetail", () => {
       ).not.toBeInTheDocument();
     });
   });
-
-  // TODO: Add tests that renames the canister
 });
