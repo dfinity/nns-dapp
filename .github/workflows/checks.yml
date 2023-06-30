@@ -199,7 +199,7 @@ jobs:
         run: command -v didc
       - name: Recreate and compare patches
         run: scripts/mk_nns_patch.test
-  mainnet-config-stability-test:
+  config-check:
     name: Mainnet config is as expected
     runs-on: ubuntu-20.04
     steps:
@@ -261,7 +261,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: scripts/canister_ids.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "mainnet-config-stability-test", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
