@@ -23,6 +23,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Simplify rust cache expiry with `pop_first()`.
 * Disable functionality buttons while SNS neuron is vesting.
 * Ignore sign-in "error" `UserInterrupt`.
+* Updated `bitcoin-canister` revision for proposal payload support.
 
 #### Deprecated
 

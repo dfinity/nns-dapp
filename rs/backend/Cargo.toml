@@ -33,7 +33,7 @@ dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05c
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="2c91aaae834dace5f1826ef41a910500d133d35e" }
+ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="b1693619e3d4dbc00d8c79e9b6886e1db48b21f7" }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
 ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
