@@ -19,6 +19,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Simplify rust cache expiry with `pop_first()`.
 * Disable functionality buttons while SNS neuron is vesting.
 * Ignore sign-in "error" `UserInterrupt`.
 
