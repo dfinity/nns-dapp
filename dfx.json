@@ -144,6 +144,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "ic": "mxzaz-hqaaa-aaaar-qaada-cai",
           "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
         }
       }
@@ -157,6 +158,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "ic": "mqygn-kiaaa-aaaar-qaadq-cai",
           "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
         }
       }
@@ -170,6 +172,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "ic": "n5wcd-faaaa-aaaar-qaaea-cai",
           "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
         }
       }
@@ -183,6 +186,7 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
+          "ic": "ewh3f-3qaaa-aaaap-aazjq-cai",
           "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
         }
       }
