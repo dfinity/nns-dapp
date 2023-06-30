@@ -73,11 +73,7 @@ struct NamedHardwareWalletAccount {
     transactions: Vec<TransactionIndex>,
 }
 
-/// A canister ID with a, possibly blank, name.
-///
-/// ## Note on ordering
-/// This will sort the canisters such that those with names specified will appear first and will be
-/// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
+/// A canister ID with a name that may be blank.
 #[derive(CandidType, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub struct NamedCanister {
     name: String,
@@ -85,6 +81,9 @@ pub struct NamedCanister {
 }
 impl NamedCanister {
     /// A value used to decide how `NamedCanister`s are sorted.
+    ///
+    /// This will sort the canisters such that those with names specified will appear first and will be
+    /// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
     ///
     /// Note: This allocates a string, so for sorting long lists this will be slow.
     /// - Consider using `sort_by_cached_key(|x| x.sorting_key())`, if allowed in canisters.
