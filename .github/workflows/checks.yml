@@ -114,11 +114,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Install tools
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Provide a config
         run: ./config.sh
       - name: Install dependencies
@@ -211,6 +206,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Install tools
+        run: |
+          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check mainnet config
         run: bash -x config.test
   asset-chunking-works:
