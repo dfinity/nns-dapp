@@ -28,6 +28,7 @@ export const createMockSnsNeuron = ({
   state,
   permissions = [],
   vesting,
+  votingPowerMultiplier = BigInt(100),
 }: {
   stake?: bigint;
   id: number[];
@@ -37,6 +38,7 @@ export const createMockSnsNeuron = ({
   // `true` means is still vesting
   // `false` means vesting period has passed
   vesting?: boolean;
+  votingPowerMultiplier?: bigint;
 }): SnsNeuron => {
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
@@ -48,7 +50,7 @@ export const createMockSnsNeuron = ({
     staked_maturity_e8s_equivalent: [BigInt(2)],
     auto_stake_maturity: [],
     aging_since_timestamp_seconds: BigInt(100),
-    voting_power_percentage_multiplier: BigInt(1),
+    voting_power_percentage_multiplier: votingPowerMultiplier,
     dissolve_state:
       state === undefined || state === NeuronState.Dissolved
         ? []

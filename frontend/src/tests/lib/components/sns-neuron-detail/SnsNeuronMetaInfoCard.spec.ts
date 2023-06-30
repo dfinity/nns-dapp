@@ -24,6 +24,7 @@ import {
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
@@ -140,6 +141,22 @@ describe("SnsNeuronMetaInfoCard", () => {
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasSplitButton()).toBe(false);
+  });
+
+  it("should renders voting power", async () => {
+    const neuron = createMockSnsNeuron({
+      stake: 2_000_000_000n,
+      id: [1],
+      state: NeuronState.Locked,
+    });
+    const { container } = renderSnsNeuronCmp([], neuron);
+
+    const po = SnsNeuronMetaInfoCardPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.isContentLoaded()).toBe(true);
+    expect(await po.getVotingPower()).toBe("25.50");
   });
 
   it("should render neuron age if greater than 0", async () => {
