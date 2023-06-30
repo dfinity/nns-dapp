@@ -200,7 +200,7 @@ jobs:
       - name: Recreate and compare patches
         run: scripts/mk_nns_patch.test
   config-check:
-    name: Mainnet config is as expected
+    name: Config is as expected
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
