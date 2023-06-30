@@ -1,6 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
+import { SnsNeuronVotingPowerPo } from "$tests/page-objects/SnsNeuronVotingPower.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -50,5 +51,13 @@ export class SnsNeuronMetaInfoCardPo extends BasePageObject {
 
   hasVestingPeriod(): Promise<boolean> {
     return this.getVestingPeriodPo().vestingPeriodIsPresent();
+  }
+
+  getVotingPowerPo(): SnsNeuronVotingPowerPo {
+    return SnsNeuronVotingPowerPo.under(this.root);
+  }
+
+  getVotingPower(): Promise<string> {
+    return this.getVotingPowerPo().getVotingPower();
   }
 }
