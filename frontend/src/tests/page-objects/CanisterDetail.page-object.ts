@@ -30,7 +30,9 @@ export class CanisterDetailPo extends BasePageObject {
     await this.getRenameCanisterModalPo().clickRenameButton();
   }
 
-  getCanisterTitle(): Promise<string> {
-    return this.root.byTestId("canister-card-title-compomnet").getText();
+  async getCanisterTitle(): Promise<string> {
+    return (
+      await this.root.byTestId("canister-card-title-compoment").getText()
+    ).trim();
   }
 }

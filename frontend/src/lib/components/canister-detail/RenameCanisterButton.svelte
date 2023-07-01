@@ -4,11 +4,12 @@
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
 
-  const openModal = () =>
+  const openModal = () => {
     emit<CanisterDetailModal>({
       message: "nnsCanisterDetailModal",
       detail: { type: "rename" },
     });
+  };
 </script>
 
 <button
