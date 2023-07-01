@@ -3,7 +3,6 @@
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
-  import { onMount } from "svelte";
   import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
