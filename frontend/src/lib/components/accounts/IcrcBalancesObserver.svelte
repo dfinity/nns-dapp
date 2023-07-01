@@ -19,14 +19,11 @@
 
     worker = await initBalancesWorker();
 
-    const {
-      account: { identifier },
-      ledgerCanisterId,
-    } = data;
+    const { accounts, ledgerCanisterId } = data;
 
     worker?.startBalancesTimer({
       ledgerCanisterId,
-      accountIdentifiers: [identifier],
+      accountIdentifiers: accounts.map(({ identifier }) => identifier),
       callback,
     });
   };

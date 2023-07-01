@@ -97,4 +97,46 @@ describe("ProposalsFilterModal", () => {
 
     expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 1, 2]);
   });
+
+  it("should select all filters", async () => {
+    const { queryAllByTestId, queryByTestId } = render(ProposalsFilterModal, {
+      props,
+    });
+
+    const inputs = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs.reduce((acc, input) => acc && input.checked, true)).toBe(
+        false
+      )
+    );
+
+    await clickByTestId(queryByTestId, "filter-modal-select-all");
+
+    const inputs2 = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs2.reduce((acc, input) => acc && input.checked, true)).toBe(
+        true
+      )
+    );
+  });
+
+  it("should clear all filters", async () => {
+    const { queryAllByTestId, queryByTestId } = render(ProposalsFilterModal, {
+      props,
+    });
+
+    const inputs = queryAllByTestId("checkbox") as HTMLInputElement[];
+    const firstInput = inputs[0];
+    fireEvent.click(firstInput);
+    await waitFor(() => expect(firstInput.checked).toBe(true));
+
+    await clickByTestId(queryByTestId, "filter-modal-clear");
+
+    const inputs2 = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs2.reduce((acc, input) => acc || input.checked, false)).toBe(
+        false
+      )
+    );
+  });
 });
