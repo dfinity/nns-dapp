@@ -4,10 +4,8 @@
 
 import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
-import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { page } from "$mocks/$app/stores";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockIcrcTransactionsStoreSubscribe,
   mockIcrcTransactionWithId,
@@ -58,14 +56,6 @@ describe("SnsTransactionList", () => {
     jest
       .spyOn(snsProjectsStore, "subscribe")
       .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-  });
-
-  it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadSnsAccountNextTransactions");
-
-    renderSnsTransactionList(mockSnsMainAccount, mockPrincipal);
-
-    expect(spy).toBeCalled();
   });
 
   it("should render transactions from store", () => {

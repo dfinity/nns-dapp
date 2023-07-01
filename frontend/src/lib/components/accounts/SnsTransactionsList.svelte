@@ -13,21 +13,13 @@
   } from "$lib/utils/icrc-transactions.utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
+  import { syncStore } from "$lib/stores/sync.store";
 
   export let account: Account;
   export let rootCanisterId: Principal;
   export let token: IcrcTokenMetadata | undefined;
 
-  let loading = true;
-
-  onMount(async () => {
-    loading = true;
-    await loadSnsAccountNextTransactions({
-      account,
-      canisterId: rootCanisterId,
-    });
-    loading = false;
-  });
+  let loading = false;
 
   // `loadMore` depends on props account and rootCanisterId
   let loadMore: () => Promise<void>;
@@ -66,7 +58,7 @@
     on:nnsIntersect={loadMore}
     {account}
     {transactions}
-    {loading}
+    loading={loading || $syncStore.transactions === "in_progress"}
     {governanceCanisterId}
     {completed}
     {token}
