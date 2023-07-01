@@ -5,6 +5,7 @@ import {
   getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
+  renameCanister,
   topUpCanister,
   updateSettings,
 } from "$lib/api/canisters.api";
@@ -91,6 +92,20 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
         name: "",
       });
+    });
+  });
+
+  describe("renameCanister", () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to rename the canister", async () => {
+      await renameCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        name: "test name",
+      });
+
+      expect(mockNNSDappCanister.renameCanister).toBeCalled();
     });
   });
 

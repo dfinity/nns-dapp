@@ -12,18 +12,28 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Periodically check for new transactions and updated balances of the SNS tokens/accounts.
+* Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
+* Render SNS neuron voting power in neuron detail page.
 
 #### Changed
 
+* Simplify rust cache expiry with `pop_first()`.
 * Disable functionality buttons while SNS neuron is vesting.
+* Updated `bitcoin-canister` revision for proposal payload support.
+* Ignore sign-in "error" `UserInterrupt`.
 
 #### Deprecated
+
+* Web Workers have been migrated to ES modules, which means that Firefox users using versions [prior to v114](https://caniuse.com/?search=worker%20module) won't be able to read certain data in the UI, such as TVL and canisters' cycles, unless they upgrade their browser to a more recent release.  
+
 #### Removed
 #### Fixed
 
 * Enable voting for proposals that are decided but still accepting votes.
+* Misplaced tooltip for disabled SNS neuron split button.
 
 #### Security
 #### Not Published
@@ -34,18 +44,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - A script to get the WASM hash from the GitHub CI build log.
 - CreateServiceNervousSystem proposal support.
 - Base64 image support for payload rendering.
+- `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 
 #### Changed
+- Consolidated the config tests.
 - Made per-network configuration in dfx.json optional.
 - Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
 - Increased timeout on end-to-end tests running on CI.
+- Set a custom URL for `internet_identity` on `ic` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
+
 #### Deprecated
 #### Removed
 - Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
 #### Fixed
 - Script to download WASM from CI no longer relies on broken `gh --status` flag.
+* ci-link script uses correct workflow name.
 #### Security
 
 ## Proposal 123245

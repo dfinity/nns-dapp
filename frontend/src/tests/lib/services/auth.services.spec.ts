@@ -5,6 +5,7 @@
 import {
   displayAndCleanLogoutMsg,
   getCurrentIdentity,
+  login,
   logout,
 } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -51,11 +52,39 @@ describe("auth-services", () => {
   describe("auth-client-mocked", () => {
     const mockAuthClient = mock<AuthClient>();
 
-    beforeAll(() =>
+    beforeEach(() => {
+      jest.clearAllMocks();
+
       jest
         .spyOn(AuthClient, "create")
-        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
-    );
+        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
+
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+    });
+
+    it("should call auth-client login on login", async () => {
+      const spy = jest.spyOn(mockAuthClient, "login");
+
+      await login();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it("should not toast error on auth-client error UserInterrupt", async () => {
+      jest.spyOn(mockAuthClient, "login").mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore simplified for testing purpose
+        ({ onError }: { onError: (err: unknown) => void }) => {
+          onError("UserInterrupt");
+        }
+      );
+
+      const spy = jest.spyOn(toastsStore, "show");
+
+      await login();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
 
     it("should call auth-client logout on logout", async () => {
       const spy = jest.spyOn(mockAuthClient, "logout");

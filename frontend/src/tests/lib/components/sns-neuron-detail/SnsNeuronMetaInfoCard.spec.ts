@@ -24,6 +24,7 @@ import {
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
@@ -47,7 +48,8 @@ describe("SnsNeuronMetaInfoCard", () => {
 
   const renderSnsNeuronCmp = (
     extraPermissions: SnsNeuronPermissionType[] = [],
-    neuron: SnsNeuron = mockSnsNeuron
+    neuron: SnsNeuron = mockSnsNeuron,
+    parameters: SnsNervousSystemParameters = snsNervousSystemParametersMock
   ) =>
     renderSelectedSnsNeuronContext({
       Component: SnsNeuronMetaInfoCard,
@@ -63,8 +65,7 @@ describe("SnsNeuronMetaInfoCard", () => {
       },
       reload: jest.fn(),
       props: {
-        parameters:
-          snsNervousSystemParametersMock as SnsNervousSystemParameters,
+        parameters,
         token: mockToken as Token,
         transactionFee: 100n,
       },
@@ -140,6 +141,36 @@ describe("SnsNeuronMetaInfoCard", () => {
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasSplitButton()).toBe(false);
+  });
+
+  it("should renders voting power", async () => {
+    const maxDissolveDelay = 400n;
+    const neuron = createMockSnsNeuron({
+      stake: 2_000_000_000n,
+      stakedMaturity: 800_000_000n,
+      id: [1],
+      state: NeuronState.Locked,
+      votingPowerMultiplier: 100n,
+      ageSinceSeconds: BigInt(nowSeconds) - 200n,
+      dissolveDelaySeconds: maxDissolveDelay - 200n,
+    });
+    const snsParameters: SnsNervousSystemParameters = {
+      ...snsNervousSystemParametersMock,
+      neuron_minimum_dissolve_delay_to_vote_seconds: [100n],
+      max_dissolve_delay_seconds: [maxDissolveDelay],
+      max_dissolve_delay_bonus_percentage: [50n],
+      max_neuron_age_for_age_bonus: [400n],
+      max_age_bonus_percentage: [50n],
+    };
+
+    const { container } = renderSnsNeuronCmp([], neuron, snsParameters);
+
+    const po = SnsNeuronMetaInfoCardPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.isContentLoaded()).toBe(true);
+    expect(await po.getVotingPower()).toBe("43.75");
   });
 
   it("should render neuron age if greater than 0", async () => {
