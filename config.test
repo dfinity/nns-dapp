@@ -21,7 +21,7 @@ clean_config() {
   echo "Network parameter is in config"
   for DFX_NETWORK in mainnet local; do
     clean_config
-    DFX_NETWORK="$DFX_NETWORK" chronic ./config.sh
+    DFX_NETWORK="$DFX_NETWORK" ./config.sh
     : "Check value in JSON"
     JSON_NETWORK="$(jq -r .DFX_NETWORK "$JSON_CONFIG")"
     [[ "$DFX_NETWORK" == "$JSON_NETWORK" ]] || {
