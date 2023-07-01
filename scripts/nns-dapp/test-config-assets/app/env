@@ -1,4 +1,4 @@
-VITE_DFX_NETWORK=ic
+VITE_DFX_NETWORK=app
 VITE_CYCLES_MINTING_CANISTER_ID=rkp4c-7iaaa-aaaaa-aaaca-cai
 VITE_WASM_CANISTER_ID=qaa6y-5yaaa-aaaaa-aaafa-cai
 VITE_GOVERNANCE_CANISTER_ID=rrkah-fqaaa-aaaaa-aaaaq-cai

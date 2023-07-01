@@ -23,7 +23,7 @@ source "$(clap.build)"
 cd "$SOURCE_DIR/.."
 
 # shellcheck disable=SC2043
-for DFX_NETWORK in mainnet ic; do
+for DFX_NETWORK in mainnet app; do
   export DFX_NETWORK
 
   : "Create the config"

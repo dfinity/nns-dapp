@@ -36,7 +36,7 @@ jobs:
     env:
       NNS_DAPP_APP_SUBNET_CANISTER_ID: "xnjld-hqaaa-aaaal-qb56q-cai"
       SNS_AGGREGATOR_APP_SUBNET_CANISTER_ID: "otgyv-wyaaa-aaaak-qcgba-cai"
-      DFX_NETWORK: ic
+      DFX_NETWORK: app
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3

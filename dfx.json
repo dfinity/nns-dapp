@@ -47,7 +47,8 @@
       },
       "remote": {
         "id": {
-          "ic": "xnjld-hqaaa-aaaal-qb56q-cai",
+          "app": "xnjld-hqaaa-aaaal-qb56q-cai",
+          "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
       }
@@ -59,7 +60,7 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "url": {
         "mainnet": "https://identity.internetcomputer.org/",
-        "ic": "https://identity.internetcomputer.org/"
+        "app": "https://identity.internetcomputer.org/"
       },
       "remote": {
         "id": {
@@ -138,7 +139,7 @@
       "type": "custom",
       "remote": {
         "id": {
-          "ic": "otgyv-wyaaa-aaaak-qcgba-cai",
+          "app": "otgyv-wyaaa-aaaak-qcgba-cai",
           "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
         }
       }
@@ -152,7 +153,7 @@
       "type": "custom",
       "remote": {
         "id": {
-          "ic": "mxzaz-hqaaa-aaaar-qaada-cai",
+          "app": "mxzaz-hqaaa-aaaar-qaada-cai",
           "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
         }
       }
@@ -166,7 +167,7 @@
       "type": "custom",
       "remote": {
         "id": {
-          "ic": "mqygn-kiaaa-aaaar-qaadq-cai",
+          "app": "mqygn-kiaaa-aaaar-qaadq-cai",
           "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
         }
       }
@@ -180,7 +181,7 @@
       "type": "custom",
       "remote": {
         "id": {
-          "ic": "n5wcd-faaaa-aaaar-qaaea-cai",
+          "app": "n5wcd-faaaa-aaaar-qaaea-cai",
           "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
         }
       }
@@ -194,7 +195,7 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
-          "ic": "ewh3f-3qaaa-aaaap-aazjq-cai",
+          "app": "ewh3f-3qaaa-aaaap-aazjq-cai",
           "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
         }
       }
@@ -202,6 +203,23 @@
   },
   "networks": {
     "mainnet": {
+      "config": {
+        "FETCH_ROOT_KEY": false,
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://icp-api.io/"
+      ],
+      "type": "persistent"
+    },
+    "app": {
       "config": {
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",
