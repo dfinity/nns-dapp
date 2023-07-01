@@ -51,6 +51,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
 - Increased timeout on end-to-end tests running on CI.
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
 
 #### Deprecated
 #### Removed
