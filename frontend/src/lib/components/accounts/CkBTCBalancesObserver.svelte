@@ -9,7 +9,7 @@
 
   export let universeId: UniverseCanisterId;
   export let accounts: Account[];
-  export let reload: (() => void) | undefined;
+  export let reload: (() => void) | undefined = undefined;
 
   const callback: BalancesCallback = ({ balances }) => {
     const accounts = balances

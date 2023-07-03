@@ -81,6 +81,19 @@ jest.mock("$lib/services/ckbtc-info.services", () => {
   };
 });
 
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("CkBTCWallet", () => {
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,
