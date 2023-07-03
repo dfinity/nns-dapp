@@ -43,10 +43,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
 
 fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
     if cache.len() >= CACHE_SIZE_LIMIT {
-        // TODO replace this with `pop_first` once it is stablized
-        if let Some(key) = cache.iter().next().map(|(key, _)| *key) {
-            cache.remove(&key);
-        }
+        cache.pop_first();
     }
 
     cache.insert(proposal_id, payload_json);

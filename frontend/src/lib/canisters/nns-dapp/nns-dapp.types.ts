@@ -89,6 +89,16 @@ export type RegisterHardwareWalletResponse =
   | { HardwareWalletAlreadyRegistered: null }
   | { HardwareWalletLimitExceeded: null }
   | { NameTooLong: null };
+export interface RenameCanisterRequest {
+  name: string;
+  canister_id: Principal;
+}
+export type RenameCanisterResponse =
+  | { Ok: null }
+  | { CanisterNotFound: null }
+  | { AccountNotFound: null }
+  | { NameAlreadyTaken: null }
+  | { NameTooLong: null };
 export interface RenameSubAccountRequest {
   new_name: string;
   account_identifier: AccountIdentifierString;
@@ -160,6 +170,9 @@ export default interface _SERVICE {
   attach_canister: (
     arg_0: AttachCanisterRequest
   ) => Promise<AttachCanisterResponse>;
+  rename_canister: (
+    arg_0: RenameCanisterRequest
+  ) => Promise<RenameCanisterResponse>;
   create_sub_account: (arg_0: string) => Promise<CreateSubAccountResponse>;
   detach_canister: (
     arg_0: DetachCanisterRequest

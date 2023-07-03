@@ -13,6 +13,6 @@ export class AddSubAccountPo extends BasePageObject {
   }
 
   clickCreate(): Promise<void> {
-    return this.getButton("create-account-button").click();
+    return this.getButton("confirm-text-input-screen-button").click();
   }
 }
