@@ -6,11 +6,10 @@
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
   import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
-  import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
-  import { jsonReviver } from "$lib/utils/json.utils";
   import type { Account } from "$lib/types/account";
+  import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 
   export let account: Account;
   export let completed: boolean;
@@ -30,22 +29,11 @@
       return;
     }
 
-    for (const transaction of transactions) {
-      const {
-        transactions: jsonTransactions,
-        mostRecentTxId: _,
-        accountIdentifier,
-        ...rest
-      } = transaction;
-
-      icrcTransactionsStore.addTransactions({
-        ...rest,
-        accountIdentifier,
-        transactions: JSON.parse(jsonTransactions, jsonReviver),
-        canisterId: universeId,
-        completed,
-      });
-    }
+    addObservedIcrcTransactionsToStore({
+      universeId,
+      completed,
+      transactions,
+    });
   };
 
   let universeId: UniverseCanisterId | undefined;

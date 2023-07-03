@@ -16,6 +16,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -84,12 +85,19 @@
   >;
 </script>
 
-<IcrcTransactionsList
-  on:nnsIntersect={loadNextTransactions}
+<CkBTCWalletTransactionsObserver
+  {indexCanisterId}
   {account}
-  {transactions}
-  {loading}
   {completed}
-  {descriptions}
-  {token}
-/>
+  {universeId}
+>
+  <IcrcTransactionsList
+    on:nnsIntersect={loadNextTransactions}
+    {account}
+    {transactions}
+    {loading}
+    {completed}
+    {descriptions}
+    {token}
+  />
+</CkBTCWalletTransactionsObserver>
