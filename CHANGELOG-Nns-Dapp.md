@@ -36,9 +36,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - CreateServiceNervousSystem proposal support.
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
-
-* Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
-* Added a script to perform part of the release SOP.
+- Added a script to perform part of the release SOP.
 
 #### Changed
 
