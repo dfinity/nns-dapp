@@ -13,7 +13,7 @@
   export let account: Account;
   export let completed: boolean;
 
-  let data: TransactionsObserverData | undefined;
+  let data: TransactionsObserverData;
   $: data = {
     account,
     indexCanisterId: indexCanisterId.toText(),
