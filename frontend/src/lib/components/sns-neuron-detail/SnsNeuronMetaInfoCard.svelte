@@ -28,6 +28,7 @@
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsNeuronVotingPower from "./SnsNeuronVotingPower.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
@@ -85,6 +86,8 @@
       <SnsNeuronStateRemainingTime {neuron} inline={false} />
 
       <SnsNeuronVestingPeriodRemaining {neuron} />
+
+      <SnsNeuronVotingPower {neuron} {parameters} {token} />
 
       <div class="buttons">
         {#if allowedToSplit}

@@ -71,6 +71,7 @@
             text={replacePlaceholders(
               $i18n.neuron_detail.voting_power_tooltip_with_stake,
               {
+                $token: "ICP",
                 $stake: formatToken({
                   value: neuron.fullNeuron.cachedNeuronStake,
                   detailed: true,

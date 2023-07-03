@@ -154,6 +154,21 @@ type AttachCanisterResponse =
         NameTooLong;
     };
 
+type RenameCanisterRequest =
+    record {
+        name: text;
+        canister_id: principal;
+    };
+
+type RenameCanisterResponse =
+    variant {
+        Ok;
+        NameAlreadyTaken;
+        NameTooLong;
+        CanisterNotFound;
+        AccountNotFound;
+    };
+
 type AddPendingNotifySwapRequest =
     record {
         buyer: principal;
@@ -244,6 +259,7 @@ service: (opt Config) -> {
     register_hardware_wallet: (RegisterHardwareWalletRequest) -> (RegisterHardwareWalletResponse);
     get_canisters: () -> (vec CanisterDetails) query;
     attach_canister: (AttachCanisterRequest) -> (AttachCanisterResponse);
+    rename_canister: (RenameCanisterRequest) -> (RenameCanisterResponse);
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;

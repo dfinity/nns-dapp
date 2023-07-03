@@ -54,6 +54,10 @@
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "url": {
+        "mainnet": "https://identity.internetcomputer.org/",
+        "ic": "https://identity.internetcomputer.org/"
+      },
       "remote": {
         "id": {
           "local": "qhbym-qaaaa-aaaaa-aaafq-cai"
@@ -195,7 +199,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
-        "IDENTITY_SERVICE_URL": "https://identity.internetcomputer.org/",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,

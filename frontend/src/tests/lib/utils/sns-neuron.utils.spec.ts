@@ -11,7 +11,9 @@ import {
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
+  ageMultiplier,
   canIdentityManageHotkeys,
+  dissolveDelayMultiplier,
   followeesByFunction,
   followeesByNeuronId,
   formattedMaturity,
@@ -1627,6 +1629,131 @@ describe("sns-neuron utils", () => {
       });
 
       expect(votingPower).toEqual(100);
+    });
+  });
+
+  describe("dissolveDelayMultiplier", () => {
+    const maxDissolveDelay = 400n;
+    const dissolveDelayToVote = 200n;
+    const snsParameters: SnsNervousSystemParameters = {
+      ...snsNervousSystemParametersMock,
+      neuron_minimum_dissolve_delay_to_vote_seconds: [dissolveDelayToVote],
+      max_dissolve_delay_seconds: [maxDissolveDelay],
+      max_dissolve_delay_bonus_percentage: [25n],
+    };
+
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    it("returns 0 if dissolve delay is less than minimum", () => {
+      const multiplier = dissolveDelayMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: dissolveDelayToVote - 10n }],
+        },
+        snsParameters,
+      });
+      expect(multiplier).toEqual(0);
+    });
+
+    it("returns 0 if no dissolve delay", () => {
+      const multiplier = dissolveDelayMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [],
+        },
+        snsParameters,
+      });
+      expect(multiplier).toEqual(0);
+    });
+
+    it("takes into account the maximum dissolve delay", () => {
+      const multiplier = dissolveDelayMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: maxDissolveDelay + 200n }],
+        },
+        snsParameters: snsParameters,
+      });
+      expect(multiplier).toEqual(1.25);
+    });
+
+    it("returns the dissolve delay multiplier when locked", () => {
+      const multiplier = dissolveDelayMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [{ DissolveDelaySeconds: maxDissolveDelay - 200n }],
+        },
+        snsParameters: snsParameters,
+      });
+      expect(multiplier).toEqual(1.125);
+    });
+
+    it("returns the dissolve delay multiplier when dissolving", () => {
+      const multiplier = dissolveDelayMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          dissolve_state: [
+            {
+              WhenDissolvedTimestampSeconds:
+                BigInt(nowSeconds) + maxDissolveDelay - 200n,
+            },
+          ],
+        },
+        snsParameters: snsParameters,
+      });
+      expect(multiplier).toEqual(1.125);
+    });
+  });
+
+  describe("ageMultiplier", () => {
+    const maxNeuronAge = 400n;
+    const snsParameters: SnsNervousSystemParameters = {
+      ...snsNervousSystemParametersMock,
+      max_neuron_age_for_age_bonus: [maxNeuronAge],
+      max_age_bonus_percentage: [25n],
+    };
+
+    beforeEach(() => {
+      jest.useFakeTimers().setSystemTime(now);
+    });
+
+    // Backend sets the age to a value far in the future if the neuron is dissolving
+    // https://github.com/dfinity/ic/blob/f4151f4394f768631edd513d908233de5337fd1c/rs/sns/governance/src/gen/ic_sns_governance.pb.v1.rs#L97C16-L97C16
+    it("returns 1 if age is in the future", () => {
+      const multiplier = ageMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds: BigInt(nowSeconds) + 100n,
+        },
+        snsParameters,
+      });
+      expect(multiplier).toEqual(1);
+    });
+
+    it("takes into account the maximum age", () => {
+      const multiplier = ageMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds:
+            BigInt(nowSeconds) - maxNeuronAge - 200n,
+        },
+        snsParameters,
+      });
+      expect(multiplier).toEqual(1.25);
+    });
+
+    it("returns the age multiplier", () => {
+      const multiplier = ageMultiplier({
+        neuron: {
+          ...mockSnsNeuron,
+          aging_since_timestamp_seconds:
+            BigInt(nowSeconds) - maxNeuronAge + 200n,
+        },
+        snsParameters,
+      });
+      expect(multiplier).toEqual(1.125);
     });
   });
 

@@ -5,6 +5,7 @@ import {
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import {
+  bonusMultiplier,
   votingPower,
   type CompactNeuronInfo,
   type IneligibleNeuronData,
@@ -698,6 +699,62 @@ export const snsNeuronVotingPower = ({
   // Rounding to avoid RangeError when converting to BigInt
   // (voting power is similar to e8s therefore rounding should not decrease accuracy)
   return Math.round(vp * (Number(voting_power_percentage_multiplier) / 100));
+};
+
+export const dissolveDelayMultiplier = ({
+  neuron,
+  snsParameters: {
+    neuron_minimum_dissolve_delay_to_vote_seconds,
+    max_dissolve_delay_seconds,
+    max_dissolve_delay_bonus_percentage,
+  },
+}: {
+  neuron: SnsNeuron;
+  snsParameters: SnsNervousSystemParameters;
+}): number => {
+  const neuronMinimumDissolveDelayToVoteSeconds = fromDefinedNullable(
+    neuron_minimum_dissolve_delay_to_vote_seconds
+  );
+  const maxDissolveDelaySeconds = fromDefinedNullable(
+    max_dissolve_delay_seconds
+  );
+  const maxDissolveDelayBonusPercentage = fromDefinedNullable(
+    max_dissolve_delay_bonus_percentage
+  );
+  const dissolveDelayInSeconds = getSnsDissolveDelaySeconds(neuron) ?? 0n;
+  const dissolveDelay =
+    dissolveDelayInSeconds < maxDissolveDelaySeconds
+      ? dissolveDelayInSeconds
+      : maxDissolveDelaySeconds;
+
+  if (dissolveDelay < neuronMinimumDissolveDelayToVoteSeconds) {
+    return 0;
+  }
+
+  return bonusMultiplier({
+    amount: dissolveDelay,
+    multiplier: Number(maxDissolveDelayBonusPercentage) / 100,
+    max: Number(maxDissolveDelaySeconds),
+  });
+};
+
+export const ageMultiplier = ({
+  neuron,
+  snsParameters: { max_neuron_age_for_age_bonus, max_age_bonus_percentage },
+}: {
+  neuron: SnsNeuron;
+  snsParameters: SnsNervousSystemParameters;
+}): number => {
+  const maxAgeBonusPercentage = fromDefinedNullable(max_age_bonus_percentage);
+  const maxNeuronAgeForAgeBonus = fromDefinedNullable(
+    max_neuron_age_for_age_bonus
+  );
+
+  return bonusMultiplier({
+    amount: neuronAge(neuron),
+    multiplier: Number(maxAgeBonusPercentage) / 100,
+    max: Number(maxNeuronAgeForAgeBonus),
+  });
 };
 
 /** Returns the reason or undefined when the neuron is eligible to vote. */

@@ -36,10 +36,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
+* Render SNS neuron voting power in neuron detail page.
 
 #### Changed
 
+* Simplify rust cache expiry with `pop_first()`.
 * Disable functionality buttons while SNS neuron is vesting.
+* Updated `bitcoin-canister` revision for proposal payload support.
 * Ignore sign-in "error" `UserInterrupt`.
 
 #### Deprecated
@@ -51,10 +54,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Enable voting for proposals that are decided but still accepting votes.
 * Title of Ledger device transaction when staking two neurons on a row.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 ### Operations
 
 #### Added
+#### Security
+#### Not Published
+
+* Progress on merge neurons preview, behind a flag.
+
+### Operations
+
+#### Added
+- A script to get the WASM hash from the GitHub CI build log.
+- `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 
 * Added a command line tool to get the arguments of a canister upgrade proposal, for verification purposes.
 * Publish the arguments used in every release.
@@ -71,6 +85,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
 * Increased timeout on end-to-end tests running on CI.
 
+- Consolidated the config tests.
+- Made per-network configuration in dfx.json optional.
+- Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
+- Increased timeout on end-to-end tests running on CI.
+- Set a custom URL for `internet_identity` on `ic` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
+- Copied the newest version of clap.bash from snsdemo.
+
+#### Deprecated
 #### Removed
 
 * Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
@@ -78,6 +101,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Script to download WASM from CI no longer relies on broken `gh --status` flag.
+- Script to download WASM from CI no longer relies on broken `gh --status` flag.
+* ci-link script uses correct workflow name.
+#### Security
 
 ## Proposal 123245
 
