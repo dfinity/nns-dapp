@@ -822,7 +822,7 @@ impl AccountsStore {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
 
                 let mut index_to_remove: Option<usize> = None;
-                for (index,c) in account.canisters.iter().enumerate() {
+                for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
                         return AttachCanisterResponse::NameAlreadyTaken;
                     }
@@ -832,7 +832,8 @@ impl AccountsStore {
                         if c.name.is_empty() && !request.name.is_empty() {
                             index_to_remove = Some(index);
                         } else {
-                            return AttachCanisterResponse::CanisterAlreadyAttached;  // Note: It might be nice to tell the user the name of the existing canister.
+                            return AttachCanisterResponse::CanisterAlreadyAttached;
+                            // Note: It might be nice to tell the user the name of the existing canister.
                         }
                     }
                 }
