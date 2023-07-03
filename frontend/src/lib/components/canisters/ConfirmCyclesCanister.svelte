@@ -6,8 +6,10 @@
   import { convertIcpToTCycles } from "$lib/utils/token.utils";
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import { ICPToken } from "@dfinity/utils";
+  import { KeyValuePair } from "@dfinity/gix-components";
 
   export let amount: number;
+  export let name: string;
   export let account: Account;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
 
@@ -27,6 +29,10 @@
 </script>
 
 <div class="wrapper" data-tid="confirm-cycles-canister-screen">
+  <KeyValuePair>
+    <span slot="key">{$i18n.canisters.name}</span>
+    <span slot="value">{name}</span>
+  </KeyValuePair>
   <p class="conversion">
     <span
       ><span class="value"

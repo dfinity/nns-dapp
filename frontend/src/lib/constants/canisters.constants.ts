@@ -5,3 +5,6 @@ export const NEW_CANISTER_MIN_T_CYCLES = 2;
 
 // Workers
 export const SYNC_CYCLES_TIMER_INTERVAL = SECONDS_IN_MINUTE * 1000; // 1 minute
+
+// Constraint coming from the backend
+export const MAX_CANISTER_NAME_LENGTH = 24;

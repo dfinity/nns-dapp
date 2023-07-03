@@ -68,9 +68,11 @@ export const listCanisters = async ({
 export const createCanister = async ({
   amount,
   account,
+  name,
 }: {
   amount: number;
   account: Account;
+  name?: string;
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
@@ -84,6 +86,7 @@ export const createCanister = async ({
       identity,
       amount: icpAmount,
       fromSubAccount: account.subAccount,
+      name,
     });
     await listCanisters({ clearBeforeQuery: false });
     // We don't wait for `loadBalance` to finish to give a better UX to the user.

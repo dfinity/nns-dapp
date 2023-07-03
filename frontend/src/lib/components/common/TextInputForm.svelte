@@ -17,6 +17,7 @@
 >
   <div>
     <p class="label"><slot name="label" /></p>
+    <!-- TODO: Show (optional) error message when button is disabled -->
     <Input
       inputType="text"
       {placeholderLabelKey}
