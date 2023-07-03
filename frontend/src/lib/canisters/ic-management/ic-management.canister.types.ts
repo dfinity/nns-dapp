@@ -20,4 +20,5 @@ export interface CanisterDetails {
   cycles: bigint;
   settings: CanisterSettings;
   moduleHash?: ArrayBuffer;
+  idleCyclesBurnedPerDay: bigint;
 }
