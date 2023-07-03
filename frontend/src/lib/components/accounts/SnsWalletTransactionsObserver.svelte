@@ -9,7 +9,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
   import type { Account } from "$lib/types/account";
-  import { addObservedTransactionsToStore } from "$lib/services/observer.services";
+  import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 
   export let account: Account;
   export let completed: boolean;
@@ -29,7 +29,7 @@
       return;
     }
 
-    addObservedTransactionsToStore({
+    addObservedIcrcTransactionsToStore({
       universeId,
       completed,
       transactions,

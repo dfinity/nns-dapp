@@ -1,4 +1,4 @@
-import { addObservedTransactionsToStore } from "$lib/services/observer.services";
+import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { jsonReplacer } from "$lib/utils/json.utils";
 import {
@@ -35,7 +35,7 @@ describe("observer.services", () => {
 
     const oldestTxId = transaction.oldestTxId - 1n;
 
-    addObservedTransactionsToStore({
+    addObservedIcrcTransactionsToStore({
       universeId: rootCanisterIdMock,
       completed: true,
       transactions: [

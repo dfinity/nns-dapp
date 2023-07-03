@@ -6,7 +6,7 @@
   import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
   import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
   import { isNullish } from "@dfinity/utils";
-  import { addObservedTransactionsToStore } from "$lib/services/observer.services";
+  import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -25,7 +25,7 @@
       return;
     }
 
-    addObservedTransactionsToStore({
+    addObservedIcrcTransactionsToStore({
       universeId,
       completed,
       transactions,

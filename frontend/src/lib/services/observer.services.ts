@@ -3,7 +3,7 @@ import type { PostMessageDataResponseTransaction } from "$lib/types/post-message
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { jsonReviver } from "$lib/utils/json.utils";
 
-export const addObservedTransactionsToStore = ({
+export const addObservedIcrcTransactionsToStore = ({
   universeId,
   completed,
   transactions,
