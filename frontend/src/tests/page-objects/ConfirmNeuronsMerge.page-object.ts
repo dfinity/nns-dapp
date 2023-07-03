@@ -1,4 +1,5 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { NnsNeuronDetailCardPo } from "$tests/page-objects/NnsNeuronDetailCard.page-object";
 import { NnsNeuronInfoPo } from "$tests/page-objects/NnsNeuronInfo.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -20,6 +21,13 @@ export class ConfirmNeuronsMergePo extends BasePageObject {
     });
   }
 
+  getSourceNeuronDetailCardPo(): NnsNeuronDetailCardPo {
+    return NnsNeuronDetailCardPo.under({
+      element: this.root,
+      testId: "source-neuron-card",
+    });
+  }
+
   getTargetNeuronInfoPo(): NnsNeuronInfoPo {
     return NnsNeuronInfoPo.under({
       element: this.root,
@@ -27,14 +35,21 @@ export class ConfirmNeuronsMergePo extends BasePageObject {
     });
   }
 
+  getTargetNeuronDetailCardPo(): NnsNeuronDetailCardPo {
+    return NnsNeuronDetailCardPo.under({
+      element: this.root,
+      testId: "target-neuron-card",
+    });
+  }
+
   getSkeletonCardPo(): SkeletonCardPo {
     return SkeletonCardPo.under(this.root);
   }
 
-  getMergedNeuronInfoPo(): NnsNeuronInfoPo {
-    return NnsNeuronInfoPo.under({
+  getMergedNeuronDetailCardPo(): NnsNeuronDetailCardPo {
+    return NnsNeuronDetailCardPo.under({
       element: this.root,
-      testId: "merged-neuron-info",
+      testId: "merged-neuron-card",
     });
   }
 
@@ -43,11 +58,11 @@ export class ConfirmNeuronsMergePo extends BasePageObject {
   }
 
   getSourceNeuronId(): Promise<string> {
-    return this.getSourceNeuronInfoPo().getNeuronId();
+    return this.getSourceNeuronDetailCardPo().getNeuronId();
   }
 
   getTargetNeuronId(): Promise<string> {
-    return this.getTargetNeuronInfoPo().getNeuronId();
+    return this.getTargetNeuronDetailCardPo().getNeuronId();
   }
 
   hasMergeResultSection(): Promise<boolean> {
