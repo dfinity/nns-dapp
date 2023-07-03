@@ -25,7 +25,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("SnsWalletBalancesObserver", () => {
+describe("SnsBalancesObserver", () => {
   type BalancesMessageEvent = MessageEvent<
     PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
   >;
