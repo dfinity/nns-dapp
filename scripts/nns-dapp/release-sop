@@ -113,7 +113,7 @@ else
 
   BRANCH_NAME="$(execute git branch --show-current)"
 
-  if ! [[ "$BRANCH_NAME" =~ "$RELEASE_NAME_PATTERN" ]]; then
+  if ! [[ "$BRANCH_NAME" =~ $RELEASE_NAME_PATTERN ]]; then
     (
       echo "Current branch $BRANCH_NAME is not a release branch."
       echo "With --continue, go to the release branch first and try again."
