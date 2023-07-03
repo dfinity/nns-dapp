@@ -83,11 +83,24 @@ jest.mock("$lib/services/ckbtc-info.services", () => {
 
 jest.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: jest.fn(() =>
+      Promise.resolve({
+        startBalancesTimer: () => {
+          // Do nothing
+        },
+        stopBalancesTimer: () => {
+          // Do nothing
+        },
+      })
+  ),
+}));
+
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
     Promise.resolve({
-      startBalancesTimer: () => {
+      startTransactionsTimer: () => {
         // Do nothing
       },
-      stopBalancesTimer: () => {
+      stopTransactionsTimer: () => {
         // Do nothing
       },
     })

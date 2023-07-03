@@ -34,6 +34,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
+* Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
 #### Not Published
