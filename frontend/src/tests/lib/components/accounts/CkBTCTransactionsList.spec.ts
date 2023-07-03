@@ -27,6 +27,19 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
   };
 });
 
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("CkBTCTransactionList", () => {
   const renderCkBTCTransactionList = () =>
     render(CkBTCTransactionsList, {

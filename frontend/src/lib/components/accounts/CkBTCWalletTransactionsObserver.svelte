@@ -1,27 +1,23 @@
 <script lang="ts">
-  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    snsOnlyProjectStore,
-    snsProjectSelectedStore,
-  } from "$lib/derived/sns/sns-selected-project.derived";
-  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+  import type { CanisterId } from "$lib/types/canister";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
   import type { Account } from "$lib/types/account";
+  import type { TransactionsObserverData } from "$lib/types/icrc.observer";
+  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+  import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
+  import { isNullish } from "@dfinity/utils";
   import { addObservedTransactionsToStore } from "$lib/services/observer.services";
 
+  export let indexCanisterId: CanisterId;
+  export let universeId: UniverseCanisterId;
   export let account: Account;
   export let completed: boolean;
 
   let data: TransactionsObserverData | undefined;
-  $: data = nonNullish($snsProjectSelectedStore)
-    ? {
-        account,
-        indexCanisterId:
-          $snsProjectSelectedStore.summary.indexCanisterId.toText(),
-      }
-    : undefined;
+  $: data = {
+    account,
+    indexCanisterId: indexCanisterId.toText(),
+  };
 
   const callback: TransactionsCallback = ({ transactions }) => {
     if (isNullish(universeId)) {
@@ -35,13 +31,8 @@
       transactions,
     });
   };
-
-  let universeId: UniverseCanisterId | undefined;
-  $: universeId = $snsOnlyProjectStore;
 </script>
 
-{#if nonNullish(data) && nonNullish(universeId)}
-  <IcrcTransactionsObserver {data} {callback}>
-    <slot />
-  </IcrcTransactionsObserver>
-{/if}
+<IcrcTransactionsObserver {data} {callback}>
+  <slot />
+</IcrcTransactionsObserver>
