@@ -15,6 +15,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
+  import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -69,17 +70,23 @@
 <div class="card-grid" data-tid="ckbtc-accounts-body">
   {#if loading}
     <SkeletonCard size="medium" />
-  {:else}
-    {#each accounts as account}
-      <AccountCard
-        role="link"
-        on:click={() => goToWallet(account)}
-        hash
-        {account}
-        token={token?.token}>{account.name ?? $i18n.accounts.main}</AccountCard
-      >
-    {/each}
+  {:else if nonNullish($selectedCkBTCUniverseIdStore)}
+    <CkBTCBalancesObserver
+      {accounts}
+      universeId={$selectedCkBTCUniverseIdStore}
+    >
+      {#each accounts as account}
+        <AccountCard
+          role="link"
+          on:click={() => goToWallet(account)}
+          hash
+          {account}
+          token={token?.token}
+          >{account.name ?? $i18n.accounts.main}</AccountCard
+        >
+      {/each}
 
-    <CkBTCWithdrawalAccount />
+      <CkBTCWithdrawalAccount />
+    </CkBTCBalancesObserver>
   {/if}
 </div>

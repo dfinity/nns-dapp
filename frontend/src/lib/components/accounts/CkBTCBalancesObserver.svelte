@@ -14,20 +14,18 @@
   const callback: BalancesCallback = ({ balances }) => {
     const accounts = balances
       .map(({ balance, accountIdentifier }) => {
-        const selectedAccount = $icrcAccountsStore[universeId.toText()].accounts?.find(
-          ({ identifier }) => identifier === accountIdentifier
-        );
+        const selectedAccount = $icrcAccountsStore[
+          universeId.toText()
+        ].accounts?.find(({ identifier }) => identifier === accountIdentifier);
 
         return nonNullish(selectedAccount)
-          ? {
+          ? ({
               ...selectedAccount,
               balanceE8s: balance,
-            } as Account
+            } as Account)
           : undefined;
       })
       .filter(nonNullish);
-
-    console.log(accounts)
 
     icrcAccountsStore.update({
       accounts: {
@@ -39,8 +37,6 @@
 
     reload?.();
   };
-
-  $: console.log('HERRE', $icrcAccountsStore)
 
   let data: BalancesObserverData;
   $: data = {
