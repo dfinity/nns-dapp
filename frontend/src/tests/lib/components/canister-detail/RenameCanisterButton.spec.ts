@@ -2,21 +2,21 @@
  * @jest-environment jsdom
  */
 
+import RenameCanisterButton from "$lib/components/canister-detail/RenameCanisterButton.svelte";
 import { RenameCanisterButtonPo } from "$tests/page-objects/RenameCanisterButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import RenameCanisterButtonTest from "./RenameCanisterButtonTest.svelte";
 
 describe("RenameCanisterButton", () => {
   it("emits rename canister modal event", (done) => {
-    const { container, component } = render(RenameCanisterButtonTest);
+    const { container } = render(RenameCanisterButton);
 
     const po = RenameCanisterButtonPo.under({
       element: new JestPageObjectElement(container),
     });
 
-    component.$on("nnsCanisterDetailModal", (data: CustomEvent) => {
-      expect(data.detail).toEqual({ type: "rename" });
+    window.addEventListener("nnsCanisterDetailModal", (event: CustomEvent) => {
+      expect(event.detail).toEqual({ type: "rename" });
       done();
     });
 
