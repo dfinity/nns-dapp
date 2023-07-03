@@ -915,7 +915,7 @@ impl AccountsStore {
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
 
             // We only attach if it doesn't already exist
-            if let None = Self::find_canister_index(account, canister_id) {
+            if Self::find_canister_index(account, canister_id).is_none() {
                 account.canisters.push(NamedCanister {
                     name: "".to_string(),
                     canister_id,
