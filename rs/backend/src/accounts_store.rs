@@ -820,23 +820,30 @@ impl AccountsStore {
 
             if self.accounts.get(&account_identifier.to_vec()).is_some() {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-                if account.canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded;
-                }
 
-                for c in account.canisters.iter() {
+                let mut index_to_remove: Option<usize> = None;
+                for (index,c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
                         return AttachCanisterResponse::NameAlreadyTaken;
-                    } else if c.canister_id == request.canister_id && !c.name.is_empty() {
-                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
+                    // The periodic_task_runner might attach the canister before this call.
+                    // The canister attached by the periodic_task_runner has name `""`
+                    if c.canister_id == request.canister_id {
+                        if c.name.is_empty() && !request.name.is_empty() {
+                            index_to_remove = Some(index);
+                        } else {
+                            return AttachCanisterResponse::CanisterAlreadyAttached;  // Note: It might be nice to tell the user the name of the existing canister.
+                        }
                     }
                 }
 
-                // The periodic_task_runner might attach the canister before this call.
-                // The canister attached by the periodic_task_runner has name `""`
-                if let Some(index) = Self::find_canister_index(account, request.canister_id) {
+                if let Some(index) = index_to_remove {
                     // Remove the previous attached canister before reattaching.
                     account.canisters.remove(index);
+                }
+
+                if account.canisters.len() >= u8::MAX as usize {
+                    return AttachCanisterResponse::CanisterLimitExceeded;
                 }
                 account.canisters.push(NamedCanister {
                     name: request.name,
