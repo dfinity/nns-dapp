@@ -3,6 +3,7 @@
   import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
   import TestIdWrapper from "./TestIdWrapper.svelte";
+  import { Html } from "@dfinity/gix-components";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -21,11 +22,18 @@
     | "hash"
     | "string"
     | "symbol"
+    | "base64Encoding"
     | "undefined";
   const getValueType = (value: unknown): ValueType => {
     if (value === null) return "null";
     if (isPrincipal(value)) return "principal";
     if (Array.isArray(json) && isHash(json)) return "hash";
+    // not null was already checked above
+    if (
+      typeof value === "object" &&
+      Object.keys(value as object)[0] === "base64Encoding"
+    )
+      return "base64Encoding";
     return typeof value;
   };
 
@@ -43,7 +51,11 @@
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
-    value = isExpandable ? json : stringifyJson(json);
+    value = isExpandable
+      ? json
+      : valueType === "base64Encoding"
+      ? (json as { [key: string]: unknown })["base64Encoding"]
+      : stringifyJson(json);
     keyLabel = `${_key}${_key.length > 0 ? ": " : ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -103,6 +115,14 @@
     <!-- no childre -->
     <span data-tid={testId} class="key" class:root
       >{keyLabel}<span class="bracket">{openBracket} {closeBracket}</span></span
+    >
+  {:else if valueType === "base64Encoding"}
+    <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
+    <span data-tid={testId} class="key-value">
+      {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+        >{/if}<Html
+        text={`<img class="value ${valueType}" alt="${_key}" src="${value}" />`}
+      /></span
     >
   {:else}
     <!-- key:value -->
