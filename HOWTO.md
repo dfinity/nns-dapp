@@ -6,7 +6,7 @@ There are parts that usually change in a proposal:
 - A new proposal topic.
 - A new `nnsFunction` or changes in one.
 
-The change is not always just in one section. Many times you need to fix two sections simulataneously. For example, a new topic comes with a new `nnsFunction`.
+The change is not always just in one section. Many times you need to fix two sections simultaneously. For example, a new topic comes with a new `nnsFunction`.
 
 ## New Action
 
