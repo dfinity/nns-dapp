@@ -803,6 +803,15 @@ impl AccountsStore {
         }
     }
 
+    fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
+        account
+            .canisters
+            .iter()
+            .enumerate()
+            .find(|(_, canister)| canister.canister_id == canister_id)
+            .map(|(index, _)| index)
+    }
+
     pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
         if !Self::validate_canister_name(&request.name) {
             AttachCanisterResponse::NameTooLong
@@ -811,35 +820,43 @@ impl AccountsStore {
 
             if self.accounts.get(&account_identifier.to_vec()).is_some() {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-                if account.canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded;
-                }
-                for c in account.canisters.iter() {
+
+                let mut index_to_remove: Option<usize> = None;
+                for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
                         return AttachCanisterResponse::NameAlreadyTaken;
-                    } else if c.canister_id == request.canister_id {
-                        return AttachCanisterResponse::CanisterAlreadyAttached;
                     }
+                    // The periodic_task_runner might attach the canister before this call.
+                    // The canister attached by the periodic_task_runner has name `""`
+                    if c.canister_id == request.canister_id {
+                        if c.name.is_empty() && !request.name.is_empty() {
+                            index_to_remove = Some(index);
+                        } else {
+                            return AttachCanisterResponse::CanisterAlreadyAttached;
+                            // Note: It might be nice to tell the user the name of the existing canister.
+                        }
+                    }
+                }
+
+                if let Some(index) = index_to_remove {
+                    // Remove the previous attached canister before reattaching.
+                    account.canisters.remove(index);
+                }
+
+                if account.canisters.len() >= u8::MAX as usize {
+                    return AttachCanisterResponse::CanisterLimitExceeded;
                 }
                 account.canisters.push(NamedCanister {
                     name: request.name,
                     canister_id: request.canister_id,
                 });
                 account.canisters.sort();
+
                 AttachCanisterResponse::Ok
             } else {
                 AttachCanisterResponse::AccountNotFound
             }
         }
-    }
-
-    fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
-        account
-            .canisters
-            .iter()
-            .enumerate()
-            .find(|(_, canister)| canister.canister_id == canister_id)
-            .map(|(index, _)| index)
     }
 
     pub fn rename_canister(&mut self, caller: PrincipalId, request: RenameCanisterRequest) -> RenameCanisterResponse {
@@ -904,11 +921,15 @@ impl AccountsStore {
 
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            account.canisters.push(NamedCanister {
-                name: "".to_string(),
-                canister_id,
-            });
-            account.canisters.sort();
+
+            // We only attach if it doesn't already exist
+            if Self::find_canister_index(account, canister_id).is_none() {
+                account.canisters.push(NamedCanister {
+                    name: "".to_string(),
+                    canister_id,
+                });
+                account.canisters.sort();
+            }
         }
     }
 
