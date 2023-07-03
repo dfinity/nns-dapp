@@ -19,7 +19,7 @@ export class RenameCanisterModalPo extends BasePageObject {
     });
   }
 
-  enterNewName(name: string): Promise<void> {
+  enterName(name: string): Promise<void> {
     return this.getTextInputFormPo().enterText(name);
   }
 

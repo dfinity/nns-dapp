@@ -36,7 +36,7 @@ describe("RenameCanisterModal", () => {
     const newName = "new name";
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 
-    po.enterNewName(newName);
+    po.enterName(newName);
 
     po.clickRenameButton();
 
@@ -47,12 +47,13 @@ describe("RenameCanisterModal", () => {
       name: newName,
       identity: mockIdentity,
     });
+    expect(canisterApi.renameCanister).toBeCalledTimes(1);
   });
 
   it("shows disabled button when input is empty", async () => {
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 
-    po.enterNewName("");
+    po.enterName("");
 
     await runResolvedPromises();
 
