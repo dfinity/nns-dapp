@@ -26,9 +26,7 @@ export class CanisterDetailPo extends BasePageObject {
   }
 
   async renameCanister(newName: string): Promise<void> {
-    await this.getRenameCanisterModalPo().enterName(newName);
-    await this.getRenameCanisterModalPo().clickRenameButton();
-    await this.getRenameCanisterModalPo().waitForAbsent();
+    await this.getRenameCanisterModalPo().rename(newName);
   }
 
   async getCanisterTitle(): Promise<string> {

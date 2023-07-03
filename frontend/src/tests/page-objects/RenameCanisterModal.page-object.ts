@@ -30,4 +30,10 @@ export class RenameCanisterModalPo extends BasePageObject {
   clickRenameButton(): Promise<void> {
     return this.getTextInputFormPo().clickSubmitButton();
   }
+
+  async rename(newName: string): Promise<void> {
+    await this.enterName(newName);
+    await this.clickRenameButton();
+    await this.waitForAbsent();
+  }
 }
