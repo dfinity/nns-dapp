@@ -1,0 +1,25 @@
+{
+  "args": [
+    "--new"
+  ],
+  "behavior": [
+    {
+      "command": "date +%Y-%m-%d",
+      "stdout": "2001-02-29",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git show-ref --quiet --verify refs/heads/Release-2001-02-29",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Branch Release-2001-02-29 already exists.",
+    "Specify a different branch name with --new --name <name>,",
+    "or use --continue to continue with an existing release branch."
+  ],
+  "expectedExitCode": 1
+}

@@ -1,0 +1,11 @@
+{
+  "args": [
+    "--new",
+    "--continue"
+  ],
+  "behavior": [ ],
+  "expectedOutput": [
+    "Cannot specify both --new and --continue"
+  ],
+  "expectedExitCode": 1
+}

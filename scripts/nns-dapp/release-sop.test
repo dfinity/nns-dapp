@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+
+test_with_data() {
+  json_file="$SOURCE_DIR/$1.json"
+  expectedExitCode="$(jq -r '.expectedExitCode' "$json_file")"
+  expectedOutput="$(jq -r '.expectedOutput[]' "$json_file")"
+
+  mapfile -t args < <(jq -r '.args[]' "$json_file")
+
+  set +e
+  actualOutput="$("$SOURCE_DIR/release-sop" "${args[@]}" --mock-json "$json_file" 2>&1)"
+  actualExitCode="$?"
+  set -e
+
+  if ! diff <(echo "$actualOutput") <(echo "$expectedOutput"); then
+    (
+      echo "ERROR: actual output differs from expected output. See diff above."
+      echo "FAILED: $1"
+    ) >&2
+    exit 1
+  fi
+
+  if [ "$actualExitCode" != "$expectedExitCode" ]; then
+    echo "Expected exit code $expectedExitCode, got $actualExitCode" >&2
+    echo "FAILED: $1"
+    exit 1
+  fi
+
+  echo "PASSED: $1"
+}
+
+test_with_data "release-sop-test-no-args"
+test_with_data "release-sop-test-new-and-continue"
+test_with_data "release-sop-test-invalid-name"
+test_with_data "release-sop-test-branch-exists"
+test_with_data "release-sop-test-uncommitted-changes"
+test_with_data "release-sop-test-continue-with-name"
+test_with_data "release-sop-test-continue-invalid-branch"
+test_with_data "release-sop-test-successful-release"
+# This relies on the checklist from the release-sop-test-successful-release
+test_with_data "release-sop-test-continue-after-success"
