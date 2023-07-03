@@ -23,8 +23,6 @@ describe("canisters-worker-api", () => {
     idle_cycles_burned_per_day: 300n,
   };
 
-  const MockHttpAgent = jest.fn();
-
   beforeEach(async () => {
     jest.resetAllMocks();
 
