@@ -55,6 +55,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Increased timeout on end-to-end tests running on CI.
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
+- Copied the newest version of clap.bash from snsdemo.
 
 #### Deprecated
 #### Removed
