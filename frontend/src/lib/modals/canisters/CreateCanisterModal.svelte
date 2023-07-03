@@ -26,6 +26,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -88,7 +89,7 @@
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
-      if (name.length > 0) {
+      if (nonNullish(name) && name.length > 0) {
         toastsShow({
           level: "success",
           labelKey: "canisters.create_canister_success_name",
@@ -125,12 +126,14 @@
     {/if}
     {#if currentStep?.name === "SelectName"}
       <TextInputForm
-        testId="create-canister-add-name"
+        testId="create-canister-name-form"
         placeholderLabelKey="canisters.name"
         on:nnsConfirmText={goNext}
         on:nnsClose={modal.back}
         bind:text={name}
-        disabledConfirm={name.length >= MAX_CANISTER_NAME_LENGTH}
+        disabledConfirm={nonNullish(name) &&
+          name.length >= MAX_CANISTER_NAME_LENGTH}
+        required={false}
       >
         <svelte:fragment slot="label"
           >{$i18n.canisters.enter_name_label}</svelte:fragment

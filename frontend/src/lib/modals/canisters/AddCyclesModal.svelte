@@ -59,6 +59,8 @@
   let amount: number | undefined;
   let canisterId: Principal | undefined;
   $: canisterId = $store.info?.canister_id;
+  let canisterName: string | undefined;
+  $: canisterName = $store.info?.name;
 
   const onSelectAccount = ({
     detail,
@@ -149,6 +151,7 @@
         {account}
         {icpToCyclesExchangeRate}
         {amount}
+        name={canisterName}
         on:nnsClose
         on:nnsBack={modal.back}
         on:nnsConfirm={addCycles}

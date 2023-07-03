@@ -7,6 +7,7 @@
   export let busy = false;
   export let disabledConfirm = false;
   export let testId: string | undefined = undefined;
+  export let required = true;
 
   const dispatcher = createEventDispatcher();
 </script>
@@ -24,6 +25,7 @@
       name="add-text-input"
       bind:value={text}
       disabled={busy}
+      {required}
     />
   </div>
 
