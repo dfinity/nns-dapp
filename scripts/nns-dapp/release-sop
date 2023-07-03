@@ -24,10 +24,10 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=n long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
-clap.define short=c long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
-clap.define short=b long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
-clap.define short=m long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
+clap.define long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
+clap.define long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
+clap.define long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
+clap.define long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
 # Source the output file ------------------------------------------------------
 source "$(clap.build)"
 
@@ -69,10 +69,12 @@ branch_exists() {
   execute git show-ref --quiet --verify "refs/heads/${branch_name}"
 }
 
+RELEASE_NAME_PATTERN="^Release-[0-9]{4}-[0-9]{2}-[0-9]{2}"
+
 if [ "$IS_NEW_RELEASE" = "true" ]; then
   if [ -z "${BRANCH_NAME:-}" ]; then
     BRANCH_NAME="Release-$(execute date +%Y-%m-%d)"
-  elif ! [[ "$BRANCH_NAME" =~ ^Release-....-..-.. ]]; then
+  elif ! [[ "$BRANCH_NAME" =~ "$RELEASE_NAME_PATTERN" ]]; then
     (
       echo "Release name must start with Release-YYYY-MM-DD"
     ) >&2
@@ -111,7 +113,7 @@ else
 
   BRANCH_NAME="$(execute git branch --show-current)"
 
-  if ! [[ "$BRANCH_NAME" =~ ^Release-....-..-.. ]]; then
+  if ! [[ "$BRANCH_NAME" =~ "$RELEASE_NAME_PATTERN" ]]; then
     (
       echo "Current branch $BRANCH_NAME is not a release branch."
       echo "With --continue, go to the release branch first and try again."
