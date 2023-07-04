@@ -98,6 +98,14 @@ describe("LinkCanisterModal", () => {
       component: LinkCanisterModal,
     });
 
+    const inputElement = container.querySelector("input[name='principal']");
+    expect(inputElement).not.toBeNull();
+
+    inputElement &&
+      (await fireEvent.input(inputElement, {
+        target: { value: "aaaaa-aa" },
+      }));
+
     const nameInputElement = container.querySelector(
       "input[name='canister-name']"
     );

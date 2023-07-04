@@ -9,9 +9,12 @@
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let principal: Principal | undefined;
   let name = "";
+  let errorMessage: string | undefined = undefined;
+  $: errorMessage = errorCanisterNameMessage(name);
 
   const dispatcher = createEventDispatcher();
   const attach = async () => {
@@ -65,7 +68,7 @@
         placeholderLabelKey="canisters.name"
         name="canister-name"
         required={false}
-        errorMessage={errorCanisterNameMessage(name)}
+        {errorMessage}
       >
         <svelte:fragment slot="label"
           >{$i18n.canisters.enter_name_label}</svelte:fragment
@@ -86,7 +89,7 @@
         data-tid="link-canister-button"
         class="primary"
         type="submit"
-        disabled={principal === undefined || $busy}
+        disabled={principal === undefined || $busy || nonNullish(errorMessage)}
       >
         {$i18n.core.confirm}
       </button>
