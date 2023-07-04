@@ -12,6 +12,7 @@ import { toastsShow } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
+  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
 import { mockCanister } from "$tests/mocks/canisters.mock";
@@ -45,13 +46,17 @@ describe("CreateCanisterModal", () => {
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should display modal", () => {
     const { container } = render(CreateCanisterModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should create a canister from ICP and close modal", async () => {
+  const testCreateCanister = async (canisterName: string) => {
     const {
       queryByTestId,
       queryAllByTestId,
@@ -71,6 +76,21 @@ describe("CreateCanisterModal", () => {
 
     fireEvent.click(accountCards[0]);
 
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+
+    if (canisterName.length > 0) {
+      const nameInputElement = queryByTestId("input-ui-element");
+      nameInputElement &&
+        (await fireEvent.input(nameInputElement, {
+          target: { value: canisterName },
+        }));
+    }
+
+    await clickByTestId(queryByTestId, "confirm-text-input-screen-button");
+
     // Select Amount Screen
     await waitFor(() =>
       expect(queryByTestId("select-cycles-screen")).toBeInTheDocument()
@@ -83,9 +103,10 @@ describe("CreateCanisterModal", () => {
     const icpInputElement = container.querySelector('input[name="icp-amount"]');
     expect(icpInputElement).not.toBeNull();
 
+    const icpAmount = 2;
     icpInputElement &&
       (await fireEvent.input(icpInputElement, {
-        target: { value: 2 },
+        target: { value: icpAmount },
       }));
     icpInputElement && (await fireEvent.blur(icpInputElement));
 
@@ -98,14 +119,30 @@ describe("CreateCanisterModal", () => {
       ).toBeInTheDocument()
     );
 
+    if (canisterName.length > 0) {
+      expect(queryByText(canisterName)).toBeInTheDocument();
+    }
+
     const done = jest.fn();
     component.$on("nnsClose", done);
 
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
-    expect(createCanister).toBeCalled();
+    expect(createCanister).toBeCalledWith({
+      name: canisterName,
+      amount: icpAmount,
+      account: mockMainAccount,
+    });
     expect(toastsShow).toBeCalled();
+  };
+
+  it("should create a canister from ICP and close modal", async () => {
+    testCreateCanister("best dapp ever");
+  });
+
+  it("should create canister without name", async () => {
+    testCreateCanister("");
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.
@@ -137,6 +174,13 @@ describe("CreateCanisterModal", () => {
     expect(accountCards.length).toBe(2);
 
     fireEvent.click(accountCards[0]);
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+
+    await clickByTestId(queryByTestId, "confirm-text-input-screen-button");
 
     // Select Amount Screen
     await waitFor(() =>

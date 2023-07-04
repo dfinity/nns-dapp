@@ -28,6 +28,7 @@
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsNeuronVotingPower from "./SnsNeuronVotingPower.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
@@ -86,6 +87,8 @@
 
       <SnsNeuronVestingPeriodRemaining {neuron} />
 
+      <SnsNeuronVotingPower {neuron} {parameters} {token} />
+
       <div class="buttons">
         {#if allowedToSplit}
           <SplitSnsNeuronButton
@@ -104,6 +107,14 @@
 
 <style lang="scss">
   .content-cell-details {
+    gap: var(--padding-1_5x);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
     gap: var(--padding-1_5x);
   }
 </style>

@@ -1,6 +1,5 @@
-import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
-import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { TicketStatus } from "$lib/types/sale";
 import type {
@@ -90,9 +89,7 @@ const mapOptionalMetadata = ({
   // We have to check if the logo is a png asset for security reasons.
   // Default logo can be svg.
   return {
-    logo: isPngAsset(nullishLogo)
-      ? nullishLogo
-      : (DEFAULT_SNS_LOGO as PngDataUrl),
+    logo: isPngAsset(nullishLogo) ? nullishLogo : DEFAULT_SNS_LOGO,
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,

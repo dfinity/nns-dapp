@@ -147,6 +147,17 @@ export const idlFactory = ({ IDL }) => {
     HardwareWalletLimitExceeded: IDL.Null,
     NameTooLong: IDL.Null,
   });
+  const RenameCanisterRequest = IDL.Record({
+    name: IDL.Text,
+    canister_id: IDL.Principal,
+  });
+  const RenameCanisterResponse = IDL.Variant({
+    Ok: IDL.Null,
+    CanisterNotFound: IDL.Null,
+    AccountNotFound: IDL.Null,
+    NameAlreadyTaken: IDL.Null,
+    NameTooLong: IDL.Null,
+  });
   const RenameSubAccountRequest = IDL.Record({
     new_name: IDL.Text,
     account_identifier: AccountIdentifier,
@@ -168,6 +179,11 @@ export const idlFactory = ({ IDL }) => {
     attach_canister: IDL.Func(
       [AttachCanisterRequest],
       [AttachCanisterResponse],
+      []
+    ),
+    rename_canister: IDL.Func(
+      [RenameCanisterRequest],
+      [RenameCanisterResponse],
       []
     ),
     create_sub_account: IDL.Func([IDL.Text], [CreateSubAccountResponse], []),

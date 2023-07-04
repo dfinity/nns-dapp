@@ -96,6 +96,26 @@ export const attachCanister = async ({
   logWithTimestamp("Attaching canister call complete.");
 };
 
+export const renameCanister = async ({
+  identity,
+  name,
+  canisterId,
+}: {
+  identity: Identity;
+  name: string;
+  canisterId: Principal;
+}): Promise<void> => {
+  logWithTimestamp("Renaming canister call...");
+  const { nnsDapp } = await canisters(identity);
+
+  await nnsDapp.renameCanister({
+    name,
+    canisterId,
+  });
+
+  logWithTimestamp("Renaming canister call complete.");
+};
+
 export const updateSettings = async ({
   identity,
   settings,

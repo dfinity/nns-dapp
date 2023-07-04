@@ -413,12 +413,16 @@ interface I18nCanisters {
   add_canister: string;
   create_canister_title: string;
   create_canister_subtitle: string;
-  create_canister_success: string;
+  create_canister_success_id: string;
+  create_canister_success_name: string;
   link_canister_title: string;
   link_canister_subtitle: string;
   link_canister_success: string;
   enter_canister_id: string;
   canister_id: string;
+  enter_name: string;
+  enter_name_label: string;
+  name: string;
   enter_amount: string;
   review_create_canister: string;
   t_cycles: string;
@@ -441,6 +445,7 @@ interface I18nCanister_detail {
   top_up_canister: string;
   top_up_successful: string;
   unlink: string;
+  rename: string;
   confirm_unlink_title: string;
   confirm_unlink_description_1: string;
   confirm_unlink_description_2: string;
@@ -450,11 +455,15 @@ interface I18nCanister_detail {
   confirm_remove_controller_user_description_2: string;
   confirm_remove_last_controller_description: string;
   unlink_success: string;
+  rename_success: string;
   confirm_new_controller: string;
   enter_controller: string;
   edit_controller: string;
   new_controller: string;
   add_controller: string;
+  rename_canister: string;
+  rename_canister_title: string;
+  rename_canister_placeholder: string;
   status_stopped: string;
   status_stopping: string;
   status_running: string;
@@ -710,6 +719,7 @@ interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
   vesting_period_tooltip: string;
+  voting_power_tooltip_with_stake: string;
   community_fund_section: string;
   community_fund_section_description: string;
   add_hotkey_info: string;
@@ -1086,6 +1096,7 @@ interface I18nActions {
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
+  CreateServiceNervousSystem: string;
 }
 
 interface I18nActions_description {
@@ -1100,6 +1111,7 @@ interface I18nActions_description {
   Motion: string;
   SetSnsTokenSwapOpenTimeWindow: string;
   OpenSnsTokenSwap: string;
+  CreateServiceNervousSystem: string;
 }
 
 interface I18nNns_functions {

@@ -63,9 +63,7 @@
 
     {#if neuron.votingPower}
       <KeyValuePairInfo testId="voting-power">
-        <svelte:fragment slot="key"
-          >{$i18n.neurons.voting_power}</svelte:fragment
-        >
+        <svelte:fragment slot="key">{$i18n.neurons.voting_power}</svelte:fragment>
         <span class="value" slot="value" data-tid="voting-power-value"
           >{formatVotingPower(neuron.votingPower)}</span
         >
@@ -75,6 +73,7 @@
               text={replacePlaceholders(
                 $i18n.neuron_detail.voting_power_tooltip_with_stake,
                 {
+                  $token: "ICP",
                   $stake: formatToken({
                     value: neuron.fullNeuron.cachedNeuronStake,
                     detailed: true,

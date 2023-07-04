@@ -3,42 +3,45 @@
   import { nonNullish } from "@dfinity/utils";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
-  import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
   import type { Account } from "$lib/types/account";
-  import type { CanisterId } from "$lib/types/canister";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 
-  export let rootCanisterId: CanisterId;
-  export let ledgerCanisterId: CanisterId;
-  export let account: Account;
+  export let universeId: UniverseCanisterId;
+  export let accounts: Account[];
+  export let reload: (() => void) | undefined = undefined;
 
   const callback: BalancesCallback = ({ balances }) => {
     const accounts = balances
       .map(({ balance, accountIdentifier }) => {
-        const selectedAccount = $snsProjectAccountsStore?.find(
-          ({ identifier }) => identifier === accountIdentifier
-        );
+        const selectedAccount = $icrcAccountsStore[
+          universeId.toText()
+        ].accounts?.find(({ identifier }) => identifier === accountIdentifier);
 
         return nonNullish(selectedAccount)
-          ? {
+          ? ({
               ...selectedAccount,
               balanceE8s: balance,
-            }
+            } as Account)
           : undefined;
       })
       .filter(nonNullish);
 
-    snsAccountsStore.updateAccounts({
-      accounts,
-      rootCanisterId: rootCanisterId,
-      certified: true,
+    icrcAccountsStore.update({
+      accounts: {
+        accounts,
+        certified: $icrcAccountsStore[universeId.toText()].certified,
+      },
+      universeId,
     });
+
+    reload?.();
   };
 
   let data: BalancesObserverData;
   $: data = {
-    account,
-    ledgerCanisterId: ledgerCanisterId.toText(),
+    accounts,
+    ledgerCanisterId: universeId.toText(),
   };
 </script>
 
