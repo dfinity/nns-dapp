@@ -63,7 +63,9 @@
 
     {#if neuron.votingPower}
       <KeyValuePairInfo testId="voting-power">
-        <svelte:fragment slot="key">{$i18n.neurons.voting_power}</svelte:fragment>
+        <svelte:fragment slot="key"
+          >{$i18n.neurons.voting_power}</svelte:fragment
+        >
         <span class="value" slot="value" data-tid="voting-power-value"
           >{formatVotingPower(neuron.votingPower)}</span
         >
