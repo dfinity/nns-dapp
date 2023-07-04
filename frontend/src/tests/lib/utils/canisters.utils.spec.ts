@@ -1,4 +1,5 @@
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import {
   canisterStatusToText,
   errorCanisterNameMessage,
@@ -184,6 +185,9 @@ describe("canister-utils", () => {
 
     it("returns undefined if valid canister name", () => {
       expect(errorCanisterNameMessage("My favorite dapp")).toBeUndefined();
+      expect(
+        errorCanisterNameMessage("a".repeat(MAX_CANISTER_NAME_LENGTH))
+      ).toBeUndefined();
     });
 
     it("returns an error message if canister name longer than max", () => {
@@ -191,6 +195,9 @@ describe("canister-utils", () => {
         errorCanisterNameMessage(
           "My favorite dapp with a super duper long name"
         )
+      ).toBe("Canister name too long. Maximum of 24 characters allowed.");
+      expect(
+        errorCanisterNameMessage("a".repeat(MAX_CANISTER_NAME_LENGTH + 1))
       ).toBe("Canister name too long. Maximum of 24 characters allowed.");
     });
   });

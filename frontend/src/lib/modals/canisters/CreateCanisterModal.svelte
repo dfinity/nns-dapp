@@ -133,7 +133,7 @@
         on:nnsClose={modal.back}
         bind:text={name}
         disabledConfirm={nonNullish(name) &&
-          name.length >= MAX_CANISTER_NAME_LENGTH}
+          name.length > MAX_CANISTER_NAME_LENGTH}
         errorMessage={errorCanisterNameMessage(name)}
         required={false}
       >

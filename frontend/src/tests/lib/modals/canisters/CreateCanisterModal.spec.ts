@@ -59,6 +59,26 @@ describe("CreateCanisterModal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
+  const selectAccountGoToNameForm = async ({
+    queryAllByTestId,
+    queryByTestId,
+  }) => {
+    // Wait for the onMount to load the conversion rate
+    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
+    // wait to update local variable with conversion rate
+    await tick();
+
+    const accountCards = queryAllByTestId("account-card");
+    expect(accountCards.length).toBe(2);
+
+    fireEvent.click(accountCards[0]);
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+  };
+
   const testCreateCanister = async (canisterName: string) => {
     const {
       queryByTestId,
@@ -69,15 +89,7 @@ describe("CreateCanisterModal", () => {
     } = await renderModal({
       component: CreateCanisterModal,
     });
-    // Wait for the onMount to load the conversion rate
-    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
-    // wait to update local variable with conversion rate
-    await tick();
-
-    const accountCards = queryAllByTestId("account-card");
-    expect(accountCards.length).toBe(2);
-
-    fireEvent.click(accountCards[0]);
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
 
     // Enter Name Screen
     await waitFor(() =>
@@ -168,20 +180,8 @@ describe("CreateCanisterModal", () => {
     const { queryByTestId, queryAllByTestId } = await renderModal({
       component: CreateCanisterModal,
     });
-    // Wait for the onMount to load the conversion rate
-    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
-    // wait to update local variable with conversion rate
-    await tick();
 
-    const accountCards = queryAllByTestId("account-card");
-    expect(accountCards.length).toBe(2);
-
-    fireEvent.click(accountCards[0]);
-
-    // Enter Name Screen
-    await waitFor(() =>
-      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
-    );
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
 
     const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
     const nameInputElement = queryByTestId("input-ui-element");
@@ -193,6 +193,25 @@ describe("CreateCanisterModal", () => {
     expect(
       queryByTestId("confirm-text-input-screen-button").getAttribute("disabled")
     ).not.toBeNull();
+  });
+
+  it("should have enabled button when creating a canister with name maximum allowed", async () => {
+    const { queryByTestId, queryAllByTestId } = await renderModal({
+      component: CreateCanisterModal,
+    });
+
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+
+    const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
+    const nameInputElement = queryByTestId("input-ui-element");
+    nameInputElement &&
+      (await fireEvent.input(nameInputElement, {
+        target: { value: longName },
+      }));
+
+    expect(
+      queryByTestId("confirm-text-input-screen-button").getAttribute("disabled")
+    ).toBeNull();
   });
 
   it("should have disabled button when creating canister with less T Cycles than minimum", async () => {

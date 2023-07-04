@@ -61,7 +61,7 @@
     busy={$busy}
     disabledConfirm={$busy ||
       (nonNullish(currentName) &&
-        currentName?.length >= MAX_CANISTER_NAME_LENGTH)}
+        currentName.length > MAX_CANISTER_NAME_LENGTH)}
     errorMessage={errorCanisterNameMessage(currentName)}
     required={false}
   >

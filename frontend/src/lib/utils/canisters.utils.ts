@@ -80,7 +80,7 @@ export const mapCanisterId = (canisterId: CanisterId | string): CanisterId =>
   typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;
 
 export const errorCanisterNameMessage = (name: string | undefined) => {
-  if (nonNullish(name) && name?.length >= MAX_CANISTER_NAME_LENGTH) {
+  if (nonNullish(name) && name.length > MAX_CANISTER_NAME_LENGTH) {
     const i18nObj = get(i18n);
     return replacePlaceholders(
       i18nObj.canister_detail.canister_name_error_too_long,
