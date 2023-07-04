@@ -404,7 +404,7 @@
     "link_canister_title": "Link Canister To Account",
     "link_canister_subtitle": "Enter the id of a canister, to top up its cycles",
     "link_canister_success": "The canister ($canisterId) was linked successfully",
-    "enter_canister_id": "Enter Canister ID:",
+    "enter_canister_id": "Enter Canister ID",
     "canister_id": "Canister ID",
     "enter_name": "Enter Canister Name",
     "enter_name_label": "Enter Canister Name (optional)",
