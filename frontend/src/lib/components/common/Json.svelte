@@ -171,6 +171,7 @@
     // compensate click area
     transform: translateX(calc(-1 * var(--padding-0_5x)));
     min-width: var(--padding);
+    text-align: left;
 
     display: inline-block;
     position: relative;
@@ -235,5 +236,8 @@
   }
   .value.boolean {
     color: var(--json-boolean-color);
+  }
+  :global(.value.base64Encoding) {
+    vertical-align: top;
   }
 </style>
