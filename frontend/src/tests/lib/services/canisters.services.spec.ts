@@ -18,6 +18,7 @@ import { canistersStore } from "$lib/stores/canisters.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
@@ -121,9 +122,16 @@ describe("canisters-services", () => {
 
   describe("attachCanister", () => {
     it("should call api to attach canister and list canisters again", async () => {
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await attachCanister({
+        canisterId: mockCanisters[0].canister_id,
+        name: mockCanisters[0].name,
+      });
       expect(response.success).toBe(true);
-      expect(spyAttachCanister).toBeCalled();
+      expect(spyAttachCanister).toBeCalledWith({
+        canisterId: mockCanisters[0].canister_id,
+        name: mockCanisters[0].name,
+        identity: mockIdentity,
+      });
       expect(spyQueryCanisters).toBeCalled();
 
       const store = get(canistersStore);
@@ -133,7 +141,9 @@ describe("canisters-services", () => {
     it("should not attach canister if no identity", async () => {
       setNoIdentity();
 
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await attachCanister({
+        canisterId: mockCanisterDetails.id,
+      });
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();
