@@ -1,7 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TextInputWithErrorPo } from "./TextInputWithError.page-object copy";
 
 export class TextInputFormPo extends BasePageObject {
   static under({
@@ -14,10 +14,14 @@ export class TextInputFormPo extends BasePageObject {
     return new TextInputFormPo(element.byTestId(testId));
   }
 
-  getTextInputPo(): TextInputPo {
-    return TextInputPo.under({
+  getTextInputPo(): TextInputWithErrorPo {
+    return TextInputWithErrorPo.under({
       element: this.root,
     });
+  }
+
+  hasTextInput(): Promise<boolean> {
+    return this.getTextInputPo().isPresent();
   }
 
   enterText(text: string): Promise<void> {
@@ -31,7 +35,15 @@ export class TextInputFormPo extends BasePageObject {
     });
   }
 
+  hasConfirmButton(): Promise<boolean> {
+    return this.getConfirmButtonPo().isPresent();
+  }
+
   clickSubmitButton(): Promise<void> {
     return this.getConfirmButtonPo().click();
+  }
+
+  getErrorMessage(): Promise<string | null> {
+    return this.getTextInputPo().getErrorMessage();
   }
 }

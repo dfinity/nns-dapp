@@ -58,7 +58,7 @@
     on:nnsClose
     bind:text={currentName}
     placeholderLabelKey="canister_detail.rename_canister_placeholder"
-    busy={$busy}
+    disabledInput={$busy}
     disabledConfirm={$busy ||
       (nonNullish(currentName) &&
         currentName.length > MAX_CANISTER_NAME_LENGTH)}
