@@ -8,12 +8,26 @@ export class SetDissolveDelayPo extends BasePageObject {
     return new SetDissolveDelayPo(element.byTestId(SetDissolveDelayPo.TID));
   }
 
+  getUpdateButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "go-confirm-delay-button",
+    });
+  }
+
+  getMaxButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "max-button",
+    });
+  }
+
   clickUpdate(): Promise<void> {
-    return this.click("go-confirm-delay-button");
+    return this.getUpdateButtonPo().click();
   }
 
   clickMax(): Promise<void> {
-    return this.click("max-button");
+    return this.getMaxButtonPo().click();
   }
 
   clickSkip() {
