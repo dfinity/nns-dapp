@@ -1,6 +1,8 @@
+diff --git a/rs/nns/governance/canister/canister.rs b/rs/nns/governance/canister/canister.rs
+index afa63abc4d..592001b222 100644
 --- a/rs/nns/governance/canister/canister.rs
 +++ b/rs/nns/governance/canister/canister.rs
-@@ -727,6 +727,15 @@ fn get_network_economics_parameters_() -> NetworkEconomics {
+@@ -761,6 +761,15 @@ fn get_network_economics_parameters_() -> NetworkEconomics {
  
  #[export_name = "canister_heartbeat"]
  fn canister_heartbeat() {
@@ -17,10 +19,10 @@
  
      // canister_heartbeat must be synchronous, so we cannot .await the future
 diff --git a/rs/nns/governance/src/governance.rs b/rs/nns/governance/src/governance.rs
-index 329e56bef..2f2d8f826 100644
+index fa7b768750..1622eb50d7 100644
 --- a/rs/nns/governance/src/governance.rs
 +++ b/rs/nns/governance/src/governance.rs
-@@ -81,7 +81,7 @@ const MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO: f64 = 0.03;
+@@ -110,7 +110,7 @@ const MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO: f64 = 0.03;
  
  // Parameter of the wait for quiet algorithm. This is the maximum amount the
  // deadline can be delayed on each vote.
@@ -30,11 +32,11 @@ index 329e56bef..2f2d8f826 100644
  // 1 KB - maximum payload size of NNS function calls to keep in listing of
  // proposals
 diff --git a/rs/nns/cmc/src/main.rs b/rs/nns/cmc/src/main.rs
-index 2c02d80dc..5a6072dc7 100644
+index 7122c46871..71b2c5bc29 100644
 --- a/rs/nns/cmc/src/main.rs
 +++ b/rs/nns/cmc/src/main.rs
-@@ -95,7 +95,7 @@ struct State {
- impl State {
+@@ -229,7 +229,7 @@ impl State {
+ impl Default for State {
      fn default() -> Self {
          let resolution = Duration::from_secs(60);
 -        let max_age = Duration::from_secs(60 * 60);
@@ -42,7 +44,7 @@ index 2c02d80dc..5a6072dc7 100644
  
          Self {
              ledger_canister_id: CanisterId::ic_00(),
-@@ -320,6 +320,7 @@ fn get_icp_xdr_conversion_rate_() {
+@@ -796,6 +796,7 @@ fn compute_average_icp_xdr_rate_at_time(
  
  #[export_name = "canister_update set_icp_xdr_conversion_rate"]
  fn set_icp_xdr_conversion_rate_() {
@@ -50,29 +52,11 @@ index 2c02d80dc..5a6072dc7 100644
      let caller = caller();
  
      assert_eq!(
-@@ -329,6 +330,7 @@ fn set_icp_xdr_conversion_rate_() {
+@@ -805,6 +806,7 @@ fn set_icp_xdr_conversion_rate_() {
          caller,
          "set_icp_xdr_conversion_rate"
      );
 +    */
  
-     let mut state = STATE.write().unwrap();
      over(
---- a/rs/nns/sns-wasm/src/sns_wasm.rs
-+++ b/rs/nns/sns-wasm/src/sns_wasm.rs
-@@ -484,6 +484,7 @@ where
-         deploy_new_sns_payload: DeployNewSnsRequest,
-         caller: PrincipalId,
-     ) -> DeployNewSnsResponse {
-+        /*
-         if !thread_safe_sns
-             .with(|sns_wasm| sns_wasm.borrow_mut().consume_caller_from_whitelist(&caller))
-         {
-@@ -492,6 +493,7 @@ where
-             )
-             .into();
-         }
-+        */
-         match Self::do_deploy_new_sns(thread_safe_sns, canister_api, deploy_new_sns_payload).await {
-             Ok((subnet_id, canisters)) => DeployNewSnsResponse {
-                 subnet_id: Some(subnet_id.get()),
+         candid_one,
