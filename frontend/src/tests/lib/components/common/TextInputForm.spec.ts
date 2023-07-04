@@ -69,6 +69,15 @@ describe("TextInputForm", () => {
     );
   });
 
+  it("should not render the error message", async () => {
+    const errorMessage = "This is a test error";
+    const { getByText } = render(TextInputForm, {
+      props: { ...mandatoryProps, errorMessage },
+    });
+
+    expect(getByText(errorMessage)).toBeInTheDocument();
+  });
+
   it("should trigger nnsClose when cancel is clicked", () => {
     const { getByTestId, component } = render(TextInputForm, {
       props: mandatoryProps,

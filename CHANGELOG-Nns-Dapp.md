@@ -12,12 +12,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Render SNS neuron voting power in neuron detail page.
-* Users can add a name when creating a new canister.
+* Users can now add names to canisters to easily identify them.
 
 #### Changed
 
 * Simplify rust cache expiry with `pop_first()`.
 * Updated `bitcoin-canister` revision for proposal payload support.
+* Improve proposal action rendering.
+* Allow renaming canister with empty string.
 
 #### Deprecated
 #### Removed

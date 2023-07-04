@@ -27,6 +27,7 @@
   } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -132,7 +133,8 @@
         on:nnsClose={modal.back}
         bind:text={name}
         disabledConfirm={nonNullish(name) &&
-          name.length >= MAX_CANISTER_NAME_LENGTH}
+          name.length > MAX_CANISTER_NAME_LENGTH}
+        errorMessage={errorCanisterNameMessage(name)}
         required={false}
       >
         <svelte:fragment slot="label"

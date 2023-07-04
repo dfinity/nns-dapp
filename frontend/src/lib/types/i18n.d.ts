@@ -456,6 +456,7 @@ interface I18nCanister_detail {
   confirm_remove_last_controller_description: string;
   unlink_success: string;
   rename_success: string;
+  canister_name_error_too_long: string;
   confirm_new_controller: string;
   enter_controller: string;
   edit_controller: string;

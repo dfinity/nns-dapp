@@ -22,7 +22,7 @@ describe("ProposalProposerActionsEntry", () => {
     const actionKey = "testKey";
     const po = renderComponent({
       actionKey,
-      actionFields: [],
+      actionData: {},
     });
 
     expect(await po.getActionTitle()).toBe(actionKey);
@@ -33,10 +33,12 @@ describe("ProposalProposerActionsEntry", () => {
     const value = "valueTest";
     const po = renderComponent({
       actionKey: "testKey",
-      actionFields: [[key, value]],
+      actionData: { [key]: value },
     });
 
-    expect(await po.getFieldsText()).toBe("keyTest valueTest ");
+    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
+      '{keyTest:"valueTest"}'
+    );
   });
 
   it("should render object fields as JSON", async () => {
@@ -46,28 +48,17 @@ describe("ProposalProposerActionsEntry", () => {
     const value2 = { key2: "value2" };
     const po = renderComponent({
       actionKey: "actionKey",
-      actionFields: [
-        [key, value],
-        [key2, value2],
-      ],
+      actionData: {
+        [key]: value,
+        [key2]: value2,
+      },
     });
 
     const jsonPos = await po.getJsonPos();
-    expect(jsonPos.length).toBe(2);
-    expect(await jsonPos[0].getText()).toEqual(' { key: "value"  }');
-    expect(await jsonPos[1].getText()).toEqual(' { key2: "value2"  }');
-  });
-
-  it("should not render text fields as json", async () => {
-    const key = "key";
-    const value = "value";
-
-    const po = renderComponent({
-      actionKey: "actionKey",
-      actionFields: [[key, value]],
-    });
-
-    expect((await po.getJsonPos()).length).toBe(0);
+    expect(jsonPos.length).toBe(1);
+    expect((await jsonPos[0].getText()).replaceAll(" ", "")).toEqual(
+      '{key:{key:"value"}key2:{key2:"value2"}}'
+    );
   });
 
   it("should render undefined fields as 'undefined' text'", async () => {
@@ -76,11 +67,11 @@ describe("ProposalProposerActionsEntry", () => {
 
     const po = renderComponent({
       actionKey: "actionKey",
-      actionFields: [[key, value]],
+      actionData: { [key]: value },
     });
 
-    expect(await po.getFieldsText()).toBe(
-      'key  { key: "value" anotherKey: undefined  } '
+    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
+      '{key:{key:"value"anotherKey:undefined}}'
     );
   });
 });
