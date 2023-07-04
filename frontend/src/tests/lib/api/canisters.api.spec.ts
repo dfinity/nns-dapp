@@ -249,6 +249,28 @@ describe("canisters-api", () => {
       expect(response).toEqual(mockCanisterDetails.id);
     });
 
+    it("should attach the canister if name max length", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
+      const response = await createCanister({
+        identity: mockIdentity,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
+        name: longName,
+      });
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: longName,
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
     it("should notify twice if the first call returns Processing", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyCreateCanister
