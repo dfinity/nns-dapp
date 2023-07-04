@@ -15,6 +15,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Users can add a name when creating a new canister.
 * Improve error management when renaming and creating canisters.
 * Add canister name validation in the canister api functions.
+* Users can link canisters with a name.
 
 #### Changed
 
