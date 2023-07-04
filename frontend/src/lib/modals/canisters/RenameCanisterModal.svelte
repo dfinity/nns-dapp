@@ -7,10 +7,12 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { createEventDispatcher, getContext } from "svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { renameCanister } from "$lib/services/canisters.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
 
   const { store }: CanisterDetailsContext = getContext<CanisterDetailsContext>(
     CANISTER_DETAILS_CONTEXT_KEY
@@ -57,9 +59,11 @@
     bind:text={currentName}
     placeholderLabelKey="canister_detail.rename_canister_placeholder"
     busy={$busy}
-    disabledConfirm={isNullish(currentName) ||
-      currentName?.length === 0 ||
-      $busy}
+    disabledConfirm={$busy ||
+      (nonNullish(currentName) &&
+        currentName.length > MAX_CANISTER_NAME_LENGTH)}
+    errorMessage={errorCanisterNameMessage(currentName)}
+    required={false}
   >
     <svelte:fragment slot="label"
       >{$i18n.canister_detail.rename_canister_title}</svelte:fragment
