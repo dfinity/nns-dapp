@@ -1,4 +1,6 @@
+import { NnsNeuronInfoStakePo } from "$tests/page-objects/NnsNeuronInfoStake.page-object";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
+import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -14,6 +16,14 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return SkeletonCardPo.allUnder(this.root);
   }
 
+  getNnsNeuronInfoStakePo(): NnsNeuronInfoStakePo {
+    return NnsNeuronInfoStakePo.under(this.root);
+  }
+
+  getNnsNeuronModalsPo(): NnsNeuronModalsPo {
+    return NnsNeuronModalsPo.under(this.root);
+  }
+
   async isContentLoaded(): Promise<boolean> {
     return (
       (await this.isPresent()) && (await this.getSkeletonCardPos()).length === 0
@@ -22,5 +32,12 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getMaturityCardPo(): NnsNeuronMaturityCardPo {
     return NnsNeuronMaturityCardPo.under(this.root);
+  }
+
+  async disburseNeuron(): Promise<void> {
+    await this.getNnsNeuronInfoStakePo().clickDisburse();
+    await this.getNnsNeuronModalsPo()
+      .getDisburseNnsNeuronModalPo()
+      .disburseNeuron();
   }
 }
