@@ -8,6 +8,7 @@
   import { createEventDispatcher } from "svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
 
   let principal: Principal | undefined;
   let name = "";
@@ -64,6 +65,7 @@
         placeholderLabelKey="canisters.name"
         name="canister-name"
         required={false}
+        errorMessage={errorCanisterNameMessage(name)}
       >
         <svelte:fragment slot="label"
           >{$i18n.canisters.enter_name_label}</svelte:fragment
@@ -81,7 +83,7 @@
         {$i18n.core.cancel}
       </button>
       <button
-        data-tid="add-principal-button"
+        data-tid="link-canister-button"
         class="primary"
         type="submit"
         disabled={principal === undefined || $busy}
