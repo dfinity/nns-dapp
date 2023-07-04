@@ -5,7 +5,10 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { CanisterAlreadyAttachedError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import {
+  CanisterAlreadyAttachedError,
+  CanisterNameTooLongError,
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   CanisterDetails as CanisterInfo,
   SubAccountArray,
@@ -15,6 +18,7 @@ import {
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -25,9 +29,14 @@ import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
-import { principalToSubAccount } from "@dfinity/utils";
+import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import { sendICP } from "./ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
+
+// This way, TS understands that if it's invalid, then the name is a string
+type LongName = string;
+const invalidName = (name: string | undefined): name is LongName =>
+  nonNullish(name) && name?.length > MAX_CANISTER_NAME_LENGTH;
 
 export const queryCanisters = async ({
   identity,
@@ -86,6 +95,13 @@ export const attachCanister = async ({
   canisterId: Principal;
 }): Promise<void> => {
   logWithTimestamp("Attaching canister call...");
+
+  if (invalidName(name)) {
+    throw new CanisterNameTooLongError("error__canister.name_too_long", {
+      $name: name,
+    });
+  }
+
   const { nnsDapp } = await canisters(identity);
 
   await nnsDapp.attachCanister({
@@ -194,6 +210,14 @@ export const createCanister = async ({
   fromSubAccount?: SubAccountArray;
 }): Promise<Principal> => {
   logWithTimestamp("Create canister call...");
+
+  // Failing fast here is specially important.
+  // Otherwise the transaction will take place and attaching the canister will fail.
+  if (invalidName(name)) {
+    throw new CanisterNameTooLongError("error__canister.name_too_long", {
+      $name: name,
+    });
+  }
 
   const { cmc, nnsDapp } = await canisters(identity);
   const principal = identity.getPrincipal();
