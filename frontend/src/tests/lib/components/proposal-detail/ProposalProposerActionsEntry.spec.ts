@@ -36,7 +36,9 @@ describe("ProposalProposerActionsEntry", () => {
       actionData: { [key]: value },
     });
 
-    expect((await po.getFieldsText()).replaceAll(' ', '')).toBe('{keyTest:"valueTest"}');
+    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
+      '{keyTest:"valueTest"}'
+    );
   });
 
   it("should render object fields as JSON", async () => {
@@ -54,7 +56,9 @@ describe("ProposalProposerActionsEntry", () => {
 
     const jsonPos = await po.getJsonPos();
     expect(jsonPos.length).toBe(1);
-    expect((await jsonPos[0].getText()).replaceAll(' ', '')).toEqual('{key:{key:"value"}key2:{key2:"value2"}}');
+    expect((await jsonPos[0].getText()).replaceAll(" ", "")).toEqual(
+      '{key:{key:"value"}key2:{key2:"value2"}}'
+    );
   });
 
   it("should render undefined fields as 'undefined' text'", async () => {
@@ -66,7 +70,7 @@ describe("ProposalProposerActionsEntry", () => {
       actionData: { [key]: value },
     });
 
-    expect((await po.getFieldsText()).replaceAll(' ', '')).toBe(
+    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
       '{key:{key:"value"anotherKey:undefined}}'
     );
   });
