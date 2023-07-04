@@ -35,7 +35,7 @@ import { nnsDappCanister } from "./nns-dapp.api";
 
 // This way, TS understands that if it's invalid, then the name is a string
 type LongName = string;
-const invalidName = (name: string | undefined): name is LongName =>
+const isNameTooLong = (name: string | undefined): name is LongName =>
   nonNullish(name) && name?.length > MAX_CANISTER_NAME_LENGTH;
 
 export const queryCanisters = async ({
@@ -96,7 +96,7 @@ export const attachCanister = async ({
 }): Promise<void> => {
   logWithTimestamp("Attaching canister call...");
 
-  if (invalidName(name)) {
+  if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
     });
@@ -123,7 +123,7 @@ export const renameCanister = async ({
 }): Promise<void> => {
   logWithTimestamp("Renaming canister call...");
 
-  if (invalidName(name)) {
+  if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
     });
@@ -220,7 +220,8 @@ export const createCanister = async ({
 
   // Failing fast here is specially important.
   // Otherwise the transaction will take place and attaching the canister will fail.
-  if (invalidName(name)) {
+  // Worst case, the NNS Dapp canister periodic runner will catch the transaction and attach the canister without a name.
+  if (isNameTooLong(name)) {
     throw new CanisterNameTooLongError("error__canister.name_too_long", {
       $name: name,
     });
