@@ -1,7 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { TextInputWithErrorPo } from "$tests/page-objects/TextInputWithError.page-object copy";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TextInputWithErrorPo } from "./TextInputWithError.page-object copy";
 
 export class TextInputFormPo extends BasePageObject {
   static under({

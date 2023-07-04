@@ -1,6 +1,6 @@
+import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TextInputPo } from "./TextInput.page-object";
 
 export class TextInputWithErrorPo extends SimpleBasePageObject {
   static TID = "input-with-error-compoment";
