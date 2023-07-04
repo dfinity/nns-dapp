@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Render SNS neuron voting power in neuron detail page.
 * Users can add a name when creating a new canister.
 * Improve error management when renaming and creating canisters.
+* Add canister name validation in the canister api functions.
 
 #### Changed
 

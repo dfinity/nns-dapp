@@ -122,6 +122,13 @@ export const renameCanister = async ({
   canisterId: Principal;
 }): Promise<void> => {
   logWithTimestamp("Renaming canister call...");
+
+  if (invalidName(name)) {
+    throw new CanisterNameTooLongError("error__canister.name_too_long", {
+      $name: name,
+    });
+  }
+
   const { nnsDapp } = await canisters(identity);
 
   await nnsDapp.renameCanister({

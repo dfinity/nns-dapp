@@ -126,6 +126,23 @@ describe("canisters-api", () => {
 
       expect(mockNNSDappCanister.renameCanister).toBeCalled();
     });
+
+    it("should fail to rename if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        renameCanister({
+          identity: mockIdentity,
+          canisterId: mockCanisterDetails.id,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockNNSDappCanister.renameCanister).not.toBeCalled();
+    });
   });
 
   describe("updateSettings", () => {
