@@ -7,6 +7,7 @@ import { attachCanister } from "$lib/services/canisters.services";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { nonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
@@ -30,26 +31,36 @@ describe("LinkCanisterModal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should attach a canister by id and close modal", async () => {
-    const { queryByTestId, container, component } = await renderModal({
-      component: LinkCanisterModal,
-    });
-
+  const fillForm = async ({ container, name, principalText }) => {
     const inputElement = container.querySelector("input[name='principal']");
     expect(inputElement).not.toBeNull();
 
     inputElement &&
       (await fireEvent.input(inputElement, {
-        target: { value: "aaaaa-aa" },
+        target: { value: principalText },
       }));
 
-    const nameInputElement = container.querySelector(
-      "input[name='canister-name']"
-    );
-    nameInputElement &&
-      (await fireEvent.input(nameInputElement, {
-        target: { value: "My fancy canister" },
-      }));
+    if (nonNullish(name)) {
+      const nameInputElement = container.querySelector(
+        "input[name='canister-name']"
+      );
+      nameInputElement &&
+        (await fireEvent.input(nameInputElement, {
+          target: { value: name },
+        }));
+    }
+  };
+
+  it("should attach a canister by id and close modal", async () => {
+    const { queryByTestId, container, component } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    await fillForm({
+      container,
+      name: "test",
+      principalText: "aaaaa-aa",
+    });
 
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
@@ -58,6 +69,21 @@ describe("LinkCanisterModal", () => {
     expect(attachCanister).toBeCalled();
 
     await waitFor(() => expect(onClose).toBeCalled());
+  });
+
+  it("should attach a canister by id if name is maximum length", async () => {
+    const { queryByTestId, container } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    await fillForm({
+      container,
+      name: "test",
+      principalText: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+    });
+
+    await clickByTestId(queryByTestId, "link-canister-button");
+    expect(attachCanister).toBeCalled();
   });
 
   it("should close modal on cancel", async () => {
@@ -77,13 +103,13 @@ describe("LinkCanisterModal", () => {
       component: LinkCanisterModal,
     });
 
-    const inputElement = container.querySelector("input[name='principal']");
-    expect(inputElement).not.toBeNull();
+    await fillForm({
+      container,
+      name: undefined,
+      principalText: "not-valid",
+    });
 
-    inputElement &&
-      (await fireEvent.input(inputElement, {
-        target: { value: "not-valid" },
-      }));
+    const inputElement = container.querySelector("input[name='principal']");
     inputElement && (await fireEvent.blur(inputElement));
 
     expect(queryByText(en.error.principal_not_valid)).toBeInTheDocument();
@@ -98,21 +124,15 @@ describe("LinkCanisterModal", () => {
       component: LinkCanisterModal,
     });
 
-    const inputElement = container.querySelector("input[name='principal']");
-    expect(inputElement).not.toBeNull();
-
-    inputElement &&
-      (await fireEvent.input(inputElement, {
-        target: { value: "aaaaa-aa" },
-      }));
+    await fillForm({
+      container,
+      name: "a".repeat(MAX_CANISTER_NAME_LENGTH + 1),
+      principalText: "aaaaa-aa",
+    });
 
     const nameInputElement = container.querySelector(
       "input[name='canister-name']"
     );
-    nameInputElement &&
-      (await fireEvent.input(nameInputElement, {
-        target: { value: "a".repeat(MAX_CANISTER_NAME_LENGTH + 1) },
-      }));
     nameInputElement && (await fireEvent.blur(nameInputElement));
 
     expect(
