@@ -3,6 +3,7 @@
  */
 
 import * as canisterApi from "$lib/api/canisters.api";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId, mockCanisters } from "$tests/mocks/canisters.mock";
@@ -50,10 +51,21 @@ describe("RenameCanisterModal", () => {
     expect(canisterApi.renameCanister).toBeCalledTimes(1);
   });
 
-  it("shows disabled button when input is empty", async () => {
+  it("shows enabled button when input is empty", async () => {
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 
     po.enterName("");
+
+    await runResolvedPromises();
+
+    expect(await po.getRenameButton().isDisabled()).toBe(false);
+  });
+
+  it("shows disabled button when input is longer than 24 characters", async () => {
+    const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+    const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
+
+    po.enterName(longName);
 
     await runResolvedPromises();
 

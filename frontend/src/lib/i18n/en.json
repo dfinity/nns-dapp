@@ -441,6 +441,7 @@
     "confirm_remove_last_controller_description": "This is the last remaining controller. If you remove it, nobody will be able to control the canister.",
     "unlink_success": "Canister successfully unlinked",
     "rename_success": "Canister successfully renamed to \"$name\"",
+    "canister_name_error_too_long": "Canister name too long. Maximum of $max characters allowed.",
     "confirm_new_controller": "Confirm New Controller",
     "enter_controller": "Enter Controller",
     "edit_controller": "Edit Controller",

@@ -1,7 +1,10 @@
 /**
  * @jest-environment jsdom
  */
-import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+import {
+  MAX_CANISTER_NAME_LENGTH,
+  NEW_CANISTER_MIN_T_CYCLES,
+} from "$lib/constants/canisters.constants";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
   createCanister,
@@ -159,6 +162,37 @@ describe("CreateCanisterModal", () => {
 
     expect(accountCards.length).toBe(2);
     expect(queryByText(mockHardwareWalletAccount.name as string)).toBeNull();
+  });
+
+  it("should have disabled button when creating a canister with name longer than maximum allowed", async () => {
+    const { queryByTestId, queryAllByTestId } = await renderModal({
+      component: CreateCanisterModal,
+    });
+    // Wait for the onMount to load the conversion rate
+    await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
+    // wait to update local variable with conversion rate
+    await tick();
+
+    const accountCards = queryAllByTestId("account-card");
+    expect(accountCards.length).toBe(2);
+
+    fireEvent.click(accountCards[0]);
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+
+    const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+    const nameInputElement = queryByTestId("input-ui-element");
+    nameInputElement &&
+      (await fireEvent.input(nameInputElement, {
+        target: { value: longName },
+      }));
+
+    expect(
+      queryByTestId("confirm-text-input-screen-button").getAttribute("disabled")
+    ).not.toBeNull();
   });
 
   it("should have disabled button when creating canister with less T Cycles than minimum", async () => {

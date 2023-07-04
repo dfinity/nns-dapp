@@ -1,6 +1,7 @@
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import {
   canisterStatusToText,
+  errorCanisterNameMessage,
   formatCyclesToTCycles,
   getCanisterFromStore,
   isController,
@@ -173,5 +174,24 @@ describe("canister-utils", () => {
       expect(canisterStatusToText(CanisterStatus.Running)).toEqual(
         en.canister_detail.status_running
       ));
+  });
+
+  describe("errorCanisterNameMessage", () => {
+    it("returns undefined if no canister name", () => {
+      expect(errorCanisterNameMessage(undefined)).toBeUndefined();
+      expect(errorCanisterNameMessage("")).toBeUndefined();
+    });
+
+    it("returns undefined if valid canister name", () => {
+      expect(errorCanisterNameMessage("My favorite dapp")).toBeUndefined();
+    });
+
+    it("returns an error message if canister name longer than max", () => {
+      expect(
+        errorCanisterNameMessage(
+          "My favorite dapp with a super duper long name"
+        )
+      ).toBe("Canister name too long. Maximum of 24 characters allowed.");
+    });
   });
 });
