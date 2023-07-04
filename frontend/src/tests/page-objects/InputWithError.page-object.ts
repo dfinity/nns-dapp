@@ -2,7 +2,7 @@ import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class TextInputWithErrorPo extends SimpleBasePageObject {
+export class InputWithErrorPo extends SimpleBasePageObject {
   static TID = "input-with-error-compoment";
 
   static under({
@@ -11,9 +11,9 @@ export class TextInputWithErrorPo extends SimpleBasePageObject {
   }: {
     element: PageObjectElement;
     testId?: string;
-  }): TextInputWithErrorPo {
-    return new TextInputWithErrorPo(
-      element.byTestId(testId ?? TextInputWithErrorPo.TID)
+  }): InputWithErrorPo {
+    return new InputWithErrorPo(
+      element.byTestId(testId ?? InputWithErrorPo.TID)
     );
   }
 
@@ -41,7 +41,7 @@ export class TextInputWithErrorPo extends SimpleBasePageObject {
 
   async getErrorMessage(): Promise<string | null> {
     return this.root.byTestId("input-error-message").isPresent()
-      ? (await this.root.byTestId("input-error-message").getText()).trim()
+      ? (await this.getText("input-error-message")).trim()
       : null;
   }
 }

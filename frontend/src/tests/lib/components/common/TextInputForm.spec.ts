@@ -28,13 +28,6 @@ describe("TextInputForm", () => {
     });
   };
 
-  it("should render an input and a button", async () => {
-    const po = renderComponent(mandatoryProps);
-
-    expect(await po.hasTextInput()).toBe(true);
-    expect(await po.hasConfirmButton()).toBe(true);
-  });
-
   it("should render text in the input field", async () => {
     const text = "test";
     const po = renderComponent({ ...mandatoryProps, text });
@@ -48,7 +41,7 @@ describe("TextInputForm", () => {
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
   });
 
-  it("should render a disabled input while busy", async () => {
+  it("should render a disabled input", async () => {
     const po = renderComponent({ ...mandatoryProps, disabledInput: true });
 
     expect(await po.getTextInputPo().isDisabled()).toBe(true);

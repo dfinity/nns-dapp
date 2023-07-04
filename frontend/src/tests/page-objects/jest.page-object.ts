@@ -70,11 +70,12 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async getValue() {
-    if (this.isInputElement(this.element)) {
-      return this.element.value;
+    if ("value" in this.element) {
+      // TS doesn't know that the "value" property is of type string
+      return this.element.value as string;
     }
     throw new Error(
-      "Element is not an input and doesn't have the value attribute"
+      `"value" property is not supported for element: "${this.element.tagName}"`
     );
   }
 
