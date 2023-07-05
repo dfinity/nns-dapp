@@ -39,7 +39,7 @@
   on:nnsClose={back}
   bind:text={newAccountName}
   placeholderLabelKey="accounts.new_linked_account_placeholder"
-  busy={$busy}
+  disabledInput={$busy}
   disabledConfirm={newAccountName.length === 0 || $busy}
 >
   <svelte:fragment slot="label"

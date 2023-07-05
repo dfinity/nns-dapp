@@ -4,7 +4,7 @@
 
   export let text: string | undefined = undefined;
   export let placeholderLabelKey: string;
-  export let busy = false;
+  export let disabledInput = false;
   export let disabledConfirm = false;
   export let errorMessage: string | undefined = undefined;
   export let testId: string | undefined = undefined;
@@ -24,7 +24,7 @@
       {placeholderLabelKey}
       name="add-text-input"
       bind:value={text}
-      disabled={busy}
+      disabled={disabledInput}
       {required}
       {errorMessage}
     />
