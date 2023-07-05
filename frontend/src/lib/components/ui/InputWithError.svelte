@@ -19,7 +19,7 @@
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
   export let showInfo = true;
-  export let testId: string | undefined = undefined;
+  export let testId = "input-with-error-compoment";
 </script>
 
 <div class="wrapper" data-tid={testId} class:error>
