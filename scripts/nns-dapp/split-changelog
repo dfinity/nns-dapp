@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xeuo pipefail
+set -euo pipefail
 
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
@@ -60,7 +60,7 @@ fi
 # Add 1 to start after the title.
 START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$OLD_CHANGELOG" | cut -d: -f1) + 1))"
 # Subtract 1 to end before the next title.
-END_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Proposal \d\+$' "$OLD_CHANGELOG" | cut -d: -f1) - 1))"
+END_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Proposal [0-9]\+$' "$OLD_CHANGELOG" | cut -d: -f1) - 1))"
 
 # Find which entries are new.
 PATCH="$(mktemp)"
@@ -76,7 +76,7 @@ sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$CHANGELOG"
 grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @' | sponge "$CHANGELOG"
 
 # Get proposal number from tags applied to same commit as prod tag
-PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-\d\+' | cut -d- -f2)"}"
+PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-[0-9]\+' | cut -d- -f2)"}"
 PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-XXXXXX}"
 
 # Append the tail of the old changelog with entries before the release was cut.
