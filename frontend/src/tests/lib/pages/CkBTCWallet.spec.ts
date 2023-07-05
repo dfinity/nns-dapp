@@ -248,11 +248,13 @@ describe("CkBTCWallet", () => {
     it("should update account after transfer tokens", async () => {
       const result = render(CkBTCAccountsTest, { props: modalProps });
 
-      const { queryByTestId, getByTestId } = result;
+      const { queryByTestId, getByTestId, container } = result;
 
       // Check original sum
       await waitFor(() =>
-        expect(getByTestId("token-value")?.textContent ?? "").toEqual(
+        expect(
+          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
+        ).toContain(
           `${formatToken({
             value: mockCkBTCMainAccount.balanceE8s,
             detailed: true,
@@ -277,9 +279,9 @@ describe("CkBTCWallet", () => {
 
       // Account should have been updated and sum should be reflected
       await waitFor(() =>
-        expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: expectedBalanceAfterTransfer })}`
-        )
+        expect(
+          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
+        ).toContain(`${formatToken({ value: expectedBalanceAfterTransfer })}`)
       );
     });
 
