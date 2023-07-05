@@ -46,7 +46,7 @@ sponge() {
 
 CHANGELOG_BASENAME="CHANGELOG-Nns-Dapp.md"
 
-TOP_DIR="$(git rev-parse --show-toplevel)" 
+TOP_DIR="$(git rev-parse --show-toplevel)"
 CHANGELOG="${CHANGELOG:-$TOP_DIR/$CHANGELOG_BASENAME}"
 
 if ! [ "${OLD_CHANGELOG:-}" ]; then
@@ -70,7 +70,7 @@ diff -u "$OLD_CHANGELOG" "$CHANGELOG" >"$PATCH" || true
 head -n "$END_OF_UNRELEASED_SECTION" "$OLD_CHANGELOG" >"$CHANGELOG"
 
 # Apply the new entries with an extra '+'.
-sed -e 's@^+[-*]@+&@' < "$PATCH" | patch "$CHANGELOG"
+sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$CHANGELOG"
 
 # Remove the entries that don't have the extra '+'.
 grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @' | sponge "$CHANGELOG"

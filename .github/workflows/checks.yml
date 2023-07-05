@@ -270,6 +270,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: scripts/nns-dapp/release-sop.test
+  split-changelog:
+    name: Test split-changelog script
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: scripts/nns-dapp/split-changelog.test
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags"]
     if: ${{ always() }}
