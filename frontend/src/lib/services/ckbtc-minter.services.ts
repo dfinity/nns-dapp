@@ -25,6 +25,7 @@ import {
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
+import {CKBTC_TRANSACTIONS_RELOAD_DELAY} from "$lib/constants/ckbtc.constants";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -121,7 +122,7 @@ export const updateBalance = async ({
     // Workaround. Ultimately we want to poll to update balance and list of transactions
     const delay = (time: number) =>
       new Promise((resolve) => setTimeout(resolve, time));
-    await delay(deferReload ? 4000 : 0);
+    await delay(deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0);
 
     uiIndicators &&
       toastsSuccess({

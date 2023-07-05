@@ -14,6 +14,7 @@ import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
+import {CKBTC_TRANSACTIONS_RELOAD_DELAY} from "$lib/constants/ckbtc.constants";
 
 jest.mock("$lib/api/ckbtc-minter.api", () => ({
   updateBalance: jest.fn().mockResolvedValue(undefined),
@@ -94,7 +95,7 @@ describe("CkBTCWalletActions", () => {
     await fireEvent.click(button as HTMLButtonElement);
 
     // wait for 4 seconds
-    await advanceTime(4000);
+    await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY);
 
     await waitFor(() => expect(spyReload).toHaveBeenCalled());
   });
