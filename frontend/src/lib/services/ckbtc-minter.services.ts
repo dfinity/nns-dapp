@@ -3,6 +3,7 @@ import {
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
+import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
@@ -13,6 +14,7 @@ import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
 import { toToastError } from "$lib/utils/error.utils";
+import { waitForMilliseconds } from "$lib/utils/utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -25,7 +27,6 @@ import {
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
-import {CKBTC_TRANSACTIONS_RELOAD_DELAY} from "$lib/constants/ckbtc.constants";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -120,9 +121,9 @@ export const updateBalance = async ({
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
 
     // Workaround. Ultimately we want to poll to update balance and list of transactions
-    const delay = (time: number) =>
-      new Promise((resolve) => setTimeout(resolve, time));
-    await delay(deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0);
+    await waitForMilliseconds(
+      deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0
+    );
 
     uiIndicators &&
       toastsSuccess({

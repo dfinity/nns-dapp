@@ -17,7 +17,8 @@
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
-  import {CKBTC_TRANSACTIONS_RELOAD_DELAY} from "$lib/constants/ckbtc.constants";
+  import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
+  import { waitForMilliseconds } from "$lib/utils/utils";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -54,9 +55,7 @@
     });
 
     // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
-    const delay = (time: number) =>
-      new Promise((resolve) => setTimeout(resolve, time));
-    await delay(CKBTC_TRANSACTIONS_RELOAD_DELAY);
+    await waitForMilliseconds(CKBTC_TRANSACTIONS_RELOAD_DELAY);
 
     await loadCkBTCAccountTransactions({
       account,
