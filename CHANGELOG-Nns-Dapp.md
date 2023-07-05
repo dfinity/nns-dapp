@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them.
+* Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
 
 #### Changed
 
