@@ -23,7 +23,8 @@
   export let account: Account;
   export let token: IcrcTokenMetadata | undefined;
 
-  let loading = true;
+  // Expose for test purpose only
+  export let loading = true;
 
   const loadNextTransactions = async () => {
     loading = true;
@@ -35,7 +36,7 @@
     loading = false;
   };
 
-  const reloadTransactions = async () => {
+  export const reloadTransactions = async () => {
     // If we are already loading transactions we do not want to double the calls
     if (loading) {
       return;
@@ -51,6 +52,11 @@
       accountIdentifier: account.identifier,
     });
 
+    // On mainnet, the ckBTC Index canister polls new transactions event two seconds. By waiting a bit more time, we optimistically try to fetch the new transaction the user just transferred.
+    const delay = (time: number) =>
+      new Promise((resolve) => setTimeout(resolve, time));
+    await delay(4000);
+
     await loadCkBTCAccountTransactions({
       account,
       canisterId: universeId,
@@ -61,8 +67,6 @@
   };
 
   onMount(loadNextTransactions);
-
-  $: account, (async () => reloadTransactions())();
 
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
