@@ -42,8 +42,12 @@
       "candid": "rs/backend/nns-dapp.did",
       "wasm": "nns-dapp.wasm.gz",
       "build": "./build.sh",
+      "url": {
+        "mainnet": "https://nns.internetcomputer.org"
+      },
       "remote": {
         "id": {
+          "app": "xnjld-hqaaa-aaaal-qb56q-cai",
           "ic": "qoctq-giaaa-aaaaa-aaaea-cai",
           "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"
         }
@@ -56,7 +60,7 @@
       "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
       "url": {
         "mainnet": "https://identity.internetcomputer.org/",
-        "ic": "https://identity.internetcomputer.org/"
+        "app": "https://identity.internetcomputer.org/"
       },
       "remote": {
         "id": {
@@ -135,6 +139,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "otgyv-wyaaa-aaaak-qcgba-cai",
           "mainnet": "3r4gx-wqaaa-aaaaq-aaaia-cai"
         }
       }
@@ -148,6 +153,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "mxzaz-hqaaa-aaaar-qaada-cai",
           "mainnet": "mxzaz-hqaaa-aaaar-qaada-cai"
         }
       }
@@ -161,6 +167,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "mqygn-kiaaa-aaaar-qaadq-cai",
           "mainnet": "mqygn-kiaaa-aaaar-qaadq-cai"
         }
       }
@@ -174,6 +181,7 @@
       "type": "custom",
       "remote": {
         "id": {
+          "app": "n5wcd-faaaa-aaaar-qaaea-cai",
           "mainnet": "n5wcd-faaaa-aaaar-qaaea-cai"
         }
       }
@@ -187,6 +195,7 @@
       "wasm": "TODO-deploy-tvl-testnet",
       "remote": {
         "id": {
+          "app": "ewh3f-3qaaa-aaaap-aazjq-cai",
           "mainnet": "ewh3f-3qaaa-aaaap-aazjq-cai"
         }
       }
@@ -198,7 +207,23 @@
         "FETCH_ROOT_KEY": false,
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
-        "OWN_CANISTER_URL": "https://nns.internetcomputer.org",
+        "FEATURE_FLAGS": {
+          "ENABLE_SNS_VOTING": true,
+          "ENABLE_SNS_AGGREGATOR": true,
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://icp-api.io/"
+      ],
+      "type": "persistent"
+    },
+    "app": {
+      "config": {
+        "FETCH_ROOT_KEY": false,
+        "API_HOST": "https://icp-api.io",
+        "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,

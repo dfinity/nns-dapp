@@ -51,6 +51,24 @@ describe("TextInputForm", () => {
     ).toBeTruthy();
   });
 
+  it("should render a required input by default", async () => {
+    const { getByTestId } = render(TextInputForm, {
+      props: { ...mandatoryProps },
+    });
+
+    expect(getByTestId("input-ui-element").hasAttribute("required")).toBe(true);
+  });
+
+  it("should not render a required input", async () => {
+    const { getByTestId } = render(TextInputForm, {
+      props: { ...mandatoryProps, required: false },
+    });
+
+    expect(getByTestId("input-ui-element").hasAttribute("required")).toBe(
+      false
+    );
+  });
+
   it("should trigger nnsClose when cancel is clicked", () => {
     const { getByTestId, component } = render(TextInputForm, {
       props: mandatoryProps,

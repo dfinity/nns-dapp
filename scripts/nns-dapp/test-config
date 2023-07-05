@@ -23,7 +23,7 @@ source "$(clap.build)"
 cd "$SOURCE_DIR/.."
 
 # shellcheck disable=SC2043
-for DFX_NETWORK in mainnet; do
+for DFX_NETWORK in mainnet app; do
   export DFX_NETWORK
 
   : "Create the config"
@@ -51,6 +51,6 @@ for DFX_NETWORK in mainnet; do
         exit 1
       } >&2
     done
-    echo "$(basename "$0") PASSED"
+    echo "$(basename "$0") for $DFX_NETWORK PASSED"
   fi
 done

@@ -1,0 +1,14 @@
+{
+  "args": [
+    "--continue",
+    "--name",
+    "Release-2001-02-29-v2"
+  ],
+  "behavior": [
+  ],
+  "expectedOutput": [
+    "--name can only be used with --new",
+    "With --continue, go to the release branch first and try again."
+  ],
+  "expectedExitCode": 1
+}

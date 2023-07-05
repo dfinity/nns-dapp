@@ -1,0 +1,9 @@
+{
+  "args": [
+  ],
+  "behavior": [ ],
+  "expectedOutput": [
+    "Must specify either --new or --continue"
+  ],
+  "expectedExitCode": 1
+}

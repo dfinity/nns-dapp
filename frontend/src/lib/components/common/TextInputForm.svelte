@@ -7,6 +7,7 @@
   export let busy = false;
   export let disabledConfirm = false;
   export let testId: string | undefined = undefined;
+  export let required = true;
 
   const dispatcher = createEventDispatcher();
 </script>
@@ -17,12 +18,14 @@
 >
   <div>
     <p class="label"><slot name="label" /></p>
+    <!-- TODO: Show (optional) error message when button is disabled -->
     <Input
       inputType="text"
       {placeholderLabelKey}
       name="add-text-input"
       bind:value={text}
       disabled={busy}
+      {required}
     />
   </div>
 
