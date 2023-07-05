@@ -8,13 +8,13 @@ import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
-import {CKBTC_TRANSACTIONS_RELOAD_DELAY} from "$lib/constants/ckbtc.constants";
 
 jest.mock("$lib/api/ckbtc-minter.api", () => ({
   updateBalance: jest.fn().mockResolvedValue(undefined),
