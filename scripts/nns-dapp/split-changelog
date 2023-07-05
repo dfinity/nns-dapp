@@ -31,7 +31,7 @@ source "$(clap.build)"
 # 3. Remove the entries without the extra '+'.
 # 4. Remove the extra '+' from the new entries.
 # 5. Append the old changelog starting at the Unreleased section but replace
-#    tht title with 'Proposal XXXXXX'.
+#    the title with 'Proposal XXXXXX'.
 # 6. Instead of 'XXXXXX' we use the proposal number if we can derive it from
 #    the tags on the commit.
 
