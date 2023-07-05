@@ -30,4 +30,5 @@ export interface PageObjectElement {
   click(): Promise<void>;
   typeText(text: string): Promise<void>;
   selectOption(option: string): Promise<void>;
+  getValue(): Promise<string>;
 }

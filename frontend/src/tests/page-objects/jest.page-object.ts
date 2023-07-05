@@ -65,6 +65,20 @@ export class JestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
+  private isInputElement(element: Element): element is HTMLInputElement {
+    return element.tagName === "INPUT";
+  }
+
+  async getValue() {
+    if ("value" in this.element) {
+      // TS doesn't know that the "value" property is of type string
+      return this.element.value as string;
+    }
+    throw new Error(
+      `"value" property is not supported for element: "${this.element.tagName}"`
+    );
+  }
+
   private getRootAndFullSelector(): {
     rootElement: Element;
     fullSelector: string;

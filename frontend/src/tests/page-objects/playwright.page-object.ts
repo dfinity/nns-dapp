@@ -63,6 +63,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     });
   }
 
+  getValue(): Promise<string> {
+    throw new Error("Not implement");
+  }
+
   getText(): Promise<string> {
     return this.locator.textContent();
   }

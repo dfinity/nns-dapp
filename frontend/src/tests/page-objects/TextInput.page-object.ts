@@ -25,4 +25,16 @@ export class TextInputPo extends SimpleBasePageObject {
   typeText(text: string): Promise<void> {
     return this.root.typeText(text);
   }
+
+  getValue(): Promise<string> {
+    return this.root.getValue();
+  }
+
+  async isDisabled(): Promise<boolean> {
+    return (await this.root.getAttribute("disabled")) !== null;
+  }
+
+  async isRequired(): Promise<boolean> {
+    return (await this.root.getAttribute("required")) !== null;
+  }
 }
