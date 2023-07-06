@@ -8,6 +8,7 @@ import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
@@ -94,7 +95,7 @@ describe("CkBTCWalletActions", () => {
     await fireEvent.click(button as HTMLButtonElement);
 
     // wait for 4 seconds
-    await advanceTime(4000);
+    await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY);
 
     await waitFor(() => expect(spyReload).toHaveBeenCalled());
   });

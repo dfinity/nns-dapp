@@ -1,5 +1,5 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
+import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,8 +14,8 @@ export class TextInputFormPo extends BasePageObject {
     return new TextInputFormPo(element.byTestId(testId));
   }
 
-  getTextInputPo(): TextInputPo {
-    return TextInputPo.under({
+  getTextInputPo(): InputWithErrorPo {
+    return InputWithErrorPo.under({
       element: this.root,
     });
   }
@@ -33,5 +33,9 @@ export class TextInputFormPo extends BasePageObject {
 
   clickSubmitButton(): Promise<void> {
     return this.getConfirmButtonPo().click();
+  }
+
+  getErrorMessage(): Promise<string | null> {
+    return this.getTextInputPo().getErrorMessage();
   }
 }

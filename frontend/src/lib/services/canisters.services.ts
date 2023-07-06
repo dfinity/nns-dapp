@@ -237,14 +237,19 @@ export const updateSettings = async ({
   }
 };
 
-export const attachCanister = async (
-  canisterId: Principal
-): Promise<{ success: boolean }> => {
+export const attachCanister = async ({
+  name,
+  canisterId,
+}: {
+  name?: string;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
   try {
     const identity = await getAuthenticatedIdentity();
     await attachCanisterApi({
       identity,
       canisterId,
+      name,
     });
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };

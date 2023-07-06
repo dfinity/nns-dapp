@@ -25,10 +25,16 @@ export class NnsNeuronsFooterPo extends BasePageObject {
     return this.getStakeNeuronsButtonPo().click();
   }
 
-  async stakeNeuron({ amount }: { amount: number }): Promise<void> {
+  async stakeNeuron({
+    amount,
+    dissolveDelayDays,
+  }: {
+    amount: number;
+    dissolveDelayDays: "max" | 0;
+  }): Promise<void> {
     await this.clickStakeNeuronsButton();
     const modal = this.getNnsStakeNeuronModalPo();
-    await modal.stake({ amount });
+    await modal.stake({ amount, dissolveDelayDays });
     await modal.waitForAbsent();
   }
 }
