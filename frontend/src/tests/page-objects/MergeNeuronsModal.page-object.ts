@@ -21,4 +21,19 @@ export class MergeNeuronsModalPo extends BasePageObject {
   getTitle(): Promise<string> {
     return this.getText("modal-title");
   }
+
+  async mergeNeurons({
+    sourceNeurondId,
+    targetNeuronId,
+  }: {
+    sourceNeurondId: string;
+    targetNeuronId: string;
+  }): Promise<void> {
+    await this.getSelectNeuronsToMergePo().selectNeurons({
+      sourceNeurondId,
+      targetNeuronId,
+    });
+    await this.getConfirmNeuronsMergePo().getConfirmMergeButtonPo().click();
+    await this.waitForAbsent();
+  }
 }
