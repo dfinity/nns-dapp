@@ -83,6 +83,13 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
+  async goToAccounts(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickAccounts();
+    // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
+  }
+
   async goToNeurons(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();

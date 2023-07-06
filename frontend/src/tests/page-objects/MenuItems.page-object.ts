@@ -9,6 +9,10 @@ export class MenuItemsPo extends BasePageObject {
     return new MenuItemsPo(element.byTestId(MenuItemsPo.TID));
   }
 
+  clickAccounts(): Promise<void> {
+    return this.click("menuitem-accounts");
+  }
+
   clickNeuronStaking(): Promise<void> {
     return this.click("menuitem-neurons");
   }
