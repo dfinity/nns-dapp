@@ -10,6 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
+- Shortened the patch files used when importing NNS types.
 ### Fixed
 ### Security
 ### Not Published
