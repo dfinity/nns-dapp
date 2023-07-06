@@ -3,8 +3,6 @@ set -xeuo pipefail
 
 # Test that no new entries are added to already released CHANGELOG sections.
 
-SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-
 CHANGELOG="CHANGELOG-Nns-Dapp.md"
 MAIN_ANCESTOR="$(git merge-base HEAD origin/main)"
 
