@@ -62,7 +62,7 @@ cd "$GIT_ROOT"
 	#![allow(non_camel_case_types)]
 	#![allow(dead_code)]
 
-	// use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 	use ic_cdk::api::call::CallResult;
 	use candid::Principal;
 	EOF
@@ -74,6 +74,7 @@ cd "$GIT_ROOT"
   #   - In the service definition, use CallResult instead of Result as the return type.
   #   - adds additional traits after Deserialize
   #   - Makes structures and their fields "pub"
+  #   - define_function! does not tolerate the trailing ,
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -87,7 +88,9 @@ cd "$GIT_ROOT"
             s/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
-            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;' |
+            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
+	    /define_function!/,/;/{s/,$//g}
+	    ' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"
 #if test -f "${PATCH_PATH}"; then
