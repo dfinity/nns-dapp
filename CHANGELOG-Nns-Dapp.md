@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them.
+* Nns voting e2e test.
 
 #### Changed
 
@@ -66,7 +67,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
-* Nns voting e2e test.
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add a name to their canisters after linking or creating them.
 
