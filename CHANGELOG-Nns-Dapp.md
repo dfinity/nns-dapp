@@ -15,6 +15,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Users can now add names to canisters to easily identify them within NNS dapp only.
 * Users can now add names to canisters to easily identify them.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+* Users can now add a name to their canisters after linking or creating them.
 
 #### Changed
 
@@ -69,7 +70,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
 * Render SNS neuron voting power in neuron detail page.
-* Users can now add a name to their canisters after linking or creating them.
 
 #### Changed
 
