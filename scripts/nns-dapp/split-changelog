@@ -25,15 +25,15 @@ clap.define long=test-proposal desc="An alternate proposal number for testing" v
 source "$(clap.build)"
 
 # The script does the following:
-# 1. Take the old changelog until the end of the Unreleased section.
+# 1. Make a copy of the old changelog file until the end of the Unreleased section.
 # 2. Apply the change that have been made since, but add an extra '+' at the
-#    start of new entries.
+#    start of new entries
 # 3. Remove the entries without the extra '+'.
 # 4. Remove the extra '+' from the new entries.
-# 5. Append the old changelog starting at the Unreleased section but replace
-#    the title with 'Proposal XXXXXX'.
-# 6. Instead of 'XXXXXX' we use the proposal number if we can derive it from
-#    the tags on the commit.
+# 5. Append the title "Proposal XXX" at the end of the file. The XXX is taken
+#    from the commit tag.
+# 6. Append the old changelog file below "Proposal XXX" starting at the
+#    Unreleased section.
 
 # Writes stdin to the given file, but only after reading all of stdin.
 # Polyfill because `sponge` is not available everywhere.
