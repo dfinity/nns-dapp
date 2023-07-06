@@ -4,7 +4,6 @@
   import { assertNonNullish, isNullish } from "@dfinity/utils";
 
   export let currentProposalId: bigint;
-  // Filtered proposal ids sorted in descending order
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
