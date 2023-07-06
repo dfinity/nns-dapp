@@ -63,6 +63,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+- foo
 * Periodically check for new transactions and updated balances of the SNS tokens/accounts.
 * Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
