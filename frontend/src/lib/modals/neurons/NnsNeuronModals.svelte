@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -37,52 +38,54 @@
 
 <svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
 
-{#if nonNullish(neuron)}
-  {#if type === "increase-dissolve-delay"}
-    <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
+<TestIdWrapper testId="nns-neuron-modals-component">
+  {#if nonNullish(neuron)}
+    {#if type === "increase-dissolve-delay"}
+      <IncreaseDissolveDelayModal {neuron} on:nnsClose={close} />
+    {/if}
+
+    {#if type === "split-neuron"}
+      <SplitNeuronModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "increase-stake"}
+      <IncreaseNeuronStakeModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "disburse"}
+      <DisburseNnsNeuronModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "dissolve"}
+      <DissolveActionButtonModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "stake-maturity"}
+      <NnsStakeMaturityModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "spawn"}
+      <SpawnNeuronModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "auto-stake-maturity"}
+      <NnsAutoStakeMaturityModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "join-community-fund"}
+      <JoinCommunityFundModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "follow"}
+      <FollowNeuronsModal on:nnsClose={close} neuronId={neuron.neuronId} />
+    {/if}
+
+    {#if type === "add-hotkey"}
+      <AddHotkeyModal on:nnsClose={close} {neuron} />
+    {/if}
   {/if}
 
-  {#if type === "split-neuron"}
-    <SplitNeuronModal on:nnsClose={close} {neuron} />
+  {#if type === "voting-history" && nonNullish(followee)}
+    <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
   {/if}
-
-  {#if type === "increase-stake"}
-    <IncreaseNeuronStakeModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "disburse"}
-    <DisburseNnsNeuronModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "dissolve"}
-    <DissolveActionButtonModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "stake-maturity"}
-    <NnsStakeMaturityModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "spawn"}
-    <SpawnNeuronModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "auto-stake-maturity"}
-    <NnsAutoStakeMaturityModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "join-community-fund"}
-    <JoinCommunityFundModal on:nnsClose={close} {neuron} />
-  {/if}
-
-  {#if type === "follow"}
-    <FollowNeuronsModal on:nnsClose={close} neuronId={neuron.neuronId} />
-  {/if}
-
-  {#if type === "add-hotkey"}
-    <AddHotkeyModal on:nnsClose={close} {neuron} />
-  {/if}
-{/if}
-
-{#if type === "voting-history" && nonNullish(followee)}
-  <VotingHistoryModal neuronId={followee.neuronId} on:nnsClose={close} />
-{/if}
+</TestIdWrapper>
