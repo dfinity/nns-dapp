@@ -276,7 +276,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          -fetch-depth: 0
+          - fetch-depth: 0
       - run: scripts/past-changelog-test
   checks-pass:
     needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "past-changelog"]
