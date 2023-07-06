@@ -83,7 +83,8 @@ cd "$GIT_ROOT"
     sed -E 's/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
-            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;'
+            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;
+	    /impl SERVICE/,${s/-> Result/-> CallResult/g}'
 } >"${RUST_PATH}"
 if test -f "${PATCH_PATH}"; then
   (
