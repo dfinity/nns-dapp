@@ -48,6 +48,8 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
+  let transactions: CkBTCTransactionsList;
+
   // e.g. is called from "Receive" modal after user click "Done"
   const reloadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -56,10 +58,22 @@
 
     await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
     await loadAccount($selectedCkBTCUniverseIdStore);
+
+    reloadTransactions();
   };
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
-  const reloadAccountFromStore = () => setSelectedAccount();
+  const reloadAccountFromStore = () => {
+    setSelectedAccount();
+    reloadTransactions();
+  };
+
+  const reloadOnlyAccountFromStore = () => setSelectedAccount();
+
+  // transactions?.reloadTransactions() returns a promise.
+  // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
+  // That is why we do not need to wait for the promise to resolve here.
+  const reloadTransactions = () => transactions?.reloadTransactions();
 
   setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
@@ -179,7 +193,7 @@
           <CkBTCBalancesObserver
             universeId={$selectedCkBTCUniverseIdStore}
             accounts={[$selectedAccountStore.account]}
-            reload={reloadAccountFromStore}
+            reload={reloadOnlyAccountFromStore}
           >
             <CkBTCWalletActions
               reload={reloadAccount}
@@ -196,6 +210,7 @@
             />
 
             <CkBTCTransactionsList
+              bind:this={transactions}
               account={$selectedAccountStore.account}
               universeId={$selectedCkBTCUniverseIdStore}
               indexCanisterId={canisters.indexCanisterId}
