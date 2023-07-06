@@ -72,6 +72,10 @@ cd "$GIT_ROOT"
   # sed:
   #   - adds additional traits after Deserialize
   #   - Makes structures and their fields "pub"
+  #   - Makes API call response types "CallResult".  The alternative convention is to have:
+  #       use ic_cdk::api::call::CallResult as Result;
+  #     at the top of the rust file but that is both confusing for Rust developers and conflicts
+  #     with custom definitions of Result found in some did files.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -79,11 +83,13 @@ cd "$GIT_ROOT"
   #   - We need a few but not all of the types to have the Default macro
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
+  # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     sed -E 's/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
-            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;'
+            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;
+	    /impl SERVICE/,${s/-> Result/-> CallResult/g}'
 } >"${RUST_PATH}"
 if test -f "${PATCH_PATH}"; then
   (
