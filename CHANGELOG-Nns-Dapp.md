@@ -29,6 +29,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
+
+* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
+
 #### Not Published
 
 * Progress on merge neurons preview, behind a flag.
