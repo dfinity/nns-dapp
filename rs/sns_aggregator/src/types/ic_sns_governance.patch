@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 28bc6ec98..3c3a440de 100644
+index 58f8b0a38..3c3a440de 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,20 +8,21 @@ use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
@@ -270,7 +270,7 @@ index 28bc6ec98..3c3a440de 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -614,76 +618,75 @@ pub struct SetMode { mode: i32 }
+@@ -614,8 +618,8 @@ pub struct SetMode { mode: i32 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct set_mode_ret0 {}
  
@@ -281,88 +281,7 @@ index 28bc6ec98..3c3a440de 100644
    pub async fn claim_swap_neurons(
      &self,
      arg0: ClaimSwapNeuronsRequest,
--  ) -> Result<(ClaimSwapNeuronsResponse,)> {
-+  ) -> CallResult<(ClaimSwapNeuronsResponse,)> {
-     ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
-   }
-   pub async fn fail_stuck_upgrade_in_progress(
-     &self,
-     arg0: fail_stuck_upgrade_in_progress_arg0,
--  ) -> Result<(fail_stuck_upgrade_in_progress_ret0,)> {
-+  ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
-     ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
-   }
--  pub async fn get_build_metadata(&self) -> Result<(String,)> {
-+  pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
-     ic_cdk::call(self.0, "get_build_metadata", ()).await
-   }
--  pub async fn get_latest_reward_event(&self) -> Result<(RewardEvent,)> {
-+  pub async fn get_latest_reward_event(&self) -> CallResult<(RewardEvent,)> {
-     ic_cdk::call(self.0, "get_latest_reward_event", ()).await
-   }
-   pub async fn get_maturity_modulation(
-     &self,
-     arg0: get_maturity_modulation_arg0,
--  ) -> Result<(GetMaturityModulationResponse,)> {
-+  ) -> CallResult<(GetMaturityModulationResponse,)> {
-     ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
-   }
--  pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> Result<
-+  pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<
-     (GetMetadataResponse,)
-   > { ic_cdk::call(self.0, "get_metadata", (arg0,)).await }
--  pub async fn get_mode(&self, arg0: get_mode_arg0) -> Result<
-+  pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<
-     (GetModeResponse,)
-   > { ic_cdk::call(self.0, "get_mode", (arg0,)).await }
--  pub async fn get_nervous_system_parameters(&self, arg0: ()) -> Result<
-+  pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<
-     (NervousSystemParameters,)
-   > { ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await }
--  pub async fn get_neuron(&self, arg0: GetNeuron) -> Result<
-+  pub async fn get_neuron(&self, arg0: GetNeuron) -> CallResult<
-     (GetNeuronResponse,)
-   > { ic_cdk::call(self.0, "get_neuron", (arg0,)).await }
--  pub async fn get_proposal(&self, arg0: GetProposal) -> Result<
-+  pub async fn get_proposal(&self, arg0: GetProposal) -> CallResult<
-     (GetProposalResponse,)
-   > { ic_cdk::call(self.0, "get_proposal", (arg0,)).await }
--  pub async fn get_root_canister_status(&self, arg0: ()) -> Result<
-+  pub async fn get_root_canister_status(&self, arg0: ()) -> CallResult<
-     (CanisterStatusResultV2,)
-   > { ic_cdk::call(self.0, "get_root_canister_status", (arg0,)).await }
-   pub async fn get_running_sns_version(
-     &self,
-     arg0: get_running_sns_version_arg0,
--  ) -> Result<(GetRunningSnsVersionResponse,)> {
-+  ) -> CallResult<(GetRunningSnsVersionResponse,)> {
-     ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
-   }
-   pub async fn get_sns_initialization_parameters(
-     &self,
-     arg0: get_sns_initialization_parameters_arg0,
--  ) -> Result<(GetSnsInitializationParametersResponse,)> {
-+  ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
-     ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
-   }
--  pub async fn list_nervous_system_functions(&self) -> Result<
-+  pub async fn list_nervous_system_functions(&self) -> CallResult<
-     (ListNervousSystemFunctionsResponse,)
-   > { ic_cdk::call(self.0, "list_nervous_system_functions", ()).await }
--  pub async fn list_neurons(&self, arg0: ListNeurons) -> Result<
-+  pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<
-     (ListNeuronsResponse,)
-   > { ic_cdk::call(self.0, "list_neurons", (arg0,)).await }
--  pub async fn list_proposals(&self, arg0: ListProposals) -> Result<
-+  pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<
-     (ListProposalsResponse,)
-   > { ic_cdk::call(self.0, "list_proposals", (arg0,)).await }
--  pub async fn manage_neuron(&self, arg0: ManageNeuron) -> Result<
-+  pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<
-     (ManageNeuronResponse,)
-   > { ic_cdk::call(self.0, "manage_neuron", (arg0,)).await }
--  pub async fn set_mode(&self, arg0: SetMode) -> Result<(set_mode_ret0,)> {
-+  pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(set_mode_ret0,)> {
+@@ -686,4 +690,3 @@ impl SERVICE {
      ic_cdk::call(self.0, "set_mode", (arg0,)).await
    }
  }
