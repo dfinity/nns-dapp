@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { emptyAddress } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
   import NnsAddress from "./NnsAddress.svelte";
@@ -24,15 +25,17 @@
     dispatcher("nnsAddress", { address: destinationAddress });
 </script>
 
-<NnsAddress bind:address on:submit={onEnterAddress} />
+<TestIdWrapper testId="nns-destination-address-component">
+  <NnsAddress bind:address on:submit={onEnterAddress} />
 
-<!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
-<!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->
-{#if mounted}
-  <NnsSelectAccount
-    on:nnsSelectAccount={onSelectAccount}
-    disableSelection={!emptyAddress(address)}
-    displayTitle={true}
-    {filterIdentifier}
-  />
-{/if}
+  <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
+  <!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->
+  {#if mounted}
+    <NnsSelectAccount
+      on:nnsSelectAccount={onSelectAccount}
+      disableSelection={!emptyAddress(address)}
+      displayTitle={true}
+      {filterIdentifier}
+    />
+  {/if}
+</TestIdWrapper>

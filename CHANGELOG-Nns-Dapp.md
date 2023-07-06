@@ -13,15 +13,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them within NNS dapp only.
-* Users can now add names to canisters to easily identify them.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+* Nns voting e2e test.
 
 #### Changed
 
 * Simplify rust cache expiry with `pop_first()`.
 * Updated `bitcoin-canister` revision for proposal payload support.
 * Improve proposal action rendering.
-* Allow renaming canister with empty string.
 
 #### Deprecated
 #### Removed
@@ -42,6 +41,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 - Added a script to perform part of the release SOP.
+- Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
+- Test that no new change log entries are added to existing releases.
 
 #### Changed
 
@@ -69,7 +70,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
 * Render SNS neuron voting power in neuron detail page.
-* Users can now add a name to their canisters after linking or creating them.
 
 #### Changed
 

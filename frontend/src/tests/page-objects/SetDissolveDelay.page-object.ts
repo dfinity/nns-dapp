@@ -31,8 +31,18 @@ export class SetDissolveDelayPo extends BasePageObject {
     return this.getMaxButtonPo().click();
   }
 
-  async setMax(): Promise<void> {
-    await this.clickMax();
+  clickSkip() {
+    return this.click("cancel-neuron-delay");
+  }
+
+  async setDissolveDelayDays(days: "max" | 0): Promise<void> {
+    if (days === 0) {
+      await this.clickSkip();
+      return;
+    }
+    if (days === "max") {
+      await this.clickMax();
+    }
     await this.clickUpdate();
   }
 }
