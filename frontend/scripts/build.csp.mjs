@@ -209,7 +209,7 @@ const cspConnectSrc = () => {
     // Location services
     "https://api.geoiplookup.net",
     "https://api.iplocation.net",
-    "${{OWN_CANISTER_URL}}",
+    "'self'",
     "${{HOST}}",
     "${{SNS_AGGREGATOR_URL}}",
     // TODO: solve with a worker
