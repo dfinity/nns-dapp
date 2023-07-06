@@ -57,8 +57,9 @@ test("Test merge neurons", async ({ page, context }) => {
     targetNeuronId: neuronId2,
   });
 
+  const transactionFee = 0.0001;
   expect(await (await neuronsPo.getNeuronCardPo(neuronId2)).getBalance()).toBe(
-    stake1 + stake2 - 0.0001
+    stake1 + stake2 - transactionFee
   );
 
   expect(await neuronsPo.getNeuronIds()).not.toContain(neuronId1);
