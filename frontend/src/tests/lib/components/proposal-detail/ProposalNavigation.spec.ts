@@ -147,4 +147,18 @@ describe("ProposalNavigation", () => {
     await po.clickOlder();
     expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
   });
+
+  it("should sort ids", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 3n,
+      proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickNewer();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(5n);
+    await po.clickOlder();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(2n);
+  });
 });

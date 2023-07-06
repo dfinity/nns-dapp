@@ -8,15 +8,19 @@
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
+  let sortedProposalIds: bigint[] = [];
+  // sort proposalIds in descent order
+  $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
+
   let newerId: bigint | undefined;
   // TODO: switch to findLast() once it's available
   // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
-  $: newerId = ([...proposalIds].reverse() as bigint[]).find(
+  $: newerId = ([...sortedProposalIds].reverse() as bigint[]).find(
     (id) => id > currentProposalId
   );
 
   let olderId: bigint | undefined;
-  $: olderId = proposalIds.find((id) => id < currentProposalId);
+  $: olderId = sortedProposalIds.find((id) => id < currentProposalId);
 
   const selectNewer = () => {
     assertNonNullish(newerId);
@@ -28,7 +32,7 @@
   };
 </script>
 
-{#if proposalIds.length > 1}
+{#if sortedProposalIds.length > 1}
   <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"
