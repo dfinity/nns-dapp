@@ -20,7 +20,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Simplify rust cache expiry with `pop_first()`.
 * Updated `bitcoin-canister` revision for proposal payload support.
 * Improve proposal action rendering.
-* Allow renaming canister with empty string.
 
 #### Deprecated
 #### Removed
