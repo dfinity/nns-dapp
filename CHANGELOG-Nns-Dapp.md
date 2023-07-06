@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them within NNS dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+* Nns voting e2e test.
 
 #### Changed
 
@@ -28,6 +29,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
 #### Security
+
+* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
+
 #### Not Published
 
 * Progress on merge neurons preview, behind a flag.
