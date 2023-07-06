@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them within NNS dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+* Nns voting e2e test.
 
 #### Changed
 
@@ -40,6 +41,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 - Added a script to perform part of the release SOP.
+- Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 - Test that no new change log entries are added to existing releases.
 
 #### Changed

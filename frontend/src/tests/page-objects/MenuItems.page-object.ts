@@ -17,6 +17,10 @@ export class MenuItemsPo extends BasePageObject {
     return this.click("menuitem-neurons");
   }
 
+  clickProposals(): Promise<void> {
+    return this.click("menuitem-proposals");
+  }
+
   clickLaunchpad(): Promise<void> {
     return this.click("menuitem-launchpad");
   }
