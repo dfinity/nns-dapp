@@ -1,16 +1,26 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index d1acc5d98..25b9ba676 100644
+index 28bc6ec98..3c3a440de 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -11,6 +11,7 @@ use ic_cdk::api::call::CallResult;
- // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
- // use ic_cdk::api::call::CallResult;
- 
+@@ -8,20 +8,21 @@ use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+ use ic_cdk::api::call::CallResult;
+ // This is an experimental feature to generate Rust binding from Candid.
+ // You may want to manually adjust some of the types.
+-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
+-// use ic_cdk::api::call::CallResult as Result;
++// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
++// use ic_cdk::api::call::CallResult;
 +
+ 
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GenericNervousSystemFunction {
-   pub  validator_canister_id: Option<candid::Principal>,
-@@ -21,7 +22,7 @@ pub struct GenericNervousSystemFunction {
+-  pub  validator_canister_id: Option<Principal>,
+-  pub  target_canister_id: Option<Principal>,
++  pub  validator_canister_id: Option<candid::Principal>,
++  pub  target_canister_id: Option<candid::Principal>,
+   pub  validator_method_name: Option<String>,
+   pub  target_method_name: Option<String>,
+ }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum FunctionType {
@@ -19,6 +29,42 @@ index d1acc5d98..25b9ba676 100644
    GenericNervousSystemFunction(GenericNervousSystemFunction),
  }
  
+@@ -143,7 +144,7 @@ pub struct Ballot { vote: i32, cast_timestamp_seconds: u64, voting_power: u64 }
+ pub struct Tally { no: u64, yes: u64, total: u64, timestamp_seconds: u64 }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct RegisterDappCanisters { canister_ids: Vec<Principal> }
++pub struct RegisterDappCanisters { canister_ids: Vec<candid::Principal> }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct Subaccount { subaccount: serde_bytes::ByteBuf }
+@@ -151,7 +152,7 @@ pub struct Subaccount { subaccount: serde_bytes::ByteBuf }
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct TransferSnsTreasuryFunds {
+   pub  from_treasury: i32,
+-  pub  to_principal: Option<Principal>,
++  pub  to_principal: Option<candid::Principal>,
+   pub  to_subaccount: Option<Subaccount>,
+   pub  memo: Option<u64>,
+   pub  amount_e8s: u64,
+@@ -161,14 +162,14 @@ pub struct TransferSnsTreasuryFunds {
+ pub struct UpgradeSnsControlledCanister {
+   pub  new_canister_wasm: serde_bytes::ByteBuf,
+   pub  mode: Option<i32>,
+-  pub  canister_id: Option<Principal>,
++  pub  canister_id: Option<candid::Principal>,
+   pub  canister_upgrade_arg: Option<serde_bytes::ByteBuf>,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct DeregisterDappCanisters {
+-  pub  canister_ids: Vec<Principal>,
+-  pub  new_controllers: Vec<Principal>,
++  pub  canister_ids: Vec<candid::Principal>,
++  pub  new_controllers: Vec<candid::Principal>,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -193,12 +194,12 @@ pub enum Action {
    ManageNervousSystemParameters(NervousSystemParameters),
    AddGenericNervousSystemFunction(NervousSystemFunction),
@@ -34,7 +80,19 @@ index d1acc5d98..25b9ba676 100644
    ManageSnsMetadata(ManageSnsMetadata),
    ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
    Motion(Motion),
-@@ -270,8 +271,8 @@ pub struct SetDissolveTimestamp { dissolve_timestamp_seconds: u64 }
+@@ -245,7 +246,10 @@ pub struct Split { memo: u64, amount_e8s: u64 }
+ pub struct Follow { function_id: u64, followees: Vec<NeuronId> }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct Account { owner: Option<Principal>, subaccount: Option<Subaccount> }
++pub struct Account {
++  pub  owner: Option<candid::Principal>,
++  pub  subaccount: Option<Subaccount>,
++}
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct DisburseMaturity {
+@@ -267,8 +271,8 @@ pub struct SetDissolveTimestamp { dissolve_timestamp_seconds: u64 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Operation {
    ChangeAutoStakeMaturity(ChangeAutoStakeMaturity),
@@ -45,8 +103,15 @@ index d1acc5d98..25b9ba676 100644
    IncreaseDissolveDelay(IncreaseDissolveDelay),
    SetDissolveTimestamp(SetDissolveTimestamp),
  }
-@@ -292,7 +293,7 @@ pub struct FinalizeDisburseMaturity {
- pub struct MemoAndController { controller: Option<candid::Principal>, memo: u64 }
+@@ -286,10 +290,13 @@ pub struct FinalizeDisburseMaturity {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct MemoAndController { controller: Option<Principal>, memo: u64 }
++pub struct MemoAndController {
++  pub  controller: Option<candid::Principal>,
++  pub  memo: u64,
++}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub enum By { MemoAndController(MemoAndController), NeuronId{} }
@@ -54,7 +119,23 @@ index d1acc5d98..25b9ba676 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct ClaimOrRefresh { by: Option<By> }
-@@ -325,7 +326,7 @@ pub enum Command_2 {
+@@ -297,13 +304,13 @@ pub struct ClaimOrRefresh { by: Option<By> }
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct RemoveNeuronPermissions {
+   pub  permissions_to_remove: Option<NeuronPermissionList>,
+-  pub  principal_id: Option<Principal>,
++  pub  principal_id: Option<candid::Principal>,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct AddNeuronPermissions {
+   pub  permissions_to_add: Option<NeuronPermissionList>,
+-  pub  principal_id: Option<Principal>,
++  pub  principal_id: Option<candid::Principal>,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -322,7 +329,7 @@ pub enum Command_2 {
    DisburseMaturity(DisburseMaturity),
    Configure(Configure),
    RegisterVote(RegisterVote),
@@ -63,7 +144,51 @@ index d1acc5d98..25b9ba676 100644
    MakeProposal(Proposal),
    FinalizeDisburseMaturity(FinalizeDisburseMaturity),
    ClaimOrRefreshNeuron(ClaimOrRefresh),
-@@ -443,7 +444,7 @@ pub struct GetMaturityModulationResponse {
+@@ -337,7 +344,7 @@ pub struct NeuronInFlightCommand { command: Option<Command_2>, timestamp: u64 }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct NeuronPermission {
+-  pub  principal: Option<Principal>,
++  pub  principal: Option<candid::Principal>,
+   pub  permission_type: Vec<i32>,
+ }
+ 
+@@ -375,7 +382,7 @@ pub struct Neuron {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct Governance {
+-  pub  root_canister_id: Option<Principal>,
++  pub  root_canister_id: Option<candid::Principal>,
+   pub  id_to_nervous_system_functions: Vec<(u64,NervousSystemFunction,)>,
+   pub  metrics: Option<GovernanceCachedMetrics>,
+   pub  maturity_modulation: Option<MaturityModulation>,
+@@ -386,8 +393,8 @@ pub struct Governance {
+   pub  sns_initialization_parameters: String,
+   pub  latest_reward_event: Option<RewardEvent>,
+   pub  pending_version: Option<UpgradeInProgress>,
+-  pub  swap_canister_id: Option<Principal>,
+-  pub  ledger_canister_id: Option<Principal>,
++  pub  swap_canister_id: Option<candid::Principal>,
++  pub  ledger_canister_id: Option<candid::Principal>,
+   pub  proposals: Vec<(u64,ProposalData,)>,
+   pub  in_flight_commands: Vec<(String,NeuronInFlightCommand,)>,
+   pub  sns_metadata: Option<ManageSnsMetadata>,
+@@ -397,12 +404,12 @@ pub struct Governance {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct NeuronParameters {
+-  pub  controller: Option<Principal>,
++  pub  controller: Option<candid::Principal>,
+   pub  dissolve_delay_seconds: Option<u64>,
+   pub  source_nns_neuron_id: Option<u64>,
+   pub  stake_e8s: Option<u64>,
+   pub  followees: Vec<NeuronId>,
+-  pub  hotkey: Option<Principal>,
++  pub  hotkey: Option<candid::Principal>,
+   pub  neuron_id: Option<NeuronId>,
+ }
+ 
+@@ -440,7 +447,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_metadata_arg0 {}
  
@@ -72,7 +197,27 @@ index d1acc5d98..25b9ba676 100644
  pub struct GetMetadataResponse {
    pub  url: Option<String>,
    pub  logo: Option<String>,
-@@ -517,7 +518,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -477,16 +484,16 @@ pub enum CanisterStatusType { stopped, stopping, running }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct DefiniteCanisterSettingsArgs {
+-  pub  controller: Principal,
++  pub  controller: candid::Principal,
+   pub  freezing_threshold: candid::Nat,
+-  pub  controllers: Vec<Principal>,
++  pub  controllers: Vec<candid::Principal>,
+   pub  memory_allocation: candid::Nat,
+   pub  compute_allocation: candid::Nat,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct CanisterStatusResultV2 {
+-  pub  controller: Principal,
++  pub  controller: candid::Principal,
+   pub  status: CanisterStatusType,
+   pub  freezing_threshold: candid::Nat,
+   pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
+@@ -514,7 +521,7 @@ pub struct GetSnsInitializationParametersResponse {
    pub  sns_initialization_parameters: String,
  }
  
@@ -81,7 +226,28 @@ index d1acc5d98..25b9ba676 100644
  pub struct ListNervousSystemFunctionsResponse {
    pub  reserved_ids: Vec<u64>,
    pub  functions: Vec<NervousSystemFunction>,
-@@ -589,17 +590,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
+@@ -522,7 +529,7 @@ pub struct ListNervousSystemFunctionsResponse {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct ListNeurons {
+-  pub  of_principal: Option<Principal>,
++  pub  of_principal: Option<candid::Principal>,
+   pub  limit: u32,
+   pub  start_page_at: Option<NeuronId>,
+ }
+@@ -562,10 +569,7 @@ pub enum Command {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct ManageNeuron {
+-  pub  subaccount: serde_bytes::ByteBuf,
+-  pub  command: Option<Command>,
+-}
++pub struct ManageNeuron { subaccount: serde_bytes::ByteBuf, command: Option<Command> }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct SplitResponse { created_neuron_id: Option<NeuronId> }
+@@ -592,17 +596,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
  pub enum Command_1 {
    Error(GovernanceError),
    Split(SplitResponse),
@@ -104,3 +270,100 @@ index d1acc5d98..25b9ba676 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -614,76 +618,75 @@ pub struct SetMode { mode: i32 }
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct set_mode_ret0 {}
+ 
+-pub struct SERVICE(pub Principal);
+-impl SERVICE {
++pub struct SERVICE(pub candid::Principal);
++impl SERVICE{
+   pub async fn claim_swap_neurons(
+     &self,
+     arg0: ClaimSwapNeuronsRequest,
+-  ) -> Result<(ClaimSwapNeuronsResponse,)> {
++  ) -> CallResult<(ClaimSwapNeuronsResponse,)> {
+     ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
+   }
+   pub async fn fail_stuck_upgrade_in_progress(
+     &self,
+     arg0: fail_stuck_upgrade_in_progress_arg0,
+-  ) -> Result<(fail_stuck_upgrade_in_progress_ret0,)> {
++  ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
+     ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
+   }
+-  pub async fn get_build_metadata(&self) -> Result<(String,)> {
++  pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
+     ic_cdk::call(self.0, "get_build_metadata", ()).await
+   }
+-  pub async fn get_latest_reward_event(&self) -> Result<(RewardEvent,)> {
++  pub async fn get_latest_reward_event(&self) -> CallResult<(RewardEvent,)> {
+     ic_cdk::call(self.0, "get_latest_reward_event", ()).await
+   }
+   pub async fn get_maturity_modulation(
+     &self,
+     arg0: get_maturity_modulation_arg0,
+-  ) -> Result<(GetMaturityModulationResponse,)> {
++  ) -> CallResult<(GetMaturityModulationResponse,)> {
+     ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
+   }
+-  pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> Result<
++  pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<
+     (GetMetadataResponse,)
+   > { ic_cdk::call(self.0, "get_metadata", (arg0,)).await }
+-  pub async fn get_mode(&self, arg0: get_mode_arg0) -> Result<
++  pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<
+     (GetModeResponse,)
+   > { ic_cdk::call(self.0, "get_mode", (arg0,)).await }
+-  pub async fn get_nervous_system_parameters(&self, arg0: ()) -> Result<
++  pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<
+     (NervousSystemParameters,)
+   > { ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await }
+-  pub async fn get_neuron(&self, arg0: GetNeuron) -> Result<
++  pub async fn get_neuron(&self, arg0: GetNeuron) -> CallResult<
+     (GetNeuronResponse,)
+   > { ic_cdk::call(self.0, "get_neuron", (arg0,)).await }
+-  pub async fn get_proposal(&self, arg0: GetProposal) -> Result<
++  pub async fn get_proposal(&self, arg0: GetProposal) -> CallResult<
+     (GetProposalResponse,)
+   > { ic_cdk::call(self.0, "get_proposal", (arg0,)).await }
+-  pub async fn get_root_canister_status(&self, arg0: ()) -> Result<
++  pub async fn get_root_canister_status(&self, arg0: ()) -> CallResult<
+     (CanisterStatusResultV2,)
+   > { ic_cdk::call(self.0, "get_root_canister_status", (arg0,)).await }
+   pub async fn get_running_sns_version(
+     &self,
+     arg0: get_running_sns_version_arg0,
+-  ) -> Result<(GetRunningSnsVersionResponse,)> {
++  ) -> CallResult<(GetRunningSnsVersionResponse,)> {
+     ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
+   }
+   pub async fn get_sns_initialization_parameters(
+     &self,
+     arg0: get_sns_initialization_parameters_arg0,
+-  ) -> Result<(GetSnsInitializationParametersResponse,)> {
++  ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
+     ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
+   }
+-  pub async fn list_nervous_system_functions(&self) -> Result<
++  pub async fn list_nervous_system_functions(&self) -> CallResult<
+     (ListNervousSystemFunctionsResponse,)
+   > { ic_cdk::call(self.0, "list_nervous_system_functions", ()).await }
+-  pub async fn list_neurons(&self, arg0: ListNeurons) -> Result<
++  pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<
+     (ListNeuronsResponse,)
+   > { ic_cdk::call(self.0, "list_neurons", (arg0,)).await }
+-  pub async fn list_proposals(&self, arg0: ListProposals) -> Result<
++  pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<
+     (ListProposalsResponse,)
+   > { ic_cdk::call(self.0, "list_proposals", (arg0,)).await }
+-  pub async fn manage_neuron(&self, arg0: ManageNeuron) -> Result<
++  pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<
+     (ManageNeuronResponse,)
+   > { ic_cdk::call(self.0, "manage_neuron", (arg0,)).await }
+-  pub async fn set_mode(&self, arg0: SetMode) -> Result<(set_mode_ret0,)> {
++  pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(set_mode_ret0,)> {
+     ic_cdk::call(self.0, "set_mode", (arg0,)).await
+   }
+ }
+-

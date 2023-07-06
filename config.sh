@@ -19,6 +19,7 @@ set -euo pipefail
 
 : "Move into the repository root directory"
 pushd "$(dirname "${BASH_SOURCE[0]}")"
+export PATH="$PWD/scripts:$PATH"
 
 : "Scan environment:"
 test -n "$DFX_NETWORK" # Will fail if not defined.
@@ -38,32 +39,6 @@ first_not_null() {
   echo "null"
 }
 
-static_host() {
-  first_not_null \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.STATIC_HOST' dfx.json)" \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
-}
-
-api_host() {
-  first_not_null \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.API_HOST' dfx.json)" \
-    "$(jq -re '.networks[env.DFX_NETWORK].config.HOST' dfx.json)"
-}
-
-# Gets the static content URL for a canister based on its ID.
-# Uses the STATIC_HOST to create the URL, which is appropriate to fetch static content.
-canister_static_url_from_id() {
-  : "If we have a canister ID, insert it into HOST as a subdomain."
-  test -z "${1:-}" || { static_host | sed -E "s,^(https?://)?,&${1}.,g"; }
-}
-
-# Gets the api URL for a canister based on its ID.
-# Uses the API_HOST to create the URL, which is appropriate for Candid API calls.
-canister_api_url_from_id() {
-  : "If we have a canister ID, insert it into HOST as a subdomain."
-  test -z "${1:-}" || { api_host | sed -E "s,^(https?://)?,&${1}.,g"; }
-}
-
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
@@ -76,11 +51,13 @@ local_deployment_data="$(
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
-  IDENTITY_SERVICE_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id internet_identity 2>/dev/null || true)"
-  )"
+  IDENTITY_SERVICE_URL="$(dfx-canister-url --network "$DFX_NETWORK" internet_identity)"
   export IDENTITY_SERVICE_URL
-  test -n "${IDENTITY_SERVICE_URL:-}" || unset IDENTITY_SERVICE_URL
+
+  : "Get the own canister URL"
+  # TODO: Delete, as it is used only in the CSP, where it can be replaced by 'self'.
+  OWN_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
+  export OWN_CANISTER_URL
 
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
@@ -92,11 +69,8 @@ local_deployment_data="$(
 
   : "Try to find the SNS aggregator URL"
   : "- may be deployed locally"
-  SNS_AGGREGATOR_URL="$(
-    canister_static_url_from_id "$(dfx canister --network "$DFX_NETWORK" id sns_aggregator 2>/dev/null || true)"
-  )"
+  SNS_AGGREGATOR_URL="$(dfx-canister-url --network "$DFX_NETWORK" sns_aggregator)"
   export SNS_AGGREGATOR_URL
-  test -n "${SNS_AGGREGATOR_URL:-}" || unset SNS_AGGREGATOR_URL
 
   : "Try to find the ckBTC canister IDs"
   CKBTC_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id ckbtc_ledger 2>/dev/null || true)"
@@ -113,6 +87,14 @@ local_deployment_data="$(
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
 
+  : "Get the ledger canister ID -it should be defined"
+  LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
+  export LEDGER_CANISTER_ID
+
+  : "Get the minter canister ID - it should be defined"
+  CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
+  export CYCLES_MINTING_CANISTER_ID
+
   : "Try to find the TVL canister ID"
   TVL_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id tvl 2>/dev/null || true)"
   export TVL_CANISTER_ID
@@ -127,15 +109,33 @@ local_deployment_data="$(
   # shellcheck disable=SC2090 # We still want the backslash.
   export ROBOTS
 
+  : "Get the network domains"
+  API_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type api)"
+  STATIC_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type static)"
+  export API_HOST STATIC_HOST
+
+  : "Determine whether we need to fetch the root key"
+  case "${DFX_NETWORK:-}" in
+  mainnet | ic) FETCH_ROOT_KEY=false ;;
+  *) FETCH_ROOT_KEY=true ;;
+  esac
+  export FETCH_ROOT_KEY
+
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
+    OWN_CANISTER_URL: env.OWN_CANISTER_URL,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
+    LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
+    CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
+    STATIC_HOST: env.STATIC_HOST,
+    API_HOST: env.API_HOST,
+    FETCH_ROOT_KEY: env.FETCH_ROOT_KEY,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
@@ -151,8 +151,9 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
-json=$(HOST=$(api_host) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * .[0].networks[env.DFX_NETWORK].config |
+# TODO: I believe that the following can be discarded now.
+json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
+  (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST |

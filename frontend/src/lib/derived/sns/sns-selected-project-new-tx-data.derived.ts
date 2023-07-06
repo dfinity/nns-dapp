@@ -1,5 +1,5 @@
-import type { Token, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { Token, TokenAmount } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { selectedUniverseIdStore } from "../selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "./sns-selected-transaction-fee.store";

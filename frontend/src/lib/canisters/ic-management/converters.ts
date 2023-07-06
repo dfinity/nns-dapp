@@ -1,12 +1,20 @@
+import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import type { Principal } from "@dfinity/principal";
 import type { CanisterDetails } from "./ic-management.canister.types";
 import { CanisterStatus } from "./ic-management.canister.types";
-import type {
-  CanisterStatusResponse,
-  CanisterStatus as RawCanisterStatus,
-} from "./ic-management.types";
 
-const getCanisterStatus = (status: RawCanisterStatus): CanisterStatus => {
+const getCanisterStatus = (
+  status:
+    | {
+        stopped: null;
+      }
+    | {
+        stopping: null;
+      }
+    | {
+        running: null;
+      }
+): CanisterStatus => {
   if ("stopped" in status) {
     return CanisterStatus.Stopped;
   } else if ("stopping" in status) {
@@ -18,7 +26,14 @@ const getCanisterStatus = (status: RawCanisterStatus): CanisterStatus => {
 };
 
 export const toCanisterDetails = ({
-  response: { memory_size, status, cycles, settings, module_hash },
+  response: {
+    memory_size,
+    status,
+    cycles,
+    settings,
+    module_hash,
+    idle_cycles_burned_per_day,
+  },
   canisterId,
 }: {
   response: CanisterStatusResponse;
@@ -38,4 +53,5 @@ export const toCanisterDetails = ({
     module_hash.length > 0 && module_hash[0] !== undefined
       ? new Uint8Array(module_hash[0]).buffer
       : undefined,
+  idleCyclesBurnedPerDay: idle_cycles_burned_per_day,
 });

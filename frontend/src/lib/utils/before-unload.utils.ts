@@ -5,22 +5,22 @@ const onBeforeUnload = ($event: BeforeUnloadEvent) => {
   return ($event.returnValue = "Are you sure you want to exit?");
 };
 
-const addSyncBeforeUnload = () => {
+const addBeforeUnload = () => {
   window.addEventListener("beforeunload", onBeforeUnload, { capture: true });
 };
 
-const removeSyncBeforeUnload = () => {
+const removeBeforeUnload = () => {
   window.removeEventListener("beforeunload", onBeforeUnload, { capture: true });
 };
 
-export const syncBeforeUnload = (dirty: boolean) => {
+export const confirmCloseApp = (dirty: boolean) => {
   if (!browser) {
     return;
   }
 
   if (dirty) {
-    addSyncBeforeUnload();
+    addBeforeUnload();
   } else {
-    removeSyncBeforeUnload();
+    removeBeforeUnload();
   }
 };

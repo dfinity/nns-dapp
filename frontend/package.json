@@ -1,6 +1,6 @@
 {
   "name": "@dfinity/nns-dapp",
-  "version": "2.0.37",
+  "version": "2.0.40",
   "private": true,
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
@@ -17,10 +17,10 @@
     "format:modified": "prettier --write $(git diff --diff-filter=ACM --name-only | egrep \"\\.(ts|js|mjs|json|scss|svelte|html)$\" | cut -d'/' -f2-)",
     "test": "TZ=UTC jest",
     "test-e2e": "playwright test",
-    "update:next": "npm update @dfinity/utils @dfinity/nns-proto @dfinity/ledger @dfinity/nns @dfinity/sns @dfinity/cmc @dfinity/ckbtc",
-    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger @dfinity/ckbtc && npm i @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/utils@next @dfinity/ledger@next @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/ckbtc@next && ../scripts/revert-next.sh",
+    "update:next": "npm update @dfinity/utils @dfinity/nns-proto @dfinity/ledger @dfinity/nns @dfinity/sns @dfinity/cmc @dfinity/ckbtc @dfinity/ic-management",
+    "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger @dfinity/ckbtc @dfinity/ic-management && npm i @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/utils@next @dfinity/ledger@next @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/ckbtc@next @dfinity/ic-management@next && ../scripts/revert-next.sh",
     "update:gix": "npm update @dfinity/gix-components",
-    "upgrade:next": "npm rm @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger @dfinity/ckbtc && npm i @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/utils@next @dfinity/ledger@next @dfinity/ckbtc@next && ../scripts/revert-next.sh"
+    "upgrade:next": "npm rm @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger @dfinity/ckbtc @dfinity/ic-management && npm i @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/utils@next @dfinity/ledger@next @dfinity/ckbtc@next @dfinity/ic-management@next && ../scripts/revert-next.sh"
   },
   "engines": {
     "npm": ">=9.0.0 <10.0.0",
@@ -72,6 +72,7 @@
     "@dfinity/ckbtc": "next",
     "@dfinity/cmc": "next",
     "@dfinity/gix-components": "next",
+    "@dfinity/ic-management": "next",
     "@dfinity/identity": "^0.15.4",
     "@dfinity/ledger": "next",
     "@dfinity/nns": "next",
@@ -83,5 +84,8 @@
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3"
+  },
+  "overrides": {
+    "semver": "^7.5.3"
   }
 }

@@ -5,6 +5,7 @@ import {
   getIcpToCyclesExchangeRate as getIcpToCyclesExchangeRateApi,
   queryCanisterDetails as queryCanisterDetailsApi,
   queryCanisters,
+  renameCanister as renameCanisterApi,
   topUpCanister as topUpCanisterApi,
   updateSettings as updateSettingsApi,
 } from "$lib/api/canisters.api";
@@ -25,8 +26,8 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -67,9 +68,11 @@ export const listCanisters = async ({
 export const createCanister = async ({
   amount,
   account,
+  name,
 }: {
   amount: number;
   account: Account;
+  name?: string;
 }): Promise<Principal | undefined> => {
   try {
     const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
@@ -83,6 +86,7 @@ export const createCanister = async ({
       identity,
       amount: icpAmount,
       fromSubAccount: account.subAccount,
+      name,
     });
     await listCanisters({ clearBeforeQuery: false });
     // We don't wait for `loadBalance` to finish to give a better UX to the user.
@@ -94,6 +98,30 @@ export const createCanister = async ({
       mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
     );
     return;
+  }
+};
+
+export const renameCanister = async ({
+  name,
+  canisterId,
+}: {
+  name: string;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+    await renameCanisterApi({
+      identity,
+      name,
+      canisterId,
+    });
+    await listCanisters({ clearBeforeQuery: false });
+    return { success: true };
+  } catch (error: unknown) {
+    toastsShow(
+      mapCanisterErrorToToastMessage(error, "error.canister_creation_unknown")
+    );
+    return { success: false };
   }
 };
 
@@ -209,14 +237,19 @@ export const updateSettings = async ({
   }
 };
 
-export const attachCanister = async (
-  canisterId: Principal
-): Promise<{ success: boolean }> => {
+export const attachCanister = async ({
+  name,
+  canisterId,
+}: {
+  name?: string;
+  canisterId: Principal;
+}): Promise<{ success: boolean }> => {
   try {
     const identity = await getAuthenticatedIdentity();
     await attachCanisterApi({
       identity,
       canisterId,
+      name,
     });
     await listCanisters({ clearBeforeQuery: false });
     return { success: true };

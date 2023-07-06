@@ -8,11 +8,16 @@ import { mock } from "jest-mock-extended";
 describe("timer.worker-utils", () => {
   const now = Date.now();
 
+  let spyPostMessage;
+
   beforeEach(() => {
     silentConsoleErrors();
 
     jest.clearAllTimers();
     jest.useFakeTimers().setSystemTime(now);
+
+    spyPostMessage = jest.fn();
+    global.postMessage = spyPostMessage;
   });
 
   describe("without identity", () => {
@@ -207,6 +212,32 @@ describe("timer.worker-utils", () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((worker as any).timer).toBeUndefined();
+    });
+
+    it("should call postMessage when status changes", async () => {
+      const worker = new TimerWorkerUtils();
+
+      const job = jest.fn();
+
+      await worker.start({
+        job,
+        data: {},
+        interval: 5000,
+      });
+
+      expect(spyPostMessage).toHaveBeenCalledTimes(2);
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "in_progress",
+        },
+      });
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "idle",
+        },
+      });
     });
   });
 });

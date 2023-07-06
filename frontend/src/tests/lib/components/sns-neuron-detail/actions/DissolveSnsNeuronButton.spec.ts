@@ -30,8 +30,10 @@ describe("DissolveSnsNeuronButton", () => {
   it("renders start dissolve message when neuron is locked", () => {
     const { getByText } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuron: mockSnsNeuron,
-        neuronState: NeuronState.Locked,
+        neuron: createMockSnsNeuron({
+          id: [1],
+          state: NeuronState.Locked,
+        }),
       },
     });
 
@@ -41,19 +43,39 @@ describe("DissolveSnsNeuronButton", () => {
   it("renders stop dissolve message when neuron is dissolving", () => {
     const { getByText } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuron: mockSnsNeuron,
-        neuronState: NeuronState.Dissolving,
+        neuron: createMockSnsNeuron({
+          id: [1],
+          state: NeuronState.Dissolving,
+        }),
       },
     });
 
     expect(getByText(en.neuron_detail.stop_dissolving)).toBeInTheDocument();
   });
 
+  it("is disabled while vesting", () => {
+    const { queryByTestId } = render(DissolveSnsNeuronButtonTest, {
+      props: {
+        neuron: createMockSnsNeuron({
+          id: [1],
+          vesting: true,
+          state: NeuronState.Locked,
+        }),
+      },
+    });
+
+    expect(queryByTestId("sns-dissolve-button").hasAttribute("disabled")).toBe(
+      true
+    );
+  });
+
   it("calls startDissolving action on click and LOCKED state", async () => {
     const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
-        neuron: mockSnsNeuron,
-        neuronState: NeuronState.Locked,
+        neuron: createMockSnsNeuron({
+          id: [1],
+          state: NeuronState.Locked,
+        }),
       },
     });
 
@@ -82,7 +104,6 @@ describe("DissolveSnsNeuronButton", () => {
           id: [1, 2, 2, 9, 9, 3, 2],
           state: NeuronState.Dissolving,
         }),
-        neuronState: NeuronState.Dissolving,
       },
     });
 
@@ -109,7 +130,6 @@ describe("DissolveSnsNeuronButton", () => {
     const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
         neuron: mockSnsNeuron,
-        neuronState: NeuronState.Dissolving,
         spy,
       },
     });

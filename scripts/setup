@@ -66,7 +66,9 @@ mkdir -p "$USER_BIN"
 NEW_TERMINAL_NEEDED=false
 append_to_profile() {
   printf '\n%s\n' "$1" >>"$USER_PROFILE"
+  set +eu
   . "$USER_PROFILE"
+  set -eu
   NEW_TERMINAL_NEEDED=true
 }
 
@@ -101,9 +103,16 @@ install_brew_maybe() {
   }
 }
 
+check_coreutils() {
+  : Checks that everything we need from coreutils is installed
+  for command in sha256sum date; do
+    "$command" --version | grep 'GNU coreutils' || return 1
+  done
+}
 install_coreutils_darwin() {
   echo "Installing coreutils..."
   brew install coreutils
+  append_to_profile "export PATH=\"/opt/homebrew/opt/coreutils/libexec/gnubin:\$PATH\""
 }
 install_coreutils_linux() {
   echo "Installing coreutils..."
@@ -159,7 +168,7 @@ install_rust() {
 }
 
 install_binstall() {
-  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
 }
 
 install_xz_darwin() {
@@ -285,7 +294,7 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
-command -v sha256sum || "install_coreutils_$OS"
+check_coreutils || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"

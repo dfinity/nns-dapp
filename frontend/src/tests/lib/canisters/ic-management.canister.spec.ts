@@ -2,24 +2,25 @@ import { createAgent } from "$lib/api/agent.api";
 import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-import type { CanisterStatusResponse } from "$lib/canisters/ic-management/ic-management.types";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterId,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
-import type { ManagementCanisterRecord } from "@dfinity/agent";
+import type { ActorSubclass } from "@dfinity/agent";
+import type { CanisterStatusResponse } from "@dfinity/ic-management";
+import type { _SERVICE as IcManagementService } from "@dfinity/ic-management/dist/candid/ic-management";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 
 describe("ICManagementCanister", () => {
-  const createICManagement = async (service: ManagementCanisterRecord) => {
+  const createICManagement = async (service: IcManagementService) => {
     const defaultAgent = await createAgent({ identity: mockIdentity });
 
     return ICManagementCanister.create({
       agent: defaultAgent,
-      serviceOverride: service,
+      serviceOverride: service as ActorSubclass<IcManagementService>,
     });
   };
 
@@ -41,8 +42,9 @@ describe("ICManagementCanister", () => {
         cycles: BigInt(10_000),
         settings,
         module_hash: [],
+        idle_cycles_burned_per_day: BigInt(30_000),
       };
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);
 
       const icManagement = await createICManagement(service);
@@ -56,7 +58,7 @@ describe("ICManagementCanister", () => {
 
     it("throws UserNotTheControllerError", async () => {
       const error = new Error("code: 403");
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -69,7 +71,7 @@ describe("ICManagementCanister", () => {
 
     it("throws Error", async () => {
       const error = new Error("Test");
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -83,7 +85,7 @@ describe("ICManagementCanister", () => {
 
   describe("updateSettings", () => {
     it("calls update_settings with new settings", async () => {
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.update_settings.mockResolvedValue(undefined);
 
       const icManagement = await createICManagement(service);
@@ -101,7 +103,7 @@ describe("ICManagementCanister", () => {
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
         ],
       };
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.update_settings.mockResolvedValue(undefined);
 
       const icManagement = await createICManagement(service);
@@ -115,7 +117,7 @@ describe("ICManagementCanister", () => {
 
     it("throws UserNotTheControllerError", async () => {
       const error = new Error("code: 403");
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.update_settings.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -130,7 +132,7 @@ describe("ICManagementCanister", () => {
 
     it("throws Error", async () => {
       const error = new Error("Test");
-      const service = mock<ManagementCanisterRecord>();
+      const service = mock<IcManagementService>();
       service.update_settings.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);

@@ -8,8 +8,8 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { StoreData } from "$lib/types/store";
-import type { TokenAmount } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import type { TokenAmount } from "@dfinity/utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";

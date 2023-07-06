@@ -70,15 +70,15 @@
 
     <div class="buttons">
       {#if allowedToDissolve}
-        <IncreaseSnsDissolveDelayButton />
+        <IncreaseSnsDissolveDelayButton {neuron} />
       {/if}
       {#if isIncreaseStakeAllowed}
         <SnsIncreaseStakeButton />
       {/if}
       {#if neuronState === NeuronState.Dissolved && allowedToDisburse}
-        <DisburseSnsButton />
+        <DisburseSnsButton {neuron} />
       {:else if canDissolve}
-        <DissolveSnsNeuronButton {neuronState} />
+        <DissolveSnsNeuronButton {neuron} />
       {/if}
     </div>
 

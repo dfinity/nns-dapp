@@ -11,7 +11,8 @@
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { E8s, NeuronState, Token } from "@dfinity/nns";
+  import type { E8s, NeuronState } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { KeyValuePair } from "@dfinity/gix-components";
   import SnsNeuronCardTitle from "$lib/components/sns-neurons/SnsNeuronCardTitle.svelte";
   import NeuronStateInfo from "$lib/components/neurons/NeuronStateInfo.svelte";
@@ -26,6 +27,8 @@
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsNeuronVotingPower from "./SnsNeuronVotingPower.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let token: Token;
@@ -67,7 +70,7 @@
 
 <TestIdWrapper testId="sns-neuron-meta-info-card-component">
   {#if nonNullish(neuron) && nonNullish(neuronState)}
-    <div class="content-cell-details">
+    <div class="content-cell-details" data-tid="sns-neuron-meta-info-content">
       <KeyValuePair>
         <SnsNeuronCardTitle
           tagName="h3"
@@ -81,6 +84,10 @@
       <SnsNeuronAge {neuron} />
 
       <SnsNeuronStateRemainingTime {neuron} inline={false} />
+
+      <SnsNeuronVestingPeriodRemaining {neuron} />
+
+      <SnsNeuronVotingPower {neuron} {parameters} {token} />
 
       <div class="buttons">
         {#if allowedToSplit}
@@ -100,6 +107,14 @@
 
 <style lang="scss">
   .content-cell-details {
+    gap: var(--padding-1_5x);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
     gap: var(--padding-1_5x);
   }
 </style>

@@ -4,11 +4,12 @@
   import { createEventDispatcher } from "svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import type { E8s, Token } from "@dfinity/nns";
+  import type { E8s } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import { fromDefinedNullable } from "@dfinity/utils";
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";

@@ -5,12 +5,8 @@ import {
 } from "$lib/api/ledger.api";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-} from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 
 describe("ledger-api", () => {

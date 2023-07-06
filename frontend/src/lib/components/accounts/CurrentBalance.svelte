@@ -1,6 +1,6 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import type { TokenAmount } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
 
   export let balance: TokenAmount;

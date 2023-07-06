@@ -19,13 +19,13 @@ PATH="$SOURCE_DIR:$PATH"
 print_help() {
   cat <<-"EOF"
 
-	Build nns-dapp.wasm inside docker. This creates:
+	Build nns-dapp.wasm.gz inside docker. This creates:
 	- An "out" directory in the project directory containing all build artefacts.
 	  Note: If the "out" directory already exists, it will be deleted and replaced.
 	- The following artefacts are also added to the project directory:
 	  - assets.tar.xz
-	  - nns-dapp.wasm
-	  - sns_aggregator.wasm
+	  - nns-dapp.wasm.gz
+	  - sns_aggregator.wasm.gz
 	  - "nns-dapp-arg-${DFX_NETWORK}.did"
 	  - "nns-dapp-arg-${DFX_NETWORK}.bin"
 
@@ -70,7 +70,7 @@ rm -rf "${OUTDIR:-not-the-file-you-were-looking-for}"
 # In normal production builds, only these files will be generated,
 # but a small code change can easily produce much more.  We ensure that
 # even in such circumstances only expected files end up in ./.
-assets=(assets.tar.xz nns-dapp.wasm sns_aggregator.wasm "nns-dapp-arg-${DFX_NETWORK}.did" "nns-dapp-arg-${DFX_NETWORK}.bin")
+assets=(assets.tar.xz nns-dapp.wasm.gz sns_aggregator.wasm.gz "nns-dapp-arg-${DFX_NETWORK}.did" "nns-dapp-arg-${DFX_NETWORK}.bin")
 for file in "${assets[@]}"; do
   rm -f "$file"
 done

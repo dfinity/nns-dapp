@@ -35,6 +35,8 @@
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
+  import RenameCanisterButton from "$lib/components/canister-detail/RenameCanisterButton.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   // BEGIN: loading and navigation
 
@@ -183,48 +185,51 @@
     });
 </script>
 
-<Island>
-  <main class="legacy">
-    <section>
-      {#if canisterInfo !== undefined}
-        <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-        <CanisterCardSubTitle canister={canisterInfo} />
-        <div class="actions">
-          <UnlinkCanisterButton canisterId={canisterInfo.canister_id} />
-        </div>
-      {:else}
-        <div class="loader-title">
-          <SkeletonText tagName="h1" />
-        </div>
-        <div class="loader-subtitle">
-          <SkeletonText />
-        </div>
-      {/if}
-      {#if canisterDetails !== undefined}
-        <CyclesCard cycles={canisterDetails.cycles} />
-        <ControllersCard />
-      {:else if errorKey !== undefined}
-        <CardInfo testId="canister-details-error-card">
-          <p class="error-message">{translate({ labelKey: errorKey })}</p>
-        </CardInfo>
-      {:else}
-        <SkeletonCard cardType="info" />
-        <SkeletonCard cardType="info" />
-      {/if}
-    </section>
-  </main>
-</Island>
+<TestIdWrapper testId="canister-detail-component">
+  <Island>
+    <main class="legacy">
+      <section>
+        {#if canisterInfo !== undefined}
+          <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
+          <CanisterCardSubTitle canister={canisterInfo} />
+          <div class="actions">
+            <UnlinkCanisterButton canisterId={canisterInfo.canister_id} />
+            <RenameCanisterButton />
+          </div>
+        {:else}
+          <div class="loader-title">
+            <SkeletonText tagName="h1" />
+          </div>
+          <div class="loader-subtitle">
+            <SkeletonText />
+          </div>
+        {/if}
+        {#if canisterDetails !== undefined}
+          <CyclesCard cycles={canisterDetails.cycles} />
+          <ControllersCard />
+        {:else if errorKey !== undefined}
+          <CardInfo testId="canister-details-error-card">
+            <p class="error-message">{translate({ labelKey: errorKey })}</p>
+          </CardInfo>
+        {:else}
+          <SkeletonCard cardType="info" />
+          <SkeletonCard cardType="info" />
+        {/if}
+      </section>
+    </main>
+  </Island>
 
-<Footer columns={1}>
-  <button
-    class="primary"
-    on:click={openModal}
-    disabled={canisterInfo === undefined || $busy}
-    >{$i18n.canister_detail.add_cycles}</button
-  >
-</Footer>
+  <Footer columns={1}>
+    <button
+      class="primary"
+      on:click={openModal}
+      disabled={canisterInfo === undefined || $busy}
+      >{$i18n.canister_detail.add_cycles}</button
+    >
+  </Footer>
 
-<CanisterDetailModals />
+  <CanisterDetailModals />
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -233,6 +238,7 @@
     margin-bottom: var(--padding-3x);
     display: flex;
     justify-content: end;
+    gap: var(--padding-2x);
   }
 
   .error-message {

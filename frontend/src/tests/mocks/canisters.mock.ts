@@ -46,6 +46,7 @@ export const mockCanisterDetails: CanisterDetails = {
     memoryAllocation: BigInt(1000),
     computeAllocation: BigInt(2000),
   },
+  idleCyclesBurnedPerDay: BigInt(3000),
 };
 
 export const mockCanistersStoreSubscribe = (
