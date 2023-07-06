@@ -62,14 +62,16 @@ cd "$GIT_ROOT"
 	#![allow(non_camel_case_types)]
 	#![allow(dead_code)]
 
-	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+	// use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 	use ic_cdk::api::call::CallResult;
+	use candid::Principal;
 	EOF
   # didc converts the .did to Rust, with the following limitations:
   #   - It applies the canidid Deserialize trait to all the types but not other traits that we need.
   #   - It makes almost all the types and fields private, which is not very helpful.
   #
   # sed:
+  #   - In the service definition, use CallResult instead of Result as the return type.
   #   - adds additional traits after Deserialize
   #   - Makes structures and their fields "pub"
   #
@@ -80,13 +82,16 @@ cd "$GIT_ROOT"
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
   didc bind "${DID_PATH}" --target rs |
-    sed -E 's/^(struct|enum|type) /pub &/;
+    rustfmt --edition 2021 |
+    sed -E '/impl SERVICE/,${s/-> Result/-> CallResult/g}
+            s/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
-            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;'
+            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;' |
+    rustfmt --edition 2021
 } >"${RUST_PATH}"
-if test -f "${PATCH_PATH}"; then
-  (
-    patch -p1 <"${PATCH_PATH}"
-  )
-fi
+#if test -f "${PATCH_PATH}"; then
+#  (
+#    patch -p1 <"${PATCH_PATH}"
+#  )
+#fi
