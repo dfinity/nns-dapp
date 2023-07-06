@@ -1,14 +1,16 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-use crate::types::{CandidType, Deserialize, Serialize};
+use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
 use ic_cdk::api::call::CallResult;
+use candid::Principal;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-// use ic_cdk::api::call::CallResult;
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
+// use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum MetadataValue {
@@ -21,8 +23,8 @@ pub enum MetadataValue {
 pub type Subaccount = serde_bytes::ByteBuf;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account {
-    owner: candid::Principal,
-    subaccount: Option<Subaccount>,
+    pub owner: Principal,
+    pub subaccount: Option<Subaccount>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -37,6 +39,7 @@ pub struct UpgradeArgs {
     pub transfer_fee: Option<u64>,
     pub metadata: Option<Vec<(String, MetadataValue)>>,
     pub change_fee_collector: Option<ChangeFeeCollector>,
+    pub max_memo_length: Option<u16>,
     pub token_name: Option<String>,
 }
 
@@ -47,7 +50,7 @@ pub struct InitArgs_archive_options {
     pub max_message_size_bytes: Option<u64>,
     pub cycles_for_archive_creation: Option<u64>,
     pub node_max_memory_size_bytes: Option<u64>,
-    pub controller_id: candid::Principal,
+    pub controller_id: Principal,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -71,8 +74,8 @@ pub enum LedgerArg {
 pub type BlockIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetBlocksArgs {
-    start: BlockIndex,
-    length: candid::Nat,
+    pub start: BlockIndex,
+    pub length: candid::Nat,
 }
 
 pub type Map = Vec<(String, Box<Value>)>;
@@ -90,37 +93,39 @@ pub enum Value {
 pub type Block = Box<Value>;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct BlockRange {
-    blocks: Vec<Block>,
+    pub blocks: Vec<Block>,
 }
 
-pub type QueryBlockArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize)]
-pub struct GetBlocksResponse_archived_blocks_inner {
+candid::define_function!(pub QueryBlockArchiveFn : (GetBlocksArgs) -> (
+    BlockRange
+  ) query);
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetBlocksResponse_archived_blocks_item {
     pub callback: QueryBlockArchiveFn,
     pub start: BlockIndex,
     pub length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetBlocksResponse {
     pub certificate: Option<serde_bytes::ByteBuf>,
     pub first_index: BlockIndex,
     pub blocks: Vec<Block>,
     pub chain_length: u64,
-    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_inner>,
+    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_item>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DataCertificate {
-    certificate: Option<serde_bytes::ByteBuf>,
-    hash_tree: serde_bytes::ByteBuf,
+    pub certificate: Option<serde_bytes::ByteBuf>,
+    pub hash_tree: serde_bytes::ByteBuf,
 }
 
 pub type TxIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetTransactionsRequest {
-    start: TxIndex,
-    length: candid::Nat,
+    pub start: TxIndex,
+    pub length: candid::Nat,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -160,30 +165,32 @@ pub struct Transaction {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransactionRange {
-    transactions: Vec<Transaction>,
+    pub transactions: Vec<Transaction>,
 }
 
-pub type QueryArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize)]
-pub struct GetTransactionsResponse_archived_transactions_inner {
+candid::define_function!(pub QueryArchiveFn : (GetTransactionsRequest) -> (
+    TransactionRange
+  ) query);
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetTransactionsResponse_archived_transactions_item {
     pub callback: QueryArchiveFn,
     pub start: TxIndex,
     pub length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetTransactionsResponse {
     pub first_index: TxIndex,
     pub log_length: candid::Nat,
     pub transactions: Vec<Transaction>,
-    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_inner>,
+    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_item>,
 }
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct icrc1_supported_standards_ret0_inner {
-    url: String,
-    name: String,
+pub struct icrc1_supported_standards_ret0_item {
+    pub url: String,
+    pub name: String,
 }
 
 pub type Timestamp = u64;
@@ -215,7 +222,7 @@ pub enum TransferResult {
     Err(TransferError),
 }
 
-pub struct SERVICE(pub candid::Principal);
+pub struct SERVICE(pub Principal);
 impl SERVICE {
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
@@ -244,7 +251,7 @@ impl SERVICE {
     pub async fn icrc1_name(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_name", ()).await
     }
-    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_inner>,)> {
+    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_item>,)> {
         ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
     }
     pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
