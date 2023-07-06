@@ -69,7 +69,7 @@ describe("ProposalNavigation", () => {
       expect(await po.isNewerButtonHidden()).toBe(false);
     });
 
-    it("should disable previous button when it's selected", async () => {
+    it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [1n, 0n],
@@ -80,7 +80,7 @@ describe("ProposalNavigation", () => {
       expect(await po.isNewerButtonHidden()).toBe(true);
     });
 
-    it("should disable next when it's selected", async () => {
+    it("should hide to-oldest-proposal when the oldest is selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [2n, 1n],
@@ -92,7 +92,7 @@ describe("ProposalNavigation", () => {
     });
   });
 
-  it("should emmit next click", async () => {
+  it("should emmit to-older-proposal click", async () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
       currentProposalId: 2n,
@@ -106,7 +106,7 @@ describe("ProposalNavigation", () => {
     expect(selectProposalSpy).toHaveBeenCalledWith(1n);
   });
 
-  it("should emmit previous click", async () => {
+  it("should emmit to-newer-proposal click", async () => {
     const selectProposalSpy = jest.fn();
     const po = renderComponent({
       currentProposalId: 2n,
