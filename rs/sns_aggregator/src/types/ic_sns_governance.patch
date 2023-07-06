@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 58f8b0a38..3c3a440de 100644
+index 3717400f9..3c3a440de 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,20 +8,21 @@ use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
@@ -65,21 +65,6 @@ index 58f8b0a38..3c3a440de 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -193,12 +194,12 @@ pub enum Action {
-   ManageNervousSystemParameters(NervousSystemParameters),
-   AddGenericNervousSystemFunction(NervousSystemFunction),
-   RemoveGenericNervousSystemFunction(u64),
--  UpgradeSnsToNextVersion{},
-+  UpgradeSnsToNextVersion(EmptyRecord),
-   RegisterDappCanisters(RegisterDappCanisters),
-   TransferSnsTreasuryFunds(TransferSnsTreasuryFunds),
-   UpgradeSnsControlledCanister(UpgradeSnsControlledCanister),
-   DeregisterDappCanisters(DeregisterDappCanisters),
--  Unspecified{},
-+  Unspecified(EmptyRecord),
-   ManageSnsMetadata(ManageSnsMetadata),
-   ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
-   Motion(Motion),
 @@ -245,7 +246,10 @@ pub struct Split { memo: u64, amount_e8s: u64 }
  pub struct Follow { function_id: u64, followees: Vec<NeuronId> }
  
@@ -92,17 +77,6 @@ index 58f8b0a38..3c3a440de 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct DisburseMaturity {
-@@ -267,8 +271,8 @@ pub struct SetDissolveTimestamp { dissolve_timestamp_seconds: u64 }
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum Operation {
-   ChangeAutoStakeMaturity(ChangeAutoStakeMaturity),
--  StopDissolving{},
--  StartDissolving{},
-+  StopDissolving(EmptyRecord),
-+  StartDissolving(EmptyRecord),
-   IncreaseDissolveDelay(IncreaseDissolveDelay),
-   SetDissolveTimestamp(SetDissolveTimestamp),
- }
 @@ -286,10 +290,13 @@ pub struct FinalizeDisburseMaturity {
  }
  
@@ -135,15 +109,6 @@ index 58f8b0a38..3c3a440de 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -322,7 +329,7 @@ pub enum Command_2 {
-   DisburseMaturity(DisburseMaturity),
-   Configure(Configure),
-   RegisterVote(RegisterVote),
--  SyncCommand{},
-+  SyncCommand(EmptyRecord),
-   MakeProposal(Proposal),
-   FinalizeDisburseMaturity(FinalizeDisburseMaturity),
-   ClaimOrRefreshNeuron(ClaimOrRefresh),
 @@ -337,7 +344,7 @@ pub struct NeuronInFlightCommand { command: Option<Command_2>, timestamp: u64 }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -247,29 +212,6 @@ index 58f8b0a38..3c3a440de 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SplitResponse { created_neuron_id: Option<NeuronId> }
-@@ -592,17 +596,17 @@ pub struct DisburseResponse { transfer_block_height: u64 }
- pub enum Command_1 {
-   Error(GovernanceError),
-   Split(SplitResponse),
--  Follow{},
-+  Follow(EmptyRecord),
-   DisburseMaturity(DisburseMaturityResponse),
-   ClaimOrRefresh(ClaimOrRefreshResponse),
--  Configure{},
--  RegisterVote{},
-+  Configure(EmptyRecord),
-+  RegisterVote(EmptyRecord),
-   MakeProposal(GetProposal),
--  RemoveNeuronPermission{},
-+  RemoveNeuronPermission(EmptyRecord),
-   StakeMaturity(StakeMaturityResponse),
-   MergeMaturity(MergeMaturityResponse),
-   Disburse(DisburseResponse),
--  AddNeuronPermission{},
-+  AddNeuronPermission(EmptyRecord),
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -614,8 +618,8 @@ pub struct SetMode { mode: i32 }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct set_mode_ret0 {}
