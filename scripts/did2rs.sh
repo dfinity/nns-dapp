@@ -76,6 +76,9 @@ cd "$GIT_ROOT"
   #       use ic_cdk::api::call::CallResult as Result;
   #     at the top of the rust file but that is both confusing for Rust developers and conflicts
   #     with custom definitions of Result found in some did files.
+  #   - didc creates invalid Rust enum entries of the form: `StopDissolving{},`
+  #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
+  #     where "EmptyRecord" is defined as the name suggests.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -89,7 +92,9 @@ cd "$GIT_ROOT"
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
             s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;
-	    /impl SERVICE/,${s/-> Result/-> CallResult/g}'
+	    /impl SERVICE/,${s/-> Result/-> CallResult/g};
+	    /^pub struct /,/^}/{s/ *\{\},$/(EmptyRecord),/g}
+	    '
 } >"${RUST_PATH}"
 if test -f "${PATCH_PATH}"; then
   (
