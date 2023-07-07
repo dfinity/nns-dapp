@@ -87,14 +87,16 @@ cd "$GIT_ROOT"
   #     is not guaranteed to be correct.
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
+    rustfmt --edition 2021 |
     sed -E 's/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
-            s/^  [a-z].*:/  pub&/;s/^( *pub ) *pub /\1/;
+            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 	    /impl SERVICE/,${s/-> Result/-> CallResult/g};
 	    /^pub struct /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    s/\<Principal\>/candid::&/g;
-	    '
+	    ' |
+    rustfmt --edition 2021
 } >"${RUST_PATH}"
 if test -f "${PATCH_PATH}"; then
   (
