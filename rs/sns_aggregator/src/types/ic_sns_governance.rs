@@ -59,22 +59,22 @@ pub struct MaturityModulation {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronId {
-    id: serde_bytes::ByteBuf,
+    pub id: serde_bytes::ByteBuf,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Followees {
-    followees: Vec<NeuronId>,
+    pub followees: Vec<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefaultFollowees {
-    followees: Vec<(u64, Followees)>,
+    pub followees: Vec<(u64, Followees)>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronPermissionList {
-    permissions: Vec<i32>,
+    pub permissions: Vec<i32>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -121,7 +121,7 @@ pub struct Version {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ProposalId {
-    id: u64,
+    pub id: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -144,33 +144,33 @@ pub struct UpgradeInProgress {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GovernanceError {
-    error_message: String,
-    error_type: i32,
+    pub error_message: String,
+    pub error_type: i32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Ballot {
-    vote: i32,
-    cast_timestamp_seconds: u64,
-    voting_power: u64,
+    pub vote: i32,
+    pub cast_timestamp_seconds: u64,
+    pub voting_power: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Tally {
-    no: u64,
-    yes: u64,
-    total: u64,
-    timestamp_seconds: u64,
+    pub no: u64,
+    pub yes: u64,
+    pub total: u64,
+    pub timestamp_seconds: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RegisterDappCanisters {
-    canister_ids: Vec<candid::Principal>,
+    pub canister_ids: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Subaccount {
-    subaccount: serde_bytes::ByteBuf,
+    pub subaccount: serde_bytes::ByteBuf,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -212,7 +212,7 @@ pub struct ExecuteGenericNervousSystemFunction {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Motion {
-    motion_text: String,
+    pub motion_text: String,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -241,7 +241,7 @@ pub struct Proposal {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct WaitForQuietState {
-    current_deadline_timestamp_seconds: u64,
+    pub current_deadline_timestamp_seconds: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -269,14 +269,14 @@ pub struct ProposalData {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Split {
-    memo: u64,
-    amount_e8s: u64,
+    pub memo: u64,
+    pub amount_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Follow {
-    function_id: u64,
-    followees: Vec<NeuronId>,
+    pub function_id: u64,
+    pub followees: Vec<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -298,12 +298,12 @@ pub struct ChangeAutoStakeMaturity {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct IncreaseDissolveDelay {
-    additional_dissolve_delay_seconds: u32,
+    pub additional_dissolve_delay_seconds: u32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetDissolveTimestamp {
-    dissolve_timestamp_seconds: u64,
+    pub dissolve_timestamp_seconds: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -317,13 +317,13 @@ pub enum Operation {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Configure {
-    operation: Option<Operation>,
+    pub operation: Option<Operation>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RegisterVote {
-    vote: i32,
-    proposal: Option<ProposalId>,
+    pub vote: i32,
+    pub proposal: Option<ProposalId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -346,7 +346,7 @@ pub enum By {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimOrRefresh {
-    by: Option<By>,
+    pub by: Option<By>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -363,18 +363,18 @@ pub struct AddNeuronPermissions {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct MergeMaturity {
-    percentage_to_merge: u32,
+    pub percentage_to_merge: u32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Amount {
-    e8s: u64,
+    pub e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Disburse {
-    to_account: Option<Account>,
-    amount: Option<Amount>,
+    pub to_account: Option<Account>,
+    pub amount: Option<Amount>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -396,8 +396,8 @@ pub enum Command_2 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronInFlightCommand {
-    command: Option<Command_2>,
-    timestamp: u64,
+    pub command: Option<Command_2>,
+    pub timestamp: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -473,18 +473,18 @@ pub struct NeuronParameters {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimSwapNeuronsRequest {
-    neuron_parameters: Vec<NeuronParameters>,
+    pub neuron_parameters: Vec<NeuronParameters>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SwapNeuron {
-    id: Option<NeuronId>,
-    status: i32,
+    pub id: Option<NeuronId>,
+    pub status: i32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimedSwapNeurons {
-    swap_neurons: Vec<SwapNeuron>,
+    pub swap_neurons: Vec<SwapNeuron>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -528,12 +528,12 @@ pub struct get_mode_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetModeResponse {
-    mode: Option<i32>,
+    pub mode: Option<i32>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNeuron {
-    neuron_id: Option<NeuronId>,
+    pub neuron_id: Option<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -544,12 +544,12 @@ pub enum Result {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNeuronResponse {
-    result: Option<Result>,
+    pub result: Option<Result>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetProposal {
-    proposal_id: Option<ProposalId>,
+    pub proposal_id: Option<ProposalId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -560,7 +560,7 @@ pub enum Result_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetProposalResponse {
-    result: Option<Result_1>,
+    pub result: Option<Result_1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -624,7 +624,7 @@ pub struct ListNeurons {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ListNeuronsResponse {
-    neurons: Vec<Neuron>,
+    pub neurons: Vec<Neuron>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -638,12 +638,12 @@ pub struct ListProposals {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ListProposalsResponse {
-    proposals: Vec<ProposalData>,
+    pub proposals: Vec<ProposalData>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct StakeMaturity {
-    percentage_to_stake: Option<u32>,
+    pub percentage_to_stake: Option<u32>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -664,29 +664,29 @@ pub enum Command {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ManageNeuron {
-    subaccount: serde_bytes::ByteBuf,
-    command: Option<Command>,
+    pub subaccount: serde_bytes::ByteBuf,
+    pub command: Option<Command>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SplitResponse {
-    created_neuron_id: Option<NeuronId>,
+    pub created_neuron_id: Option<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DisburseMaturityResponse {
-    amount_disbursed_e8s: u64,
+    pub amount_disbursed_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ClaimOrRefreshResponse {
-    refreshed_neuron_id: Option<NeuronId>,
+    pub refreshed_neuron_id: Option<NeuronId>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct StakeMaturityResponse {
-    maturity_e8s: u64,
-    staked_maturity_e8s: u64,
+    pub maturity_e8s: u64,
+    pub staked_maturity_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -697,7 +697,7 @@ pub struct MergeMaturityResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DisburseResponse {
-    transfer_block_height: u64,
+    pub transfer_block_height: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

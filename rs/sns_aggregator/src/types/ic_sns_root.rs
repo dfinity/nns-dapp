@@ -24,7 +24,7 @@ pub struct SnsRootCanister {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterIdRecord {
-    canister_id: candid::Principal,
+    pub canister_id: candid::Principal,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -36,7 +36,7 @@ pub enum CanisterStatusType {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefiniteCanisterSettings {
-    controllers: Vec<candid::Principal>,
+    pub controllers: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -50,7 +50,7 @@ pub struct CanisterStatusResult {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsCanistersSummaryRequest {
-    update_canister_list: Option<bool>,
+    pub update_canister_list: Option<bool>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -104,7 +104,7 @@ pub struct ListSnsCanistersResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RegisterDappCanisterRequest {
-    canister_id: Option<candid::Principal>,
+    pub canister_id: Option<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -112,7 +112,7 @@ pub struct register_dapp_canister_ret0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RegisterDappCanistersRequest {
-    canister_ids: Vec<candid::Principal>,
+    pub canister_ids: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -126,8 +126,8 @@ pub struct SetDappControllersRequest {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterCallError {
-    code: Option<i32>,
-    description: String,
+    pub code: Option<i32>,
+    pub description: String,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -138,7 +138,7 @@ pub struct FailedUpdate {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetDappControllersResponse {
-    failed_updates: Vec<FailedUpdate>,
+    pub failed_updates: Vec<FailedUpdate>,
 }
 
 pub struct SERVICE(pub candid::Principal);

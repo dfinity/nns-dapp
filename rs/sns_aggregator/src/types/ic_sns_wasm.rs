@@ -19,19 +19,19 @@ pub struct SnsWasmCanisterInitPayload {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsWasm {
-    wasm: serde_bytes::ByteBuf,
-    canister_type: i32,
+    pub wasm: serde_bytes::ByteBuf,
+    pub canister_type: i32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmRequest {
-    hash: serde_bytes::ByteBuf,
-    wasm: Option<SnsWasm>,
+    pub hash: serde_bytes::ByteBuf,
+    pub wasm: Option<SnsWasm>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsWasmError {
-    message: String,
+    pub message: String,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -42,12 +42,12 @@ pub enum Result {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmResponse {
-    result: Option<Result>,
+    pub result: Option<Result>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TreasuryDistribution {
-    total_e8s: u64,
+    pub total_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -61,18 +61,18 @@ pub struct NeuronDistribution {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DeveloperDistribution {
-    developer_neurons: Vec<NeuronDistribution>,
+    pub developer_neurons: Vec<NeuronDistribution>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AirdropDistribution {
-    airdrop_neurons: Vec<NeuronDistribution>,
+    pub airdrop_neurons: Vec<NeuronDistribution>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SwapDistribution {
-    total_e8s: u64,
-    initial_swap_amount_e8s: u64,
+    pub total_e8s: u64,
+    pub initial_swap_amount_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -90,7 +90,7 @@ pub enum InitialTokenDistribution {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Countries {
-    iso_codes: Vec<String>,
+    pub iso_codes: Vec<String>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -122,7 +122,7 @@ pub struct SnsInitPayload {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DeployNewSnsRequest {
-    sns_init_payload: Option<SnsInitPayload>,
+    pub sns_init_payload: Option<SnsInitPayload>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -167,7 +167,7 @@ pub struct GetNextSnsVersionRequest {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNextSnsVersionResponse {
-    next_version: Option<SnsVersion>,
+    pub next_version: Option<SnsVersion>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -175,17 +175,17 @@ pub struct get_sns_subnet_ids_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsSubnetIdsResponse {
-    sns_subnet_ids: Vec<candid::Principal>,
+    pub sns_subnet_ids: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetWasmRequest {
-    hash: serde_bytes::ByteBuf,
+    pub hash: serde_bytes::ByteBuf,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetWasmResponse {
-    wasm: Option<SnsWasm>,
+    pub wasm: Option<SnsWasm>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -202,7 +202,7 @@ pub struct InsertUpgradePathEntriesRequest {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InsertUpgradePathEntriesResponse {
-    error: Option<SnsWasmError>,
+    pub error: Option<SnsWasmError>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -247,7 +247,7 @@ pub struct ListUpgradeStep {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ListUpgradeStepsResponse {
-    steps: Vec<ListUpgradeStep>,
+    pub steps: Vec<ListUpgradeStep>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -275,7 +275,7 @@ pub struct UpdateSnsSubnetListRequest {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpdateSnsSubnetListResponse {
-    error: Option<SnsWasmError>,
+    pub error: Option<SnsWasmError>,
 }
 
 pub struct SERVICE(pub candid::Principal);

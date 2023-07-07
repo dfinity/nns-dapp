@@ -21,8 +21,8 @@ pub enum MetadataValue {
 pub type Subaccount = serde_bytes::ByteBuf;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Account {
-    owner: candid::Principal,
-    subaccount: Option<Subaccount>,
+    pub owner: candid::Principal,
+    pub subaccount: Option<Subaccount>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -71,8 +71,8 @@ pub enum LedgerArg {
 pub type BlockIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetBlocksArgs {
-    start: BlockIndex,
-    length: candid::Nat,
+    pub start: BlockIndex,
+    pub length: candid::Nat,
 }
 
 pub type Map = Vec<(String, Box<Value>)>;
@@ -90,7 +90,7 @@ pub enum Value {
 pub type Block = Box<Value>;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct BlockRange {
-    blocks: Vec<Block>,
+    pub blocks: Vec<Block>,
 }
 
 pub type QueryBlockArchiveFn = candid::Func;
@@ -112,15 +112,15 @@ pub struct GetBlocksResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DataCertificate {
-    certificate: Option<serde_bytes::ByteBuf>,
-    hash_tree: serde_bytes::ByteBuf,
+    pub certificate: Option<serde_bytes::ByteBuf>,
+    pub hash_tree: serde_bytes::ByteBuf,
 }
 
 pub type TxIndex = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetTransactionsRequest {
-    start: TxIndex,
-    length: candid::Nat,
+    pub start: TxIndex,
+    pub length: candid::Nat,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -160,7 +160,7 @@ pub struct Transaction {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransactionRange {
-    transactions: Vec<Transaction>,
+    pub transactions: Vec<Transaction>,
 }
 
 pub type QueryArchiveFn = candid::Func;
@@ -182,8 +182,8 @@ pub struct GetTransactionsResponse {
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct icrc1_supported_standards_ret0_inner {
-    url: String,
-    name: String,
+    pub url: String,
+    pub name: String,
 }
 
 pub type Timestamp = u64;
