@@ -64,10 +64,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp
-      - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v3
-        with:
-          name: sns_aggregator_dev
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
@@ -336,6 +332,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
