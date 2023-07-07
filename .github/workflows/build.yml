@@ -88,7 +88,7 @@ jobs:
           npx playwright install --with-deps firefox
       - name: Run Playwright end-to-end tests
         working-directory: frontend
-        run: npm run test-e2e
+        run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e
       - name: Upload Playwright results
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}
@@ -339,10 +339,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: sns_aggregator_dev
-      - name: Get sns_aggregator
-        uses: actions/download-artifact@v3
-        with:
-          name: sns_aggregator
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
@@ -419,7 +415,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
       - name: Expect the first page of data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -452,7 +448,7 @@ jobs:
           git fetch --depth 1 origin tag aggregator-prod
           diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
           if test -n "${diff:-}"
-          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm.gz --verbose
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Stop replica
