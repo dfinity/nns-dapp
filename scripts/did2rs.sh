@@ -45,6 +45,7 @@ cd "$GIT_ROOT"
 
 which didc
 didc --version
+rustfmt --version
 
 ##########################
 # Translate candid to Rust
