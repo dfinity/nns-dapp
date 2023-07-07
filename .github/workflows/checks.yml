@@ -152,6 +152,7 @@ jobs:
         run: |
           if git diff | grep . ; then
                   echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  echo "Note:  didc version: $(didc --version)"
                   exit 1
           fi
   release-templating-works:

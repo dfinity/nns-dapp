@@ -43,6 +43,9 @@ DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
 
 cd "$GIT_ROOT"
 
+which didc
+didc --version
+
 ##########################
 # Translate candid to Rust
 ##########################
