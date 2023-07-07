@@ -40,6 +40,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+- Added CI workflows to update rust and didc automatically.
 - CreateServiceNervousSystem proposal support.
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
