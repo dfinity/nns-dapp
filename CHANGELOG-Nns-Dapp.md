@@ -55,6 +55,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
 - Migrated some end-to-end tests from Wdio to Playwright.
+- Use the newest snsdemo snapshot with the sns_aggregator preloaded.
 
 #### Deprecated
 #### Removed
