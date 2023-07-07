@@ -374,6 +374,25 @@ jobs:
           # Note: Pretty much any argument values will do; the canister will be reconfigured.
           dfx canister install sns_aggregator --wasm sns_aggregator.wasm.gz --mode reinstall --yes --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
           dfx canister call sns_aggregator get_canister_config
+      - name: Get the earliest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          # Wait for the aggregator to be up:
+          for (( try=300; try>0; try-- )); do
+            if curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json; then
+              break
+            fi
+            sleep 2
+          done
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          # Later we expect 10 SNSs. Make sure that when we do, it's because we
+          # actually collected the data and it wasn't preloaded from the
+          # snapshot.
+          (( actual < expect ))  || {
+            echo ERROR: Should not yet have $expected SNS before collecting.
+            scripts/sns/aggregator/get_log
+          }
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
       - name: Make the aggregator collect data quickly
