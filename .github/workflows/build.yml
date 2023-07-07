@@ -342,38 +342,17 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Get docker build outputs
+      - name: Get sns_aggregator_dev
         uses: actions/download-artifact@v3
         with:
-          name: out
-          path: out
-      - name: Get SNS scripts
-        uses: actions/checkout@v3
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          # Version from 2023-06-06 with dfx v0.14.1
-          ref: '0e61f618018db099a01b1686535fff8eff980d1c'
-      - name: Add SNS scripts to the path
-        run: |
-          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-      - name: Install tools
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-      - name: Get test environment
-        run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
-          dfx-snapshot-restore --snapshot state.tar.xz --verbose
-          dfx identity use snsdemo8
-          dfx-sns-demo-healthcheck
-      - name: Upgrade to the current aggregator
-        run: |
-          cp out/sns_aggregator_dev.wasm.gz sns_aggregator.wasm.gz
-          # Note: Pretty much any argument values will do; the canister will be reconfigured.
-          dfx canister install sns_aggregator --wasm sns_aggregator.wasm.gz --mode reinstall --yes --upgrade-unchanged '(opt record { update_interval_ms = 1000; fast_interval_ms = 1_000_000_000; })'
-          dfx canister call sns_aggregator get_canister_config
+          # Version from 2023-06-06 with dfx v 0.14.1
+          snsdemo_ref: '0e61f618018db099a01b1686535fff8eff980d1c'
+          snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Verify that configuration is as provided
         run: scripts/sns/aggregator/test-config
       - name: Make the aggregator collect data quickly
@@ -424,7 +403,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm sns_aggregator.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
       - name: Expect the first page of data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -457,7 +436,7 @@ jobs:
           git fetch --depth 1 origin tag aggregator-prod
           diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
           if test -n "${diff:-}"
-          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator.wasm.gz --verbose
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Stop replica
