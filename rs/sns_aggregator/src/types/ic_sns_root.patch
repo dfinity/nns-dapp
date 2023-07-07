@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 17d19329e..eb29aeae2 100644
+index 3d08525e4..d85254a2e 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -4,12 +4,12 @@
+@@ -3,12 +3,12 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -18,26 +18,12 @@ index 17d19329e..eb29aeae2 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SnsRootCanister {
-@@ -82,7 +82,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -91,7 +91,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_sns_canisters_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
  pub struct ListSnsCanistersResponse {
-   pub  root: Option<candid::Principal>,
-   pub  swap: Option<candid::Principal>,
-@@ -124,7 +124,7 @@ pub struct FailedUpdate {
- pub struct SetDappControllersResponse { failed_updates: Vec<FailedUpdate> }
- 
- pub struct SERVICE(pub candid::Principal);
--impl SERVICE {
-+impl SERVICE{
-   pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<
-     (CanisterStatusResult,)
-   > { ic_cdk::call(self.0, "canister_status", (arg0,)).await }
-@@ -162,4 +162,3 @@ impl SERVICE {
-     ic_cdk::call(self.0, "set_dapp_controllers", (arg0,)).await
-   }
- }
--
+     pub root: Option<candid::Principal>,
+     pub swap: Option<candid::Principal>,
