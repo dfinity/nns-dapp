@@ -6,7 +6,11 @@ set -xeuo pipefail
 CHANGELOG="CHANGELOG-Nns-Dapp.md"
 MAIN_ANCESTOR="$(git merge-base HEAD origin/main)"
 
-LAST_ADDED_ENTRY_CONTENT="$(git diff "$MAIN_ANCESTOR" "$CHANGELOG" | grep '^+[*-]' | tail -1 | sed -e 's/^+//')"
+if ! LAST_ADDED_ENTRY_CONTENT="$(git diff "$MAIN_ANCESTOR" "$CHANGELOG" | grep '^+[*-]' | tail -1 | sed -e 's/^+//')"; then
+  echo "PASSED: No new entries were added to $CHANGELOG"
+  exit 0
+fi
+
 LAST_ADDED_ENTRY_LINE_NUMBER="$(grep --fixed-string -n -m 1 -- "$LAST_ADDED_ENTRY_CONTENT" "$CHANGELOG" | cut -d: -f1)"
 LAST_RELEASE_HEADING="$(git show origin/main:CHANGELOG-Nns-Dapp.md | grep -m 1 '^## Proposal [0-9]\+$')"
 LAST_RELEASE_LINE_NUMBER="$(grep -n -m 1 "$LAST_RELEASE_HEADING" "$CHANGELOG" | cut -d: -f1)"
