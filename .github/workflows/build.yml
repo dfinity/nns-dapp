@@ -95,7 +95,7 @@ jobs:
           done
       - name: Run Playwright end-to-end tests
         working-directory: frontend
-        run: PLAYWRIGHT_BASE_URL="$(scripts/dfx-canister-url nns-dapp)" npm run test-e2e
+        run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e
       - name: Upload Playwright results
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}
