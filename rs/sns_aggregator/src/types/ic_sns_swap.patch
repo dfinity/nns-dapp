@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index b1cfb799f..b373161c8 100644
+index f71811d32..b373161c8 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -4,17 +4,17 @@
@@ -11,7 +11,7 @@ index b1cfb799f..b373161c8 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
+-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
 -// use ic_cdk::api::call::CallResult as Result;
 +// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 +// use ic_cdk::api::call::CallResult;
@@ -25,24 +25,6 @@ index b1cfb799f..b373161c8 100644
  pub struct Init {
    pub  sns_root_canister_id: String,
    pub  fallback_controller_principal_ids: Vec<String>,
-@@ -29,7 +29,7 @@ pub struct Init {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ErrorRefundIcpRequest { source_principal_id: Option<Principal> }
-+pub struct ErrorRefundIcpRequest { source_principal_id: Option<candid::Principal> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Ok { block_height: Option<u64> }
-@@ -52,7 +52,7 @@ pub struct CanisterCallError { code: Option<i32>, description: String }
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct FailedUpdate {
-   pub  err: Option<CanisterCallError>,
--  pub  dapp_canister_id: Option<Principal>,
-+  pub  dapp_canister_id: Option<candid::Principal>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -79,7 +79,7 @@ pub struct SettleCommunityFundParticipationResult {
  }
  
@@ -52,44 +34,6 @@ index b1cfb799f..b373161c8 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SetModeCallResult { possibility: Option<Possibility_2> }
-@@ -107,7 +107,7 @@ pub struct FinalizeSwapResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetBuyerStateRequest { principal_id: Option<Principal> }
-+pub struct GetBuyerStateRequest { principal_id: Option<candid::Principal> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct TransferableAmount {
-@@ -138,16 +138,16 @@ pub enum CanisterStatusType { stopped, stopping, running }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct DefiniteCanisterSettingsArgs {
--  pub  controller: Principal,
-+  pub  controller: candid::Principal,
-   pub  freezing_threshold: candid::Nat,
--  pub  controllers: Vec<Principal>,
-+  pub  controllers: Vec<candid::Principal>,
-   pub  memory_allocation: candid::Nat,
-   pub  compute_allocation: candid::Nat,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct CanisterStatusResultV2 {
--  pub  controller: Principal,
-+  pub  controller: candid::Principal,
-   pub  status: CanisterStatusType,
-   pub  freezing_threshold: candid::Nat,
-   pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
-@@ -190,7 +190,7 @@ pub struct get_open_ticket_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Icrc1Account {
--  pub  owner: Option<Principal>,
-+  pub  owner: Option<candid::Principal>,
-   pub  subaccount: Option<serde_bytes::ByteBuf>,
- }
- 
 @@ -217,13 +217,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_sale_parameters_arg0 {}
@@ -120,7 +64,7 @@ index b1cfb799f..b373161c8 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct ListCommunityFundParticipantsRequest {
-@@ -320,36 +317,25 @@ pub struct ListCommunityFundParticipantsResponse {
+@@ -320,10 +317,7 @@ pub struct ListCommunityFundParticipantsResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -132,12 +76,7 @@ index b1cfb799f..b373161c8 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct Participant {
-   pub  participation: Option<BuyerState>,
--  pub  participant_id: Option<Principal>,
-+  pub  participant_id: Option<candid::Principal>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -335,21 +329,13 @@ pub struct Participant {
  pub struct ListDirectParticipantsResponse { participants: Vec<Participant> }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -162,16 +101,14 @@ index b1cfb799f..b373161c8 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct InvalidUserAmount {
-@@ -398,29 +384,38 @@ pub struct RefreshBuyerTokensResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -399,28 +385,37 @@ pub struct RefreshBuyerTokensResponse {
  pub struct restore_dapp_controllers_arg0 {}
  
--pub struct SERVICE(pub Principal);
+ pub struct SERVICE(pub candid::Principal);
 -impl SERVICE {
 -  pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<
 -    (ErrorRefundIcpResponse,)
 -  > { ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await }
-+pub struct SERVICE(pub candid::Principal);
 +impl SERVICE{
 +  pub async fn error_refund_icp(
 +    &self,
