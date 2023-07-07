@@ -43,6 +43,12 @@ DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
 
 cd "$GIT_ROOT"
 
+: "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
+{
+  didc --version
+  rustfmt --version
+} >/dev/null
+
 ##########################
 # Translate candid to Rust
 ##########################

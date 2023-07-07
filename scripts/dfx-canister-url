@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -xeuo pipefail
+set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
@@ -136,7 +136,7 @@ network_url() {
   test -n "${network_url:-}" || network_url="$(network_config | h="${DFX_URL_TYPE^^}_HOST" jq -re '.[env.DFX_NETWORK].config | .[env.h] // .HOST // empty' || true)"
   test -n "${network_url}" || [[ "${DFX_NETWORK:-}" != "local" ]] || network_url="http://localhost:8080"
   test -n "${network_url}" || network_url="https://${DFX_NETWORK}.testnet.dfinity.network"
-  echo "${network_url:-}" | head -n1
+  echo "${network_url%%$'\n'*}"
 }
 
 canister_url() {
