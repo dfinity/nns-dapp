@@ -37,6 +37,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
       ENABLE_SIMULATE_MERGE_NEURONS: true,
+      ENABLE_NEURON_SETTINGS: false,
       ENABLE_INSTANT_UNLOCK: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,

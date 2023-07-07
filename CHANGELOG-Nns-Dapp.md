@@ -46,6 +46,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Added a script to perform part of the release SOP.
 - Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 - Test that no new change log entries are added to existing releases.
+- New feature flag "ENABLE_NEURON_SETTINGS".
 
 #### Changed
 
