@@ -47,6 +47,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 - Test that no new change log entries are added to existing releases.
 - New feature flag "ENABLE_NEURON_SETTINGS".
+- Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
 
 #### Changed
 
