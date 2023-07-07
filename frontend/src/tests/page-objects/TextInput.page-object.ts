@@ -12,7 +12,9 @@ export class TextInputPo extends SimpleBasePageObject {
   }): TextInputPo {
     if (isNullish(testId)) {
       return new TextInputPo(
-        element.querySelector("input[type=text], input:not([type])")
+        element.querySelector(
+          "input[type=text], input[type=number], input:not([type])"
+        )
       );
     }
     return new TextInputPo(
