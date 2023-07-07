@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 0f919e668..4ee8d9890 100644
+index 4878b0b12..4ee8d9890 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 @@ -4,12 +4,12 @@
@@ -11,31 +11,13 @@ index 0f919e668..4ee8d9890 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
+-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
 -// use ic_cdk::api::call::CallResult as Result;
 +// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
 +// use ic_cdk::api::call::CallResult;
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum MetadataValue {
-@@ -21,7 +21,7 @@ pub enum MetadataValue {
- 
- pub type Subaccount = serde_bytes::ByteBuf;
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct Account { owner: Principal, subaccount: Option<Subaccount> }
-+pub struct Account { owner: candid::Principal, subaccount: Option<Subaccount> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum ChangeFeeCollector { SetTo(Account), Unset }
-@@ -42,7 +42,7 @@ pub struct InitArgs_archive_options {
-   pub  max_message_size_bytes: Option<u64>,
-   pub  cycles_for_archive_creation: Option<u64>,
-   pub  node_max_memory_size_bytes: Option<u64>,
--  pub  controller_id: Principal,
-+  pub  controller_id: candid::Principal,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -80,30 +80,25 @@ pub type Block = Box<Value>;
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct BlockRange { blocks: Vec<Block> }
@@ -109,13 +91,11 @@ index 0f919e668..4ee8d9890 100644
  
  pub type Timestamp = u64;
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -197,17 +190,20 @@ pub enum TransferError {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -198,16 +191,19 @@ pub enum TransferError {
  pub enum TransferResult { Ok(BlockIndex), Err(TransferError) }
  
--pub struct SERVICE(pub Principal);
+ pub struct SERVICE(pub candid::Principal);
 -impl SERVICE {
-+pub struct SERVICE(pub candid::Principal);
 +impl SERVICE{
    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<
      (GetBlocksResponse,)

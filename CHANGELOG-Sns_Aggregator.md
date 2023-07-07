@@ -10,8 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
-- Shortened the patch files by automating the use of EmptyRecord.
-- Shortened the patch files used when importing NNS types.
+- Shortened patch files by namespacing Principal automatically, automating the use of EmptyRecord and using CallResult in API declarations.
 ### Fixed
 ### Security
 ### Not Published
