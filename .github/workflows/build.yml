@@ -368,7 +368,13 @@ jobs:
       - name: Get the earliest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
-          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          # Wait for the aggregator to be up:
+          for (( try=300; try>0; try-- )); do
+            if curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json; then
+              break
+            fi
+            sleep 2
+          done
           expect=10
           actual="$(jq length aggregate-1.json)"
           # Later we expect 10 SNSs. Make sure that when we do, it's because we
