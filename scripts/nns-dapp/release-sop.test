@@ -38,9 +38,14 @@ test_with_data() {
   fi
 
   if [ "$actualExitCode" != "$expectedExitCode" ]; then
-    echo "Expected exit code $expectedExitCode, got $actualExitCode" >&2
-    echo "FAILED: $1"
-    exit 1
+    if [ "${UPDATE_TESTS:-}" = "true" ]; then
+      jq -r --argjson actualExitCode "$actualExitCode" '.expectedExitCode = $actualExitCode' "$json_file" | sponge "$json_file"
+      echo "UPDATED $test_name"
+    else
+      echo "Expected exit code $expectedExitCode, got $actualExitCode" >&2
+      echo "FAILED: $1"
+      exit 1
+    fi
   fi
 
   echo "PASSED: $1"
