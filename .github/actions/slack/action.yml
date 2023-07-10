@@ -1,5 +1,5 @@
 name: 'Slack'
-description: 'A simple action that send a slack message to a channel.'
+description: 'A simple action that sends a slack message to a channel.'
 inputs:
   message:
     description: 'The message to send. A link to the action run will be appended.'
