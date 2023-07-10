@@ -11,7 +11,7 @@ inputs:
   snapshot_url:
     description: "The URL of the snapshot to download and install"
     required: false
-    default: "https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+    default: "https://github.com/dfinity/snsdemo/releases/download/release-2023-07-07/snsdemo_snapshot_ubuntu-22.04.tar.xz"
   nns_dapp_wasm:
     description: "The name of the nns-dapp wasm to install"
     required: false
