@@ -67,7 +67,7 @@ cd "$GIT_ROOT"
 	#![allow(non_camel_case_types)]
 	#![allow(dead_code)]
 
-	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+	use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 	use ic_cdk::api::call::CallResult;
 	EOF
   # didc converts the .did to Rust, with the following limitations:
