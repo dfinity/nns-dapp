@@ -1,16 +1,7 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 1c4dd45ec..6cf95680e 100644
+index 1c4dd45ec..e504fb85b 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -8,7 +8,7 @@ use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
- // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
--// use ic_cdk::api::call::CallResult as Result;
-+// use ic_cdk::api::call::CallResult as Result
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GenericNervousSystemFunction {
 @@ -515,7 +515,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_metadata_arg0 {}
