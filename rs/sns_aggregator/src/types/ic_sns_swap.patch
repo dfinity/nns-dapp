@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index a21002e86..e0827feb2 100644
+index 4b6fc9324..e0827feb2 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -3,19 +3,19 @@
@@ -31,7 +31,7 @@ index a21002e86..e0827feb2 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Possibility_2 {
--    Ok {},
+-    Ok(EmptyRecord),
 +    Ok,
      Err(CanisterCallError),
  }
