@@ -99,7 +99,7 @@ cd "$GIT_ROOT"
             s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 	    /impl SERVICE/,${s/-> Result/-> CallResult/g};
-	    /^pub struct /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
+	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
 	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021
