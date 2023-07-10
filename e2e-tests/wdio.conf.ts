@@ -1,5 +1,4 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { NNS_DAPP_URL } from "./common/constants";
 import { Options as WebDriverOptions, Capabilities } from "@wdio/types";
 
 /**
@@ -48,7 +47,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
 }
 
 export const config: WebdriverIO.Config = {
-  baseUrl: NNS_DAPP_URL,
+  baseUrl: process.env.WDIO_BASE_URL,
 
   before: (_capabilities, _spec) => {
     browser["screenshot-prefix"] = "before"; // Suite name

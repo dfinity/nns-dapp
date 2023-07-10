@@ -86,13 +86,9 @@ e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
 
 ### Running against local server
 
-If you wish to run the e2e tests against your local server, configure the URL as following in `.env` file of the test:
+If you wish to run the e2e tests against your local server, please note:
 
-```
-VITE_OWN_CANISTER_URL=http://localhost:5173/
-```
-
-In addition, the II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
+* The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
 
 ## Requirements
 
