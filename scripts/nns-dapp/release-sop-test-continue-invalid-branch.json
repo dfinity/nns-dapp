@@ -1,0 +1,18 @@
+{
+  "args": [
+    "--continue"
+  ],
+  "behavior": [
+    {
+      "command": "git branch --show-current",
+      "stdout": "my-feature-branch",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Current branch my-feature-branch is not a release branch.",
+    "With --continue, go to the release branch first and try again."
+  ],
+  "expectedExitCode": 1
+}

@@ -1,13 +1,14 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
     WizardModal,
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
-  import DestinationAddress from "$lib/components/accounts/DestinationAddress.svelte";
+  import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -95,13 +96,19 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  testId="disburse-nns-neuron-modal-component"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
   {#if currentStep?.name === "SelectDestination"}
-    <DestinationAddress on:nnsAddress={onSelectAddress} />
+    <NnsDestinationAddress on:nnsAddress={onSelectAddress} />
   {/if}
   {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron

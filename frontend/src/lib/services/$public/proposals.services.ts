@@ -17,6 +17,7 @@ import {
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
+import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { errorToString } from "$lib/utils/error.utils";
 import {
   excludeProposals,
@@ -46,7 +47,7 @@ const handleFindProposalsError = ({
   if (
     certified ||
     identity.getPrincipal().isAnonymous() ||
-    FORCE_CALL_STRATEGY === "query"
+    isForceCallStrategy()
   ) {
     proposalsStore.setProposals({ proposals: [], certified });
 
@@ -67,7 +68,6 @@ export const listProposals = async ({
 }): Promise<void> => {
   return findProposals({
     beforeProposal: undefined,
-    loadFinished,
     onLoad: ({ response: proposals, certified }) => {
       proposalsStore.setProposals({ proposals, certified });
 
@@ -98,7 +98,6 @@ export const listNextProposals = async ({
 }): Promise<void> =>
   findProposals({
     beforeProposal,
-    loadFinished,
     onLoad: ({ response: proposals, certified }) => {
       if (proposals.length === 0) {
         // There is no more proposals to fetch for the current filters.
@@ -120,32 +119,12 @@ const findProposals = async ({
   beforeProposal,
   onLoad,
   onError,
-  loadFinished,
 }: {
   beforeProposal: ProposalId | undefined;
   onLoad: QueryAndUpdateOnResponse<ProposalInfo[]>;
   onError: QueryAndUpdateOnError<unknown>;
-  loadFinished: (params: {
-    paginationOver: boolean;
-    certified: boolean | undefined;
-  }) => void;
 }): Promise<void> => {
   const filters: ProposalsFiltersStore = get(proposalsFiltersStore);
-
-  const { topics, rewards, status } = filters;
-
-  // The governance canister consider empty filters and an "any" query. Flutter on the contrary considers empty as empty.
-  // That's why we implement the same behavior and do not render any proposals if one of the filter is empty.
-  // This is covered by our utils "hideProposal" but to avoid glitch, like displaying a spinner appearing and disappearing for a while, we "just" do not query the canister and empty the store if one of the filter is empty.
-  if (topics.length === 0 || rewards.length === 0 || status.length === 0) {
-    proposalsStore.setProposals({ proposals: [], certified: undefined });
-
-    loadFinished({
-      paginationOver: true,
-      certified: undefined,
-    });
-    return;
-  }
 
   const validateResponses = (
     trustedProposals: ProposalInfo[],
@@ -249,7 +228,9 @@ export const loadProposal = async ({
     console.error(erroneusResponse);
 
     const skipUpdateErrorHandling =
-      silentUpdateErrorMessages === true && erroneusResponse.certified === true;
+      silentUpdateErrorMessages === true &&
+      (erroneusResponse.certified === true ||
+        (erroneusResponse.certified === false && isForceCallStrategy()));
 
     if (silentErrorMessages !== true && !skipUpdateErrorHandling) {
       const details = errorToString(erroneusResponse?.error);

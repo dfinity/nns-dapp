@@ -2,9 +2,9 @@ import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-suppl
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { TokenAmount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("snsTotalSupplyTokenAmountStore", () => {

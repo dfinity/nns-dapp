@@ -1,11 +1,16 @@
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { getDeniedCountries } from "$lib/getters/sns-summary";
+import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { TokenAmount } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import type { StoreData } from "$lib/types/store";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import type { TokenAmount } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
@@ -158,6 +163,31 @@ export const canUserParticipateToSwap = ({
   );
 };
 
+/**
+ * Returns whether the location of the user is needed to participate to the swap.
+ *
+ * Some projects might restrict participation in the swap to users from specific countries.
+ *
+ * Yet, we don't need to get the location of all users, only those who can to participate to the swap:
+ *
+ * - Same logic as canUserParticipateToSwap
+ * - User is logged in (this logic is assumed in the previous function)
+ * - Project has a deny_list of countries (TODO: add new fields in the swap params)
+ */
+export const userCountryIsNeeded = ({
+  summary,
+  swapCommitment,
+  loggedIn,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+  loggedIn: boolean;
+}): boolean =>
+  canUserParticipateToSwap({ summary, swapCommitment }) &&
+  loggedIn &&
+  nonNullish(summary) &&
+  getDeniedCountries(summary).length > 0;
+
 export const hasUserParticipatedToSwap = ({
   swapCommitment,
 }: {
@@ -234,4 +264,111 @@ export const validParticipation = ({
     };
   }
   return { valid: true };
+};
+
+export type ParticipationButtonStatus =
+  | "disabled-max-participation"
+  | "disabled-not-eligible"
+  | "disabled-not-open"
+  | "enabled"
+  | "loading"
+  | "logged-out";
+
+/**
+ * Returns the status of the Participate Button.
+ *
+ * There are 6 possible statuses:
+ * - logged-out
+ * - loading
+ * - disabled-not-open
+ * - disabled-max-participation
+ * - disabled-not-eligible
+ * - enabled
+ *
+ * logged-out:
+ * - The user is not logged in.
+ *
+ * loading:
+ * - Fetching any of the data
+ * - Found an open ticket.
+ *
+ * disabled-max-participation:
+ * - The user has already participated to the swap with the maximum per user.
+ *
+ * disabled-not-eligible:
+ * - The user is in a restricted country.
+ *
+ * disabled-not-open:
+ * - The project is not open.
+ *
+ * enabled:
+ * - None of the above.
+ *
+ * @param {Object} params
+ * @param {SnsSummary | null | undefined} params.summary SNS Summary
+ * @param {SnsSwapCommitment | null | undefined} params.swapCommitment User's swap commitment
+ * @param {SnsSwapTicket | null | undefined} params.ticket The open ticket of the user. The meaning of the types is the same as in ticketsStore.
+ * @param {boolean} params.loggedIn Whether the user is logged in or not.
+ * @param {CountryCode | undefined | Error} params.userCountry The location of the user. The meaning of the types is the same as in userCountryStore.
+ * @returns {ParticipationButtonStatus} A string representing the status of the button.
+ */
+export const participateButtonStatus = ({
+  summary,
+  swapCommitment,
+  loggedIn,
+  ticket,
+  userCountry,
+}: {
+  summary: SnsSummary | undefined | null;
+  swapCommitment: SnsSwapCommitment | undefined | null;
+  loggedIn: boolean;
+  ticket: SnsSwapTicket | undefined | null;
+  userCountry: StoreData<Country>;
+}): ParticipationButtonStatus => {
+  if (!loggedIn) {
+    return "logged-out";
+  }
+
+  const currentCommitment = getCommitmentE8s(swapCommitment);
+  if (isNullish(summary) || isNullish(currentCommitment)) {
+    return "loading";
+  }
+
+  if (!isProjectOpen(summary)) {
+    return "disabled-not-open";
+  }
+
+  // If `ticket` is undefined, it means that the ticket is still being fetched.
+  // If `ticket` is not null, it means there is an ongoing participation already.
+  if (ticket === undefined || ticket !== null) {
+    return "loading";
+  }
+
+  // Whether user can still participate with 1 e8
+  const userReachedMaxCommitment = commitmentTooLarge({
+    summary,
+    amountE8s: currentCommitment + BigInt(1),
+  });
+  if (userReachedMaxCommitment) {
+    return "disabled-max-participation";
+  }
+
+  const projectDeniedCountries = getDeniedCountries(summary);
+  if (projectDeniedCountries.length > 0) {
+    // We tried to get the user country but it failed.
+    // We don't want to block the user from participating.
+    if (userCountry instanceof Error) {
+      return "enabled";
+    }
+
+    if (userCountry === NOT_LOADED) {
+      return "loading";
+    }
+
+    if (projectDeniedCountries.includes(userCountry.isoCode)) {
+      return "disabled-not-eligible";
+    }
+  }
+
+  return "enabled";
 };

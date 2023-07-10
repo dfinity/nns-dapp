@@ -1,12 +1,15 @@
+import type { ProjectProposalData } from "$lib/stores/sns-proposals.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  type SnsBallot,
   type SnsProposalData,
   type SnsProposalId,
   type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import type { Subscriber } from "svelte/store";
 
 export const mockSnsProposal: SnsProposalData = {
   id: [
@@ -123,10 +126,14 @@ export const createSnsProposal = ({
   status,
   rewardStatus,
   proposalId,
+  ballots = [],
+  createdAt = BigInt(12313123),
 }: {
   status: SnsProposalDecisionStatus;
   rewardStatus?: SnsProposalRewardStatus;
   proposalId: bigint;
+  ballots?: Array<[string, SnsBallot]>;
+  createdAt?: bigint;
 }): SnsProposalData => {
   const id: [SnsProposalId] = [{ id: proposalId }];
   switch (status) {
@@ -137,6 +144,8 @@ export const createSnsProposal = ({
           id,
           latest_tally: [acceptedTally],
           decided_timestamp_seconds: BigInt(0),
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
       });
@@ -149,6 +158,8 @@ export const createSnsProposal = ({
           decided_timestamp_seconds: BigInt(11223),
           executed_timestamp_seconds: BigInt(0),
           failed_timestamp_seconds: BigInt(0),
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
       });
@@ -161,6 +172,8 @@ export const createSnsProposal = ({
           decided_timestamp_seconds: BigInt(11223),
           executed_timestamp_seconds: BigInt(0),
           failed_timestamp_seconds: BigInt(112231320),
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
       });
@@ -173,6 +186,8 @@ export const createSnsProposal = ({
           decided_timestamp_seconds: BigInt(11223),
           executed_timestamp_seconds: BigInt(112231320),
           failed_timestamp_seconds: BigInt(0),
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
       });
@@ -185,8 +200,41 @@ export const createSnsProposal = ({
           decided_timestamp_seconds: BigInt(11223),
           executed_timestamp_seconds: BigInt(0),
           failed_timestamp_seconds: BigInt(0),
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
+        },
+        rewardStatus,
+      });
+    default:
+      return addRewardStatusData({
+        proposal: {
+          ...mockSnsProposal,
+          id,
+          ballots,
+          proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
       });
   }
 };
+
+export const buildMockSnsProposalsStoreSubscribe =
+  ({
+    universeIdText,
+    proposals,
+  }: {
+    universeIdText: string;
+    proposals: SnsProposalData[];
+  }) =>
+  (
+    run: Subscriber<{ [universeIdText: string]: ProjectProposalData }>
+  ): (() => void) => {
+    run({
+      [universeIdText]: {
+        proposals,
+        certified: true,
+        completed: true,
+      },
+    });
+    return () => undefined;
+  };

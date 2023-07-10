@@ -3,8 +3,17 @@ import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
 import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import { tokensStore } from "$lib/stores/tokens.store";
+import { formatToken } from "$lib/utils/token.utils";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockTokensSubscribe,
+  mockUniversesTokens,
+} from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
 import { page } from "../../../../__mocks__/$app/stores";
@@ -15,17 +24,52 @@ vi.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+  return {
+    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-minter.services", () => {
+  return {
+    updateBalance: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("CkBTCAccounts", () => {
   const goToWallet = async () => {
     // Do nothing
   };
 
-  beforeAll(() =>
+  beforeAll(() => {
+    jest
+      .spyOn(tokensStore, "subscribe")
+      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+
     page.mock({
       data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
-    })
-  );
+    });
+  });
 
   describe("when there are accounts in the store", () => {
     beforeAll(() => {
@@ -49,6 +93,20 @@ describe("CkBTCAccounts", () => {
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
+      );
+    });
+
+    it("should render balance in card", async () => {
+      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
+
+      const cardTitleRow = container.querySelector(
+        'article > div[data-tid="token-value-label"]'
+      );
+
+      expect(cardTitleRow?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockCkBTCMainAccount.balanceE8s,
+        })} ${mockCkBTCToken.symbol}`
       );
     });
 

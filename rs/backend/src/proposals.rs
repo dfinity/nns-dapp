@@ -1,13 +1,12 @@
 use crate::proposals::def::*;
-use candid::parser::types::{IDLType, PrimType};
-use candid::parser::value::IDLValue;
-use candid::{CandidType, Decode, Deserialize};
+use candid::parser::types::{IDLType, IDLTypes};
+use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
 use idl2json::candid_types::internal_candid_type_to_idl_type;
-use idl2json::{idl2json_with_weak_names, BytesFormat, Idl2JsonOptions};
+use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
@@ -44,10 +43,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
 
 fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
     if cache.len() >= CACHE_SIZE_LIMIT {
-        // TODO replace this with `pop_first` once it is stablized
-        if let Some(key) = cache.iter().next().map(|(key, _)| *key) {
-            cache.remove(&key);
-        }
+        cache.pop_first();
     }
 
     cache.insert(proposal_id, payload_json);
@@ -62,6 +58,8 @@ pub struct InternetIdentityInit {
     pub archive_config: Option<ArchiveConfig>,
     pub canister_creation_cycles_cost: Option<u64>,
     pub register_rate_limit: Option<RateLimitConfig>,
+    pub max_num_latest_delegation_origins: Option<u64>,
+    pub migrate_storage_to_memory_manager: Option<bool>,
 }
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct RateLimitConfig {
@@ -96,27 +94,35 @@ pub enum ArchiveIntegration {
     Pull,
 }
 
-fn decode_arg(arg: &[u8], canister_id: Option<CanisterId>) -> String {
-    if arg.is_empty() {
-        return "[]".to_owned();
-    }
+/// Best effort to determine the types of a cansiter args.
+fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     // If canister id is II
     // use InternetIdentityInit type
-    let idl_type = if canister_id == Some(IDENTITY_CANISTER_ID) {
+    let args = if canister_id == Some(IDENTITY_CANISTER_ID) {
         let idl_type = internal_candid_type_to_idl_type(&InternetIdentityInit::ty());
-        IDLType::OptT(Box::new(idl_type))
+        vec![IDLType::OptT(Box::new(idl_type))]
     } else {
-        // This will be ignored, so we won't have any type information.
-        IDLType::PrimT(PrimType::Null)
+        vec![]
     };
+    IDLTypes { args }
+}
 
-    let idl_value = Decode!(arg, IDLValue).expect("Binary is not valid candid");
-    let options = Idl2JsonOptions {
-        bytes_as: Some(BytesFormat::Hex),
-        long_bytes_as: None,
-    };
-    let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
-    serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
+    // TODO: Test empty payload
+    // TODO: Test existing payloads
+    // TODO: Test muti-value payloads
+    match IDLArgs::from_bytes(arg) {
+        Ok(idl_args) => {
+            let options = Idl2JsonOptions {
+                bytes_as: Some(BytesFormat::Hex),
+                long_bytes_as: None,
+                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+            };
+            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &options);
+            serde_json::to_string(&json_value).expect("Failed to serialize JSON")
+        }
+        Err(_) => "[]".to_owned(),
+    }
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
@@ -199,10 +205,11 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
 }
 
 fn debug<T: Debug>(value: T) -> String {
-    format!("{:?}", value)
+    format!("{value:?}")
 }
 
 mod def {
+    use crate::proposals::canister_arg_types;
     use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
@@ -246,7 +253,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, None);
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -286,7 +293,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, Some(payload.canister_id));
+            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -513,7 +520,7 @@ mod def {
     fn calculate_hash_string(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in calculate_hash(bytes) {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }
@@ -521,7 +528,7 @@ mod def {
     fn format_bytes(bytes: &[u8]) -> String {
         let mut hash_string = String::with_capacity(64);
         for byte in bytes {
-            write!(hash_string, "{:02x}", byte).unwrap();
+            write!(hash_string, "{byte:02x}").unwrap();
         }
         hash_string
     }

@@ -26,14 +26,14 @@ hex = "0.4.3"
 # 0.4.19 works and satisfies ic. 
 chrono = "=0.4.19"
 
-ic-cdk = "0.7.3"
+ic-cdk = "0.8.1"
 ic-cdk-macros = "0.6.10"
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="2c91aaae834dace5f1826ef41a910500d133d35e" }
+ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="b1693619e3d4dbc00d8c79e9b6886e1db48b21f7" }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
 ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
@@ -49,9 +49,10 @@ ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-idl2json = { git = "https://github.com/dfinity/idl2json", rev="c983dea6fc5666912218e7babf2b6b2f8b5648a4" }
+idl2json = "0.8.7"
 flate2 = "1.0.25"
 regex = "1.7.1"
 
 [dev-dependencies]
 maplit = "1.0.2"
+anyhow = "1.0.68"

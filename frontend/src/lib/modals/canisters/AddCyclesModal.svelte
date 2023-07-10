@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
@@ -28,6 +28,7 @@
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
+  import { ICPToken } from "@dfinity/utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -58,6 +59,8 @@
   let amount: number | undefined;
   let canisterId: Principal | undefined;
   $: canisterId = $store.info?.canister_id;
+  let canisterName: string | undefined;
+  $: canisterName = $store.info?.name;
 
   const onSelectAccount = ({
     detail,
@@ -112,7 +115,7 @@
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
-      <SelectAccount
+      <NnsSelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
@@ -138,7 +141,7 @@
           />
         </p>
         <div>
-          <TransactionSource {account} />
+          <TransactionSource {account} token={ICPToken} />
         </div>
         <CanisterIdInfo {canisterId} />
       </SelectCyclesCanister>
@@ -148,6 +151,7 @@
         {account}
         {icpToCyclesExchangeRate}
         {amount}
+        name={canisterName}
         on:nnsClose
         on:nnsBack={modal.back}
         on:nnsConfirm={addCycles}

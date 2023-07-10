@@ -1,96 +1,44 @@
-import { queryCanisterDetails } from "$lib/api/canisters.api.cjs";
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { SYNC_CYCLES_TIMER_INTERVAL } from "$lib/constants/canisters.constants";
 import type { CanisterSync } from "$lib/types/canister";
-import type {
-  PostMessage,
-  PostMessageDataRequest,
-} from "$lib/types/post-messages";
-import { createAuthClient } from "$lib/utils/auth.utils";
-import type { Identity } from "@dfinity/agent";
+import type { PostMessageDataRequestCycles } from "$lib/types/post-message.canister";
+import type { PostMessage } from "$lib/types/post-messages";
+import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
+import {
+  TimerWorkerUtils,
+  type TimerWorkerUtilsJobData,
+} from "$lib/worker-utils/timer.worker-utils";
+
+// Worker context to start and stop job
+const worker = new TimerWorkerUtils();
 
 onmessage = async ({
   data: dataMsg,
-}: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
+}: MessageEvent<PostMessage<PostMessageDataRequestCycles>>) => {
   const { msg, data } = dataMsg;
 
   switch (msg) {
     case "nnsStopCyclesTimer":
-      await stopCyclesTimer();
+      worker.stop();
       return;
     case "nnsStartCyclesTimer":
-      await startCyclesTimer({ data });
+      await worker.start<PostMessageDataRequestCycles>({
+        interval: SYNC_CYCLES_TIMER_INTERVAL,
+        job: syncCanister,
+        data,
+      });
       return;
   }
 };
-
-let timer: NodeJS.Timeout | undefined = undefined;
-
-const loadIdentity = async (): Promise<Identity | undefined> => {
-  const authClient = await createAuthClient();
-  const authenticated = await authClient.isAuthenticated();
-
-  // Not authenticated therefore no identity to fetch the cycles
-  if (!authenticated) {
-    return undefined;
-  }
-
-  return authClient.getIdentity();
-};
-
-const startCyclesTimer = async ({
-  data: { canisterId },
-}: {
-  data: PostMessageDataRequest;
-}) => {
-  // This worker has already been started
-  if (timer !== undefined) {
-    return;
-  }
-
-  const identity: Identity | undefined = await loadIdentity();
-
-  if (!identity) {
-    // We do nothing if no identity
-    return;
-  }
-
-  const sync = async () => await syncCanister({ identity, canisterId });
-
-  // We sync the cycles now but also schedule the update afterwards
-  await sync();
-
-  timer = setInterval(sync, SYNC_CYCLES_TIMER_INTERVAL);
-};
-
-const stopCyclesTimer = async () => {
-  if (!timer) {
-    return;
-  }
-
-  clearInterval(timer);
-  timer = undefined;
-};
-
-let syncInProgress = false;
 
 const syncCanister = async ({
   identity,
-  canisterId,
-}: {
-  identity: Identity;
-  canisterId: string;
-}) => {
-  // Avoid to duplicate the sync if already in progress and not yet finished
-  if (syncInProgress) {
-    return;
-  }
-
-  syncInProgress = true;
-
+  data,
+}: TimerWorkerUtilsJobData<PostMessageDataRequestCycles>) => {
+  const { canisterId } = data;
   try {
     const canisterInfo: CanisterDetails = await queryCanisterDetails({
-      canisterId,
+      ...data,
       identity,
     });
 
@@ -99,15 +47,14 @@ const syncCanister = async ({
       canisterId,
     });
   } catch (err: unknown) {
-    console.error(err);
-
     emitCanister({
       id: canisterId,
       sync: "error",
     });
-  }
 
-  syncInProgress = false;
+    // Bubble error to stop worker
+    throw err;
+  }
 };
 
 // Update ui with one canister information

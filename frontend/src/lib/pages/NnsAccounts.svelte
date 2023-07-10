@@ -11,6 +11,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
+  import { ICPToken } from "@dfinity/utils";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -32,14 +33,16 @@
       role="link"
       on:click={() => goToWallet(mainAccount)}
       hash
-      account={$accountsStore.main}>{$i18n.accounts.main}</AccountCard
+      account={$accountsStore.main}
+      token={ICPToken}>{$i18n.accounts.main}</AccountCard
     >
     {#each $accountsStore.subAccounts ?? [] as subAccount}
       <AccountCard
         role="link"
         on:click={() => goToWallet(subAccount)}
         hash
-        account={subAccount}>{subAccount.name}</AccountCard
+        account={subAccount}
+        token={ICPToken}>{subAccount.name}</AccountCard
       >
     {/each}
     {#each $accountsStore.hardwareWallets ?? [] as walletAccount}
@@ -47,7 +50,8 @@
         role="link"
         on:click={() => goToWallet(walletAccount)}
         hash
-        account={walletAccount}>{walletAccount.name}</AccountCard
+        account={walletAccount}
+        token={ICPToken}>{walletAccount.name}</AccountCard
       >
     {/each}
 

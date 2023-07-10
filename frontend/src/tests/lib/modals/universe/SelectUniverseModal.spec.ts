@@ -32,7 +32,7 @@ describe("SelectUniverseModal", () => {
 
     expect(
       getByTestId("select-universe-modal-title")?.textContent ?? ""
-    ).toEqual(en.universe.select_token);
+    ).toEqual(en.universe.select_nervous_system);
   });
 
   it("should navigate", async () => {

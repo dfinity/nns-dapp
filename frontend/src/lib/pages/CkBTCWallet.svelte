@@ -35,6 +35,9 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
+  import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -45,6 +48,8 @@
 
   debugSelectedAccountStore(selectedAccountStore);
 
+  let transactions: CkBTCTransactionsList;
+
   // e.g. is called from "Receive" modal after user click "Done"
   const reloadAccount = async () => {
     if (isNullish($selectedCkBTCUniverseIdStore)) {
@@ -53,10 +58,22 @@
 
     await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
     await loadAccount($selectedCkBTCUniverseIdStore);
+
+    reloadTransactions();
   };
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
-  const reloadAccountFromStore = () => setSelectedAccount();
+  const reloadAccountFromStore = () => {
+    setSelectedAccount();
+    reloadTransactions();
+  };
+
+  const reloadOnlyAccountFromStore = () => setSelectedAccount();
+
+  // transactions?.reloadTransactions() returns a promise.
+  // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
+  // That is why we do not need to wait for the promise to resolve here.
+  const reloadTransactions = () => transactions?.reloadTransactions();
 
   setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
@@ -151,6 +168,17 @@
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
     ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
     : undefined;
+
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
 <Island>
@@ -159,29 +187,36 @@
       {#if loaded}
         <Summary />
 
-        <WalletSummary detailedBalance />
-
-        {#if nonNullish(canisters)}
-          <CkBTCWalletActions
-            reload={reloadAccount}
-            minterCanisterId={canisters.minterCanisterId}
-          />
-        {/if}
-
-        <Separator />
+        <WalletSummary detailedBalance token={token?.token} />
 
         {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
-          <BitcoinAddress
-            account={$selectedAccountStore.account}
+          <CkBTCBalancesObserver
             universeId={$selectedCkBTCUniverseIdStore}
-            minterCanisterId={canisters.minterCanisterId}
-          />
+            accounts={[$selectedAccountStore.account]}
+            reload={reloadOnlyAccountFromStore}
+          >
+            <CkBTCWalletActions
+              reload={reloadAccount}
+              minterCanisterId={canisters.minterCanisterId}
+            />
 
-          <CkBTCTransactionsList
-            account={$selectedAccountStore.account}
-            universeId={$selectedCkBTCUniverseIdStore}
-            indexCanisterId={canisters.indexCanisterId}
-          />
+            <Separator />
+
+            <BitcoinAddress
+              account={$selectedAccountStore.account}
+              universeId={$selectedCkBTCUniverseIdStore}
+              minterCanisterId={canisters.minterCanisterId}
+              reload={reloadAccount}
+            />
+
+            <CkBTCTransactionsList
+              bind:this={transactions}
+              account={$selectedAccountStore.account}
+              universeId={$selectedCkBTCUniverseIdStore}
+              indexCanisterId={canisters.indexCanisterId}
+              token={token?.token}
+            />
+          </CkBTCBalancesObserver>
         {/if}
       {:else}
         <Spinner />

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { syncBeforeUnload } from "$lib/utils/before-unload.utils";
+  import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { onMount } from "svelte";
   import { Toasts, BusyScreen } from "@dfinity/gix-components";
@@ -13,7 +13,7 @@
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
-  $: syncBeforeUnload(
+  $: confirmCloseApp(
     voteRegistrationActive(
       $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
     )
@@ -22,7 +22,7 @@
 
 <slot />
 
-<Warnings ckBTCWarnings />
+<Warnings ckBTCWarnings testEnvironmentWarning />
 
 <Toasts />
 <BusyScreen />

@@ -1,7 +1,7 @@
 import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
 import {
-  AGGREGATOR_CANISTER_PATH,
   AGGREGATOR_CANISTER_VERSION,
+  AGGREGATOR_PAGE_SIZE,
 } from "$lib/constants/sns.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type {
@@ -10,6 +10,7 @@ import type {
 } from "@dfinity/ledger";
 import type {
   SnsFunctionType,
+  SnsGetDerivedStateResponse,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsSwap,
@@ -19,6 +20,8 @@ import { nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
+
+const aggergatorPageUrl = (page: number) => `/sns/list/page/${page}/slow.json`;
 
 type CanisterIds = {
   root_canister_id: string;
@@ -59,6 +62,7 @@ export type CachedSns = {
    */
   icrc1_fee?: bigint;
   icrc1_total_supply: bigint;
+  derived_state: SnsGetDerivedStateResponse;
 };
 
 type CachedSnsMetadataDto = {
@@ -74,6 +78,10 @@ type CachedNervousFunctionDto = {
   function_type: SnsFunctionType;
 };
 
+type CachedCountriesDto = {
+  iso_codes: string[];
+};
+
 type CachedSnsSwapDto = {
   lifecycle: number;
   decentralization_sale_open_timestamp_seconds?: number;
@@ -87,6 +95,8 @@ type CachedSnsSwapDto = {
     fallback_controller_principal_ids: string[];
     transaction_fee_e8s: number;
     neuron_minimum_stake_e8s: number;
+    confirmation_text?: string | undefined;
+    restricted_countries?: CachedCountriesDto | undefined;
   };
   params: {
     min_participants: number;
@@ -108,6 +118,9 @@ type CachedSnsSwapDto = {
 type CachedSnsSwapDerivedDto = {
   buyer_total_icp_e8s: number;
   sns_tokens_per_icp: number;
+  cf_participant_count: number | undefined | null;
+  direct_participant_count: number | undefined | null;
+  cf_neuron_count: number | undefined | null;
 };
 
 type CachedSnsTokenMetadataDto = [
@@ -136,6 +149,7 @@ type CachedSnsDto = {
   icrc1_metadata: CachedSnsTokenMetadataDto;
   icrc1_fee: [] | [number];
   icrc1_total_supply: number;
+  derived_state: CachedSnsSwapDerivedDto;
 };
 
 const convertOptionalNumToBigInt = (
@@ -203,6 +217,8 @@ const convertSwap = ({
         transaction_fee_e8s: toNullable(
           convertOptionalNumToBigInt(init.transaction_fee_e8s)
         ),
+        confirmation_text: toNullable(init.confirmation_text),
+        restricted_countries: toNullable(init.restricted_countries),
       })
     : [],
   params: nonNullish(params)
@@ -231,9 +247,43 @@ const convertSwap = ({
 const convertDerived = ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s,
+  cf_participant_count,
+  direct_participant_count,
+  cf_neuron_count,
 }: CachedSnsSwapDerivedDto): SnsSwapDerivedState => ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s: BigInt(buyer_total_icp_e8s),
+  cf_participant_count: nonNullish(cf_participant_count)
+    ? toNullable(BigInt(cf_participant_count))
+    : [],
+  direct_participant_count: nonNullish(direct_participant_count)
+    ? toNullable(BigInt(direct_participant_count))
+    : [],
+  cf_neuron_count: nonNullish(cf_neuron_count)
+    ? toNullable(BigInt(cf_neuron_count))
+    : [],
+});
+
+const convertDerivedToResponse = ({
+  sns_tokens_per_icp,
+  buyer_total_icp_e8s,
+  cf_participant_count,
+  direct_participant_count,
+  cf_neuron_count,
+}: CachedSnsSwapDerivedDto): SnsGetDerivedStateResponse => ({
+  sns_tokens_per_icp: toNullable(sns_tokens_per_icp),
+  buyer_total_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(buyer_total_icp_e8s)
+  ),
+  cf_participant_count: nonNullish(cf_participant_count)
+    ? toNullable(BigInt(cf_participant_count))
+    : [],
+  direct_participant_count: nonNullish(direct_participant_count)
+    ? toNullable(BigInt(direct_participant_count))
+    : [],
+  cf_neuron_count: nonNullish(cf_neuron_count)
+    ? toNullable(BigInt(cf_neuron_count))
+    : [],
 });
 
 const convertIcrc1Metadata = (
@@ -260,6 +310,7 @@ const convertSnsData = ({
   icrc1_metadata,
   icrc1_fee,
   icrc1_total_supply,
+  derived_state,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -276,21 +327,33 @@ const convertSnsData = ({
   icrc1_metadata: convertIcrc1Metadata(icrc1_metadata),
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
+  derived_state: convertDerivedToResponse(derived_state),
 });
 
 const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
   data.map(convertSnsData);
 
-export const querySnsProjects = async (): Promise<CachedSns[]> => {
-  logWithTimestamp("Loading SNS projects from aggregator canister...");
+const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
   const response = await fetch(
-    `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${AGGREGATOR_CANISTER_PATH}`
+    `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${aggergatorPageUrl(
+      page
+    )}`
   );
   if (!response.ok) {
     throw new Error("Error loading SNS projects from aggregator canister");
   }
+  const data: CachedSnsDto[] = await response.json();
+  if (data.length === AGGREGATOR_PAGE_SIZE) {
+    const nextPageData = await querySnsAggregator(page + 1);
+    return [...data, ...nextPageData];
+  }
+  return data;
+};
+
+export const querySnsProjects = async (): Promise<CachedSns[]> => {
+  logWithTimestamp("Loading SNS projects from aggregator canister...");
   try {
-    const data: CachedSnsDto[] = await response.json();
+    const data: CachedSnsDto[] = await querySnsAggregator();
     const convertedData = convertDtoData(data);
     logWithTimestamp("Loading SNS projects from aggregator canister completed");
     return convertedData;

@@ -11,7 +11,6 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
 import { encodeIcrcAccount } from "@dfinity/ledger";
-import { TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
@@ -38,7 +37,7 @@ export const getSortedTransactionsFromStore = ({
   account: Account;
 }): IcrcTransactionData[] =>
   mapToSelfTransaction(
-    store[canisterId.toText()]?.[account.identifier].transactions ?? []
+    store[canisterId.toText()]?.[account.identifier]?.transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
   );
@@ -148,10 +147,7 @@ export const mapIcrcTransaction = ({
       isSend,
       from: txInfo.from,
       to: txInfo.to,
-      displayAmount: TokenAmount.fromE8s({
-        amount: txInfo.amount + feeApplied,
-        token: account.balance.token,
-      }),
+      displayAmount: txInfo.amount + feeApplied,
       date: new Date(timestampMilliseconds),
     };
   } catch (err) {
@@ -209,4 +205,4 @@ export const isIcrcTransactionsCompleted = ({
   canisterId: UniverseCanisterId;
   account: Account;
 }): boolean =>
-  Boolean(store[canisterId.toText()]?.[account.identifier].completed);
+  Boolean(store[canisterId.toText()]?.[account.identifier]?.completed);

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import {
   sortedSnsCFNeuronsStore,
@@ -6,7 +10,6 @@ import {
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
-import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -26,33 +29,32 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi, type SpyInstance } from "vitest";
 
-vi.mock("$lib/services/sns-neurons.services", () => {
+jest.mock("$lib/services/sns-neurons.services", () => {
   return {
-    syncSnsNeurons: vi.fn().mockReturnValue(undefined),
+    syncSnsNeurons: jest.fn().mockReturnValue(undefined),
   };
 });
 
-vi.mock("$lib/services/sns-accounts.services", () => {
+jest.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: vi.fn().mockReturnValue(undefined),
+    syncSnsAccounts: jest.fn().mockReturnValue(undefined),
   };
 });
 
-vi.mock("$lib/services/sns-parameters.services", () => {
+jest.mock("$lib/services/sns-parameters.services", () => {
   return {
-    loadSnsParameters: vi.fn().mockReturnValue(undefined),
+    loadSnsParameters: jest.fn().mockResolvedValue(undefined),
   };
 });
 
 describe("SnsNeurons", () => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  let authStoreMock: SpyInstance<any>;
+  let authStoreMock: jest.MockedFunction<any>;
 
   beforeEach(() => {
     page.mock({ data: { universe: rootCanisterIdMock.toText() } });
-    authStoreMock = vi
+    authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
@@ -64,7 +66,7 @@ describe("SnsNeurons", () => {
     );
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
   describe("without neurons from CF", () => {
     beforeEach(() => {
@@ -74,23 +76,24 @@ describe("SnsNeurons", () => {
       const neuron2 = createMockSnsNeuron({
         id: [1, 2, 4],
       });
-      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([neuron1, neuron2])
-      );
-      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([])
-      );
-      vi.spyOn(snsParametersStore, "subscribe").mockImplementation(
-        buildMockSnsParametersStore()
-      );
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(
+          buildMockSortedSnsNeuronsStoreSubscribe([neuron1, neuron2])
+        );
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(snsParametersStore, "subscribe")
+        .mockImplementation(buildMockSnsParametersStore());
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should subscribe to store and call services to set up data", async () => {
       render(SnsNeurons);
       await waitFor(() => expect(authStoreMock).toHaveBeenCalled());
-      await waitFor(() => expect(loadSnsParameters).toHaveBeenCalled());
       await waitFor(() => expect(syncSnsAccounts).toBeCalled());
       await waitFor(() => expect(syncSnsNeurons).toBeCalled());
     });
@@ -123,15 +126,15 @@ describe("SnsNeurons", () => {
         }),
         source_nns_neuron_id: [BigInt(123)],
       };
-      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([neuron1])
-      );
-      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([neuron2])
-      );
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron1]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should render SnsNeuronCards for each neuron", async () => {
       const { queryAllByTestId } = render(SnsNeurons);
@@ -179,15 +182,15 @@ describe("SnsNeurons", () => {
         }),
         source_nns_neuron_id: [BigInt(123)],
       };
-      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([])
-      );
-      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([neuron2])
-      );
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should render Community Fund title", async () => {
       const { queryByTestId } = render(SnsNeurons);
@@ -207,20 +210,20 @@ describe("SnsNeurons", () => {
   });
 
   describe("no neurons", () => {
-    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
-      mockStoreSubscribe(mockSnsFullProject)
-    );
+    jest
+      .spyOn(snsProjectSelectedStore, "subscribe")
+      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
     beforeAll(() => {
-      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([])
-      );
-      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
-        buildMockSortedSnsNeuronsStoreSubscribe([])
-      );
+      jest
+        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      jest
+        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
+        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
     });
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => jest.clearAllMocks());
 
     it("should render empty text if no neurons", async () => {
       const { getByText } = render(SnsNeurons);

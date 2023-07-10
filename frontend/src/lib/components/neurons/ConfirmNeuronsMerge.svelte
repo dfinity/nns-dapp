@@ -1,15 +1,22 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
+  import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { startBusyNeuron } from "$lib/services/busy.services";
-  import { mergeNeurons } from "$lib/services/neurons.services";
+  import {
+    mergeNeurons,
+    simulateMergeNeurons,
+  } from "$lib/services/neurons.services";
   import { stopBusy } from "$lib/stores/busy.store";
+  import { ENABLE_SIMULATE_MERGE_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html, busy } from "@dfinity/gix-components";
   import NnsNeuronInfo from "./NnsNeuronInfo.svelte";
+  import NnsNeuronDetailCard from "./NnsNeuronDetailCard.svelte";
 
   export let neurons: NeuronInfo[];
 
@@ -27,6 +34,23 @@
   let targetNeuron: NeuronInfo;
   let sourceNeuron: NeuronInfo;
   $: [sourceNeuron, targetNeuron] = neurons;
+
+  let simulationFailed = false;
+  let simulatedMergedNeuron: NeuronInfo | undefined;
+  $: {
+    if ($ENABLE_SIMULATE_MERGE_NEURONS) {
+      simulateMergeNeurons({
+        targetNeuronId: targetNeuron.neuronId,
+        sourceNeuronId: sourceNeuron.neuronId,
+      }).then((result) => {
+        simulatedMergedNeuron = result;
+        simulationFailed = isNullish(result);
+      });
+    }
+  }
+
+  let showMergeResult = false;
+  $: showMergeResult = $ENABLE_SIMULATE_MERGE_NEURONS && !simulationFailed;
 
   const merge = async () => {
     startBusyNeuron({
@@ -51,14 +75,37 @@
   };
 </script>
 
-<div class="wrapper">
+<div class="wrapper" data-tid="confirm-neurons-merge-component">
   <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-  <NnsNeuronInfo neuron={sourceNeuron} />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
+  {/if}
 
   <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  <NnsNeuronInfo neuron={targetNeuron} />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
+  {/if}
+
+  {#if showMergeResult}
+    <div data-tid="merge-result-section">
+      <h3>{$i18n.neurons.expected_merge_result}</h3>
+
+      {#if isNullish(simulatedMergedNeuron)}
+        <SkeletonCard cardType="info" />
+      {:else}
+        <NnsNeuronDetailCard
+          neuron={simulatedMergedNeuron}
+          testId="merged-neuron-card"
+        />
+      {/if}
+    </div>
+  {/if}
 
   <div class="additional-text">
     <p class="description">

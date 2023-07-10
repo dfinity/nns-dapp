@@ -34,7 +34,7 @@ export const enterAmount = async (
   const icpAmount = "10";
   const input = container.querySelector(AMOUNT_INPUT_SELECTOR);
   input && fireEvent.input(input, { target: { value: icpAmount } });
-  await waitFor(() => expect(nextButton?.hasAttribute("disabled")).toBeFalsy());
+  await waitFor(() => expect(nextButton?.hasAttribute("disabled")).toBe(false));
 
   fireEvent.click(nextButton);
 

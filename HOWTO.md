@@ -6,7 +6,7 @@ There are parts that usually change in a proposal:
 - A new proposal topic.
 - A new `nnsFunction` or changes in one.
 
-The change is not always just in one section. Many times you need to fix two sections simulataneously. For example, a new topic comes with a new `nnsFunction`.
+The change is not always just in one section. Many times you need to fix two sections simultaneously. For example, a new topic comes with a new `nnsFunction`.
 
 ## New Action
 
@@ -46,6 +46,26 @@ This means that we need to upgrade the candid files and related, and synchronize
 
 - Upgrade candid file.
 - Add the i18n label in `en.governance.json`.
+- Upgrade the IC dependencies in nns-dapp canister.
+
+#### How To Upgrade IC Dependencies
+
+The Internet Computer dependencies are in the [Cargo.toml](./rs/backend/Cargo.toml) of the backend project. They are the ones that point to `git = "https://github.com/dfinity/ic"`. For example:
+
+```
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+```
+
+Upgrading them means change the commit in `rev = ...`.
+
+Normally, upgrading the dependency of `ic-nns-governance` is enough. But sometimes this library depends on the others and you need to upgrade the others.
+
+**Which commit?**
+
+Ideally, you should update to the upcoming commit that the NNS team is planning on releasing. You need to ask the NNS Team about their upcoming release.
+
+Otherwise, you need to find the commit that added the new Action. Check the blame of the file in the IC repo or ask the NNS Team.
+
 
 ## New Proposal Topic
 
@@ -91,6 +111,14 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 - Add i18n labels in `en.json`: "follow_neurons.topic_XX_title" and "follow_neurons.topic_XX_description"
 
 The topic descriptions can be found in [governance.proto](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
+
+### Upgrade dependencies: Ledger ICP App
+
+One dependency for the topics is the [Ledger](https://www.ledger.com/) App developed by [Zondax](https://github.com/Zondax).
+
+When there is a new topic we need to open an issue in the [Ledger ICP repo](https://github.com/Zondax/ledger-icp).
+
+We need to specify the number of the new topic and the title that should be shown in the screen. The title should be the same as the label in `en.governance.json` from the point above.
 
 ## New or changes in `nnsFunction`
 
@@ -148,7 +176,7 @@ is the one that will be used. So we first need to remove the canister from the
 cache and then run `dfx nns install`.
 
 **Note**: If the last step below (`dfx nns install`) gives an error because it
-can't download some canister (for example `lifeline.wasm`), you can copy that
+can't download some canister (for example `lifeline.wasm.gz`), you can copy that
 canister back from the backup directory into the cache directory and try
 again, as long as it isn't the governance canister itself.
 
@@ -213,7 +241,7 @@ If the file/directory doesn't exist at all, create it with that content.
 Then deploy `nns-dapp`:
 
 1. Build the wasm. E.g.: `DFX_NETWORK=local ./build.sh`
-2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
+2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
 
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.

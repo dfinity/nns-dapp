@@ -106,4 +106,70 @@ describe("SnsFilterStatusModal", () => {
 
     expect(statuses.filter(({ checked }) => checked).length).toEqual(2);
   });
+
+  it("should select all filters", async () => {
+    const uncheckedFilters = filters.map((filter) => ({
+      ...filter,
+      checked: false,
+    }));
+    snsFiltersStore.setDecisionStatus({
+      rootCanisterId: mockPrincipal,
+      decisionStatus: uncheckedFilters,
+    });
+    const { queryAllByTestId, queryByTestId } = render(SnsFilterStatusModal, {
+      props: {
+        ...props,
+        filters: uncheckedFilters,
+      },
+    });
+
+    const inputs = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs.reduce((acc, input) => acc && input.checked, true)).toBe(
+        false
+      )
+    );
+
+    await clickByTestId(queryByTestId, "filter-modal-select-all");
+
+    const inputs2 = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs2.reduce((acc, input) => acc && input.checked, true)).toBe(
+        true
+      )
+    );
+  });
+
+  it("should clearfilters", async () => {
+    const uncheckedFilters = filters.map((filter) => ({
+      ...filter,
+      checked: true,
+    }));
+    snsFiltersStore.setDecisionStatus({
+      rootCanisterId: mockPrincipal,
+      decisionStatus: uncheckedFilters,
+    });
+    const { queryAllByTestId, queryByTestId } = render(SnsFilterStatusModal, {
+      props: {
+        ...props,
+        filters: uncheckedFilters,
+      },
+    });
+
+    const inputs = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs.reduce((acc, input) => acc && input.checked, true)).toBe(
+        true
+      )
+    );
+
+    await clickByTestId(queryByTestId, "filter-modal-clear");
+
+    const inputs2 = queryAllByTestId("checkbox") as HTMLInputElement[];
+    await waitFor(() =>
+      expect(inputs2.reduce((acc, input) => acc || input.checked, false)).toBe(
+        false
+      )
+    );
+  });
 });

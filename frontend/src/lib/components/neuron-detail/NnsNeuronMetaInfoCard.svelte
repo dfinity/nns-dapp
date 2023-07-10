@@ -8,10 +8,8 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formatVotingPower,
-    isNeuronControllableByUser,
     formattedStakedMaturity,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
   import {
     Html,
     KeyValuePairInfo,
@@ -25,14 +23,9 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { onIntersection } from "$lib/directives/intersection.directives";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let neuron: NeuronInfo;
-
-  let isControlledByUser: boolean;
-  $: isControlledByUser = isNeuronControllableByUser({
-    neuron,
-    mainAccount: $accountsStore.main,
-  });
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -50,60 +43,63 @@
   // TODO: placeholders cannot contain ath the moment other placeholders keys - e.g. $stakedMaturity contains $stake would lead to replace errors therefore a distinctive selector $st4kedMaturity
 </script>
 
-<div class="content-cell-details">
-  <KeyValuePair>
-    <div
-      slot="key"
-      data-tid="neuron-id-title"
-      use:onIntersection
-      on:nnsIntersecting={updateLayoutTitle}
-    >
-      <NnsNeuronCardTitle tagName="h3" {neuron} />
-    </div>
-    <NeuronStateInfo state={neuron.state} slot="value" />
-  </KeyValuePair>
-
-  <NnsNeuronAge {neuron} />
-
-  <NnsNeuronRemainingTime {neuron} inline={false} />
-
-  {#if neuron.votingPower}
-    <KeyValuePairInfo testId="voting-power">
-      <svelte:fragment slot="key">{$i18n.neurons.voting_power}</svelte:fragment>
-      <span class="value" slot="value"
-        >{formatVotingPower(neuron.votingPower)}</span
+<TestIdWrapper testId="nns-neuron-meta-info-card-component">
+  <div class="content-cell-details">
+    <KeyValuePair>
+      <div
+        slot="key"
+        data-tid="neuron-id-title"
+        use:onIntersection
+        on:nnsIntersecting={updateLayoutTitle}
       >
-      <svelte:fragment slot="info">
-        {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
-          <Html
-            text={replacePlaceholders(
-              $i18n.neuron_detail.voting_power_tooltip_with_stake,
-              {
-                $stake: formatToken({
-                  value: neuron.fullNeuron.cachedNeuronStake,
-                  detailed: true,
-                }),
-                $st4kedMaturity: formattedStakedMaturity(neuron),
-                $delayMultiplier: dissolveDelayMultiplier(
-                  neuron.dissolveDelaySeconds
-                ).toFixed(2),
-                $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
-              }
-            )}
-          />
-        {/if}
-      </svelte:fragment>
-    </KeyValuePairInfo>
-  {/if}
-</div>
+        <NnsNeuronCardTitle tagName="h3" {neuron} />
+      </div>
+      <NeuronStateInfo state={neuron.state} slot="value" />
+    </KeyValuePair>
 
-<div class="buttons">
-  {#if isControlledByUser}
+    <NnsNeuronAge {neuron} />
+
+    <NnsNeuronRemainingTime {neuron} inline={false} />
+
+    {#if neuron.votingPower}
+      <KeyValuePairInfo testId="voting-power">
+        <svelte:fragment slot="key"
+          >{$i18n.neurons.voting_power}</svelte:fragment
+        >
+        <span class="value" slot="value" data-tid="voting-power-value"
+          >{formatVotingPower(neuron.votingPower)}</span
+        >
+        <svelte:fragment slot="info">
+          {#if neuron.fullNeuron?.cachedNeuronStake !== undefined}
+            <Html
+              text={replacePlaceholders(
+                $i18n.neuron_detail.voting_power_tooltip_with_stake,
+                {
+                  $token: "ICP",
+                  $stake: formatToken({
+                    value: neuron.fullNeuron.cachedNeuronStake,
+                    detailed: true,
+                  }),
+                  $st4kedMaturity: formattedStakedMaturity(neuron),
+                  $delayMultiplier: dissolveDelayMultiplier(
+                    neuron.dissolveDelaySeconds
+                  ).toFixed(2),
+                  $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
+                }
+              )}
+            />
+          {/if}
+        </svelte:fragment>
+      </KeyValuePairInfo>
+    {/if}
+  </div>
+
+  <div class="buttons">
     <SplitNnsNeuronButton {neuron} />
-  {/if}
-</div>
+  </div>
 
-<Separator />
+  <Separator />
+</TestIdWrapper>
 
 <style lang="scss">
   .buttons {

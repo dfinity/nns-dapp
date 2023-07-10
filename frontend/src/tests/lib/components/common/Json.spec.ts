@@ -201,4 +201,20 @@ describe("Json", () => {
       expect(button.getAttribute("aria-label")).toBe(en.core.toggle)
     );
   });
+
+  it("should render base 64 images", async () => {
+    const json = {
+      logo: {
+        base64Encoding: "data:image/png;base64,xxx",
+      },
+    };
+    const { getByAltText } = render(Json, {
+      props: { json },
+    });
+    const img = getByAltText("logo");
+
+    expect(img).toBeInTheDocument();
+    expect(img.tagName).toBe("IMG");
+    expect(img.getAttribute("src")).toBe("data:image/png;base64,xxx");
+  });
 });

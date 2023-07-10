@@ -1,9 +1,12 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
-  import SelectAccount from "$lib/components/accounts/SelectAccount.svelte";
+  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
-  import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+  import {
+    MAX_CANISTER_NAME_LENGTH,
+    NEW_CANISTER_MIN_T_CYCLES,
+  } from "$lib/constants/canisters.constants";
   import {
     createCanister,
     getIcpToCyclesExchangeRate,
@@ -22,6 +25,9 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import TextInputForm from "$lib/components/common/TextInputForm.svelte";
+  import { nonNullish } from "@dfinity/utils";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -32,6 +38,10 @@
     {
       name: "SelectAccount",
       title: $i18n.accounts.select_source,
+    },
+    {
+      name: "SelectName",
+      title: $i18n.canisters.enter_name,
     },
     {
       name: "SelectCycles",
@@ -46,6 +56,7 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let account: Account | undefined;
+  let name = "";
   let amount: number | undefined;
 
   const onSelectAccount = ({
@@ -55,7 +66,7 @@
     modal.next();
   };
 
-  const selectAmount = () => {
+  const goNext = () => {
     modal.next();
   };
 
@@ -75,16 +86,27 @@
     const canisterId = await createCanister({
       amount,
       account,
+      name,
     });
     stopBusy("create-canister");
     if (canisterId !== undefined) {
-      toastsShow({
-        level: "success",
-        labelKey: "canisters.create_canister_success",
-        substitutions: {
-          $canisterId: canisterId.toText(),
-        },
-      });
+      if (nonNullish(name) && name.length > 0) {
+        toastsShow({
+          level: "success",
+          labelKey: "canisters.create_canister_success_name",
+          substitutions: {
+            $canisterName: name,
+          },
+        });
+      } else {
+        toastsShow({
+          level: "success",
+          labelKey: "canisters.create_canister_success_id",
+          substitutions: {
+            $canisterId: canisterId.toText(),
+          },
+        });
+      }
       dispatcher("nnsClose");
     }
   };
@@ -98,10 +120,29 @@
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectAccount"}
-      <SelectAccount
+      <NnsSelectAccount
         hideHardwareWalletAccounts
         on:nnsSelectAccount={onSelectAccount}
       />
+    {/if}
+    {#if currentStep?.name === "SelectName"}
+      <TextInputForm
+        testId="create-canister-name-form"
+        placeholderLabelKey="canisters.name"
+        on:nnsConfirmText={goNext}
+        on:nnsClose={modal.back}
+        bind:text={name}
+        disabledConfirm={nonNullish(name) &&
+          name.length > MAX_CANISTER_NAME_LENGTH}
+        errorMessage={errorCanisterNameMessage(name)}
+        required={false}
+      >
+        <svelte:fragment slot="label"
+          >{$i18n.canisters.enter_name_label}</svelte:fragment
+        >
+        <svelte:fragment slot="cancel-text">{$i18n.core.back}</svelte:fragment>
+        <svelte:fragment slot="confirm-text">{$i18n.core.next}</svelte:fragment>
+      </TextInputForm>
     {/if}
     {#if currentStep?.name === "SelectCycles"}
       <SelectCyclesCanister
@@ -109,7 +150,7 @@
         bind:amount
         on:nnsClose
         on:nnsBack={modal.back}
-        on:nnsSelectAmount={selectAmount}
+        on:nnsSelectAmount={goNext}
         minimumCycles={NEW_CANISTER_MIN_T_CYCLES}
       >
         <svelte:fragment slot="select-amount"
@@ -134,6 +175,7 @@
         {account}
         {icpToCyclesExchangeRate}
         {amount}
+        {name}
         on:nnsConfirm={create}
         on:nnsClose
         on:nnsBack={modal.back}

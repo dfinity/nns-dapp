@@ -56,7 +56,7 @@ export const testTransferReviewTokens = async (params: TestTransferTokens) => {
   const participateButton = getByTestId("transaction-button-next");
 
   await waitFor(() =>
-    expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+    expect(participateButton?.hasAttribute("disabled")).toBe(false)
   );
 
   fireEvent.click(participateButton);

@@ -29,8 +29,8 @@ describe("ckbtc-index api", () => {
     burn: [],
   } as unknown as IcrcTransaction;
 
-  describe("getCkBTCAccounts", () => {
-    it("returns main account with balance and project token metadata", async () => {
+  describe("getCkBTCTransactions", () => {
+    it("should returns transactions", async () => {
       const id = BigInt(1);
 
       const getTransactionsSpy =
@@ -51,7 +51,7 @@ describe("ckbtc-index api", () => {
       expect(getTransactionsSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("should bubble errors", () => {
       indexCanisterMock.getTransactions.mockImplementation(async () => {
         throw new Error();
       });

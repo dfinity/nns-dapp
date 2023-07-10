@@ -14,10 +14,14 @@
   } from "$lib/constants/bitcoin.constants";
   import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
+  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+  import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
+  export let reload: () => Promise<void>;
 
   let identifier: AccountIdentifierText;
   $: ({ identifier } = account);
@@ -38,35 +42,40 @@
 
   onMount(() =>
     loadBtcAddress({
-      universeId,
       minterCanisterId,
       identifier: account.identifier,
     })
   );
 
-  // TODO: to be removed when ckBTC with minter is live.
-  let enabled = false;
-  $: enabled = isUniverseCkTESTBTC(universeId);
+  let minConfirmations: number | undefined;
+  $: minConfirmations =
+    $ckBTCInfoStore[universeId.toText()]?.info.min_confirmations;
+
+  // TODO: incoming_bitcoin_network_part_1 comes before incoming_bitcoin_network_part_2. It would be more worth creating a component or directive that can replace placeholders of the i18n with Svelte components
 </script>
 
-{#if enabled}
-  <p class="description">
-    {$i18n.ckbtc.incoming_bitcoin_network}
-    <a
-      data-tid="block-explorer-link"
-      href={btcAddressLoaded ? blockExplorerUrl : ""}
-      rel="noopener noreferrer external"
-      target="_blank"
-      aria-disabled={!btcAddressLoaded}
-      >{$i18n.ckbtc.block_explorer}
-      {#if !btcAddressLoaded}
-        <div class="spinner">
-          <Spinner size="tiny" inline />
-        </div>
-      {/if}
-    </a>.
-  </p>
-{/if}
+<p class="description">
+  {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network_part_1, {
+    $min: `${minConfirmations ?? ""}`,
+  })}
+
+  <CkBTCWalletActions inline {minterCanisterId} {reload} />
+
+  {$i18n.ckbtc.incoming_bitcoin_network_part_2}
+  <a
+    data-tid="block-explorer-link"
+    href={btcAddressLoaded ? blockExplorerUrl : ""}
+    rel="noopener noreferrer external"
+    target="_blank"
+    aria-disabled={!btcAddressLoaded}
+    >{$i18n.ckbtc.block_explorer}
+    {#if !btcAddressLoaded}
+      <div class="spinner">
+        <Spinner size="tiny" inline />
+      </div>
+    {/if}
+  </a>.
+</p>
 
 <style lang="scss">
   div {

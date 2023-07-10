@@ -3,16 +3,24 @@
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
-  import { TokenAmount } from "@dfinity/nns";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import type { Token } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let amount: number | undefined = undefined;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  export let kytEstimatedFee: bigint | undefined | null = undefined;
   export let universeId: UniverseCanisterId;
+
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
+  let kytEstimatedFee: bigint | undefined = undefined;
+  $: kytEstimatedFee = infoData?.info.kyt_fee;
 
   let bitcoinLabel: string;
   $: bitcoinLabel = isUniverseCkTESTBTC(universeId)

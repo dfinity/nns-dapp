@@ -1,11 +1,14 @@
+import { goto } from "$app/navigation";
 import {
   PROPOSAL_COLOR,
   type ProposalStatusColor,
 } from "$lib/constants/proposals.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
+import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type { Identity } from "@dfinity/agent";
 import type {
   Ballot,
@@ -44,28 +47,13 @@ export const proposalFirstActionKey = (
   proposal: Proposal | undefined
 ): string | undefined => Object.keys(proposal?.action ?? {})[0];
 
-export const proposalActionFields = (
-  proposal: Proposal
-): [string, unknown][] => {
+export const proposalActionData = (proposal: Proposal): unknown | undefined => {
   const key = proposalFirstActionKey(proposal);
   if (key === undefined) {
-    return [];
+    return {};
   }
-  return Object.entries(
-    keyOfOptional({ obj: proposal.action, key }) ?? {}
-  ).filter(([, value]) => {
-    switch (typeof value) {
-      case "object":
-        return value && Object.keys(value).length > 0;
-      case "undefined":
-      case "string":
-      case "bigint":
-      case "boolean":
-      case "number":
-        return true;
-    }
-    return false;
-  });
+
+  return (proposal.action as { [key: string]: unknown })?.[key];
 };
 
 export const getNnsFunctionKey = (
@@ -128,9 +116,9 @@ const matchFilters = ({
   } = proposalInfo;
 
   return (
-    topics.includes(proposalTopic) &&
-    rewards.includes(rewardStatus) &&
-    status.includes(proposalStatus)
+    (topics.length === 0 || topics.includes(proposalTopic)) &&
+    (rewards.length === 0 || rewards.includes(rewardStatus)) &&
+    (status.length === 0 || status.includes(proposalStatus))
   );
 };
 
@@ -614,3 +602,12 @@ export const nnsNeuronToVotingNeuron = ({
   neuronIdString: `${neuron.neuronId}`,
   votingPower: getVotingPower({ neuron, proposal }),
 });
+
+/** Navigate to the current universe (NNS/SNS) proposal page */
+export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
+  goto(
+    buildProposalUrl({
+      universe: get(pageStore).universe,
+      proposalId,
+    })
+  );

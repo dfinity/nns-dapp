@@ -1,6 +1,6 @@
 import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionReceivedAmount", () => {

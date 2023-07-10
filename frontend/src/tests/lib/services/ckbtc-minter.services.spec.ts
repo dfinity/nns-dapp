@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -27,10 +31,9 @@ import {
 } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("ckbtc-minter-services", () => {
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
   describe("loadBtcAddress", () => {
     page.mock({
@@ -39,7 +42,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should get bitcoin address", async () => {
-      const spyGetAddress = vi
+      const spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
@@ -47,7 +50,6 @@ describe("ckbtc-minter-services", () => {
       expect(store[mockCkBTCMainAccount.identifier]).toBeUndefined();
 
       await services.loadBtcAddress({
-        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
         minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
         identifier: mockCkBTCMainAccount.identifier,
       });
@@ -68,7 +70,7 @@ describe("ckbtc-minter-services", () => {
 
   describe("updateBalance", () => {
     beforeEach(() =>
-      vi.spyOn(console, "error").mockImplementation(() => undefined)
+      jest.spyOn(console, "error").mockImplementation(() => undefined)
     );
 
     const params = {
@@ -77,7 +79,7 @@ describe("ckbtc-minter-services", () => {
     };
 
     it("should update balance", async () => {
-      const spyUpdateBalance = vi
+      const spyUpdateBalance = jest
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(mockUpdateBalanceOk);
 
@@ -94,21 +96,39 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should reload after update balance", async () => {
-      const spyReload = vi.fn();
+      const spyReload = jest.fn();
 
       await services.updateBalance({ ...params, reload: spyReload });
 
       await waitFor(() => expect(spyReload).toBeCalled());
     });
 
-    it("should start and stop busy", async () => {
-      const startBusySpy = vi
-        .spyOn(busyStore, "startBusy")
-        .mockImplementation(vi.fn());
+    it("should reload after update balance even if update balance is on error", async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterAlreadyProcessingError();
+      });
 
-      const stopBusySpy = vi
+      const spyReload = jest.fn();
+
+      const err = new ApiErrorKey(en.error__ckbtc.already_process);
+
+      const result = await services.updateBalance({
+        ...params,
+        reload: spyReload,
+      });
+
+      await waitFor(() => expect(spyReload).toBeCalled());
+      expect(result).toEqual({ success: false, err });
+    });
+
+    it("should start and stop busy", async () => {
+      const startBusySpy = jest
+        .spyOn(busyStore, "startBusy")
+        .mockImplementation(jest.fn());
+
+      const stopBusySpy = jest
         .spyOn(busyStore, "stopBusy")
-        .mockImplementation(vi.fn());
+        .mockImplementation(jest.fn());
 
       await services.updateBalance(params);
 
@@ -126,7 +146,7 @@ describe("ckbtc-minter-services", () => {
 
       const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
 
-      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterGenericError(error);
       });
 
@@ -141,7 +161,7 @@ describe("ckbtc-minter-services", () => {
     it("should return temporary unavailable error", async () => {
       const error = "message";
 
-      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterTemporaryUnavailableError(error);
       });
 
@@ -155,7 +175,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should return already processing error", async () => {
-      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterAlreadyProcessingError();
       });
 
@@ -167,11 +187,11 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should handle no new UTXOs success", async () => {
-      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
 
-      const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+      const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
 
       const result = await services.updateBalance(params);
 
@@ -183,19 +203,102 @@ describe("ckbtc-minter-services", () => {
         substitutions: undefined,
       });
     });
+
+    it("should return generic error even if no ui indicators", async () => {
+      const Err = {
+        GenericError: {
+          error_message: "message",
+          error_code: 123n,
+        },
+      };
+
+      const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
+
+      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterGenericError(error);
+      });
+
+      const result = await services.updateBalance({
+        ...params,
+        uiIndicators: false,
+      });
+
+      expect(result).toEqual({
+        success: false,
+        err: new MinterGenericError(error),
+      });
+    });
+
+    describe("no ui indicators", () => {
+      it("should not start and stop busy", async () => {
+        const startBusySpy = jest
+          .spyOn(busyStore, "startBusy")
+          .mockImplementation(jest.fn());
+
+        const stopBusySpy = jest
+          .spyOn(busyStore, "stopBusy")
+          .mockImplementation(jest.fn());
+
+        await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        expect(startBusySpy).not.toHaveBeenCalled();
+        expect(stopBusySpy).not.toHaveBeenCalled();
+      });
+
+      it("should not toast success if no ui indicators", async () => {
+        const spyUpdateBalance = jest
+          .spyOn(minterApi, "updateBalance")
+          .mockResolvedValue(mockUpdateBalanceOk);
+
+        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+
+        await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        await waitFor(() =>
+          expect(spyUpdateBalance).toBeCalledWith({
+            identity: mockIdentity,
+            canisterId: CKBTC_MINTER_CANISTER_ID,
+          })
+        );
+
+        expect(spyOnToastsShow).not.toHaveBeenCalled();
+      });
+
+      it("should not handle no new UTXOs success if no ui indicators", async () => {
+        jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+          throw new MinterNoNewUtxosError();
+        });
+
+        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+
+        const result = await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        expect(result).toEqual({ success: true });
+        expect(spyOnToastsShow).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("estimateFee", () => {
     it("should call estimate fee", async () => {
       const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
-      const spyEstimateFee = vi
+      const spyEstimateFee = jest
         .spyOn(minterApi, "estimateFee")
         .mockResolvedValue(result);
 
       const params = { certified: true, amount: 456n };
 
-      const callback = vi.fn();
+      const callback = jest.fn();
 
       await services.estimateFee({
         params,
@@ -217,37 +320,6 @@ describe("ckbtc-minter-services", () => {
     });
   });
 
-  describe("depositFee", () => {
-    it("should call deposit fee", async () => {
-      const result = 789n;
-
-      const spyDepositFee = vi
-        .spyOn(minterApi, "depositFee")
-        .mockResolvedValue(result);
-
-      const params = { certified: true };
-
-      const callback = vi.fn();
-
-      await services.depositFee({
-        callback,
-        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
-      });
-
-      await waitFor(() =>
-        expect(spyDepositFee).toBeCalledWith({
-          identity: mockIdentity,
-          canisterId: CKBTC_MINTER_CANISTER_ID,
-          ...params,
-        })
-      );
-
-      expect(callback).toHaveBeenCalledWith(result);
-      // Query + Update
-      expect(callback).toHaveBeenCalledTimes(2);
-    });
-  });
-
   describe("getWithdrawalAccount", () => {
     it("should call get withdrawal account", async () => {
       const result: WithdrawalAccount = {
@@ -255,7 +327,7 @@ describe("ckbtc-minter-services", () => {
         subaccount: [],
       };
 
-      const spyGetWithdrawal = vi
+      const spyGetWithdrawal = jest
         .spyOn(minterApi, "getWithdrawalAccount")
         .mockResolvedValue(result);
 

@@ -1,4 +1,4 @@
-name: E2e test
+name: Build and test
 # We use "push" events so that we have the actual commit. In "pull_request"
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
@@ -6,6 +6,12 @@ name: E2e test
 # date before merge. It's also nice to have CI running on branches without PRs.
 on:
   push:
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'no-cache'
+        default: false
+        type: boolean
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -14,54 +20,118 @@ defaults:
     shell: bash -euxlo pipefail {0}
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 60
+    runs-on: ubuntu-latest-m
+    timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Set up docker buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build wasms
-        uses: docker/build-push-action@v3
+      - name: Build nns-dapp repo
+        uses: ./.github/actions/build_nns_dapp
         with:
-          context: .
-          file: Dockerfile
-          build-args: |
-            DFX_NETWORK=local
-          cache-from: type=gha,scope=cached-stage
-          # Exports the artefacts from the final stage
-          outputs: .
-      - name: Get SNS scripts
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Upload nns-dapp wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp
+          path: out/nns-dapp.wasm.gz
+          retention-days: 3
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator
+          path: out/sns_aggregator.wasm.gz
+          retention-days: 3
+      - name: 'Upload sns_aggregator_dev wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: out/sns_aggregator_dev.wasm.gz
+          retention-days: 3
+      - name: 'Upload whole out directory'
+        uses: actions/upload-artifact@v3
+        with:
+          name: out
+          path: out
+          retention-days: 3
+  test-playwright-e2e:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
         uses: actions/checkout@v3
+      - name: Get nns-dapp
+        uses: actions/download-artifact@v3
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          # Version from Apr 4 2023 with xz compressed state
-          ref: '8160f742e10fbd1ac89549a5880ae047ff8f290d'
+          name: nns-dapp
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp.wasm.gz'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+      - name: Generate .env configuration for Playwright end-to-end tests
+        run: |
+          DFX_NETWORK=local ./config.sh
+      - name: Prepare for Playwright end-to-end tests
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps firefox
+      - name: Wait for aggregator to get all SNSs
+        run: |
+          set +x
+          for (( try=300; try>0; try-- )); do
+             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
+             (( num_sns < 12)) || break
+             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
+             sleep 2
+          done
+      - name: Run Playwright end-to-end tests
+        working-directory: frontend
+        run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e
+      - name: Upload Playwright results
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() }}
+        with:
+          name: playwright-failure-results
+          path: |
+            frontend/playwright-report/*
+            frontend/playwright-results/*
+          retention-days: 3
+      - name: Stop replica
+        run: dfx stop
+  test-rest:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp
+      - name: Get sns_aggregator
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp.wasm.gz'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-      - name: Install SNS script dependencies
-        run: |
-          dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-          dfx-software-idl2json-install --version "v$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-      - name: Get test environment
-        run: |
-          curl -fL --retry 5 https://github.com/dfinity/snsdemo/releases/download/release-2023-04-27/snsdemo_snapshot_ubuntu-22.04.tar.xz > state.tar.xz
-          dfx-snapshot-restore --snapshot state.tar.xz --verbose
-          dfx identity use snsdemo8
-          dfx-sns-demo-healthcheck
-      - name: Install nns-dapp and sns_aggregator
-        run: |
-          echo "Create the nns-dapp install argument:"
-          export DFX_NETWORK=local
-          ./config.sh
-          echo "Install:"
-          dfx canister install nns-dapp --wasm nns-dapp.wasm --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
-          dfx canister install sns_aggregator --wasm sns_aggregator_dev.wasm --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
-          # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
-          dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
       - name: Install command line HTML parser
         run: |
           go install github.com/ericchiang/pup@latest
@@ -83,63 +153,56 @@ jobs:
             # grep ... fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
+      - name: Determine ic-wasm version
+        id: ic-wasm-version
+        run: |
+          echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
+          echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
+      - name: Cache ic-wasm
+        id: cache-ic-wasm
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}
+          key: ${{ runner.os }}-${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}-ic-wasm
+      - name: Install ic-wasm
+        if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
+          cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
+          command -v ic-wasm || {
+            echo "ERROR: Failed to install ic-wasm"
+            exit 1
+          }>&2
+          [[ "$( command -v ic-wasm )" == ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }} ]] || {
+            echo "ERROR: ic-wasm was installed at an unexpected location."
+            echo "EXPECTED: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}"
+            echo "ACTUAL:   $( command -v ic-wasm )"
+            echo "Please align fact and expectation."
+            exit 1
+          } >&2
+      - name: Check that metadata is present
+        run: |
+          scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
           if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm
+          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
           else echo "Skipping test as there are no relevant code changes"
           fi
-      - name: Rename nns-dapp.wasm for upload
-        run: cp nns-dapp.wasm nns-dapp_local.wasm
-      - name: 'Upload nns-dapp_local wasm module'
-        uses: actions/upload-artifact@v3
-        with:
-          name: nns-dapp_local
-          path: nns-dapp_local.wasm
-          retention-days: 3
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
             : Creates or updates a release for the tag
             if gh release view "$tag"
-            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp_local.wasm || true
-            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp_local.wasm
+            then gh release upload --repo dfinity/nns-dapp --clobber "$tag" nns-dapp.wasm.gz || true
+            else gh release create --title "Release for tags/$tag" --draft --notes "Build artefacts from tag: $tag" "$tag" nns-dapp.wasm.gz
             fi
             : If the tag is for a proposal or nightly, make it public
             [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate .env configuration for Playwright end-to-end tests
-        run: |
-          DFX_NETWORK=local ./config.sh
-      - name: Prepare for Playwright end-to-end tests
-        working-directory: frontend
-        run: |
-          npm ci
-          npx playwright install --with-deps firefox
-      - name: Wait for aggregator to get all SNSs
-        run: |
-          set +x
-          for (( try=300; try>0; try-- )); do
-             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
-             (( num_sns < 12)) || break
-             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
-          done
-      - name: Run Playwright end-to-end tests
-        working-directory: frontend
-        run: npm run test-e2e
-      - name: Upload Playwright results
-        uses: actions/upload-artifact@v3
-        if: ${{ failure() }}
-        with:
-          name: playwright-failure-results
-          path: |
-            frontend/playwright-report/*
-            frontend/playwright-results/*
-          retention-days: 3
       - name: Generate .env configuration for e2e-tests
         run: |
           DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
@@ -164,7 +227,7 @@ jobs:
           SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
@@ -200,8 +263,261 @@ jobs:
         working-directory: e2e-tests
         run: |
           rm -rf screenshots
+  network_independent_wasm:
+    name: "Same wasms for mainnet and local"
+    # Note: The dockerfile structure SHOULD guarantee that the network is not used in any wasm build commands.
+    #       As long as that holds, this test is not needed.
+    needs: build
+    runs-on: ubuntu-latest-m
+    timeout-minutes: 45
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check dockerfile for changes
+        id: dockerfile_changed
+        run: |
+          common_parent_commit="$(git merge-base HEAD origin/main)"
+          if git diff "$common_parent_commit" Dockerfile | grep -q .
+          then echo "dockerfile_changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up docker buildx
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        uses: docker/setup-buildx-action@v2
+      - name: Build wasms
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          build-args: |
+            DFX_NETWORK=local
+            COMMIT=${{ github.sha }}
+          cache-from: type=gha,scope=cached-stage
+          # Exports the artefacts from the final stage
+          outputs: ./out-mainnet
+      - name: Get nns-dapp
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp
+          path: out-local
+      - name: Get sns_aggregator
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator
+          path: out-local
+      - name: Get sns_aggregator_dev
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+          path: out-local
+      - name: Compare wasms
+        if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
+        run: |
+          set -x
+          ls -l
+          artefacts="sns_aggregator_dev.wasm.gz sns_aggregator.wasm.gz nns-dapp.wasm.gz"
+          networks=(mainnet local)
+          for network in "${networks[@]}" ; do
+            ls -l "out-$network"
+            (cd "out-$network" && sha256sum ${artefacts[@]} ; ) > "${network}_hashes.txt"
+          done
+          diff local_hashes.txt mainnet_hashes.txt  || {
+            echo "ERROR: wasm hashes differ between mainnet and local."
+          }
+  aggregator_test:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+      - name: Get the earliest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          # Wait for the aggregator to be up:
+          for (( try=300; try>0; try-- )); do
+            if curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json; then
+              break
+            fi
+            sleep 2
+          done
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          # Later we expect 10 SNSs. Make sure that when we do, it's because we
+          # actually collected the data and it wasn't preloaded from the
+          # snapshot.
+          (( actual < expect ))  || {
+            echo ERROR: Should not yet have $expected SNS before collecting.
+            scripts/sns/aggregator/get_log
+          }
+      - name: Verify that configuration is as provided
+        run: scripts/sns/aggregator/test-config
+      - name: Make the aggregator collect data quickly
+        run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
+      - name: Wait for the aggregator to get data
+        run: sleep 120
+        # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+        # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
+      - name: Get the latest data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
+          }
+      - name: Get the first page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl --retry 5 -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json || {
+            echo "ERROR: Failed to get data."
+            scripts/sns/aggregator/get_log
+          }
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+            scripts/sns/aggregator/get_log
+          }
+      - name: Get the second page of data from the sns aggregator
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/1/slow.json" | tee aggregate-1.json
+          expect=2
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Get logs
+        run: |
+          scripts/sns/aggregator/get_log > ,logs
+          LOG_LINES="$(wc -l <,logs)"
+          (( LOG_LINES > 10 )) || {
+            echo "ERROR: Expected a non-trivial number of lines to have been logged by now but found only ${LOG_LINES}"
+            cat ,logs
+            exit 1
+          }
+      - name: Upgrade the aggregator to self with a slow refresh rate
+        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+      - name: Expect the first page of data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/page/0/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the latest data to be retained over the upgrade
+        run: |
+          AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
+          curl -Lf "http://${AGGREGATOR_CANISTER_ID}.localhost:8080/v1/sns/list/latest/slow.json" | tee aggregate-1.json
+          expect=10
+          actual="$(jq length aggregate-1.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator but found $actual.
+          }
+      - name: Expect the upstream data to be retained over the upgrade
+        run: |
+          ./scripts/sns/aggregator/get_stable_data
+          expect=12
+          actual="$(jq '.sns_cache.upstream_data | length' stable_data.json)"
+          (( expect == actual ))  || {
+            echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
+          }
+      - name: Downgrade to prod and upgrade back again
+        run: |
+          set -euxo pipefail
+          git fetch --depth 1 origin tag aggregator-prod
+          diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
+          if test -n "${diff:-}"
+          then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
+          else echo "Skipping test as there are no relevant code changes"
+          fi
+      - name: Stop replica
+        run: dfx stop
+  assets:
+    name: "Upload assets"
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get docker build outputs
+        uses: actions/download-artifact@v3
+        with:
+          name: out
+          path: out
+      - name: Print the hash of all assets
+        run: find out -type f | xargs sha256sum
+      - name: 'Record the git commit and any tags'
+        run: git log | head -n1 > out/commit.txt
+      - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp for ${{ matrix.BUILD_NAME }}
+          path: |
+            out/commit.txt
+            out/nns-dapp.wasm.gz
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.did
+            out/nns-dapp-arg-${{ matrix.DFX_NETWORK }}.bin
+            out/frontend-config.sh
+            out/deployment-config.json
+      - name: 'Upload sns_aggregator wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sns_aggregator for ${{ matrix.BUILD_NAME }}
+          path: |
+            out/sns_aggregator.wasm.gz
+            out/sns_aggregator_dev.wasm.gz
+      - name: Release
+        uses: ./.github/actions/release_nns_dapp
+        with:
+          assets_dir: 'out'
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Upload frontend assets'
+        uses: actions/upload-artifact@v3
+        with:
+          name: NNS frontend assets
+          path: |
+            out/assets.tar.xz
+            out/sourcemaps.tar.xz
+      - name: "Link the build sha to this commit"
+        run: |
+          : Set up git
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          : Make a note of the WASM shasum.
+          NOTE="refs/notes/mainnet/wasm-sha"
+          SHA="$(sha256sum < "out/nns-dapp.wasm.gz")"
+          git fetch origin "+${NOTE}:${NOTE}"
+          if git notes --ref="wasm-sha" add -m "$SHA"
+          then git push origin "${NOTE}:${NOTE}" || true
+          else echo SHA already set
+          fi
+      - name: "Verify that the WASM module is small enough to deploy"
+        run: |
+          wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
+          max_size=3145728
+          echo "WASM size:          $wasm_size"
+          echo "Max supported size: $max_size"
+          (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build"]
+    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

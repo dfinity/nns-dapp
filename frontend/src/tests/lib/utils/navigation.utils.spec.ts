@@ -31,7 +31,7 @@ describe("navigation-utils", () => {
           effectivePreviousPath: AppPath.Canister,
           currentData: ["test"],
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
 
     it("should reload if not expected route referrer", () => {
@@ -213,14 +213,14 @@ describe("navigation-utils", () => {
           currentPath: AppPath.Authentication,
           paths: [AppPath.Accounts, AppPath.Wallet],
         })
-      ).toBeFalsy();
+      ).toBe(false);
 
       expect(
         isSelectedPath({
           currentPath: null,
           paths: [AppPath.Accounts, AppPath.Wallet],
         })
-      ).toBeFalsy();
+      ).toBe(false);
     });
   });
 });

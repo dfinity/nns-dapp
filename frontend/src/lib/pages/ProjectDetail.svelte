@@ -33,7 +33,6 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import {
-    cancelPollGetOpenTicket,
     hidePollingToast,
     restoreSnsSaleParticipation,
   } from "$lib/services/sns-sale.services";
@@ -43,6 +42,9 @@
   import { browser } from "$app/environment";
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { userCountryIsNeeded } from "$lib/utils/projects.utils";
+  import { loadUserCountry } from "$lib/services/user-country.services";
+  import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -161,25 +163,51 @@
     });
   }
 
+  let shouldLoadUserCountry = false;
+  $: shouldLoadUserCountry = userCountryIsNeeded({
+    summary: $projectDetailStore?.summary,
+    swapCommitment: $projectDetailStore?.swapCommitment,
+    loggedIn: $authSignedInStore,
+  });
+  $: if (shouldLoadUserCountry) {
+    loadUserCountry();
+  }
+
+  let derivedStateHasBuyersCount: boolean | undefined;
+  $: derivedStateHasBuyersCount = hasBuyersCount(
+    $projectDetailStore?.summary?.derived
+  );
+  let areWatchersSet = false;
+
   let unsubscribeWatchCommitment: () => void | undefined;
   let unsubscribeWatchMetrics: () => void | undefined;
-  $: if (nonNullish(rootCanisterId) && nonNullish(swapCanisterId)) {
-    // We load the metrics to have them initially available before setInterval starts
-    loadSnsSwapMetrics({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      swapCanisterId,
-      forceFetch: false,
-    });
+  $: if (
+    nonNullish(rootCanisterId) &&
+    nonNullish(swapCanisterId) &&
+    nonNullish(derivedStateHasBuyersCount) &&
+    !areWatchersSet
+  ) {
+    // TODO: Remove once all SNS support the buyers count in derived state
+    if (!derivedStateHasBuyersCount) {
+      // We load the metrics to have them initially available before setInterval starts
+      loadSnsSwapMetrics({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        swapCanisterId,
+        forceFetch: false,
+      });
+      if (enableOpenProjectWatchers) {
+        unsubscribeWatchMetrics?.();
+        unsubscribeWatchMetrics = watchSnsMetrics({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          swapCanisterId: swapCanisterId,
+        });
+      }
+    }
 
     if (enableOpenProjectWatchers) {
+      areWatchersSet = true;
       unsubscribeWatchCommitment?.();
       unsubscribeWatchCommitment = watchSnsTotalCommitment({ rootCanisterId });
-
-      unsubscribeWatchMetrics?.();
-      unsubscribeWatchMetrics = watchSnsMetrics({
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId: swapCanisterId,
-      });
     }
   }
 
@@ -261,7 +289,8 @@
 
     // TODO: Improve cancellatoin of actions onDestroy
     // The polling was triggered by `restoreSnsSaleParticipation` call and needs to be canceled explicitly.
-    cancelPollGetOpenTicket();
+    // TODO: Reenable https://dfinity.atlassian.net/browse/GIX-1574
+    // cancelPollGetOpenTicket();
 
     // Hide toasts when moving away from the page
     hidePollingToast();

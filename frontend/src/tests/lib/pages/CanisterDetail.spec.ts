@@ -1,115 +1,192 @@
-import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+/**
+ * @jest-environment jsdom
+ */
+
+import * as canisterApi from "$lib/api/canisters.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
-import {
-  getCanisterDetails,
-  listCanisters,
-} from "$lib/services/canisters.services";
+import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
-import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
+import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockCanister,
+  mockCanisterDetails,
+  mockCanisterId,
+} from "$tests/mocks/canisters.mock";
+import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
-const defaultReturn = Promise.resolve(mockCanisterDetails);
-let getCanisterDetailsReturn = defaultReturn;
-const setGetCanisterDetailReturn = (value: Promise<CanisterDetails>) =>
-  (getCanisterDetailsReturn = value);
-const resetGetCanisterDetailReturn = () =>
-  (getCanisterDetailsReturn = defaultReturn);
-vi.mock("$lib/services/canisters.services", () => {
-  return {
-    listCanisters: vi.fn(),
-    routePathCanisterId: () => mockCanister.canister_id.toText(),
-    getCanisterDetails: vi
-      .fn()
-      .mockImplementation(() => getCanisterDetailsReturn),
-    getCanisterFromStore: () => mockCanister,
-  };
-});
+jest.mock("$lib/api/canisters.api");
 
 describe("CanisterDetail", () => {
-  afterEach(() => {
+  blockAllCallsTo(["$lib/api/canisters.api"]);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    authStore.setForTesting(mockIdentity);
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   });
 
+  const canisterId = mockCanisterId;
+
   const props = {
-    canisterId: mockCanister.canister_id.toText(),
+    canisterId: canisterId.toText(),
   };
 
-  it("should render title once loaded", async () => {
-    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { container } = render(CanisterDetail, props);
-
-    const title = container.querySelector("h1");
-
-    await waitFor(() => expect(title).not.toBeNull());
-    expect((title as HTMLElement).textContent.trim()).toEqual(
-      mockCanister.canister_id.toText()
-    );
-  });
-
-  it("should fetch canisters from nns-dapp if store is not loaded yet", async () => {
-    render(CanisterDetail, props);
-    await waitFor(() => expect(listCanisters).toBeCalled());
-  });
-
-  it("should get canister details", async () => {
-    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    render(CanisterDetail, props);
-    await waitFor(() => expect(getCanisterDetails).toBeCalled());
-  });
-
-  it("should render canister id", async () => {
-    // Need to be the same that routePathCanisterId returns.
-    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryAllByText } = render(CanisterDetail, props);
-
-    await waitFor(() =>
-      expect(
-        queryAllByText(mockCanister.canister_id.toText()).length
-      ).toBeGreaterThan(0)
-    );
-  });
-
-  it("should render cards", async () => {
-    // Need to be the same that routePathCanisterId returns.
-    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryByTestId } = render(CanisterDetail, props);
-
-    await waitFor(() =>
-      expect(queryByTestId("canister-cycles-card")).toBeInTheDocument()
-    );
-    // Waiting for the one above is enough
-    expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
-  });
-
-  it("should render cards when not certified", async () => {
-    // Need to be the same that routePathCanisterId returns.
-    canistersStore.setCanisters({
-      canisters: [mockCanister],
-      certified: false,
+  describe("canister without name", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(canisterApi, "queryCanisterDetails")
+        .mockResolvedValue(mockCanisterDetails);
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: "",
+        },
+      ]);
     });
-    const { queryByTestId } = render(CanisterDetail, props);
 
-    await waitFor(() =>
-      expect(queryByTestId("canister-cycles-card")).toBeInTheDocument()
-    );
-    // Waiting for the one above is enough
-    expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
+    it("should render canister id as title once loaded", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      expect(
+        queryByTestId("canister-card-title-compoment").textContent.trim()
+      ).toEqual(mockCanister.canister_id.toText());
+    });
+
+    it("should render rename button", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      expect(
+        queryByTestId("rename-canister-button-component")
+      ).toBeInTheDocument();
+    });
+
+    it("should render cards", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      expect(queryByTestId("canister-controllers-card")).toBeInTheDocument();
+    });
   });
 
-  it("should not render cards if user is not the controller", async () => {
-    setGetCanisterDetailReturn(Promise.reject(new UserNotTheControllerError()));
-    // Need to be the same that routePathCanisterId returns.
-    canistersStore.setCanisters({ canisters: [mockCanister], certified: true });
-    const { queryByTestId } = render(CanisterDetail, props);
+  describe("canister with name", () => {
+    const canisterName = "canister name";
 
-    await waitFor(() =>
-      expect(queryByTestId("canister-details-error-card")).toBeInTheDocument()
-    );
-    // Waiting for the one above is enough
-    expect(queryByTestId("canister-cycles-card")).not.toBeInTheDocument();
-    expect(queryByTestId("canister-controllers-card")).not.toBeInTheDocument();
-    resetGetCanisterDetailReturn();
+    beforeEach(() => {
+      jest
+        .spyOn(canisterApi, "queryCanisterDetails")
+        .mockResolvedValue(mockCanisterDetails);
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: canisterName,
+        },
+      ]);
+    });
+
+    it("should render canister name as title", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      expect(
+        queryByTestId("canister-card-title-compoment").textContent.trim()
+      ).toEqual(canisterName);
+    });
+
+    it("should render canister id", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      expect(queryByTestId("identifier").textContent.trim()).toEqual(
+        shortenWithMiddleEllipsis(canisterId.toText())
+      );
+    });
+  });
+
+  describe("if user is not the controller", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(canisterApi, "queryCanisterDetails")
+        .mockRejectedValue(new UserNotTheControllerError());
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: "",
+        },
+      ]);
+    });
+
+    it("should not render cards if user is not the controller", async () => {
+      const { queryByTestId } = render(CanisterDetail, props);
+
+      await runResolvedPromises();
+
+      // Waiting for the one above is enough
+      expect(queryByTestId("canister-cycles-card")).not.toBeInTheDocument();
+      expect(
+        queryByTestId("canister-controllers-card")
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("rename button", () => {
+    const newName = "new name";
+    const oldName = "old name";
+    const canisterOldName = {
+      canister_id: canisterId,
+      name: oldName,
+    };
+    const canisterNewName = {
+      ...canisterOldName,
+      name: newName,
+    };
+    beforeEach(() => {
+      jest
+        .spyOn(canisterApi, "queryCanisterDetails")
+        .mockResolvedValue(mockCanisterDetails);
+      jest
+        .spyOn(canisterApi, "queryCanisters")
+        .mockResolvedValueOnce([canisterOldName])
+        .mockResolvedValueOnce([canisterOldName])
+        .mockResolvedValueOnce([canisterNewName])
+        .mockResolvedValueOnce([canisterNewName]);
+      jest.spyOn(canisterApi, "renameCanister").mockResolvedValue(undefined);
+    });
+
+    it("should rename the canister successfully", async () => {
+      const { container } = render(CanisterDetail, props);
+
+      const po = CanisterDetailPo.under(new JestPageObjectElement(container));
+
+      await runResolvedPromises();
+
+      expect(await po.getCanisterTitle()).toBe(oldName);
+
+      await po.clickRename();
+      await po.getRenameCanisterModalPo().isPresent();
+      await po.renameCanister(newName);
+
+      await runResolvedPromises();
+
+      expect(await po.getCanisterTitle()).toBe(newName);
+      expect(canisterApi.renameCanister).toHaveBeenCalledTimes(1);
+      expect(canisterApi.renameCanister).toHaveBeenCalledWith({
+        canisterId,
+        name: newName,
+        identity: mockIdentity,
+      });
+    });
   });
 });

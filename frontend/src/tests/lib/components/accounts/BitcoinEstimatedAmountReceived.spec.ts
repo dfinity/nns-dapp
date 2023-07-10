@@ -1,11 +1,17 @@
 import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEstimatedAmountReceived.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { render } from "@testing-library/svelte";
 import en from "../../../mocks/i18n.mock";
 
 describe("BitcoinEstimatedAmountReceived", () => {
+  beforeEach(() => {
+    ckBTCInfoStore.reset();
+  });
+
   describe("should display zero as estimated received amount", () => {
     const zeroBtc = `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`;
 
@@ -14,7 +20,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: undefined,
           bitcoinEstimatedFee: undefined,
-          kytEstimatedFee: undefined,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -28,7 +33,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: undefined,
           bitcoinEstimatedFee: 1_000n,
-          kytEstimatedFee: 2_000n,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -42,7 +46,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
         props: {
           amount: 10,
           bitcoinEstimatedFee: undefined,
-          kytEstimatedFee: undefined,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -52,11 +55,19 @@ describe("BitcoinEstimatedAmountReceived", () => {
     });
 
     it("amount does not cover fee", () => {
+      ckBTCInfoStore.setInfo({
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        info: {
+          ...mockCkBTCMinterInfo,
+          kyt_fee: 5_000n,
+        },
+        certified: true,
+      });
+
       const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
         props: {
           amount: 0.0000099,
           bitcoinEstimatedFee: 5_000n,
-          kytEstimatedFee: 5_000n,
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         },
       });
@@ -71,7 +82,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: undefined,
         bitcoinEstimatedFee: undefined,
-        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -86,7 +96,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: undefined,
         bitcoinEstimatedFee: undefined,
-        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -99,7 +108,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: undefined,
         bitcoinEstimatedFee: undefined,
-        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -108,11 +116,19 @@ describe("BitcoinEstimatedAmountReceived", () => {
   });
 
   it("should display estimated received amount as zero if estimated btc fee not defined", () => {
+    ckBTCInfoStore.setInfo({
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: 1_000n,
+      },
+      certified: true,
+    });
+
     const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
       props: {
         amount: 0.0099,
         bitcoinEstimatedFee: undefined,
-        kytEstimatedFee: 1_000n,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -131,7 +147,6 @@ describe("BitcoinEstimatedAmountReceived", () => {
       props: {
         amount: 0.0099,
         bitcoinEstimatedFee: 1_000n,
-        kytEstimatedFee: undefined,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });
@@ -146,11 +161,19 @@ describe("BitcoinEstimatedAmountReceived", () => {
   });
 
   it("should display estimated received amount", () => {
+    ckBTCInfoStore.setInfo({
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: 2_000n,
+      },
+      certified: true,
+    });
+
     const { getByTestId } = render(BitcoinEstimatedAmountReceived, {
       props: {
         amount: 0.0099,
         bitcoinEstimatedFee: 1_000n,
-        kytEstimatedFee: 2_000n,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       },
     });

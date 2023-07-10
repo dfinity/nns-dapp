@@ -16,8 +16,8 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { ICPToken } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
 

@@ -1,7 +1,6 @@
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
-import { secondsToDays } from "$lib/utils/date.utils";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
@@ -57,7 +56,7 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: secondsToDays(SECONDS_IN_YEAR * 2) },
+        target: { value: SECONDS_IN_YEAR * 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -84,9 +83,10 @@ describe("IncreaseDissolveDelayModal", () => {
   });
 
   it("should not be able to change dissolve delay below current value", async () => {
+    const currentNeuronDissoveDelay = SECONDS_IN_YEAR;
     const editableNeuron = {
       ...mockNeuron,
-      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      dissolveDelaySeconds: BigInt(currentNeuronDissoveDelay),
     };
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
@@ -100,7 +100,7 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: secondsToDays(SECONDS_IN_YEAR / 2) },
+        target: { value: currentNeuronDissoveDelay / 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -112,7 +112,7 @@ describe("IncreaseDissolveDelayModal", () => {
     );
     inputRange &&
       (await waitFor(() =>
-        expect(inputRange.value).toBe(String(secondsToDays(SECONDS_IN_YEAR)))
+        expect(inputRange.value).toBe(String(currentNeuronDissoveDelay))
       ));
   });
 });

@@ -1,6 +1,5 @@
-import { DEFAULT_SNS_LOGO } from "$lib/constants/sns.constants";
+import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
-import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { TicketStatus } from "$lib/types/sale";
 import type {
@@ -37,6 +36,8 @@ type OptionalSummary = QuerySns & {
   derived?: SnsSwapDerivedState;
   swapCanisterId?: Principal;
   governanceCanisterId?: Principal;
+  ledgerCanisterId?: Principal;
+  indexCanisterId?: Principal;
 };
 
 type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
@@ -88,9 +89,7 @@ const mapOptionalMetadata = ({
   // We have to check if the logo is a png asset for security reasons.
   // Default logo can be svg.
   return {
-    logo: isPngAsset(nullishLogo)
-      ? nullishLogo
-      : (DEFAULT_SNS_LOGO as PngDataUrl),
+    logo: isPngAsset(nullishLogo) ? nullishLogo : DEFAULT_SNS_LOGO,
     url: nullishUrl,
     name: nullishName,
     description: nullishDescription,
@@ -153,6 +152,8 @@ export const mapAndSortSnsQueryToSummaries = ({
         token: mapOptionalToken(token),
         swapCanisterId: swapState?.swapCanisterId,
         governanceCanisterId: swapState?.governanceCanisterId,
+        ledgerCanisterId: swapState?.ledgerCanisterId,
+        indexCanisterId: swapState?.indexCanisterId,
         swap: mapOptionalSwap(swapData),
         derived: fromNullable(swapState?.derived ?? []),
       };
@@ -166,6 +167,8 @@ export const mapAndSortSnsQueryToSummaries = ({
       entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
       entry.governanceCanisterId !== undefined &&
+      entry.ledgerCanisterId !== undefined &&
+      entry.indexCanisterId !== undefined &&
       entry.derived !== undefined &&
       entry.metadata !== undefined &&
       entry.token !== undefined

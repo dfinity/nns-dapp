@@ -5,14 +5,9 @@ import {
 } from "$lib/api/ledger.api";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  TokenAmount,
-} from "@dfinity/nns";
-import { vi } from "vitest";
-import { mock } from "vitest-mock-extended";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { mock } from "jest-mock-extended";
 
 describe("ledger-api", () => {
   describe("sendICP", () => {
@@ -29,18 +24,18 @@ describe("ledger-api", () => {
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
-      vi.useFakeTimers().setSystemTime(now);
+      jest.useFakeTimers().setSystemTime(now);
 
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
-      );
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation((): LedgerCanister => ledgerMock);
 
-      spyTransfer = vi.spyOn(ledgerMock, "transfer");
+      spyTransfer = jest.spyOn(ledgerMock, "transfer");
     });
 
     afterAll(() => {
-      vi.clearAllMocks();
-      vi.clearAllTimers();
+      jest.clearAllMocks();
+      jest.clearAllTimers();
     });
 
     it("should call ledger to send ICP", async () => {
@@ -120,9 +115,9 @@ describe("ledger-api", () => {
     ledgerMock.transactionFee.mockResolvedValue(fee);
 
     beforeEach(() => {
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
-      );
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation((): LedgerCanister => ledgerMock);
     });
 
     it("gets transaction fee from LedgerCanister", async () => {
@@ -138,9 +133,9 @@ describe("ledger-api", () => {
     ledgerMock.accountBalance.mockResolvedValue(balance);
 
     beforeEach(() => {
-      vi.spyOn(LedgerCanister, "create").mockImplementation(
-        (): LedgerCanister => ledgerMock
-      );
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation((): LedgerCanister => ledgerMock);
     });
 
     it("gets accounts balance from LedgerCanister", async () => {

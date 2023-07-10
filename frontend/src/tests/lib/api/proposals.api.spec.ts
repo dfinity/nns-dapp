@@ -50,6 +50,29 @@ describe("proposals-api", () => {
 
       expect(spyListProposals).toHaveReturnedTimes(1);
     });
+
+    it("should call with no excluded topics if topics filter is empty", async () => {
+      await queryProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        filters: {
+          ...DEFAULT_PROPOSALS_FILTERS,
+          topics: [],
+        },
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      expect(spyListProposals).toHaveBeenCalledWith({
+        certified: true,
+        request: {
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          excludeTopic: [],
+          includeRewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards,
+          includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          limit: 100,
+        },
+      });
+    });
   });
 
   describe("load", () => {

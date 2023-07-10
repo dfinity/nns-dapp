@@ -8,6 +8,7 @@ import type {
   SnsSwapTicket,
 } from "@dfinity/sns";
 import { SnsSwapCanister } from "@dfinity/sns";
+import { toNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const getOpenTicket = async ({
@@ -89,10 +90,12 @@ export const notifyParticipation = async ({
   identity,
   rootCanisterId,
   buyer,
+  confirmationText,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   buyer: Principal;
+  confirmationText: string | undefined;
 }): Promise<SnsRefreshBuyerTokensResponse> => {
   logWithTimestamp(`[sale] notifyParticipation call...`);
 
@@ -102,7 +105,10 @@ export const notifyParticipation = async ({
     certified: true,
   });
 
-  const response = await notifyParticipationApi({ buyer: buyer.toText() });
+  const response = await notifyParticipationApi({
+    buyer: buyer.toText(),
+    confirmation_text: toNullable(confirmationText),
+  });
 
   logWithTimestamp(`[sale] notifyParticipation complete.`);
 

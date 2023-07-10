@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -12,23 +15,29 @@ import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
-vi.mock("$lib/services/sns-accounts.services", () => {
+jest.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
+jest.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-vi.mock("$lib/services/ckbtc-transactions.services", () => {
+jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -45,7 +54,9 @@ describe("Wallet", () => {
   });
 
   beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
   );
 
   describe("nns context", () => {

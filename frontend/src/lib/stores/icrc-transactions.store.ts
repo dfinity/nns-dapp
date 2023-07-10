@@ -1,3 +1,4 @@
+import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
@@ -5,6 +6,7 @@ import type {
 import { removeKeys } from "$lib/utils/utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
 
 export type IcrcAccountIdentifier = string;
@@ -29,15 +31,19 @@ export type IcrcTransactionsStoreData = Record<
 
 export interface IcrcTransactionsStore
   extends Readable<IcrcTransactionsStoreData> {
-  addTransactions: (data: {
-    accountIdentifier: string;
-    canisterId: UniverseCanisterId;
-    transactions: IcrcTransactionWithId[];
-    oldestTxId?: bigint;
-    completed: boolean;
-  }) => void;
+  addTransactions: (
+    data: {
+      accountIdentifier: string;
+      canisterId: UniverseCanisterId;
+      completed: boolean;
+    } & GetTransactionsResponse
+  ) => void;
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;
+  resetAccount: (params: {
+    universeId: UniverseCanisterId;
+    accountIdentifier: string;
+  }) => void;
 }
 
 /**
@@ -108,6 +114,30 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
           keysToRemove: [canisterId.toText()],
         })
       );
+    },
+
+    resetAccount({
+      universeId,
+      accountIdentifier,
+    }: {
+      universeId: UniverseCanisterId;
+      accountIdentifier: string;
+    }) {
+      update((currentState: IcrcTransactionsStoreData) => {
+        const projectState = currentState[universeId.toText()];
+        return {
+          ...removeKeys({
+            obj: currentState,
+            keysToRemove: [universeId.toText()],
+          }),
+          ...(nonNullish(projectState) && {
+            [universeId.toText()]: removeKeys({
+              obj: projectState,
+              keysToRemove: [accountIdentifier],
+            }),
+          }),
+        };
+      });
     },
   };
 };

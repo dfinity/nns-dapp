@@ -11,7 +11,7 @@ import {
   mockTransactionSendDataFromMain,
 } from "$tests/mocks/transaction.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
@@ -78,7 +78,7 @@ describe("TransactionCard", () => {
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `-${formatToken({
-        value: mockTransactionSendDataFromMain.displayAmount.toE8s(),
+        value: mockTransactionSendDataFromMain.displayAmount,
         detailed: true,
       })}`
     );
@@ -91,7 +91,7 @@ describe("TransactionCard", () => {
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `+${formatToken({
-        value: mockTransactionReceiveDataFromMain.displayAmount.toE8s(),
+        value: mockTransactionReceiveDataFromMain.displayAmount,
         detailed: true,
       })}`
     );

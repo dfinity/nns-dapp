@@ -5,20 +5,27 @@
   import { Modal } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Input from "$lib/components/ui/Input.svelte";
-  import { getICPs, getTokens } from "$lib/services/dev.services";
+  import {
+    getICPs,
+    getTestBalance,
+    getTokens,
+  } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { get } from "svelte/store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { ICPToken, type Token } from "@dfinity/nns";
+  import { ICPToken, type Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { browser } from "$app/environment";
 
   let visible = false;
   let transferring = false;
 
   let inputValue: number | undefined = undefined;
+
+  let selectedProjectId = OWN_CANISTER_ID;
+  $: selectedProjectId = $selectedUniverseIdStore;
 
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
@@ -30,10 +37,12 @@
 
     transferring = true;
 
-    const selectedProjectId = get(selectedUniverseIdStore);
-
     try {
-      if (selectedProjectId.toText() === OWN_CANISTER_ID.toText()) {
+      // Default to transfer ICPs if the test account's balance of the selected universe is 0.
+      if (
+        selectedProjectId.toText() === OWN_CANISTER_ID.toText() ||
+        tokenBalanceE8s === 0n
+      ) {
         await getICPs(inputValue);
       } else {
         await getTokens({
@@ -61,11 +70,23 @@
   };
 
   let invalidForm: boolean;
-
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 
+  // Check the balance of the test account in that universe.
+  let tokenBalanceE8s = 0n;
+  $: selectedProjectId,
+    (async () => {
+      // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
+      if (browser) {
+        tokenBalanceE8s = await getTestBalance(selectedProjectId);
+      }
+    })();
+
+  // If the test account balance is 0, don't show a button that won't work. Show the ICP token instead.
   let token: Token;
-  $: token = $snsTokenSymbolSelectedStore || ICPToken;
+  $: token =
+    (tokenBalanceE8s === 0n ? ICPToken : $snsTokenSymbolSelectedStore) ??
+    ICPToken;
 </script>
 
 <TestIdWrapper testId="get-tokens-component">

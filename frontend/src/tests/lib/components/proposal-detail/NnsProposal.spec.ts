@@ -1,8 +1,13 @@
 import * as proposalsApi from "$lib/api/proposals.api";
+import { filteredProposals } from "$lib/derived/proposals.derived";
 import {
+  generateMockProposals,
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
+import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.mock";
+import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -17,11 +22,12 @@ vi.mock("$lib/api/nns-dapp.api");
 describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
 
-  const renderProposalModern = () =>
+  const renderProposalModern = (id = 1000n) =>
     render(NnsProposalTest, {
       props: {
         proposalInfo: {
           ...mockProposalInfo,
+          id,
           proposal: {
             ...mockProposalInfo.proposal,
             action: proposalActionNnsFunction21,
@@ -71,5 +77,19 @@ describe("Proposal", () => {
         queryByTestId("proposal-proposer-payload-entry-title")
       ).toBeInTheDocument()
     );
+  });
+
+  it("should render proposal navigation", async () => {
+    jest
+      .spyOn(filteredProposals, "subscribe")
+      .mockImplementation(
+        createMockProposalsStoreSubscribe(generateMockProposals(10))
+      );
+
+    const { container } = renderProposalModern(5n);
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
   });
 });

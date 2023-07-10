@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TokenAmount, Token } from "@dfinity/nns";
+  import type { TokenAmount, Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -35,7 +35,7 @@
 
 <div data-tid="transaction-step-2">
   <div class="info">
-    <TransactionSource account={sourceAccount} />
+    <TransactionSource account={sourceAccount} {token} />
 
     <TransactionSummary {amount} {token} {transactionFee} {showLedgerFee}>
       <slot name="received-amount" slot="received-amount" />

@@ -43,6 +43,6 @@ describe("IntersectionDirectives", () => {
     render(IntersectionTest);
 
     expect(spy).toHaveBeenCalled();
-    expect(testIntersecting).toBeFalsy();
+    expect(testIntersecting).toBe(false);
   });
 });

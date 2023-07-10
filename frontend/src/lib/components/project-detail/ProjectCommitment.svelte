@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -14,6 +14,7 @@
   import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
+  import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -41,10 +42,11 @@
   });
 
   let saleBuyerCount: number | undefined;
-  $: saleBuyerCount =
-    $projectDetailStore?.summary?.rootCanisterId &&
-    $snsSwapMetricsStore[$projectDetailStore?.summary?.rootCanisterId.toText()]
-      ?.saleBuyerCount;
+  $: saleBuyerCount = swapSaleBuyerCount({
+    rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
+    swapMetrics: $snsSwapMetricsStore,
+    derivedState: derived,
+  });
 </script>
 
 {#if nonNullish(saleBuyerCount)}

@@ -5,8 +5,8 @@ export class AccountsTab extends MyNavigator {
   static readonly ADD_ACCOUNT_SELECTOR: string = `[data-tid="open-add-account-modal"]`;
   static readonly MAKE_ACCOUNT_LINKED_SELECTOR: string = `[data-tid="choose-linked-as-account-type"]`;
   static readonly MAKE_ACCOUNT_HARDWARE_SELECTOR: string = `[data-tid="choose-hardware-wallet-as-account-type"]`;
-  static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `#modalContent [data-tid="input-ui-element"]`;
-  static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `#modalContent [type="submit"]`;
+  static readonly LINKED_ACCOUNT_NAME_SELECTOR: string = `[id*="modal-content-"] [data-tid="input-ui-element"]`;
+  static readonly CREATE_LINKED_ACCOUNT_BUTTON_SELECTOR: string = `[id*="modal-content-"] [type="submit"]`;
   static readonly ICP_VALUE_SELECTOR: string = `[data-tid="token-value"]`;
   static readonly DESTINATION_TOGGLE_SELECTOR: string = `[data-tid="select-destination"] [for="toggle"]`;
 

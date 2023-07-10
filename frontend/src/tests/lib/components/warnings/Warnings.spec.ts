@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -9,15 +13,14 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
-import { vi } from "vitest";
+import { render, waitFor, type RenderResult } from "@testing-library/svelte";
+import { SvelteComponent, tick } from "svelte";
 import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-vi.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: vi.fn(() =>
+jest.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: jest.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -29,13 +32,18 @@ vi.mock("$lib/services/$public/worker-metrics.services", () => ({
   ),
 }));
 
+jest.mock("$lib/constants/environment.constants.ts", () => ({
+  ...jest.requireActual("$lib/constants/environment.constants.ts"),
+  IS_TEST_MAINNET: true,
+}));
+
 describe("Warnings", () => {
   describe("TransactionRateWarning", () => {
     beforeEach(() => metricsStore.set(undefined));
 
     afterAll(() => {
-      vi.clearAllMocks();
-      vi.resetAllMocks();
+      jest.clearAllMocks();
+      jest.resetAllMocks();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {
@@ -114,8 +122,8 @@ describe("Warnings", () => {
 
   describe("ConvertCkBTCToBtcWarning", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
-      vi.resetAllMocks();
+      jest.clearAllMocks();
+      jest.resetAllMocks();
 
       layoutWarningToastId.set(undefined);
       metricsStore.set(undefined);
@@ -126,7 +134,7 @@ describe("Warnings", () => {
 
     describe("signed in", () => {
       beforeEach(() =>
-        vi
+        jest
           .spyOn(authStore, "subscribe")
           .mockImplementation(mockAuthStoreSubscribe)
       );
@@ -188,6 +196,83 @@ describe("Warnings", () => {
         await waitFor(() => {
           expect(container.querySelector(".toast")).toBeNull();
         });
+      });
+    });
+  });
+
+  describe("TestEnvironmentWarning", () => {
+    describe("not signed in", () => {
+      it("should not render test environment warning", async () => {
+        const { getByTestId } = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitFor(expect(() => getByTestId("test-env-warning")).toThrow);
+      });
+    });
+
+    describe("signed in", () => {
+      beforeAll(() =>
+        jest
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe)
+      );
+
+      it("should render test environment warning", async () => {
+        const { getByTestId } = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitFor(() =>
+          expect(getByTestId("test-env-warning")).not.toBeNull()
+        );
+      });
+
+      const waitAndClose = async ({
+        getByTestId,
+      }: RenderResult<SvelteComponent>) => {
+        await waitFor(() =>
+          expect(getByTestId("test-env-warning-ack")).not.toBeNull()
+        );
+
+        const button = getByTestId("test-env-warning-ack");
+        fireEvent.click(button);
+
+        await waitFor(
+          () => expect(() => getByTestId("test-env-warning")).toThrow
+        );
+      };
+
+      it("should close test environment warning", async () => {
+        const result = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitAndClose(result);
+      });
+
+      it("should not reopen environment warning", async () => {
+        const result = render(Warnings, {
+          props: {
+            testEnvironmentWarning: true,
+          },
+        });
+
+        await waitAndClose(result);
+
+        const { rerender, getByTestId } = result;
+
+        rerender(Warnings);
+
+        await waitFor(
+          () => expect(() => getByTestId("test-env-warning")).toThrow
+        );
       });
     });
   });

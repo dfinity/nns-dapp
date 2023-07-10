@@ -14,6 +14,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
+import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -34,6 +35,9 @@ describe("VotingCard", () => {
     createdTimestampSeconds: BigInt(BigInt(1000)),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     neuronId,
+    permission_type: Int32Array.from([
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+    ]),
   }));
 
   const renderVotingCard = () =>

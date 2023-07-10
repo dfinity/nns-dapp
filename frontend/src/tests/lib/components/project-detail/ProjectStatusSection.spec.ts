@@ -82,7 +82,10 @@ describe("ProjectStatusSection", () => {
     const { rootCanisterId } = summary;
     const { queryByTestId } = renderContextCmp({
       summary,
-      swapCommitment: undefined,
+      swapCommitment: {
+        rootCanisterId,
+        myCommitment: undefined,
+      },
       Component: ProjectStatusSection,
     });
     expect(

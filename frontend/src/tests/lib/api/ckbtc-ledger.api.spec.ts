@@ -25,13 +25,10 @@ describe("ckbtc-ledger api", () => {
   afterAll(() => vi.clearAllMocks());
 
   describe("getCkBTCAccount", () => {
-    it("returns main account with balance and token metadata", async () => {
-      const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
-        mockQueryTokenResponse
-      );
-      const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(
-        BigInt(10_000_000)
-      );
+    it("returns main account with balance", async () => {
+      const balance = BigInt(10_000_000);
+
+      const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 
       const account = await getCkBTCAccount({
         certified: true,
@@ -43,14 +40,15 @@ describe("ckbtc-ledger api", () => {
 
       expect(account).not.toBeUndefined();
 
-      expect(account?.balance.toE8s()).toEqual(BigInt(10_000_000));
+      expect(account?.balanceE8s).toEqual(balance);
 
       expect(balanceSpy).toBeCalled();
-      expect(metadataSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
-      ledgerCanisterMock.metadata.mockResolvedValue([]);
+    it("throws an error if no balance", () => {
+      ledgerCanisterMock.balance.mockImplementation(() =>
+        Promise.reject(new Error())
+      );
 
       const call = () =>
         getCkBTCAccount({

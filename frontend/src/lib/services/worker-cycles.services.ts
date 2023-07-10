@@ -1,11 +1,22 @@
+import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import type {
-  PostMessage,
-  PostMessageDataResponse,
-} from "$lib/types/post-messages";
+  PostMessageDataRequestCycles,
+  PostMessageDataResponseCycles,
+} from "$lib/types/post-message.canister";
+import type { PostMessage } from "$lib/types/post-messages";
 
-export type CyclesCallback = (data: PostMessageDataResponse) => void;
+export type CyclesCallback = (data: PostMessageDataResponseCycles) => void;
 
-export const initCyclesWorker = async () => {
+export interface CyclesWorker {
+  startCyclesTimer: (
+    params: {
+      callback: CyclesCallback;
+    } & Pick<PostMessageDataRequestCycles, "canisterId">
+  ) => void;
+  stopCyclesTimer: () => void;
+}
+
+export const initCyclesWorker = async (): Promise<CyclesWorker> => {
   const CyclesWorker = await import("$lib/workers/cycles.worker?worker");
   const cyclesWorker: Worker = new CyclesWorker.default();
 
@@ -13,7 +24,7 @@ export const initCyclesWorker = async () => {
 
   cyclesWorker.onmessage = async ({
     data,
-  }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+  }: MessageEvent<PostMessage<PostMessageDataResponseCycles>>) => {
     const { msg } = data;
 
     switch (msg) {
@@ -26,16 +37,16 @@ export const initCyclesWorker = async () => {
   return {
     startCyclesTimer: ({
       callback,
-      canisterId,
+      ...rest
     }: {
-      canisterId: string;
       callback: CyclesCallback;
+      canisterId: string;
     }) => {
       cyclesCallback = callback;
 
       cyclesWorker.postMessage({
         msg: "nnsStartCyclesTimer",
-        data: { canisterId },
+        data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopCyclesTimer: () => {

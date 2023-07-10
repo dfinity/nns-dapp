@@ -367,6 +367,72 @@ describe("NNSDapp", () => {
     });
   });
 
+  describe("NNSDapp.renameCanister", () => {
+    it("should call rename_canister", async () => {
+      const service = mock<NNSDappService>();
+      service.rename_canister.mockResolvedValue({ Ok: null });
+      const nnsDapp = await createNnsDapp(service);
+
+      await nnsDapp.renameCanister({
+        name: "test",
+        canisterId: mockCanister.canister_id,
+      });
+
+      expect(service.rename_canister).toBeCalledWith({
+        name: "test",
+        canister_id: mockCanister.canister_id,
+      });
+    });
+
+    it("should throw CanisterNotFound", async () => {
+      const service = mock<NNSDappService>();
+      service.rename_canister.mockResolvedValue({
+        CanisterNotFound: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.renameCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterNotFoundError);
+    });
+
+    it("should throw CanisterNameAlreadyTakenError", async () => {
+      const service = mock<NNSDappService>();
+      service.rename_canister.mockResolvedValue({
+        NameAlreadyTaken: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.renameCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
+    });
+
+    it("should throw CanisterNameTooLongError", async () => {
+      const service = mock<NNSDappService>();
+      service.rename_canister.mockResolvedValue({
+        NameTooLong: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = () =>
+        nnsDapp.renameCanister({
+          name: "test",
+          canisterId: mockCanister.canister_id,
+        });
+
+      expect(call).rejects.toThrowError(CanisterNameTooLongError);
+    });
+  });
+
   describe("NNSDapp.detachCanister", () => {
     it("should call attach_canister", async () => {
       const service = mock<NNSDappService>();

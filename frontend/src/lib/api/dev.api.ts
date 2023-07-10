@@ -1,23 +1,29 @@
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { SnsGovernanceCanister, type SnsNeuronId } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
 import { initSns, wrapper } from "./sns-wrapper.api";
 
+export const testAccountPrincipal =
+  "jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe";
+export const testAccountAddress =
+  "5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087";
+
 const getTestAccountAgent = async (): Promise<HttpAgent> => {
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
   // identity to send the current user some ICP to test things with.
-  // The identity's principal is jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe
-  // The identity's default ledger address is 5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087
+  // The identity's principal is ${testAccountPrincipal}
+  // The identity's default ledger address is ${testAccountAddress}
   const publicKey = "Uu8wv55BKmk9ZErr6OIt5XR1kpEGXcOSOC1OYzrAwuk=";
   const privateKey =
     "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
@@ -33,6 +39,32 @@ const getTestAccountAgent = async (): Promise<HttpAgent> => {
   await agent.fetchRootKey();
 
   return agent;
+};
+
+export const getTestAccountBalance = async (
+  rootCanisterId: Principal
+): Promise<bigint> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  if (isUniverseNns(rootCanisterId)) {
+    const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
+
+    return ledgerCanister.accountBalance({
+      accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
+    });
+  }
+
+  const { balance } = await initSns({
+    agent,
+    rootCanisterId,
+    certified: false,
+  });
+
+  return balance({
+    owner: Principal.fromText(testAccountPrincipal),
+  });
 };
 
 /*

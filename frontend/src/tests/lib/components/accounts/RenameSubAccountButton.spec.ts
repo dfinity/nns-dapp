@@ -34,7 +34,7 @@ describe("RenameSubAccountButton", () => {
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
     await waitFor(() =>
-      expect(getByTestId("rename-subaccount-button")).not.toBeNull()
+      expect(getByTestId("confirm-text-input-screen-button")).not.toBeNull()
     );
   });
 });

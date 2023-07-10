@@ -1,12 +1,17 @@
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
+import type { CanisterId } from "$lib/types/canister";
+import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { formatNumber } from "./format.utils";
+import { replacePlaceholders } from "./i18n.utils";
 
 export const getCanisterFromStore = ({
   canisterId,
@@ -69,4 +74,18 @@ export const canisterStatusToText = (status: CanisterStatus): string => {
     default:
       return i18nObj.canister_detail.status_running;
   }
+};
+
+export const mapCanisterId = (canisterId: CanisterId | string): CanisterId =>
+  typeof canisterId === "string" ? Principal.fromText(canisterId) : canisterId;
+
+export const errorCanisterNameMessage = (name: string | undefined) => {
+  if (nonNullish(name) && name.length > MAX_CANISTER_NAME_LENGTH) {
+    const i18nObj = get(i18n);
+    return replacePlaceholders(
+      i18nObj.canister_detail.canister_name_error_too_long,
+      { $max: String(MAX_CANISTER_NAME_LENGTH) }
+    );
+  }
+  return undefined;
 };

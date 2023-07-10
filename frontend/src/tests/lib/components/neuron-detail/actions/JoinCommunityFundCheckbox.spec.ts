@@ -63,7 +63,7 @@ describe("JoinCommunityFundCheckbox", () => {
     });
 
     const inputElement = queryByTestId("checkbox") as HTMLInputElement;
-    expect(inputElement.checked).toBeFalsy();
+    expect(inputElement.checked).toBe(false);
   });
 
   it("allows neuron to join community fund", async () => {

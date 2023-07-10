@@ -14,6 +14,7 @@ import {
   registerVote,
   removeHotkey,
   setFollowees,
+  simulateMergeNeurons,
   spawnNeuron,
   splitNeuron,
   stakeMaturity,
@@ -453,7 +454,7 @@ describe("neurons-api", () => {
       expect(mockGovernanceCanister.mergeNeurons).toBeCalled();
     });
 
-    it("throws error when setting followees fails", async () => {
+    it("throws error when merging neurons fails", async () => {
       const error = new Error();
       mockGovernanceCanister.mergeNeurons.mockImplementation(
         vi.fn(() => {
@@ -463,6 +464,39 @@ describe("neurons-api", () => {
 
       const call = () =>
         mergeNeurons({
+          identity: mockIdentity,
+          sourceNeuronId: BigInt(10),
+          targetNeuronId: BigInt(11),
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("simulate merge neurons", () => {
+    it("simulates merging neurons successfully", async () => {
+      mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
+        jest.fn().mockResolvedValue(undefined)
+      );
+
+      await simulateMergeNeurons({
+        identity: mockIdentity,
+        sourceNeuronId: BigInt(10),
+        targetNeuronId: BigInt(11),
+      });
+
+      expect(mockGovernanceCanister.simulateMergeNeurons).toBeCalled();
+    });
+
+    it("throws error when simulating merging fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
+        jest.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        simulateMergeNeurons({
           identity: mockIdentity,
           sourceNeuronId: BigInt(10),
           targetNeuronId: BigInt(11),

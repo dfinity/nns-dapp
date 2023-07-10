@@ -35,6 +35,7 @@
   import Summary from "$lib/components/summary/Summary.svelte";
   import { listNeurons } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
+  import { isForceCallStrategy } from "$lib/utils/env.utils";
 
   export let neuronIdText: string | undefined | null;
 
@@ -70,7 +71,8 @@
       $neuronsStore.neurons !== undefined &&
       // After neuron staking the query (not certified) call can return the outdated neuron list
       // so if the neuron is undefined it's more reliable to wait for the update call.
-      $neuronsStore.certified === true &&
+      ($neuronsStore.certified === true ||
+        ($neuronsStore.certified === false && isForceCallStrategy())) &&
       $pageStore.path === AppPath.Neuron
     ) {
       toastsError({

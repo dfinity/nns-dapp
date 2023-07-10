@@ -12,7 +12,7 @@ import {
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsTransactionCard", () => {
@@ -58,7 +58,7 @@ describe("NnsTransactionCard", () => {
     const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `-${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
+      `-${formatToken({ value: displayAmount, detailed: true })}`
     );
   });
 
@@ -69,7 +69,7 @@ describe("NnsTransactionCard", () => {
     const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({ value: displayAmount.toE8s(), detailed: true })}`
+      `+${formatToken({ value: displayAmount, detailed: true })}`
     );
   });
 

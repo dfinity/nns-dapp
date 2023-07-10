@@ -26,7 +26,7 @@ describe("StakeMaturityButton", () => {
     });
 
     const button = getByTestId("stake-maturity-button");
-    await waitFor(() => expect(button.hasAttribute("disabled")).toBeFalsy());
+    await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
   });
 
   it("should be disabled", async () => {

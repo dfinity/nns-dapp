@@ -1,15 +1,18 @@
 import {
-  depositFee,
   estimateFee,
   getBTCAddress,
   getWithdrawalAccount,
+  minterInfo,
   retrieveBtc,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
+import {
+  mockCkBTCMinterInfo,
+  mockUpdateBalanceOk,
+} from "$tests/mocks/ckbtc-minter.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
@@ -171,26 +174,24 @@ describe("ckbtc-minter api", () => {
     });
   });
 
-  describe("depositFee", () => {
-    it("returns deposit fee", async () => {
-      const expectedResult = 789n;
+  describe("minterInfo", () => {
+    it("returns minter info", async () => {
+      const minterFeeSpy =
+        minterCanisterMock.getMinterInfo.mockResolvedValue(mockCkBTCMinterInfo);
 
-      const depositFeeSpy =
-        minterCanisterMock.getDepositFee.mockResolvedValue(expectedResult);
+      const result = await minterInfo(params);
 
-      const result = await depositFee(params);
+      expect(result).toEqual(mockCkBTCMinterInfo);
 
-      expect(result).toEqual(expectedResult);
-
-      expect(depositFeeSpy).toBeCalled();
+      expect(minterFeeSpy).toBeCalled();
     });
 
     it("bubble errors", () => {
-      minterCanisterMock.getDepositFee.mockImplementation(async () => {
+      minterCanisterMock.getMinterInfo.mockImplementation(async () => {
         throw new Error();
       });
 
-      const call = () => depositFee(params);
+      const call = () => minterInfo(params);
 
       expect(call).rejects.toThrowError();
     });

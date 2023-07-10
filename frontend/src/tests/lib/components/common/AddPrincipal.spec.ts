@@ -47,7 +47,7 @@ describe("PrincipalInput", () => {
     const buttonElement = getByTestId("add-principal-button");
 
     await waitFor(() =>
-      expect(buttonElement.hasAttribute("disabled")).toBeFalsy()
+      expect(buttonElement.hasAttribute("disabled")).toBe(false)
     );
   });
 });

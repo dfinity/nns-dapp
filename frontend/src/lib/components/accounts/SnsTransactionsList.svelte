@@ -11,9 +11,12 @@
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
   } from "$lib/utils/icrc-transactions.utils";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
 
   export let account: Account;
   export let rootCanisterId: Principal;
+  export let token: IcrcTokenMetadata | undefined;
 
   let loading = true;
 
@@ -58,11 +61,14 @@
   )?.summary.governanceCanisterId;
 </script>
 
-<IcrcTransactionsList
-  on:nnsIntersect={loadMore}
-  {account}
-  {transactions}
-  {loading}
-  {governanceCanisterId}
-  {completed}
-/>
+<SnsWalletTransactionsObserver {account} {completed}>
+  <IcrcTransactionsList
+    on:nnsIntersect={loadMore}
+    {account}
+    {transactions}
+    {loading}
+    {governanceCanisterId}
+    {completed}
+    {token}
+  />
+</SnsWalletTransactionsObserver>

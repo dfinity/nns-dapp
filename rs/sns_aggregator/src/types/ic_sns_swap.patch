@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 857000679..321ccf5ea 100644
+index a21002e86..e0827feb2 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -4,14 +4,14 @@
+@@ -3,19 +3,19 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -11,50 +11,53 @@ index 857000679..321ccf5ea 100644
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
- // use ic_cdk::export::candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
- // use ic_cdk::api::call::CallResult;
+-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+-// use ic_cdk::api::call::CallResult as Result;
++// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
++// use ic_cdk::api::call::CallResult;
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct Countries {
+     pub iso_codes: Vec<String>,
+ }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Init {
-   pub  sns_root_canister_id: String,
-   pub  fallback_controller_principal_ids: Vec<String>,
-@@ -74,7 +74,7 @@ pub struct SettleCommunityFundParticipationResult {
+     pub sns_root_canister_id: String,
+     pub fallback_controller_principal_ids: Vec<String>,
+@@ -111,7 +111,7 @@ pub struct SettleCommunityFundParticipationResult {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub enum Possibility_2 {
+-    Ok {},
++    Ok,
+     Err(CanisterCallError),
  }
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub enum Possibility_2 { Ok{}, Err(CanisterCallError) }
-+pub enum Possibility_2 { Ok, Err(CanisterCallError) }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SetModeCallResult { possibility: Option<Possibility_2> }
-@@ -207,13 +207,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
+@@ -274,13 +274,13 @@ pub struct GetOpenTicketResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_sale_parameters_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct NeuronBasketConstructionParameters {
-   pub  dissolve_delay_interval_seconds: u64,
-   pub  count: u64,
+     pub dissolve_delay_interval_seconds: u64,
+     pub count: u64,
  }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Params {
-   pub  min_participant_icp_e8s: u64,
-   pub  neuron_basket_construction_parameters: Option<
-@@ -284,10 +284,10 @@ pub struct Swap {
+     pub min_participant_icp_e8s: u64,
+     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
+@@ -375,7 +375,7 @@ pub struct DerivedState {
+     pub cf_neuron_count: Option<u64>,
  }
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct DerivedState { sns_tokens_per_icp: f32, buyer_total_icp_e8s: u64 }
-+pub struct DerivedState { pub sns_tokens_per_icp: f32, pub buyer_total_icp_e8s: u64 }
- 
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetStateResponse { swap: Option<Swap>, derived: Option<DerivedState> }
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
-+pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ListCommunityFundParticipantsRequest {
+ pub struct GetStateResponse {
+     pub swap: Option<Swap>,
+     pub derived: Option<DerivedState>,

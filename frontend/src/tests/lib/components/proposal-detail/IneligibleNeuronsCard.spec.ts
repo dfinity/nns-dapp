@@ -43,7 +43,7 @@ describe("IneligibleNeuronsCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("should display ineligible neurons (< 6 months) ", () => {
+  it("should display ineligible neurons with reason 'short'", () => {
     const { getByText } = render(IneligibleNeuronsCard, {
       props: {
         ineligibleNeurons: [
@@ -82,6 +82,22 @@ describe("IneligibleNeuronsCard", () => {
     expect(
       (container.querySelector("small") as HTMLElement).textContent
     ).toEqual(en.proposal_detail__ineligible.reason_since);
+  });
+
+  it("should display ineligible neurons due to reason 'no-permission'", () => {
+    const { getByText, container } = render(IneligibleNeuronsCard, {
+      ineligibleNeurons: [
+        {
+          neuronIdString: "111",
+          reason: "no-permission",
+        },
+      ] as IneligibleNeuronData[],
+      minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
+    });
+    expect(getByText("111", { exact: false })).toBeInTheDocument();
+    expect(
+      (container.querySelector("small") as HTMLElement).textContent
+    ).toEqual(en.proposal_detail__ineligible.reason_no_permission);
   });
 
   it("should display multiple ineligible neurons", () => {

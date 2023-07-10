@@ -11,6 +11,7 @@ import {
   snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
+import { getConditionsToAccept } from "$lib/getters/sns-summary";
 import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
@@ -35,9 +36,7 @@ import {
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
-  ICPToken,
   InsufficientFundsError,
-  TokenAmount,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
@@ -57,6 +56,8 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import {
+  ICPToken,
+  TokenAmount,
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,
@@ -507,9 +508,17 @@ const pollNotifyParticipation = async ({
   identity: Identity;
 }) => {
   try {
+    const project = getProjectFromStore(rootCanisterId);
+    const confirmationText = project && getConditionsToAccept(project.summary);
+
     return await poll({
       fn: (): Promise<SnsRefreshBuyerTokensResponse> =>
-        notifyParticipation({ buyer, rootCanisterId, identity }),
+        notifyParticipation({
+          buyer,
+          rootCanisterId,
+          identity,
+          confirmationText,
+        }),
       shouldExit: isInternalRefreshBuyerTokensError,
       millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
       useExponentialBackoff: true,

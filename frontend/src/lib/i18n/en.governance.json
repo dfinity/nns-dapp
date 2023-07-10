@@ -21,7 +21,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap",
     "ReplicaVersionManagement": "Replica Version Management",
     "SubnetReplicaVersionManagement": "Subnet Replica Version Management",
-    "SnsAndCommunityFund": "SNS & Community Fund"
+    "SnsAndCommunityFund": "SNS & Neurons' Fund"
   },
   "topics_description": {
     "Unspecified": "",
@@ -38,7 +38,7 @@
     "SnsDecentralizationSale": "SNS Decentralization Swap.",
     "ReplicaVersionManagement": "All proposals dealing with blessing and retirement of replica versions.",
     "SubnetReplicaVersionManagement": "Proposals handling updates of a subnet’s replica version.",
-    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Community Fund"
+    "SnsAndCommunityFund": "Proposals relating to service nervous systems (SNS) and Neurons' Fund"
   },
   "rewards": {
     "Unknown": "Unknown",
@@ -81,7 +81,8 @@
     "SetDefaultFollowees": "Set Default Followees",
     "Motion": "Motion",
     "SetSnsTokenSwapOpenTimeWindow": "Start Decentralization Swap",
-    "OpenSnsTokenSwap": "Open Decentralization Swap"
+    "OpenSnsTokenSwap": "Open Decentralization Swap",
+    "CreateServiceNervousSystem": "Create Service Nervous System (SNS)"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -94,7 +95,8 @@
     "SetDefaultFollowees": "Specify the list of followees that a freshly created neuron should have.",
     "Motion": "A motion is a text that can be adopted or rejected. No code is executed when a motion is adopted. An adopted motion should guide the future strategy of the Internet Computer ecosystem.",
     "SetSnsTokenSwapOpenTimeWindow": "Start decentralization swap.",
-    "OpenSnsTokenSwap": "Open decentralization swap."
+    "OpenSnsTokenSwap": "Open decentralization swap.",
+    "CreateServiceNervousSystem": "Create a new Service Nervous System (SNS)."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",

@@ -16,12 +16,16 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
+  mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import {
@@ -87,9 +91,9 @@ describe("UniverseAccountsBalance", () => {
       const balance: HTMLElement | null = getByTestId("token-value-label");
 
       const totalBalance =
-        mockMainAccount.balance.toE8s() +
-        mockSubAccount.balance.toE8s() +
-        mockHardwareWalletAccount.balance.toE8s();
+        mockMainAccount.balanceE8s +
+        mockSubAccount.balanceE8s +
+        mockHardwareWalletAccount.balanceE8s;
 
       expect(balance?.textContent.trim() ?? "").toEqual(
         `${formatToken({
@@ -102,7 +106,7 @@ describe("UniverseAccountsBalance", () => {
     it("should render a total balance for Sns", () => {
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
-      const totalBalance = mockSnsMainAccount.balance;
+      const totalBalance = mockSnsMainAccount.balanceE8s;
 
       snsAccountsStore.setAccounts({
         rootCanisterId,
@@ -122,14 +126,14 @@ describe("UniverseAccountsBalance", () => {
 
       expect(balance?.textContent.trim() ?? "").toEqual(
         `${formatToken({
-          value: totalBalance.toE8s(),
+          value: totalBalance,
           detailed: false,
-        })} ${mockSnsMainAccount.balance.token.symbol}`
+        })} ${mockSnsToken.symbol}`
       );
     });
 
-    it("should render a total balance for ckBTC", () => {
-      const totalBalance = mockCkBTCMainAccount.balance;
+    it.only("should render a total balance for ckBTC", () => {
+      const totalBalance = mockCkBTCMainAccount.balanceE8s;
 
       icrcAccountsStore.set({
         accounts: {
@@ -149,9 +153,9 @@ describe("UniverseAccountsBalance", () => {
 
       expect(balance?.textContent.trim() ?? "").toEqual(
         `${formatToken({
-          value: totalBalance.toE8s(),
+          value: totalBalance,
           detailed: false,
-        })} ${mockCkBTCMainAccount.balance.token.symbol}`
+        })} ${mockCkBTCToken.symbol}`
       );
     });
   });

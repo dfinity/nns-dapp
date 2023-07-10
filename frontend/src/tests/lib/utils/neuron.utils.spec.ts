@@ -1,4 +1,5 @@
 import {
+  SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_HALF_YEAR,
@@ -21,6 +22,7 @@ import {
   ageMultiplier,
   allHaveSameFollowees,
   ballotsWithDefinedProposal,
+  bonusMultiplier,
   canBeMerged,
   checkInvalidState,
   dissolveDelayMultiplier,
@@ -48,6 +50,7 @@ import {
   isValidInputAmount,
   mapMergeableNeurons,
   mapNeuronIds,
+  maturityLastDistribution,
   minNeuronSplittable,
   neuronAge,
   neuronCanBeSplit,
@@ -72,18 +75,19 @@ import {
   mockNeuronControlled,
   mockNeuronNotControlled,
 } from "$tests/mocks/neurons.mock";
+import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
-  ICPToken,
   NeuronState,
-  TokenAmount,
   Topic,
   Vote,
   type BallotInfo,
   type NeuronInfo,
   type ProposalInfo,
+  type RewardEvent,
 } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { vi } from "vitest";
 
@@ -254,6 +258,42 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("bonusMultiplier", () => {
+    it("should return the multiplier", () => {
+      expect(
+        bonusMultiplier({
+          amount: 300n,
+          multiplier: 0.25,
+          max: 600,
+        })
+      ).toBe(1.125);
+
+      expect(
+        bonusMultiplier({
+          amount: 600n,
+          multiplier: 0.5,
+          max: 600,
+        })
+      ).toBe(1.5);
+
+      expect(
+        bonusMultiplier({
+          amount: 400n,
+          multiplier: 1,
+          max: 200,
+        })
+      ).toBe(2);
+
+      expect(
+        bonusMultiplier({
+          amount: 400n,
+          multiplier: 0.25,
+          max: 0,
+        })
+      ).toBe(1);
+    });
+  });
+
   describe("hasValidStake", () => {
     it("returns whether the stake is valid or not", () => {
       const fullNeuronWithEnoughStake = {
@@ -286,13 +326,13 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: fullNeuronWithoutEnoughStake,
       };
-      expect(hasValidStake(neuronWithoutEnoughStake)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutEnoughStake)).toBe(false);
 
       const neuronWithoutFullNeuron = {
         ...mockNeuron,
       };
       neuronWithoutFullNeuron.fullNeuron = undefined;
-      expect(hasValidStake(neuronWithoutFullNeuron)).toBeFalsy();
+      expect(hasValidStake(neuronWithoutFullNeuron)).toBe(false);
     });
   });
 
@@ -1964,6 +2004,34 @@ describe("neuron-utils", () => {
           reason: "short",
         },
       ] as IneligibleNeuronData[]);
+    });
+  });
+
+  describe("maturityLastDistribution", () => {
+    it("should return last distribution timestamp w/o rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        settled_proposals: [
+          {
+            id: 0n,
+          },
+        ],
+      } as RewardEvent;
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(12234455555n);
+    });
+
+    it("should return last distribution timestamp after 3 rollovers", () => {
+      const testRewardEvent = {
+        ...mockRewardEvent,
+        actual_timestamp_seconds: 12234455555n,
+        rounds_since_last_distribution: [3n],
+        settled_proposals: [],
+      } as RewardEvent;
+      const threeDays = BigInt(3 * SECONDS_IN_DAY);
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(
+        12234455555n - threeDays
+      );
     });
   });
 });

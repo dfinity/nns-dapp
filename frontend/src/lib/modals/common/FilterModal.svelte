@@ -43,11 +43,35 @@
   const filter = () => {
     dispatch("nnsConfirm");
   };
+
+  const selectAll = () => {
+    dispatch("nnsSelectAll");
+  };
+
+  const clearSelection = () => {
+    dispatch("nnsClearSelection");
+  };
 </script>
 
 {#if !loading}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
     <slot slot="title" name="title" />
+
+    <div slot="sub-title" class="toggle-all-wrapper">
+      <p><slot name="filter-by" /></p>
+      <div>
+        <button
+          class="text"
+          data-tid="filter-modal-select-all"
+          on:click={selectAll}>{$i18n.voting.check_all}</button
+        >
+        <button
+          class="text"
+          data-tid="filter-modal-clear"
+          on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
+        >
+      </div>
+    </div>
 
     {#if filters}
       <div class="filters">
@@ -80,5 +104,12 @@
 <style lang="scss">
   .filters {
     --checkbox-padding: var(--padding-2x) var(--padding) var(--padding-2x);
+  }
+
+  .toggle-all-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 var(--padding-2x);
   }
 </style>

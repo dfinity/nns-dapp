@@ -1,0 +1,62 @@
+name: 'Start dfx snapshot'
+description: |
+  Start a local replica running against a given snapshot.
+  Optionally installs nns-dapp and sns_aggregator.
+inputs:
+  snsdemo_ref:
+    description: "The commit at which to use the snsdemo scripts"
+    required: false
+    # Version from 2023-06-06 with dfx v 0.14.1
+    default: "0e61f618018db099a01b1686535fff8eff980d1c"
+  snapshot_url:
+    description: "The URL of the snapshot to download and install"
+    required: false
+    default: "https://github.com/dfinity/snsdemo/releases/download/release-2023-06-06/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+  nns_dapp_wasm:
+    description: "The name of the nns-dapp wasm to install"
+    required: false
+  sns_aggregator_wasm:
+    description: "The name of the sns_aggregator wasm to install"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Get SNS scripts
+      uses: actions/checkout@v3
+      with:
+        repository: 'dfinity/snsdemo'
+        path: 'snsdemo'
+        ref: ${{ inputs.snsdemo_ref }}
+    - name: Add snsdemo scripts to the path
+      shell: bash
+      run: |
+        echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+    - name: Install SNS script dependencies
+      shell: bash
+      run: |
+        dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
+        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
+        cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+    - name: Get test environment
+      shell: bash
+      run: |
+        curl -fL --retry 5 ${{ inputs.snapshot_url }} > state.tar.xz
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose
+        dfx identity use snsdemo8
+        dfx-sns-demo-healthcheck
+    - name: Install nns-dapp
+      if: ${{ inputs.nns_dapp_wasm }}
+      shell: bash
+      run: |
+        echo "Create the nns-dapp install argument:"
+        export DFX_NETWORK=local
+        ./config.sh
+        echo "Install:"
+        dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode reinstall --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
+    - name: Install sns_aggregator
+      if: ${{ inputs.sns_aggregator_wasm }}
+      shell: bash
+      run: |
+        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode reinstall --yes --argument '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'
+        # TODO: The argument above is not passed to the canister by dfx.  Fix (by asking the sdk team), then remove the following line:
+        dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 100; })'

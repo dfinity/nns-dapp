@@ -215,14 +215,14 @@ describe("api-utils", () => {
           );
         const onLoad = vi.fn();
 
-        expect(updateDone).toBeFalsy();
-        expect(queryDone).toBeFalsy();
+        expect(updateDone).toBe(false);
+        expect(queryDone).toBe(false);
         await queryAndUpdate<number, unknown>({
           request,
           onLoad,
         });
         expect(updateDone).toBeTruthy();
-        expect(queryDone).toBeFalsy();
+        expect(queryDone).toBe(false);
       });
 
       it("should log", async () => {

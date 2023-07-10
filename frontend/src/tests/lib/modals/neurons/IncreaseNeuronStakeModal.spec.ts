@@ -76,7 +76,7 @@ describe("IncreaseNeuronStakeModal", () => {
       const input = container.querySelector("input[name='amount']");
       input && fireEvent.input(input, { target: { value: icpAmount } });
       await waitFor(() =>
-        expect(participateButton?.hasAttribute("disabled")).toBeFalsy()
+        expect(participateButton?.hasAttribute("disabled")).toBe(false)
       );
 
       fireEvent.click(participateButton);

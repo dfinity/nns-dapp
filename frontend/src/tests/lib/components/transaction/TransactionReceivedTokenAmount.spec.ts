@@ -1,7 +1,7 @@
 import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionReceivedTokenAmount", () => {

@@ -6,7 +6,8 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { E8s, Token } from "@dfinity/nns";
+  import type { E8s } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
@@ -161,6 +162,17 @@
           {neuronId}
           {reloadNeuron}
           on:nnsClose={close}
+          mode="add"
+        />
+      {/if}
+
+      {#if type === "dev-remove-permissions" && IS_TESTNET}
+        <AddPermissionsModal
+          {rootCanisterId}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
+          mode="remove"
         />
       {/if}
     {/if}

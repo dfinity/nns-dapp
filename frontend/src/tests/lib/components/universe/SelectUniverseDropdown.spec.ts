@@ -15,6 +15,7 @@ import {
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
+  mockSnsToken,
   mockTokenStore,
 } from "$tests/mocks/sns-projects.mock";
 import {
@@ -108,10 +109,8 @@ describe("SelectUniverseDropdown", () => {
         getByTestId("token-value-label")?.textContent.trim() ?? ""
       ).toEqual(
         `${formatToken({
-          value:
-            mockSnsMainAccount.balance.toE8s() +
-            mockSnsSubAccount.balance.toE8s(),
-        })} ${mockSnsMainAccount.balance.token.symbol}`
+          value: mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s,
+        })} ${mockSnsToken.symbol}`
       );
     });
   });

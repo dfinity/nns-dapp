@@ -54,7 +54,7 @@ function clap.define() {
 	done
 
 	if [ "$variable" = "" ]; then
-		clap.throw_error "You must give a variable for option: ($short/$long)"
+		clap.throw_error "You must give a variable for option: (${short:-}/${long:-})"
 	fi
 
 	if [ "${val:-}" = "" ]; then
@@ -62,7 +62,7 @@ function clap.define() {
 	fi
 
 	# build OPTIONS and help
-	clap_usage="${clap_usage}#NL#TB${short} $(printf "%-25s %s" "${long}:" "${desc}")"
+	clap_usage="${clap_usage}#NL#TB${short:-} $(printf "%-25s %s" "${long}:" "${desc}")"
 	if [ "${default:-}" != "" ] && [ "${nargs:-}" != "0" ]; then
 		clap_usage="${clap_usage} [default:$default]"
 	fi
@@ -75,9 +75,9 @@ function clap.define() {
 		clap_flag_match="${clap_flag_match}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
 	fi
 	if [ "${default:-}" != "" ]; then
-		clap_defaults="${clap_defaults}#NL${variable}=${default}"
+		clap_defaults="${clap_defaults}#NL${variable}=${default@Q}"
 	fi
-	clap_arguments_string="${clap_arguments_string}${shortname}"
+	clap_arguments_string="${clap_arguments_string}${shortname:-}"
 	if [ "${val:-}" = "\$OPTARG" ]; then
 		clap_arguments_string="${clap_arguments_string}:"
 	fi
@@ -132,6 +132,7 @@ while [ \$# -ne 0 ]; do
                         usage
                         exit 0;;
 		--verbose)
+			CLAP_VERBOSE=true
 			set -x;;
 		--)
 			break ;;

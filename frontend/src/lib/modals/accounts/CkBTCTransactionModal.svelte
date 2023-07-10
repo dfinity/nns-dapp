@@ -11,7 +11,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import type { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -30,6 +30,10 @@
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import { nonNullish } from "@dfinity/utils";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import {
+    ckBTCInfoStore,
+    type CkBTCInfoStoreUniverseData,
+  } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
@@ -43,7 +47,7 @@
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
-    mustSelectNetwork: isUniverseCkTESTBTC(universeId),
+    mustSelectNetwork: true,
     ...(withdrawalAccount && {
       networkReadonly: true,
       selectDestinationMethods: "manual",
@@ -51,13 +55,21 @@
     }),
   };
 
+  // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
+  let fee: TokenAmount;
+  $: fee = withdrawalAccount
+    ? TokenAmount.fromE8s({
+        amount: 0n,
+        token: transactionFee.token,
+      })
+    : transactionFee;
+
   let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
     ? isUniverseCkTESTBTC(universeId)
       ? TransactionNetwork.BTC_TESTNET
       : TransactionNetwork.BTC_MAINNET
     : undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
-  let kytEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep | undefined;
 
@@ -148,15 +160,17 @@
 
   let userAmount: number | undefined = undefined;
 
+  let infoData: CkBTCInfoStoreUniverseData | undefined = undefined;
+  $: infoData = $ckBTCInfoStore[universeId.toText()];
+
   let validateAmount: ValidateAmountFn;
   $: validateAmount = ({ amount, selectedAccount }) => {
     assertCkBTCUserInputAmount({
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: transactionFee.toE8s(),
-      bitcoinEstimatedFee,
-      kytEstimatedFee,
+      transactionFee: fee.toE8s(),
+      infoData,
     });
 
     return undefined;
@@ -170,7 +184,7 @@
   on:nnsClose
   bind:currentStep
   {token}
-  {transactionFee}
+  transactionFee={fee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}
@@ -193,17 +207,14 @@
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
     />
-    <BitcoinKYTFee
-      {selectedNetwork}
-      minterCanisterId={canisters.minterCanisterId}
-      bind:kytFee={kytEstimatedFee}
-    />
+    {#if networkBtc}
+      <BitcoinKYTFee {universeId} />
+    {/if}
   </svelte:fragment>
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
         {bitcoinEstimatedFee}
-        {kytEstimatedFee}
         {universeId}
         amount={userAmount}
       />

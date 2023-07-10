@@ -10,12 +10,19 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { ICPToken, type Token } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get, writable } from "svelte/store";
 import ContextWrapperTest from "../ContextWrapperTest.svelte";
 
 describe("WalletSummary", () => {
-  const renderWalletSummary = (detailedBalance?: boolean) =>
+  const renderWalletSummary = ({
+    detailedBalance,
+    token,
+  }: {
+    detailedBalance?: boolean;
+    token: Token | undefined;
+  }) =>
     render(ContextWrapperTest, {
       props: {
         contextKey: WALLET_CONTEXT_KEY,
@@ -28,18 +35,21 @@ describe("WalletSummary", () => {
         Component: WalletSummary,
         props: {
           detailedBalance,
+          token,
         },
       },
     });
 
+  const props = { token: ICPToken };
+
   it("should render title", () => {
-    const { getByText } = renderWalletSummary();
+    const { getByText } = renderWalletSummary(props);
 
     expect(getByText(en.accounts.main)).toBeInTheDocument();
   });
 
   it("should render an account identifier", () => {
-    const { getByText } = renderWalletSummary();
+    const { getByText } = renderWalletSummary(props);
 
     expect(
       getByText(mockMainAccount.identifier, { exact: false })
@@ -47,37 +57,40 @@ describe("WalletSummary", () => {
   });
 
   it("should render a shortened balance in ICP", () => {
-    const { getByText, queryByTestId } = renderWalletSummary();
+    const { getByText, queryByTestId } = renderWalletSummary(props);
 
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balance.toE8s() })}`
+      `${formatToken({ value: mockMainAccount.balanceE8s })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });
 
   it("should render a detailed balance in ICP", () => {
-    const { queryByTestId } = renderWalletSummary(true);
+    const { queryByTestId } = renderWalletSummary({
+      ...props,
+      detailedBalance: true,
+    });
 
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
       `${formatToken({
-        value: mockMainAccount.balance.toE8s(),
+        value: mockMainAccount.balanceE8s,
         detailed: true,
       })}`
     );
   });
 
   it("should contain a tooltip", () => {
-    const { container } = renderWalletSummary();
+    const { container } = renderWalletSummary(props);
 
     expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
   });
 
   it("should render a detailed balance in ICP in a tooltip", () => {
-    const { container } = renderWalletSummary();
+    const { container } = renderWalletSummary(props);
 
     const icp: HTMLDivElement | null = container.querySelector(
       "#wallet-detailed-icp"
@@ -86,7 +99,7 @@ describe("WalletSummary", () => {
     expect(icp?.textContent).toEqual(
       replacePlaceholders(en.accounts.current_balance_detail, {
         $amount: `${formatToken({
-          value: mockMainAccount.balance.toE8s(),
+          value: mockMainAccount.balanceE8s,
           detailed: true,
         })}`,
         $token: en.core.icp,
@@ -101,7 +114,7 @@ describe("WalletSummary", () => {
     intersecting: boolean;
     text: string;
   }) => {
-    const { getByTestId } = renderWalletSummary();
+    const { getByTestId } = renderWalletSummary(props);
 
     const element = getByTestId("wallet-summary") as HTMLElement;
     dispatchIntersecting({ element, intersecting });
@@ -114,10 +127,19 @@ describe("WalletSummary", () => {
     await testTitle({
       intersecting: false,
       text: `${en.accounts.main} – ${formatToken({
-        value: mockMainAccount.balance.toE8s(),
-      })} ${mockMainAccount.balance.token.symbol}`,
+        value: mockMainAccount.balanceE8s,
+      })} ${ICPToken.symbol}`,
     }));
 
   it("should render a static title if title is intersecting viewport", async () =>
     await testTitle({ intersecting: true, text: en.wallet.title }));
+
+  it("should not render a balance if token is unlikely undefined", () => {
+    const { container } = renderWalletSummary({
+      ...props,
+      token: undefined,
+    });
+
+    expect(container.querySelector("#wallet-detailed-icp")).toBeNull();
+  });
 });

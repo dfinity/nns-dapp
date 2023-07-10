@@ -2,7 +2,7 @@ import TransactionSummary from "$lib/components/transaction/TransactionSummary.s
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionSummary", () => {

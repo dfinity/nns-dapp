@@ -196,7 +196,7 @@ const initSnsQueryStore = (): SnsQueryStore => {
       const buyer_total_icp_e8s = fromNullable(
         derivedState.buyer_total_icp_e8s
       );
-      // We don't update the store if any of the derived state is undefined.
+      // We don't update the store if any of the derived state mandatory fields is undefined.
       if (
         sns_tokens_per_icp === undefined ||
         buyer_total_icp_e8s === undefined
@@ -204,6 +204,7 @@ const initSnsQueryStore = (): SnsQueryStore => {
         return;
       }
       const newDerivedState: SnsSwapDerivedState = {
+        ...derivedState,
         sns_tokens_per_icp,
         buyer_total_icp_e8s,
       };

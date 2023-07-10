@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";

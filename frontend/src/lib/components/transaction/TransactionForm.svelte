@@ -11,7 +11,7 @@
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, type Token } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
@@ -32,6 +32,7 @@
   export let canSelectSource: boolean;
   export let selectedDestinationAddress: string | undefined = undefined;
   export let amount: number | undefined = undefined;
+  export let disableContinue = false;
   export let token: Token;
   export let transactionFee: TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
@@ -58,7 +59,7 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: selectedAccount?.balance.toE8s(),
+    balance: selectedAccount?.balanceE8s,
     fee: transactionFee.toE8s(),
     maxAmount,
   });
@@ -66,6 +67,7 @@
 
   let disableButton: boolean;
   $: disableButton =
+    disableContinue ||
     selectedAccount === undefined ||
     amount === 0 ||
     amount === undefined ||
@@ -123,6 +125,7 @@
     bind:selectedAccount
     {canSelectSource}
     {rootCanisterId}
+    {token}
   />
 
   {#if canSelectDestination}

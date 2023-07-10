@@ -49,7 +49,7 @@
 
   $: onSnsProjectChanged($snsOnlyProjectStore);
 
-  const onSnsFiltersChanged = async (filters: SnsFiltersStoreData) => {
+  const fetchProposals = async (filters: SnsFiltersStoreData) => {
     // First call will have `filters` as `undefined`.
     // Once we have the initial filters, we load the proposals.
     if (
@@ -60,15 +60,24 @@
     }
   };
 
-  $: onSnsFiltersChanged($snsFiltersStore);
+  // Fetch the proposals only on filters or project change.
+  // TODO(e2e): cover this with e2e tests.
+  $: $snsOnlyProjectStore,
+    $snsFiltersStore,
+    (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
     if (selectedProjectCanisterId !== undefined) {
-      const beforeProposalId =
-        proposals !== undefined ? lastProposalId(proposals) : undefined;
+      const beforeProposalId = nonNullish(currentProjectCanisterId)
+        ? lastProposalId(
+            $snsProposalsStore[currentProjectCanisterId.toText()]?.proposals ??
+              []
+          )
+        : undefined;
+
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,

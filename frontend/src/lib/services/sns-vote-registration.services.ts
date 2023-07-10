@@ -16,6 +16,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
+  ballotVotingPower,
   mapProposalInfo as mapSnsProposal,
   toSnsVote,
 } from "$lib/utils/sns-proposals.utils";
@@ -141,18 +142,19 @@ const proposalAfterVote = ({
   neurons: SnsNeuron[];
   vote: SnsVote;
 }): SnsProposalData => {
-  const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
-  const optimisticBallots: Array<[string, Ballot]> = Array.from(
-    votedNeuronsIds
-  ).map((id) => [
-    id,
+  // replace ballots of just voted neurons with optimistic ones
+  const optimisticBallots: Array<[string, Ballot]> = neurons.map((neuron) => [
+    // neuron id
+    getSnsNeuronIdAsHexString(neuron),
+    // optimistic ballot
     {
       vote,
       cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
-      // TODO(sns-voting): get voting power if needed
-      voting_power: 0n,
+      voting_power: ballotVotingPower({ proposal, neuron }),
     } as Ballot,
   ]);
+  const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
+
   return {
     ...proposal,
     ballots: [

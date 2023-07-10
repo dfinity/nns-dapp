@@ -2,10 +2,11 @@ use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
+    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse, TransactionType,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
-use crate::assets::{hash_bytes, insert_asset, Asset};
+use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
@@ -70,7 +71,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     STATE.with(|s| {
         let bytes = stable::get();
         let new_state = State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {:?}", e));
+            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         });
 
@@ -89,9 +90,9 @@ pub fn http_request() {
     over(candid_one, assets::http_request);
 }
 
-/// Returns the user's account details if they have an account, else AccountNotFound.
+/// Returns the user's account details if they have an account, else `AccountNotFound`.
 ///
-/// The account details contain each of the AccountIdentifiers linked to the user's account. These
+/// The account details contain each of the `AccountIdentifier`s linked to the user's account. These
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
 #[export_name = "canister_query get_account"]
@@ -122,9 +123,9 @@ fn add_account_impl() -> AccountIdentifier {
     AccountIdentifier::from(principal)
 }
 
-/// Returns a page of transactions for a given AccountIdentifier.
+/// Returns a page of transactions for a given `AccountIdentifier`.
 ///
-/// The AccountIdentifier must be linked to the caller's account, else an empty Vec will be
+/// The `AccountIdentifier` must be linked to the caller's account, else an empty Vec will be
 /// returned.
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
@@ -209,6 +210,17 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
 }
 
+/// Renames a canister of the user.
+#[export_name = "canister_update rename_canister"]
+pub fn rename_canister() {
+    over(candid_one, rename_canister_impl);
+}
+
+fn rename_canister_impl(request: RenameCanisterRequest) -> RenameCanisterResponse {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().rename_canister(principal, request))
+}
+
 /// Detaches a canister from the user's account.
 #[export_name = "canister_update detach_canister"]
 pub fn detach_canister() {
@@ -222,7 +234,7 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 
 #[export_name = "canister_update get_proposal_payload"]
 pub fn get_proposal_payload() {
-    over_async(candid_one, proposals::get_proposal_payload)
+    over_async(candid_one, proposals::get_proposal_payload);
 }
 
 #[export_name = "canister_update add_pending_notify_swap"]
@@ -296,9 +308,25 @@ pub fn add_stable_asset() {
                 insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
             }
             unknown_hash => {
-                dfn_core::api::trap_with(&format!("Unknown asset with hash {}", unknown_hash));
+                dfn_core::api::trap_with(&format!("Unknown asset with hash {unknown_hash}"));
             }
         }
+    });
+}
+
+/// Add assets to be served by the canister.
+///
+/// # Panics
+/// - Permission to upload may be denied; see `may_upload()` for details.
+#[export_name = "canister_update add_assets_tar_xz"]
+pub fn add_assets_tar_xz() {
+    over(candid_one, |asset_bytes: Vec<u8>| {
+        let caller = ic_cdk::caller();
+        let is_controller = ic_cdk::api::is_controller(&caller);
+        assets::upload::may_upload(&caller, is_controller)
+            .map_err(|e| format!("Permission to upload denied: {}", e))
+            .unwrap();
+        insert_tar_xz(asset_bytes);
     })
 }
 

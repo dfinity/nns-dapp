@@ -1,4 +1,7 @@
-import * as api from "$lib/api/ckbtc-minter.api";
+/**
+ * @jest-environment jsdom
+ */
+
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -8,6 +11,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
@@ -20,6 +24,7 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
@@ -28,16 +33,15 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-vi.mock("$lib/api/ckbtc-minter.api");
+jest.mock("$lib/api/ckbtc-minter.api");
 
 describe("BtcCkBTCReceiveModal", () => {
-  const reloadSpy = vi.fn();
+  const reloadSpy = jest.fn();
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   const renderReceiveModal = ({
@@ -65,7 +69,7 @@ describe("BtcCkBTCReceiveModal", () => {
     let spyGetAddress;
 
     beforeEach(() => {
-      spyGetAddress = vi
+      spyGetAddress = jest
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
     });
@@ -87,7 +91,7 @@ describe("BtcCkBTCReceiveModal", () => {
       beforeEach(() => {
         bitcoinAddressStore.reset();
 
-        vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
+        jest.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
       });
 
       it("should render spinner while loading BTC address", async () => {
@@ -109,7 +113,14 @@ describe("BtcCkBTCReceiveModal", () => {
           btcAddress: mockBTCAddressTestnet,
         });
 
-        vi.spyOn(api, "depositFee").mockResolvedValue(789n);
+        ckBTCInfoStore.setInfo({
+          canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+          info: {
+            ...mockCkBTCMinterInfo,
+            kyt_fee: 789n,
+          },
+          certified: true,
+        });
       });
 
       it("should render BTC address", async () => {
@@ -146,8 +157,7 @@ describe("BtcCkBTCReceiveModal", () => {
         );
       });
 
-      // TODO: to be activated when ckBTC with minter is live
-      it.skip("should render a bitcoin description", async () => {
+      it("should render a bitcoin description", async () => {
         const { getByText, container } = await renderReceiveModal({
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         });
@@ -183,8 +193,7 @@ describe("BtcCkBTCReceiveModal", () => {
         await waitFor(() => expect(getByText(title)).toBeInTheDocument());
       });
 
-      // TODO: to be activated when ckBTC with minter is live
-      it.skip("should render a bitcoin logo", async () => {
+      it("should render a bitcoin logo", async () => {
         const { getByTestId, container } = await renderReceiveModal({
           universeId: CKBTC_UNIVERSE_CANISTER_ID,
         });
@@ -246,9 +255,9 @@ describe("BtcCkBTCReceiveModal", () => {
 
   describe("without btc", () => {
     beforeAll(() => {
-      vi.spyOn(tokensStore, "subscribe").mockImplementation(
-        mockTokensSubscribe(mockUniversesTokens)
-      );
+      jest
+        .spyOn(tokensStore, "subscribe")
+        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

@@ -50,7 +50,6 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { vi, type SpyInstance } from "vitest";
 
@@ -201,10 +200,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -252,10 +248,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -322,10 +315,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -370,10 +360,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -414,7 +401,9 @@ describe("accounts-services", () => {
       accountsStore.setForTesting({
         main: mockMainAccount,
       });
-      expect(get(accountsStore).main.balance).toEqual(mockMainAccount.balance);
+      expect(get(accountsStore).main.balanceE8s).toEqual(
+        mockMainAccount.balanceE8s
+      );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
 
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -429,7 +418,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      expect(get(accountsStore).main.balance.toE8s()).toEqual(newBalanceE8s);
+      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should not show error if only query fails", async () => {
@@ -493,10 +482,7 @@ describe("accounts-services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -550,10 +536,7 @@ describe("accounts-services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balance: TokenAmount.fromE8s({
-            amount: mainBalanceE8s,
-            token: ICPToken,
-          }),
+          balanceE8s: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -920,10 +903,7 @@ describe("accounts-services", () => {
     const mockAccounts = {
       main: {
         ...mockMainAccount,
-        balance: TokenAmount.fromE8s({
-          amount: mainBalanceE8s,
-          token: ICPToken,
-        }),
+        balanceE8s: mainBalanceE8s,
       },
       subAccounts: [],
       hardwareWallets: [],

@@ -5,16 +5,19 @@ import {
   getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
+  renameCanister,
   topUpCanister,
   updateSettings,
 } from "$lib/api/canisters.api";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { NameTooLongError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -23,16 +26,9 @@ import {
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
-import {
-  AccountIdentifier,
-  ICPToken,
-  LedgerCanister,
-  SubAccount,
-  TokenAmount,
-} from "@dfinity/nns";
-import { principalToSubAccount } from "@dfinity/utils";
-import { vi } from "vitest";
-import { mock } from "vitest-mock-extended";
+import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
+import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
+import { mock } from "jest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -41,32 +37,32 @@ describe("canisters-api", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
 
   afterAll(() => {
-    vi.resetAllMocks();
-    vi.clearAllTimers();
+    jest.resetAllMocks();
+    jest.clearAllTimers();
   });
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    jest.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
-    vi.useFakeTimers().setSystemTime(now);
+    jest.useFakeTimers().setSystemTime(now);
 
-    vi.spyOn(NNSDappCanister, "create").mockImplementation(
-      (): NNSDappCanister => mockNNSDappCanister
-    );
+    jest
+      .spyOn(NNSDappCanister, "create")
+      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
-    vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
+    jest.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
 
-    vi.spyOn(ICManagementCanister, "create").mockImplementation(
-      () => mockICManagementCanister
-    );
+    jest
+      .spyOn(ICManagementCanister, "create")
+      .mockImplementation(() => mockICManagementCanister);
 
-    vi.spyOn(LedgerCanister, "create").mockImplementation(
-      () => mockLedgerCanister
-    );
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mockLedgerCanister);
   });
 
   describe("queryCanisters", () => {
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should call the canister to list the canisters 🤪", async () => {
       await queryCanisters({ identity: mockIdentity, certified: true });
@@ -76,7 +72,7 @@ describe("canisters-api", () => {
   });
 
   describe("attachCanister", () => {
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should call the nns dapp canister to attach the canister id", async () => {
       await attachCanister({
@@ -99,10 +95,58 @@ describe("canisters-api", () => {
         name: "",
       });
     });
+
+    it("should fail to attach if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        attachCanister({
+          identity: mockIdentity,
+          canisterId: mockCanisterDetails.id,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
+    });
+  });
+
+  describe("renameCanister", () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to rename the canister", async () => {
+      await renameCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        name: "test name",
+      });
+
+      expect(mockNNSDappCanister.renameCanister).toBeCalled();
+    });
+
+    it("should fail to rename if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        renameCanister({
+          identity: mockIdentity,
+          canisterId: mockCanisterDetails.id,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockNNSDappCanister.renameCanister).not.toBeCalled();
+    });
   });
 
   describe("updateSettings", () => {
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should call the ic management canister to update settings", async () => {
       mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
@@ -133,7 +177,7 @@ describe("canisters-api", () => {
   });
 
   describe("detachCanister", () => {
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => jest.clearAllMocks());
 
     it("should call the nns dapp canister to detach the canister id", async () => {
       await detachCanister({
@@ -176,11 +220,11 @@ describe("canisters-api", () => {
 
   describe("createCanister", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
+      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      vi.spyOn(console, "log").mockImplementation(() => undefined);
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
@@ -200,6 +244,28 @@ describe("canisters-api", () => {
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
+    it("should attach the canister if name max length", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
+      const response = await createCanister({
+        identity: mockIdentity,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
+        name: longName,
+      });
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: longName,
         canisterId: mockCanisterDetails.id,
       });
       expect(response).toEqual(mockCanisterDetails.id);
@@ -275,15 +341,36 @@ describe("canisters-api", () => {
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });
+
+    it("should fail to create if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        createCanister({
+          identity: mockIdentity,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
+    });
   });
 
   describe("topUpCanister", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
+      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      vi.spyOn(console, "log").mockImplementation(() => undefined);
+      jest.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer and notify", async () => {

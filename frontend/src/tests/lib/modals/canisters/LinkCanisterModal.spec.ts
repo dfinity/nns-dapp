@@ -1,60 +1,100 @@
+/**
+ * @jest-environment jsdom
+ */
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
-import { accountsStore } from "$lib/stores/accounts.store";
-import {
-  mockAccountsStoreSubscribe,
-  mockHardwareWalletAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { nonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
-vi.mock("$lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
-    attachCanister: vi.fn().mockResolvedValue({ success: true }),
+    attachCanister: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
-vi.mock("$lib/stores/toasts.store", () => {
+jest.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsShow: vi.fn(),
-    toastsSuccess: vi.fn(),
+    toastsShow: jest.fn(),
+    toastsSuccess: jest.fn(),
   };
 });
 
 describe("LinkCanisterModal", () => {
-  vi.spyOn(accountsStore, "subscribe").mockImplementation(
-    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-  );
   it("should display modal", () => {
     const { container } = render(LinkCanisterModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should attach an existing canister and close modal", async () => {
-    const { queryByTestId, container, component } = await renderModal({
-      component: LinkCanisterModal,
-    });
-
-    const inputElement = container.querySelector("input[type='text']");
+  const fillForm = async ({ container, name, principalText }) => {
+    const inputElement = container.querySelector("input[name='principal']");
     expect(inputElement).not.toBeNull();
 
     inputElement &&
       (await fireEvent.input(inputElement, {
-        target: { value: "aaaaa-aa" },
+        target: { value: principalText },
       }));
 
-    const onClose = vi.fn();
+    if (nonNullish(name)) {
+      const nameInputElement = container.querySelector(
+        "input[name='canister-name']"
+      );
+      nameInputElement &&
+        (await fireEvent.input(nameInputElement, {
+          target: { value: name },
+        }));
+    }
+  };
+
+  it("should attach a canister by id and close modal", async () => {
+    const { queryByTestId, container, component } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    await fillForm({
+      container,
+      name: "test",
+      principalText: "aaaaa-aa",
+    });
+
+    const onClose = jest.fn();
     component.$on("nnsClose", onClose);
 
-    await clickByTestId(queryByTestId, "attach-canister-button");
+    await clickByTestId(queryByTestId, "link-canister-button");
     expect(attachCanister).toBeCalled();
 
+    await waitFor(() => expect(onClose).toBeCalled());
+  });
+
+  it("should attach a canister by id if name is maximum length", async () => {
+    const { queryByTestId, container } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    await fillForm({
+      container,
+      name: "test",
+      principalText: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+    });
+
+    await clickByTestId(queryByTestId, "link-canister-button");
+    expect(attachCanister).toBeCalled();
+  });
+
+  it("should close modal on cancel", async () => {
+    const { queryByTestId, component } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    const onClose = jest.fn();
+    component.$on("nnsClose", onClose);
+
+    await clickByTestId(queryByTestId, "cancel-button");
     await waitFor(() => expect(onClose).toBeCalled());
   });
 
@@ -63,19 +103,43 @@ describe("LinkCanisterModal", () => {
       component: LinkCanisterModal,
     });
 
-    const inputElement = container.querySelector("input[type='text']");
-    expect(inputElement).not.toBeNull();
+    await fillForm({
+      container,
+      name: undefined,
+      principalText: "not-valid",
+    });
 
-    inputElement &&
-      (await fireEvent.input(inputElement, {
-        target: { value: "not-valid" },
-      }));
+    const inputElement = container.querySelector("input[name='principal']");
     inputElement && (await fireEvent.blur(inputElement));
 
     expect(queryByText(en.error.principal_not_valid)).toBeInTheDocument();
 
-    const buttonElement = queryByTestId("attach-canister-button");
+    const buttonElement = queryByTestId("link-canister-button");
     expect(buttonElement).not.toBeNull();
     expect(buttonElement?.hasAttribute("disabled")).toBe(true);
+  });
+
+  it("should show an error and have disabled button if name is longer than max", async () => {
+    const { queryByTestId, queryByText, container } = await renderModal({
+      component: LinkCanisterModal,
+    });
+
+    await fillForm({
+      container,
+      name: "a".repeat(MAX_CANISTER_NAME_LENGTH + 1),
+      principalText: "aaaaa-aa",
+    });
+
+    const nameInputElement = container.querySelector(
+      "input[name='canister-name']"
+    );
+    nameInputElement && (await fireEvent.blur(nameInputElement));
+
+    expect(
+      queryByText("Canister name too long. Maximum of 24 characters allowed.")
+    ).toBeInTheDocument();
+    expect(
+      queryByTestId("link-canister-button")?.hasAttribute("disabled")
+    ).toBe(true);
   });
 });

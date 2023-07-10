@@ -10,7 +10,12 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
+  import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
@@ -45,26 +50,43 @@
     ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
     : [];
 
-  // TODO: to be removed when ckBTC with minter is live.
-  let ckTESTBTC = false;
-  $: ckTESTBTC = isUniverseCkTESTBTC($selectedCkBTCUniverseIdStore);
+  let token: TokensStoreUniverseData | undefined = undefined;
+  $: token = nonNullish($selectedCkBTCUniverseIdStore)
+    ? $ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  let canisters: CkBTCAdditionalCanisters | undefined = undefined;
+  $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
+    ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
+    : undefined;
+
+  $: (async () =>
+    await loadCkBTCInfo({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    }))();
 </script>
 
 <div class="card-grid" data-tid="ckbtc-accounts-body">
   {#if loading}
     <SkeletonCard size="medium" />
-  {:else}
-    {#each accounts as account}
-      <AccountCard
-        role="link"
-        on:click={() => goToWallet(account)}
-        hash
-        {account}>{account.name ?? $i18n.accounts.main}</AccountCard
-      >
-    {/each}
+  {:else if nonNullish($selectedCkBTCUniverseIdStore)}
+    <CkBTCBalancesObserver
+      {accounts}
+      universeId={$selectedCkBTCUniverseIdStore}
+    >
+      {#each accounts as account}
+        <AccountCard
+          role="link"
+          on:click={() => goToWallet(account)}
+          hash
+          {account}
+          token={token?.token}
+          >{account.name ?? $i18n.accounts.main}</AccountCard
+        >
+      {/each}
 
-    {#if ckTESTBTC}
       <CkBTCWithdrawalAccount />
-    {/if}
+    </CkBTCBalancesObserver>
   {/if}
 </div>

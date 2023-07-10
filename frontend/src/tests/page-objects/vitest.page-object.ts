@@ -2,6 +2,8 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
+const SELF_SELECTOR = ":scope";
+
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
  */
@@ -63,12 +65,26 @@ export class VitestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
+  private isInputElement(element: Element): element is HTMLInputElement {
+    return element.tagName === "INPUT";
+  }
+
+  async getValue() {
+    if ("value" in this.element) {
+      // TS doesn't know that the "value" property is of type string
+      return this.element.value as string;
+    }
+    throw new Error(
+      `"value" property is not supported for element: "${this.element.tagName}"`
+    );
+  }
+
   private getRootAndFullSelector(): {
     rootElement: Element;
     fullSelector: string;
   } {
     if (isNullish(this.parent)) {
-      return { rootElement: this.element, fullSelector: ":scope" };
+      return { rootElement: this.element, fullSelector: SELF_SELECTOR };
     }
     const { rootElement, fullSelector } = this.parent.getRootAndFullSelector();
     return {
@@ -79,7 +95,12 @@ export class VitestPageObjectElement implements PageObjectElement {
 
   async isPresent(): Promise<boolean> {
     const { rootElement, fullSelector } = this.getRootAndFullSelector();
-    this.element = rootElement.querySelector(fullSelector);
+    if (fullSelector !== SELF_SELECTOR) {
+      // I would expect that element.querySelector(":scope") would return the
+      // element itself, but it doesn't. So we skip this step if
+      // fullSelector === SELF_SELECTOR.
+      this.element = rootElement.querySelector(fullSelector);
+    }
     return nonNullish(this.element);
   }
 
@@ -90,9 +111,15 @@ export class VitestPageObjectElement implements PageObjectElement {
   }
 
   waitForAbsent(): Promise<void> {
-    return waitFor(async () => {
-      expect(await this.isPresent()).toBe(false);
-    });
+    return waitFor(
+      async () => {
+        return expect(await this.isPresent()).toBe(false);
+      },
+      // TODO: Needed for the swap participation flow. Remove.
+      // To remove we need to use different describes in ProjectDetail.spec.ts
+      // Describes that mock timers and describes that don't.
+      { timeout: 5_000 }
+    );
   }
 
   // Resolves to null if the element is not present.
@@ -105,11 +132,17 @@ export class VitestPageObjectElement implements PageObjectElement {
     return this.element && this.element.getAttribute(attribute);
   }
 
+  async getClasses(): Promise<string[] | null> {
+    return this.element && Array.from(this.element.classList);
+  }
+
   async click(): Promise<void> {
+    await this.waitFor();
     await fireEvent.click(this.element);
   }
 
   async typeText(text: string): Promise<void> {
+    await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
     await fireEvent.input(this.element, { target: { value: text } });

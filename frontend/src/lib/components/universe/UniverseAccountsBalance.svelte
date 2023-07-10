@@ -2,17 +2,15 @@
   import { nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
   import { tokensStore } from "$lib/stores/tokens.store";
 
   export let universe: Universe;
 
-  // TODO: conversion from E8S to use new tokensStore until account.ts.balance is converted to E8S
   let balanceE8s: bigint | undefined;
-  $: balanceE8s =
-    $universesAccountsBalance[universe.canisterId]?.balance?.toE8s();
+  $: balanceE8s = $universesAccountsBalance[universe.canisterId]?.balanceE8s;
 
   let token: Token | undefined;
   $: token = $tokensStore[universe.canisterId]?.token;

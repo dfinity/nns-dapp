@@ -7,19 +7,23 @@ import {
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockedConstants,
+  resetMockedConstants,
+} from "$tests/utils/mockable-constants.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("ckbtc-withdrawal-accounts.services", () => {
   describe("loadCkBTCWithdrawalAccount", () => {
     beforeEach(() => {
-      vi.clearAllMocks();
+      resetMockedConstants();
+      jest.clearAllMocks();
       ckBTCWithdrawalAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    const spyGetWithdrawalAccount = vi
+    const spyGetWithdrawalAccount = jest
       .spyOn(minterServices, "getWithdrawalAccount")
       .mockResolvedValue({
         owner: mockCkBTCWithdrawalIcrcAccount.owner,
@@ -27,7 +31,31 @@ describe("ckbtc-withdrawal-accounts.services", () => {
       });
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
-      const spyGetCkBTCAccount = vi
+      const spyGetCkBTCAccount = jest
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockResolvedValue(mockCkBTCWithdrawalAccount);
+
+      await loadCkBTCWithdrawalAccount({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      await tick();
+
+      expect(spyGetCkBTCAccount).toHaveBeenCalled();
+
+      expect(spyGetWithdrawalAccount).toHaveBeenCalled();
+
+      const store = get(ckBTCWithdrawalAccountsStore);
+
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).not.toBeUndefined();
+      expect(
+        store[CKBTC_UNIVERSE_CANISTER_ID.toText()].account.identifier
+      ).toEqual(mockCkBTCWithdrawalAccount.identifier);
+    });
+
+    it("should not be affected by FORCE_CALL_STRATEGY", async () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
+      const spyGetCkBTCAccount = jest
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
 
@@ -58,9 +86,9 @@ describe("ckbtc-withdrawal-accounts.services", () => {
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
-      vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
-        Promise.reject(undefined)
-      );
+      jest
+        .spyOn(ledgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.reject(undefined));
 
       await loadCkBTCWithdrawalAccount({
         universeId: CKBTC_UNIVERSE_CANISTER_ID,

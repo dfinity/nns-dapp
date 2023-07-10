@@ -4,6 +4,7 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
+  createSummary,
   mockSnsFullProject,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
@@ -28,16 +29,48 @@ describe("ProjectCommitment", () => {
     ).toEqual(`${formatToken({ value: summary.swap.params.min_icp_e8s })} ICP`);
   });
 
-  it("should render total participants", () => {
+  it("should render total participants from swap metrics", () => {
     snsSwapMetricsStore.setMetrics({
       rootCanisterId: mockSnsFullProject.swapCommitment.rootCanisterId,
       metrics: {
         saleBuyerCount,
       },
     });
+    const summaryWithoutBuyers = createSummary({
+      lifecycle: SnsSwapLifecycle.Open,
+      buyersCount: null,
+    });
 
     const { queryByTestId } = renderContextCmp({
-      summary,
+      summary: summaryWithoutBuyers,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
+    });
+
+    const textContent: string =
+      queryByTestId("sns-project-current-sale-buyer-count")?.textContent ?? "";
+
+    expect(
+      textContent.includes(en.sns_project_detail.current_sale_buyer_count)
+    ).toBeTruthy();
+
+    expect(textContent.includes(`${saleBuyerCount}`)).toBeTruthy();
+  });
+
+  it("should render total participants from derived state", () => {
+    snsSwapMetricsStore.setMetrics({
+      rootCanisterId: mockSnsFullProject.swapCommitment.rootCanisterId,
+      metrics: {
+        saleBuyerCount: 0,
+      },
+    });
+    const summaryWithBuyersCount = createSummary({
+      lifecycle: SnsSwapLifecycle.Open,
+      buyersCount: BigInt(saleBuyerCount),
+    });
+
+    const { queryByTestId } = renderContextCmp({
+      summary: summaryWithBuyersCount,
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
       Component: ProjectCommitment,
     });

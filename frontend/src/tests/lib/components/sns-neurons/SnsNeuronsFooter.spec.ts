@@ -9,7 +9,8 @@ import {
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import { NeuronState, TokenAmount } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
+import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
 

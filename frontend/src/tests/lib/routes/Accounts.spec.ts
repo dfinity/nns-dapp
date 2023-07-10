@@ -53,6 +53,50 @@ vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   };
 });
 
+jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+  return {
+    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-minter.services", () => {
+  return {
+    updateBalance: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/ckbtc-info.services", () => {
+  return {
+    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("Accounts", () => {
   beforeAll(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);

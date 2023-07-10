@@ -1,5 +1,11 @@
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_HOUR,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -8,6 +14,7 @@ import {
   type SnsNervousSystemParameters,
   type SnsNeuron,
 } from "@dfinity/sns";
+import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
@@ -19,42 +26,64 @@ export const createMockSnsNeuron = ({
   stake = BigInt(1_000_000_000),
   id,
   state,
+  permissions = [],
+  vesting,
+  votingPowerMultiplier = BigInt(100),
+  dissolveDelaySeconds = BigInt(Math.floor(3600 * 24 * 365 * 2)),
+  ageSinceSeconds = BigInt(1000),
+  stakedMaturity = BigInt(100_000_000),
+  maturity = BigInt(100_000_000),
 }: {
   stake?: bigint;
   id: number[];
   state?: NeuronState;
-}): SnsNeuron => ({
-  id: [{ id: arrayOfNumberToUint8Array(id) }],
-  permissions: [],
-  source_nns_neuron_id: [],
-  maturity_e8s_equivalent: BigInt(1),
-  cached_neuron_stake_e8s: stake,
-  created_timestamp_seconds: BigInt(
-    Math.floor(Date.now() / 1000 - mockSnsNeuronTimestampSeconds)
-  ),
-  staked_maturity_e8s_equivalent: [BigInt(2)],
-  auto_stake_maturity: [],
-  aging_since_timestamp_seconds: BigInt(100),
-  voting_power_percentage_multiplier: BigInt(1),
-  dissolve_state:
-    state === undefined
-      ? []
-      : [
-          state === NeuronState.Dissolving
-            ? {
-                WhenDissolvedTimestampSeconds: BigInt(
-                  Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
-                ),
-              }
-            : {
-                DissolveDelaySeconds: BigInt(Math.floor(3600 * 24 * 365 * 2)),
-              },
-        ],
-  followees: [],
-  neuron_fees_e8s: BigInt(0),
-  vesting_period_seconds: [],
-  disburse_maturity_in_progress: [],
-});
+  permissions?: NeuronPermission[];
+  // `undefined` means no vesting at all (default)
+  // `true` means is still vesting
+  // `false` means vesting period has passed
+  vesting?: boolean;
+  votingPowerMultiplier?: bigint;
+  dissolveDelaySeconds?: bigint;
+  ageSinceSeconds?: bigint;
+  stakedMaturity?: bigint;
+  maturity?: bigint;
+}): SnsNeuron => {
+  return {
+    id: [{ id: arrayOfNumberToUint8Array(id) }],
+    permissions,
+    source_nns_neuron_id: [],
+    maturity_e8s_equivalent: maturity,
+    cached_neuron_stake_e8s: stake,
+    created_timestamp_seconds: BigInt(nowInSeconds() - SECONDS_IN_DAY),
+    staked_maturity_e8s_equivalent: [stakedMaturity],
+    auto_stake_maturity: [],
+    aging_since_timestamp_seconds: ageSinceSeconds,
+    voting_power_percentage_multiplier: votingPowerMultiplier,
+    dissolve_state:
+      state === undefined || state === NeuronState.Dissolved
+        ? []
+        : [
+            state === NeuronState.Dissolving
+              ? {
+                  WhenDissolvedTimestampSeconds: BigInt(
+                    Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
+                  ),
+                }
+              : {
+                  DissolveDelaySeconds: dissolveDelaySeconds,
+                },
+          ],
+    followees: [],
+    neuron_fees_e8s: BigInt(0),
+    vesting_period_seconds:
+      vesting === undefined
+        ? []
+        : vesting
+        ? [BigInt(SECONDS_IN_MONTH)]
+        : [BigInt(SECONDS_IN_HOUR)],
+    disburse_maturity_in_progress: [],
+  };
+};
 
 export const mockSnsNeuronId = {
   id: arrayOfNumberToUint8Array([1, 5, 3, 9, 9, 3, 2]),
@@ -146,6 +175,7 @@ export const snsNervousSystemParametersMock: SnsNervousSystemParameters = {
     },
   ],
   max_number_of_principals_per_neuron: [5n],
+  maturity_modulation_disabled: [false],
 };
 
 export const buildMockSnsParametersStore =

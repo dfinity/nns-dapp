@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { getDeniedCountries } from "$lib/getters/sns-summary";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
+  import type { CountryCode } from "$lib/types/location";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
@@ -14,18 +16,22 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { formatNumber } from "$lib/utils/format.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
+  // type safety validation is done in ProjectDetail component
+  let summary: SnsSummary;
+  $: summary = $projectDetailStore.summary as SnsSummary;
+
   let params: SnsParams;
   let token: IcrcTokenMetadata;
-  // type safety validation is done in ProjectDetail component
   $: ({
     swap: { params },
     token,
-  } = $projectDetailStore.summary as SnsSummary);
+  } = summary);
 
   let minCommitmentIcp: TokenAmount;
   $: minCommitmentIcp = TokenAmount.fromE8s({
@@ -46,6 +52,15 @@
 
   let snsTotalTokenSupply: TokenAmount | undefined | null;
   $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
+
+  let deniedCountryCodes: CountryCode[];
+  $: deniedCountryCodes = getDeniedCountries(summary);
+
+  let hasDeniedCountries: boolean;
+  $: hasDeniedCountries = deniedCountryCodes.length > 0;
+
+  let formattedDeniedCountryCodes: string;
+  $: formattedDeniedCountryCodes = deniedCountryCodes.join(", ");
 </script>
 
 <TestIdWrapper testId="project-swap-details-component">
@@ -58,6 +73,15 @@
   <KeyValuePair>
     <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
     <AmountDisplay slot="value" amount={snsTokens} singleLine />
+  </KeyValuePair>
+  <KeyValuePair testId="project-swap-min-participants">
+    <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
+    <span slot="value"
+      >{formatNumber(params.min_participants, {
+        minFraction: 0,
+        maxFraction: 0,
+      })}</span
+    >
   </KeyValuePair>
   <KeyValuePair>
     <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
@@ -75,4 +99,10 @@
       tagName="span"
     />
   </KeyValuePair>
+  {#if hasDeniedCountries}
+    <KeyValuePair testId="excluded-countries">
+      <span slot="key">{$i18n.sns_project_detail.persons_excluded} </span>
+      <span slot="value">{formattedDeniedCountryCodes}</span>
+    </KeyValuePair>
+  {/if}
 </TestIdWrapper>

@@ -1,9 +1,9 @@
 import {
-  depositFee as depositFeeAPI,
   estimateFee as estimateFeeAPI,
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
+import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
@@ -13,9 +13,8 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
-import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
-import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+import { waitForMilliseconds } from "$lib/utils/utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -36,18 +35,11 @@ const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
 
 export const loadBtcAddress = async ({
   minterCanisterId,
-  universeId,
   identifier,
 }: {
   minterCanisterId: CanisterId;
-  universeId: UniverseCanisterId;
   identifier: AccountIdentifierText;
 }) => {
-  // TODO: to be removed when ckBTC with minter is live.
-  if (!isUniverseCkTESTBTC(universeId)) {
-    return;
-  }
-
   const store = get(bitcoinAddressStore);
   const btcAddressLoaded = nonNullish(store[identifier]);
 
@@ -107,63 +99,36 @@ export const estimateFee = async ({
   });
 };
 
-export const depositFee = async ({
-  minterCanisterId,
-  callback,
-}: {
-  minterCanisterId: CanisterId;
-  callback: (fee: bigint | null) => void;
-}): Promise<void> => {
-  return queryAndUpdate<bigint, unknown>({
-    request: ({ certified, identity }) =>
-      depositFeeAPI({
-        identity,
-        certified,
-        canisterId: minterCanisterId,
-      }),
-    onLoad: ({ response: fee }) => callback(fee),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      // hide fee on any error
-      callback(null);
-
-      if (certified !== true) {
-        return;
-      }
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error__ckbtc.deposit_fee",
-        })
-      );
-    },
-    logMessage: "Getting Bitcoin deposit fee",
-  });
-};
-
 export const updateBalance = async ({
   minterCanisterId,
   reload,
+  deferReload = false,
+  uiIndicators = true,
 }: {
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
+  deferReload?: boolean;
+  uiIndicators?: boolean;
 }): Promise<{ success: boolean; err?: CkBTCErrorKey | unknown }> => {
-  startBusy({
-    initiator: "update-ckbtc-balance",
-  });
+  uiIndicators &&
+    startBusy({
+      initiator: "update-ckbtc-balance",
+    });
 
   const identity = await getAuthenticatedIdentity();
 
   try {
     await updateBalanceAPI({ identity, canisterId: minterCanisterId });
 
-    await reload?.();
+    // Workaround. Ultimately we want to poll to update balance and list of transactions
+    await waitForMilliseconds(
+      deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0
+    );
 
-    toastsSuccess({
-      labelKey: "ckbtc.ckbtc_balance_updated",
-    });
+    uiIndicators &&
+      toastsSuccess({
+        labelKey: "ckbtc.ckbtc_balance_updated",
+      });
 
     return { success: true };
   } catch (error: unknown) {
@@ -171,9 +136,10 @@ export const updateBalance = async ({
 
     // Few errors returned by the minter are considered to be displayed as information for the user
     if (err instanceof CkBTCSuccessKey) {
-      toastsSuccess({
-        labelKey: err.message,
-      });
+      uiIndicators &&
+        toastsSuccess({
+          labelKey: err.message,
+        });
 
       return { success: true };
     }
@@ -185,7 +151,10 @@ export const updateBalance = async ({
 
     return { success: false, err };
   } finally {
-    stopBusy("update-ckbtc-balance");
+    // We reload in any case because the user might hit "Refresh balance" in the UI thinking the feature is meant to reload the account and transactions even though it is actually meant to confirm the conversion of BTC -> ckBTC
+    await reload?.();
+
+    uiIndicators && stopBusy("update-ckbtc-balance");
   }
 };
 
