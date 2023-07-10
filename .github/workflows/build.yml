@@ -76,7 +76,7 @@ jobs:
           snapshot_url: https://github.com/dfinity/snsdemo/releases/download/release-2023-07-07/snsdemo_snapshot_ubuntu-22.04.tar.xz
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-          # Upgrade to keep the preloaded SNSes.
+          # Upgrade innstead of reinstall to keep the preloaded SNSes.
           sns_aggregator_install_mode: 'upgrade'
       - name: Generate .env configuration for Playwright end-to-end tests
         run: |
