@@ -16,6 +16,7 @@ jobs:
         id: update
         run: |
           pwd
+          find .github/actions
           current_didc_release=$(jq -r '.defaults.build.config.DIDC_VERSION' dfx.json)
           echo "current didc release '$current_didc_release'"
 
