@@ -13,10 +13,6 @@ npm run test-e2e -- account
 ```
 This will run only the e2e tests which have `account` in the filename.
 
-If the environment variable `CI` is set, then the tests will run against
-`VITE_OWN_CANISTER_URL` instead of `http://localhost:5173`. This is configured
-in `frontend/playwright.config.ts`.
-
 
 # Environment
 

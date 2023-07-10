@@ -106,6 +106,5 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   DFX_NETWORK="$DFX_NETWORK" ./config.sh
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister for NNS Dapp may have been created already"
   dfx deploy nns-dapp --argument "$(cat "nns-dapp-arg-${DFX_NETWORK}.did")" --upgrade-unchanged --network "$DFX_NETWORK" --no-wallet
-  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
-  echo "NNS Dapp deployed to: $OWN_CANISTER_URL"
+  echo "NNS Dapp deployed to: $(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
 fi
