@@ -53,7 +53,7 @@
     },
     {
       "command": "cargo_audit",
-      "stdout": "RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044",
+      "stdout": "RUSTSEC-2020-0071,RUSTSEC-2020-0159",
       "stderr": "",
       "exitCode": 0
     },
@@ -99,8 +99,8 @@
     "git push origin -f tags/release-candidate: Done",
     "Security test: npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
     "Expected npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
-    "Security test: cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044",
-    "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044",
+    "Security test: cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
+    "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
     "Security test: no HTML in templates: Found @html",
     "Press enter to run the following command:",
     "",
