@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index a3c5425ed..a8fc475ec 100644
+index 9d36cbf1c..36ae2f307 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-@@ -4,12 +4,12 @@
+@@ -3,12 +3,12 @@
  #![allow(non_camel_case_types)]
  #![allow(dead_code)]
  
@@ -18,46 +18,12 @@ index a3c5425ed..a8fc475ec 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SnsWasmCanisterInitPayload {
-@@ -120,7 +120,9 @@ pub struct DeployNewSnsResponse {
- pub struct get_allowed_principals_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetAllowedPrincipalsResponse { allowed_principals: Vec<candid::Principal> }
-+pub struct GetAllowedPrincipalsResponse {
-+  pub  allowed_principals: Vec<candid::Principal>,
-+}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SnsVersion {
-@@ -171,7 +173,7 @@ pub struct InsertUpgradePathEntriesResponse { error: Option<SnsWasmError> }
+@@ -208,7 +208,7 @@ pub struct InsertUpgradePathEntriesResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_deployed_snses_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
  pub struct DeployedSns {
-   pub  root_canister_id: Option<candid::Principal>,
-   pub  governance_canister_id: Option<candid::Principal>,
-@@ -181,7 +183,7 @@ pub struct DeployedSns {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListDeployedSnsesResponse { instances: Vec<DeployedSns> }
-+pub struct ListDeployedSnsesResponse { pub instances: Vec<DeployedSns> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ListUpgradeStepsRequest {
-@@ -236,7 +238,7 @@ pub struct UpdateSnsSubnetListRequest {
- pub struct UpdateSnsSubnetListResponse { error: Option<SnsWasmError> }
- 
- pub struct SERVICE(pub candid::Principal);
--impl SERVICE {
-+impl SERVICE{
-   pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<
-     (AddWasmResponse,)
-   > { ic_cdk::call(self.0, "add_wasm", (arg0,)).await }
-@@ -298,4 +300,3 @@ impl SERVICE {
-     ic_cdk::call(self.0, "update_sns_subnet_list", (arg0,)).await
-   }
- }
--
+     pub root_canister_id: Option<candid::Principal>,
+     pub governance_canister_id: Option<candid::Principal>,
