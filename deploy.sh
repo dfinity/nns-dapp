@@ -26,7 +26,7 @@ help_text() {
 }
 
 #
-DFX_NETWORK=local             # which network to deploy to
+DFX_NETWORK=local # which network to deploy to
 
 # Whether to run each action:
 DEPLOY_II="false"
