@@ -719,12 +719,12 @@ pub enum Command_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ManageNeuronResponse {
-    command: Option<Command_1>,
+    pub command: Option<Command_1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetMode {
-    mode: i32,
+    pub mode: i32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
