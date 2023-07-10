@@ -1,6 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -32,9 +30,7 @@ export default defineConfig({
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.CI
-      ? process.env.VITE_OWN_CANISTER_URL
-      : "http://localhost:5173",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:5173",
     screenshot: "only-on-failure",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "retain-on-failure",

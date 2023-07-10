@@ -13,27 +13,27 @@ export class ProposalNavigationPo extends BasePageObject {
     return (await root.getClasses()).includes("hidden");
   }
 
-  getPreviousButtonPo(): ButtonPo {
-    return this.getButton("proposal-nav-previous");
+  getNewerButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-newer");
   }
 
-  getNextButtonPo(): ButtonPo {
-    return this.getButton("proposal-nav-next");
+  getOlderButtonPo(): ButtonPo {
+    return this.getButton("proposal-nav-older");
   }
 
-  async isPreviousButtonHidden(): Promise<boolean> {
-    return ProposalNavigationPo.isButtonHidden(this.getPreviousButtonPo());
+  async isNewerButtonHidden(): Promise<boolean> {
+    return ProposalNavigationPo.isButtonHidden(this.getNewerButtonPo());
   }
 
-  async isNextButtonHidden(): Promise<boolean> {
-    return ProposalNavigationPo.isButtonHidden(this.getNextButtonPo());
+  async isOlderButtonHidden(): Promise<boolean> {
+    return ProposalNavigationPo.isButtonHidden(this.getOlderButtonPo());
   }
 
-  clickPrevious(): Promise<void> {
-    return this.getPreviousButtonPo().click();
+  clickNewer(): Promise<void> {
+    return this.getNewerButtonPo().click();
   }
 
-  clickNext(): Promise<void> {
-    return this.getNextButtonPo().click();
+  clickOlder(): Promise<void> {
+    return this.getOlderButtonPo().click();
   }
 }

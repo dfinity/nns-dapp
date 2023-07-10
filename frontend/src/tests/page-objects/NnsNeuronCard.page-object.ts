@@ -37,4 +37,8 @@ export class NnsNeuronCardPo extends BasePageObject {
   isDisabled(): Promise<boolean> {
     return this.getNeuronCardContainerPo().isDisabled();
   }
+
+  async getBalance(): Promise<number> {
+    return Number(await this.getText("token-value"));
+  }
 }
