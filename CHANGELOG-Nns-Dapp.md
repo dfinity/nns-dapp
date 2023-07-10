@@ -64,13 +64,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Updated `bitcoin-canister` revision for proposal payload support.
 * Improve proposal action rendering.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
 
-#### Security
 #### Not Published
 
 * Progress on merge neurons preview, behind a flag.
@@ -91,16 +88,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * ci-link script uses correct workflow name.
 
-#### Security
-
 ## Proposal 123301
-
 
 ### Application
 
