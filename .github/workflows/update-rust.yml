@@ -34,7 +34,7 @@ jobs:
           if [ "$current_rust_version" != "$latest_rust_version" ]
           then
             echo rust toolchain needs an update
-            sed -i -e "s/$current_rust_version/$latest_rust_version/g" ./rust-toolchain.toml
+            sed -i -e "/^channel *=/{s/$current_rust_version/$latest_rust_version/g}" ./rust-toolchain.toml
             echo "updated=1" >> "$GITHUB_OUTPUT"
           else
             echo "updated=0" >> "$GITHUB_OUTPUT"

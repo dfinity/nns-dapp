@@ -14,7 +14,7 @@ jobs:
       - name: Check new didc version
         id: update
         run: |
-          current_didc_release=$(sed <.didc-release 's/#.*$//' | sed '/^$/d')
+          current_didc_release=$(jq '.defaults.build.config.DIDC_VERSION' dfx.json)
           echo "current didc release '$current_didc_release'"
 
           latest_didc_release=$(curl -sSL https://api.github.com/repos/dfinity/candid/releases/latest | jq .tag_name -r)
