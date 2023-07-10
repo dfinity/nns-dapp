@@ -1,15 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 1c4dd45ec..9f4abee6a 100644
+index 1c4dd45ec..6cf95680e 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -7,8 +7,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
- use ic_cdk::api::call::CallResult;
+@@ -8,7 +8,7 @@ use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+ // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
 -// use ic_cdk::api::call::CallResult as Result;
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-+// use ic_cdk::api::call::CallResult;
++// use ic_cdk::api::call::CallResult as Result
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GenericNervousSystemFunction {

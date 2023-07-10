@@ -8,7 +8,7 @@ use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
-// use ic_cdk::api::call::CallResult as Result
+// use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GenericNervousSystemFunction {
