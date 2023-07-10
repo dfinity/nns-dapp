@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 1c4dd45ec..e71ccd0a4 100644
+index 1c4dd45ec..9f4abee6a 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -7,8 +7,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -31,18 +31,3 @@ index 1c4dd45ec..e71ccd0a4 100644
  pub struct ListNervousSystemFunctionsResponse {
      pub reserved_ids: Vec<u64>,
      pub functions: Vec<NervousSystemFunction>,
-@@ -719,12 +719,12 @@ pub enum Command_1 {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ManageNeuronResponse {
--    pub command: Option<Command_1>,
-+    command: Option<Command_1>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SetMode {
--    pub mode: i32,
-+    mode: i32,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
