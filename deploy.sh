@@ -27,7 +27,6 @@ help_text() {
 
 #
 DFX_NETWORK=local             # which network to deploy to
-CONFIG_FILE="./frontend/.env" # the location of the dapp .env config, computed from dfx.json for the specific network.
 
 # Whether to run each action:
 DEPLOY_II="false"
