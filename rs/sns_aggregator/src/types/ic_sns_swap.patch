@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index b207c99f6..e0827feb2 100644
+index b207c99f6..81477acb6 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -3,19 +3,19 @@
@@ -7,14 +7,12 @@ index b207c99f6..e0827feb2 100644
  #![allow(dead_code)]
  
 -use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
-+use crate::types::{CandidType, Deserialize, Serialize};
++use crate::types::{CandidType, Deserialize, EmptyREcord, Serialize};
  use ic_cdk::api::call::CallResult;
  // This is an experimental feature to generate Rust binding from Candid.
  // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
--// use ic_cdk::api::call::CallResult as Result;
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-+// use ic_cdk::api::call::CallResult;
+ // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+ // use ic_cdk::api::call::CallResult as Result;
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
