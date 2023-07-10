@@ -7,22 +7,22 @@ import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
 
-describe("IcrcTransactionsObserver", () => {
-  let spyPostMessage;
+let spyPostMessage;
 
+describe("IcrcTransactionsObserver", () => {
   beforeEach(() => {
     spyPostMessage = vi.fn();
 
-    vi.mock("$lib/workers/transactions.worker?worker", () => {
-      return class TransactionsWorker {
+    vi.mock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
         postMessage(data: {
           msg: "nnsStartTransactionsTimer";
           data: PostMessageDataRequestTransactions;
         }) {
           spyPostMessage(data);
         }
-      };
-    });
+      },
+    }));
   });
 
   const data: TransactionsObserverData = {
