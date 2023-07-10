@@ -76,7 +76,7 @@ import {
 } from "@dfinity/utils";
 import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import { vi } from "vitest";
+import { type Mock, vi } from "vitest";
 
 vi.mock("$lib/proxy/api.import.proxy");
 vi.mock("$lib/api/agent.api", () => {
@@ -182,7 +182,7 @@ describe("sns-api", () => {
       certified: true,
     });
 
-    (importSnsWasmCanister as vi.Mock).mockResolvedValue({
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
@@ -192,7 +192,7 @@ describe("sns-api", () => {
     spyOnNotifyParticipation.mockResolvedValue({
       icp_accepted_participation_e8s: 666n,
     });
-    (importInitSnsWrapper as vi.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
