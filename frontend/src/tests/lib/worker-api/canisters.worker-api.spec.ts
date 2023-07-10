@@ -3,8 +3,10 @@ import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
+import { ICManagementCanister } from "@dfinity/ic-management";
+import { mock } from "jest-mock-extended";
 
-jest.mock("@dfinity/agent/lib/cjs/index");
+jest.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -18,17 +20,18 @@ describe("canisters-worker-api", () => {
       compute_allocation: 5n,
     },
     module_hash: [],
+    idle_cycles_burned_per_day: 300n,
   };
-
-  const MockHttpAgent = jest.fn();
 
   beforeEach(async () => {
     jest.resetAllMocks();
-    const module = await import("@dfinity/agent/lib/cjs/index");
-    module.HttpAgent = MockHttpAgent;
-    module.getManagementCanister = jest.fn().mockReturnValue({
-      canister_status: async () => response,
-    });
+
+    const mockICManagementCanister = mock<ICManagementCanister>();
+    jest
+      .spyOn(ICManagementCanister, "create")
+      .mockImplementation(() => mockICManagementCanister);
+
+    mockICManagementCanister.canisterStatus.mockResolvedValue(response);
   });
 
   describe("queryCanisterDetails", () => {
@@ -53,6 +56,7 @@ describe("canisters-worker-api", () => {
           computeAllocation: 5n,
         },
         moduleHash: undefined,
+        idleCyclesBurnedPerDay: 300n,
       });
     });
   });

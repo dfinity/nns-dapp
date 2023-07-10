@@ -68,10 +68,10 @@ describe("Accounts", () => {
 
     await waitFor(() =>
       expect(
-        container.querySelector('input[name="newAccount"]')
+        container.querySelector('input[name="add-text-input"]')
       ).toBeInTheDocument()
     );
-    const input = container.querySelector('input[name="newAccount"]');
+    const input = container.querySelector('input[name="add-text-input"]');
     input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
     const createButton = container.querySelector('button[type="submit"]');

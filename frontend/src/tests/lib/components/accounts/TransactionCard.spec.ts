@@ -15,7 +15,7 @@ import {
   mockTransactionSendDataFromMain,
 } from "$tests/mocks/transaction.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/nns";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {

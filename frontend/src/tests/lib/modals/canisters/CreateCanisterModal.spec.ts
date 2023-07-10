@@ -1,7 +1,10 @@
 /**
  * @jest-environment jsdom
  */
-import { NEW_CANISTER_MIN_T_CYCLES } from "$lib/constants/canisters.constants";
+import {
+  MAX_CANISTER_NAME_LENGTH,
+  NEW_CANISTER_MIN_T_CYCLES,
+} from "$lib/constants/canisters.constants";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
   createCanister,
@@ -12,6 +15,7 @@ import { toastsShow } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
+  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/accounts.store.mock";
 import { mockCanister } from "$tests/mocks/canisters.mock";
@@ -45,22 +49,20 @@ describe("CreateCanisterModal", () => {
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should display modal", () => {
     const { container } = render(CreateCanisterModal);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
-  it("should create a canister from ICP and close modal", async () => {
-    const {
-      queryByTestId,
-      queryAllByTestId,
-      container,
-      component,
-      queryByText,
-    } = await renderModal({
-      component: CreateCanisterModal,
-    });
+  const selectAccountGoToNameForm = async ({
+    queryAllByTestId,
+    queryByTestId,
+  }) => {
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
     // wait to update local variable with conversion rate
@@ -70,6 +72,39 @@ describe("CreateCanisterModal", () => {
     expect(accountCards.length).toBe(2);
 
     fireEvent.click(accountCards[0]);
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+  };
+
+  const testCreateCanister = async (canisterName: string) => {
+    const {
+      queryByTestId,
+      queryAllByTestId,
+      container,
+      component,
+      queryByText,
+    } = await renderModal({
+      component: CreateCanisterModal,
+    });
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+
+    if (canisterName.length > 0) {
+      const nameInputElement = queryByTestId("input-ui-element");
+      nameInputElement &&
+        (await fireEvent.input(nameInputElement, {
+          target: { value: canisterName },
+        }));
+    }
+
+    await clickByTestId(queryByTestId, "confirm-text-input-screen-button");
 
     // Select Amount Screen
     await waitFor(() =>
@@ -83,9 +118,10 @@ describe("CreateCanisterModal", () => {
     const icpInputElement = container.querySelector('input[name="icp-amount"]');
     expect(icpInputElement).not.toBeNull();
 
+    const icpAmount = 2;
     icpInputElement &&
       (await fireEvent.input(icpInputElement, {
-        target: { value: 2 },
+        target: { value: icpAmount },
       }));
     icpInputElement && (await fireEvent.blur(icpInputElement));
 
@@ -98,14 +134,30 @@ describe("CreateCanisterModal", () => {
       ).toBeInTheDocument()
     );
 
+    if (canisterName.length > 0) {
+      expect(queryByText(canisterName)).toBeInTheDocument();
+    }
+
     const done = jest.fn();
     component.$on("nnsClose", done);
 
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");
 
     await waitFor(() => expect(done).toBeCalled());
-    expect(createCanister).toBeCalled();
+    expect(createCanister).toBeCalledWith({
+      name: canisterName,
+      amount: icpAmount,
+      account: mockMainAccount,
+    });
     expect(toastsShow).toBeCalled();
+  };
+
+  it("should create a canister from ICP and close modal", async () => {
+    testCreateCanister("best dapp ever");
+  });
+
+  it("should create canister without name", async () => {
+    testCreateCanister("");
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.
@@ -124,6 +176,44 @@ describe("CreateCanisterModal", () => {
     expect(queryByText(mockHardwareWalletAccount.name as string)).toBeNull();
   });
 
+  it("should have disabled button when creating a canister with name longer than maximum allowed", async () => {
+    const { queryByTestId, queryAllByTestId } = await renderModal({
+      component: CreateCanisterModal,
+    });
+
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+
+    const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+    const nameInputElement = queryByTestId("input-ui-element");
+    nameInputElement &&
+      (await fireEvent.input(nameInputElement, {
+        target: { value: longName },
+      }));
+
+    expect(
+      queryByTestId("confirm-text-input-screen-button").getAttribute("disabled")
+    ).not.toBeNull();
+  });
+
+  it("should have enabled button when creating a canister with name maximum allowed", async () => {
+    const { queryByTestId, queryAllByTestId } = await renderModal({
+      component: CreateCanisterModal,
+    });
+
+    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+
+    const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
+    const nameInputElement = queryByTestId("input-ui-element");
+    nameInputElement &&
+      (await fireEvent.input(nameInputElement, {
+        target: { value: longName },
+      }));
+
+    expect(
+      queryByTestId("confirm-text-input-screen-button").getAttribute("disabled")
+    ).toBeNull();
+  });
+
   it("should have disabled button when creating canister with less T Cycles than minimum", async () => {
     const { queryByTestId, queryAllByTestId, container } = await renderModal({
       component: CreateCanisterModal,
@@ -137,6 +227,13 @@ describe("CreateCanisterModal", () => {
     expect(accountCards.length).toBe(2);
 
     fireEvent.click(accountCards[0]);
+
+    // Enter Name Screen
+    await waitFor(() =>
+      expect(queryByTestId("create-canister-name-form")).toBeInTheDocument()
+    );
+
+    await clickByTestId(queryByTestId, "confirm-text-input-screen-button");
 
     // Select Amount Screen
     await waitFor(() =>

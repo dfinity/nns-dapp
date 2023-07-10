@@ -9,8 +9,7 @@ import type {
 } from "$lib/stores/tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
-import { TokenAmount } from "@dfinity/nns";
-import { nonNullish } from "@dfinity/utils";
+import { TokenAmount, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const nnsTokenStore = derived<

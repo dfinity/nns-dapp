@@ -1,6 +1,6 @@
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
-import { toastsShow } from "$lib/stores/toasts.store";
+import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
 import type { Identity } from "@dfinity/agent";
@@ -10,6 +10,22 @@ import { get } from "svelte/store";
 
 const msgParam = "msg";
 const levelParam = "level";
+
+export const login = async () => {
+  const onError = (err: unknown) => {
+    if (err === "UserInterrupt") {
+      // We do not display an error if user explicitly cancelled the process of sign-in. User is most certainly aware of it.
+      return;
+    }
+
+    toastsError({
+      labelKey: "error.sign_in",
+      err,
+    });
+  };
+
+  await authStore.signIn(onError);
+};
 
 export const logout = async ({
   msg = undefined,

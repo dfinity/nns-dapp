@@ -4,7 +4,7 @@
 
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 

@@ -22,7 +22,7 @@
   import {
     snsNeuronToVotingNeuron,
     snsProposalIdString,
-    snsProposalOpen,
+    snsProposalAcceptingVotes,
   } from "$lib/utils/sns-proposals.utils";
   import {
     getSnsNeuronIdAsHexString,
@@ -82,7 +82,7 @@
     $voteRegistrationStore,
     (visible =
       voteRegistration !== undefined ||
-      (votableNeurons.length > 0 && snsProposalOpen(proposal)));
+      (votableNeurons.length > 0 && snsProposalAcceptingVotes(proposal)));
 
   let neuronsReady = false;
   $: neuronsReady =

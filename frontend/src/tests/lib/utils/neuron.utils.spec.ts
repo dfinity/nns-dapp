@@ -22,6 +22,7 @@ import {
   ageMultiplier,
   allHaveSameFollowees,
   ballotsWithDefinedProposal,
+  bonusMultiplier,
   canBeMerged,
   checkInvalidState,
   dissolveDelayMultiplier,
@@ -78,9 +79,7 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
-  ICPToken,
   NeuronState,
-  TokenAmount,
   Topic,
   Vote,
   type BallotInfo,
@@ -88,6 +87,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
@@ -254,6 +254,42 @@ describe("neuron-utils", () => {
 
     it("returns expected multiplier for one year", () => {
       expect(ageMultiplier(BigInt(SECONDS_IN_YEAR))).toBe(1.0625);
+    });
+  });
+
+  describe("bonusMultiplier", () => {
+    it("should return the multiplier", () => {
+      expect(
+        bonusMultiplier({
+          amount: 300n,
+          multiplier: 0.25,
+          max: 600,
+        })
+      ).toBe(1.125);
+
+      expect(
+        bonusMultiplier({
+          amount: 600n,
+          multiplier: 0.5,
+          max: 600,
+        })
+      ).toBe(1.5);
+
+      expect(
+        bonusMultiplier({
+          amount: 400n,
+          multiplier: 1,
+          max: 200,
+        })
+      ).toBe(2);
+
+      expect(
+        bonusMultiplier({
+          amount: 400n,
+          multiplier: 0.25,
+          max: 0,
+        })
+      ).toBe(1);
     });
   });
 

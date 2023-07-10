@@ -18,6 +18,10 @@ export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
     accounts: IcrcAccounts;
     universeId: UniverseCanisterId;
   }) => void;
+  update: (params: {
+    accounts: IcrcAccounts;
+    universeId: UniverseCanisterId;
+  }) => void;
   reset: () => void;
 }
 
@@ -43,6 +47,29 @@ const initIcrcAccountsStore = (): IcrcAccountsStore => {
       update((currentState: IcrcAccountStoreData) => ({
         ...currentState,
         [universeId.toText()]: accounts,
+      }));
+    },
+
+    update: ({
+      accounts: { accounts, certified },
+      universeId,
+    }: {
+      accounts: IcrcAccounts;
+      universeId: UniverseCanisterId;
+    }) => {
+      update((currentState: IcrcAccountStoreData) => ({
+        ...currentState,
+        [universeId.toText()]: {
+          accounts: [
+            ...(currentState[universeId.toText()]?.accounts ?? []).filter(
+              ({ identifier }) =>
+                accounts.find(({ identifier: i }) => identifier === i) ===
+                undefined
+            ),
+            ...accounts,
+          ],
+          certified,
+        },
       }));
     },
 

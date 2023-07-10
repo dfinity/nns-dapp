@@ -10,7 +10,8 @@
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils";
-  import type { NeuronState, TokenAmount } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
+  import type { TokenAmount } from "@dfinity/utils";
   import { SECONDS_IN_DAY } from "$lib/constants/constants";
 
   export let neuronState: NeuronState;

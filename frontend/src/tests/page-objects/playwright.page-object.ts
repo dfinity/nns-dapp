@@ -63,16 +63,21 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     });
   }
 
+  getValue(): Promise<string> {
+    throw new Error("Not implement");
+  }
+
   getText(): Promise<string> {
     return this.locator.textContent();
   }
 
-  getAttribute(_attribute: string): Promise<string | null> {
-    throw new Error("Not implement");
+  getAttribute(attribute: string): Promise<string | null> {
+    return this.locator.getAttribute(attribute);
   }
 
-  getClasses(): Promise<string[] | null> {
-    throw new Error("Not implement");
+  async getClasses(): Promise<string[] | null> {
+    const classNames = await this.getAttribute("class");
+    return classNames?.split(" ");
   }
 
   async isPresent(): Promise<boolean> {

@@ -16,6 +16,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html, busy } from "@dfinity/gix-components";
   import NnsNeuronInfo from "./NnsNeuronInfo.svelte";
+  import NnsNeuronDetailCard from "./NnsNeuronDetailCard.svelte";
 
   export let neurons: NeuronInfo[];
 
@@ -77,11 +78,19 @@
 <div class="wrapper" data-tid="confirm-neurons-merge-component">
   <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-  <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
+  {/if}
 
   <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
+  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
+    <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
+  {:else}
+    <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
+  {/if}
 
   {#if showMergeResult}
     <div data-tid="merge-result-section">
@@ -90,10 +99,9 @@
       {#if isNullish(simulatedMergedNeuron)}
         <SkeletonCard cardType="info" />
       {:else}
-        <!-- TODO: Show more information about the neuron. -->
-        <NnsNeuronInfo
+        <NnsNeuronDetailCard
           neuron={simulatedMergedNeuron}
-          testId="merged-neuron-info"
+          testId="merged-neuron-card"
         />
       {/if}
     </div>

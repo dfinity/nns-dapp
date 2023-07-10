@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { NeuronState, Token } from "@dfinity/nns";
+  import type { NeuronState } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isNullish } from "@dfinity/utils";
@@ -15,7 +16,7 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { TokenAmount } from "@dfinity/nns";
+  import { TokenAmount } from "@dfinity/utils";
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
