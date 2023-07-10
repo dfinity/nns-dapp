@@ -60,6 +60,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Copied the newest version of clap.bash from snsdemo.
 - Migrated some end-to-end tests from Wdio to Playwright.
 - Use the newest snsdemo snapshot with the sns_aggregator preloaded.
+- Split Playwright e2e test on CI into 2 shards.
 
 #### Deprecated
 #### Removed
