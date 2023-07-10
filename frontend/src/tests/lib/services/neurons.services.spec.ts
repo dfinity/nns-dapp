@@ -38,10 +38,10 @@ import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister, Topic } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 const {
   addHotkey,

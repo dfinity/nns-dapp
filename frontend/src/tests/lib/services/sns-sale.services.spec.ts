@@ -74,9 +74,9 @@ import {
   arrayOfNumberToUint8Array,
   toNullable,
 } from "@dfinity/utils";
-import mock from "jest-mock-extended/lib/Mock";
 import { get } from "svelte/store";
-import { type Mock, vi } from "vitest";
+import { vi, type Mock } from "vitest";
+import mock from "vitest-mock-extended/lib/Mock";
 
 vi.mock("$lib/proxy/api.import.proxy");
 vi.mock("$lib/api/agent.api", () => {

@@ -3,8 +3,8 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
 import { vi } from "vitest";
+import mock from "vitest-mock-extended/lib/Mock";
 
 describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();

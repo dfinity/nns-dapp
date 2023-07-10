@@ -9,7 +9,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import mock from "vitest-mock-extended/lib/Mock";
 
 describe("transactions.worker-services", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();

@@ -16,8 +16,8 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;
@@ -52,9 +52,9 @@ describe("auth-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
-      vi
-        .spyOn(AuthClient, "create")
-        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
+      vi.spyOn(AuthClient, "create").mockImplementation(
+        async (): Promise<AuthClient> => mockAuthClient
+      );
 
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
@@ -183,9 +183,9 @@ describe("auth-services", () => {
   });
 
   describe("getCurrentIdentity", () => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
     afterAll(() => vi.clearAllMocks());
 

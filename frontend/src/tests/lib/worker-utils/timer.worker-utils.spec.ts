@@ -3,7 +3,7 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("timer.worker-utils", () => {
   const now = Date.now();

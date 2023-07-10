@@ -7,8 +7,8 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
 import { vi } from "vitest";
+import mock from "vitest-mock-extended/lib/Mock";
 
 describe("balances.worker-services", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();

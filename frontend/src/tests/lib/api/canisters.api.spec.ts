@@ -28,8 +28,8 @@ import {
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
 import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
-import { mock } from "jest-mock-extended";
 import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -47,19 +47,19 @@ describe("canisters-api", () => {
     const now = Date.now();
     vi.useFakeTimers().setSystemTime(now);
 
-    vi
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(
+      (): NNSDappCanister => mockNNSDappCanister
+    );
 
     vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
 
-    vi
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
-    vi
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mockLedgerCanister);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => mockLedgerCanister
+    );
   });
 
   describe("queryCanisters", () => {
