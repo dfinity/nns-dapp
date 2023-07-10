@@ -24,7 +24,7 @@ describe("location services", () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
       const countryCode = "CH";
-      jest
+      vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
 
@@ -36,7 +36,7 @@ describe("location services", () => {
     it("should set the location store to error if api fails", async () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
-      jest
+      vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockRejectedValue(new Error("test"));
 
@@ -49,7 +49,7 @@ describe("location services", () => {
 
     it("should not call api if location store is already set", async () => {
       const countryCode = "CH";
-      const apiFn = jest
+      const apiFn = vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
       userCountryStore.set({ isoCode: countryCode });
@@ -61,7 +61,7 @@ describe("location services", () => {
 
     it("should not call api if location store has an error", async () => {
       const countryCode = "CH";
-      const apiFn = jest
+      const apiFn = vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
       userCountryStore.set(new Error("test"));

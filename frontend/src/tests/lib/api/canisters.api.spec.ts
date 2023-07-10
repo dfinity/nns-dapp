@@ -47,17 +47,17 @@ describe("canisters-api", () => {
     const now = Date.now();
     vi.useFakeTimers().setSystemTime(now);
 
-    jest
+    vi
       .spyOn(NNSDappCanister, "create")
       .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
 
     vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
 
-    jest
+    vi
       .spyOn(ICManagementCanister, "create")
       .mockImplementation(() => mockICManagementCanister);
 
-    jest
+    vi
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => mockLedgerCanister);
   });

@@ -30,6 +30,7 @@ import {
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
+import {vi} from "vitest";
 
 vi.mock("$lib/api/ckbtc-minter.api");
 
@@ -65,7 +66,7 @@ describe("BtcCkBTCReceiveModal", () => {
     let spyGetAddress;
 
     beforeEach(() => {
-      spyGetAddress = jest
+      spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
     });
@@ -251,7 +252,7 @@ describe("BtcCkBTCReceiveModal", () => {
 
   describe("without btc", () => {
     beforeAll(() => {
-      jest
+      vi
         .spyOn(tokensStore, "subscribe")
         .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 

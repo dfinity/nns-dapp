@@ -56,11 +56,9 @@ describe("ledger-services", () => {
   describe("connect hardware wallet", () => {
     describe("success", () => {
       beforeEach(() => {
-        jest
-          .spyOn(LedgerIdentity, "create")
-          .mockImplementation(
-            async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          );
+        vi.spyOn(LedgerIdentity, "create").mockImplementation(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        );
       });
 
       it("should set connecting state before connecting", async () => {
@@ -123,24 +121,26 @@ describe("ledger-services", () => {
     let spySyncAccounts;
 
     beforeAll(() => {
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+      vi.spyOn(NNSDappCanister, "create").mockImplementation(
+        (): NNSDappCanister => mockNNSDappCanister
+      );
 
-      spySyncAccounts = jest
+      spySyncAccounts = vi
         .spyOn(accountsServices, "syncAccounts")
-        .mockImplementation(vi.fn());
+        .mockImplementation(async () => {
+          // Do nothing
+        });
 
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
       const mockCreateAgent = () => Promise.resolve(mock<HttpAgent>());
       vi.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockImplementation(() => Promise.resolve(mockGetIdentity()));
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+        () => Promise.resolve(mockGetIdentity())
+      );
     });
 
     describe("success", () => {
@@ -199,11 +199,9 @@ describe("ledger-services", () => {
 
   describe("get ledger identity", () => {
     beforeEach(() => {
-      jest
-        .spyOn(LedgerIdentity, "create")
-        .mockImplementation(
-          async (): Promise<LedgerIdentity> => mockLedgerIdentity
-        );
+      vi.spyOn(LedgerIdentity, "create").mockImplementation(
+        async (): Promise<LedgerIdentity> => mockLedgerIdentity
+      );
     });
 
     it("should return ledger identity", async () => {
@@ -228,8 +226,7 @@ describe("ledger-services", () => {
     });
 
     it("should not return cached ledger identity for different account", async () => {
-      jest
-        .spyOn(LedgerIdentity, "create")
+      vi.spyOn(LedgerIdentity, "create")
         .mockImplementationOnce(
           async (): Promise<LedgerIdentity> => mockLedgerIdentity
         )
@@ -266,11 +263,9 @@ describe("ledger-services", () => {
     let spy;
 
     beforeAll(() => {
-      jest
-        .spyOn(LedgerIdentity, "create")
-        .mockImplementation(
-          async (): Promise<LedgerIdentity> => mockLedgerIdentity
-        );
+      vi.spyOn(LedgerIdentity, "create").mockImplementation(
+        async (): Promise<LedgerIdentity> => mockLedgerIdentity
+      );
 
       spy = vi.spyOn(mockLedgerIdentity, "showAddressAndPubKeyOnDevice");
     });
@@ -307,9 +302,9 @@ describe("ledger-services", () => {
     const mockNeurons = [mockNeuron];
 
     beforeAll(() => {
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockImplementation(() => Promise.resolve(mockNeurons));
+      vi.spyOn(api, "queryNeurons").mockImplementation(() =>
+        Promise.resolve(mockNeurons)
+      );
     });
 
     describe("success", () => {

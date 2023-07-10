@@ -27,7 +27,7 @@ import { vi } from "vitest";
 vi.mock("$lib/services/canisters.services", () => {
   return {
     getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(10_000)),
-    createCanister: jest
+    createCanister: vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
   };
@@ -41,7 +41,7 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("CreateCanisterModal", () => {
-  jest
+  vi
     .spyOn(accountsStore, "subscribe")
     .mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])

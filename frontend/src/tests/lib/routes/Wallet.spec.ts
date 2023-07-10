@@ -12,6 +12,7 @@ import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import {vi} from "vitest";
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -51,7 +52,7 @@ describe("Wallet", () => {
   });
 
   beforeAll(() =>
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe)
   );

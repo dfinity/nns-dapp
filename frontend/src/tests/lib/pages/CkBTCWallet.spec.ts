@@ -66,9 +66,10 @@ vi.mock("$lib/api/ckbtc-minter.api", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", async () => {
   return {
-    ...vi.requireActual("$lib/services/ckbtc-minter.services"),
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("$lib/services/ckbtc-minter.services")),
     updateBalance: vi.fn().mockResolvedValue([]),
     depositFee: vi.fn().mockResolvedValue(789n),
   };
@@ -140,7 +141,7 @@ describe("CkBTCWallet", () => {
 
       vi.useFakeTimers().setSystemTime(new Date());
 
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
 

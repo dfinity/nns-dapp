@@ -2,6 +2,7 @@ import { isSignedIn, loadIdentity } from "$lib/utils/auth.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
+import {vi} from "vitest";
 
 describe("auth-utils", () => {
   describe("isSignedIn", () => {
@@ -21,7 +22,7 @@ describe("auth-utils", () => {
       mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
       beforeEach(() =>
-        jest
+        vi
           .spyOn(AuthClient, "create")
           .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
       );
@@ -37,7 +38,7 @@ describe("auth-utils", () => {
       mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
       beforeEach(() =>
-        jest
+        vi
           .spyOn(AuthClient, "create")
           .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
       );

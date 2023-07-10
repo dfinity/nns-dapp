@@ -8,6 +8,7 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
+import {vi} from "vitest";
 
 describe("ledger-api", () => {
   describe("sendICP", () => {
@@ -26,7 +27,7 @@ describe("ledger-api", () => {
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
       vi.useFakeTimers().setSystemTime(now);
 
-      jest
+      vi
         .spyOn(LedgerCanister, "create")
         .mockImplementation((): LedgerCanister => ledgerMock);
 
@@ -115,7 +116,7 @@ describe("ledger-api", () => {
     ledgerMock.transactionFee.mockResolvedValue(fee);
 
     beforeEach(() => {
-      jest
+      vi
         .spyOn(LedgerCanister, "create")
         .mockImplementation((): LedgerCanister => ledgerMock);
     });
@@ -133,7 +134,7 @@ describe("ledger-api", () => {
     ledgerMock.accountBalance.mockResolvedValue(balance);
 
     beforeEach(() => {
-      jest
+      vi
         .spyOn(LedgerCanister, "create")
         .mockImplementation((): LedgerCanister => ledgerMock);
     });

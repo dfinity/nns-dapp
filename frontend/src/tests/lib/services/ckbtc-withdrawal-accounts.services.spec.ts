@@ -13,6 +13,7 @@ import {
 } from "$tests/utils/mockable-constants.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import {vi} from "vitest";
 
 describe("ckbtc-withdrawal-accounts.services", () => {
   describe("loadCkBTCWithdrawalAccount", () => {
@@ -23,7 +24,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    const spyGetWithdrawalAccount = jest
+    const spyGetWithdrawalAccount = vi
       .spyOn(minterServices, "getWithdrawalAccount")
       .mockResolvedValue({
         owner: mockCkBTCWithdrawalIcrcAccount.owner,

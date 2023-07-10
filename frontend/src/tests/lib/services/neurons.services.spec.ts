@@ -81,10 +81,10 @@ vi.mock("$lib/services/accounts.services", () => {
   return {
     loadBalance: vi.fn(),
     transferICP: vi.fn().mockResolvedValue({ success: true }),
-    getAccountIdentityByPrincipal: jest
+    getAccountIdentityByPrincipal: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
-    getAccountIdentity: jest
+    getAccountIdentity: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
   };
@@ -101,7 +101,7 @@ const resetLedger = () =>
 
 vi.mock("$lib/proxy/ledger.services.proxy", () => {
   return {
-    getLedgerIdentityProxy: jest
+    getLedgerIdentityProxy: vi
       .fn()
       .mockImplementation(() => getLedgerIdentityImplementation()),
   };

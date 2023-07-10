@@ -10,6 +10,7 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {vi} from "vitest";
 
 vi.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);
@@ -20,7 +21,7 @@ const transferSpy = vi.fn().mockResolvedValue(BigInt(10));
 let metadataReturn = mockQueryTokenResponse;
 const setMetadataError = () => (metadataReturn = []);
 const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
-const metadataSpy = jest
+const metadataSpy = vi
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
 

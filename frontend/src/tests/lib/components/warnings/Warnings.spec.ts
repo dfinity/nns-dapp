@@ -12,6 +12,7 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import WarningsTest from "./WarningsTest.svelte";
+import {vi} from "vitest";
 
 let metricsCallback: MetricsCallback | undefined;
 
@@ -28,8 +29,9 @@ vi.mock("$lib/services/$public/worker-metrics.services", () => ({
   ),
 }));
 
-vi.mock("$lib/constants/environment.constants.ts", () => ({
-  ...vi.requireActual("$lib/constants/environment.constants.ts"),
+vi.mock("$lib/constants/environment.constants.ts", async () => ({
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  ...(await vi.importActual<any>("$lib/constants/environment.constants.ts")),
   IS_TEST_MAINNET: true,
 }));
 

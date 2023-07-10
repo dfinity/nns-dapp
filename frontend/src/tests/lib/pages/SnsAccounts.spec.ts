@@ -69,7 +69,7 @@ describe("SnsAccounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    jest
+    vi
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 

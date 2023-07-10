@@ -5,8 +5,8 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 import { vi } from "vitest";
 
-vi.mock("@dfinity/agent", () => {
-  const agent = vi.requireActual("@dfinity/agent");
+vi.mock("@dfinity/agent", async () => {
+  const agent = vi.importActual("@dfinity/agent");
   return {
     ...agent,
     HttpAgent: vi.fn().mockImplementation(() => {

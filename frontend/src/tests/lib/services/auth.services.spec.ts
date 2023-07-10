@@ -52,7 +52,7 @@ describe("auth-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
-      jest
+      vi
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient);
 
@@ -183,7 +183,7 @@ describe("auth-services", () => {
   });
 
   describe("getCurrentIdentity", () => {
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mutableMockAuthStoreSubscribe);
 

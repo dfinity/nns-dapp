@@ -20,6 +20,7 @@ import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-
 import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
+import {vi} from "vitest";
 
 vi.mock("$lib/api/governance.api");
 
@@ -32,7 +33,7 @@ describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
 
   beforeEach(() => {
-    jest
+    vi
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockResolvedValue(testIdentity);
     vi.clearAllMocks();

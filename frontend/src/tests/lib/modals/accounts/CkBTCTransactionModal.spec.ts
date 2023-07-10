@@ -34,6 +34,7 @@ import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
+import {vi} from "vitest";
 
 vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -60,7 +61,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
   beforeAll(() => {
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
@@ -87,7 +88,7 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest
+    vi
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
   });
@@ -110,7 +111,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "convertCkBTCToBtc")
       .mockResolvedValue({ success });
 
@@ -129,7 +130,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "retrieveBtc")
       .mockResolvedValue({ success });
 
@@ -173,7 +174,7 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
-    jest
+    vi
       .spyOn(services, "convertCkBTCToBtc")
       .mockResolvedValue({ success: true });
 

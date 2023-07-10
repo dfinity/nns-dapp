@@ -87,7 +87,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
-    jest
+    vi
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
@@ -102,7 +102,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       cf_neuron_count: [],
     });
 
-    jest
+    vi
       .spyOn(snsMetricsApi, "querySnsSwapMetrics")
       .mockResolvedValue(rawMetricsText);
   });
@@ -110,7 +110,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
@@ -314,7 +314,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
   describe("logged in user", () => {
     beforeEach(() => {
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
 
@@ -347,7 +347,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
         vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
-        jest
+        vi
           .spyOn(ledgerApi, "queryAccountBalance")
           .mockResolvedValue(BigInt(1_000_000_000));
       });
@@ -465,7 +465,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
-          jest
+          vi
             .spyOn(snsApi, "querySnsSwapCommitment")
             // Query call
             .mockResolvedValueOnce({
@@ -552,7 +552,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             },
           ],
         };
-        jest
+        vi
           .spyOn(snsApi, "querySnsSwapCommitment")
           .mockResolvedValueOnce({
             rootCanisterId: Principal.fromText(rootCanisterId),
@@ -699,7 +699,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
@@ -726,7 +726,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });

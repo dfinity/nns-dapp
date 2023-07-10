@@ -38,16 +38,16 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { vi } from "vitest";
+import {type SpyInstance, vi} from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/ledger.api");
 vi.mock("$lib/services/sns.services", () => {
   return {
-    initiateSnsSaleParticipation: jest
+    initiateSnsSaleParticipation: vi
       .fn()
       .mockResolvedValue({ success: true }),
-    getSwapAccount: jest
+    getSwapAccount: vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
@@ -68,7 +68,7 @@ describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
     vi.clearAllMocks();
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
     vi.mocked(initiateSnsSaleParticipation).mockClear();
@@ -212,13 +212,13 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are not available", () => {
     const mainBalanceE8s = BigInt(10_000_000);
-    let queryAccountSpy: vi.SpyInstance;
-    let queryAccountBalanceSpy: vi.SpyInstance;
+    let queryAccountSpy: SpyInstance;
+    let queryAccountBalanceSpy: SpyInstance;
     let resolveQueryAccounts;
 
     beforeEach(() => {
       accountsStore.resetForTesting();
-      queryAccountBalanceSpy = jest
+      queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       queryAccountSpy = vi.spyOn(nnsDappApi, "queryAccount").mockReturnValue(
@@ -248,7 +248,7 @@ describe("ParticipateSwapModal", () => {
       spy,
       params,
     }: {
-      spy: vi.SpyInstance;
+      spy: SpyInstance;
       params: object;
     }) => {
       expect(spy).toBeCalledWith({
@@ -281,17 +281,17 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: vi.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
       accountsStore.resetForTesting();
       vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
+      vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
       vi.spyOn(console, "error").mockImplementation(() => undefined);
