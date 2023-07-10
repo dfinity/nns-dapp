@@ -49,6 +49,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Test that no new change log entries are added to existing releases.
 - New feature flag "ENABLE_NEURON_SETTINGS".
 - Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
+- release-sop.test now has a flag to update golden files.
 
 #### Changed
 
