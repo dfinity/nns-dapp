@@ -48,6 +48,8 @@ describe("neurons-api", () => {
     mockGovernanceCanister.listKnownNeurons.mockImplementation(
       vi.fn().mockResolvedValue([])
     );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     mockGovernanceCanister.stakeNeuron.mockImplementation(vi.fn());
     mockGovernanceCanister.getNeuron.mockImplementation(
       vi.fn().mockResolvedValue(mockNeuron)

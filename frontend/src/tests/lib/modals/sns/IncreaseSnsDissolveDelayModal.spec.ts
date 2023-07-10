@@ -136,7 +136,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
+    await waitFor(() =>
+      expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1)
+    );
   });
 
   it("should be able to change dissolve delay in the confirmation screen using input", async () => {
@@ -180,7 +182,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
+    await waitFor(() =>
+      expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1)
+    );
     expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledWith(
       expect.objectContaining({
         additionalDissolveDelaySeconds: dissolveDelaySeconds,
