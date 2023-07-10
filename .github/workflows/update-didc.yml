@@ -31,15 +31,15 @@ jobs:
             echo "updated=0" >> "$GITHUB_OUTPUT"
           fi
 
-          cat ./.didc-release
-        # If the .didc-release was updated, create a PR.
+          jq '.defaults.build.config.DIDC_VERSION' dfx.json
+        # If dfx.json was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
-          add-paths: ./.didc-release
+          add-paths: dfx.json
           commit-message: Update didc release
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
