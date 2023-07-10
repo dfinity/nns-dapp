@@ -130,6 +130,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - A script to get the WASM hash from the GitHub CI build log.
 * Instructions to verify canister args in proposal.
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+* More test for the release-sop script.
 
 #### Changed
 
