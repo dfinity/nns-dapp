@@ -73,6 +73,8 @@ jobs:
         with:
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+          # Upgrade innstead of reinstall to keep the preloaded SNSes.
+          sns_aggregator_install_mode: 'upgrade'
       - name: Generate .env configuration for Playwright end-to-end tests
         run: |
           DFX_NETWORK=local ./config.sh
@@ -81,15 +83,6 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps firefox
-      - name: Wait for aggregator to get all SNSs
-        run: |
-          set +x
-          for (( try=300; try>0; try-- )); do
-             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
-             (( num_sns < 12)) || break
-             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
-          done
       - name: Run Playwright end-to-end tests
         working-directory: frontend
         run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e
