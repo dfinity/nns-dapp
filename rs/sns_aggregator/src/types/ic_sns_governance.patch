@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 9aabc2d6f..ee5bc0da0 100644
+index 9df6155f5..7a0945758 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -516,7 +516,7 @@ pub struct GetMaturityModulationResponse {
