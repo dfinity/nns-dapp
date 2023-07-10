@@ -15,6 +15,7 @@ jobs:
       - name: Check new didc version
         id: update
         run: |
+          pwd
           current_didc_release=$(jq -r '.defaults.build.config.DIDC_VERSION' dfx.json)
           echo "current didc release '$current_didc_release'"
 
