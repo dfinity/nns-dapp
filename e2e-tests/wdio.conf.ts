@@ -47,7 +47,7 @@ function capabilitiesFromEnv(): Capabilities.RemoteCapabilities {
 }
 
 export const config: WebdriverIO.Config = {
-  baseUrl: env.WDIO_BASE_URL,
+  baseUrl: process.env.WDIO_BASE_URL,
 
   before: (_capabilities, _spec) => {
     browser["screenshot-prefix"] = "before"; // Suite name
