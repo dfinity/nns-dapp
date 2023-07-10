@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 1c4dd45ec..e504fb85b 100644
+index 9aabc2d6f..ee5bc0da0 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -515,7 +515,7 @@ pub struct GetMaturityModulationResponse {
+@@ -516,7 +516,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_metadata_arg0 {}
  
@@ -11,7 +11,7 @@ index 1c4dd45ec..e504fb85b 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -609,7 +609,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -610,7 +610,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  

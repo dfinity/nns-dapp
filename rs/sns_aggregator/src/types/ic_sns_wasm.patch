@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index 67020291f..7d2ba7415 100644
+index 5aaf0f993..fb10071be 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-@@ -208,7 +208,7 @@ pub struct InsertUpgradePathEntriesResponse {
+@@ -209,7 +209,7 @@ pub struct InsertUpgradePathEntriesResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_deployed_snses_arg0 {}
  
