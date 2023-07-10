@@ -5,6 +5,7 @@ on:
   schedule:
     # check for new rust versions weekly
     - cron: '30 3 * * FRI'
+  workflow_dispatch:
 jobs:
   rust-update:
     runs-on: ubuntu-latest

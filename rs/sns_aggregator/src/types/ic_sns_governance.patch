@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 582c902e6..e71ccd0a4 100644
+index 4dd5e7018..e71ccd0a4 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -3,12 +3,12 @@
@@ -18,59 +18,6 @@ index 582c902e6..e71ccd0a4 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GenericNervousSystemFunction {
-@@ -20,7 +20,7 @@ pub struct GenericNervousSystemFunction {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum FunctionType {
--    NativeNervousSystemFunction {},
-+    NativeNervousSystemFunction(EmptyRecord),
-     GenericNervousSystemFunction(GenericNervousSystemFunction),
- }
- 
-@@ -220,12 +220,12 @@ pub enum Action {
-     ManageNervousSystemParameters(NervousSystemParameters),
-     AddGenericNervousSystemFunction(NervousSystemFunction),
-     RemoveGenericNervousSystemFunction(u64),
--    UpgradeSnsToNextVersion {},
-+    UpgradeSnsToNextVersion(EmptyRecord),
-     RegisterDappCanisters(RegisterDappCanisters),
-     TransferSnsTreasuryFunds(TransferSnsTreasuryFunds),
-     UpgradeSnsControlledCanister(UpgradeSnsControlledCanister),
-     DeregisterDappCanisters(DeregisterDappCanisters),
--    Unspecified {},
-+    Unspecified(EmptyRecord),
-     ManageSnsMetadata(ManageSnsMetadata),
-     ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
-     Motion(Motion),
-@@ -309,8 +309,8 @@ pub struct SetDissolveTimestamp {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum Operation {
-     ChangeAutoStakeMaturity(ChangeAutoStakeMaturity),
--    StopDissolving {},
--    StartDissolving {},
-+    StopDissolving(EmptyRecord),
-+    StartDissolving(EmptyRecord),
-     IncreaseDissolveDelay(IncreaseDissolveDelay),
-     SetDissolveTimestamp(SetDissolveTimestamp),
- }
-@@ -341,7 +341,7 @@ pub struct MemoAndController {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum By {
-     MemoAndController(MemoAndController),
--    NeuronId {},
-+    NeuronId(EmptyRecord),
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -384,7 +384,7 @@ pub enum Command_2 {
-     DisburseMaturity(DisburseMaturity),
-     Configure(Configure),
-     RegisterVote(RegisterVote),
--    SyncCommand {},
-+    SyncCommand(EmptyRecord),
-     MakeProposal(Proposal),
-     FinalizeDisburseMaturity(FinalizeDisburseMaturity),
-     ClaimOrRefreshNeuron(ClaimOrRefresh),
 @@ -515,7 +515,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_metadata_arg0 {}
@@ -89,27 +36,7 @@ index 582c902e6..e71ccd0a4 100644
  pub struct ListNervousSystemFunctionsResponse {
      pub reserved_ids: Vec<u64>,
      pub functions: Vec<NervousSystemFunction>,
-@@ -704,27 +704,27 @@ pub struct DisburseResponse {
- pub enum Command_1 {
-     Error(GovernanceError),
-     Split(SplitResponse),
--    Follow {},
-+    Follow(EmptyRecord),
-     DisburseMaturity(DisburseMaturityResponse),
-     ClaimOrRefresh(ClaimOrRefreshResponse),
--    Configure {},
--    RegisterVote {},
-+    Configure(EmptyRecord),
-+    RegisterVote(EmptyRecord),
-     MakeProposal(GetProposal),
--    RemoveNeuronPermission {},
-+    RemoveNeuronPermission(EmptyRecord),
-     StakeMaturity(StakeMaturityResponse),
-     MergeMaturity(MergeMaturityResponse),
-     Disburse(DisburseResponse),
--    AddNeuronPermission {},
-+    AddNeuronPermission(EmptyRecord),
- }
+@@ -719,12 +719,12 @@ pub enum Command_1 {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct ManageNeuronResponse {

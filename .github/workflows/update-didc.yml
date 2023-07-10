@@ -5,6 +5,7 @@ on:
   schedule:
     # check for new didc releases daily at 7:30
     - cron: '30 7 * * *'
+  workflow_dispatch:
 jobs:
   didc-update:
     runs-on: ubuntu-latest
