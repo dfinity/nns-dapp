@@ -37,6 +37,11 @@
   import Summary from "$lib/components/summary/Summary.svelte";
   import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { ENABLE_NEURON_SETTINGS } from "$lib/stores/feature-flags.store";
+  import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
+  import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
+  import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
+  import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -144,6 +149,12 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
+          {#if ENABLE_NEURON_SETTINGS}
+            <SnsNeuronPageHeader />
+            <SnsNeuronVotingPowerSection />
+            <SnsNeuronMaturitySection />
+            <SnsNeuronAdvancedSection />
+          {/if}
           <Summary />
 
           {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
