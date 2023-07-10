@@ -490,7 +490,7 @@ jobs:
           echo "Max supported size: $max_size"
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
