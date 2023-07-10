@@ -25,7 +25,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {
@@ -72,17 +72,15 @@ describe("SnsNeurons", () => {
       const neuron2 = createMockSnsNeuron({
         id: [1, 2, 4],
       });
-      vi
-        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
-        .mockImplementation(
-          buildMockSortedSnsNeuronsStoreSubscribe([neuron1, neuron2])
-        );
-      vi
-        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
-      vi
-        .spyOn(snsParametersStore, "subscribe")
-        .mockImplementation(buildMockSnsParametersStore());
+      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([neuron1, neuron2])
+      );
+      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
+      vi.spyOn(snsParametersStore, "subscribe").mockImplementation(
+        buildMockSnsParametersStore()
+      );
     });
 
     afterEach(() => vi.clearAllMocks());
@@ -122,12 +120,12 @@ describe("SnsNeurons", () => {
         }),
         source_nns_neuron_id: [BigInt(123)],
       };
-      vi
-        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron1]));
-      vi
-        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
+      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([neuron1])
+      );
+      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([neuron2])
+      );
     });
 
     afterEach(() => vi.clearAllMocks());
@@ -178,12 +176,12 @@ describe("SnsNeurons", () => {
         }),
         source_nns_neuron_id: [BigInt(123)],
       };
-      vi
-        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
-      vi
-        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([neuron2]));
+      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
+      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([neuron2])
+      );
     });
 
     afterEach(() => vi.clearAllMocks());
@@ -206,17 +204,17 @@ describe("SnsNeurons", () => {
   });
 
   describe("no neurons", () => {
-    vi
-      .spyOn(snsProjectSelectedStore, "subscribe")
-      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+      mockStoreSubscribe(mockSnsFullProject)
+    );
 
     beforeAll(() => {
-      vi
-        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
-      vi
-        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
+      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
     });
 
     afterAll(() => vi.clearAllMocks());

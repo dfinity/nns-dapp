@@ -61,9 +61,9 @@ describe("CkBTCAccounts", () => {
   };
 
   beforeAll(() => {
-    vi
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
     page.mock({
       data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

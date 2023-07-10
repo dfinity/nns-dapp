@@ -69,9 +69,9 @@ describe("SnsAccounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    vi
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
     snsQueryStore.reset();
     snsQueryStore.setData(

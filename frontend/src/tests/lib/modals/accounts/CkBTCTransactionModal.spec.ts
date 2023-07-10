@@ -34,7 +34,7 @@ import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
@@ -61,9 +61,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
   beforeAll(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icrcAccountsStore.set({
       accounts: {
@@ -88,9 +86,10 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    vi
-      .spyOn(minterApi, "estimateFee")
-      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
+    vi.spyOn(minterApi, "estimateFee").mockResolvedValue({
+      minter_fee: 123n,
+      bitcoin_fee: 456n,
+    });
   });
 
   it("should transfer tokens", async () => {
@@ -174,9 +173,9 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
-    vi
-      .spyOn(services, "convertCkBTCToBtc")
-      .mockResolvedValue({ success: true });
+    vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+      success: true,
+    });
 
     const result = await renderTransactionModal();
 

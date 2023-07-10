@@ -41,11 +41,9 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("CreateCanisterModal", () => {
-  vi
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(accountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();

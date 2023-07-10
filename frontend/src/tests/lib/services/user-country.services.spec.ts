@@ -24,9 +24,9 @@ describe("location services", () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
       const countryCode = "CH";
-      vi
-        .spyOn(locationApi, "queryUserCountryLocation")
-        .mockResolvedValue(countryCode);
+      vi.spyOn(locationApi, "queryUserCountryLocation").mockResolvedValue(
+        countryCode
+      );
 
       await loadUserCountry();
 
@@ -36,9 +36,9 @@ describe("location services", () => {
     it("should set the location store to error if api fails", async () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
-      vi
-        .spyOn(locationApi, "queryUserCountryLocation")
-        .mockRejectedValue(new Error("test"));
+      vi.spyOn(locationApi, "queryUserCountryLocation").mockRejectedValue(
+        new Error("test")
+      );
 
       await loadUserCountry();
 

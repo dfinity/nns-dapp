@@ -13,7 +13,7 @@ import {
 } from "$tests/utils/mockable-constants.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import {vi} from "vitest";
+import { vi } from "vitest";
 
 describe("ckbtc-withdrawal-accounts.services", () => {
   describe("loadCkBTCWithdrawalAccount", () => {

@@ -29,8 +29,8 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
-import {vi} from "vitest";
 
 vi.mock("$lib/api/ckbtc-minter.api");
 
@@ -252,9 +252,9 @@ describe("BtcCkBTCReceiveModal", () => {
 
   describe("without btc", () => {
     beforeAll(() => {
-      vi
-        .spyOn(tokensStore, "subscribe")
-        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe(mockUniversesTokens)
+      );
 
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

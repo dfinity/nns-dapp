@@ -141,9 +141,9 @@ describe("CkBTCWallet", () => {
 
       vi.useFakeTimers().setSystemTime(new Date());
 
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
       icrcAccountsStore.set({
         accounts: {

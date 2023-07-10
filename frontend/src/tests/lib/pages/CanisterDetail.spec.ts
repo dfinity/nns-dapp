@@ -36,9 +36,9 @@ describe("CanisterDetail", () => {
 
   describe("canister without name", () => {
     beforeEach(() => {
-      vi
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
       vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
@@ -80,9 +80,9 @@ describe("CanisterDetail", () => {
     const canisterName = "canister name";
 
     beforeEach(() => {
-      vi
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
       vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
@@ -114,9 +114,9 @@ describe("CanisterDetail", () => {
 
   describe("if user is not the controller", () => {
     beforeEach(() => {
-      vi
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockRejectedValue(new UserNotTheControllerError());
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockRejectedValue(
+        new UserNotTheControllerError()
+      );
       vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
@@ -150,11 +150,10 @@ describe("CanisterDetail", () => {
       name: newName,
     };
     beforeEach(() => {
-      vi
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
-      vi
-        .spyOn(canisterApi, "queryCanisters")
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
+      vi.spyOn(canisterApi, "queryCanisters")
         .mockResolvedValueOnce([canisterOldName])
         .mockResolvedValueOnce([canisterOldName])
         .mockResolvedValueOnce([canisterNewName])

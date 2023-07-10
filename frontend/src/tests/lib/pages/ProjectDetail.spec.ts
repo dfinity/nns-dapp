@@ -87,9 +87,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
-    vi
-      .spyOn(nnsDappApi, "queryAccount")
-      .mockResolvedValue(mockAccountDetails);
+    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
     fakeLocationApi.setCountryCode(userCountryCode);
@@ -102,17 +100,17 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       cf_neuron_count: [],
     });
 
-    vi
-      .spyOn(snsMetricsApi, "querySnsSwapMetrics")
-      .mockResolvedValue(rawMetricsText);
+    vi.spyOn(snsMetricsApi, "querySnsSwapMetrics").mockResolvedValue(
+      rawMetricsText
+    );
   });
 
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
@@ -314,9 +312,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
   describe("logged in user", () => {
     beforeEach(() => {
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
       vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
@@ -347,9 +345,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
         vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
-        vi
-          .spyOn(ledgerApi, "queryAccountBalance")
-          .mockResolvedValue(BigInt(1_000_000_000));
+        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+          BigInt(1_000_000_000)
+        );
       });
 
       it("should show user's commitment", async () => {
@@ -465,8 +463,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
-          vi
-            .spyOn(snsApi, "querySnsSwapCommitment")
+          vi.spyOn(snsApi, "querySnsSwapCommitment")
             // Query call
             .mockResolvedValueOnce({
               rootCanisterId: Principal.fromText(rootCanisterId),
@@ -552,8 +549,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             },
           ],
         };
-        vi
-          .spyOn(snsApi, "querySnsSwapCommitment")
+        vi.spyOn(snsApi, "querySnsSwapCommitment")
           .mockResolvedValueOnce({
             rootCanisterId: Principal.fromText(rootCanisterId),
             myCommitment: initialCommitment,
@@ -699,9 +695,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {
@@ -726,9 +722,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {
