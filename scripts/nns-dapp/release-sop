@@ -316,6 +316,7 @@ post_on_slack() {
     echo ":rocket: *New RC ${BRANCH_NAME}* : $STAGING_URL"
     echo "Commit: $COMMIT"
     echo "WASM hash: $WASM_HASH"
+    echo "Change log: https://github.com/dfinity/nns-dapp/blob/release-candidate/CHANGELOG-Nns-Dapp.md"
     echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$STAGING_URL)"
     echo "Please try it out."
     echo
