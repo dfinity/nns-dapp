@@ -3,18 +3,19 @@ import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
 
-jest.mock("@dfinity/agent", () => {
-  const agent = jest.requireActual("@dfinity/agent");
+vi.mock("@dfinity/agent", () => {
+  const agent = vi.requireActual("@dfinity/agent");
   return {
     ...agent,
-    HttpAgent: jest.fn().mockImplementation(() => {
+    HttpAgent: vi.fn().mockImplementation(() => {
       return {};
     }),
   };
 });
 
-jest.mock("$lib/constants/canister-ids.constants");
+vi.mock("$lib/constants/canister-ids.constants");
 
 describe("tvl worker-api", () => {
   const tvlCanisterMock = mock<TVLCanister>();
@@ -30,8 +31,8 @@ describe("tvl worker-api", () => {
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    jest.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
+    vi.clearAllMocks();
+    vi.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
   });
 
   describe("with tvl canister id set", () => {

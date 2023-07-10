@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { TVL_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as tvlApi from "$lib/worker-api/tvl.worker-api";
 import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("tvl services", () => {
   const params = {
@@ -16,7 +13,7 @@ describe("tvl services", () => {
   };
 
   beforeEach(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
+    vi.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   const result = {
@@ -41,7 +38,7 @@ describe("tvl services", () => {
   });
 
   it("should not bubble error but return undefined", async () => {
-    jest.spyOn(tvlApi, "queryTVL").mockImplementation(async () => {
+    vi.spyOn(tvlApi, "queryTVL").mockImplementation(async () => {
       throw new Error("test");
     });
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -51,7 +47,7 @@ describe("CkBTCWalletTransactionsObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
+    vi.mock("$lib/workers/transactions.worker?worker", () => {
       return class TransactionsWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));

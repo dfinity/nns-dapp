@@ -5,10 +5,10 @@ import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
     afterEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
     it("should fetch json once if less than 10 SNSes", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       const [_first, ...nineSnses] = tenAggregatedSnses;
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
@@ -25,7 +25,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should fetch next page if there are 10 SNSes", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch
         .mockReturnValueOnce(
           Promise.resolve({
@@ -51,7 +51,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should convert response", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch.mockReturnValue(
         Promise.resolve({
           ok: true,

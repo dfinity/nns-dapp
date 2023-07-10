@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -100,7 +96,7 @@ describe("SnsVotingCard", () => {
   const spyRegisterVote = jest
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
-  const spyOnReloadProposal = jest.fn();
+  const spyOnReloadProposal = vi.fn();
   const renderVotingCard = (proposal = testProposal) =>
     render(SnsVotingCard, {
       props: {

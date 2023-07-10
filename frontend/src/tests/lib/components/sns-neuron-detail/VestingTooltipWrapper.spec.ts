@@ -1,11 +1,7 @@
-/**
- * @jest-environment jsdom
- */
-
 import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTooltipWrapper.svelte";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { VestingTooltipWrapperPo } from "$tests/page-objects/VestingTooltipWrapper.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -26,7 +22,9 @@ describe("VestingTooltipWrapper", () => {
       },
     });
 
-    return VestingTooltipWrapperPo.under(new JestPageObjectElement(container));
+    return VestingTooltipWrapperPo.under(
+      new VitestPageObjectElement(container)
+    );
   };
 
   it("should not render tooltip if neuron is not vesting", async () => {

@@ -5,8 +5,9 @@ import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
 import { mock } from "jest-mock-extended";
+import { vi } from "vitest";
 
-jest.mock("@dfinity/agent");
+vi.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -24,7 +25,7 @@ describe("canisters-worker-api", () => {
   };
 
   beforeEach(async () => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     const mockICManagementCanister = mock<ICManagementCanister>();
     jest

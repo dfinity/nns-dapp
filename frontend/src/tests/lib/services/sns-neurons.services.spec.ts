@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -63,22 +59,22 @@ const {
   addFollowee,
 } = services;
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
+    toastsError: vi.fn(),
   };
 });
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    loadSnsAccounts: jest.fn(),
+    loadSnsAccounts: vi.fn(),
   };
 });
 
 describe("sns-neurons-services", () => {
   describe("syncSnsNeurons", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       snsNeuronsStore.reset();
 
       snsParametersStore.reset();
@@ -255,7 +251,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should empty store if update call fails", async () => {
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
 
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
@@ -277,9 +273,9 @@ describe("sns-neurons-services", () => {
 
   describe("loadNeurons", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       snsNeuronsStore.reset();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should call api.querySnsNeurons and load neurons in store", async () => {
@@ -306,9 +302,9 @@ describe("sns-neurons-services", () => {
 
   describe("getSnsNeuron", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       snsNeuronsStore.reset();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", (done) => {
       const subaccount: Uint8Array = neuronSubaccount({
@@ -473,7 +469,7 @@ describe("sns-neurons-services", () => {
       const spyQuery = jest
         .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.reject());
-      const onLoad = jest.fn();
+      const onLoad = vi.fn();
       const onError = ({ certified }: { certified: boolean }) => {
         expect(spyQuery).toBeCalled();
         expect(onLoad).not.toBeCalled();
@@ -663,7 +659,7 @@ describe("sns-neurons-services", () => {
   describe("stakeNeuron", () => {
     afterEach(() => {
       transactionsFeesStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
@@ -784,7 +780,7 @@ describe("sns-neurons-services", () => {
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call sns api setFollowees with new followee when topic already has followees", async () => {
       const queryNeuronSpy = jest
@@ -877,7 +873,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when new followee does not exist", async () => {
-      jest.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(undefined);
+      vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(undefined);
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
         rootCanisterId,
@@ -905,7 +901,7 @@ describe("sns-neurons-services", () => {
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should call sns api setFollowees with followee removed from list", async () => {
       const neuron: SnsNeuron = {
@@ -1077,8 +1073,8 @@ describe("sns-neurons-services", () => {
 
   describe("splitNeuron", () => {
     const transactionFee = 100n;
-    let snsNeuronsStoreSpy: jest.SpyInstance;
-    let snsTokenSymbolSelectedStoreSpy: jest.SpyInstance;
+    let snsNeuronsStoreSpy: vi.SpyInstance;
+    let snsTokenSymbolSelectedStoreSpy: vi.SpyInstance;
 
     beforeEach(() => {
       snsNeuronsStoreSpy = jest

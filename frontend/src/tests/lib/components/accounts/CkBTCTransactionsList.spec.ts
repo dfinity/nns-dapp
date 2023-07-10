@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-transactions.services";
@@ -20,15 +16,15 @@ import {
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -52,14 +48,14 @@ describe("CkBTCTransactionList", () => {
     });
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers().setSystemTime(new Date());
+    vi.clearAllMocks();
+    vi.useFakeTimers().setSystemTime(new Date());
   });
 
-  afterAll(() => jest.useRealTimers());
+  afterAll(() => vi.useRealTimers());
 
   it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadCkBTCAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
 
     renderCkBTCTransactionList();
 
@@ -67,8 +63,8 @@ describe("CkBTCTransactionList", () => {
   });
 
   it("should call service to load transactions on imperative function call", async () => {
-    const spy = jest.spyOn(services, "loadCkBTCAccountNextTransactions");
-    const spyReload = jest.spyOn(services, "loadCkBTCAccountTransactions");
+    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
+    const spyReload = vi.spyOn(services, "loadCkBTCAccountTransactions");
 
     const { component } = render(CkBTCTransactionsList, {
       props: {

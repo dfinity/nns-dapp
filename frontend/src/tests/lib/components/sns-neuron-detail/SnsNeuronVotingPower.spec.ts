@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronVotingPower from "$lib/components/sns-neuron-detail/SnsNeuronVotingPower.svelte";
 import {
   createMockSnsNeuron,
@@ -9,7 +5,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronVotingPowerPo } from "$tests/page-objects/SnsNeuronVotingPower.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -37,7 +33,7 @@ describe("SnsNeuronVotingPower", () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   const renderComponent = (neuron: SnsNeuron) => {
@@ -49,7 +45,7 @@ describe("SnsNeuronVotingPower", () => {
       },
     });
 
-    return SnsNeuronVotingPowerPo.under(new JestPageObjectElement(container));
+    return SnsNeuronVotingPowerPo.under(new VitestPageObjectElement(container));
   };
 
   it("renders neuron voting power", async () => {

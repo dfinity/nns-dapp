@@ -475,7 +475,7 @@ describe("neurons-api", () => {
   describe("simulate merge neurons", () => {
     it("simulates merging neurons successfully", async () => {
       mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await simulateMergeNeurons({
@@ -490,7 +490,7 @@ describe("neurons-api", () => {
     it("throws error when simulating merging fails", async () => {
       const error = new Error();
       mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -35,17 +31,18 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/nns";
 import { writable } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/services/sns.services", () => {
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/services/sns.services", () => {
   return {
     initiateSnsSaleParticipation: jest
       .fn()
@@ -58,8 +55,8 @@ jest.mock("$lib/services/sns.services", () => {
   };
 });
 
-jest.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
+vi.mock("$lib/services/sns-sale.services", () => ({
+  initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
 }));
 
 type SwapModalParams = {
@@ -70,16 +67,16 @@ type SwapModalParams = {
 describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
-    jest.mocked(initiateSnsSaleParticipation).mockClear();
+    vi.mocked(initiateSnsSaleParticipation).mockClear();
     accountsStore.resetForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
   });
 
-  const reload = jest.fn();
+  const reload = vi.fn();
   const renderSwapModal = ({
     swapCommitment,
     confirmationText,
@@ -98,7 +95,7 @@ describe("ParticipateSwapModal", () => {
 
   const renderSwapModalPo = async (params: SwapModalParams = {}) => {
     const { container } = await renderSwapModal(params);
-    return new ParticipateSwapModalPo(new JestPageObjectElement(container));
+    return new ParticipateSwapModalPo(new VitestPageObjectElement(container));
   };
 
   const renderEnter10ICPAndNext = async (
@@ -215,8 +212,8 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are not available", () => {
     const mainBalanceE8s = BigInt(10_000_000);
-    let queryAccountSpy: jest.SpyInstance;
-    let queryAccountBalanceSpy: jest.SpyInstance;
+    let queryAccountSpy: vi.SpyInstance;
+    let queryAccountBalanceSpy: vi.SpyInstance;
     let resolveQueryAccounts;
 
     beforeEach(() => {
@@ -224,7 +221,7 @@ describe("ParticipateSwapModal", () => {
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      queryAccountSpy = jest.spyOn(nnsDappApi, "queryAccount").mockReturnValue(
+      queryAccountSpy = vi.spyOn(nnsDappApi, "queryAccount").mockReturnValue(
         new Promise((resolve) => {
           resolveQueryAccounts = resolve;
         })
@@ -251,7 +248,7 @@ describe("ParticipateSwapModal", () => {
       spy,
       params,
     }: {
-      spy: jest.SpyInstance;
+      spy: vi.SpyInstance;
       params: object;
     }) => {
       expect(spy).toBeCalledWith({
@@ -284,12 +281,12 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: vi.SpyInstance;
     beforeEach(() => {
       accountsStore.resetForTesting();
-      jest.clearAllTimers();
+      vi.clearAllTimers();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -297,7 +294,7 @@ describe("ParticipateSwapModal", () => {
       spyQueryAccount = jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

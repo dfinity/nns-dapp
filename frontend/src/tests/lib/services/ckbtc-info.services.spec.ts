@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
@@ -14,10 +10,11 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     ckBTCInfoStore.reset();
   });
 
@@ -93,7 +90,7 @@ describe("ckbtc-info-services", () => {
       });
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => vi.clearAllMocks());
 
     it("should not reload info if already loaded", async () => {
       const spyGetMinterInfo = jest

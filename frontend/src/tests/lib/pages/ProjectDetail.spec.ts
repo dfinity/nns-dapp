@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
@@ -38,7 +34,7 @@ import {
 } from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -48,13 +44,14 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-swap-metrics.api");
-jest.mock("$lib/api/sns-sale.api");
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-swap-metrics.api");
+vi.mock("$lib/api/sns-sale.api");
+vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/location.api");
 
 const blockedApiPaths = [
   "$lib/api/sns.api",
@@ -78,26 +75,26 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 # HELP sale_cf_participants_count`;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsQueryStore.reset();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
-    jest.clearAllTimers();
+    vi.clearAllTimers();
     const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
 
-    jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
+    vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
     jest
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
-    jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
     fakeLocationApi.setCountryCode(userCountryCode);
 
-    jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
+    vi.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
       buyer_total_icp_e8s: [BigInt(200_000_000)],
       cf_participant_count: [],
@@ -321,8 +318,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
 
-      jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-      jest.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
+      vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+      vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
         decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
         lifecycle: [SnsSwapLifecycle.Open],
       });
@@ -345,11 +342,11 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
       beforeEach(() => {
         snsQueryStore.setData(responses);
-        jest.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
+        vi.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
         jest
           .spyOn(ledgerApi, "queryAccountBalance")
           .mockResolvedValue(BigInt(1_000_000_000));
@@ -357,7 +354,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       it("should show user's commitment", async () => {
         const userCommitment = BigInt(100_000_000);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),
           myCommitment: {
             icp: [
@@ -386,8 +383,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       describe("no open ticket and no commitment", () => {
         beforeEach(() => {
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
             rootCanisterId: Principal.fromText(rootCanisterId),
             myCommitment: undefined,
           } as SnsSwapCommitment);
@@ -398,7 +395,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           await runResolvedPromises();
 
-          return ProjectDetailPo.under(new JestPageObjectElement(container));
+          return ProjectDetailPo.under(new VitestPageObjectElement(container));
         };
 
         it("should enable button without loading user's country if no deny list", async () => {
@@ -463,8 +460,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             subAccounts: [],
             hardwareWallets: [],
           });
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
@@ -492,7 +489,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           await runResolvedPromises();
 
           const projectDetail = ProjectDetailPo.under(
-            new JestPageObjectElement(container)
+            new VitestPageObjectElement(container)
           );
 
           await waitFor(async () =>
@@ -528,7 +525,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("when restricted countries and getting location fails", async () => {
-          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          vi.spyOn(console, "error").mockImplementation(() => undefined);
           fakeLocationApi.setCountryCode(
             new Error("Failed to get user location")
           );
@@ -565,7 +562,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             rootCanisterId: Principal.fromText(rootCanisterId),
             myCommitment: finalCommitment,
           } as SnsSwapCommitment);
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
         const { getByTestId, queryByTestId } = render(ProjectDetail, props);
 
@@ -600,7 +597,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       };
       beforeEach(() => {
         snsQueryStore.setData(response);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [],
@@ -635,7 +632,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       const userCommitment = BigInt(100_000_000);
       beforeEach(() => {
         snsQueryStore.setData(responses);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),
           myCommitment: {
             icp: [

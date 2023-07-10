@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {

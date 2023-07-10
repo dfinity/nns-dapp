@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -24,6 +20,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SnsBalancesObserver", () => {
   type BalancesMessageEvent = MessageEvent<
@@ -33,7 +30,7 @@ describe("SnsBalancesObserver", () => {
   let postMessageMock: PostMessageMock<BalancesMessageEvent>;
 
   beforeEach(() => {
-    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
         {
           ...mockSnsFullProject,
@@ -56,7 +53,7 @@ describe("SnsBalancesObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
+    vi.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));

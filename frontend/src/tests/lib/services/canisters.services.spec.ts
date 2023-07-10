@@ -33,8 +33,8 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/api/canisters.api");
+vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/canisters.api");
 const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
 
 describe("canisters-services", () => {
@@ -42,20 +42,20 @@ describe("canisters-services", () => {
 
   const newBalanceE8s = BigInt(100_000_000);
   const exchangeRate = BigInt(10_000);
-  let spyQueryCanisters: jest.SpyInstance;
-  let spyQueryAccountBalance: jest.SpyInstance;
-  let spyAttachCanister: jest.SpyInstance;
-  let spyRenameCanister: jest.SpyInstance;
-  let spyDetachCanister: jest.SpyInstance;
-  let spyUpdateSettings: jest.SpyInstance;
-  let spyCreateCanister: jest.SpyInstance;
-  let spyTopUpCanister: jest.SpyInstance;
-  let spyQueryCanisterDetails: jest.SpyInstance;
-  let spyGetExchangeRate: jest.SpyInstance;
+  let spyQueryCanisters: vi.SpyInstance;
+  let spyQueryAccountBalance: vi.SpyInstance;
+  let spyAttachCanister: vi.SpyInstance;
+  let spyRenameCanister: vi.SpyInstance;
+  let spyDetachCanister: vi.SpyInstance;
+  let spyUpdateSettings: vi.SpyInstance;
+  let spyCreateCanister: vi.SpyInstance;
+  let spyTopUpCanister: vi.SpyInstance;
+  let spyQueryCanisterDetails: vi.SpyInstance;
+  let spyGetExchangeRate: vi.SpyInstance;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });

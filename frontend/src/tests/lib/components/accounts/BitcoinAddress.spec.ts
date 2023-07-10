@@ -31,7 +31,7 @@ describe("BitcoinAddress", () => {
     account: mockCkBTCMainAccount,
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-    reload: jest.fn(),
+    reload: vi.fn(),
   };
 
   beforeEach(() => {

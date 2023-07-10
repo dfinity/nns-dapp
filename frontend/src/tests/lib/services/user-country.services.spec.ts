@@ -4,15 +4,16 @@ import { loadUserCountry } from "$lib/services/user-country.services";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/location.api");
 
 describe("location services", () => {
   blockAllCallsTo(["$lib/api/location.api"]);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   describe("loadUserLocation", () => {

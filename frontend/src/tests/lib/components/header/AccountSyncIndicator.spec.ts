@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { syncStore } from "$lib/stores/sync.store";

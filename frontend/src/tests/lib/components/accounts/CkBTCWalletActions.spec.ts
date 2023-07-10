@@ -27,8 +27,8 @@ describe("CkBTCWalletActions", () => {
     });
   });
 
-  beforeEach(() => jest.useFakeTimers().setSystemTime(now));
-  afterEach(jest.clearAllTimers);
+  beforeEach(() => vi.useFakeTimers().setSystemTime(now));
+  afterEach(vi.clearAllTimers);
 
   const props = {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,

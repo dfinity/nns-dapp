@@ -53,26 +53,26 @@ vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   };
 });
 
-jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
   return {
-    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-info.services", () => {
+vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
-    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -84,8 +84,8 @@ jest.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing

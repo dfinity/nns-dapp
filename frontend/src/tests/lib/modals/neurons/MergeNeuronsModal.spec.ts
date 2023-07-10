@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import { mergeNeurons, simulateMergeNeurons } from "$lib/api/governance.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -21,11 +17,11 @@ import { createMockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 const testIdentity = createMockIdentity(37373);
 
@@ -39,7 +35,7 @@ describe("MergeNeuronsModal", () => {
     jest
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockResolvedValue(testIdentity);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     accountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
@@ -80,7 +76,7 @@ describe("MergeNeuronsModal", () => {
     const { container } = await renderModal({
       component: MergeNeuronsModal,
     });
-    return MergeNeuronsModalPo.under(new JestPageObjectElement(container));
+    return MergeNeuronsModalPo.under(new VitestPageObjectElement(container));
   };
 
   describe("when mergeable neurons by user", () => {

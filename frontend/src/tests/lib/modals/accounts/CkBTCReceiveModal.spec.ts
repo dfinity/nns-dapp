@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -35,13 +31,13 @@ import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/api/ckbtc-minter.api");
+vi.mock("$lib/api/ckbtc-minter.api");
 
 describe("BtcCkBTCReceiveModal", () => {
-  const reloadSpy = jest.fn();
+  const reloadSpy = vi.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const renderReceiveModal = ({
@@ -91,7 +87,7 @@ describe("BtcCkBTCReceiveModal", () => {
       beforeEach(() => {
         bitcoinAddressStore.reset();
 
-        jest.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
+        vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(undefined);
       });
 
       it("should render spinner while loading BTC address", async () => {

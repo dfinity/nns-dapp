@@ -4,12 +4,13 @@ import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
 
 describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     jest
       .spyOn(IcrcLedgerCanister, "create")

@@ -3,14 +3,15 @@ import { initBalancesWorker } from "$lib/services/worker-balances.services";
 import type { PostMessageDataRequestBalances } from "$lib/types/post-message.balances";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { vi } from "vitest";
 
 describe("initBalancesWorker", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
+    vi.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         postMessage(data: {
           msg: "nnsStartBalancesTimer";
@@ -25,7 +26,7 @@ describe("initBalancesWorker", () => {
   it("should start worker with params", async () => {
     const worker = await initBalancesWorker();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       ledgerCanisterId: ledgerCanisterIdMock.toText(),

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
@@ -23,7 +19,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
@@ -43,7 +39,7 @@ describe("SnsNeuronMetaInfoCard", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   const renderSnsNeuronCmp = (
@@ -63,7 +59,7 @@ describe("SnsNeuronMetaInfoCard", () => {
           },
         ],
       },
-      reload: jest.fn(),
+      reload: vi.fn(),
       props: {
         parameters,
         token: mockToken as Token,
@@ -119,7 +115,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     );
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
 
     expect(await po.getSplitButtonPo().isDisabled()).toBe(true);
@@ -136,7 +132,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithPositiveAge);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -166,7 +162,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuron, snsParameters);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -182,7 +178,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithPositiveAge);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
 
     expect(await po.getNeuronAge()).toBe("30 days, 10 hours");
@@ -197,7 +193,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithAge0);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
 
     expect(await po.hasNeuronAge()).toBe(false);

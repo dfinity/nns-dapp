@@ -8,12 +8,13 @@ import {
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 import mock from "jest-mock-extended/lib/Mock";
+import { vi } from "vitest";
 
 describe("balances.worker-services", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     jest
       .spyOn(IcrcLedgerCanister, "create")

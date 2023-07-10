@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -19,6 +15,7 @@ import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("CkBTCBalancesObserver", () => {
   type BalancesMessageEvent = MessageEvent<
@@ -41,7 +38,7 @@ describe("CkBTCBalancesObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
+    vi.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
@@ -130,7 +127,7 @@ describe("CkBTCBalancesObserver", () => {
   });
 
   it("should reload on new sync message", async () => {
-    const spyReload = jest.fn();
+    const spyReload = vi.fn();
     const { getByTestId } = render(CkBTCBalancesObserverTest, {
       props: {
         reload: spyReload,

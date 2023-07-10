@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -28,6 +24,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { vi } from "vitest";
 
 describe("SnsWalletTransactionsObserver", () => {
   type TransactionsMessageEvent = MessageEvent<
@@ -47,7 +44,7 @@ describe("SnsWalletTransactionsObserver", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
         {
           ...mockSnsFullProject,
@@ -65,7 +62,7 @@ describe("SnsWalletTransactionsObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
+    vi.mock("$lib/workers/transactions.worker?worker", () => {
       return class TransactionsWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));

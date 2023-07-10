@@ -29,8 +29,8 @@ import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-accounts.services");
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -67,7 +67,7 @@ describe("SnsAccounts", () => {
     nonNullish(container.querySelector(".value"));
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     jest
       .spyOn(tokensStore, "subscribe")
@@ -145,7 +145,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should init worker that sync the balance", async () => {
-      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsAccounts, { goToWallet });
 

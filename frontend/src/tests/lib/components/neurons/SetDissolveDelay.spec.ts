@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
 import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_HALF_YEAR,
 } from "$lib/constants/constants";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -32,7 +29,9 @@ describe("SetDissolveDelay", () => {
           minDissolveDelayDescription: "",
         },
       });
-      const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+      const po = SetDissolveDelayPo.under(
+        new VitestPageObjectElement(container)
+      );
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
       await po.clickMax();

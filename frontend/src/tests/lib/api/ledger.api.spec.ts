@@ -24,18 +24,18 @@ describe("ledger-api", () => {
     beforeAll(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
 
       jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation((): LedgerCanister => ledgerMock);
 
-      spyTransfer = jest.spyOn(ledgerMock, "transfer");
+      spyTransfer = vi.spyOn(ledgerMock, "transfer");
     });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.clearAllTimers();
+      vi.clearAllMocks();
+      vi.clearAllTimers();
     });
 
     it("should call ledger to send ICP", async () => {

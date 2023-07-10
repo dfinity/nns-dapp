@@ -15,7 +15,7 @@ describe("transactions.worker-services", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     jest
       .spyOn(IcrcIndexCanister, "create")

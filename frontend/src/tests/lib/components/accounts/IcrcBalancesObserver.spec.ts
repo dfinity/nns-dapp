@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type { BalancesObserverData } from "$lib/types/icrc.observer";
@@ -14,9 +10,9 @@ describe("IcrcBalancesObserver", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
+    vi.mock("$lib/workers/balances.worker?worker", () => {
       return class BalancesWorker {
         postMessage(data: {
           msg: "nnsStartBalancesTimer" | "nnsStopBalancesTimer";
@@ -37,7 +33,7 @@ describe("IcrcBalancesObserver", () => {
     render(IcrcBalancesObserver, {
       props: {
         data,
-        callback: jest.fn(),
+        callback: vi.fn(),
       },
     });
 
@@ -58,7 +54,7 @@ describe("IcrcBalancesObserver", () => {
     const { unmount } = render(IcrcBalancesObserver, {
       props: {
         data,
-        callback: jest.fn(),
+        callback: vi.fn(),
       },
     });
 

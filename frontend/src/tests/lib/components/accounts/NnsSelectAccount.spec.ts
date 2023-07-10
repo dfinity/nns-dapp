@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
 import { accountsStore } from "$lib/stores/accounts.store";
 import {
@@ -37,8 +33,8 @@ describe("NnsSelectAccount", () => {
       getByText(mockMainAccount.identifier, { exact: false })
     ).toBeInTheDocument();
 
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should not render hardware wallets when prop hideHardwareWalletAccounts is true", () => {
@@ -56,8 +52,8 @@ describe("NnsSelectAccount", () => {
       queryByText(mockHardwareWalletAccount.name as string, { exact: false })
     ).toBeNull();
 
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render no title per default", () => {

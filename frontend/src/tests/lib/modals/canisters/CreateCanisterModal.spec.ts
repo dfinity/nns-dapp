@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import {
   MAX_CANISTER_NAME_LENGTH,
   NEW_CANISTER_MIN_T_CYCLES,
@@ -25,20 +22,21 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import { vi } from "vitest";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
+    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(10_000)),
     createCanister: jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
@@ -50,7 +48,7 @@ describe("CreateCanisterModal", () => {
     );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should display modal", () => {
@@ -138,7 +136,7 @@ describe("CreateCanisterModal", () => {
       expect(queryByText(canisterName)).toBeInTheDocument();
     }
 
-    const done = jest.fn();
+    const done = vi.fn();
     component.$on("nnsClose", done);
 
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");

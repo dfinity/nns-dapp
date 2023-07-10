@@ -31,6 +31,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { vi } from "vitest";
 
 describe("project-utils", () => {
   const summaryUsRestricted: SnsSummary = createSummary({
@@ -162,11 +163,11 @@ describe("project-utils", () => {
   describe("durationTillSwapDeadline", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -185,11 +186,11 @@ describe("project-utils", () => {
   describe("durationTillSwapStart", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -288,7 +289,7 @@ describe("project-utils", () => {
 
   describe("userCountryIsNeeded", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("country not needed", () => {

@@ -7,7 +7,7 @@ import {
 } from "$tests/mocks/proposal.mock";
 import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.mock";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -87,7 +87,9 @@ describe("Proposal", () => {
       );
 
     const { container } = renderProposalModern(5n);
-    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+    const po = ProposalNavigationPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);

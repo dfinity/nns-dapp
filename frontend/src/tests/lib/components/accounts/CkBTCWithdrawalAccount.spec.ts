@@ -321,7 +321,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
     describe("account is not yet loaded", () => {
       beforeEach(() => {
-        jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+        vi.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
           owner: mockCkBTCWithdrawalIcrcAccount.owner,
           subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
         });

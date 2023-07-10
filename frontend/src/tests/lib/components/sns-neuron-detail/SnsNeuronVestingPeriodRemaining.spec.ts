@@ -1,14 +1,11 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronVestingPeriodRemaining from "$lib/components/sns-neuron-detail/SnsNeuronVestingPeriodRemaining.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("SnsNeuronVestingPeriodRemaining", () => {
   const now = 1686806749421;
@@ -17,7 +14,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
   const monthAgo = BigInt(nowSeconds - SECONDS_IN_MONTH);
   const oneWeek = BigInt(SECONDS_IN_DAY * 7);
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   const renderComponent = (neuron: SnsNeuron) => {
@@ -26,7 +23,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
     });
 
     return SnsNeuronVestingPeriodRemainingPo.under(
-      new JestPageObjectElement(container)
+      new VitestPageObjectElement(container)
     );
   };
 

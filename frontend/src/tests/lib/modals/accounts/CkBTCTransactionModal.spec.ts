@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -39,13 +35,13 @@ import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    ckBTCTransferTokens: jest.fn().mockResolvedValue({ success: true }),
+    ckBTCTransferTokens: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/services/ckbtc-convert.services");
+vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
   const renderTransactionModal = (selectedAccount?: Account) =>
@@ -156,7 +152,7 @@ describe("CkBTCTransactionModal", () => {
   }) => {
     const result = await renderTransactionModal(selectedAccount);
 
-    const onEnd = jest.fn();
+    const onEnd = vi.fn();
     result.component.$on(eventName, onEnd);
 
     await testTransferTokens({

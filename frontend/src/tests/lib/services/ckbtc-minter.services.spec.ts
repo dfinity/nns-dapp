@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -33,7 +29,7 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("loadBtcAddress", () => {
     page.mock({
@@ -70,7 +66,7 @@ describe("ckbtc-minter-services", () => {
 
   describe("updateBalance", () => {
     beforeEach(() =>
-      jest.spyOn(console, "error").mockImplementation(() => undefined)
+      vi.spyOn(console, "error").mockImplementation(() => undefined)
     );
 
     const params = {
@@ -96,7 +92,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should reload after update balance", async () => {
-      const spyReload = jest.fn();
+      const spyReload = vi.fn();
 
       await services.updateBalance({ ...params, reload: spyReload });
 
@@ -104,11 +100,11 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should reload after update balance even if update balance is on error", async () => {
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterAlreadyProcessingError();
       });
 
-      const spyReload = jest.fn();
+      const spyReload = vi.fn();
 
       const err = new ApiErrorKey(en.error__ckbtc.already_process);
 
@@ -124,11 +120,11 @@ describe("ckbtc-minter-services", () => {
     it("should start and stop busy", async () => {
       const startBusySpy = jest
         .spyOn(busyStore, "startBusy")
-        .mockImplementation(jest.fn());
+        .mockImplementation(vi.fn());
 
       const stopBusySpy = jest
         .spyOn(busyStore, "stopBusy")
-        .mockImplementation(jest.fn());
+        .mockImplementation(vi.fn());
 
       await services.updateBalance(params);
 
@@ -146,7 +142,7 @@ describe("ckbtc-minter-services", () => {
 
       const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
 
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterGenericError(error);
       });
 
@@ -161,7 +157,7 @@ describe("ckbtc-minter-services", () => {
     it("should return temporary unavailable error", async () => {
       const error = "message";
 
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterTemporaryUnavailableError(error);
       });
 
@@ -175,7 +171,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should return already processing error", async () => {
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterAlreadyProcessingError();
       });
 
@@ -187,11 +183,11 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should handle no new UTXOs success", async () => {
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterNoNewUtxosError();
       });
 
-      const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+      const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
 
       const result = await services.updateBalance(params);
 
@@ -214,7 +210,7 @@ describe("ckbtc-minter-services", () => {
 
       const error = `${Err.GenericError.error_message} (${Err.GenericError.error_code})`;
 
-      jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
         throw new MinterGenericError(error);
       });
 
@@ -233,11 +229,11 @@ describe("ckbtc-minter-services", () => {
       it("should not start and stop busy", async () => {
         const startBusySpy = jest
           .spyOn(busyStore, "startBusy")
-          .mockImplementation(jest.fn());
+          .mockImplementation(vi.fn());
 
         const stopBusySpy = jest
           .spyOn(busyStore, "stopBusy")
-          .mockImplementation(jest.fn());
+          .mockImplementation(vi.fn());
 
         await services.updateBalance({
           ...params,
@@ -253,7 +249,7 @@ describe("ckbtc-minter-services", () => {
           .spyOn(minterApi, "updateBalance")
           .mockResolvedValue(mockUpdateBalanceOk);
 
-        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+        const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
 
         await services.updateBalance({
           ...params,
@@ -271,11 +267,11 @@ describe("ckbtc-minter-services", () => {
       });
 
       it("should not handle no new UTXOs success if no ui indicators", async () => {
-        jest.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
           throw new MinterNoNewUtxosError();
         });
 
-        const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
+        const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
 
         const result = await services.updateBalance({
           ...params,
@@ -298,7 +294,7 @@ describe("ckbtc-minter-services", () => {
 
       const params = { certified: true, amount: 456n };
 
-      const callback = jest.fn();
+      const callback = vi.fn();
 
       await services.estimateFee({
         params,

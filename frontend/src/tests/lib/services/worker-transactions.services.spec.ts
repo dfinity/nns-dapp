@@ -3,14 +3,15 @@ import { initTransactionsWorker } from "$lib/services/worker-transactions.servic
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { vi } from "vitest";
 
 describe("initTransactionsWorker", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
+    vi.mock("$lib/workers/transactions.worker?worker", () => {
       return class TransactionsWorker {
         postMessage(data: {
           msg: "nnsStartTransactionsTimer";
@@ -25,7 +26,7 @@ describe("initTransactionsWorker", () => {
   it("should start worker with params", async () => {
     const worker = await initTransactionsWorker();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       indexCanisterId: indexCanisterIdMock.toText(),

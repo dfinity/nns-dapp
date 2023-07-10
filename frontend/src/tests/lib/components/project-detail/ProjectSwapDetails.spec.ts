@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -15,7 +11,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { TokenAmount } from "@dfinity/utils";
 
 describe("ProjectSwapDetails", () => {
@@ -46,7 +42,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+    const po = ProjectSwapDetailsPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getMinParticipants()).toEqual("1’430");
   });
@@ -117,7 +115,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+    const po = ProjectSwapDetailsPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getTotalSupply()).toMatch(
       formatToken({ value: totalSupply })
@@ -131,7 +131,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+    const po = ProjectSwapDetailsPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getExcludedCountriesPo().isPresent()).toBe(false);
   });
@@ -143,7 +145,9 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
+    const po = ProjectSwapDetailsPo.under(
+      new VitestPageObjectElement(container)
+    );
 
     expect(await po.getExcludedCountriesPo().getValueText()).toBe("CH, US");
   });

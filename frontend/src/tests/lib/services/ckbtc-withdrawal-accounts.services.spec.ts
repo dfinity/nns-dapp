@@ -18,9 +18,9 @@ describe("ckbtc-withdrawal-accounts.services", () => {
   describe("loadCkBTCWithdrawalAccount", () => {
     beforeEach(() => {
       resetMockedConstants();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       ckBTCWithdrawalAccountsStore.reset();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     const spyGetWithdrawalAccount = jest

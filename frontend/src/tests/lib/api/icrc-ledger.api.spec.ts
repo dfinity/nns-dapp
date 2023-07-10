@@ -8,11 +8,12 @@ import {
   mockQueryTokenResponse,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
+import { vi } from "vitest";
 
 describe("icrc-ledger api", () => {
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {
-      const balanceSpy = jest.fn().mockResolvedValue(BigInt(10_000_000));
+      const balanceSpy = vi.fn().mockResolvedValue(BigInt(10_000_000));
 
       const account = await getIcrcAccount({
         certified: true,
@@ -52,7 +53,7 @@ describe("icrc-ledger api", () => {
 
   describe("getIcrcToken", () => {
     it("returns token metadata", async () => {
-      const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
+      const metadataSpy = vi.fn().mockResolvedValue(mockQueryTokenResponse);
 
       const token = await getIcrcToken({
         certified: true,
@@ -81,7 +82,7 @@ describe("icrc-ledger api", () => {
 
   describe("transfer", () => {
     it("successfully calls transfer api", async () => {
-      const transferSpy = jest.fn().mockResolvedValue(undefined);
+      const transferSpy = vi.fn().mockResolvedValue(undefined);
 
       await icrcTransfer({
         to: { owner: mockIdentity.getPrincipal() },
