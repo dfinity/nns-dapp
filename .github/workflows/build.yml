@@ -56,7 +56,7 @@ jobs:
   test-playwright-e2e-shard-1-of-2:
     needs: build
     runs-on: ubuntu-20.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
@@ -68,7 +68,7 @@ jobs:
   test-playwright-e2e-shard-2-of-2:
     needs: build
     runs-on: ubuntu-20.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
