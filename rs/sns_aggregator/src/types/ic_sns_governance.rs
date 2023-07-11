@@ -1,4 +1,5 @@
 #![allow(clippy::all)]
+#![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
@@ -7,8 +8,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-// use ic_cdk::api::call::CallResult;
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GenericNervousSystemFunction {
@@ -719,12 +720,12 @@ pub enum Command_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ManageNeuronResponse {
-    command: Option<Command_1>,
+    pub command: Option<Command_1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetMode {
-    mode: i32,
+    pub mode: i32,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

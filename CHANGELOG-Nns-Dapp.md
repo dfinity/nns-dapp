@@ -15,7 +15,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Revert display of TVL in various currencies to USD only
 * Removed `OWN_CANISTER_URL`.
+* Setting Dissolve Delay supports 888 years.
 
 #### Deprecated
 #### Removed
@@ -42,6 +44,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Updated `didc` to the latest release.
 * Migrated some end-to-end tests from Wdio to Playwright.
 * Use the newest snsdemo snapshot with the sns_aggregator preloaded.
 * Split Playwright e2e test on CI into 2 shards.
