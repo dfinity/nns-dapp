@@ -649,7 +649,7 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "DIDC_VERSION": "2023-06-30",
-        "IC_COMMIT": "26b480f775222265f4369bc485d502a140f15564"
+        "IC_COMMIT": "78159ede9b7695f6a0e77b5ea53a55f67f044eb4"
       },
       "packtool": ""
     }
