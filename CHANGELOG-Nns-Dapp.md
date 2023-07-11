@@ -23,6 +23,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 #### Fixed
 
+- Destroy sns neuron component and page after disburse.
+
 #### Security
 
 * Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
