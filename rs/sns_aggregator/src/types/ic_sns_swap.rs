@@ -17,19 +17,19 @@ pub struct NeuronBasketConstructionParameters {
     pub count: u64,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct CfNeuron {
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct CfParticipant {
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct NeuronsFundParticipants {
     pub cf_participants: Vec<CfParticipant>,
 }
