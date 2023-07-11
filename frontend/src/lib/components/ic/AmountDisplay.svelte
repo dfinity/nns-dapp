@@ -9,6 +9,7 @@
   export let inline = false;
   export let singleLine = false;
   export let title = false;
+  export let huge = false;
   export let copy = false;
   export let text = false;
   export let inheritSize = false;
@@ -23,6 +24,7 @@
   class:title
   class:copy
   class:text
+  class:huge
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
@@ -124,6 +126,10 @@
         // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
         line-height: 1.8;
       }
+    }
+
+    &.huge span.value {
+      font-size: var(--font-size-huge);
     }
   }
 
