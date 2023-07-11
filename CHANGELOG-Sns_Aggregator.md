@@ -10,6 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
+- Updated `ic-cdk` to the latest version and use the, now separate, `ic-cdk-timers`.
 - Shortened patch files by namespacing Principal automatically, automating the use of EmptyRecord and using CallResult in API declarations.
 ### Fixed
 ### Security
