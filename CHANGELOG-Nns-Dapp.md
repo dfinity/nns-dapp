@@ -15,6 +15,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Revert display of TVL in various currencies to USD only
 * Removed `OWN_CANISTER_URL`.
 
 #### Deprecated
