@@ -114,9 +114,7 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ledgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_LEDGER_CANISTER_ID
     ),
-    ownCanisterId: convertEmtpyStringToUndefined(
-      import.meta.env.VITE_OWN_CANISTER_ID
-    ),
+    ownCanisterId: undefined, // Self-discovered by the canister and available via the env vars in the index.html configuration data.
     snsAggregatorUrl: convertEmtpyStringToUndefined(
       import.meta.env.VITE_AGGREGATOR_CANISTER_URL
     ),
