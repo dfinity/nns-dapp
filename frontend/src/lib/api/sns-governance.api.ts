@@ -247,25 +247,28 @@ export const stopDissolving = async ({
   logWithTimestamp(`Stop dissolving sns neuron complete.`);
 };
 
-export const increaseDissolveDelay = async ({
+export const setDissolveDelay = async ({
   identity,
   rootCanisterId,
   neuronId,
-  additionalDissolveDelaySeconds,
+  dissolveTimestampSeconds,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  additionalDissolveDelaySeconds: number;
+  dissolveTimestampSeconds: number;
 }): Promise<void> => {
   logWithTimestamp(`Increase sns dissolve delay call...`);
 
-  const { increaseDissolveDelay } = await wrapper({
+  const { setDissolveTimestamp } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  await increaseDissolveDelay({ neuronId, additionalDissolveDelaySeconds });
+  await setDissolveTimestamp({
+    neuronId,
+    dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+  });
 
   logWithTimestamp(`Increase sns dissolve delay complete.`);
 };

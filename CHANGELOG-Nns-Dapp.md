@@ -17,6 +17,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Revert display of TVL in various currencies to USD only
 * Removed `OWN_CANISTER_URL`.
+* Setting Dissolve Delay supports 888 years.
 
 #### Deprecated
 #### Removed

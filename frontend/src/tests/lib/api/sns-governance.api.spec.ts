@@ -10,7 +10,6 @@ import {
   getNervousSystemFunctions,
   getNeuronBalance,
   getSnsNeuron,
-  increaseDissolveDelay,
   nervousSystemParameters,
   queryProposal,
   queryProposals,
@@ -19,6 +18,7 @@ import {
   refreshNeuron,
   registerVote,
   removeNeuronPermissions,
+  setDissolveDelay,
   setFollowees,
   splitNeuron,
   stakeMaturity,
@@ -79,7 +79,7 @@ describe("sns-api", () => {
   const splitNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const startDissolvingSpy = jest.fn().mockResolvedValue(undefined);
   const stopDissolvingSpy = jest.fn().mockResolvedValue(undefined);
-  const increaseDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
+  const setDissolveDelaySpy = jest.fn().mockResolvedValue(undefined);
   const getNeuronBalanceSpy = jest.fn().mockResolvedValue(undefined);
   const refreshNeuronSpy = jest.fn().mockResolvedValue(undefined);
   const claimNeuronSpy = jest.fn().mockResolvedValue(undefined);
@@ -131,7 +131,7 @@ describe("sns-api", () => {
         splitNeuron: splitNeuronSpy,
         startDissolving: startDissolvingSpy,
         stopDissolving: stopDissolvingSpy,
-        increaseDissolveDelay: increaseDissolveDelaySpy,
+        setDissolveTimestamp: setDissolveDelaySpy,
         getNeuronBalance: getNeuronBalanceSpy,
         refreshNeuron: refreshNeuronSpy,
         claimNeuron: claimNeuronSpy,
@@ -254,15 +254,20 @@ describe("sns-api", () => {
     expect(stopDissolvingSpy).toBeCalled();
   });
 
-  it("should increaseDissolveDelay", async () => {
-    await increaseDissolveDelay({
+  it("should setDissolveDelay", async () => {
+    const dissolveTimestampSeconds = 123;
+    const neuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
+    await setDissolveDelay({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      neuronId: { id: arrayOfNumberToUint8Array([1, 2, 3]) },
-      additionalDissolveDelaySeconds: 123,
+      neuronId,
+      dissolveTimestampSeconds,
     });
 
-    expect(increaseDissolveDelaySpy).toBeCalled();
+    expect(setDissolveDelaySpy).toBeCalledWith({
+      dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+      neuronId,
+    });
   });
 
   it("should stakeMaturity", async () => {
