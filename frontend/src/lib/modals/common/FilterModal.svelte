@@ -83,12 +83,19 @@
     {/if}
 
     <svelte:fragment slot="footer">
-      <button class="secondary" type="button" data-tid="close" on:click={close}>
+      <button
+        class="secondary"
+        type="button"
+        aria-label="select-all-filters"
+        data-tid="close"
+        on:click={close}
+      >
         {$i18n.core.cancel}
       </button>
       <button
         class="primary"
         type="button"
+        aria-label="clear-filters"
         on:click={filter}
         data-tid="apply-filters"
       >
