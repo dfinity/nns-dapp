@@ -19,6 +19,18 @@ describe("Hash", () => {
     expect(small?.textContent).toEqual(shortenWithMiddleEllipsis(identifier));
   });
 
+  it("should use the splitLength prop", () => {
+    const splitLength = 3;
+    const { getByTestId } = render(Hash, {
+      props: { text: identifier, testId, id: identifier, splitLength },
+    });
+
+    const small = getByTestId(testId);
+    expect(small?.textContent).toEqual(
+      shortenWithMiddleEllipsis(identifier, splitLength)
+    );
+  });
+
   it("should render a tooltip with all identifier", () => {
     const { container } = render(Hash, {
       props: { text: identifier, testId, id: identifier },
