@@ -21,7 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 #### Fixed
 
-- back button after sns neuron disburse.
+- Destroy sns neuron component and page after disburse.
 
 #### Security
 
