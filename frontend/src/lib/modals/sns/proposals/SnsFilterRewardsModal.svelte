@@ -63,5 +63,4 @@
   filters={filtersValues}
 >
   <span slot="title">{$i18n.voting.rewards}</span>
-  <span slot="filter-by">{$i18n.voting.filter_by_rewards}</span>
 </FilterModal>
