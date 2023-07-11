@@ -393,9 +393,6 @@ interface I18nVoting {
   topics: string;
   rewards: string;
   status: string;
-  filter_by_topics: string;
-  filter_by_rewards: string;
-  filter_by_status: string;
   hide_unavailable_proposals: string;
   check_all: string;
   uncheck_all: string;
