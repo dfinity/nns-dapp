@@ -21,13 +21,14 @@ describe("AmountInput", () => {
     expect(getByText(en.core.max)).toBeInTheDocument();
   });
 
-  it("should trigger max value", (done) => {
-    const { container, component } = render(AmountInput, { props });
-    component.$on("nnsMax", () => done());
+  it("should trigger max value", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(AmountInput, { props });
+      component.$on("nnsMax", () => done());
 
-    const button: HTMLButtonElement = container.querySelector(
-      "button"
-    ) as HTMLButtonElement;
-    fireEvent.click(button);
-  });
+      const button: HTMLButtonElement = container.querySelector(
+        "button"
+      ) as HTMLButtonElement;
+      fireEvent.click(button);
+    }));
 });

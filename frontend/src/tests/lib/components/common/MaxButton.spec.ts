@@ -12,10 +12,11 @@ describe("MaxButton", () => {
     expect(queryByTestId("icon-subdirectory")).toBeInTheDocument();
   });
 
-  it("should trigger on click event", (done) => {
-    const { container, component } = render(MaxButton);
-    component.$on("click", () => done());
-    const buttonElement = container.querySelector("button");
-    buttonElement && fireEvent.click(buttonElement);
-  });
+  it("should trigger on click event", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(MaxButton);
+      component.$on("click", () => done());
+      const buttonElement = container.querySelector("button");
+      buttonElement && fireEvent.click(buttonElement);
+    }));
 });

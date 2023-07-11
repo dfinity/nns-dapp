@@ -36,68 +36,73 @@ describe("FilterModal", () => {
     );
   });
 
-  it("should forward close modal event", (done) => {
-    const { queryByTestId, component } = render(FilterModal, {
-      props,
-    });
+  it("should forward close modal event", () =>
+    new Promise<void>((done) => {
+      const { queryByTestId, component } = render(FilterModal, {
+        props,
+      });
 
-    component.$on("nnsClose", () => {
-      done();
-    });
+      component.$on("nnsClose", () => {
+        done();
+      });
 
-    const button = queryByTestId("close");
-    button && fireEvent.click(button);
-  });
+      const button = queryByTestId("close");
+      button && fireEvent.click(button);
+    }));
 
-  it("should trigger nnsChange event when checkbox is clicked", (done) => {
-    const { container, component } = render(FilterModal, {
-      props,
-    });
+  it("should trigger nnsChange event when checkbox is clicked", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(FilterModal, {
+        props,
+      });
 
-    component.$on("nnsChange", () => {
-      done();
-    });
+      component.$on("nnsChange", () => {
+        done();
+      });
 
-    const checkboxes = container.querySelectorAll("input[type=checkbox]");
-    checkboxes[0] && fireEvent.click(checkboxes[0]);
-  });
+      const checkboxes = container.querySelectorAll("input[type=checkbox]");
+      checkboxes[0] && fireEvent.click(checkboxes[0]);
+    }));
 
-  it("should trigger nnsConfirm event when primary button is clicked", (done) => {
-    const { queryByTestId, component } = render(FilterModal, {
-      props,
-    });
+  it("should trigger nnsConfirm event when primary button is clicked", () =>
+    new Promise<void>((done) => {
+      const { queryByTestId, component } = render(FilterModal, {
+        props,
+      });
 
-    component.$on("nnsConfirm", () => {
-      done();
-    });
+      component.$on("nnsConfirm", () => {
+        done();
+      });
 
-    const button = queryByTestId("apply-filters");
-    button && fireEvent.click(button);
-  });
+      const button = queryByTestId("apply-filters");
+      button && fireEvent.click(button);
+    }));
 
-  it("should trigger nnsSelectAll when select all button is clicked", (done) => {
-    const { queryByTestId, component } = render(FilterModal, {
-      props,
-    });
+  it("should trigger nnsSelectAll when select all button is clicked", () =>
+    new Promise<void>((done) => {
+      const { queryByTestId, component } = render(FilterModal, {
+        props,
+      });
 
-    component.$on("nnsSelectAll", () => {
-      done();
-    });
+      component.$on("nnsSelectAll", () => {
+        done();
+      });
 
-    const button = queryByTestId("filter-modal-select-all");
-    button && fireEvent.click(button);
-  });
+      const button = queryByTestId("filter-modal-select-all");
+      button && fireEvent.click(button);
+    }));
 
-  it("should trigger nnsClearSelection when clear button is clicked", (done) => {
-    const { queryByTestId, component } = render(FilterModal, {
-      props,
-    });
+  it("should trigger nnsClearSelection when clear button is clicked", () =>
+    new Promise<void>((done) => {
+      const { queryByTestId, component } = render(FilterModal, {
+        props,
+      });
 
-    component.$on("nnsClearSelection", () => {
-      done();
-    });
+      component.$on("nnsClearSelection", () => {
+        done();
+      });
 
-    const button = queryByTestId("filter-modal-clear");
-    button && fireEvent.click(button);
-  });
+      const button = queryByTestId("filter-modal-clear");
+      button && fireEvent.click(button);
+    }));
 });

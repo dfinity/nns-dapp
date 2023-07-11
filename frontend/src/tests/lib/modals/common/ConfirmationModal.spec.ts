@@ -18,15 +18,17 @@ describe("ConfirmationModal", () => {
     expect(getByText(noButtonText)).toBeInTheDocument();
   });
 
-  it("should trigger nnsClose", (done) => {
-    const { getByText, component } = render(ConfirmationModal);
-    component.$on("nnsClose", () => done());
-    fireEvent.click(getByText(noButtonText));
-  });
+  it("should trigger nnsClose", () =>
+    new Promise<void>((done) => {
+      const { getByText, component } = render(ConfirmationModal);
+      component.$on("nnsClose", () => done());
+      fireEvent.click(getByText(noButtonText));
+    }));
 
-  it("should trigger nnsConfirm", (done) => {
-    const { getByText, component } = render(ConfirmationModal);
-    component.$on("nnsConfirm", () => done());
-    fireEvent.click(getByText(yesButtonText));
-  });
+  it("should trigger nnsConfirm", () =>
+    new Promise<void>((done) => {
+      const { getByText, component } = render(ConfirmationModal);
+      component.$on("nnsConfirm", () => done());
+      fireEvent.click(getByText(yesButtonText));
+    }));
 });
