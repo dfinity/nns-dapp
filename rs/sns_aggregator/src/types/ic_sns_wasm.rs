@@ -47,6 +47,16 @@ pub struct AddWasmResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Canister {
+    pub id: Option<candid::Principal>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DappCanisters {
+    pub canisters: Vec<Canister>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TreasuryDistribution {
     pub total_e8s: u64,
 }
@@ -113,6 +123,7 @@ pub struct SnsInitPayload {
     pub initial_reward_rate_basis_points: Option<u64>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
+    pub dapp_canisters: Option<DappCanisters>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
     pub reward_rate_transition_duration_seconds: Option<u64>,
@@ -127,6 +138,13 @@ pub struct DeployNewSnsRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DappCanistersTransferResult {
+    pub restored_dapp_canisters: Vec<Canister>,
+    pub nns_controlled_dapp_canisters: Vec<Canister>,
+    pub sns_controlled_dapp_canisters: Vec<Canister>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsCanisterIds {
     pub root: Option<candid::Principal>,
     pub swap: Option<candid::Principal>,
@@ -137,6 +155,7 @@ pub struct SnsCanisterIds {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DeployNewSnsResponse {
+    pub dapp_canisters_transfer_result: Option<DappCanistersTransferResult>,
     pub subnet_id: Option<candid::Principal>,
     pub error: Option<SnsWasmError>,
     pub canisters: Option<SnsCanisterIds>,
