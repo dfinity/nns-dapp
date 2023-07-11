@@ -1,0 +1,102 @@
+{
+  "args": [
+    "--new"
+  ],
+  "behavior": [
+    {
+      "command": "date +%Y-%m-%d",
+      "stdout": "2001-02-29",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git show-ref --quiet --verify refs/heads/Release-2001-02-29",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 1
+    },
+    {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --quiet --exit-code",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "date +%Y-%m-%d\\ %H:%M:%S",
+      "stdout": "2001-02-29 14:15:16",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse release-candidate",
+      "stdout": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "npm_audit",
+      "stdout": "https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cargo_audit",
+      "stdout": "RUSTSEC-1999-0001",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
+    "Start time: 2001-02-29 14:15:16",
+    "Press enter to run the following command:",
+    "",
+    "git fetch --tags --force",
+    "",
+    "git fetch --tags --force: Done",
+    "Press enter to run the following command:",
+    "",
+    "git checkout -b Release-2001-02-29 origin/main",
+    "",
+    "git checkout -b Release-2001-02-29 origin/main: Done",
+    "Release branch: Release-2001-02-29",
+    "Current branch: Release-2001-02-29",
+    "Press enter to run the following command:",
+    "",
+    "git push origin Release-2001-02-29",
+    "",
+    "git push origin Release-2001-02-29: Done",
+    "Release branch URL: https://github.com/dfinity/nns-dapp/tree/Release-2001-02-29",
+    "Press enter to run the following command:",
+    "",
+    "git tag -f release-candidate",
+    "",
+    "git tag -f release-candidate: Done",
+    "Release commit: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "tags/release-candidate commit: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "Press enter to run the following command:",
+    "",
+    "git push origin -f tags/release-candidate",
+    "",
+    "git push origin -f tags/release-candidate: Done",
+    "Security test: npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+    "Expected npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+    "Security test: cargo audit: RUSTSEC-1999-0001",
+    "Values don't match!",
+    "Security test: cargo audit: RUSTSEC-1999-0001",
+    "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159"
+  ],
+  "expectedExitCode": 1
+}
