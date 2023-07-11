@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Removed `OWN_CANISTER_URL`.
+* Setting Dissolve Delay supports 888 years.
 
 #### Deprecated
 #### Removed
