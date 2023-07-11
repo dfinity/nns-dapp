@@ -12,7 +12,6 @@
     record{ 0="HOST"; 1="https://icp-api.io" };
     record{ 0="IDENTITY_SERVICE_URL"; 1="https://identity.internetcomputer.org/" };
     record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
-    record{ 0="OWN_CANISTER_ID"; 1="xnjld-hqaaa-aaaal-qb56q-cai" };
     record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
     record{ 0="SNS_AGGREGATOR_URL"; 1="https://otgyv-wyaaa-aaaak-qcgba-cai.icp0.io" };
     record{ 0="STATIC_HOST"; 1="https://icp0.io" };

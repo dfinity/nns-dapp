@@ -41,14 +41,6 @@ first_not_null() {
 
 local_deployment_data="$(
   set -euo pipefail
-  : "Try to find the nns-dapp canister ID:"
-  : "- may be set by dfx as an env var"
-  : "- may be deployed locally"
-  LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-dapp 2>/dev/null || true)"
-  test -n "${CANISTER_ID:-}" || CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
-  export CANISTER_ID
-  test -n "${CANISTER_ID:-}" || unset CANISTER_ID
-
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(dfx-canister-url --network "$DFX_NETWORK" internet_identity)"
@@ -118,7 +110,6 @@ local_deployment_data="$(
 
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
-    OWN_CANISTER_ID: env.CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
@@ -143,7 +134,6 @@ local_deployment_data="$(
 : "- last is the defaults section in dfx.json"
 : ""
 : "After assembling the configuration:"
-: "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
@@ -159,7 +149,6 @@ wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
 governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
 tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
-ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
@@ -175,7 +164,6 @@ VITE_WASM_CANISTER_ID=$wasmCanisterId
 VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
 VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
-VITE_OWN_CANISTER_ID=$ownCanisterId
 VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
@@ -221,9 +209,6 @@ export TVL_CANISTER_ID
 
 LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
-
-OWN_CANISTER_ID="$ownCanisterId"
-export OWN_CANISTER_ID
 
 HOST="$host"
 export HOST
