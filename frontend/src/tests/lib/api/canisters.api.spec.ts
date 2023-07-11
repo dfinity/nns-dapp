@@ -5,16 +5,19 @@ import {
   getIcpToCyclesExchangeRate,
   queryCanisterDetails,
   queryCanisters,
+  renameCanister,
   topUpCanister,
   updateSettings,
 } from "$lib/api/canisters.api";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { NameTooLongError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -91,6 +94,54 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
         name: "",
       });
+    });
+
+    it("should fail to attach if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        attachCanister({
+          identity: mockIdentity,
+          canisterId: mockCanisterDetails.id,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
+    });
+  });
+
+  describe("renameCanister", () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it("should call the nns dapp canister to rename the canister", async () => {
+      await renameCanister({
+        identity: mockIdentity,
+        canisterId: mockCanisterDetails.id,
+        name: "test name",
+      });
+
+      expect(mockNNSDappCanister.renameCanister).toBeCalled();
+    });
+
+    it("should fail to rename if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        renameCanister({
+          identity: mockIdentity,
+          canisterId: mockCanisterDetails.id,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
+      expect(mockNNSDappCanister.renameCanister).not.toBeCalled();
     });
   });
 
@@ -198,6 +249,28 @@ describe("canisters-api", () => {
       expect(response).toEqual(mockCanisterDetails.id);
     });
 
+    it("should attach the canister if name max length", async () => {
+      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+        mockCanisterDetails.id
+      );
+
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
+      const response = await createCanister({
+        identity: mockIdentity,
+        amount: TokenAmount.fromString({
+          amount: "3",
+          token: ICPToken,
+        }) as TokenAmount,
+        name: longName,
+      });
+      expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
+        name: longName,
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(response).toEqual(mockCanisterDetails.id);
+    });
+
     it("should notify twice if the first call returns Processing", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
       mockCMCCanister.notifyCreateCanister
@@ -265,6 +338,27 @@ describe("canisters-api", () => {
           }) as TokenAmount,
         });
       expect(call).rejects.toThrow();
+      expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
+    });
+
+    it("should fail to create if name is longer than max", async () => {
+      const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      const call = () =>
+        createCanister({
+          identity: mockIdentity,
+          amount: TokenAmount.fromString({
+            amount: "3",
+            token: ICPToken,
+          }) as TokenAmount,
+          name: longName,
+        });
+
+      expect(call).rejects.toThrowError(
+        new NameTooLongError("error__canister.name_too_long", {
+          $name: longName,
+        })
+      );
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });

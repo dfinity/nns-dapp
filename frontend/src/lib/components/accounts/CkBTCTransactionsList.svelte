@@ -16,13 +16,17 @@
   import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
+  import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
+  import { waitForMilliseconds } from "$lib/utils/utils";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let account: Account;
   export let token: IcrcTokenMetadata | undefined;
 
-  let loading = true;
+  // Expose for test purpose only
+  export let loading = true;
 
   const loadNextTransactions = async () => {
     loading = true;
@@ -34,7 +38,7 @@
     loading = false;
   };
 
-  const reloadTransactions = async () => {
+  export const reloadTransactions = async () => {
     // If we are already loading transactions we do not want to double the calls
     if (loading) {
       return;
@@ -50,6 +54,9 @@
       accountIdentifier: account.identifier,
     });
 
+    // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
+    await waitForMilliseconds(CKBTC_TRANSACTIONS_RELOAD_DELAY);
+
     await loadCkBTCAccountTransactions({
       account,
       canisterId: universeId,
@@ -60,8 +67,6 @@
   };
 
   onMount(loadNextTransactions);
-
-  $: account, (async () => reloadTransactions())();
 
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
@@ -84,12 +89,19 @@
   >;
 </script>
 
-<IcrcTransactionsList
-  on:nnsIntersect={loadNextTransactions}
+<CkBTCWalletTransactionsObserver
+  {indexCanisterId}
   {account}
-  {transactions}
-  {loading}
   {completed}
-  {descriptions}
-  {token}
-/>
+  {universeId}
+>
+  <IcrcTransactionsList
+    on:nnsIntersect={loadNextTransactions}
+    {account}
+    {transactions}
+    {loading}
+    {completed}
+    {descriptions}
+    {token}
+  />
+</CkBTCWalletTransactionsObserver>

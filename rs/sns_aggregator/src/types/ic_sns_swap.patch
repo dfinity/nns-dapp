@@ -1,289 +1,53 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 79a9b463e..b373161c8 100644
+index 613b5e633..efc52543c 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -4,17 +4,17 @@
- #![allow(non_camel_case_types)]
- #![allow(dead_code)]
- 
--use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
-+use crate::types::{CandidType, Deserialize, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
--// use ic_cdk::api::call::CallResult as Result;
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-+// use ic_cdk::api::call::CallResult;
+@@ -11,12 +11,12 @@ use ic_cdk::api::call::CallResult;
+ // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+ // use ic_cdk::api::call::CallResult as Result;
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
- pub struct Countries { iso_codes: Vec<String> }
+ pub struct Countries {
+     pub iso_codes: Vec<String>,
+ }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Init {
-   pub  sns_root_canister_id: String,
-   pub  fallback_controller_principal_ids: Vec<String>,
-@@ -29,7 +29,7 @@ pub struct Init {
+     pub sns_root_canister_id: String,
+     pub fallback_controller_principal_ids: Vec<String>,
+@@ -112,7 +112,7 @@ pub struct SettleCommunityFundParticipationResult {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub enum Possibility_2 {
+-    Ok(EmptyRecord),
++    Ok,
+     Err(CanisterCallError),
  }
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ErrorRefundIcpRequest { source_principal_id: Option<Principal> }
-+pub struct ErrorRefundIcpRequest { source_principal_id: Option<candid::Principal> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Ok { block_height: Option<u64> }
-@@ -52,7 +52,7 @@ pub struct CanisterCallError { code: Option<i32>, description: String }
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct FailedUpdate {
-   pub  err: Option<CanisterCallError>,
--  pub  dapp_canister_id: Option<Principal>,
-+  pub  dapp_canister_id: Option<candid::Principal>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -79,7 +79,7 @@ pub struct SettleCommunityFundParticipationResult {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub enum Possibility_2 { Ok{}, Err(CanisterCallError) }
-+pub enum Possibility_2 { Ok, Err(CanisterCallError) }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SetModeCallResult { possibility: Option<Possibility_2> }
-@@ -107,7 +107,7 @@ pub struct FinalizeSwapResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetBuyerStateRequest { principal_id: Option<Principal> }
-+pub struct GetBuyerStateRequest { principal_id: Option<candid::Principal> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct TransferableAmount {
-@@ -138,16 +138,16 @@ pub enum CanisterStatusType { stopped, stopping, running }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct DefiniteCanisterSettingsArgs {
--  pub  controller: Principal,
-+  pub  controller: candid::Principal,
-   pub  freezing_threshold: candid::Nat,
--  pub  controllers: Vec<Principal>,
-+  pub  controllers: Vec<candid::Principal>,
-   pub  memory_allocation: candid::Nat,
-   pub  compute_allocation: candid::Nat,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct CanisterStatusResultV2 {
--  pub  controller: Principal,
-+  pub  controller: candid::Principal,
-   pub  status: CanisterStatusType,
-   pub  freezing_threshold: candid::Nat,
-   pub  balance: Vec<(serde_bytes::ByteBuf,candid::Nat,)>,
-@@ -190,7 +190,7 @@ pub struct get_open_ticket_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Icrc1Account {
--  pub  owner: Option<Principal>,
-+  pub  owner: Option<candid::Principal>,
-   pub  subaccount: Option<serde_bytes::ByteBuf>,
- }
- 
-@@ -217,13 +217,13 @@ pub struct GetOpenTicketResponse { result: Option<Result_1> }
+@@ -275,13 +275,13 @@ pub struct GetOpenTicketResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct get_sale_parameters_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct NeuronBasketConstructionParameters {
-   pub  dissolve_delay_interval_seconds: u64,
-   pub  count: u64,
+     pub dissolve_delay_interval_seconds: u64,
+     pub count: u64,
  }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Params {
-   pub  min_participant_icp_e8s: u64,
-   pub  neuron_basket_construction_parameters: Option<
-@@ -302,11 +302,8 @@ pub struct DerivedState {
-   pub  cf_neuron_count: Option<u64>,
+     pub min_participant_icp_e8s: u64,
+     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
+@@ -376,7 +376,7 @@ pub struct DerivedState {
+     pub cf_neuron_count: Option<u64>,
  }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetStateResponse {
--  pub  swap: Option<Swap>,
--  pub  derived: Option<DerivedState>,
--}
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
-+pub struct GetStateResponse { pub swap: Option<Swap>, pub derived: Option<DerivedState> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ListCommunityFundParticipantsRequest {
-@@ -320,36 +317,25 @@ pub struct ListCommunityFundParticipantsResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListDirectParticipantsRequest {
--  pub  offset: Option<u32>,
--  pub  limit: Option<u32>,
--}
-+pub struct ListDirectParticipantsRequest { offset: Option<u32>, limit: Option<u32> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Participant {
-   pub  participation: Option<BuyerState>,
--  pub  participant_id: Option<Principal>,
-+  pub  participant_id: Option<candid::Principal>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ListDirectParticipantsResponse { participants: Vec<Participant> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListSnsNeuronRecipesRequest {
--  pub  offset: Option<u64>,
--  pub  limit: Option<u32>,
--}
-+pub struct ListSnsNeuronRecipesRequest { offset: Option<u64>, limit: Option<u32> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListSnsNeuronRecipesResponse {
--  pub  sns_neuron_recipes: Vec<SnsNeuronRecipe>,
--}
-+pub struct ListSnsNeuronRecipesResponse { sns_neuron_recipes: Vec<SnsNeuronRecipe> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct NewSaleTicketRequest {
--  pub  subaccount: Option<serde_bytes::ByteBuf>,
--  pub  amount_icp_e8s: u64,
--}
-+pub struct NewSaleTicketRequest { subaccount: Option<serde_bytes::ByteBuf>, amount_icp_e8s: u64 }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct InvalidUserAmount {
-@@ -398,88 +384,96 @@ pub struct RefreshBuyerTokensResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct restore_dapp_controllers_arg0 {}
- 
--pub struct SERVICE(pub Principal);
--impl SERVICE {
--  pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> Result<
--    (ErrorRefundIcpResponse,)
--  > { ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await }
--  pub async fn finalize_swap(&self, arg0: finalize_swap_arg0) -> Result<
-+pub struct SERVICE(pub candid::Principal);
-+impl SERVICE{
-+  pub async fn error_refund_icp(
-+    &self,
-+    arg0: ErrorRefundIcpRequest,
-+  ) -> CallResult<(ErrorRefundIcpResponse,)> {
-+    ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
-+  }
-+  pub async fn finalize_swap(&self, arg0: finalize_swap_arg0) -> CallResult<
-     (FinalizeSwapResponse,)
-   > { ic_cdk::call(self.0, "finalize_swap", (arg0,)).await }
--  pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> Result<
-+  pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> CallResult<
-     (GetBuyerStateResponse,)
-   > { ic_cdk::call(self.0, "get_buyer_state", (arg0,)).await }
--  pub async fn get_buyers_total(&self, arg0: get_buyers_total_arg0) -> Result<
--    (GetBuyersTotalResponse,)
--  > { ic_cdk::call(self.0, "get_buyers_total", (arg0,)).await }
-+  pub async fn get_buyers_total(
-+    &self,
-+    arg0: get_buyers_total_arg0,
-+  ) -> CallResult<(GetBuyersTotalResponse,)> {
-+    ic_cdk::call(self.0, "get_buyers_total", (arg0,)).await
-+  }
-   pub async fn get_canister_status(
-     &self,
-     arg0: get_canister_status_arg0,
--  ) -> Result<(CanisterStatusResultV2,)> {
-+  ) -> CallResult<(CanisterStatusResultV2,)> {
-     ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
-   }
--  pub async fn get_derived_state(&self, arg0: get_derived_state_arg0) -> Result<
--    (GetDerivedStateResponse,)
--  > { ic_cdk::call(self.0, "get_derived_state", (arg0,)).await }
--  pub async fn get_init(&self, arg0: get_init_arg0) -> Result<
-+  pub async fn get_derived_state(
-+    &self,
-+    arg0: get_derived_state_arg0,
-+  ) -> CallResult<(GetDerivedStateResponse,)> {
-+    ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
-+  }
-+  pub async fn get_init(&self, arg0: get_init_arg0) -> CallResult<
-     (GetInitResponse,)
-   > { ic_cdk::call(self.0, "get_init", (arg0,)).await }
--  pub async fn get_lifecycle(&self, arg0: get_lifecycle_arg0) -> Result<
-+  pub async fn get_lifecycle(&self, arg0: get_lifecycle_arg0) -> CallResult<
-     (GetLifecycleResponse,)
-   > { ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await }
--  pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> Result<
-+  pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> CallResult<
-     (GetOpenTicketResponse,)
-   > { ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await }
-   pub async fn get_sale_parameters(
-     &self,
-     arg0: get_sale_parameters_arg0,
--  ) -> Result<(GetSaleParametersResponse,)> {
-+  ) -> CallResult<(GetSaleParametersResponse,)> {
-     ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
-   }
--  pub async fn get_state(&self, arg0: get_state_arg0) -> Result<
-+  pub async fn get_state(&self, arg0: get_state_arg0) -> CallResult<
-     (GetStateResponse,)
-   > { ic_cdk::call(self.0, "get_state", (arg0,)).await }
-   pub async fn list_community_fund_participants(
-     &self,
-     arg0: ListCommunityFundParticipantsRequest,
--  ) -> Result<(ListCommunityFundParticipantsResponse,)> {
-+  ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
-     ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
-   }
-   pub async fn list_direct_participants(
-     &self,
-     arg0: ListDirectParticipantsRequest,
--  ) -> Result<(ListDirectParticipantsResponse,)> {
-+  ) -> CallResult<(ListDirectParticipantsResponse,)> {
-     ic_cdk::call(self.0, "list_direct_participants", (arg0,)).await
-   }
-   pub async fn list_sns_neuron_recipes(
-     &self,
-     arg0: ListSnsNeuronRecipesRequest,
--  ) -> Result<(ListSnsNeuronRecipesResponse,)> {
-+  ) -> CallResult<(ListSnsNeuronRecipesResponse,)> {
-     ic_cdk::call(self.0, "list_sns_neuron_recipes", (arg0,)).await
-   }
--  pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> Result<
-+  pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<
-     (NewSaleTicketResponse,)
-   > { ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await }
-   pub async fn notify_payment_failure(
-     &self,
-     arg0: notify_payment_failure_arg0,
--  ) -> Result<(Ok_1,)> {
-+  ) -> CallResult<(Ok_1,)> {
-     ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
-   }
--  pub async fn open(&self, arg0: OpenRequest) -> Result<(open_ret0,)> {
-+  pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
-     ic_cdk::call(self.0, "open", (arg0,)).await
-   }
-   pub async fn refresh_buyer_tokens(
-     &self,
-     arg0: RefreshBuyerTokensRequest,
--  ) -> Result<(RefreshBuyerTokensResponse,)> {
-+  ) -> CallResult<(RefreshBuyerTokensResponse,)> {
-     ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
-   }
-   pub async fn restore_dapp_controllers(
-     &self,
-     arg0: restore_dapp_controllers_arg0,
--  ) -> Result<(SetDappControllersCallResult,)> {
-+  ) -> CallResult<(SetDappControllersCallResult,)> {
-     ic_cdk::call(self.0, "restore_dapp_controllers", (arg0,)).await
-   }
- }
--
+ pub struct GetStateResponse {
+     pub swap: Option<Swap>,
+     pub derived: Option<DerivedState>,

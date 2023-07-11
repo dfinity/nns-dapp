@@ -16,7 +16,7 @@ import {
   mapProposalInfo,
   nnsNeuronToVotingNeuron,
   preserveNeuronSelectionAfterUpdate,
-  proposalActionFields,
+  proposalActionData,
   proposalFirstActionKey,
   proposalIdSet,
   proposalsHaveSameIds,
@@ -651,17 +651,17 @@ describe("proposals-utils", () => {
 
   describe("proposalActionFields", () => {
     it("should filter action fields", () => {
-      const fields = proposalActionFields(proposalWithRewardNodeProviderAction);
+      const action = proposalActionData(proposalWithRewardNodeProviderAction);
 
-      expect(fields.map(([key]) => key).join()).toEqual(
+      expect(Object.keys(action).join()).toEqual(
         "nodeProvider,amountE8s,rewardMode"
       );
     });
 
     it("should include undefined action fields", () => {
-      const fields = proposalActionFields(proposalWithActionWithUndefined);
+      const action = proposalActionData(proposalWithActionWithUndefined);
 
-      expect(fields.map(([key]) => key).join()).toEqual(
+      expect(Object.keys(action).join()).toEqual(
         "nodeProvider,amountE8s,rewardMode"
       );
     });
@@ -671,9 +671,9 @@ describe("proposals-utils", () => {
         ...mockProposalInfo.proposal,
         action: undefined,
       } as Proposal;
-      const fields = proposalActionFields(proposal);
+      const action = proposalActionData(proposal);
 
-      expect(fields.length).toBe(0);
+      expect(Object.keys(action).length).toBe(0);
     });
   });
 

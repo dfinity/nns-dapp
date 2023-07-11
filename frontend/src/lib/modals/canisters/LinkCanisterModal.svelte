@@ -1,28 +1,20 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
+  import { busy, Modal } from "@dfinity/gix-components";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { attachCanister } from "$lib/services/canisters.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
-  import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
-
-  const steps: WizardSteps = [
-    {
-      name: "EnterCanisterId",
-      title: $i18n.canisters.link_canister,
-    },
-  ];
-
-  let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   let principal: Principal | undefined;
+  let name = "";
+  let errorMessage: string | undefined = undefined;
+  $: errorMessage = errorCanisterNameMessage(name);
 
   const dispatcher = createEventDispatcher();
   const attach = async () => {
@@ -34,7 +26,10 @@
       return;
     }
     startBusy({ initiator: "link-canister" });
-    const { success } = await attachCanister(principal);
+    const { success } = await attachCanister({
+      canisterId: principal,
+      name,
+    });
     stopBusy("link-canister");
     if (success) {
       toastsSuccess({
@@ -49,17 +44,63 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<Modal on:nnsClose>
   <svelte:fragment slot="title"
     ><span data-tid="link-canister-modal-title"
-      >{currentStep?.title ?? $i18n.canisters.link_canister}</span
+      >{$i18n.canisters.link_canister}</span
     ></svelte:fragment
   >
 
-  {#if currentStep?.name === "EnterCanisterId"}
-    <AddPrincipal bind:principal on:nnsSelectPrincipal={attach} on:nnsClose>
-      <span slot="title">{$i18n.canisters.enter_canister_id}</span>
-      <span slot="button">{$i18n.core.confirm}</span>
-    </AddPrincipal>
-  {/if}
-</WizardModal>
+  <form on:submit|preventDefault={attach}>
+    <div class="fields">
+      <PrincipalInput
+        bind:principal
+        placeholderLabelKey="core.principal_id"
+        name="principal"
+      >
+        <svelte:fragment slot="label"
+          >{$i18n.canisters.enter_canister_id}</svelte:fragment
+        >
+      </PrincipalInput>
+      <InputWithError
+        bind:value={name}
+        inputType="text"
+        placeholderLabelKey="canisters.name"
+        name="canister-name"
+        required={false}
+        {errorMessage}
+      >
+        <svelte:fragment slot="label"
+          >{$i18n.canisters.enter_name_label}</svelte:fragment
+        >
+      </InputWithError>
+    </div>
+
+    <div class="toolbar">
+      <button
+        class="secondary"
+        type="button"
+        data-tid="cancel-button"
+        on:click={() => dispatcher("nnsClose")}
+      >
+        {$i18n.core.cancel}
+      </button>
+      <button
+        data-tid="link-canister-button"
+        class="primary"
+        type="submit"
+        disabled={principal === undefined || $busy || nonNullish(errorMessage)}
+      >
+        {$i18n.core.confirm}
+      </button>
+    </div>
+  </form>
+</Modal>
+
+<style lang="scss">
+  .fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+</style>

@@ -939,6 +939,80 @@ fn attach_canister_canister_already_attached() {
 }
 
 #[test]
+fn attach_canister_substitutes_empty_name_canister() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: "".to_string(),
+            canister_id,
+        },
+    );
+
+    let initial_canisters = store.get_canisters(principal);
+    assert!(initial_canisters[0].name.is_empty());
+
+    let name = "XYZ";
+    let result = store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: name.to_string(),
+            canister_id,
+        },
+    );
+
+    let canisters = store.get_canisters(principal);
+    assert_eq!(name, canisters[0].name);
+    assert!(matches!(result, AttachCanisterResponse::Ok));
+}
+
+#[test]
+fn attach_newly_created_canister_attaches_if_not_present() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let canisters = store.get_canisters(principal);
+    assert_eq!(canisters.len(), 0);
+
+    store.attach_newly_created_canister(principal, canister_id);
+
+    let final_canisters = store.get_canisters(principal);
+    assert_eq!(final_canisters.len(), 1);
+}
+
+#[test]
+fn attach_newly_created_canister_does_not_attach_if_present() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+
+    let name = "XYZ";
+    store.attach_canister(
+        principal,
+        AttachCanisterRequest {
+            name: name.to_string(),
+            canister_id,
+        },
+    );
+
+    let canisters = store.get_canisters(principal);
+    assert_eq!(canisters.len(), 1);
+
+    store.attach_newly_created_canister(principal, canister_id);
+
+    let final_canisters = store.get_canisters(principal);
+    assert_eq!(final_canisters.len(), 1);
+    assert_eq!(final_canisters[0].name, name);
+}
+
+#[test]
 fn attach_canister_and_rename() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();

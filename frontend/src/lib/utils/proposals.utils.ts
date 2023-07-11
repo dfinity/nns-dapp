@@ -47,28 +47,13 @@ export const proposalFirstActionKey = (
   proposal: Proposal | undefined
 ): string | undefined => Object.keys(proposal?.action ?? {})[0];
 
-export const proposalActionFields = (
-  proposal: Proposal
-): [string, unknown][] => {
+export const proposalActionData = (proposal: Proposal): unknown | undefined => {
   const key = proposalFirstActionKey(proposal);
   if (key === undefined) {
-    return [];
+    return {};
   }
-  return Object.entries(
-    keyOfOptional({ obj: proposal.action, key }) ?? {}
-  ).filter(([, value]) => {
-    switch (typeof value) {
-      case "object":
-        return value && Object.keys(value).length > 0;
-      case "undefined":
-      case "string":
-      case "bigint":
-      case "boolean":
-      case "number":
-        return true;
-    }
-    return false;
-  });
+
+  return (proposal.action as { [key: string]: unknown })?.[key];
 };
 
 export const getNnsFunctionKey = (

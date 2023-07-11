@@ -38,7 +38,7 @@
   on:nnsClose
   bind:text={newAccountName}
   placeholderLabelKey="accounts.rename_new_name_placeholder"
-  busy={$busy}
+  disabledInput={$busy}
   disabledConfirm={newAccountName.length === 0 ||
     $busy ||
     selectedAccount === undefined}

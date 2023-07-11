@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+
+print_help() {
+  cat <<-EOF
+	Takes the entries in the '## Unreleased' section of CHANGELOG-Nns-Dapp.md and
+	splits them into a section with entries before and after the last release was
+	cut.
+
+	The second section gets a title like "PROPOSAL XXXXXX" based on the proposal
+	number tag.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define long=commit desc="Entries after this commit are considered new" variable=COMMIT default="tags/release-candidate"
+clap.define long=test-changelog desc="An alternate CHANGELOG file for testing" variable=CHANGELOG default=""
+clap.define long=test-old-changelog desc="An alternate old CHANGELOG for testing" variable=OLD_CHANGELOG default=""
+clap.define long=test-proposal desc="An alternate proposal number for testing" variable=PROPOSAL_NUMBER default=""
+# Source the output file ------------------------------------------------------
+source "$(clap.build)"
+
+# The script does the following:
+# 1. Make a copy of the old changelog file until the end of the Unreleased section.
+# 2. Apply the change that have been made since, but add an extra '+' at the
+#    start of new entries
+# 3. Remove the entries without the extra '+'.
+# 4. Remove the extra '+' from the new entries.
+# 5. Append the title "Proposal XXX" at the end of the file. The XXX is taken
+#    from the commit tag.
+# 6. Append the old changelog file below "Proposal XXX" starting at the
+#    Unreleased section.
+
+# Writes stdin to the given file, but only after reading all of stdin.
+# Polyfill because `sponge` is not available everywhere.
+sponge() {
+  local tmp_file
+  tmp_file="$(mktemp)"
+  cat >"$tmp_file"
+  mv "$tmp_file" "$1"
+}
+
+CHANGELOG_BASENAME="CHANGELOG-Nns-Dapp.md"
+
+TOP_DIR="$(git rev-parse --show-toplevel)"
+CHANGELOG="${CHANGELOG:-$TOP_DIR/$CHANGELOG_BASENAME}"
+
+if ! [ "${OLD_CHANGELOG:-}" ]; then
+  OLD_CHANGELOG="$(mktemp)"
+  trap 'rm "$OLD_CHANGELOG"' EXIT
+
+  # Get the old changelog from git history.
+  git show "$COMMIT:$CHANGELOG_BASENAME" >"$OLD_CHANGELOG"
+fi
+
+# Add 1 to start after the title.
+START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$OLD_CHANGELOG" | cut -d: -f1) + 1))"
+# Subtract 1 to end before the next title.
+END_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Proposal [0-9]\+$' "$OLD_CHANGELOG" | cut -d: -f1) - 1))"
+
+# Find which entries are new.
+PATCH="$(mktemp)"
+diff -u "$OLD_CHANGELOG" "$CHANGELOG" >"$PATCH" || true
+
+# Take the part until the end of the Unreleased section.
+head -n "$END_OF_UNRELEASED_SECTION" "$OLD_CHANGELOG" >"$CHANGELOG"
+
+# Apply the new entries with an extra '+'.
+sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$CHANGELOG"
+
+# Remove the entries that don't have the extra '+'.
+grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @' | sponge "$CHANGELOG"
+
+# Get proposal number from tags applied to same commit as prod tag
+PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-[0-9]\+' | cut -d- -f2)"}"
+PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-XXXXXX}"
+
+# Append the tail of the old changelog with entries before the release was cut.
+echo "## Proposal $PROPOSAL_NUMBER" >>"$CHANGELOG"
+tail -n "+$START_OF_UNRELEASED_SECTION" "$OLD_CHANGELOG" >>"$CHANGELOG"
+
+# Remove duplicate blank lines.
+cat -s "$CHANGELOG" | sponge "$CHANGELOG"
+
+rm "$PATCH"

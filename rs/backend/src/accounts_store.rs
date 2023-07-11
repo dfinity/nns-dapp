@@ -16,7 +16,7 @@ use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::cmp::min;
+use std::cmp::{min, Ordering};
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
@@ -76,6 +76,35 @@ struct NamedHardwareWalletAccount {
 pub struct NamedCanister {
     name: String,
     canister_id: CanisterId,
+}
+
+impl NamedCanister {
+    /// A value used to decide how `NamedCanister`s are sorted.
+    ///
+    /// This will sort the canisters such that those with names specified will appear first and will be
+    /// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
+    ///
+    /// Note: This allocates a string, so for sorting long lists this will be slow.
+    /// - Consider using `sort_by_cached_key(|x| x.sorting_key())`, if allowed in canisters.
+    /// - Determine whether the native ordering of principals is acceptable.  If so, the key can
+    ///   be of type (bool, &str, &Principal) where the string is the name.
+    fn sorting_key(&self) -> (bool, String) {
+        if self.name.is_empty() {
+            (true, self.canister_id.to_string())
+        } else {
+            (false, self.name.clone())
+        }
+    }
+}
+impl Ord for NamedCanister {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.sorting_key().cmp(&other.sorting_key())
+    }
+}
+impl PartialOrd for NamedCanister {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
@@ -774,6 +803,15 @@ impl AccountsStore {
         }
     }
 
+    fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
+        account
+            .canisters
+            .iter()
+            .enumerate()
+            .find(|(_, canister)| canister.canister_id == canister_id)
+            .map(|(index, _)| index)
+    }
+
     pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
         if !Self::validate_canister_name(&request.name) {
             AttachCanisterResponse::NameTooLong
@@ -782,35 +820,43 @@ impl AccountsStore {
 
             if self.accounts.get(&account_identifier.to_vec()).is_some() {
                 let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-                if account.canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded;
-                }
-                for c in account.canisters.iter() {
+
+                let mut index_to_remove: Option<usize> = None;
+                for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
                         return AttachCanisterResponse::NameAlreadyTaken;
-                    } else if c.canister_id == request.canister_id {
-                        return AttachCanisterResponse::CanisterAlreadyAttached;
                     }
+                    // The periodic_task_runner might attach the canister before this call.
+                    // The canister attached by the periodic_task_runner has name `""`
+                    if c.canister_id == request.canister_id {
+                        if c.name.is_empty() && !request.name.is_empty() {
+                            index_to_remove = Some(index);
+                        } else {
+                            return AttachCanisterResponse::CanisterAlreadyAttached;
+                            // Note: It might be nice to tell the user the name of the existing canister.
+                        }
+                    }
+                }
+
+                if let Some(index) = index_to_remove {
+                    // Remove the previous attached canister before reattaching.
+                    account.canisters.remove(index);
+                }
+
+                if account.canisters.len() >= u8::MAX as usize {
+                    return AttachCanisterResponse::CanisterLimitExceeded;
                 }
                 account.canisters.push(NamedCanister {
                     name: request.name,
                     canister_id: request.canister_id,
                 });
-                sort_canisters(&mut account.canisters);
+                account.canisters.sort();
+
                 AttachCanisterResponse::Ok
             } else {
                 AttachCanisterResponse::AccountNotFound
             }
         }
-    }
-
-    fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
-        account
-            .canisters
-            .iter()
-            .enumerate()
-            .find(|(_, canister)| canister.canister_id == canister_id)
-            .map(|(index, _)| index)
     }
 
     pub fn rename_canister(&mut self, caller: PrincipalId, request: RenameCanisterRequest) -> RenameCanisterResponse {
@@ -831,7 +877,7 @@ impl AccountsStore {
                         name: request.name,
                         canister_id: request.canister_id,
                     });
-                    sort_canisters(&mut account.canisters);
+                    account.canisters.sort();
                     RenameCanisterResponse::Ok
                 } else {
                     RenameCanisterResponse::CanisterNotFound
@@ -875,11 +921,15 @@ impl AccountsStore {
 
         if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            account.canisters.push(NamedCanister {
-                name: "".to_string(),
-                canister_id,
-            });
-            sort_canisters(&mut account.canisters);
+
+            // We only attach if it doesn't already exist
+            if Self::find_canister_index(account, canister_id).is_none() {
+                account.canisters.push(NamedCanister {
+                    name: "".to_string(),
+                    canister_id,
+                });
+                account.canisters.sort();
+            }
         }
     }
 
@@ -1568,18 +1618,6 @@ fn convert_byte_to_sub_account(byte: u8) -> Subaccount {
     let mut bytes = [0u8; 32];
     bytes[31] = byte;
     Subaccount(bytes)
-}
-
-/// This will sort the canisters such that those with names specified will appear first and will be
-/// sorted by their names. Then those without names will appear last, sorted by their canister Ids.
-fn sort_canisters(canisters: &mut [NamedCanister]) {
-    canisters.sort_unstable_by_key(|c| {
-        if c.name.is_empty() {
-            (true, c.canister_id.to_string())
-        } else {
-            (false, c.name.clone())
-        }
-    });
 }
 
 #[derive(CandidType, Deserialize)]

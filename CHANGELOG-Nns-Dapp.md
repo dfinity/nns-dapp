@@ -7,6 +7,96 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
 
 ## Unreleased
+### Application
+
+#### Added
+
+* Nns voting e2e test.
+
+#### Changed
+
+* Revert display of TVL in various currencies to USD only
+* Removed `OWN_CANISTER_URL`.
+* Setting Dissolve Delay supports 888 years.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+#### Security
+
+* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Added CI workflows to update rust and didc automatically, by cron job or button click.
+* Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
+* Test that no new change log entries are added to existing releases.
+* New feature flag "ENABLE_NEURON_SETTINGS".
+* Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
+* release-sop.test now has a flag to update golden files.
+
+#### Changed
+
+* Updated `didc` to the latest release.
+* Migrated some end-to-end tests from Wdio to Playwright.
+* Use the newest snsdemo snapshot with the sns_aggregator preloaded.
+* Split Playwright e2e test on CI into 2 shards.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+#### Security
+
+## Proposal 123423
+### Application
+
+#### Added
+
+* Render SNS neuron voting power in neuron detail page.
+* Users can now add names to canisters to easily identify them within NNS dapp only.
+* Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+
+#### Changed
+
+* Simplify rust cache expiry with `pop_first()`.
+* Updated `bitcoin-canister` revision for proposal payload support.
+* Improve proposal action rendering.
+
+#### Fixed
+
+* Fix bug with newly created canisters where the name was ovewritten to empty string.
+
+#### Not Published
+
+* Progress on merge neurons preview, behind a flag.
+
+### Operations
+
+#### Added
+
+- CreateServiceNervousSystem proposal support.
+- Base64 image support for payload rendering.
+- `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
+- Added a script to perform part of the release SOP.
+
+#### Changed
+
+- Consolidated the config tests.
+- Set a custom URL for `internet_identity` on `ic` rather than using the default.
+- Improve Canister Detail tests by mocking the api layer instead of services.
+- Copied the newest version of clap.bash from snsdemo.
+
+#### Fixed
+
+* ci-link script uses correct workflow name.
+
+## Proposal 123301
 
 ### Application
 
@@ -16,44 +106,46 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Decode the payment (amount) from the QR code reader.
 * Add "Select All" and "Clear" selection in proposal filters.
 * Add vesting information in SNS neuron detail.
+* Render SNS neuron voting power in neuron detail page.
 
 #### Changed
 
-* Simplify rust cache expiry with `pop_first()`.
 * Disable functionality buttons while SNS neuron is vesting.
 * Ignore sign-in "error" `UserInterrupt`.
 
 #### Deprecated
 
-* Web Workers have been migrated to ES modules, which means that Firefox users using versions [prior to v114](https://caniuse.com/?search=worker%20module) won't be able to read certain data in the UI, such as TVL and canisters' cycles, unless they upgrade their browser to a more recent release.  
+* Web Workers have been migrated to ES modules, which means that Firefox users using versions [prior to v114](https://caniuse.com/?search=worker%20module) won't be able to read certain data in the UI, such as TVL and canisters' cycles, unless they upgrade their browser to a more recent release.
 
-#### Removed
 #### Fixed
 
+* Title of Ledger device transaction when staking two neurons on a row.
 * Enable voting for proposals that are decided but still accepting votes.
 * Misplaced tooltip for disabled SNS neuron split button.
-
-#### Security
-#### Not Published
 
 ### Operations
 
 #### Added
-- A script to get the WASM hash from the GitHub CI build log.
-- `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 
+* Added a command line tool to get the arguments of a canister upgrade proposal, for verification purposes.
+* Publish the arguments used in every release.
+* A script to download the WASM from GitHub CI build.
+- A script to get the WASM hash from the GitHub CI build log.
+* Instructions to verify canister args in proposal.
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+* More test for the release-sop script.
 
 #### Changed
+
+- Refactored CI tests to reduce network load related failures.
+- Fix coreutils installation issues on M1 apple laptops.
 - Made per-network configuration in dfx.json optional.
 - Consolidated the `docker-build` and `aggregator` GitHub workflows into the `build` workflow, to reuse the build artefacts and so reduce network load on the runners.
 - Increased timeout on end-to-end tests running on CI.
-#### Deprecated
+
 #### Removed
-- Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
-#### Fixed
-- Script to download WASM from CI no longer relies on broken `gh --status` flag.
-#### Security
+
+* Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
 
 ## Proposal 123245
 

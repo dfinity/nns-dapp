@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    proposalActionFields,
+    proposalActionData,
     proposalFirstActionKey,
   } from "$lib/utils/proposals.utils";
   import type { Proposal } from "@dfinity/nns";
@@ -9,11 +9,10 @@
   export let proposal: Proposal | undefined;
 
   let actionKey: string | undefined;
-  let actionFields: [string, unknown][] = [];
+  let actionData: unknown = {};
   $: actionKey =
     proposal !== undefined ? proposalFirstActionKey(proposal) : undefined;
-  $: actionFields =
-    proposal !== undefined ? proposalActionFields(proposal) : [];
+  $: actionData = proposal !== undefined ? proposalActionData(proposal) : {};
 </script>
 
-<ProposalProposerActionsEntry {actionKey} {actionFields} />
+<ProposalProposerActionsEntry {actionKey} {actionData} />

@@ -1,6 +1,5 @@
 import { fetchTransactionRate } from "$lib/api/dashboard.api";
 import type { GetTVLResult } from "$lib/canisters/tvl/tvl.canister.types";
-import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
 import {
   SYNC_METRICS_CONFIG,
   SYNC_METRICS_TIMER_INTERVAL,
@@ -10,7 +9,6 @@ import type { MetricsSync } from "$lib/types/metrics";
 import type { PostMessageDataRequestMetrics } from "$lib/types/post-message.metrics";
 import type { PostMessage } from "$lib/types/post-messages";
 import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
-import { nonNullish } from "@dfinity/utils";
 
 onmessage = async ({
   data: dataMsg,
@@ -79,32 +77,8 @@ const syncMetrics = async ({
   syncInProgress = true;
 
   try {
-    const randomCurrency = (): FiatCurrency | undefined => {
-      const random = Math.floor(1 + Math.random() * 5);
-
-      switch (random) {
-        case 2:
-          return { CNY: null };
-        case 3:
-          return { EUR: null };
-        case 4:
-          return { GBP: null };
-        case 5:
-          return { JPY: null };
-        default:
-          return undefined;
-      }
-    };
-
-    const currency = randomCurrency();
-
     const metrics = await Promise.all([
-      syncTvl
-        ? queryTVL({
-            ...rest,
-            ...(nonNullish(currency) && { currency }),
-          })
-        : Promise.resolve(undefined),
+      syncTvl ? queryTVL(rest) : Promise.resolve(undefined),
       syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
     ]);
 

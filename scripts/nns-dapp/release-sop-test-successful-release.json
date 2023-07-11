@@ -1,0 +1,182 @@
+{
+  "args": [
+    "--new"
+  ],
+  "behavior": [
+    {
+      "command": "date +%Y-%m-%d",
+      "stdout": "2001-02-29",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git show-ref --quiet --verify refs/heads/Release-2001-02-29",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 1
+    },
+    {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --quiet --exit-code",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "date +%Y-%m-%d\\ %H:%M:%S",
+      "stdout": "2001-02-29 14:15:16",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse release-candidate",
+      "stdout": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "npm_audit",
+      "stdout": "https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cargo_audit",
+      "stdout": "RUSTSEC-2020-0071,RUSTSEC-2020-0159",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "no_html_in_templates",
+      "stdout": "Checked",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "scripts/nns-dapp/get-hash-from-ci-log --commit tags/release-candidate",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "sha256 /home/runner/work/nns-dapp/release/ci/nns-dapp.wasm.gz",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "get_dfx_identity",
+      "stdout": "default: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "dfx canister id nns-dapp --network staging",
+      "stdout": "jefp3-bqaaa-aaaaa-aacyq-cai",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cat nns-dapp-arg-staging.did",
+      "stdout": "(record{})",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "get_module_hash_from_network staging",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "post_on_slack",
+      "stdout": "https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
+    "Start time: 2001-02-29 14:15:16",
+    "Press enter to run the following command:",
+    "",
+    "git fetch --tags --force",
+    "",
+    "git fetch --tags --force: Done",
+    "Press enter to run the following command:",
+    "",
+    "git checkout -b Release-2001-02-29 origin/main",
+    "",
+    "git checkout -b Release-2001-02-29 origin/main: Done",
+    "Release branch: Release-2001-02-29",
+    "Current branch: Release-2001-02-29",
+    "Press enter to run the following command:",
+    "",
+    "git push origin Release-2001-02-29",
+    "",
+    "git push origin Release-2001-02-29: Done",
+    "Release branch URL: https://github.com/dfinity/nns-dapp/tree/Release-2001-02-29",
+    "Press enter to run the following command:",
+    "",
+    "git tag -f release-candidate",
+    "",
+    "git tag -f release-candidate: Done",
+    "Release commit: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "tags/release-candidate commit: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "Press enter to run the following command:",
+    "",
+    "git push origin -f tags/release-candidate",
+    "",
+    "git push origin -f tags/release-candidate: Done",
+    "Security test: npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+    "Expected npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7",
+    "Security test: cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
+    "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
+    "Security test: no HTML in templates: Checked",
+    "Press enter to run the following command:",
+    "",
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz",
+    "",
+    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Done",
+    "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Local WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Press enter to run the following command:",
+    "",
+    "scripts/canister_ids --remove --network staging --canister nns-dapp",
+    "",
+    "scripts/canister_ids --remove --network staging --canister nns-dapp: Done",
+    "dfx identity: default: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe",
+    "Press enter to run the following command:",
+    "",
+    "dfx canister create nns-dapp --network staging --no-wallet",
+    "",
+    "dfx canister create nns-dapp --network staging --no-wallet: Done",
+    "NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
+    "Current NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
+    "Press enter to run the following command:",
+    "",
+    "DFX_NETWORK=staging ./config.sh",
+    "",
+    "DFX_NETWORK=staging ./config.sh: Done",
+    "Press enter to run the following command:",
+    "",
+    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz",
+    "",
+    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: Done",
+    "Staging URL: https://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/",
+    "Staging WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Post on Slack: https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509"
+  ],
+  "expectedExitCode": 0
+}

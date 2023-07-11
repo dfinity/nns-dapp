@@ -1,12 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import Input from "../ui/Input.svelte";
+  import InputWithError from "../ui/InputWithError.svelte";
 
   export let text: string | undefined = undefined;
   export let placeholderLabelKey: string;
-  export let busy = false;
+  export let disabledInput = false;
   export let disabledConfirm = false;
+  export let errorMessage: string | undefined = undefined;
   export let testId: string | undefined = undefined;
+  export let required = true;
 
   const dispatcher = createEventDispatcher();
 </script>
@@ -17,12 +19,14 @@
 >
   <div>
     <p class="label"><slot name="label" /></p>
-    <Input
+    <InputWithError
       inputType="text"
       {placeholderLabelKey}
       name="add-text-input"
       bind:value={text}
-      disabled={busy}
+      disabled={disabledInput}
+      {required}
+      {errorMessage}
     />
   </div>
 

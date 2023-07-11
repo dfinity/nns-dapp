@@ -1,22 +1,21 @@
-#![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(clippy::all)]
+#![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
-use candid::Principal;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, Principal};
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsWasmCanisterInitPayload {
-    pub allowed_principals: Vec<Principal>,
+    pub allowed_principals: Vec<candid::Principal>,
     pub access_controls_enabled: bool,
-    pub sns_subnet_ids: Vec<Principal>,
+    pub sns_subnet_ids: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -48,23 +47,13 @@ pub struct AddWasmResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Canister {
-    pub id: Option<Principal>,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DappCanisters {
-    pub canisters: Vec<Canister>,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TreasuryDistribution {
     pub total_e8s: u64,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronDistribution {
-    pub controller: Option<Principal>,
+    pub controller: Option<candid::Principal>,
     pub dissolve_delay_seconds: u64,
     pub memo: u64,
     pub stake_e8s: u64,
@@ -124,7 +113,6 @@ pub struct SnsInitPayload {
     pub initial_reward_rate_basis_points: Option<u64>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
-    pub dapp_canisters: Option<DappCanisters>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
     pub reward_rate_transition_duration_seconds: Option<u64>,
@@ -139,25 +127,17 @@ pub struct DeployNewSnsRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct DappCanistersTransferResult {
-    pub restored_dapp_canisters: Vec<Canister>,
-    pub nns_controlled_dapp_canisters: Vec<Canister>,
-    pub sns_controlled_dapp_canisters: Vec<Canister>,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsCanisterIds {
-    pub root: Option<Principal>,
-    pub swap: Option<Principal>,
-    pub ledger: Option<Principal>,
-    pub index: Option<Principal>,
-    pub governance: Option<Principal>,
+    pub root: Option<candid::Principal>,
+    pub swap: Option<candid::Principal>,
+    pub ledger: Option<candid::Principal>,
+    pub index: Option<candid::Principal>,
+    pub governance: Option<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DeployNewSnsResponse {
-    pub dapp_canisters_transfer_result: Option<DappCanistersTransferResult>,
-    pub subnet_id: Option<Principal>,
+    pub subnet_id: Option<candid::Principal>,
     pub error: Option<SnsWasmError>,
     pub canisters: Option<SnsCanisterIds>,
 }
@@ -167,7 +147,7 @@ pub struct get_allowed_principals_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetAllowedPrincipalsResponse {
-    pub allowed_principals: Vec<Principal>,
+    pub allowed_principals: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -182,7 +162,7 @@ pub struct SnsVersion {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNextSnsVersionRequest {
-    pub governance_canister_id: Option<Principal>,
+    pub governance_canister_id: Option<candid::Principal>,
     pub current_version: Option<SnsVersion>,
 }
 
@@ -196,7 +176,7 @@ pub struct get_sns_subnet_ids_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsSubnetIdsResponse {
-    pub sns_subnet_ids: Vec<Principal>,
+    pub sns_subnet_ids: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -218,7 +198,7 @@ pub struct SnsUpgrade {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InsertUpgradePathEntriesRequest {
     pub upgrade_path: Vec<SnsUpgrade>,
-    pub sns_governance_canister_id: Option<Principal>,
+    pub sns_governance_canister_id: Option<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -229,13 +209,13 @@ pub struct InsertUpgradePathEntriesResponse {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct list_deployed_snses_arg0 {}
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct DeployedSns {
-    pub root_canister_id: Option<Principal>,
-    pub governance_canister_id: Option<Principal>,
-    pub index_canister_id: Option<Principal>,
-    pub swap_canister_id: Option<Principal>,
-    pub ledger_canister_id: Option<Principal>,
+    pub root_canister_id: Option<candid::Principal>,
+    pub governance_canister_id: Option<candid::Principal>,
+    pub index_canister_id: Option<candid::Principal>,
+    pub swap_canister_id: Option<candid::Principal>,
+    pub ledger_canister_id: Option<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -247,7 +227,7 @@ pub struct ListDeployedSnsesResponse {
 pub struct ListUpgradeStepsRequest {
     pub limit: u32,
     pub starting_at: Option<SnsVersion>,
-    pub sns_governance_canister_id: Option<Principal>,
+    pub sns_governance_canister_id: Option<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -273,8 +253,8 @@ pub struct ListUpgradeStepsResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpdateAllowedPrincipalsRequest {
-    pub added_principals: Vec<Principal>,
-    pub removed_principals: Vec<Principal>,
+    pub added_principals: Vec<candid::Principal>,
+    pub removed_principals: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -290,8 +270,8 @@ pub struct UpdateAllowedPrincipalsResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpdateSnsSubnetListRequest {
-    pub sns_subnet_ids_to_add: Vec<Principal>,
-    pub sns_subnet_ids_to_remove: Vec<Principal>,
+    pub sns_subnet_ids_to_add: Vec<candid::Principal>,
+    pub sns_subnet_ids_to_remove: Vec<candid::Principal>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -299,7 +279,7 @@ pub struct UpdateSnsSubnetListResponse {
     pub error: Option<SnsWasmError>,
 }
 
-pub struct SERVICE(pub Principal);
+pub struct SERVICE(pub candid::Principal);
 impl SERVICE {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
         ic_cdk::call(self.0, "add_wasm", (arg0,)).await

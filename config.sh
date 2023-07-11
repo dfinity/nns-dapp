@@ -104,6 +104,18 @@ local_deployment_data="$(
   # shellcheck disable=SC2090 # We still want the backslash.
   export ROBOTS
 
+  : "Get the network domains"
+  API_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type api)"
+  STATIC_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type static)"
+  export API_HOST STATIC_HOST
+
+  : "Determine whether we need to fetch the root key"
+  case "${DFX_NETWORK:-}" in
+  mainnet | ic) FETCH_ROOT_KEY=false ;;
+  *) FETCH_ROOT_KEY=true ;;
+  esac
+  export FETCH_ROOT_KEY
+
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.CANISTER_ID,
@@ -115,6 +127,9 @@ local_deployment_data="$(
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
+    STATIC_HOST: env.STATIC_HOST,
+    API_HOST: env.API_HOST,
+    FETCH_ROOT_KEY: env.FETCH_ROOT_KEY,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
@@ -130,13 +145,12 @@ local_deployment_data="$(
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
 : "- construct ledger and governance canister URLs"
+# TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
   (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
-  .HOST=env.HOST |
-  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
+  .HOST=env.HOST
 ' dfx.json <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
@@ -146,7 +160,6 @@ governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
 tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
-ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
@@ -163,7 +176,6 @@ VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
 VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
 VITE_OWN_CANISTER_ID=$ownCanisterId
-VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
@@ -212,8 +224,6 @@ export LEDGER_CANISTER_ID
 
 OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID
-OWN_CANISTER_URL="$ownCanisterUrl"
-export OWN_CANISTER_URL
 
 HOST="$host"
 export HOST
