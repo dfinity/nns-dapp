@@ -11,10 +11,53 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Nns voting e2e test.
+
+#### Changed
+
+* Removed `OWN_CANISTER_URL`.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+#### Security
+
+* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Added CI workflows to update rust and didc automatically, by cron job or button click.
+* Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
+* Test that no new change log entries are added to existing releases.
+* New feature flag "ENABLE_NEURON_SETTINGS".
+* Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
+* release-sop.test now has a flag to update golden files.
+
+#### Changed
+
+* Migrated some end-to-end tests from Wdio to Playwright.
+* Use the newest snsdemo snapshot with the sns_aggregator preloaded.
+* Split Playwright e2e test on CI into 2 shards.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+#### Security
+
+## Proposal 123423
+### Application
+
+#### Added
+
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them within NNS dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
-* Nns voting e2e test.
 
 #### Changed
 
@@ -22,15 +65,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Updated `bitcoin-canister` revision for proposal payload support.
 * Improve proposal action rendering.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
-
-#### Security
-
-* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
 
 #### Not Published
 
@@ -40,16 +77,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-- Added CI workflows to update rust and didc automatically.
 - CreateServiceNervousSystem proposal support.
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 - Added a script to perform part of the release SOP.
-- Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
-- Test that no new change log entries are added to existing releases.
-- New feature flag "ENABLE_NEURON_SETTINGS".
-- Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
-- release-sop.test now has a flag to update golden files.
 
 #### Changed
 
@@ -57,15 +88,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
-- Migrated some end-to-end tests from Wdio to Playwright.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * ci-link script uses correct workflow name.
-
-#### Security
 
 ## Proposal 123301
 
@@ -104,6 +130,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - A script to get the WASM hash from the GitHub CI build log.
 * Instructions to verify canister args in proposal.
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+* More test for the release-sop script.
 
 #### Changed
 
@@ -116,7 +143,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
-
 
 ## Proposal 123245
 
