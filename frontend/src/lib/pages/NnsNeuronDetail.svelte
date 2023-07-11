@@ -36,6 +36,11 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { isForceCallStrategy } from "$lib/utils/env.utils";
+  import { ENABLE_NEURON_SETTINGS } from "$lib/stores/feature-flags.store";
+  import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
+  import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
+  import NnsNeuronMaturitySection from "$lib/components/neuron-detail/NnsNeuronMaturitySection.svelte";
+  import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -142,6 +147,12 @@
     <main class="legacy">
       <section data-tid="neuron-detail">
         {#if neuron && !inVotingProcess}
+          {#if ENABLE_NEURON_SETTINGS}
+            <NnsNeuronPageHeader />
+            <NnsNeuronVotingPowerSection />
+            <NnsNeuronMaturitySection />
+            <NnsNeuronAdvancedSection />
+          {/if}
           <Summary displayUniverse={false} />
 
           <NnsNeuronMetaInfoCard {neuron} />
