@@ -33,7 +33,7 @@ const mandatoryEnvVarKeys: EnvironmentVars = {
   governanceCanisterId: "",
   identityServiceUrl: "",
   ledgerCanisterId: "",
-  ownCanisterId: "",
+  // ownCanisterId: "",  This is manadtory but set dynamically.  Not sure when the dynamic variables come in, and where to test that the dynamic variables include canister ID.
   wasmCanisterId: "",
 };
 
