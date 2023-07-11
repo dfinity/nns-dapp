@@ -9,10 +9,9 @@
   export let inline = false;
   export let singleLine = false;
   export let title = false;
-  export let huge = false;
   export let copy = false;
   export let text = false;
-  export let inheritSize = false;
+  export let size: "inherit" | "huge" | undefined = undefined;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean | "height_decimals" = false;
 </script>
@@ -20,11 +19,11 @@
 <div
   class:inline
   class:singleLine
-  class:inheritSize
+  class:inheritSize={size === "inherit"}
   class:title
   class:copy
   class:text
-  class:huge
+  class:huge={size === "huge"}
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
