@@ -141,7 +141,7 @@ impl FastScheduler {
     /// Stop collecting data now.
     pub fn stop(&mut self) {
         if let Some(timer_id) = self.update_timer.take() {
-            ic_cdk_timers::clear_timer(timer_id);
+            clear_timer(timer_id);
         }
     }
 
@@ -157,7 +157,7 @@ impl FastScheduler {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::global_update_next()));
         let old_timer = self.update_timer.replace(timer_id);
         if let Some(id) = old_timer {
-            ic_cdk_timers::clear_timer(id);
+            clear_timer(id);
         }
         self.next_start_seconds = None;
     }
