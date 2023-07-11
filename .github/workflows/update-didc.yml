@@ -5,6 +5,7 @@ on:
   schedule:
     # check for new didc releases daily at 7:30
     - cron: '30 7 * * *'
+  workflow_dispatch:
 jobs:
   didc-update:
     runs-on: ubuntu-latest
@@ -14,7 +15,9 @@ jobs:
       - name: Check new didc version
         id: update
         run: |
-          current_didc_release=$(sed <.didc-release 's/#.*$//' | sed '/^$/d')
+          pwd
+          find .github/actions
+          current_didc_release=$(jq -r '.defaults.build.config.DIDC_VERSION' dfx.json)
           echo "current didc release '$current_didc_release'"
 
           latest_didc_release=$(curl -sSL https://api.github.com/repos/dfinity/candid/releases/latest | jq .tag_name -r)
@@ -30,15 +33,15 @@ jobs:
             echo "updated=0" >> "$GITHUB_OUTPUT"
           fi
 
-          cat ./.didc-release
-        # If the .didc-release was updated, create a PR.
+          jq '.defaults.build.config.DIDC_VERSION' dfx.json
+        # If dfx.json was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
-          add-paths: ./.didc-release
+          add-paths: dfx.json
           commit-message: Update didc release
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>

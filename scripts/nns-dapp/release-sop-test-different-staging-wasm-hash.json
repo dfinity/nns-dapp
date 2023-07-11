@@ -95,13 +95,7 @@
     },
     {
       "command": "get_module_hash_from_network staging",
-      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
-      "command": "post_on_slack",
-      "stdout": "https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509",
+      "stdout": "8888888888888888888888888888888888888888888888888888888888888888",
       "stderr": "",
       "exitCode": 0
     }
@@ -175,8 +169,9 @@
     "",
     "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: Done",
     "Staging URL: https://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/",
-    "Staging WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "Post on Slack: https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509"
+    "Values don't match!",
+    "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+    "Staging WASM hash: 8888888888888888888888888888888888888888888888888888888888888888"
   ],
-  "expectedExitCode": 0
+  "expectedExitCode": 1
 }

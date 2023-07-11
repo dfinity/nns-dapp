@@ -316,6 +316,7 @@ post_on_slack() {
     echo ":rocket: *New RC ${BRANCH_NAME}* : $STAGING_URL"
     echo "Commit: $COMMIT"
     echo "WASM hash: $WASM_HASH"
+    echo "Change log: https://github.com/dfinity/nns-dapp/blob/release-candidate/CHANGELOG-Nns-Dapp.md"
     echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$STAGING_URL)"
     echo "Please try it out."
     echo
@@ -341,14 +342,14 @@ confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
 verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
 record "Security test: cargo audit" cargo_audit
-verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044"
+verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159"
 record "Security test: no HTML in templates" no_html_in_templates
 confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
 verify "CI NNS-dapp WASM hash" "Local WASM hash" sha256 "$TOP_DIR/release/ci/nns-dapp.wasm.gz"
 confirm_cmd scripts/canister_ids --remove --network staging --canister nns-dapp
 record "dfx identity" get_dfx_identity
-confirm_cmd dfx canister create nns-dapp --network staging
+confirm_cmd dfx canister create nns-dapp --network staging --no-wallet
 record "NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
 verify "NNS-dapp staging canister ID" "Current NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
 CANISTER_ID="$(checklist_must_get "NNS-dapp staging canister ID")"

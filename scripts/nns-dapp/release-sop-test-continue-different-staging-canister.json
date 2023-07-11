@@ -35,19 +35,7 @@
     },
     {
       "command": "dfx canister id nns-dapp --network staging",
-      "stdout": "jefp3-bqaaa-aaaaa-aacyq-cai",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
-      "command": "cat nns-dapp-arg-staging.did",
-      "stdout": "(record{})",
-      "stderr": "",
-      "exitCode": 0
-    },
-    {
-      "command": "get_module_hash_from_network staging",
-      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stdout": "aaaaa-aa",
       "stderr": "",
       "exitCode": 0
     }
@@ -77,12 +65,9 @@
     "dfx identity: Was already: default: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe",
     "dfx canister create nns-dapp --network staging --no-wallet: Was already done. Skipping.",
     "NNS-dapp staging canister ID: Was already: jefp3-bqaaa-aaaaa-aacyq-cai",
-    "Current NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
-    "DFX_NETWORK=staging ./config.sh: Was already done. Skipping.",
-    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: Was already done. Skipping.",
-    "Staging URL: Was already: https://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/",
-    "Staging WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "Post on Slack: Was already: https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509"
+    "Values don't match!",
+    "NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
+    "Current NNS-dapp staging canister ID: aaaaa-aa"
   ],
-  "expectedExitCode": 0
+  "expectedExitCode": 1
 }

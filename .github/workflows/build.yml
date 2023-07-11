@@ -53,57 +53,30 @@ jobs:
           name: out
           path: out
           retention-days: 3
-  test-playwright-e2e:
+  test-playwright-e2e-shard-1-of-2:
     needs: build
     runs-on: ubuntu-20.04
-    timeout-minutes: 40
+    timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Get nns-dapp
-        uses: actions/download-artifact@v3
+      - name: Run Playwright e2e test shard 1/2
+        uses: ./.github/actions/test-e2e
         with:
-          name: nns-dapp
-      - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v3
+          shard_number: 1
+          shard_count: 2
+  test-playwright-e2e-shard-2-of-2:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Run Playwright e2e test shard 2/2
+        uses: ./.github/actions/test-e2e
         with:
-          name: sns_aggregator_dev
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'nns-dapp.wasm.gz'
-          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-      - name: Generate .env configuration for Playwright end-to-end tests
-        run: |
-          DFX_NETWORK=local ./config.sh
-      - name: Prepare for Playwright end-to-end tests
-        working-directory: frontend
-        run: |
-          npm ci
-          npx playwright install --with-deps firefox
-      - name: Wait for aggregator to get all SNSs
-        run: |
-          set +x
-          for (( try=300; try>0; try-- )); do
-             num_sns="$(for ((page=0; page<3; page++)) ; do { curl -fsS "http://$(dfx canister id sns_aggregator).localhost:8080/v1/sns/list/page/$page/slow.json" | jq length ; } 2>/dev/null || true ; done | awk '{i+=$1}END{print i}')"
-             (( num_sns < 12)) || break
-             printf "\r #SNS: % 4d   Tries remaining: %4d" "$num_sns" "$try"
-             sleep 2
-          done
-      - name: Run Playwright end-to-end tests
-        working-directory: frontend
-        run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e
-      - name: Upload Playwright results
-        uses: actions/upload-artifact@v3
-        if: ${{ failure() }}
-        with:
-          name: playwright-failure-results
-          path: |
-            frontend/playwright-report/*
-            frontend/playwright-results/*
-          retention-days: 3
-      - name: Stop replica
-        run: dfx stop
+          shard_number: 2
+          shard_count: 2
   test-rest:
     needs: build
     runs-on: ubuntu-20.04
@@ -517,7 +490,7 @@ jobs:
           echo "Max supported size: $max_size"
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
