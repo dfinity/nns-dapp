@@ -38,6 +38,7 @@ pub struct UpgradeArgs {
     pub transfer_fee: Option<u64>,
     pub metadata: Option<Vec<(String, MetadataValue)>>,
     pub change_fee_collector: Option<ChangeFeeCollector>,
+    pub max_memo_length: Option<u16>,
     pub token_name: Option<String>,
 }
 

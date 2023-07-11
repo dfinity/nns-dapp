@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 9df6155f5..7a0945758 100644
+index 5db75704c..bd1fb8593 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -516,7 +516,7 @@ pub struct GetMaturityModulationResponse {
@@ -11,7 +11,7 @@ index 9df6155f5..7a0945758 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -610,7 +610,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -606,7 +606,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  
