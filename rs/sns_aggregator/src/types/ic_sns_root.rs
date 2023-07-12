@@ -1,14 +1,15 @@
 #![allow(clippy::all)]
+#![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-use crate::types::{CandidType, Deserialize, Serialize};
+use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-// use ic_cdk::api::call::CallResult;
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsRootCanister {
@@ -41,11 +42,45 @@ pub struct DefiniteCanisterSettings {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResult {
-    pub controller: candid::Principal,
     pub status: CanisterStatusType,
     pub memory_size: candid::Nat,
+    pub cycles: candid::Nat,
     pub settings: DefiniteCanisterSettings,
     pub module_hash: Option<serde_bytes::ByteBuf>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum CanisterInstallMode {
+    reinstall,
+    upgrade,
+    install,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum AuthzChangeOp {
+    Authorize { add_self: bool },
+    Deauthorize,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct MethodAuthzChange {
+    pub principal: Option<candid::Principal>,
+    pub method_name: String,
+    pub canister: candid::Principal,
+    pub operation: AuthzChangeOp,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ChangeCanisterProposal {
+    pub arg: serde_bytes::ByteBuf,
+    pub wasm_module: serde_bytes::ByteBuf,
+    pub stop_before_installing: bool,
+    pub mode: CanisterInstallMode,
+    pub canister_id: candid::Principal,
+    pub query_allocation: Option<candid::Nat>,
+    pub authz_changes: Vec<MethodAuthzChange>,
+    pub memory_allocation: Option<candid::Nat>,
+    pub compute_allocation: Option<candid::Nat>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -145,6 +180,9 @@ pub struct SERVICE(pub candid::Principal);
 impl SERVICE {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await
+    }
+    pub async fn change_canister(&self, arg0: ChangeCanisterProposal) -> CallResult<()> {
+        ic_cdk::call(self.0, "change_canister", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await

@@ -1,14 +1,15 @@
 #![allow(clippy::all)]
+#![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
-use crate::types::{CandidType, Deserialize, Serialize};
+use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-// use ic_cdk::api::call::CallResult;
+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsWasmCanisterInitPayload {
@@ -43,6 +44,16 @@ pub enum Result {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmResponse {
     pub result: Option<Result>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Canister {
+    pub id: Option<candid::Principal>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DappCanisters {
+    pub canisters: Vec<Canister>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -112,6 +123,7 @@ pub struct SnsInitPayload {
     pub initial_reward_rate_basis_points: Option<u64>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
+    pub dapp_canisters: Option<DappCanisters>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
     pub reward_rate_transition_duration_seconds: Option<u64>,
@@ -126,6 +138,13 @@ pub struct DeployNewSnsRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct DappCanistersTransferResult {
+    pub restored_dapp_canisters: Vec<Canister>,
+    pub nns_controlled_dapp_canisters: Vec<Canister>,
+    pub sns_controlled_dapp_canisters: Vec<Canister>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SnsCanisterIds {
     pub root: Option<candid::Principal>,
     pub swap: Option<candid::Principal>,
@@ -136,6 +155,7 @@ pub struct SnsCanisterIds {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DeployNewSnsResponse {
+    pub dapp_canisters_transfer_result: Option<DappCanistersTransferResult>,
     pub subnet_id: Option<candid::Principal>,
     pub error: Option<SnsWasmError>,
     pub canisters: Option<SnsCanisterIds>,

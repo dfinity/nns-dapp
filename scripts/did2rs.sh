@@ -63,11 +63,12 @@ cd "$GIT_ROOT"
   # We import traits that we apply to the Rust types.
   cat <<-EOF
 	#![allow(clippy::all)]
+	#![allow(unused_imports)]
 	#![allow(clippy::missing_docs_in_private_items)]
 	#![allow(non_camel_case_types)]
 	#![allow(dead_code)]
 
-	use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
+	use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 	use ic_cdk::api::call::CallResult;
 	EOF
   # didc converts the .did to Rust, with the following limitations:

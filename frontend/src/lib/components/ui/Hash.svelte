@@ -9,9 +9,10 @@
   export let text: string;
   export let showCopy = false;
   export let className: string | undefined = undefined;
+  export let splitLength: number | undefined = undefined;
 
   let shortenText: string;
-  $: shortenText = shortenWithMiddleEllipsis(text);
+  $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
 </script>
 
 <span data-tid="hash-component">

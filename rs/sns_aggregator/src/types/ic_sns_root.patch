@@ -1,24 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 3d08525e4..d85254a2e 100644
+index 1dc8c34d2..2f942ab47 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -3,12 +3,12 @@
- #![allow(non_camel_case_types)]
- #![allow(dead_code)]
- 
--use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
-+use crate::types::{CandidType, Deserialize, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
--// use ic_cdk::api::call::CallResult as Result;
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-+// use ic_cdk::api::call::CallResult;
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SnsRootCanister {
-@@ -91,7 +91,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -126,7 +126,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_sns_canisters_arg0 {}
  

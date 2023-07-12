@@ -1,24 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 7cbb51d8e..efb2fe93b 100644
+index 05042e186..dd77268d5 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -3,12 +3,12 @@
- #![allow(non_camel_case_types)]
- #![allow(dead_code)]
- 
--use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
-+use crate::types::{CandidType, Deserialize, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
--// use ic_cdk::api::call::CallResult as Result;
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug};
-+// use ic_cdk::api::call::CallResult;
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum MetadataValue {
-@@ -93,23 +93,21 @@ pub struct BlockRange {
+@@ -95,23 +95,21 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -47,7 +31,7 @@ index 7cbb51d8e..efb2fe93b 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -165,27 +163,25 @@ pub struct TransactionRange {
+@@ -167,27 +165,25 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  
@@ -81,7 +65,7 @@ index 7cbb51d8e..efb2fe93b 100644
      pub url: String,
      pub name: String,
  }
-@@ -248,7 +244,7 @@ impl SERVICE {
+@@ -250,7 +246,7 @@ impl SERVICE {
      pub async fn icrc1_name(&self) -> CallResult<(String,)> {
          ic_cdk::call(self.0, "icrc1_name", ()).await
      }
