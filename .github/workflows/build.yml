@@ -487,11 +487,12 @@ jobs:
           wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
           max_size=3145728
           (
-            echo "## NNS dapp WASM size"
-            echo "WASM size:          $wasm_size"
-            echo "Max supported size: $max_size"
-            echo "Percentage used:    $(( (wasm_size * 100) / max_size ))"
-            echo "Free:               $(( max_size - wasm_size ))"
+            echo "## NNS dapp WASM stats"
+            humreadable_size="$(numfmt --to=iec-i --suffix=B --format="%.3f" $wasm_size)"
+            humreadable_max="$(numfmt --to=iec-i --suffix=B --format="%.3f" $max_size )"
+            humreadable_ratio="$(( (wasm_size * 100) / max_size ))%"
+            humreadable_free="$(numfmt --to=iec-i --suffix=B --format="%.3f" $(( max_size - wasm_size )))"
+            echo "**WASM size:** $humreadable_size / $humreadable_max = $humreadable_ratio  ($humreadable_free free)"
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
