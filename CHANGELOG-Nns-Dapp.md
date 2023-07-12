@@ -37,6 +37,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Better visibility of wasm size in CI.
 * Added CI workflows to update rust and didc automatically, by cron job or button click.
 * Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 * Test that no new change log entries are added to existing releases.
