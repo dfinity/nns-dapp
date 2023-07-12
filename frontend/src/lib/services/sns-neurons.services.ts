@@ -4,11 +4,11 @@ import {
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
   getSnsNeuron as getSnsNeuronApi,
-  increaseDissolveDelay as increaseDissolveDelayApi,
   querySnsNeuron,
   querySnsNeurons,
   refreshNeuron,
   removeNeuronPermissions,
+  setDissolveDelay,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
@@ -31,12 +31,12 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   followeesByFunction,
-  getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
@@ -488,16 +488,12 @@ export const updateDelay = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
-    const currentDissolveDelay =
-      getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
-    const additionalDissolveDelaySeconds =
-      dissolveDelaySeconds - Number(currentDissolveDelay);
 
-    await increaseDissolveDelayApi({
+    await setDissolveDelay({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      additionalDissolveDelaySeconds,
+      dissolveTimestampSeconds: nowInSeconds() + dissolveDelaySeconds,
     });
 
     return { success: true };

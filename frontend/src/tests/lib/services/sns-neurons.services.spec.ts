@@ -615,51 +615,37 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
-    const spyOnIncreaseDissolveDelay = jest
-      .spyOn(governanceApi, "increaseDissolveDelay")
+    const spyOnSetDissolveDelay = jest
+      .spyOn(governanceApi, "setDissolveDelay")
       .mockImplementation(() => Promise.resolve());
+    const nowInSeconds = 1689063315;
+    const now = nowInSeconds * 1000;
 
-    beforeEach(spyOnIncreaseDissolveDelay.mockClear);
+    beforeEach(() => {
+      jest.clearAllTimers();
+      jest.useFakeTimers().setSystemTime(now);
+      spyOnSetDissolveDelay.mockClear();
+    });
 
-    it("should call sns api increaseDissolveDelay", async () => {
+    it("should call sns api setDissolveDelay with dissolve timestamp", async () => {
       const neuronId = fromDefinedNullable(mockSnsNeuron.id);
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
+      const dissolveDelaySeconds = 123;
       const { success } = await updateDelay({
         rootCanisterId,
-        dissolveDelaySeconds: 123,
+        dissolveDelaySeconds,
         neuron: mockSnsNeuron,
       });
 
       expect(success).toBeTruthy();
 
-      expect(spyOnIncreaseDissolveDelay).toBeCalledWith({
+      expect(spyOnSetDissolveDelay).toBeCalledWith({
         neuronId,
         identity,
         rootCanisterId,
-        additionalDissolveDelaySeconds: 123,
+        dissolveTimestampSeconds: nowInSeconds + dissolveDelaySeconds,
       });
-    });
-
-    it("should calculate additionalDissolveDelaySeconds", async () => {
-      const rootCanisterId = mockPrincipal;
-      const { success } = await updateDelay({
-        rootCanisterId,
-        dissolveDelaySeconds: 333,
-        neuron: {
-          ...mockSnsNeuron,
-          dissolve_state: [{ DissolveDelaySeconds: BigInt(111) }],
-        },
-      });
-
-      expect(success).toBeTruthy();
-
-      expect(spyOnIncreaseDissolveDelay).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({
-          additionalDissolveDelaySeconds: 222,
-        })
-      );
     });
   });
 

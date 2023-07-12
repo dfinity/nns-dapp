@@ -34,6 +34,8 @@ const roundUpSecondsToWholeDays = (seconds: number): number =>
   daysToSeconds(secondsToDays(seconds));
 
 describe("IncreaseSnsDissolveDelayModal", () => {
+  const nowInSeconds = 1689063315;
+  const now = nowInSeconds * 1000;
   const neuron: SnsNeuron = {
     ...mockSnsNeuron,
     dissolve_state: [
@@ -62,6 +64,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );
+
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(now);
 
     snsParametersStore.reset();
     snsParametersStore.setParameters({
@@ -137,7 +142,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() =>
-      expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1)
+      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
     );
   });
 
@@ -183,11 +188,11 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     confirmButton && (await fireEvent.click(confirmButton));
 
     await waitFor(() =>
-      expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1)
+      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
     );
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledWith(
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
       expect.objectContaining({
-        additionalDissolveDelaySeconds: dissolveDelaySeconds,
+        dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,
       })
     );
   });
