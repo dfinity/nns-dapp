@@ -416,7 +416,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subAccountIdentifier: identifier,
+      subAccountIdentifier: accountIdentifierFromIcrc(identifier),
     });
 
     await syncAccounts();

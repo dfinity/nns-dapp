@@ -1,6 +1,7 @@
 import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
@@ -12,9 +13,8 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { isUniverseNns } from "./universe.utils";
-import {get} from "svelte/store";
-import {ENABLE_ICP_ICRC} from "$lib/stores/feature-flags.store";
 
 /*
  * Returns the principal's main or hardware account
@@ -239,6 +239,7 @@ export const sumAccounts = (
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
 
+// TODO: to be used only with feature flag on
 export const accountIdentifierFromIcrc = (
   icrcAccountIdentifier: IcrcAccountIdentifier
 ): AccountIdentifierString => {
