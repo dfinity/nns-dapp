@@ -1,49 +1,42 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { PageHeader } from "@dfinity/gix-components";
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { TokenAmount, nonNullish, ICPToken } from "@dfinity/utils";
-  import { formatVotingPower, neuronStake } from "$lib/utils/neuron.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { i18n } from "$lib/stores/i18n";
   import { MAX_NEURON_ID_DIGITS } from "$lib/constants/neurons.constants";
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 
   export let neuron: NeuronInfo;
-
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
-    amount: neuronStake(neuron),
-    token: ICPToken,
-  });
 </script>
 
-<PageHeader testId="nns-neuron-page-header-component">
-  <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
-  <span slot="end" class="description header-end">
+<div class="container" data-tid="nns-neuron-page-header-component">
+  <UniversePageSummary universe={NNS_UNIVERSE} />
+  <span class="description header-end">
     <IdentifierHash
       identifier={neuron.neuronId.toString()}
       splitLength={MAX_NEURON_ID_DIGITS / 2}
     />
   </span>
-  <span slot="title">
-    {#if nonNullish(amount)}
-      <AmountDisplay {amount} size="huge" singleLine />
-    {/if}
-  </span>
-  <h3 class="description" slot="subtitle" data-tid="voting-power-subtitle">
-    {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-      $votingPower: formatVotingPower(neuron.votingPower),
-    })}
-  </h3>
-</PageHeader>
+</div>
 
 <style lang="scss">
-  .header-end {
-    // The IdentifierHash has the copy button at the end which has some extra padding.
-    // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
-    padding-left: var(--padding-1_5x);
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    justify-content: center;
+    align-items: center;
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .header-end {
+      // The IdentifierHash has the copy button at the end which has some extra padding.
+      // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
+      padding-left: var(--padding-1_5x);
+    }
   }
 </style>

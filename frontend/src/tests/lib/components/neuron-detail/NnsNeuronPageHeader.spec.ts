@@ -16,23 +16,9 @@ describe("NnsNeuronPageHeader", () => {
     return NnsNeuronPageHeaderPo.under(new JestPageObjectElement(container));
   };
 
-  it("should render the NNS universe", async () => {
+  it("should render the NNS universe name", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.getUniverse()).toEqual("Internet Computer");
-  });
-
-  it("should render the neuron's stake", async () => {
-    const stake = 314_000_000n;
-    const po = renderComponent({
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockNeuron.fullNeuron,
-        cachedNeuronStake: stake,
-        neuronFees: 0n,
-      },
-    });
-
-    expect(await po.getStake()).toEqual("3.14");
   });
 });
