@@ -58,19 +58,16 @@
     <slot slot="title" name="title" />
 
     <div slot="sub-title" class="toggle-all-wrapper">
-      <p><slot name="filter-by" /></p>
-      <div>
-        <button
-          class="text"
-          data-tid="filter-modal-select-all"
-          on:click={selectAll}>{$i18n.voting.check_all}</button
-        >
-        <button
-          class="text"
-          data-tid="filter-modal-clear"
-          on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
-        >
-      </div>
+      <button
+        class="text"
+        data-tid="filter-modal-select-all"
+        on:click={selectAll}>{$i18n.voting.check_all}</button
+      >
+      <button
+        class="text"
+        data-tid="filter-modal-clear"
+        on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
+      >
     </div>
 
     {#if filters}
@@ -86,12 +83,19 @@
     {/if}
 
     <svelte:fragment slot="footer">
-      <button class="secondary" type="button" data-tid="close" on:click={close}>
+      <button
+        class="secondary"
+        type="button"
+        aria-label="select-all-filters"
+        data-tid="close"
+        on:click={close}
+      >
         {$i18n.core.cancel}
       </button>
       <button
         class="primary"
         type="button"
+        aria-label="clear-filters"
         on:click={filter}
         data-tid="apply-filters"
       >
@@ -108,8 +112,10 @@
 
   .toggle-all-wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+    gap: var(--padding);
+
     margin: 0 var(--padding-2x);
   }
 </style>

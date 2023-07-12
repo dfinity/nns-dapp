@@ -1,34 +1,10 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 613b5e633..efc52543c 100644
+index ec0aa0a8e..9f21c5756 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -11,12 +11,12 @@ use ic_cdk::api::call::CallResult;
+@@ -11,35 +11,35 @@ use ic_cdk::api::call::CallResult;
  // use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
  // use ic_cdk::api::call::CallResult as Result;
- 
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
- pub struct Countries {
-     pub iso_codes: Vec<String>,
- }
- 
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
- pub struct Init {
-     pub sns_root_canister_id: String,
-     pub fallback_controller_principal_ids: Vec<String>,
-@@ -112,7 +112,7 @@ pub struct SettleCommunityFundParticipationResult {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum Possibility_2 {
--    Ok(EmptyRecord),
-+    Ok,
-     Err(CanisterCallError),
- }
- 
-@@ -275,13 +275,13 @@ pub struct GetOpenTicketResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct get_sale_parameters_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
@@ -39,10 +15,54 @@ index 613b5e633..efc52543c 100644
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct CfNeuron {
+     pub nns_neuron_id: u64,
+     pub amount_icp_e8s: u64,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct CfParticipant {
+     pub hotkey_principal: String,
+     pub cf_neurons: Vec<CfNeuron>,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct NeuronsFundParticipants {
+     pub cf_participants: Vec<CfParticipant>,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct Countries {
+     pub iso_codes: Vec<String>,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct Init {
+     pub nns_proposal_id: Option<u64>,
+     pub sns_root_canister_id: String,
+@@ -147,7 +147,7 @@ pub struct SettleCommunityFundParticipationResult {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub enum Possibility_2 {
+-    Ok(EmptyRecord),
++    Ok,
+     Err(CanisterCallError),
+ }
+ 
+@@ -306,7 +306,7 @@ pub struct GetOpenTicketResponse {
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct get_sale_parameters_arg0 {}
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -376,7 +376,7 @@ pub struct DerivedState {
+@@ -390,7 +390,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  

@@ -72,7 +72,7 @@
   {#if myCommitment !== undefined}
     <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>
     <dd data-tid="commitment-token-value">
-      <AmountDisplay amount={myCommitment} singleLine inheritSize />
+      <AmountDisplay amount={myCommitment} singleLine size="inherit" />
     </dd>
   {/if}
 </dl>

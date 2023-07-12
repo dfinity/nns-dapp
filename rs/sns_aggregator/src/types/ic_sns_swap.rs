@@ -12,22 +12,57 @@ use ic_cdk::api::call::CallResult;
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct NeuronBasketConstructionParameters {
+    pub dissolve_delay_interval_seconds: u64,
+    pub count: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct CfNeuron {
+    pub nns_neuron_id: u64,
+    pub amount_icp_e8s: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct CfParticipant {
+    pub hotkey_principal: String,
+    pub cf_neurons: Vec<CfNeuron>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct NeuronsFundParticipants {
+    pub cf_participants: Vec<CfParticipant>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Countries {
     pub iso_codes: Vec<String>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Init {
+    pub nns_proposal_id: Option<u64>,
     pub sns_root_canister_id: String,
+    pub min_participant_icp_e8s: Option<u64>,
+    pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
+    pub max_icp_e8s: Option<u64>,
     pub neuron_minimum_stake_e8s: Option<u64>,
     pub confirmation_text: Option<String>,
+    pub swap_start_timestamp_seconds: Option<u64>,
+    pub swap_due_timestamp_seconds: Option<u64>,
+    pub min_participants: Option<u32>,
+    pub sns_token_e8s: Option<u64>,
     pub nns_governance_canister_id: String,
     pub transaction_fee_e8s: Option<u64>,
     pub icp_ledger_canister_id: String,
     pub sns_ledger_canister_id: String,
+    pub neurons_fund_participants: Option<NeuronsFundParticipants>,
+    pub should_auto_finalize: Option<bool>,
+    pub max_participant_icp_e8s: Option<u64>,
     pub sns_governance_canister_id: String,
     pub restricted_countries: Option<Countries>,
+    pub min_icp_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -185,7 +220,6 @@ pub enum CanisterStatusType {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefiniteCanisterSettingsArgs {
-    pub controller: candid::Principal,
     pub freezing_threshold: candid::Nat,
     pub controllers: Vec<candid::Principal>,
     pub memory_allocation: candid::Nat,
@@ -194,10 +228,7 @@ pub struct DefiniteCanisterSettingsArgs {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResultV2 {
-    pub controller: candid::Principal,
     pub status: CanisterStatusType,
-    pub freezing_threshold: candid::Nat,
-    pub balance: Vec<(serde_bytes::ByteBuf, candid::Nat)>,
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,
     pub settings: DefiniteCanisterSettingsArgs,
@@ -276,12 +307,6 @@ pub struct GetOpenTicketResponse {
 pub struct get_sale_parameters_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
-pub struct NeuronBasketConstructionParameters {
-    pub dissolve_delay_interval_seconds: u64,
-    pub count: u64,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Params {
     pub min_participant_icp_e8s: u64,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
@@ -340,18 +365,6 @@ pub struct SnsNeuronRecipe {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct CfNeuron {
-    pub nns_neuron_id: u64,
-    pub amount_icp_e8s: u64,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct CfParticipant {
-    pub hotkey_principal: String,
-    pub cf_neurons: Vec<CfNeuron>,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Swap {
     pub neuron_recipes: Vec<SnsNeuronRecipe>,
     pub next_ticket_id: Option<u64>,
@@ -359,6 +372,7 @@ pub struct Swap {
     pub finalize_swap_in_progress: Option<bool>,
     pub cf_participants: Vec<CfParticipant>,
     pub init: Option<Init>,
+    pub already_tried_to_auto_finalize: Option<bool>,
     pub purge_old_tickets_last_completion_timestamp_nanoseconds: Option<u64>,
     pub lifecycle: i32,
     pub purge_old_tickets_next_principal: Option<serde_bytes::ByteBuf>,
@@ -386,11 +400,6 @@ pub struct GetStateResponse {
 pub struct ListCommunityFundParticipantsRequest {
     pub offset: Option<u64>,
     pub limit: Option<u32>,
-}
-
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct ListCommunityFundParticipantsResponse {
-    pub cf_participants: Vec<CfParticipant>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -520,7 +529,7 @@ impl SERVICE {
     pub async fn list_community_fund_participants(
         &self,
         arg0: ListCommunityFundParticipantsRequest,
-    ) -> CallResult<(ListCommunityFundParticipantsResponse,)> {
+    ) -> CallResult<(NeuronsFundParticipants,)> {
         ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
     }
     pub async fn list_direct_participants(

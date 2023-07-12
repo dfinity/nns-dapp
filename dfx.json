@@ -648,8 +648,8 @@
         "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2023-05-26",
-        "IC_COMMIT": "26b480f775222265f4369bc485d502a140f15564"
+        "DIDC_VERSION": "2023-07-11",
+        "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
       },
       "packtool": ""
     }

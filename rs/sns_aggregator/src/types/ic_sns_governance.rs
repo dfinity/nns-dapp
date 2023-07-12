@@ -573,7 +573,6 @@ pub enum CanisterStatusType {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DefiniteCanisterSettingsArgs {
-    pub controller: candid::Principal,
     pub freezing_threshold: candid::Nat,
     pub controllers: Vec<candid::Principal>,
     pub memory_allocation: candid::Nat,
@@ -582,10 +581,7 @@ pub struct DefiniteCanisterSettingsArgs {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterStatusResultV2 {
-    pub controller: candid::Principal,
     pub status: CanisterStatusType,
-    pub freezing_threshold: candid::Nat,
-    pub balance: Vec<(serde_bytes::ByteBuf, candid::Nat)>,
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,
     pub settings: DefiniteCanisterSettingsArgs,
