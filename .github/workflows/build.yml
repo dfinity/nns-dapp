@@ -164,6 +164,7 @@ jobs:
           else echo "Skipping test as there are no relevant code changes"
           fi
       - name: Count upgrade cycles
+        run: |
           post_upgrade_instruction_count="$(dfx canister call nns-dapp get_stats | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count')"
           mainnet_state_recovery_instruction_count="$(dfx canister call nns-dapp get_stats --network mainnet | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count')"
           state_recovery_safety_factor=10
