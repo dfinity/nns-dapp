@@ -580,6 +580,7 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
+  voting_power_subtitle: string;
   voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;

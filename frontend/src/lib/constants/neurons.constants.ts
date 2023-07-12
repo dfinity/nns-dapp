@@ -7,6 +7,8 @@ export const MAX_NEURONS_MERGED = 2;
 export const MIN_NEURON_STAKE = E8S_PER_ICP;
 export const MAX_CONCURRENCY = 10;
 export const SPAWN_VARIANCE_PERCENTAGE = 0.95;
+// Neuron ids are random u64. Max digits of a u64 is 20.
+export const MAX_NEURON_ID_DIGITS = 20;
 
 export const DISSOLVE_DELAY_MULTIPLIER = 1;
 export const AGE_MULTIPLIER = 0.25;
