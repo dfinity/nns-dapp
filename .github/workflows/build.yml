@@ -486,8 +486,13 @@ jobs:
         run: |
           wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
           max_size=3145728
-          echo "WASM size:          $wasm_size"
-          echo "Max supported size: $max_size"
+          (
+            echo "## NNS dapp WASM size"
+            echo "WASM size:          $wasm_size"
+            echo "Max supported size: $max_size"
+            echo "Percentage used:    $(( (wasm_size * 100) / max_size ))"
+            echo "Free:               $(( max_size - wasm_size ))"
+          ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
     needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
