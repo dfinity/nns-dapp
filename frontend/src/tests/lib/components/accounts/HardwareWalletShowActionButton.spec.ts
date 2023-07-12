@@ -7,7 +7,7 @@ import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/icp-ledger
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletShowActionButton", () => {
   afterEach(() => {

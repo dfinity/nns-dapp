@@ -20,7 +20,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };

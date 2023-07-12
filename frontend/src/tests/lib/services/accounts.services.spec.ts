@@ -52,7 +52,7 @@ import {
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()

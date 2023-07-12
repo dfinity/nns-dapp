@@ -11,7 +11,7 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import WalletContextTest from "./WalletContextTest.svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
   afterAll(() => {
