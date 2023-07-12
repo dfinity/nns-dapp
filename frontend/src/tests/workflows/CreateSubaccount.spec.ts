@@ -3,7 +3,7 @@
  */
 
 import { createSubAccount } from "$lib/api/accounts.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
@@ -25,7 +25,7 @@ jest.mock("$lib/api/accounts.api", () => {
   };
 });
 
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 jest.mock("$lib/api/nns-dapp.api");
 

@@ -3,7 +3,7 @@ import {
   getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
-import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
+import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
@@ -21,7 +21,7 @@ import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import {
   accountsStore,

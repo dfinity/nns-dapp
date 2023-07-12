@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
@@ -53,14 +53,14 @@ jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-swap-metrics.api");
 jest.mock("$lib/api/sns-sale.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/api/location.api");
 
 const blockedApiPaths = [
   "$lib/api/sns.api",
   "$lib/api/sns-swap-metrics.api",
   "$lib/api/sns-sale.api",
-  "$lib/api/ledger.api",
+  "$lib/api/icp-ledger.api",
   "$lib/api/location.api",
 ];
 

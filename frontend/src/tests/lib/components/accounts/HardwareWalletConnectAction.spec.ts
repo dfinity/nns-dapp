@@ -4,14 +4,14 @@
 
 import HardwareWalletConnectAction from "$lib/components/accounts/HardwareWalletConnectAction.svelte";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
-import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { connectToHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+jest.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletConnectAction", () => {
   afterEach(() => {
