@@ -28,10 +28,7 @@
     debugTransactions,
   } from "$lib/derived/debug.derived";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-  import type {
-    AccountIdentifierString,
-    Transaction,
-  } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -43,6 +40,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { ICPToken } from "@dfinity/utils";
+  import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 
   onMount(() => {
     pollAccounts();
@@ -57,13 +55,15 @@
   let transactions: Transaction[] | undefined;
 
   const reloadTransactions = (
-    accountIdentifier: AccountIdentifierString
+    accountIdentifier: IcrcAccountIdentifier
   ): Promise<void> =>
     getAccountTransactions({
-      accountIdentifier,
-      onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
+      icrcAccountIdentifier: accountIdentifier,
+      onLoad: ({ icrcAccountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
-        if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
+        if (
+          icrcAccountIdentifier !== $selectedAccountStore.account?.identifier
+        ) {
           return;
         }
 

@@ -8,7 +8,6 @@ import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
-  AccountIdentifierString,
   HardwareWalletAccountDetails,
   SubAccountDetails,
   Transaction,
@@ -27,10 +26,15 @@ import {
   accountsStore,
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
+import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
-import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  accountIdentifierFromIcrc,
+  findAccount,
+  getAccountByPrincipal,
+} from "$lib/utils/accounts.utils";
 import {
   isForceCallStrategy,
   notForceCallStrategy,
@@ -43,7 +47,13 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -94,14 +104,24 @@ export const loadAccounts = async ({
     (type: AccountType) =>
     async (
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
-    ): Promise<Account> => ({
-      identifier: account.account_identifier,
-      balanceE8s: await getAccountBalance(account.account_identifier),
-      type,
-      ...("sub_account" in account && { subAccount: account.sub_account }),
-      ...("name" in account && { name: account.name }),
-      ...("principal" in account && { principal: account.principal }),
-    });
+    ): Promise<Account> => {
+      const owner =
+        "principal" in account ? account.principal : identity.getPrincipal();
+
+      return {
+        identifier: encodeIcrcAccount({
+          owner,
+          ...("sub_account" in account && {
+            subaccount: arrayOfNumberToUint8Array(account.sub_account),
+          }),
+        }),
+        balanceE8s: await getAccountBalance(account.account_identifier),
+        type,
+        ...("sub_account" in account && { subAccount: account.sub_account }),
+        ...("name" in account && { name: account.name }),
+        ...("principal" in account && { principal: account.principal }),
+      };
+    };
 
   const [main, subAccounts, hardwareWallets] = await Promise.all([
     mapAccount("main")(mainAccount),
@@ -305,15 +325,15 @@ const transferError = ({
 };
 
 export const getAccountTransactions = async ({
-  accountIdentifier,
+  icrcAccountIdentifier,
   onLoad,
 }: {
-  accountIdentifier: AccountIdentifierString;
+  icrcAccountIdentifier: IcrcAccountIdentifier;
   onLoad: ({
-    accountIdentifier,
+    icrcAccountIdentifier,
     transactions,
   }: {
-    accountIdentifier: AccountIdentifierString;
+    icrcAccountIdentifier: IcrcAccountIdentifier;
     transactions: Transaction[];
   }) => void;
 }): Promise<void> =>
@@ -323,12 +343,12 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        accountIdentifier,
+        accountIdentifier: accountIdentifierFromIcrc(icrcAccountIdentifier),
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
     onLoad: ({ response: transactions }) =>
-      onLoad({ accountIdentifier, transactions }),
+      onLoad({ icrcAccountIdentifier, transactions }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 

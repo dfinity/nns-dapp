@@ -1,5 +1,7 @@
+import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
@@ -7,9 +9,9 @@ import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import { checkAccountId } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
 
 /*
@@ -229,3 +231,27 @@ export const sumAccounts = (
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
+
+export const accountIdentifierFromIcrc = (
+  icrcAccountIdentifier: IcrcAccountIdentifier
+): AccountIdentifierString => {
+  const { owner: principal, subaccount } = decodeIcrcAccount(
+    icrcAccountIdentifier
+  );
+
+  const sub = nonNullish(subaccount)
+    ? SubAccount.fromBytes(subaccount)
+    : undefined;
+
+  // TODO: handle errors in caller
+  if (sub instanceof Error) {
+    throw sub;
+  }
+
+  return AccountIdentifier.fromPrincipal({
+    principal,
+    ...(nonNullish(sub) && {
+      subAccount: sub,
+    }),
+  }).toHex();
+};
