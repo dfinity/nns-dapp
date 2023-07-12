@@ -13,6 +13,8 @@ import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
+import {get} from "svelte/store";
+import {ENABLE_ICP_ICRC} from "$lib/stores/feature-flags.store";
 
 /*
  * Returns the principal's main or hardware account
@@ -78,10 +80,15 @@ export const invalidAddress = ({
     });
   }
 
+  // TODO: reactive variable as parameter
+  const feature = get(ENABLE_ICP_ICRC);
+
   // NNS universe doesn't use ICRC yet
-  if (isUniverseNns(rootCanisterId)) {
+  if (isUniverseNns(rootCanisterId) && !feature) {
     return invalidIcpAddress(address);
   }
+
+  // TODO: if NNS and Icrc fails, try ICP valid address
 
   // Consider it as an ICRC address
   return invalidIcrcAddress(address);
