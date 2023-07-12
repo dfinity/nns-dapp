@@ -61,8 +61,8 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
-const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/ledger.api"];
+jest.mock("$lib/api/icp-ledger.api");
+const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
 describe("accounts-services", () => {
   blockAllCallsTo(blockedApiPaths);

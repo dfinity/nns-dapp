@@ -29,7 +29,7 @@ import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/services/neurons.services", () => {
   return {
     disburse: jest.fn().mockResolvedValue({ success: true }),

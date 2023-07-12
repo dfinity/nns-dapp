@@ -22,7 +22,7 @@ import {
 import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
   const goToWallet = async () => {

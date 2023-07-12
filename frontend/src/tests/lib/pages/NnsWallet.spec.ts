@@ -37,12 +37,12 @@ import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/accounts.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 const blockedApiPaths = [
   "$lib/api/nns-dapp.api",
   "$lib/api/accounts.api",
-  "$lib/api/ledger.api",
+  "$lib/api/icp-ledger.api",
 ];
 
 describe("NnsWallet", () => {

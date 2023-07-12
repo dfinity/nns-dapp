@@ -92,7 +92,7 @@ jest.mock("$lib/constants/sns.constants", () => ({
   SALE_PARTICIPATION_RETRY_SECONDS: 1,
 }));
 
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();

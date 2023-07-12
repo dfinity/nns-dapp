@@ -44,7 +44,7 @@ import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 const neuronStake = 2.2;
 const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
 const newNeuron: NeuronInfo = {

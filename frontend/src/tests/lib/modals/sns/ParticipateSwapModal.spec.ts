@@ -44,7 +44,7 @@ import { AccountIdentifier } from "@dfinity/nns";
 import { writable } from "svelte/store";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/services/sns.services", () => {
   return {
     initiateSnsSaleParticipation: jest

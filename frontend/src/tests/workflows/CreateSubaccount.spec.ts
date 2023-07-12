@@ -25,7 +25,7 @@ jest.mock("$lib/api/accounts.api", () => {
   };
 });
 
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 jest.mock("$lib/api/nns-dapp.api");
 

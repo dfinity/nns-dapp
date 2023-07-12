@@ -19,7 +19,7 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/services/neurons.services", () => {
   return {
     topUpNeuron: jest.fn().mockResolvedValue({ success: true }),
