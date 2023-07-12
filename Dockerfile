@@ -59,9 +59,6 @@ RUN curl --fail https://sh.rustup.rs -sSf \
         | sh -s -- -y --no-modify-path
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
-# Install IC CDK optimizer
-# TODO: Make ic-cdk-optimizer support binstall, then use cargo binstall --no-confirm ic-cdk-optimizer here.
-RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
