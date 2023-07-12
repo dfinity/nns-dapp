@@ -1,5 +1,5 @@
 import * as api from "$lib/api/canisters.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import {
   addController,
@@ -33,9 +33,9 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/api/canisters.api");
-const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
+const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);

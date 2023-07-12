@@ -19,7 +19,7 @@ jest.mock("$lib/services/accounts.services", () => {
   };
 });
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     connectToHardwareWalletProxy: jest
       .fn()

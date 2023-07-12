@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+  import { listNeuronsHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { busy } from "@dfinity/gix-components";
   import { getContext } from "svelte";

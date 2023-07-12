@@ -98,7 +98,7 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: jest
       .fn()

@@ -16,7 +16,7 @@ import {
   registerHardwareWallet,
   resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
-} from "$lib/services/ledger.services";
+} from "$lib/services/icp-ledger.services";
 import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -42,7 +42,7 @@ import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 
-describe("ledger-services", () => {
+describe("icp-ledger.services", () => {
   const callback = jest.fn();
   const mockLedgerIdentity: MockLedgerIdentity = new MockLedgerIdentity();
   const ledgerPrincipal2 = mockPrincipal;

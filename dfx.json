@@ -646,7 +646,6 @@
         "NODE_VERSION": "18.14.2",
         "WASM_NM_VERSION": "0.2.0",
         "IC_WASM_VERSION": "0.3.6",
-        "IC_CDK_OPTIMIZER_VERSION": "0.3.1",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "DIDC_VERSION": "2023-07-11",
