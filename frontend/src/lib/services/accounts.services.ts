@@ -3,6 +3,7 @@ import {
   getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
+import { ckBTCTransfer } from "$lib/api/ckbtc-ledger.api";
 import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
@@ -16,6 +17,7 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
@@ -26,8 +28,10 @@ import {
   accountsStore,
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account, AccountType } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
@@ -35,6 +39,7 @@ import {
   findAccount,
   getAccountByPrincipal,
 } from "$lib/utils/accounts.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   isForceCallStrategy,
   notForceCallStrategy,
@@ -47,7 +52,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import {
   ICPToken,
   TokenAmount,
@@ -282,18 +287,37 @@ export const transferICP = async ({
 
     const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
-    await sendICP({
-      identity,
-      to,
-      fromSubAccount: subAccount,
-      amount: tokenAmount,
-    });
+    const feeE8s = get(mainTransactionFeeE8sStore);
+
+    // TODO: reactive variable as parameter
+    const feature = get(ENABLE_ICP_ICRC);
+
+    // TODO: refactor ckBTCTransfer to standard ICRC transfer service or create an icp transfer?
+
+    await (feature
+      ? ckBTCTransfer({
+          identity,
+          to: decodeIcrcAccount(to),
+          fromSubAccount: subAccount,
+          amount: tokenAmount.toE8s(),
+          canisterId: LEDGER_CANISTER_ID,
+          createdAt: nowInBigIntNanoSeconds(),
+          fee: feeE8s,
+        })
+      : sendICP({
+          identity,
+          to,
+          fromSubAccount: subAccount,
+          amount: tokenAmount,
+        }));
 
     // Transfer can be to one of the user's account.
     const toAccount = findAccount({
       identifier: to,
       accounts: get(nnsAccountsListStore),
     });
+
+    // TODO: this does not work yet
     await Promise.all([
       loadBalance({ accountIdentifier: identifier }),
       nonNullish(toAccount)
