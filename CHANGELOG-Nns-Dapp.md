@@ -53,6 +53,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Duplicate `ic-cdk-optimizer` version field.
+
 #### Fixed
 
 #### Security
