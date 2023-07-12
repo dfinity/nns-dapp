@@ -129,8 +129,6 @@
 
     &.huge span.value {
       font-size: var(--font-size-huge);
-      // `huge` will not span multiple lines, so we can set it to 1 to not have extra space above and below the value
-      line-height: 1;
     }
   }
 
