@@ -19,7 +19,7 @@ use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpRes
 use candid::{candid_method, export_service};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
-use ic_cdk::timer::{set_timer, set_timer_interval};
+use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
@@ -209,7 +209,7 @@ fn setup(config: Option<Config>) {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
         if let Some(id) = old_timer {
-            ic_cdk::timer::clear_timer(id);
+            clear_timer(id);
         }
     });
     // Schedule fast collection of swap state
