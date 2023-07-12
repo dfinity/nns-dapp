@@ -14,7 +14,6 @@
   onMount(async () => await initAppAuth());
 </script>
 
-<!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
 {#if isNullish($navigating)}
   <Layout layout="stretch">
     <Banner />
