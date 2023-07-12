@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";

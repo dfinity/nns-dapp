@@ -3,7 +3,7 @@
  */
 
 import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
-import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { listNeuronsHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {

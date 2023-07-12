@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";

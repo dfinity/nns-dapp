@@ -7,7 +7,7 @@ import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import {
   connectToHardwareWalletProxy,
   registerHardwareWalletProxy,
-} from "$lib/proxy/ledger.services.proxy";
+} from "$lib/proxy/icp-ledger.services.proxy";
 import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent } from "@testing-library/dom";

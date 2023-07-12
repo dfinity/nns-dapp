@@ -4,7 +4,7 @@
 
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,

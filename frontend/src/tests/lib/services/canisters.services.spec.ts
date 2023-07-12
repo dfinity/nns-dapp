@@ -1,5 +1,5 @@
 import * as api from "$lib/api/canisters.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import {
   addController,

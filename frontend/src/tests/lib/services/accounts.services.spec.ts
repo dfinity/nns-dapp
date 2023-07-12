@@ -3,13 +3,13 @@
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import {
   addSubAccount,
   cancelPollAccounts,

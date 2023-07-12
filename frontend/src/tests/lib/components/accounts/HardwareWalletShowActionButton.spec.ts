@@ -3,7 +3,7 @@
  */
 
 import HardwareWalletShowAction from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
-import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 
