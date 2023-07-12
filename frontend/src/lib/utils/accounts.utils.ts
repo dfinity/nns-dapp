@@ -240,7 +240,9 @@ export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
 
 // TODO: to be used only with feature flag on
-// TODO: or, instead of using the flag or additionally, do we want to make this utils try both? like trying to convert from ICRC and if fails fallback to string ICP account identifier. Can be useful to support both old and new url parameters in Wallet?
+// TODO: try to convert from ICRC and if fails fallback to string ICP account identifier
+//  - Can be useful to support both old and new url parameters in Wallet
+//  - Can also be useful for transferICP which reload the balance and which may be call with or without ICRC and with or without a related address
 export const accountIdentifierFromIcrc = (
   icrcAccountIdentifier: IcrcAccountIdentifier
 ): AccountIdentifierString => {

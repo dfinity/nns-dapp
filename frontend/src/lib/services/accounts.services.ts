@@ -224,9 +224,20 @@ export const loadBalance = async ({
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
+
+  // TODO: remove feature accountIdentifierFromIcrc should fallback, probably
+  const feature = get(ENABLE_ICP_ICRC);
+  const identifier = feature
+    ? accountIdentifierFromIcrc(accountIdentifier)
+    : accountIdentifier;
+
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
-      queryAccountBalance({ identity, certified, accountIdentifier }),
+      queryAccountBalance({
+        identity,
+        certified,
+        accountIdentifier: identifier,
+      }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
         certified,
@@ -317,7 +328,7 @@ export const transferICP = async ({
       accounts: get(nnsAccountsListStore),
     });
 
-    // TODO: this does not work yet
+    // TODO: GIX-1704 use ICRC
     await Promise.all([
       loadBalance({ accountIdentifier: identifier }),
       nonNullish(toAccount)

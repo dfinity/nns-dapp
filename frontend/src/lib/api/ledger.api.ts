@@ -69,6 +69,7 @@ export const transactionFee = async ({
   return fee;
 };
 
+// TODO: GIX-1704 use ICRC
 export const queryAccountBalance = async ({
   accountIdentifier,
   identity,
