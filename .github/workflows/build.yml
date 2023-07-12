@@ -159,7 +159,7 @@ jobs:
       - name: Basic downgrade-upgrade test
         run: |
           git fetch --depth 1 origin tag prod
-          if git diff tags/prod rs/backend | grep -q .
+          if git diff tags/prod rs/backend .github/workflows/build.yml | grep -q .
           then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
           else echo "Skipping test as there are no relevant code changes"
           fi
@@ -430,7 +430,7 @@ jobs:
         run: |
           set -euxo pipefail
           git fetch --depth 1 origin tag aggregator-prod
-          diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
+          diff="$(git diff tags/aggregator-prod rs/sns_aggregator .github/workflows/build.yml)"
           if test -n "${diff:-}"
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
