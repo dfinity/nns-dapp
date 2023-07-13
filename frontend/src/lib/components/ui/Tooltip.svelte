@@ -71,21 +71,12 @@
 
   let destroyed = false;
   onDestroy(() => (destroyed = true));
-
-  const onclick = (e: MouseEvent) => {
-    console.log("click", e);
-  };
 </script>
 
 <svelte:window bind:innerWidth />
 
 <div class="tooltip-wrapper" data-tid="tooltip-component">
-  <div
-    class="tooltip-target"
-    aria-describedby={id}
-    bind:this={target}
-    on:click={onclick}
-  >
+  <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>
   <div
