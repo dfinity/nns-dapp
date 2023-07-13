@@ -55,7 +55,7 @@
   $: seconds = date.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card" transition:fade|local>
+<article data-tid="transaction-card" transition:fade|global>
   <div class="icon" class:send={!isReceive}>
     <IconNorthEast size="24px" />
   </div>
