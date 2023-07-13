@@ -158,23 +158,26 @@ jobs:
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Basic downgrade-upgrade test
         run: |
-          git fetch --depth 1 origin tag prod
-          if git diff tags/prod rs/backend .github/workflows/build.yml | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
-          else echo "Skipping test as there are no relevant code changes"
-          fi
+          ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
       - name: Count upgrade cycles
         run: |
           post_upgrade_instruction_count="$(dfx canister call nns-dapp get_stats | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count')"
           mainnet_state_recovery_instruction_count="$(dfx canister call nns-dapp get_stats --network mainnet | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count')"
-          state_recovery_safety_factor=10
+          state_recovery_safety_factor=2
+          likely_instruction_count="$(( post_upgrade_instruction_count + mainnet_state_recovery_instruction_count ))"
           maximum_likely_instruction_count="$(( post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count ))"
           max_instructions=1000000000000
-          percent="$(( (maximum_likely_instruction_count *  100) / max_instructions ))"
           humreadable(){ numfmt --to=si --format="%.3f" "${!1}" ; }
+          body_columns(){ printf "| %-60s | %20s | %12s |\n" "**$1**" "$(humreadable $2)" "$(percent $2)" ; }
+          percent() { echo "$(( ( ${!1} * 100 ) / max_instructions ))%" ; }
           (
-            echo  "## Upgrade cycle counts"
-            echo "**Max likely instruction count:** post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count = $(humreadable post_upgrade_instruction_count) + $(humreadable state_recovery_safety_factor) * $(humreadable mainnet_state_recovery_instruction_count) = $percent% of max"
+            echo "## Upgrade cycle counts"
+            echo "| Name                                                         | Cycles               | % max cycles | "
+            echo "|--------------------------------------------------------------|----------------------|--------------|"
+            body_columns "Mainnet state recovery instruction count" mainnet_state_recovery_instruction_count
+            body_columns "PR post upgrade instruction count" post_upgrade_instruction_count
+            body_columns "Likely PR count in prod"  likely_instruction_count
+            body_columns "Instruction count with ${state_recovery_safety_factor}x increase in user data" maximum_likely_instruction_count
           ) | tee -a $GITHUB_STEP_SUMMARY
       - name: Release
         run: |
