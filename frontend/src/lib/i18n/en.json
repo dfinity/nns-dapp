@@ -557,6 +557,7 @@
     "disburse": "Disburse",
     "increase_stake": "Increase Stake",
     "split_neuron": "Split Neuron",
+    "voting_power_subtitle": "Voting Power: $votingPower",
     "voting_power_tooltip_with_stake": "Calculated as: <br/>($token staked + maturity staked) x Dissolve Delay Bonus x Age Bonus<br/>($stake + $st4kedMaturity) x $delayMultiplier x $ageMultiplier",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the neurons' fund?",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the neurons' fund?",

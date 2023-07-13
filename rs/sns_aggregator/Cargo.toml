@@ -13,8 +13,9 @@ base64 = "0.13.0"
 candid = "0.8.2"
 # This next candid is 0.9.0_beta code that fixes serde Nat but has other issues.  Keep checking until the issues are fixed.
 #candid = { git = "https://github.com/dfinity/candid" , rev = "42ffed660ded37585c4b9f97e3ce90919e24c518" }
-ic-cdk = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a", features = ["timers"] }
-ic-cdk-macros = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
+ic-cdk = { version="0.9.2" }
+ic-cdk-macros = { version="0.6.10" }
+ic-cdk-timers = "0.3.0"
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
 ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "d14361f9939baaeb899106b874851ad4a0ce928b" }
 ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "d14361f9939baaeb899106b874851ad4a0ce928b" }
