@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+
+print_help() {
+  cat <<-EOF
+
+	Estimates the post-upgrade cycle counts given a local deployment of a release candidate
+	and a mainnet stats.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+# Source the output file ------------------------------------------------------
+source "$(clap.build)"
+
 : "Collect data from the local run, and from mainnet to get counts for a realistic state size."
 for network in mainnet local; do
   : "## $network stats"
