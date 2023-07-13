@@ -161,8 +161,9 @@ jobs:
           ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
       - name: Count upgrade cycles
         run: |
-          post_upgrade_instruction_count="$(dfx canister call nns-dapp get_stats | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count')"
-          mainnet_state_recovery_instruction_count="$(dfx canister call nns-dapp get_stats --network mainnet | idl2json | jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count')"
+          for network in mainnet local ; do dfx canister call nns-dapp get_stats --network $network | idl2json > ,counts-$network.json ; done
+          post_upgrade_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count') , counts-local.json"
+          mainnet_state_recovery_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count' , counts-mainnet.json)"
           state_recovery_safety_factor=2
           likely_instruction_count="$(( post_upgrade_instruction_count + mainnet_state_recovery_instruction_count ))"
           maximum_likely_instruction_count="$(( post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count ))"
@@ -179,6 +180,9 @@ jobs:
             body_columns "Likely PR count in prod"  likely_instruction_count
             body_columns "Instruction count with ${state_recovery_safety_factor}x increase in user data" maximum_likely_instruction_count
           ) | tee -a $GITHUB_STEP_SUMMARY
+          echo "Details for geeks:"
+          performance_count_deltas() { jq '[.performance_counts | map (.instruction_count = (.instruction_count | tonumber)) | foreach .[] as $record ( {this: 0}; {last: .this, this: $record.instruction_count}; {key: $record.name, value: {increase: (.this - .last), cumulative: .this}} )] | from_entries' "$1" ; }
+          for network in mainnet local ; do echo "## $network instruction counts" ; performance_count_deltas ,counts-$network.json ; done
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
