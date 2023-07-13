@@ -162,8 +162,8 @@ jobs:
       - name: Count upgrade cycles
         run: |
           for network in mainnet local ; do dfx canister call nns-dapp get_stats --network $network | idl2json > ,counts-$network.json ; done
-          post_upgrade_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count') , counts-local.json"
-          mainnet_state_recovery_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count' , counts-mainnet.json)"
+          post_upgrade_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count') ,counts-local.json"
+          mainnet_state_recovery_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after state_recovery") | .instruction_count' ,counts-mainnet.json)"
           state_recovery_safety_factor=2
           likely_instruction_count="$(( post_upgrade_instruction_count + mainnet_state_recovery_instruction_count ))"
           maximum_likely_instruction_count="$(( post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count ))"
