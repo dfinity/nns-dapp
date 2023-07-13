@@ -20,6 +20,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Setting Dissolve Delay supports 888 years.
 * Improve reponsiveness in proposal filter modals.
 * Improve responsiveness in proposal filter modals.
+* Only Locked neurons are mergeable.
 
 #### Deprecated
 #### Removed

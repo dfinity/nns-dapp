@@ -319,6 +319,7 @@ interface I18nNeurons {
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
+  cannot_merge_neuron_state: string;
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
@@ -580,6 +581,7 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
+  voting_power_subtitle: string;
   voting_power_tooltip_with_stake: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
