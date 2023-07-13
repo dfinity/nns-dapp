@@ -309,6 +309,7 @@
     "cannot_merge_neuron_community": "Neurons that joined the Neurons' Fund can't be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
+    "cannot_merge_neuron_state": "Only locked neurons can be merged.",
     "only_merge_two": "You can only merge two neurons at a time.",
     "need_two_to_merge": "You need at least two neurons to merge",
     "irreversible_action": "This action is irreversible.",
