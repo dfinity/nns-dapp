@@ -457,6 +457,7 @@ const isMergeableNeuron = ({
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
+  neuron.state === NeuronState.Locked &&
   isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
@@ -474,6 +475,9 @@ const getMergeableNeuronMessageKey = ({
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
+  }
+  if (neuron.state !== NeuronState.Locked) {
+    return "neurons.cannot_merge_neuron_state";
   }
 };
 
@@ -587,6 +591,12 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   return allHaveSameFollowees(sortedFollowees);
 };
 
+/**
+ * This function checks whether two neurons can be merged
+ * but it doesn't check if each neuron is mergeable.
+ *
+ * The mergeability of each neuron should be checked before calling this function.
+ */
 export const canBeMerged = (
   neurons: NeuronInfo[]
 ): { isValid: boolean; messageKey?: string } => {
