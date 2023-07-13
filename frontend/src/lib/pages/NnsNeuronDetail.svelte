@@ -149,7 +149,7 @@
     <main class="legacy">
       <section data-tid="neuron-detail">
         {#if neuron && !inVotingProcess}
-          {#if ENABLE_NEURON_SETTINGS}
+          {#if $ENABLE_NEURON_SETTINGS}
             <div class="section-wrapper">
               <NnsNeuronPageHeader {neuron} />
               <NnsNeuronPageHeading {neuron} />
