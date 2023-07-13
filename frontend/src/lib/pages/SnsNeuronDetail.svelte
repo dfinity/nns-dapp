@@ -149,7 +149,7 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if ENABLE_NEURON_SETTINGS}
+          {#if $ENABLE_NEURON_SETTINGS}
             <SnsNeuronPageHeader />
             <SnsNeuronVotingPowerSection />
             <SnsNeuronMaturitySection />
