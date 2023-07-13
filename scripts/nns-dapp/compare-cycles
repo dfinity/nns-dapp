@@ -1,37 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-          for network in mainnet local ; do
-            : "## $network stats"
-            dfx canister call nns-dapp get_stats --network $network | idl2json > ,counts-$network.json
-            : "## $network post_upgrade instruction counts"
-            jq '[.performance_counts | map (.instruction_count = (.instruction_count | tonumber)) | foreach .[] as $record ( {this: 0}; {last: .this, this: $record.instruction_count}; {key: $record.name, value: {increase: (.this - .last), cumulative: .this}} )] | from_entries' ,counts-$network.json > ,postupgrade-$network.json
-          done
-	  post_upgrade_instruction_count="$(jq -r '.performance_counts [] | select(.name == "post_upgrade after set_canister_arguments") | .instruction_count' ,counts-local.json)"
-          mainnet_state_recovery_instruction_count="$(jq -r '.["post_upgrade after state_recovery"].increase' ,postupgrade-mainnet.json)"
-          state_recovery_safety_factor=2
-          likely_instruction_count="$(( post_upgrade_instruction_count + mainnet_state_recovery_instruction_count ))"
-          maximum_likely_instruction_count="$(( post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count ))"
-          max_instructions=1000000000000
-          humreadable(){ numfmt --to=si --format="%.3f" "${!1}" ; }
-          body_columns(){ printf "| %-60s | %20s | %12s |\n" "**$1**" "$(humreadable $2)" "$(percent $2)" ; }
-          percent() { echo "$(( ( ${!1} * 100 ) / max_instructions ))%" ; }
-          (
-            echo "## Upgrade cycle counts"
-            echo "| Name                                                         | Cycles               | % max cycles | "
-            echo "|--------------------------------------------------------------|----------------------|--------------|"
-            body_columns "Mainnet state recovery instruction count" mainnet_state_recovery_instruction_count
-            body_columns "PR post upgrade instruction count" post_upgrade_instruction_count
-            body_columns "Likely PR count in prod"  likely_instruction_count
-            body_columns "Instruction count with ${state_recovery_safety_factor}x increase in user data" maximum_likely_instruction_count
-          )
+: "Collect data from the local run, and from mainnet to get counts for a realistic state size."
+for network in mainnet local; do
+  : "## $network stats"
+  dfx canister call nns-dapp get_stats --network $network | idl2json >,counts-$network.json
+  : "## $network post_upgrade instruction counts"
+  jq '[.performance_counts | map (.instruction_count = (.instruction_count | tonumber)) | foreach .[] as $record ( {this: 0}; {last: .this, this: $record.instruction_count}; {key: $record.name, value: {increase: (.this - .last), cumulative: .this}} )] | from_entries' ,counts-$network.json >,postupgrade-$network.json
+done
 
-	  {
-	    echo "# Details"
-	    for network in mainnet local ; do
-		   echo "## $network stats"
-		   jq . ,counts-$network.json
-		   echo "## $network post upgrade cycle counts"
-		   jq . ,postupgrade-$network.json
-	   done
-	  } >&2
+post_upgrade_instruction_count="$(jq -r '.["post_upgrade stop"].cumulative' ,postupgrade-local.json)"
+mainnet_state_recovery_instruction_count="$(jq -r '.["post_upgrade after state_recovery"].increase' ,postupgrade-mainnet.json)"
+# Assuming mainnet state recovery is as now, simply adding the mainnet state upgrade cycle count makes a reasonable estimate of cycles consumed.
+state_recovery_safety_factor=2
+likely_instruction_count="$((post_upgrade_instruction_count + mainnet_state_recovery_instruction_count))"
+maximum_likely_instruction_count="$((post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count))"
+max_instructions=1000000000000
+
+humreadable() { numfmt --to=si --format="%.3f" "${!1}"; }
+body_columns() { printf "| %-60s | %20s | %12s |\n" "**$1**" "$(humreadable "$2")" "$(percent "$2")"; }
+percent() { echo "$(((${!1} * 100) / max_instructions))%"; }
+
+# Declare the variables as exported to satisfy shellcheck; it is not needed for the code.
+export likely_instruction_count maximum_likely_instruction_count
+(
+  echo "## Upgrade cycle counts"
+  echo "| Name                                                         | Cycles               | % max cycles | "
+  echo "|--------------------------------------------------------------|----------------------|--------------|"
+  body_columns "Mainnet state recovery instruction count" mainnet_state_recovery_instruction_count
+  body_columns "PR post upgrade instruction count" post_upgrade_instruction_count
+  body_columns "Likely PR count in prod" likely_instruction_count
+  body_columns "Instruction count with ${state_recovery_safety_factor}x increase in user data" maximum_likely_instruction_count
+)
+
+{
+  echo "# Details"
+  for network in mainnet local; do
+    echo "## $network stats"
+    jq . ,counts-$network.json
+    echo "## $network post upgrade cycle counts"
+    jq . ,postupgrade-$network.json
+  done
+} >&2
