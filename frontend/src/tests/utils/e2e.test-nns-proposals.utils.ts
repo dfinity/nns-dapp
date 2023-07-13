@@ -29,7 +29,7 @@ export const createDummyProposal = async (appPo: AppPo) => {
   expect(idsAfterNeuronCreation).toHaveLength(idsBeforeRun.length + 1);
 
   const newNeuronId = idsAfterNeuronCreation.find(
-    (id) => !idsBeforeRun.includes(id)
+    (id: string) => !idsBeforeRun.includes(id)
   );
 
   await localStep("Open neuron details");
