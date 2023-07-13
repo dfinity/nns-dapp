@@ -42,6 +42,8 @@
   import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
   import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
   import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -149,11 +151,15 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if $ENABLE_NEURON_SETTINGS}
-            <SnsNeuronPageHeader />
-            <SnsNeuronVotingPowerSection />
-            <SnsNeuronMaturitySection />
-            <SnsNeuronAdvancedSection />
+          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters)}
+            <div class="section-wrapper">
+              <SnsNeuronPageHeader />
+              <SnsNeuronPageHeading {parameters} />
+              <Separator spacing="none" />
+              <SnsNeuronVotingPowerSection />
+              <SnsNeuronMaturitySection />
+              <SnsNeuronAdvancedSection />
+            </div>
           {/if}
           <Summary />
 
@@ -179,3 +185,11 @@
 
   <SnsNeuronModals />
 </TestIdWrapper>
+
+<style lang="scss">
+  .section-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
+  }
+</style>
