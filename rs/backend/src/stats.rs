@@ -103,11 +103,11 @@ pub fn stable_memory_size_bytes() -> u64 {
 pub fn wasm_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
-       (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
+        (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
-       0
+        0
     }
 }
 
