@@ -16,6 +16,7 @@
 
 <button
   class={variant}
+  data-tid="nns-increase-stake-button-component"
   on:click={() =>
     openNnsNeuronModal({
       type: "increase-stake",

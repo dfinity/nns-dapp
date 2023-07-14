@@ -12,7 +12,7 @@
   export let neuron: NeuronInfo;
 </script>
 
-<ItemAction>
+<ItemAction testId="nns-stake-item-action-component">
   <UniverseLogo
     slot="icon"
     size="big"
@@ -22,9 +22,9 @@
   />
   <div class="content">
     <p class="icp-value">
-      <span>{formatToken({ value: neuronStake(neuron) })}</span><span
-        >{ICPToken.symbol}</span
-      >
+      <span data-tid="stake-value"
+        >{formatToken({ value: neuronStake(neuron) })}</span
+      ><span>{ICPToken.symbol}</span>
     </p>
     <p class="description">{$i18n.neurons.ic_stake}</p>
   </div>
