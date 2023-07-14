@@ -3,4 +3,4 @@ set -euo pipefail
 # Craete an empty assets file, if there is none.
 test -e assets.tar.xz || touch assets.tar.xz
 # Lint the rust code
-cargo clippy --all-targets --all-features -- -D warnings
+cargo clippy --target wasm32-unknown-unknown --all-features -- -D warnings
