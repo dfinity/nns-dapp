@@ -3,13 +3,13 @@ use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
-use core::arch::wasm32::memory_size as wasm_memory_size;
 use ic_cdk::api::stable::stable64_size;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
 #[cfg(test)]
 mod tests;
 #[cfg(target_arch = "wasm32")]
+use core::arch::wasm32::memory_size as wasm_memory_size;
 const WASM_PAGE_SIZE: u64 = 65536;
 const GIBIBYTE: u64 = 1 << 30;
 
@@ -101,7 +101,14 @@ pub fn stable_memory_size_bytes() -> u64 {
 
 /// The wasm memory size in bytes
 pub fn wasm_memory_size_bytes() -> u64 {
-    (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
+    #[cfg(target_arch = "wasm32")]
+    {
+       (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+       0
+    }
 }
 
 /// Convert bytes to binary gigabytes
