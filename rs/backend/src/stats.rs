@@ -18,6 +18,8 @@ pub fn get_stats(state: &State) -> Stats {
     // Collect values from various subcomponents
     state.accounts_store.borrow().get_stats(&mut ans);
     state.performance.borrow().get_stats(&mut ans);
+    ans.stable_memory_size_bytes = stable_memory_size_bytes();
+    ans.wasm_memory_size_bytes = wasm_memory_size_bytes();
     // Return all the values
     ans
 }
@@ -38,6 +40,8 @@ pub struct Stats {
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
     pub performance_counts: Vec<PerformanceCount>,
+    pub stable_memory_size_bytes: u64,
+    pub wasm_memory_size_bytes: u64,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
@@ -79,21 +83,28 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     )?;
     w.encode_gauge(
         "nns_dapp_stable_memory_size_gib",
-        stable_memory_size_gib(),
-        "Amount of stable memory pages used by this canister, in binary gigabytes",
+        gibibytes(stable_memory_size_bytes()),
+        "Amount of stable memory used by this canister, in binary gigabytes",
     )?;
     w.encode_gauge(
         "nns_dapp_wasm_memory_size_gib",
-        wasm_memory_size_gib(),
-        "Amount of wasm memory pages used by this canister, in binary gigabytes",
+        gibibytes(wasm_memory_size_bytes()),
+        "Amount of wasm memory used by this canister, in binary gigabytes",
     )?;
     Ok(())
 }
 
-pub fn stable_memory_size_gib() -> f64 {
-    (stable64_size() as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64)
+/// The stable memory size in bytes
+pub fn stable_memory_size_bytes() -> u64 {
+    stable64_size() * WASM_PAGE_SIZE
 }
 
-pub fn wasm_memory_size_gib() -> f64 {
-    (wasm_memory_size(0) as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64)
+/// The wasm memory size in bytes
+pub fn wasm_memory_size_bytes() -> u64 {
+    (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
+}
+
+/// Convert bytes to binary gigabytes
+pub fn gibibytes(bytes: u64) -> f64 {
+    (bytes as f64) / (GIBIBYTE as f64)
 }

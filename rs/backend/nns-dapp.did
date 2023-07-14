@@ -215,6 +215,8 @@ type Stats =
         neurons_topped_up_count: nat64;
         transactions_to_process_queue_length: nat32;
         performance_counts: vec PerformanceCount;
+        nns_dapp_stable_memory_size_gib: float64;
+        nns_dapp_wasm_memory_size_gib: float64;
     };
 
 type PerformanceCount =

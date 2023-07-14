@@ -51,8 +51,8 @@ fn pre_upgrade() {
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
-        stats::stable_memory_size_gib(),
-        stats::wasm_memory_size_gib()
+        stats::gibibytes(stats::stable_memory_size_bytes()),
+        stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
         let bytes = s.encode();
@@ -61,8 +61,8 @@ fn pre_upgrade() {
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
-        stats::stable_memory_size_gib(),
-        stats::wasm_memory_size_gib()
+        stats::gibibytes(stats::stable_memory_size_bytes()),
+        stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
 }
 
