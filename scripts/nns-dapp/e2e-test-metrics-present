@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Verifies that the canister metrics include all expected values.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+METRICS_URL="$(dfx-canister-url --raw --network "$DFX_NETWORK" nns-dapp)/metrics"
+REFERENCE_KEYS_FILE="$0.keys"
+NETWORK_KEYS_FILE=",nns-dapp-metrics-$DFX_NETWORK.keys"
+NETWORK_METRICS_FILE=",nns-dapp-metrics-$DFX_NETWORK.txt"
+curl "$METRICS_URL" > "$NETWORK_METRICS_FILE"
+sed -nE '/^([a-z_]+).*/{s//\1/g;p}' "$NETWORK_METRICS_FILE" | sort > "$NETWORK_KEYS_FILE"
+diff "$REFERENCE_KEYS_FILE" "$NETWORK_KEYS_FILE" || {
+    echo "ERROR: The list of metrics in  does not match the reference set."
+    echo "Expected metrics are in: $REFERENCE_KEYS_FILE"
+    echo "Actual metrics are in:  $NETWORK_KEYS_FILE"
+    exit 1
+} >&2
+# rm "$NETWORK_KEYS_FILE" "$NETWORK_METRICS_FILE"

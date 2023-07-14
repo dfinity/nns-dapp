@@ -1,0 +1,9 @@
+accounts_count
+hardware_wallet_accounts_count
+neurons_created_count
+neurons_topped_up_count
+nns_dapp_stable_memory_size_gib
+nns_dapp_wasm_memory_size_gib
+seconds_since_last_ledger_sync
+sub_accounts_count
+transactions_count
