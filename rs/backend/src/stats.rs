@@ -96,7 +96,14 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
 
 /// The stable memory size in bytes
 pub fn stable_memory_size_bytes() -> u64 {
-    stable64_size() * WASM_PAGE_SIZE
+    #[cfg(target_arch = "wasm32")]
+    {
+        stable64_size() * WASM_PAGE_SIZE
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        0
+    }
 }
 
 /// The wasm memory size in bytes
