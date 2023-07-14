@@ -49,16 +49,20 @@ fn main() {}
 #[pre_upgrade]
 fn pre_upgrade() {
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter before saving state: {}",
-        ic_cdk::api::instruction_counter()
+        "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
+        ic_cdk::api::instruction_counter(),
+        stats::stable_memory_size_gib(),
+        stats::wasm_memory_size_gib()
     ));
     STATE.with(|s| {
         let bytes = s.encode();
         stable::set(&bytes);
     });
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter after saving state: {}",
-        ic_cdk::api::instruction_counter()
+        "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
+        ic_cdk::api::instruction_counter(),
+        stats::stable_memory_size_gib(),
+        stats::wasm_memory_size_gib()
     ));
 }
 

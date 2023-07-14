@@ -79,13 +79,21 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     )?;
     w.encode_gauge(
         "nns_dapp_stable_memory_size_gib",
-        (stable64_size() as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64),
+        stable_memory_size_gib(),
         "Amount of stable memory pages used by this canister, in binary gigabytes",
     )?;
     w.encode_gauge(
         "nns_dapp_wasm_memory_size_gib",
-        (wasm_memory_size(0) as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64),
+        wasm_memory_size_gib(),
         "Amount of wasm memory pages used by this canister, in binary gigabytes",
     )?;
     Ok(())
+}
+
+pub fn stable_memory_size_gib() -> f64 {
+    (stable64_size() as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64)
+}
+
+pub fn wasm_memory_size_gib() -> f64 {
+    (wasm_memory_size(0) as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64)
 }
