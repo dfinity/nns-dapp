@@ -3,13 +3,15 @@ use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
-use ic_cdk::api::stable::stable64_size;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
 #[cfg(test)]
 mod tests;
 #[cfg(target_arch = "wasm32")]
 use core::arch::wasm32::memory_size as wasm_memory_size;
+#[cfg(target_arch = "wasm32")]
+use ic_cdk::api::stable::stable64_size;
+#[cfg(target_arch = "wasm32")]
 const WASM_PAGE_SIZE: u64 = 65536;
 const GIBIBYTE: u64 = 1 << 30;
 
@@ -18,8 +20,8 @@ pub fn get_stats(state: &State) -> Stats {
     // Collect values from various subcomponents
     state.accounts_store.borrow().get_stats(&mut ans);
     state.performance.borrow().get_stats(&mut ans);
-    ans.stable_memory_size_bytes = stable_memory_size_bytes();
-    ans.wasm_memory_size_bytes = wasm_memory_size_bytes();
+    ans.stable_memory_size_bytes = Some(stable_memory_size_bytes());
+    ans.wasm_memory_size_bytes = Some(wasm_memory_size_bytes());
     // Return all the values
     ans
 }
@@ -40,8 +42,11 @@ pub struct Stats {
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
     pub performance_counts: Vec<PerformanceCount>,
-    pub stable_memory_size_bytes: u64,
-    pub wasm_memory_size_bytes: u64,
+    // TODO: After a transition period, these two can be required rather than being optional.
+    //       The transition period can be considered over when most deployments, including
+    //       production, CI and snsdemo populate these fields.
+    pub stable_memory_size_bytes: Option<u64>,
+    pub wasm_memory_size_bytes: Option<u64>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
@@ -112,6 +117,8 @@ pub fn wasm_memory_size_bytes() -> u64 {
     {
         (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
     }
+    // This can happen only for test builds.  When compiled for a canister, the target is
+    // always wasm32.
     #[cfg(not(target_arch = "wasm32"))]
     {
         0
