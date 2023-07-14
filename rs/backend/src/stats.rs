@@ -3,10 +3,15 @@ use crate::perf::PerformanceCount;
 use crate::state::State;
 use crate::STATE;
 use candid::CandidType;
+use core::arch::wasm32::memory_size as wasm_memory_size;
+use ic_cdk::api::stable::stable64_size;
 use icp_ledger::BlockIndex;
 use serde::Deserialize;
 #[cfg(test)]
 mod tests;
+#[cfg(target_arch = "wasm32")]
+const WASM_PAGE_SIZE: u64 = 65536;
+const GIBIBYTE: u64 = 1 << 30;
 
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
@@ -71,6 +76,16 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "seconds_since_last_ledger_sync",
         stats.seconds_since_last_ledger_sync as f64,
         "Number of seconds since last ledger sync.",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_stable_memory_size_gib",
+        (stable64_size() as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64),
+        "Amount of stable memory pages used by this canister, in binary gigabytes",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_wasm_memory_size_gib",
+        (wasm_memory_size(0) as f64) * (WASM_PAGE_SIZE as f64) / (GIBIBYTE as f64),
+        "Amount of wasm memory pages used by this canister, in binary gigabytes",
     )?;
     Ok(())
 }
