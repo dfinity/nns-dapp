@@ -10,7 +10,7 @@
 
 <Section testId="nns-neuron-maturity-section-component">
   <h3 slot="title">{$i18n.neuron_detail.maturity_title}</h3>
-  <h3 slot="end" data-tid="voting-power">
+  <h3 slot="end" data-tid="total-maturity">
     {formattedTotalMaturity(neuron)}
   </h3>
   <p slot="description">

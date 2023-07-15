@@ -11,10 +11,11 @@
 
 <ItemAction testId="nns-staked-maturity-item-action-component">
   <div slot="icon" class="icon">
+    <!-- TODO: Use icon from gix-components and fix icon size -->
     <IconStakedMaturity size="24px" />
   </div>
   <div class="content">
-    <p>{formattedStakedMaturity(neuron)}</p>
+    <p data-tid="staked-maturity">{formattedStakedMaturity(neuron)}</p>
     <p class="description">{$i18n.neuron_detail.staked_description}</p>
   </div>
   <NnsStakeMaturityButton {neuron} slot="actions" />
