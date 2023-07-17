@@ -34,7 +34,7 @@ Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
 * ... what has changed
 * ... in simple bullet points
 
-## Commit log:
+## Commit Log:
 
 \`\`\`
 + bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)"
