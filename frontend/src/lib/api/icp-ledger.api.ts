@@ -3,6 +3,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
+import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
@@ -76,7 +77,7 @@ export const queryAccountBalance = async ({
 }: {
   certified: boolean;
   identity: Identity;
-  accountIdentifier: string;
+  accountIdentifier: IcpAccountIdentifierText;
 }) => {
   logWithTimestamp(`Get account balance call...`);
   const { canister } = await ledgerCanister({ identity });
