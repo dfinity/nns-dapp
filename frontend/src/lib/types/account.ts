@@ -1,4 +1,8 @@
-import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type {
+  AccountIdentifierString,
+  SubAccountArray,
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 
 export type AccountType =
@@ -7,10 +11,11 @@ export type AccountType =
   | "hardwareWallet"
   | "withdrawalAccount";
 
-export type IcpAccountIdentifierText = string;
+export type IcpAccountIdentifierText = AccountIdentifierString;
 
 export interface Account {
-  identifier: IcpAccountIdentifierText;
+  // TODO: IcpAccountIdentifierText to be removed
+  identifier: IcpAccountIdentifierText | IcrcAccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
   balanceE8s: bigint;
