@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
@@ -19,7 +19,7 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/services/neurons.services", () => {
   return {
     topUpNeuron: jest.fn().mockResolvedValue({ success: true }),

@@ -30,7 +30,7 @@ import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
-import { sendICP } from "./ledger.api";
+import { sendICP } from "./icp-ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
 
 // This way, TS understands that if it's invalid, then the name is a string

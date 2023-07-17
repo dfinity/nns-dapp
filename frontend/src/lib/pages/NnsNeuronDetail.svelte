@@ -41,6 +41,8 @@
   import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
   import NnsNeuronMaturitySection from "$lib/components/neuron-detail/NnsNeuronMaturitySection.svelte";
   import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -147,11 +149,15 @@
     <main class="legacy">
       <section data-tid="neuron-detail">
         {#if neuron && !inVotingProcess}
-          {#if ENABLE_NEURON_SETTINGS}
-            <NnsNeuronPageHeader />
-            <NnsNeuronVotingPowerSection />
-            <NnsNeuronMaturitySection />
-            <NnsNeuronAdvancedSection />
+          {#if $ENABLE_NEURON_SETTINGS}
+            <div class="section-wrapper">
+              <NnsNeuronPageHeader {neuron} />
+              <NnsNeuronPageHeading {neuron} />
+              <Separator spacing="none" />
+              <NnsNeuronVotingPowerSection {neuron} />
+              <NnsNeuronMaturitySection />
+              <NnsNeuronAdvancedSection />
+            </div>
           {/if}
           <Summary displayUniverse={false} />
 
@@ -179,3 +185,11 @@
 
   <NnsNeuronModals />
 </TestIdWrapper>
+
+<style lang="scss">
+  .section-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
+  }
+</style>

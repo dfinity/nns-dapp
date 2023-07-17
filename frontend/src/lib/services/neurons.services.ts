@@ -9,7 +9,7 @@ import {
 } from "$lib/constants/ledger-app.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
@@ -60,7 +60,7 @@ import {
   transferICP,
 } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { assertLedgerVersion } from "./ledger.services";
+import { assertLedgerVersion } from "./icp-ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (

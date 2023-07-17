@@ -22,6 +22,8 @@
       tagName="span"
       text={proposerText}
       id="proposer-id"
+      showCopy
+      flowLessCopy
     />
   </svelte:fragment>
 
