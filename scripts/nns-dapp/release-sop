@@ -181,7 +181,7 @@ confirm_cmd() {
     return
   fi
   (
-    echo "Press enter to run the following command:"
+    echo "👇 Press enter to run the following command:"
     echo
     echo "$cmd"
     echo
@@ -340,7 +340,7 @@ record "Release commit" git rev-parse release-candidate
 verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
 confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
-verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-72xf-g2v4-qvf3,https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
 record "Security test: cargo audit" cargo_audit
 verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159"
 record "Security test: no HTML in templates" no_html_in_templates
