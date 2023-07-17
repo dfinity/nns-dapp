@@ -39,16 +39,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ## Proposal 123471
 ### Application
 
-#### Added
-
-* Nns voting e2e test.
-
 #### Changed
 
 * Revert display of TVL in various currencies to USD only
 * Removed `OWN_CANISTER_URL`.
 * Setting Dissolve Delay supports 888 years.
-* Improve reponsiveness in proposal filter modals.
 * Improve responsiveness in proposal filter modals.
 * Only Locked neurons are mergeable.
 * Add copy button to sns proposal proposer id.
@@ -69,6 +64,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Nns voting e2e test.
 * Added CI workflows to update rust and didc automatically, by cron job or button click.
 * Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 * Test that no new change log entries are added to existing releases.
