@@ -29,6 +29,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+
 #### Deprecated
 #### Removed
 
@@ -75,7 +77,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
 * Updated `didc` to the latest release.
 * Migrated some end-to-end tests from Wdio to Playwright.
 * Use the newest snsdemo snapshot with the sns_aggregator preloaded.
