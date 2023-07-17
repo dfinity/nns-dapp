@@ -24,7 +24,7 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
     return this.getStakeItemActionPo().isPresent();
   }
 
-  getNeuronStateItemActionPo(): NnsStakeItemActionPo {
+  getNeuronStateItemActionPo(): NnsNeuronStateItemActionPo {
     return NnsNeuronStateItemActionPo.under(this.root);
   }
 
