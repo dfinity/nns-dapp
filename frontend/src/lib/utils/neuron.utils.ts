@@ -26,8 +26,9 @@ import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
-  IconLockClock,
+  IconLockClosed,
   IconLockOpen,
+  IconPace,
 } from "@dfinity/gix-components";
 import {
   NeuronState,
@@ -70,7 +71,7 @@ type StateMapper = {
 export const stateTextMapper: StateMapper = {
   [NeuronState.Locked]: {
     textKey: "locked",
-    Icon: IconLockClock,
+    Icon: IconLockClosed,
     status: "ok",
   },
   [NeuronState.Unspecified]: {
@@ -84,7 +85,7 @@ export const stateTextMapper: StateMapper = {
   },
   [NeuronState.Dissolving]: {
     textKey: "dissolving",
-    Icon: IconHistoryToggleOff,
+    Icon: IconPace,
     status: "warn",
   },
   [NeuronState.Spawning]: {
