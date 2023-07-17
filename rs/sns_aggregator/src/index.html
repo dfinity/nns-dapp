@@ -32,7 +32,7 @@
           const aggregatorUrl = "";
 
           const renderSns = ({canister_ids: {root_canister_id}, meta: {name}}) => {
-              const div = document.createElement("article");
+              const article = document.createElement("article");
 
               const img = document.createElement("img");
               img.loading = "lazy";
@@ -42,10 +42,10 @@
               a.href = `${aggregatorUrl}/root/${root_canister_id}/slow.json`;
               a.text = name;
 
-              div.appendChild(img);
-              div.appendChild(a);
+              article.appendChild(img);
+              article.appendChild(a);
 
-              return div;
+              return article;
           }
 
           const renderSnses = (latest) => {
