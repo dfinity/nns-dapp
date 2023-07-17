@@ -311,7 +311,7 @@ command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 cargo binstall -V || install_binstall
-check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm ; }
+check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx
