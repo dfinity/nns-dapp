@@ -1,4 +1,5 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
@@ -9,12 +10,10 @@ import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
 
-export type IcrcAccountIdentifier = string;
-
 // Each Icrc Account - Sns or ckBTC - is an entry in this store.
 // We use the account string representation as the key to identify the transactions.
 export type IcrcTransactions = Record<
-  IcrcAccountIdentifier,
+  IcrcAccountIdentifierText,
   {
     transactions: IcrcTransactionWithId[];
     oldestTxId?: bigint;

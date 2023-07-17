@@ -8,7 +8,6 @@ import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
-  AccountIdentifierString,
   HardwareWalletAccountDetails,
   SubAccountDetails,
   Transaction,
@@ -28,7 +27,11 @@ import {
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { Account, AccountType } from "$lib/types/account";
+import type {
+  Account,
+  AccountIdentifierText,
+  AccountType,
+} from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import {
@@ -195,7 +198,7 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: string;
+  accountIdentifier: AccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
@@ -308,12 +311,9 @@ export const getAccountTransactions = async ({
   accountIdentifier,
   onLoad,
 }: {
-  accountIdentifier: AccountIdentifierString;
-  onLoad: ({
-    accountIdentifier,
-    transactions,
-  }: {
-    accountIdentifier: AccountIdentifierString;
+  accountIdentifier: AccountIdentifierText;
+  onLoad: (params: {
+    accountIdentifier: AccountIdentifierText;
     transactions: Transaction[];
   }) => void;
 }): Promise<void> =>

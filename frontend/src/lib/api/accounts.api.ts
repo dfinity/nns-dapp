@@ -64,7 +64,7 @@ export const renameSubAccount = async ({
 }: {
   newName: string;
   identity: Identity;
-  subAccountIdentifier: string;
+  subAccountIdentifier: AccountIdentifierString;
 }): Promise<void> => {
   logWithTimestamp(
     `Renaming SubAccount ${hashCode(subAccountIdentifier)} call...`

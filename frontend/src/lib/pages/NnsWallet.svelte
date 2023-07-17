@@ -43,6 +43,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { ICPToken } from "@dfinity/utils";
+  import type { AccountIdentifierText } from "$lib/types/account";
 
   onMount(() => {
     pollAccounts();
@@ -57,7 +58,7 @@
   let transactions: Transaction[] | undefined;
 
   const reloadTransactions = (
-    accountIdentifier: AccountIdentifierString
+    accountIdentifier: AccountIdentifierText
   ): Promise<void> =>
     getAccountTransactions({
       accountIdentifier,
