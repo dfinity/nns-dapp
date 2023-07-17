@@ -1,6 +1,5 @@
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import type {
   Account,
   AccountIdentifierText,
@@ -15,7 +14,6 @@ import { decodeIcrcAccount } from "@dfinity/ledger";
 import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import { get } from "svelte/store";
 import { isUniverseNns } from "./universe.utils";
 
 /*
@@ -82,15 +80,10 @@ export const invalidAddress = ({
     });
   }
 
-  // TODO: reactive variable as parameter
-  const feature = get(ENABLE_ICP_ICRC);
-
-  // NNS universe doesn't use ICRC yet
-  if (isUniverseNns(rootCanisterId) && !feature) {
-    return invalidIcpAddress(address);
+  // NNS universe accepts ICP and ICRC adresses for transactions
+  if (isUniverseNns(rootCanisterId)) {
+    return invalidIcrcAddress(address) && invalidIcpAddress(address);
   }
-
-  // TODO: if NNS and Icrc fails, try ICP valid address
 
   // Consider it as an ICRC address
   return invalidIcrcAddress(address);

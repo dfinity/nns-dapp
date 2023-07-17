@@ -28,7 +28,6 @@ import {
   accountsStore,
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
-import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type {
@@ -40,6 +39,8 @@ import type { NewTransaction } from "$lib/types/transaction";
 import {
   findAccount,
   getAccountByPrincipal,
+  invalidIcpAddress,
+  invalidIcrcAddress,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -310,9 +311,18 @@ export const transferICP = async ({
 
     const feeE8s = get(mainTransactionFeeE8sStore);
 
-    const feature = get(ENABLE_ICP_ICRC);
+    const validIcrcAddress = !invalidIcrcAddress(to);
+    const validIcpAddress = !invalidIcpAddress(to);
 
-    await (feature
+    // UI validates addresses and disable form if not compliant. Therefore, this issue should unlikely happen.
+    if (!validIcrcAddress && !validIcpAddress) {
+      toastsError({
+        labelKey: "error.address_not_icp_icrc_valid",
+      });
+      return { success: false };
+    }
+
+    await (validIcrcAddress
       ? icrcTransfer({
           identity,
           to: decodeIcrcAccount(to),
