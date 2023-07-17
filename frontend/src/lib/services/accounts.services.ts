@@ -227,7 +227,6 @@ export const loadBalance = async ({
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
-
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
       queryAccountBalance({
