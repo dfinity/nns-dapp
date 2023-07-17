@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve responsiveness in proposal filter modals.
 * Only Locked neurons are mergeable.
 * Add copy button to sns proposal proposer id.
+* New neuron state icons.
 
 #### Deprecated
 #### Removed
