@@ -276,7 +276,7 @@ describe("ParticipateSwapModal", () => {
       expectSpyCalledWithQueryOnly({
         spy: queryAccountBalanceSpy,
         params: {
-          accountIdentifier: mockAccountDetails.account_identifier,
+          icpAccountIdentifier: mockAccountDetails.account_identifier,
           identity: mockIdentity,
         },
       });

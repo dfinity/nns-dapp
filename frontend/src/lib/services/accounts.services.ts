@@ -91,9 +91,11 @@ export const getOrCreateAccount = async ({
 export const loadAccounts = async ({
   identity,
   certified,
+  icrcEnabled,
 }: {
   identity: Identity;
   certified: boolean;
+  icrcEnabled: boolean;
 }): Promise<AccountsStoreData> => {
   // Helper
   const getAccountBalance = (identifierString: string): Promise<bigint> =>
@@ -117,12 +119,14 @@ export const loadAccounts = async ({
         "principal" in account ? account.principal : identity.getPrincipal();
 
       return {
-        identifier: encodeIcrcAccount({
-          owner,
-          ...("sub_account" in account && {
-            subaccount: arrayOfNumberToUint8Array(account.sub_account),
-          }),
-        }),
+        identifier: icrcEnabled
+          ? encodeIcrcAccount({
+              owner,
+              ...("sub_account" in account && {
+                subaccount: arrayOfNumberToUint8Array(account.sub_account),
+              }),
+            })
+          : account.account_identifier,
         balanceE8s: await getAccountBalance(account.account_identifier),
         type,
         ...("sub_account" in account && { subAccount: account.sub_account }),
@@ -185,13 +189,17 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
 /**
  * Loads the account data using the ledger and the nns dapp canister.
  */
-const syncAccountsWithErrorHandler = (
-  errorHandler: SyncAccontsErrorHandler
-): Promise<void> => {
+const syncAccountsWithErrorHandler = ({
+  errorHandler,
+  icrcEnabled,
+}: {
+  errorHandler: SyncAccontsErrorHandler;
+  icrcEnabled: boolean;
+}): Promise<void> => {
   const mutableStore =
     accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
   return queryAndUpdate<AccountsStoreData, unknown>({
-    request: (options) => loadAccounts(options),
+    request: (options) => loadAccounts({ ...options, icrcEnabled }),
     onLoad: ({ response: accounts }) => mutableStore.set(accounts),
     onError: ({ error: err, certified }) => {
       console.error(err);
@@ -203,8 +211,11 @@ const syncAccountsWithErrorHandler = (
   });
 };
 
-export const syncAccounts = () =>
-  syncAccountsWithErrorHandler(defaultErrorHandlerAccounts);
+export const syncAccounts = (icrcEnabled: boolean) =>
+  syncAccountsWithErrorHandler({
+    errorHandler: defaultErrorHandlerAccounts,
+    icrcEnabled,
+  });
 
 const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
 
@@ -213,7 +224,8 @@ const ignoreErrors: SyncAccontsErrorHandler = () => undefined;
  *
  * It ignores errors and does not show any toasts. Accounts will be synced again.
  */
-export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
+export const initAccounts = (icrcEnabled: boolean) =>
+  syncAccountsWithErrorHandler({ errorHandler: ignoreErrors, icrcEnabled });
 
 /**
  * Queries the balance of an account and loads it in the store.
@@ -263,15 +275,17 @@ export const loadBalance = async ({
 
 export const addSubAccount = async ({
   name,
+  icrcEnabled,
 }: {
   name: string;
+  icrcEnabled: boolean;
 }): Promise<void> => {
   try {
     const identity: Identity = await getAuthenticatedIdentity();
 
     await createSubAccount({ name, identity });
 
-    await syncAccounts();
+    await syncAccounts(icrcEnabled);
   } catch (err: unknown) {
     toastsError(
       toToastError({
@@ -421,9 +435,11 @@ export const getAccountIdentityByPrincipal = async (
 export const renameSubAccount = async ({
   newName,
   selectedAccount,
+  icrcEnabled,
 }: {
   newName: string;
   selectedAccount: Account | undefined;
+  icrcEnabled: boolean;
 }): Promise<{ success: boolean; err?: string }> => {
   if (!selectedAccount) {
     return renameError({ labelKey: "error.rename_subaccount_no_account" });
@@ -444,7 +460,7 @@ export const renameSubAccount = async ({
       subIcpAccountIdentifier: toIcpAccountIdentifier(identifier),
     });
 
-    await syncAccounts();
+    await syncAccounts(icrcEnabled);
 
     return { success: true };
   } catch (err: unknown) {
@@ -474,6 +490,7 @@ const pollAccountsId = Symbol("poll-accounts");
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
+  icrcEnabled: boolean;
 }): Promise<AccountsStoreData> =>
   poll({
     fn: () => loadAccounts(params),
@@ -494,7 +511,13 @@ const pollLoadAccounts = async (params: {
  *
  * @param certified Whether the accounts should be requested as certified or not.
  */
-export const pollAccounts = async (certified = true) => {
+export const pollAccounts = async ({
+  certified = true,
+  icrcEnabled,
+}: {
+  certified?: boolean;
+  icrcEnabled: boolean;
+}) => {
   const overrideCertified = isForceCallStrategy() ? false : certified;
   const accounts = get(accountsStore);
 
@@ -515,6 +538,7 @@ export const pollAccounts = async (certified = true) => {
     const certifiedAccounts = await pollLoadAccounts({
       identity,
       certified: overrideCertified,
+      icrcEnabled,
     });
     mutableStore.set(certifiedAccounts);
   } catch (err) {

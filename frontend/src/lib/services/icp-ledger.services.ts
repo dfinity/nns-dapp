@@ -23,6 +23,7 @@ export interface ConnectToHardwareWalletParams {
 export interface RegisterHardwareWalletParams {
   name: string | undefined;
   ledgerIdentity: LedgerIdentity | undefined;
+  icrcEnabled: boolean;
 }
 
 /**
@@ -57,6 +58,7 @@ export const connectToHardwareWallet = async (
 export const registerHardwareWallet = async ({
   name,
   ledgerIdentity,
+  icrcEnabled,
 }: RegisterHardwareWalletParams): Promise<void> => {
   if (name === undefined) {
     toastsError({
@@ -86,7 +88,7 @@ export const registerHardwareWallet = async ({
 
     logWithTimestamp(`Register hardware wallet ${hashCode(name)} complete.`);
 
-    await syncAccounts();
+    await syncAccounts(icrcEnabled);
   } catch (err: unknown) {
     toastUnexpectedError({
       err,

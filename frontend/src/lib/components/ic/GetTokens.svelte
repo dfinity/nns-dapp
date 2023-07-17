@@ -18,6 +18,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   let visible = false;
   let transferring = false;
@@ -43,7 +44,10 @@
         selectedProjectId.toText() === OWN_CANISTER_ID.toText() ||
         tokenBalanceE8s === 0n
       ) {
-        await getICPs(inputValue);
+        await getICPs({
+          icps: inputValue,
+          icrcEnabled: $ENABLE_ICP_ICRC,
+        });
       } else {
         await getTokens({
           tokens: inputValue,

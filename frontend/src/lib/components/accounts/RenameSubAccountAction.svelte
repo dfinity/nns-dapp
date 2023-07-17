@@ -10,6 +10,7 @@
     type WalletContext,
   } from "$lib/types/wallet.context";
   import TextInputForm from "../common/TextInputForm.svelte";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
   let selectedAccount: Account | undefined;
@@ -25,6 +26,7 @@
     await renameSubAccount({
       newName: newAccountName,
       selectedAccount,
+      icrcEnabled: $ENABLE_ICP_ICRC,
     });
 
     stopBusy("accounts");

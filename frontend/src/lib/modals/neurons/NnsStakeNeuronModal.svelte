@@ -23,9 +23,10 @@
     pollAccounts,
   } from "$lib/services/accounts.services";
   import { nonNullish } from "@dfinity/utils";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   onMount(() => {
-    pollAccounts();
+    pollAccounts({ icrcEnabled: $ENABLE_ICP_ICRC });
   });
 
   onDestroy(() => {

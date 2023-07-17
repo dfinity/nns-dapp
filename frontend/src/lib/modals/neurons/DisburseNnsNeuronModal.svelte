@@ -22,11 +22,12 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/accounts.services";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 
   onMount(() => {
-    pollAccounts();
+    pollAccounts({ icrcEnabled: $ENABLE_ICP_ICRC });
   });
 
   onDestroy(() => {

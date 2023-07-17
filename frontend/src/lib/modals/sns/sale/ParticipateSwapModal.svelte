@@ -44,9 +44,10 @@
     pollAccounts,
   } from "$lib/services/accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   onMount(() => {
-    pollAccounts(false);
+    pollAccounts({ certified: false, icrcEnabled: $ENABLE_ICP_ICRC });
   });
 
   onDestroy(() => {

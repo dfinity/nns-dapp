@@ -39,9 +39,10 @@
   import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   onMount(() => {
-    pollAccounts();
+    pollAccounts({ icrcEnabled: $ENABLE_ICP_ICRC });
   });
 
   onDestroy(() => {

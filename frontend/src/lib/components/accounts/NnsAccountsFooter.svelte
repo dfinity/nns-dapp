@@ -7,13 +7,14 @@
   import { nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncAccounts } from "$lib/services/accounts.services";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
   const closeModal = () => (modal = undefined);
 
   // TODO: for performance reason use `loadBalance` to reload specific account
-  const reload = async () => await syncAccounts();
+  const reload = async () => await syncAccounts($ENABLE_ICP_ICRC);
 </script>
 
 <TestIdWrapper testId="nns-accounts-footer-component">
