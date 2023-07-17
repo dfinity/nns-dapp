@@ -29,10 +29,13 @@ import {
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
-import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
-import type { Account, AccountType } from "$lib/types/account";
+import type {
+  Account,
+  AccountType,
+  IcrcAccountIdentifier,
+} from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
   accountIdentifierFromIcrc,

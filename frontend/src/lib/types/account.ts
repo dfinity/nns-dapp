@@ -9,6 +9,8 @@ export type AccountType =
 
 export type AccountIdentifierText = string;
 
+export type IcrcAccountIdentifier = string;
+
 export interface Account {
   identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal

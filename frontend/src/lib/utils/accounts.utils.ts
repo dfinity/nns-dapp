@@ -2,8 +2,7 @@ import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.t
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
-import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
-import type { Account } from "$lib/types/account";
+import type { Account, IcrcAccountIdentifier } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmountE8s } from "$lib/utils/token.utils";

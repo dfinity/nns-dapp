@@ -40,7 +40,8 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { ICPToken } from "@dfinity/utils";
-  import type { IcrcAccountIdentifier } from "$lib/stores/icrc-transactions.store";
+
+  import type { IcrcAccountIdentifier } from "$lib/types/account";
 
   onMount(() => {
     pollAccounts();
