@@ -181,7 +181,7 @@ confirm_cmd() {
     return
   fi
   (
-    echo "Press enter to run the following command:"
+    echo "👇 Press enter to run the following command:"
     echo
     echo "$cmd"
     echo
