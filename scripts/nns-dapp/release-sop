@@ -241,6 +241,7 @@ verify() {
 is_release_sop_script_newest_version() {
   if git diff --quiet origin/main scripts/nns-dapp/release-sop; then
     echo "yes"
+    return
   fi
   echo
   echo "The release-sop script is different from origin/main"
