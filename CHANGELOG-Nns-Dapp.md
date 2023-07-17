@@ -20,6 +20,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Setting Dissolve Delay supports 888 years.
 * Improve reponsiveness in proposal filter modals.
 * Improve responsiveness in proposal filter modals.
+* Only Locked neurons are mergeable.
+* Add copy button to sns proposal proposer id.
 
 #### Deprecated
 #### Removed
@@ -37,7 +39,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Better visibility of wasm size in CI.
+* Better visibility of upgrade cycle consumption and wasm size in CI.
 * Added CI workflows to update rust and didc automatically, by cron job or button click.
 * Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 * Test that no new change log entries are added to existing releases.
