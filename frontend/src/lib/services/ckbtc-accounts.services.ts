@@ -1,5 +1,5 @@
-import { ckBTCTransfer } from "$lib/api/ckbtc-ledger.api";
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
+import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
@@ -92,7 +92,7 @@ export const ckBTCTransferTokens = async ({
         identity: Identity;
       } & Omit<IcrcTransferParams, "transfer">
     ) =>
-      await ckBTCTransfer({
+      await icrcTransfer({
         ...params,
         canisterId: universeId,
       }),

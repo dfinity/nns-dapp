@@ -1,20 +1,26 @@
+import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { HOST } from "$lib/constants/environment.constants";
 import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import type { HttpAgent, Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
   IcrcTokens,
 } from "@dfinity/ledger";
 import {
+  IcrcLedgerCanister,
   encodeIcrcAccount,
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
 } from "@dfinity/ledger";
+import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
 import {
   arrayOfNumberToUint8Array,
@@ -78,6 +84,30 @@ export interface IcrcTransferParams {
   transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
 }
 
+export const icrcTransfer = async ({
+  identity,
+  canisterId,
+  ...rest
+}: {
+  identity: Identity;
+  canisterId: Principal;
+} & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
+  logWithTimestamp("Getting ckBTC transfer: call...");
+
+  const {
+    canister: { transfer: transferApi },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  const blockIndex = await executeIcrcTransfer({
+    ...rest,
+    transfer: transferApi,
+  });
+
+  logWithTimestamp("Getting ckBTC transfer: done");
+
+  return blockIndex;
+};
+
 /**
  * Transfer Icrc tokens from one account to another.
  *
@@ -86,7 +116,7 @@ export interface IcrcTransferParams {
  *
  * This als adds an extra layer of safety because we show the fee before the user confirms the transaction.
  */
-export const icrcTransfer = async ({
+export const executeIcrcTransfer = async ({
   to: { owner, subaccount },
   fromSubAccount,
   createdAt,
@@ -104,3 +134,29 @@ export const icrcTransfer = async ({
       : undefined,
     ...rest,
   });
+
+export const icrcLedgerCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<{
+  canister: IcrcLedgerCanister;
+  agent: HttpAgent;
+}> => {
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId,
+  });
+
+  return {
+    canister,
+    agent,
+  };
+};
