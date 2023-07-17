@@ -238,6 +238,17 @@ verify() {
   fi
 }
 
+is_release_sop_script_newest_version() {
+  if git diff --quiet origin/main scripts/nns-dapp/release-sop; then
+    echo "yes"
+    return
+  fi
+  echo
+  echo "The release-sop script is different from origin/main"
+  echo "Pull changes and try again."
+  exit 1
+}
+
 npm_audit() {
   local audit
   pushd "$TOP_DIR/frontend" >&2
@@ -330,6 +341,7 @@ echo Checklist file: "$CHECKLIST_FILE"
 
 record "Start time" date +"%Y-%m-%d %H:%M:%S"
 confirm_cmd git fetch --tags --force
+record "Release SOP script is newest version" is_release_sop_script_newest_version
 confirm_cmd git checkout -b "$BRANCH_NAME" origin/main
 record "Release branch" echo "$BRANCH_NAME"
 verify "Release branch" "Current branch" echo "$BRANCH_NAME"
