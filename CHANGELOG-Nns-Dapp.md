@@ -26,6 +26,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Better visibility of upgrade cycle consumption, wasm size and memory usage.
+* Check that release-sop is the newest version when it's run.
 
 #### Changed
 
