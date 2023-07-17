@@ -7,10 +7,10 @@ export type AccountType =
   | "hardwareWallet"
   | "withdrawalAccount";
 
-export type IcpAccountIdentifier = string;
+export type IcpAccountIdentifierText = string;
 
 export interface Account {
-  identifier: IcpAccountIdentifier;
+  identifier: IcpAccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
   balanceE8s: bigint;

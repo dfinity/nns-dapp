@@ -1,16 +1,16 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
-import type { IcpAccountIdentifier } from "$lib/types/account";
+import type { IcpAccountIdentifierText } from "$lib/types/account";
 import type { BtcAddressText } from "$lib/types/bitcoin";
 import type { IcrcBlockIndex } from "@dfinity/ledger";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
-type BitcoinAddressData = Record<IcpAccountIdentifier, BtcAddressText>;
+type BitcoinAddressData = Record<IcpAccountIdentifierText, BtcAddressText>;
 
 export interface BitcoinAddressStore extends Readable<BitcoinAddressData> {
   set: (params: {
-    identifier: IcpAccountIdentifier;
+    identifier: IcpAccountIdentifierText;
     btcAddress: BtcAddressText;
   }) => void;
   reset: () => void;
@@ -32,7 +32,7 @@ export const initBitcoinAddressStore = (): BitcoinAddressStore => {
       identifier,
       btcAddress,
     }: {
-      identifier: IcpAccountIdentifier;
+      identifier: IcpAccountIdentifierText;
       btcAddress: BtcAddressText;
     }) => {
       update((currentState: BitcoinAddressData) => ({

@@ -1,7 +1,7 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 
-import type { IcpAccountIdentifier } from "$lib/types/account";
+import type { IcpAccountIdentifierText } from "$lib/types/account";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
@@ -81,7 +81,7 @@ export const getIcrcAccountsTransactions = ({
 
 type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
   Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
-    accountIdentifier: IcpAccountIdentifier;
+    accountIdentifier: IcpAccountIdentifierText;
     start?: bigint;
     state: TransactionsData | undefined;
   };
