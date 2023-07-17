@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NnsAvailableMaturityActionItemPo } from "./NnsAvailableMaturityActionItem.page-object";
 import { NnsStakedMaturityActionItemPo } from "./NnsStakedMaturityActionItem.page-object";
 
 export class NnsNeuronMaturitySectionPo extends BasePageObject {
@@ -21,5 +22,13 @@ export class NnsNeuronMaturitySectionPo extends BasePageObject {
 
   hasStakedMaturityItemAction(): Promise<boolean> {
     return this.getStakedMaturityItemActionPo().isPresent();
+  }
+
+  getAvailableMaturityItemActionPo(): NnsAvailableMaturityActionItemPo {
+    return NnsAvailableMaturityActionItemPo.under(this.root);
+  }
+
+  hasAvailableMaturityItemAction(): Promise<boolean> {
+    return this.getAvailableMaturityItemActionPo().isPresent();
   }
 }
