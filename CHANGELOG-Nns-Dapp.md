@@ -30,6 +30,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+Use faster GitHub runners for e2e tests.
+
 #### Deprecated
 #### Removed
 
