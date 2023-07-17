@@ -31,6 +31,7 @@ import type {
   Account,
   AccountIdentifierText,
   AccountType,
+  IcpAccountIdentifierText,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
@@ -198,7 +199,7 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: AccountIdentifierText;
+  accountIdentifier: IcpAccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
