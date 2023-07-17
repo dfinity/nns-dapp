@@ -2,8 +2,8 @@
 #
 # The frontend is built into public/. The dapp is bundled into a tarball,
 # assets.tar.xz. This tarball is baked into the wasm binary output at build
-# time by cargo, and finally the wasm binary is read by ic-cdk-optimizer and
-# optimizer. This scripts outputs a single file, nns-dapp.wasm.
+# time by cargo, and finally the wasm binary is read by ic-wasm and
+# optimized. This scripts outputs a single file, nns-dapp.wasm.
 #
 #                          frontend◄─────────── assets.tar.xz
 #                                                           ▲
@@ -11,7 +11,7 @@
 #                                                           │
 #                                                      cargo build
 #                                                           ▲
-#                                                           │ ic-cdk-optimizer
+#                                                           │ ic-wasm shrink
 #                                                           │
 #                                                      nns-dapp.wasm
 #                                                           ▲

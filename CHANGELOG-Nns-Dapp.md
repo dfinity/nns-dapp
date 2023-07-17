@@ -30,6 +30,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+
 #### Deprecated
 #### Removed
 

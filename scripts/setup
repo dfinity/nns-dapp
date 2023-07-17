@@ -185,11 +185,6 @@ install_tar_linux() {
   sudo apt-get install tar
 }
 
-install_ic_cdk_optimizer() {
-  # Nit: Needs rust to be in a working state.
-  cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
-}
-
 is_docker_installed() {
   command -v docker >/dev/null 2>&1 || return 1
   local major_version
@@ -306,7 +301,6 @@ command -v xz || "install_xz_$OS"
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
