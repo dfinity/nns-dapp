@@ -96,6 +96,8 @@
 
     stopBusy("disburse-sns-neuron");
 
+    dispatcher("nnsClose");
+
     if (success) {
       toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
@@ -103,8 +105,6 @@
 
       await goto($neuronsPathStore, { replaceState: true });
     }
-
-    dispatcher("nnsClose");
   };
 </script>
 
