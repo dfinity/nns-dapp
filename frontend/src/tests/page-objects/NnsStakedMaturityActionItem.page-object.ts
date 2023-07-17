@@ -13,8 +13,4 @@ export class NnsStakedMaturityActionItemPo extends BasePageObject {
   getStakedMaturity(): Promise<string> {
     return this.getText("staked-maturity");
   }
-
-  hasStakeButton(): Promise<boolean> {
-    return this.getButton("stake-maturity-button").isPresent();
-  }
 }
