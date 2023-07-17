@@ -232,6 +232,16 @@ install_ic_admin_darwin() {
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
+check_ic_wasm() {
+  EXPECTED_IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  INSTALLED_IC_WASM_VERSION="$(ic-wasm --version | awk '{print $2}')"
+  [[ "${INSTALLED_IC_WASM_VERSION:-}" == "$EXPECTED_IC_WASM_VERSION" ]]
+}
+install_ic_wasm() {
+  IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  cargo binstall --force --no-confirm "ic-wasm@${IC_WASM_VERSION}"
+}
+
 install_sns_linux() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
@@ -296,6 +306,7 @@ command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 cargo binstall -V || install_binstall
+check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx
