@@ -6,7 +6,7 @@
     Spinner,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account, IcpAccountIdentifierText } from "$lib/types/account";
+  import type { Account } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
@@ -23,6 +23,7 @@
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
+  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 
   export let data: CkBTCReceiveModalData;
 
@@ -103,7 +104,7 @@
 
   // When used in ckBTC receive modal, the identifier is originally undefined that's why we reload when it changes
   const loadBitcoinAddress = async (
-    identifier: IcpAccountIdentifierText | undefined
+    identifier: IcrcAccountIdentifierText | undefined
   ) => {
     if (isNullish(identifier)) {
       return;

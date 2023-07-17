@@ -13,9 +13,11 @@ export type AccountType =
 
 export type IcpAccountIdentifierText = AccountIdentifierString;
 
+// TODO: IcpAccountIdentifierText to be removed and inline type
+export type AccountIdentifierText = IcpAccountIdentifierText | IcrcAccountIdentifierText;
+
 export interface Account {
-  // TODO: IcpAccountIdentifierText to be removed
-  identifier: IcpAccountIdentifierText | IcrcAccountIdentifierText;
+  identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
   balanceE8s: bigint;
