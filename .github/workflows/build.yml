@@ -160,6 +160,8 @@ jobs:
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+      - name: Verify that metrics are present
+        run: scripts/nns-dapp/e2e-test-metrics-present
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
