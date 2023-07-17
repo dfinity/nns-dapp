@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, onMount, onDestroy } from "svelte";
+  import { onDestroy, onMount, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
@@ -10,7 +10,7 @@
     pollAccounts,
   } from "$lib/services/accounts.services";
   import { accountsStore } from "$lib/stores/accounts.store";
-  import { Spinner, busy } from "@dfinity/gix-components";
+  import { busy, Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
@@ -34,14 +34,11 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import { ICPToken } from "@dfinity/utils";
-
-  import type { IcrcAccountIdentifier } from "$lib/types/account";
+  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 
   onMount(() => {
     pollAccounts();
@@ -56,7 +53,7 @@
   let transactions: Transaction[] | undefined;
 
   const reloadTransactions = (
-    accountIdentifier: IcrcAccountIdentifier
+    accountIdentifier: IcrcAccountIdentifierText
   ): Promise<void> =>
     getAccountTransactions({
       icrcAccountIdentifier: accountIdentifier,

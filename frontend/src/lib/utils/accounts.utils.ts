@@ -2,8 +2,9 @@ import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.t
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
-import type { Account, IcrcAccountIdentifier } from "$lib/types/account";
+import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
@@ -243,7 +244,7 @@ export const hasAccounts = (accounts: Account[]): boolean =>
 //  - Can be useful to support both old and new url parameters in Wallet
 //  - Can also be useful for transferICP which reload the balance and which may be call with or without ICRC and with or without a related address
 export const accountIdentifierFromIcrc = (
-  icrcAccountIdentifier: IcrcAccountIdentifier
+  icrcAccountIdentifier: IcrcAccountIdentifierText
 ): AccountIdentifierString => {
   const { owner: principal, subaccount } = decodeIcrcAccount(
     icrcAccountIdentifier
