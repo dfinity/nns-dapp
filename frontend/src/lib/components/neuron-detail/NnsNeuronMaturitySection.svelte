@@ -10,9 +10,9 @@
 
 <Section testId="nns-neuron-maturity-section-component">
   <h3 slot="title">{$i18n.neuron_detail.maturity_title}</h3>
-  <h3 slot="end" data-tid="total-maturity">
+  <p slot="end" class="title-value" data-tid="total-maturity">
     {formattedTotalMaturity(neuron)}
-  </h3>
+  </p>
   <p slot="description">
     {$i18n.neuron_detail.maturity_section_description}
   </p>
@@ -26,6 +26,11 @@
   p {
     margin: 0;
   }
+
+  .title-value {
+    font-size: var(--font-size-h3);
+  }
+
   .content {
     display: flex;
     flex-direction: column;
