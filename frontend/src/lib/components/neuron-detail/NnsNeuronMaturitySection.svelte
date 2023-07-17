@@ -20,3 +20,17 @@
     <NnsStakedMaturityActionItem {neuron} />
   </ul>
 </Section>
+
+<style lang="scss">
+  h3,
+  p {
+    margin: 0;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    padding: 0;
+  }
+</style>
