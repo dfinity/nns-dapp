@@ -3,8 +3,8 @@ import {
   getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
-import { ckBTCTransfer } from "$lib/api/ckbtc-ledger.api";
 import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
+import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
@@ -299,10 +299,8 @@ export const transferICP = async ({
 
     const feature = get(ENABLE_ICP_ICRC);
 
-    // TODO: refactor ckBTCTransfer to standard ICRC transfer service or create an icp transfer?
-
     await (feature
-      ? ckBTCTransfer({
+      ? icrcTransfer({
           identity,
           to: decodeIcrcAccount(to),
           fromSubAccount: subAccount,
