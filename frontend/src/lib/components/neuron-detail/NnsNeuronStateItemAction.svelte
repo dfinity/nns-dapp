@@ -4,7 +4,6 @@
   import {
     ageMultiplier,
     getStateInfo,
-    neuronAgeBonus,
     type StateInfo,
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
