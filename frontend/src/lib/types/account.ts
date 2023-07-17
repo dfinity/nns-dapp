@@ -14,7 +14,9 @@ export type AccountType =
 export type IcpAccountIdentifierText = AccountIdentifierString;
 
 // TODO: IcpAccountIdentifierText to be removed and inline type
-export type AccountIdentifierText = IcpAccountIdentifierText | IcrcAccountIdentifierText;
+export type AccountIdentifierText =
+  | IcpAccountIdentifierText
+  | IcrcAccountIdentifierText;
 
 export interface Account {
   identifier: AccountIdentifierText;

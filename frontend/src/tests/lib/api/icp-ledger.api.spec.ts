@@ -143,7 +143,7 @@ describe("icp-ledger.api", () => {
       const actualBalance = await queryAccountBalance({
         identity: mockIdentity,
         certified,
-        accountIdentifier: mockMainAccount.identifier,
+        icpAccountIdentifier: mockMainAccount.identifier,
       });
       expect(actualBalance).toEqual(balance);
       expect(ledgerMock.accountBalance).toBeCalledWith({

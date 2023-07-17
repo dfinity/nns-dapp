@@ -785,7 +785,7 @@ describe("accounts-services", () => {
 
     it("should call getTransactions", async () => {
       await getAccountTransactions({
-        icrcAccountIdentifier: "",
+        accountIdentifier: "",
         onLoad,
       });
       expect(spyGetTransactions).toBeCalled();
@@ -794,7 +794,7 @@ describe("accounts-services", () => {
 
     it("should call onLoad", async () => {
       await getAccountTransactions({
-        icrcAccountIdentifier: "",
+        accountIdentifier: "",
         onLoad,
       });
       expect(onLoad).toBeCalled();
@@ -818,7 +818,7 @@ describe("accounts-services", () => {
         const spyToastError = jest.spyOn(toastsFunctions, "toastsError");
 
         await getAccountTransactions({
-          icrcAccountIdentifier: "",
+          accountIdentifier: "",
           onLoad,
         });
 

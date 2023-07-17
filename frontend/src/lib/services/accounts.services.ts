@@ -31,13 +31,16 @@ import {
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
-import type { Account, AccountType } from "$lib/types/account";
-import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+import type {
+  Account,
+  AccountIdentifierText,
+  AccountType,
+} from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
-  accountIdentifierFromIcrc,
   findAccount,
   getAccountByPrincipal,
+  toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
@@ -97,7 +100,7 @@ export const loadAccounts = async ({
     queryAccountBalance({
       identity,
       certified,
-      accountIdentifier: identifierString,
+      icpAccountIdentifier: identifierString,
     });
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
@@ -220,23 +223,17 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: string;
+  accountIdentifier: AccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
-
-  // TODO: remove feature accountIdentifierFromIcrc should fallback, probably
-  const feature = get(ENABLE_ICP_ICRC);
-  const identifier = feature
-    ? accountIdentifierFromIcrc(accountIdentifier)
-    : accountIdentifier;
 
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
       queryAccountBalance({
         identity,
         certified,
-        accountIdentifier: identifier,
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
       }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
@@ -300,7 +297,6 @@ export const transferICP = async ({
 
     const feeE8s = get(mainTransactionFeeE8sStore);
 
-    // TODO: reactive variable as parameter
     const feature = get(ENABLE_ICP_ICRC);
 
     // TODO: refactor ckBTCTransfer to standard ICRC transfer service or create an icp transfer?
@@ -360,15 +356,12 @@ const transferError = ({
 };
 
 export const getAccountTransactions = async ({
-  icrcAccountIdentifier,
+  accountIdentifier,
   onLoad,
 }: {
-  icrcAccountIdentifier: IcrcAccountIdentifierText;
-  onLoad: ({
-    icrcAccountIdentifier,
-    transactions,
-  }: {
-    icrcAccountIdentifier: IcrcAccountIdentifierText;
+  accountIdentifier: AccountIdentifierText;
+  onLoad: (params: {
+    accountIdentifier: AccountIdentifierText;
     transactions: Transaction[];
   }) => void;
 }): Promise<void> =>
@@ -378,12 +371,12 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        accountIdentifier: accountIdentifierFromIcrc(icrcAccountIdentifier),
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
     onLoad: ({ response: transactions }) =>
-      onLoad({ icrcAccountIdentifier, transactions }),
+      onLoad({ accountIdentifier, transactions }),
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -451,7 +444,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subAccountIdentifier: accountIdentifierFromIcrc(identifier),
+      subIcpAccountIdentifier: toIcpAccountIdentifier(identifier),
     });
 
     await syncAccounts();

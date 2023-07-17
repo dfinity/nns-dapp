@@ -38,7 +38,7 @@
   import Summary from "$lib/components/summary/Summary.svelte";
   import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+  import type { AccountIdentifierText } from "$lib/types/account";
 
   onMount(() => {
     pollAccounts();
@@ -53,15 +53,13 @@
   let transactions: Transaction[] | undefined;
 
   const reloadTransactions = (
-    accountIdentifier: IcrcAccountIdentifierText
+    accountIdentifier: AccountIdentifierText
   ): Promise<void> =>
     getAccountTransactions({
-      icrcAccountIdentifier: accountIdentifier,
-      onLoad: ({ icrcAccountIdentifier, transactions: loadedTransactions }) => {
+      accountIdentifier: accountIdentifier,
+      onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
-        if (
-          icrcAccountIdentifier !== $selectedAccountStore.account?.identifier
-        ) {
+        if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
           return;
         }
 

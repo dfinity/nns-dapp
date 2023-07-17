@@ -1,10 +1,12 @@
-import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
-import type { Account } from "$lib/types/account";
+import type {
+  Account,
+  AccountIdentifierText,
+  IcpAccountIdentifierText,
+} from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
-import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
@@ -239,22 +241,28 @@ export const sumAccounts = (
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
 
-// TODO: to be used only with feature flag on
-// TODO: try to convert from ICRC and if fails fallback to string ICP account identifier
-//  - Can be useful to support both old and new url parameters in Wallet
-//  - Can also be useful for transferICP which reload the balance and which may be call with or without ICRC and with or without a related address
-export const accountIdentifierFromIcrc = (
-  icrcAccountIdentifier: IcrcAccountIdentifierText
-): AccountIdentifierString => {
-  const { owner: principal, subaccount } = decodeIcrcAccount(
-    icrcAccountIdentifier
-  );
+export const toIcpAccountIdentifier = (
+  accountIdentifier: AccountIdentifierText
+): IcpAccountIdentifierText => {
+  try {
+    return maybeIcrcToIcpAccountIdentifier(accountIdentifier);
+  } catch (err: unknown) {
+    // We ignore the error. The provided account identifier was not a valid Icrc account identifier.
+    // We continue with the provided account identifier which might either be a valid Icp account identifier or just incorrect.
+  }
+
+  return accountIdentifier;
+};
+
+const maybeIcrcToIcpAccountIdentifier = (
+  accountIdentifier: AccountIdentifierText
+): IcpAccountIdentifierText => {
+  const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
 
   const sub = nonNullish(subaccount)
     ? SubAccount.fromBytes(subaccount)
     : undefined;
 
-  // TODO: handle errors in caller
   if (sub instanceof Error) {
     throw sub;
   }

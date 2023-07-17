@@ -28,7 +28,7 @@ describe("accounts-api", () => {
 
     await renameSubAccount({
       newName: "test subaccount",
-      subAccountIdentifier: mockSubAccount.identifier,
+      subIcpAccountIdentifier: mockSubAccount.identifier,
       identity: mockIdentity,
     });
 
@@ -48,7 +48,7 @@ describe("accounts-api", () => {
     const response = await getTransactions({
       identity: mockIdentity,
       certified: true,
-      accountIdentifier: "",
+      icpAccountIdentifier: "",
       pageSize: 1,
       offset: 0,
     });

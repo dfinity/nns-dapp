@@ -3,6 +3,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
+import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
@@ -70,20 +71,21 @@ export const transactionFee = async ({
 };
 
 // TODO: GIX-1704 use ICRC
+// @deprecated
 export const queryAccountBalance = async ({
-  accountIdentifier,
+  icpAccountIdentifier,
   identity,
   certified,
 }: {
   certified: boolean;
   identity: Identity;
-  accountIdentifier: string;
+  icpAccountIdentifier: IcpAccountIdentifierText;
 }) => {
   logWithTimestamp(`Get account balance call...`);
   const { canister } = await ledgerCanister({ identity });
 
   const e8sBalance = await canister.accountBalance({
-    accountIdentifier: AccountIdentifier.fromHex(accountIdentifier),
+    accountIdentifier: AccountIdentifier.fromHex(icpAccountIdentifier),
     certified,
   });
 
