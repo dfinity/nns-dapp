@@ -6,6 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
+  import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -28,6 +29,7 @@
   </p>
   <ul class="content">
     <NnsStakeItemAction {neuron} />
+    <NnsNeuronStateItemAction {neuron} />
   </ul>
 </Section>
 
@@ -44,7 +46,7 @@
   .content {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-3x);
 
     padding: 0;
   }

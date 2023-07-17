@@ -54,6 +54,7 @@ import {
 } from "./accounts.utils";
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
+import { replacePlaceholders } from "./i18n.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { toNnsVote } from "./sns-proposals.utils";
 import { formatToken } from "./token.utils";
@@ -893,4 +894,23 @@ export const maturityLastDistribution = ({
     (fromNullable(rounds_since_last_distribution) ?? 1n) *
       BigInt(SECONDS_IN_DAY)
   );
+};
+
+export const getAgeBonusText = ({
+  neuron,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  i18n: I18n;
+}): string => {
+  const ageMultiplier = bonusMultiplier({
+    amount: neuron.ageSeconds,
+    multiplier: AGE_MULTIPLIER,
+    max: SECONDS_IN_FOUR_YEARS,
+  });
+  return neuron.state === NeuronState.Locked
+    ? replacePlaceholders(i18n.neuron_detail.age_bonus_label, {
+        $ageBonus: ageMultiplier.toFixed(2),
+      })
+    : i18n.neuron_detail.no_age_bonus;
 };
