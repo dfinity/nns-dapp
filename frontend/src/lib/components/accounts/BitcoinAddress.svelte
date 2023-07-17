@@ -2,7 +2,7 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
-  import type { Account, AccountIdentifierText } from "$lib/types/account";
+  import type { Account, IcpAccountIdentifier } from "$lib/types/account";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import { nonNullish } from "@dfinity/utils";
   import type { BtcAddressText } from "$lib/types/bitcoin";
@@ -23,7 +23,7 @@
   export let universeId: UniverseCanisterId;
   export let reload: () => Promise<void>;
 
-  let identifier: AccountIdentifierText;
+  let identifier: IcpAccountIdentifier;
   $: ({ identifier } = account);
 
   let btcAddress: undefined | BtcAddressText;

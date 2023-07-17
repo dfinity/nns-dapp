@@ -6,7 +6,7 @@
     Spinner,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account, AccountIdentifierText } from "$lib/types/account";
+  import type { Account, IcpAccountIdentifier } from "$lib/types/account";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
@@ -103,7 +103,7 @@
 
   // When used in ckBTC receive modal, the identifier is originally undefined that's why we reload when it changes
   const loadBitcoinAddress = async (
-    identifier: AccountIdentifierText | undefined
+    identifier: IcpAccountIdentifier | undefined
   ) => {
     if (isNullish(identifier)) {
       return;
