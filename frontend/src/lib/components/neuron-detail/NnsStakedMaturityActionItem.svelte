@@ -1,9 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formattedStakedMaturity } from "$lib/utils/neuron.utils";
-  import { ItemAction } from "@dfinity/gix-components";
+  import { IconExpandCircleDown, ItemAction } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import IconStakedMaturity from "./IconStakedMaturity.svelte";
   import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
 
   export let neuron: NeuronInfo;
@@ -12,7 +11,7 @@
 <ItemAction testId="nns-staked-maturity-item-action-component">
   <div slot="icon" class="icon">
     <!-- TODO: Use icon from gix-components and fix icon size -->
-    <IconStakedMaturity size="24px" />
+    <IconExpandCircleDown />
   </div>
   <div class="content">
     <p data-tid="staked-maturity">{formattedStakedMaturity(neuron)}</p>
