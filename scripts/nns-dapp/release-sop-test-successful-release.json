@@ -40,6 +40,12 @@
       "exitCode": 0
     },
     {
+      "command": "is_release_sop_script_newest_version",
+      "stdout": "yes",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
       "command": "git rev-parse release-candidate",
       "stdout": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
       "stderr": "",
@@ -114,6 +120,7 @@
     "git fetch --tags --force",
     "",
     "git fetch --tags --force: Done",
+    "Release SOP script is newest version: yes",
     "👇 Press enter to run the following command:",
     "",
     "git checkout -b Release-2001-02-29 origin/main",
