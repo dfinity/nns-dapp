@@ -34,6 +34,7 @@ import type {
   Account,
   AccountIdentifierText,
   AccountType,
+  IcpAccount,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
@@ -115,7 +116,7 @@ export const loadAccounts = async ({
     (type: AccountType) =>
     async (
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
-    ): Promise<Account> => ({
+    ): Promise<IcpAccount> => ({
       identifier: icrcEnabled
         ? encodeIcrcAccount({
             owner:
@@ -127,6 +128,7 @@ export const loadAccounts = async ({
             }),
           })
         : account.account_identifier,
+      icpIdentifier: account.account_identifier,
       balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),

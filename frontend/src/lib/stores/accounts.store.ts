@@ -1,13 +1,13 @@
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
-import type { Account } from "$lib/types/account";
+import type { IcpAccount } from "$lib/types/account";
 import { isNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { queuedStore } from "./queued-store";
 
 export interface AccountsStoreData {
-  main?: Account;
-  subAccounts?: Account[];
-  hardwareWallets?: Account[];
+  main?: IcpAccount;
+  subAccounts?: IcpAccount[];
+  hardwareWallets?: IcpAccount[];
   certified?: boolean;
 }
 
@@ -80,7 +80,7 @@ const initAccountsStore = (): AccountsStore => {
               // Ignore update if the main account is not set.
               return { main, subAccounts, hardwareWallets };
             }
-            const mapNewBalance = (account: Account) => {
+            const mapNewBalance = (account: IcpAccount) => {
               return account.identifier === accountIdentifier
                 ? { ...account, balanceE8s }
                 : account;
