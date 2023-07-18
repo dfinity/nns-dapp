@@ -6,7 +6,7 @@ import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsO
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type { TransactionsObserverData } from "$lib/types/icrc.observer";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 

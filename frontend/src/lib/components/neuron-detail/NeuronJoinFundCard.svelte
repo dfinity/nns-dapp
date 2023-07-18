@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import { isNeuronControllableByUser } from "$lib/utils/neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
@@ -13,7 +13,7 @@
   let isControlledByUser: boolean;
   $: isControlledByUser = isNeuronControllableByUser({
     neuron,
-    mainAccount: $accountsStore.main,
+    mainAccount: $icpAccountsStore.main,
   });
 </script>
 

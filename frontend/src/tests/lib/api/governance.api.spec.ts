@@ -22,8 +22,8 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/api/governance.api";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, LedgerCanister, Topic, Vote } from "@dfinity/nns";

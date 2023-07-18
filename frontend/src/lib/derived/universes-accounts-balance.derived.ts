@@ -1,5 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { accountsStore, type AccountsStore } from "$lib/stores/accounts.store";
+import {
+  icpAccountsStore,
+  type IcpAccountsStore,
+} from "$lib/stores/icp-accounts.store";
 import type { IcrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
@@ -21,10 +24,10 @@ export type UniversesAccountsBalanceReadableStore = Record<
 >;
 
 export const universesAccountsBalance = derived<
-  [AccountsStore, SnsAccountsStore, IcrcAccountsStore],
+  [IcpAccountsStore, SnsAccountsStore, IcrcAccountsStore],
   UniversesAccountsBalanceReadableStore
 >(
-  [accountsStore, snsAccountsStore, icrcAccountsStore],
+  [icpAccountsStore, snsAccountsStore, icrcAccountsStore],
   ([$accountsStore, $snsAccountsStore, $icrcAccountsStore]) => ({
     [OWN_CANISTER_ID_TEXT]: {
       balanceE8s: sumNnsAccounts($accountsStore),

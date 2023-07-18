@@ -5,13 +5,13 @@ import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
 } from "$lib/services/canisters.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsSuccess } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
@@ -34,7 +34,7 @@ jest.mock("$lib/stores/toasts.store", () => {
 
 describe("AddCyclesModal", () => {
   jest
-    .spyOn(accountsStore, "subscribe")
+    .spyOn(icpAccountsStore, "subscribe")
     .mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );

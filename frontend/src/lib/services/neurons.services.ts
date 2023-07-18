@@ -10,8 +10,8 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
@@ -419,7 +419,7 @@ export const mergeNeurons = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       targetNeuronId
     );
-    const accounts = get(accountsStore);
+    const accounts = get(icpAccountsStore);
     if (
       isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
     ) {
@@ -607,7 +607,7 @@ export const splitNeuron = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuron.neuronId
     );
-    const accounts = get(accountsStore);
+    const accounts = get(icpAccountsStore);
     if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
       await assertLedgerVersion({
         identity,

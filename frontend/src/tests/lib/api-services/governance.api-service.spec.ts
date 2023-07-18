@@ -3,12 +3,12 @@ import {
   resetNeuronsApiService,
 } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import {
   createMockKnownNeuron,
   createMockNeuron,

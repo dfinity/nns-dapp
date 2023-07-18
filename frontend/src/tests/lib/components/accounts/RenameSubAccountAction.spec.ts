@@ -5,9 +5,9 @@
 import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
 import { renameSubAccount } from "$lib/services/accounts.services";
 import type { Account } from "$lib/types/account";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent } from "@testing-library/dom";
 
 jest.mock("$lib/services/accounts.services");

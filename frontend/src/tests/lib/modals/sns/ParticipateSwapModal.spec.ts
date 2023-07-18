@@ -8,8 +8,8 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
 import { cancelPollAccounts } from "$lib/services/accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -18,14 +18,14 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
-  mockAccountDetails,
-  mockAccountsStoreData,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountDetails,
+  mockAccountsStoreData,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
   createBuyersState,
@@ -75,7 +75,7 @@ describe("ParticipateSwapModal", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
     jest.mocked(initiateSnsSaleParticipation).mockClear();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
   });
 
@@ -134,7 +134,7 @@ describe("ParticipateSwapModal", () => {
 
   describe("when accounts are available", () => {
     beforeEach(() => {
-      accountsStore.setForTesting(mockAccountsStoreData);
+      icpAccountsStore.setForTesting(mockAccountsStoreData);
     });
 
     const participate = async (po: ParticipateSwapModalPo) => {
@@ -220,7 +220,7 @@ describe("ParticipateSwapModal", () => {
     let resolveQueryAccounts;
 
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -286,7 +286,7 @@ describe("ParticipateSwapModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);

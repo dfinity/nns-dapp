@@ -13,7 +13,7 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import Separator from "$lib/components/ui/Separator.svelte";
 
@@ -23,7 +23,7 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   let hotkeyControlled: boolean;
