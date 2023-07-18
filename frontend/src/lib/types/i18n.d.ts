@@ -653,6 +653,10 @@ interface I18nNeuron_detail {
   maturity_range: string;
   spawning_neuron_info: string;
   maturity_percentage: string;
+  advanced_settings_title: string;
+  advanced_settings_description: string;
+  neuron_account: string;
+  created: string;
 }
 
 interface I18nSns_launchpad {
