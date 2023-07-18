@@ -1,4 +1,3 @@
-import type { Account } from "$lib/types/account";
 import {
   acquireICPTs,
   acquireSnsTokens,
@@ -11,6 +10,7 @@ import {
   snsAccountsStore,
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
+import type { Account } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
