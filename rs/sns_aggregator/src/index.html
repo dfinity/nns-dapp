@@ -1,29 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>SNS aggregator</title>
     <style>
-	.sns {
-	  display: flex;
-	  align-items: center;
-	}
+      @font-face {
+        font-family: CircularXX;
+        src: url("https://nns.raw.ic0.app/assets/fonts/CircularXXWeb-Regular.woff2")
+          format("woff2");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root {
+        background: var(--gargoyle-gas);
+
+        --gargoyle-gas: #fee440;
+        --lavender-indigo: #9b5de5;
+        --hot-pink: #f15bb5;
+        --blue-bolt: #00bbf9;
+        --sea-green: #00f5d4;
+
+        --padding-3x: calc(var(--padding) * 3);
+        --padding-2x: calc(var(--padding) * 2);
+        --padding: 16px;
+        --padding-0_5x: calc(var(--padding) / 2);
+        --padding-0_25x: calc(var(--padding) / 4);
+
+        --border-size: calc(var(--padding) / 6);
+        --border-radius: var(--padding);
+        --border-radius-0_5x: calc(var(--padding) / 2);
+      }
+
+      body {
+        font-family: "CircularXX", sans-serif;
+        font-weight: 400;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      ::selection {
+        background: var(--sea-green);
+      }
+
+      ::-moz-selection {
+        background: var(--sea-green);
+      }
+
+      a {
+        transition:
+          color 0.15s ease-out,
+          background 0.15s ease-out,
+          transform 0.15s ease-out,
+          box-shadow 0.25s ease-out;
+      }
+
+      main {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: var(--padding-2x) 0;
+      }
+
+      section {
+        background: white;
+        margin: 0 0 48px;
+        padding: var(--padding-0_5x) var(--padding-2x);
+        border: var(--border-size) solid black;
+        border-radius: var(--padding);
+      }
+
+      section a {
+        color: var(--hot-pink);
+        border-radius: var(--padding-0_25x);
+      }
+
+      section a:hover {
+        color: var(--blue-bolt);
+      }
+
+      h1 {
+        text-shadow: 0.1em 0.1em var(--sea-green);
+        font-size: 4rem;
+        letter-spacing: -0.045em;
+        max-width: 100px;
+        line-height: 0.55em;
+        margin: var(--padding-2x) 0 var(--padding-3x);
+      }
+
+      h2 {
+        display: inline-flex;
+        align-items: flex-end;
+        width: 100%;
+        justify-content: space-between;
+        border-bottom: var(--border-size) solid black;
+        margin: 0 0 var(--padding-2x);
+      }
+
+      h2 span {
+        background: white;
+        text-shadow: 0.05em 0.05em var(--sea-green);
+        border: var(--border-size) solid black;
+        border-top-left-radius: var(--border-radius-0_5x);
+        border-top-right-radius: var(--border-radius-0_5x);
+        border-bottom: 0;
+        padding: var(--padding-0_25x) var(--padding-2x);
+      }
+
+      h1::selection,
+      h2 span::selection {
+        background: var(--lavender-indigo);
+      }
+
+      h1::-moz-selection,
+      h2 span::-moz-selection {
+        background: var(--lavender-indigo);
+      }
+
+      .github {
+        display: inline-flex;
+        justify-content: flex-end;
+        margin: var(--padding-0_25x);
+      }
+
+      .github a {
+        color: black;
+        cursor: pointer;
+
+        border: var(--border-size) dashed black;
+        border-radius: 50%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        padding: 1px 1px 2px;
+      }
+
+      .github a:hover {
+        color: var(--blue-bolt);
+
+        animation: shake 0.5s;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes rotation {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(359deg);
+        }
+      }
+
+      @media (min-width: 576px) {
+        .snses {
+          display: grid;
+          grid-template-columns: repeat(
+            var(--columns),
+            calc((100% - (var(--columns) * var(--padding-2x))) / var(--columns))
+          );
+          grid-gap: var(--padding-2x);
+
+          --columns: 2;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .snses {
+          --columns: 3;
+        }
+      }
+
+      article {
+        display: flex;
+        align-items: center;
+        gap: var(--padding);
+
+        margin: 0 0 var(--padding-2x);
+      }
+
+      article a {
+        background: white;
+        padding: var(--padding-0_5x) var(--padding);
+        border: 2px solid black;
+        border-radius: var(--border-radius);
+
+        box-shadow: var(--padding-0_25x) var(--padding-0_25x) black;
+        text-decoration: none;
+
+        color: black;
+      }
+
+      article a:hover,
+      article a:active {
+        background: var(--blue-bolt);
+        color: white;
+      }
+
+      article a:active {
+        box-shadow: none;
+        transform: translateX(3px) translateY(3px);
+      }
+
+      article img:has(+ a:hover) {
+        animation: shake 0.5s;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translate(1px, 1px) rotate(0deg);
+        }
+        10% {
+          transform: translate(-1px, -2px) rotate(-1deg);
+        }
+        20% {
+          transform: translate(-3px, 0px) rotate(1deg);
+        }
+        30% {
+          transform: translate(3px, 2px) rotate(0deg);
+        }
+        40% {
+          transform: translate(1px, -1px) rotate(1deg);
+        }
+        50% {
+          transform: translate(-1px, 2px) rotate(-1deg);
+        }
+        60% {
+          transform: translate(-3px, 1px) rotate(0deg);
+        }
+        70% {
+          transform: translate(3px, 1px) rotate(-1deg);
+        }
+        80% {
+          transform: translate(-1px, -1px) rotate(1deg);
+        }
+        90% {
+          transform: translate(1px, 2px) rotate(0deg);
+        }
+        100% {
+          transform: translate(1px, -2px) rotate(-1deg);
+        }
+      }
+
+      img {
+        width: 100px;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        border: var(--padding-0_25x) dashed black;
+        padding: var(--padding-0_25x);
+      }
     </style>
-    <script>
-	    fetch('/v1/sns/list/latest/slow.json').then(response => response.json()).then(latest => {
-		    document.body.innerHTML +=latest.map(sns => `<div class="sns"><img src="/v1/sns/root/${sns.canister_ids.root_canister_id}/logo.png" width="100px" height="100px"></img><a href="/v1/sns/root/${sns.canister_ids.root_canister_id}/slow.json">${sns.meta.name}</a></div>`).join('')
-	    });
-    </script>
   </head>
   <body>
-	  <h1>SNS aggregator</h1>
-	  <p>The aggregator collects information on all deployed SNS and re-publishes aggegate values as certified query calls.  This data is intended for use by any canister that wishes to provide dashboards.  The data will typically be updated about once per minute.  Collecting the data from this aggregator will typically be much faster than collecting the same data directly from the SNSs.</p>
-	  <ul>
-		  <li><a href="/v1/sns/list/latest/slow.json">The latest SNSs</li>
-		  <li><a href="/v1/sns/list/page/0/slow.json">A paginated list of SNSs</a></li>
-          <li>Slow data for one SNS is at: /v1/sns/root/$CANISTER_ID/slow.json</li>
+    <main>
+      <section>
+        <h1>SNS aggregator</h1>
+        <p>
+          The aggregator collects information on all deployed SNS and
+          re-publishes aggegate values as certified query calls. This data is
+          intended for use by any canister that wishes to provide dashboards.
+          The data will typically be updated about once per minute. Collecting
+          the data from this aggregator will typically be much faster than
+          collecting the same data directly from the SNSs.
+        </p>
+        <ul>
+          <li><a href="/v1/sns/list/latest/slow.json">The latest SNSs</a></li>
+          <li>
+            <a href="/v1/sns/list/page/0/slow.json">A paginated list of SNSs</a>
+          </li>
+          <li>
+            Slow data for one SNS is at: /v1/sns/root/$CANISTER_ID/slow.json
+          </li>
           <li>The SNS logo is at: /v1/sns/root/$CANISTER_ID/logo.png</li>
-      </ul>
-      <h2>Recent SNSs</h2>
+        </ul>
+      </section>
+
+      <h2>
+        <span>Recent SNSs</span>
+        <div class="github">
+          <a
+            href="https://github.com/dfinity/nns-dapp"
+            rel="noopener noreferrer"
+            target="_blank"
+            aria-label="SNS aggregator source on GitHub"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              width="24px"
+              height="24px"
+            >
+              <path
+                d="M256 32C132.3 32 32 134.9 32 261.7c0 101.5 64.2 187.5 153.2 217.9a17.56 17.56 0 003.8.4c8.3 0 11.5-6.1 11.5-11.4 0-5.5-.2-19.9-.3-39.1a102.4 102.4 0 01-22.6 2.7c-43.1 0-52.9-33.5-52.9-33.5-10.2-26.5-24.9-33.6-24.9-33.6-19.5-13.7-.1-14.1 1.4-14.1h.1c22.5 2 34.3 23.8 34.3 23.8 11.2 19.6 26.2 25.1 39.6 25.1a63 63 0 0025.6-6c2-14.8 7.8-24.9 14.2-30.7-49.7-5.8-102-25.5-102-113.5 0-25.1 8.7-45.6 23-61.6-2.3-5.8-10-29.2 2.2-60.8a18.64 18.64 0 015-.5c8.1 0 26.4 3.1 56.6 24.1a208.21 208.21 0 01112.2 0c30.2-21 48.5-24.1 56.6-24.1a18.64 18.64 0 015 .5c12.2 31.6 4.5 55 2.2 60.8 14.3 16.1 23 36.6 23 61.6 0 88.2-52.4 107.6-102.3 113.3 8 7.1 15.2 21.1 15.2 42.5 0 30.7-.3 55.5-.3 63 0 5.4 3.1 11.5 11.4 11.5a19.35 19.35 0 004-.4C415.9 449.2 480 363.1 480 261.7 480 134.9 379.7 32 256 32z"
+              />
+            </svg>
+          </a>
+        </div>
+      </h2>
+
+      <div class="snses"></div>
+    </main>
+
+    <script>
+      // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns
+      // Use the above for local development of this HTML page
+      const aggregatorUrl = "";
+
+      const renderSns = ({
+        canister_ids: { root_canister_id },
+        meta: { name },
+      }) => {
+        const article = document.createElement("article");
+
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.src = `${aggregatorUrl}/root/${root_canister_id}/logo.png`;
+
+        const a = document.createElement("a");
+        a.href = `${aggregatorUrl}/root/${root_canister_id}/slow.json`;
+        a.text = name;
+
+        article.appendChild(img);
+        article.appendChild(a);
+
+        return article;
+      };
+
+      const renderSnses = (latest) => {
+        const fragment = document.createDocumentFragment();
+        fragment.append(...latest.map(renderSns));
+
+        document.querySelector(".snses")?.append(fragment);
+      };
+
+      const loadSnses = () =>
+        fetch(`${aggregatorUrl}/list/latest/slow.json`)
+          .then((response) => response.json())
+          .then((latest) => renderSnses(latest));
+
+      document.addEventListener("DOMContentLoaded", loadSnses, { once: true });
+    </script>
   </body>
 </html>

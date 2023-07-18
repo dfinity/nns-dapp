@@ -3,13 +3,13 @@
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import {
   addSubAccount,
   cancelPollAccounts,
@@ -53,7 +53,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import { vi, type SpyInstance } from "vitest";
 
-vi.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: vi
       .fn()
@@ -62,8 +62,8 @@ vi.mock("$lib/proxy/ledger.services.proxy", () => {
 });
 
 vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/ledger.api");
-const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/ledger.api"];
+vi.mock("$lib/api/icp-ledger.api");
+const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
 describe("accounts-services", () => {
   blockAllCallsTo(blockedApiPaths);

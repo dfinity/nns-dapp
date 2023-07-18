@@ -1,16 +1,30 @@
 import {
+  executeIcrcTransfer,
   getIcrcAccount,
   getIcrcToken,
   icrcTransfer,
 } from "$lib/api/icrc-ledger.api";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 import { vi } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger api", () => {
+  const ledgerCanisterMock = mock<IcrcLedgerCanister>();
+
+  beforeEach(() => {
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
+  });
+
+  afterEach(() => jest.clearAllMocks());
+
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {
       const balanceSpy = vi.fn().mockResolvedValue(BigInt(10_000_000));
@@ -80,16 +94,34 @@ describe("icrc-ledger api", () => {
     });
   });
 
-  describe("transfer", () => {
+  describe("execute transfer", () => {
     it("successfully calls transfer api", async () => {
-      const transferSpy = vi.fn().mockResolvedValue(undefined);
+      const transferSpy = jest.fn().mockResolvedValue(undefined);
 
-      await icrcTransfer({
+      await executeIcrcTransfer({
         to: { owner: mockIdentity.getPrincipal() },
         amount: BigInt(10_000_000),
         createdAt: BigInt(123456),
         fee: BigInt(10_000),
         transfer: transferSpy,
+      });
+
+      expect(transferSpy).toBeCalled();
+    });
+  });
+
+  describe("transfer", () => {
+    it("successfully calls transfer api", async () => {
+      const transferSpy =
+        ledgerCanisterMock.transfer.mockResolvedValue(undefined);
+
+      await icrcTransfer({
+        identity: mockIdentity,
+        to: { owner: mockIdentity.getPrincipal() },
+        amount: BigInt(10_000_000),
+        createdAt: BigInt(123456),
+        fee: BigInt(10_000),
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       expect(transferSpy).toBeCalled();

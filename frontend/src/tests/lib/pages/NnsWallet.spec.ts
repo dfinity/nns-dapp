@@ -3,7 +3,7 @@
  */
 
 import * as accountsApi from "$lib/api/accounts.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
@@ -38,12 +38,12 @@ import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/accounts.api");
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 
 const blockedApiPaths = [
   "$lib/api/nns-dapp.api",
   "$lib/api/accounts.api",
-  "$lib/api/ledger.api",
+  "$lib/api/icp-ledger.api",
 ];
 
 describe("NnsWallet", () => {

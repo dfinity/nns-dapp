@@ -4,7 +4,7 @@
   import { Spinner } from "@dfinity/gix-components";
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import HardwareWalletInfo from "./HardwareWalletInfo.svelte";
-  import { connectToHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+  import { connectToHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 
   export let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;

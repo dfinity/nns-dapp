@@ -1164,6 +1164,7 @@ describe("neuron-utils", () => {
     it("wraps mergeable neurons with true if mergeable", () => {
       const neuron = {
         ...mockNeuron,
+        state: NeuronState.Locked,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
@@ -1194,6 +1195,7 @@ describe("neuron-utils", () => {
     it("wraps mergeable neurons with false if user is not controller or joined community fund", () => {
       const neuron = {
         ...mockNeuron,
+        state: NeuronState.Locked,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
@@ -1226,6 +1228,46 @@ describe("neuron-utils", () => {
       const neuron = {
         ...mockNeuron,
         state: NeuronState.Spawning,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron],
+        accounts: {
+          main: mockMainAccount,
+        },
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+    });
+
+    it("wraps mergeable neurons with false if neuron is Dissolving", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolving,
+        fullNeuron: {
+          ...mockFullNeuron,
+          hasJoinedCommunityFund: undefined,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      };
+      const wrappedNeurons = mapMergeableNeurons({
+        neurons: [neuron],
+        accounts: {
+          main: mockMainAccount,
+        },
+        selectedNeurons: [],
+      });
+      expect(wrappedNeurons[0].mergeable).toBe(false);
+    });
+
+    it("wraps mergeable neurons with false if neuron is Dissolved", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolved,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
@@ -1314,6 +1356,7 @@ describe("neuron-utils", () => {
     it("wraps selected neurons with selected property true", () => {
       const neuron = {
         ...mockNeuron,
+        state: NeuronState.Locked,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,
@@ -1348,6 +1391,7 @@ describe("neuron-utils", () => {
     it(`does not allow to have more mergeable once ${MAX_NEURONS_MERGED} is reached`, () => {
       const neuron = {
         ...mockNeuron,
+        state: NeuronState.Locked,
         fullNeuron: {
           ...mockFullNeuron,
           hasJoinedCommunityFund: undefined,

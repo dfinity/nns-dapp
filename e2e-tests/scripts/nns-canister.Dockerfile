@@ -7,7 +7,8 @@ RUN apt -yq update && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
-RUN cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
+# Note: The version should match dfx.json, however it is expected that the old e2e tests, including this file, will be deleted soon so there is no point in adding the code to get the version.
+RUN cargo binstall --no-confirm "ic-wasm@0.3.6"
 
 ARG IC_COMMIT
 
@@ -35,20 +36,20 @@ WORKDIR /ic/rs
 RUN binary="governance-canister" && \
     features="test" && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" --features "$features" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+    ic-wasm -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm" shrink
 
 ## Note: This is available as a download however we patch the source code to make testing easier.
 RUN binary=cycles-minting-canister && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+    ic-wasm -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm" shrink
 
 RUN binary=sns-swap-canister && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+    ic-wasm -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm" shrink
 
 RUN binary=sns-wasm-canister && \
     cargo build --target wasm32-unknown-unknown --profile canister-release --bin "$binary" && \
-    ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm"
+    ic-wasm -o "$CARGO_TARGET_DIR/${binary}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/canister-release/${binary}.wasm" shrink
 
 FROM scratch AS scratch
 COPY --from=builder /ic/rs/nns/governance/canister/governance.did /governance.did

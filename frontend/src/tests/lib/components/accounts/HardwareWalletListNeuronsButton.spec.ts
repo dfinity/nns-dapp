@@ -1,5 +1,5 @@
 import HardwareWalletListNeurons from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
-import { listNeuronsHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+import { listNeuronsHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -8,7 +8,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { vi, type Mock } from "vitest";
 import WalletContextTest from "./WalletContextTest.svelte";
 
-vi.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletListNeuronsButton", () => {
   afterAll(() => {

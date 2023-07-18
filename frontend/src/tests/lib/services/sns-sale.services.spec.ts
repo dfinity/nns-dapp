@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
@@ -89,7 +89,7 @@ vi.mock("$lib/constants/sns.constants", () => ({
   SALE_PARTICIPATION_RETRY_SECONDS: 1,
 }));
 
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();

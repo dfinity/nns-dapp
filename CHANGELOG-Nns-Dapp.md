@@ -11,15 +11,50 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Nns voting e2e test.
+#### Changed
+
+* Improve visibility of proposal summary headers.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Install `ic-wasm` as part of the setup command.
+* Better visibility of upgrade cycle consumption, wasm size and memory usage.
+* Check that release-sop is the newest version when it's run.
+
+#### Changed
+
+* Use faster GitHub runners for e2e tests.
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 123471
+### Application
 
 #### Changed
 
 * Revert display of TVL in various currencies to USD only
 * Removed `OWN_CANISTER_URL`.
 * Setting Dissolve Delay supports 888 years.
-* Improve reponsiveness in proposal filter modals.
 * Improve responsiveness in proposal filter modals.
+* Only Locked neurons are mergeable.
+* Add copy button to sns proposal proposer id.
+* New neuron state icons.
 
 #### Deprecated
 #### Removed
@@ -37,6 +72,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Nns voting e2e test.
 * Added CI workflows to update rust and didc automatically, by cron job or button click.
 * Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
 * Test that no new change log entries are added to existing releases.
@@ -53,6 +89,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Duplicate `ic-cdk-optimizer` version field.
+
 #### Fixed
 
 #### Security

@@ -99,7 +99,7 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-vi.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     getLedgerIdentityProxy: vi
       .fn()

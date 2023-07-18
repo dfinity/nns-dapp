@@ -32,6 +32,7 @@
     "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
     "Start time: Was already: 2001-02-29 14:15:16",
     "git fetch --tags --force: Was already done. Skipping.",
+    "Release SOP script is newest version: Was already: yes",
     "git checkout -b Release-2001-02-29 origin/main: Was already done. Skipping.",
     "Release branch: Was already: Release-2001-02-29",
     "Current branch: Release-2001-02-29",

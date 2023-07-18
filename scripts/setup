@@ -185,11 +185,6 @@ install_tar_linux() {
   sudo apt-get install tar
 }
 
-install_ic_cdk_optimizer() {
-  # Nit: Needs rust to be in a working state.
-  cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
-}
-
 is_docker_installed() {
   command -v docker >/dev/null 2>&1 || return 1
   local major_version
@@ -237,6 +232,16 @@ install_ic_admin_darwin() {
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
+check_ic_wasm() {
+  EXPECTED_IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  INSTALLED_IC_WASM_VERSION="$(ic-wasm --version | awk '{print $2}')"
+  [[ "${INSTALLED_IC_WASM_VERSION:-}" == "$EXPECTED_IC_WASM_VERSION" ]]
+}
+install_ic_wasm() {
+  IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  cargo binstall --force --no-confirm "ic-wasm@${IC_WASM_VERSION}"
+}
+
 install_sns_linux() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
@@ -278,10 +283,6 @@ install_didc_darwin() {
   rm "$tempfile"
 }
 
-install_wasm_nm() {
-  cargo binstall --no-confirm wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
-}
-
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -301,17 +302,16 @@ command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 cargo binstall -V || install_binstall
+check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
-command -v wasm-nm || install_wasm_nm
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

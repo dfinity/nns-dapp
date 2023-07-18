@@ -2,7 +2,7 @@ import {
   queryAccountBalance,
   sendICP,
   transactionFee,
-} from "$lib/api/ledger.api";
+} from "$lib/api/icp-ledger.api";
 import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
@@ -10,7 +10,7 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
-describe("ledger-api", () => {
+describe("icp-ledger.api", () => {
   describe("sendICP", () => {
     let spyTransfer;
 

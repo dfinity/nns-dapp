@@ -3,12 +3,11 @@ import {
   getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
-import { queryAccountBalance, sendICP } from "$lib/api/ledger.api";
+import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
   AccountDetails,
-  AccountIdentifierString,
   HardwareWalletAccountDetails,
   SubAccountDetails,
   Transaction,
@@ -21,14 +20,19 @@ import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { AccountsStoreData } from "$lib/stores/accounts.store";
 import {
   accountsStore,
   type SingleMutationAccountsStore,
 } from "$lib/stores/accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { Account, AccountType } from "$lib/types/account";
+import type {
+  Account,
+  AccountIdentifierText,
+  AccountType,
+  IcpAccountIdentifierText,
+} from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
 import {
@@ -195,7 +199,7 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: string;
+  accountIdentifier: IcpAccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
@@ -308,12 +312,9 @@ export const getAccountTransactions = async ({
   accountIdentifier,
   onLoad,
 }: {
-  accountIdentifier: AccountIdentifierString;
-  onLoad: ({
-    accountIdentifier,
-    transactions,
-  }: {
-    accountIdentifier: AccountIdentifierString;
+  accountIdentifier: AccountIdentifierText;
+  onLoad: (params: {
+    accountIdentifier: AccountIdentifierText;
     transactions: Transaction[];
   }) => void;
 }): Promise<void> =>

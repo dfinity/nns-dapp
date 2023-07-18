@@ -1,7 +1,7 @@
 import {
   getIcrcAccount,
   getIcrcToken,
-  icrcTransfer as transferIcrcApi,
+  executeIcrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import type { Account } from "$lib/types/account";

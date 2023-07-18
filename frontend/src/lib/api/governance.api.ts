@@ -3,7 +3,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import { isLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { HttpAgent, Identity } from "@dfinity/agent";
@@ -18,7 +18,7 @@ import type {
 } from "@dfinity/nns";
 import { GovernanceCanister, type RewardEvent } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { ledgerCanister as getLedgerCanister } from "./ledger.api";
+import { ledgerCanister as getLedgerCanister } from "./icp-ledger.api";
 
 /**
  * COMMON TYPES

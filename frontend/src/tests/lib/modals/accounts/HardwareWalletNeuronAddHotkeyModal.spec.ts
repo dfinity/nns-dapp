@@ -1,6 +1,6 @@
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
@@ -17,7 +17,7 @@ import { get } from "svelte/store";
 import { vi, type Mock } from "vitest";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
-vi.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };

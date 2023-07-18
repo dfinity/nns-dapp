@@ -17,7 +17,7 @@ vi.mock("$lib/services/accounts.services", () => {
   };
 });
 
-vi.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     connectToHardwareWalletProxy: vi.fn().mockImplementation(async (callback) =>
       callback({

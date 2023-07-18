@@ -1,4 +1,4 @@
-import { sendICP } from "$lib/api/ledger.api";
+import { sendICP } from "$lib/api/icp-ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,

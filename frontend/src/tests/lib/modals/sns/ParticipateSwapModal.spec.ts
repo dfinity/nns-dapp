@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
@@ -41,7 +41,7 @@ import { writable } from "svelte/store";
 import { vi, type SpyInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/services/sns.services", () => {
   return {
     initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),

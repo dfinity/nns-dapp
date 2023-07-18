@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 547777466..0c5882eb7 100644
+index 05042e186..dd77268d5 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -94,23 +94,21 @@ pub struct BlockRange {
+@@ -95,23 +95,21 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -31,7 +31,7 @@ index 547777466..0c5882eb7 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -166,27 +164,25 @@ pub struct TransactionRange {
+@@ -167,27 +165,25 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  
@@ -65,7 +65,7 @@ index 547777466..0c5882eb7 100644
      pub url: String,
      pub name: String,
  }
-@@ -249,7 +245,7 @@ impl SERVICE {
+@@ -250,7 +246,7 @@ impl SERVICE {
      pub async fn icrc1_name(&self) -> CallResult<(String,)> {
          ic_cdk::call(self.0, "icrc1_name", ()).await
      }

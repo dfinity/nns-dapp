@@ -41,6 +41,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_SNS_AGGREGATOR: true,
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
+      ENABLE_ICP_ICRC: false,
       ENABLE_SIMULATE_MERGE_NEURONS: true,
       ENABLE_NEURON_SETTINGS: false,
       ENABLE_INSTANT_UNLOCK: true,

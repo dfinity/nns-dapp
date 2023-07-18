@@ -5,6 +5,7 @@
   import { NeuronState } from "@dfinity/nns";
   import { getStateInfo } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
+  import { ICON_SIZE_SMALL_PIXELS } from "$lib/constants/layout.constants";
 
   export let state: NeuronState;
 
@@ -14,7 +15,7 @@
 
 {#if stateInfo !== undefined}
   <div class="status" data-tid="neuron-state-info">
-    <svelte:component this={stateInfo.Icon} />
+    <svelte:component this={stateInfo.Icon} size={ICON_SIZE_SMALL_PIXELS} />
     {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
   </div>
 {/if}

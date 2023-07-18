@@ -13,11 +13,15 @@ export class ParticipateButtonPo extends BasePageObject {
     return ParticipateSwapModalPo.under(this.root);
   }
 
+  click(): Promise<void> {
+    return this.getButton().click();
+  }
+
   async participate(params: {
     amount: number;
     acceptConditions: boolean;
   }): Promise<void> {
-    await this.getButton().click();
+    await this.click();
     const modal = this.getParticipateSwapModalPo();
     await modal.participate(params);
     // We wait for the modal to disappear. It has a timeout of 1 second to close itself.

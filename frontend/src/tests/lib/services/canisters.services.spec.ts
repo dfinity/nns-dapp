@@ -1,5 +1,5 @@
 import * as api from "$lib/api/canisters.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import {
   addController,
@@ -35,9 +35,9 @@ import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
 import { vi } from "vitest";
 
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/canisters.api");
-const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
+const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);

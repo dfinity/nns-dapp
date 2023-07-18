@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
@@ -16,7 +16,7 @@ import { waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/services/neurons.services", () => {
   return {
     topUpNeuron: vi.fn().mockResolvedValue({ success: true }),

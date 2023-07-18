@@ -2,7 +2,7 @@
  * @vi-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -30,7 +30,7 @@ import { get } from "svelte/store";
 import { vi, type SpyInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/services/neurons.services", () => {
   return {
     disburse: vi.fn().mockResolvedValue({ success: true }),

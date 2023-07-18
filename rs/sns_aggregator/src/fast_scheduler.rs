@@ -5,12 +5,10 @@ use crate::{
     types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse},
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
-use ic_cdk::{
-    api::time,
-    timer::{clear_timer, set_timer, set_timer_interval, TimerId},
-};
+use ic_cdk::api::time;
+use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval, TimerId};
 use std::str::FromStr;
-use std::{borrow::Borrow, time::Duration};
+use std::time::Duration;
 
 /// Collects a subset of data with high frequency during an open sale.
 #[derive(Default)]
@@ -143,7 +141,7 @@ impl FastScheduler {
     /// Stop collecting data now.
     pub fn stop(&mut self) {
         if let Some(timer_id) = self.update_timer.take() {
-            ic_cdk::timer::clear_timer(timer_id);
+            clear_timer(timer_id);
         }
     }
 
@@ -159,7 +157,7 @@ impl FastScheduler {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(Self::global_update_next()));
         let old_timer = self.update_timer.replace(timer_id);
         if let Some(id) = old_timer {
-            ic_cdk::timer::clear_timer(id);
+            clear_timer(id);
         }
         self.next_start_seconds = None;
     }
@@ -254,7 +252,6 @@ impl FastScheduler {
             .sns_cache
             .borrow()
             .upstream_data
-            .borrow()
             .values()
             .filter_map(|value| this.start_time_for_sns(&value.swap_state).ok())
             .reduce(|a, b| if a.0 < b.0 { a } else { b })

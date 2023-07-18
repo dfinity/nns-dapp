@@ -319,6 +319,7 @@ interface I18nNeurons {
   cannot_merge_neuron_community: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
+  cannot_merge_neuron_state: string;
   only_merge_two: string;
   need_two_to_merge: string;
   irreversible_action: string;
@@ -580,7 +581,14 @@ interface I18nNeuron_detail {
   disburse: string;
   increase_stake: string;
   split_neuron: string;
+  voting_power_subtitle: string;
   voting_power_tooltip_with_stake: string;
+  voting_power_section_description: string;
+  maturity_section_description: string;
+  staked_description: string;
+  age_bonus_label: string;
+  no_age_bonus: string;
+  available_description: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
@@ -645,6 +653,10 @@ interface I18nNeuron_detail {
   maturity_range: string;
   spawning_neuron_info: string;
   maturity_percentage: string;
+  advanced_settings_title: string;
+  advanced_settings_description: string;
+  neuron_account: string;
+  created: string;
 }
 
 interface I18nSns_launchpad {

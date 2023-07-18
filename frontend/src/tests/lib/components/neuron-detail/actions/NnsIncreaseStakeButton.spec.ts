@@ -24,6 +24,25 @@ describe("NnsIncreaseStakeButton", () => {
     expect(getByText(en.neuron_detail.increase_stake)).toBeInTheDocument();
   });
 
+  it("uses variant", () => {
+    const variant = "secondary";
+    const { queryByTestId } = render(NeuronContextTest, {
+      props: {
+        neuron: mockNeuron,
+        testComponent: NnsIncreaseStakeButton,
+        componentProps: {
+          variant,
+        },
+      },
+    });
+
+    expect(
+      queryByTestId("nns-increase-stake-button-component").classList.contains(
+        variant
+      )
+    ).toBe(true);
+  });
+
   it("opens Increase Neuron Stake Modal", async () => {
     // To avoid that the modal requests the accounts
     accountsStore.setForTesting(mockAccountsStoreData);

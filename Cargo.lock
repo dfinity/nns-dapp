@@ -1662,7 +1662,7 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0#89129b8212791d7e05cab62ff08eece2888a86e0"
 dependencies = [
  "ic-metrics-encoder",
- "ic0 0.18.10",
+ "ic0",
 ]
 
 [[package]]
@@ -1693,25 +1693,10 @@ checksum = "c98b304a2657bad15bcb547625a018e13cf596676d834cfd93023395a6e2e03a"
 dependencies = [
  "candid",
  "cfg-if",
- "ic-cdk-macros 0.6.10",
- "ic0 0.18.10",
+ "ic-cdk-macros",
+ "ic0",
  "serde",
  "serde_bytes",
-]
-
-[[package]]
-name = "ic-cdk"
-version = "0.6.10"
-source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
-dependencies = [
- "candid",
- "cfg-if",
- "futures",
- "ic-cdk-macros 0.6.8",
- "ic0 0.18.9",
- "serde",
- "serde_bytes",
- "slotmap",
 ]
 
 [[package]]
@@ -1721,8 +1706,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9beb0bf1dcd0639c313630e34aa547a2b19450ddf1969c176e13225ef3b29048"
 dependencies = [
  "candid",
- "ic-cdk-macros 0.6.10",
- "ic0 0.18.10",
+ "ic-cdk-macros",
+ "ic0",
  "serde",
  "serde_bytes",
 ]
@@ -1734,23 +1719,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1faa7b42964694fb38d7f62172e0d8261381e39ce85b4d6b519929f7cad9b4fb"
 dependencies = [
  "candid",
- "ic-cdk-macros 0.6.10",
- "ic0 0.18.10",
+ "ic-cdk-macros",
+ "ic0",
  "serde",
  "serde_bytes",
 ]
 
 [[package]]
-name = "ic-cdk-macros"
-version = "0.6.8"
-source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
+name = "ic-cdk"
+version = "0.9.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff1375116689aeeffdc6e96ec8ed1953671aee1dcd01016ab86e0606e93bec94"
 dependencies = [
  "candid",
- "proc-macro2",
- "quote",
+ "ic-cdk-macros",
+ "ic0",
  "serde",
- "serde_tokenstream",
- "syn 1.0.109",
+ "serde_bytes",
 ]
 
 [[package]]
@@ -1775,7 +1760,21 @@ checksum = "c739e7c592cb66df4f15c6b6c4859b1195782f63923e2fb1b29553d9c0819bd4"
 dependencies = [
  "futures",
  "ic-cdk 0.7.4",
- "ic0 0.18.10",
+ "ic0",
+ "serde",
+ "serde_bytes",
+ "slotmap",
+]
+
+[[package]]
+name = "ic-cdk-timers"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "83ae33d93347308ae34156bacec10a348689f2f42b1e783dc7015f0ba1c4987a"
+dependencies = [
+ "futures",
+ "ic-cdk 0.9.2",
+ "ic0",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -2234,9 +2233,9 @@ dependencies = [
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-canister-profiler",
  "ic-canisters-http-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "ic-cdk-macros 0.6.10",
- "ic-cdk-timers",
+ "ic-cdk 0.6.10",
+ "ic-cdk-macros",
+ "ic-cdk-timers 0.1.2",
  "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-icrc1-ledger",
  "ic-metrics-encoder",
@@ -2258,8 +2257,8 @@ dependencies = [
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-canister-log 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-canisters-http-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk 0.6.10",
+ "ic-cdk-macros",
  "ic-crypto-tree-hash",
  "ic-icrc1 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-icrc1-client",
@@ -2443,7 +2442,7 @@ dependencies = [
  "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk 0.6.10",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
@@ -2788,7 +2787,7 @@ dependencies = [
  "futures",
  "hex",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-cdk 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-cdk 0.6.10",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-metrics-encoder",
@@ -2926,11 +2925,6 @@ dependencies = [
  "candid",
  "serde",
 ]
-
-[[package]]
-name = "ic0"
-version = "0.18.9"
-source = "git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a#58791941b72471e09e3d9e733f2a3d4d54e52b5a"
 
 [[package]]
 name = "ic0"
@@ -3361,7 +3355,7 @@ dependencies = [
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.41"
+version = "2.0.42"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
@@ -3377,7 +3371,7 @@ dependencies = [
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-btc-interface 0.1.0 (git+https://github.com/dfinity/bitcoin-canister?rev=b1693619e3d4dbc00d8c79e9b6886e1db48b21f7)",
  "ic-cdk 0.8.1",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
@@ -4517,14 +4511,15 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.41"
+version = "2.0.42"
 dependencies = [
  "anyhow",
  "base64 0.13.1",
  "candid",
  "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
- "ic-cdk 0.6.10 (git+https://github.com/dfinity/cdk-rs?rev=58791941b72471e09e3d9e733f2a3d4d54e52b5a)",
- "ic-cdk-macros 0.6.8",
+ "ic-cdk 0.9.2",
+ "ic-cdk-macros",
+ "ic-cdk-timers 0.3.0",
  "ic-certified-map 0.3.2",
  "ic-ic00-types 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=d14361f9939baaeb899106b874851ad4a0ce928b)",
