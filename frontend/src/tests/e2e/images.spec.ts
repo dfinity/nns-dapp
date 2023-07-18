@@ -7,8 +7,8 @@ const expectImagesLoaded = async ({ page, sources }) => {
   const imageSources = await Promise.all(
     (await images.all()).map((img) => img.getAttribute("src"))
   );
-  // We only look at the basename because the rest might differ depending on
-  // the environment.
+  // We only look at the basename (stripping path and content hash extension)
+  // because the rest might differ depending on the environment.
   const baseImageSources = imageSources.map((src) =>
     src.replace(/.*\//, "").replace(/\.[0-9a-f]{8}\./, ".")
   );
