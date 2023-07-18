@@ -588,6 +588,7 @@ interface I18nNeuron_detail {
   staked_description: string;
   age_bonus_label: string;
   no_age_bonus: string;
+  available_description: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
