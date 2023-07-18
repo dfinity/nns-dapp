@@ -325,7 +325,7 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        accountIdentifier,
+        icpAccountIdentifier: accountIdentifier,
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
@@ -398,7 +398,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subAccountIdentifier: identifier,
+      subIcpAccountIdentifier: identifier,
     });
 
     await syncAccounts();
