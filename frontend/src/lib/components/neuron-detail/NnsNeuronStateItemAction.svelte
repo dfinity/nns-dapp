@@ -31,7 +31,7 @@
     {/if}
   </svelte:fragment>
   <div class="content">
-    <h4 class="icp-value" data-tid="state-text">
+    <h4 data-tid="state-text">
       {keyOf({ obj: $i18n.neuron_state, key: NeuronState[neuron.state] })}
     </h4>
     {#if neuron.state === NeuronState.Locked}
@@ -81,11 +81,5 @@
     h4 {
       margin: 0;
     }
-  }
-
-  .icp-value {
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
   }
 </style>
