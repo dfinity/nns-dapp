@@ -3,9 +3,9 @@
  */
 
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import { accountsStore } from "../../../../lib/stores/accounts.store";
 import type { Account } from "../../../../lib/types/account";
 import {
   mockMainAccount,
@@ -73,7 +73,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a dropdown to select account", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: undefined,
@@ -89,7 +89,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should select account", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,

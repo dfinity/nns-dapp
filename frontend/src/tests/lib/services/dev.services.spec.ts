@@ -2,15 +2,15 @@
  * @jest-environment jsdom
  */
 import { getICPs } from "$lib/services/dev.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAccountsStoreSubscribe } from "$tests/mocks/accounts.store.mock";
 import { get } from "svelte/store";
 
 describe("dev-services", () => {
   beforeEach(() => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
   });
 

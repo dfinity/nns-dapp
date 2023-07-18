@@ -13,8 +13,8 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
@@ -95,7 +95,7 @@ describe("NnsStakeNeuronModal", () => {
     const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -313,7 +313,7 @@ describe("NnsStakeNeuronModal", () => {
         icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
@@ -414,7 +414,7 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -532,7 +532,7 @@ describe("NnsStakeNeuronModal", () => {
   describe("when accounts are not loaded", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -557,7 +557,7 @@ describe("NnsStakeNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       const now = Date.now();

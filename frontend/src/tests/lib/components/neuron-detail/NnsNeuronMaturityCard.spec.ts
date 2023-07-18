@@ -4,8 +4,8 @@
 
 import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
   formattedStakedMaturity,
@@ -205,7 +205,7 @@ describe("NnsNeuronMaturityCard", () => {
   describe("hw", () => {
     beforeAll(() =>
       jest
-        .spyOn(accountsStore, "subscribe")
+        .spyOn(icpAccountsStore, "subscribe")
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         )

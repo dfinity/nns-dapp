@@ -17,7 +17,7 @@
     formattedTotalMaturity,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { nonNullish } from "@dfinity/utils";
@@ -29,7 +29,7 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   let showDetails: boolean;

@@ -3,8 +3,8 @@
  */
 
 import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import { formatVotingPower, neuronAge } from "$lib/utils/neuron.utils";
 import {
@@ -33,7 +33,7 @@ describe("NnsNeuronMetaInfoCard", () => {
       .mockImplementation(mockAuthStoreSubscribe);
 
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(
         mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
       );

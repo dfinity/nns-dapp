@@ -1,6 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -12,7 +12,7 @@ import { get } from "svelte/store";
 
 describe("universes-accounts-balance.derived", () => {
   jest
-    .spyOn(accountsStore, "subscribe")
+    .spyOn(icpAccountsStore, "subscribe")
     .mockImplementation(mockAccountsStoreSubscribe([], []));
 
   const rootCanisterId = mockSnsFullProject.rootCanisterId;

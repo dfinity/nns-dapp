@@ -4,7 +4,7 @@
 
 import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -26,7 +26,7 @@ describe("SelectDestinationAddress", () => {
     const hardwareWallets = [mockHardwareWalletAccount];
 
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(
         mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
       );

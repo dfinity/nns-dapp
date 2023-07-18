@@ -4,7 +4,7 @@ import { isNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { queuedStore } from "./queued-store";
 
-export interface AccountsStoreData {
+export interface IcpAccountsStoreData {
   main?: IcpAccount;
   subAccounts?: IcpAccount[];
   hardwareWallets?: IcpAccount[];
@@ -12,7 +12,7 @@ export interface AccountsStoreData {
 }
 
 export interface SingleMutationAccountsStore {
-  set: (data: AccountsStoreData) => void;
+  set: (data: IcpAccountsStoreData) => void;
   setBalance: ({
     certified,
     accountIdentifier,
@@ -26,26 +26,26 @@ export interface SingleMutationAccountsStore {
   cancel: () => void;
 }
 
-export interface AccountsStore extends Readable<AccountsStoreData> {
+export interface IcpAccountsStore extends Readable<IcpAccountsStoreData> {
   // Returns a store on which operations can be performed for a single
   // mutation. Note that the changes applied for both the query and update
   // response count as a single mutation and should be applied using the same
   // store. The purpose of this store is to be able to associate the query and
   // update response of the same mutation.
-  getSingleMutationAccountsStore: (
+  getSingleMutationIcpAccountsStore: (
     strategy?: QueryAndUpdateStrategy | undefined
   ) => SingleMutationAccountsStore;
   resetForTesting: () => void;
   // Set the store contents if you don't care about the queryAndUpdate race
   // condition.
-  setForTesting: (data: AccountsStoreData) => void;
+  setForTesting: (data: IcpAccountsStoreData) => void;
 }
 
 /**
  * A store that contains the account information.
  */
-const initAccountsStore = (): AccountsStore => {
-  const initialAccounts: AccountsStoreData = {
+const initIcpAccountsStore = (): IcpAccountsStore => {
+  const initialAccounts: IcpAccountsStoreData = {
     main: undefined,
     subAccounts: undefined,
     hardwareWallets: undefined,
@@ -53,7 +53,7 @@ const initAccountsStore = (): AccountsStore => {
   };
 
   const { subscribe, getSingleMutationStore, resetForTesting } =
-    queuedStore<AccountsStoreData>(initialAccounts);
+    queuedStore<IcpAccountsStoreData>(initialAccounts);
 
   const getSingleMutationAccountsStore = (
     strategy?: QueryAndUpdateStrategy | undefined
@@ -61,7 +61,7 @@ const initAccountsStore = (): AccountsStore => {
     const { set, update, cancel } = getSingleMutationStore(strategy);
 
     return {
-      set(accounts: AccountsStoreData) {
+      set(accounts: IcpAccountsStoreData) {
         set({ data: accounts, certified: accounts.certified || false });
       },
 
@@ -104,14 +104,14 @@ const initAccountsStore = (): AccountsStore => {
 
   return {
     subscribe,
-    getSingleMutationAccountsStore,
+    getSingleMutationIcpAccountsStore: getSingleMutationAccountsStore,
     resetForTesting,
 
-    setForTesting(accounts: AccountsStoreData) {
+    setForTesting(accounts: IcpAccountsStoreData) {
       const mutableStore = getSingleMutationAccountsStore();
       mutableStore.set(accounts);
     },
   };
 };
 
-export const accountsStore = initAccountsStore();
+export const icpAccountsStore = initIcpAccountsStore();

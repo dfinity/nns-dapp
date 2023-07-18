@@ -4,8 +4,8 @@
 
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 import { transferICP } from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -36,7 +36,7 @@ describe("IcpTransactionModal", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
   });
 

@@ -7,7 +7,7 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -81,7 +81,7 @@ describe("UniverseAccountsBalance", () => {
 
   describe("balance", () => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(
         mockAccountsStoreSubscribe(
           [mockSubAccount],

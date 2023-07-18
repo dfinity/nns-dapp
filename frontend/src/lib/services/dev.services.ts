@@ -4,8 +4,8 @@ import {
   getTestAccountBalance,
 } from "$lib/api/dev.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import { accountsStore } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   snsAccountsStore,
   type SnsAccountsStoreData,
@@ -24,7 +24,7 @@ export const getICPs = async ({
   icps: number;
   icrcEnabled: boolean;
 }) => {
-  const { main }: AccountsStoreData = get(accountsStore);
+  const { main }: IcpAccountsStoreData = get(icpAccountsStore);
 
   if (!main) {
     throw new Error("No account found to get ICPs");

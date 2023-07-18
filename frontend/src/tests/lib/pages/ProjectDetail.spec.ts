@@ -13,8 +13,8 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
@@ -458,7 +458,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         beforeEach(() => {
           // Do not rely on the `loadAccounts` from the modal.
-          accountsStore.setForTesting({
+          icpAccountsStore.setForTesting({
             main: mockMainAccount,
             subAccounts: [],
             hardwareWallets: [],

@@ -4,7 +4,7 @@
 
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import {
@@ -20,7 +20,7 @@ describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
     });
 
     const props = { rootCanisterId: OWN_CANISTER_ID };
@@ -40,7 +40,7 @@ describe("SelectAccountDropdown", () => {
     const hardwareWallets = [mockHardwareWalletAccount];
 
     beforeEach(() => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts,
         hardwareWallets,

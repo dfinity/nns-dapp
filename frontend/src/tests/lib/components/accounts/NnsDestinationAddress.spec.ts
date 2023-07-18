@@ -3,7 +3,7 @@
  */
 
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
@@ -18,7 +18,7 @@ describe("NnsDestinationAddress", () => {
   };
 
   jest
-    .spyOn(accountsStore, "subscribe")
+    .spyOn(icpAccountsStore, "subscribe")
     .mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
     );

@@ -3,7 +3,7 @@
  */
 
 import NnsIncreaseStakeButton from "$lib/components/neuron-detail/actions/NnsIncreaseStakeButton.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -48,7 +48,7 @@ describe("NnsIncreaseStakeButton", () => {
 
   it("opens Increase Neuron Stake Modal", async () => {
     // To avoid that the modal requests the accounts
-    accountsStore.setForTesting(mockAccountsStoreData);
+    icpAccountsStore.setForTesting(mockAccountsStoreData);
     const { container } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,

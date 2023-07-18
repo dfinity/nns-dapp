@@ -6,8 +6,8 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -63,7 +63,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      accountsStore.setForTesting(mockAccountsStoreData);
+      icpAccountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should call top up neuron", async () => {

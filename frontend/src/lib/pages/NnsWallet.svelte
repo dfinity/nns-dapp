@@ -9,7 +9,7 @@
     loadBalance,
     pollAccounts,
   } from "$lib/services/accounts.services";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { busy, Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -91,7 +91,7 @@
     // handle unknown accountIdentifier from URL
     if (
       account === undefined &&
-      $accountsStore.main !== undefined &&
+      $icpAccountsStore.main !== undefined &&
       $pageStore.path === AppPath.Wallet
     ) {
       toastsError({

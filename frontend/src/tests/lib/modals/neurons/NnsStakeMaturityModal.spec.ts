@@ -4,7 +4,7 @@
 
 import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
@@ -103,7 +103,7 @@ describe("NnsStakeMaturityModal", () => {
   describe("HW", () => {
     beforeAll(() =>
       jest
-        .spyOn(accountsStore, "subscribe")
+        .spyOn(icpAccountsStore, "subscribe")
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         )

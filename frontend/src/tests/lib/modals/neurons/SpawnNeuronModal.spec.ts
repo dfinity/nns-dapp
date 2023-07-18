@@ -4,7 +4,7 @@
 
 import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockHardwareWalletAccount,
@@ -31,7 +31,7 @@ describe("SpawnNeuronModal", () => {
   };
 
   beforeAll(() =>
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     })

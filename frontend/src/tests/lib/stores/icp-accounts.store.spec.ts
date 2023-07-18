@@ -1,5 +1,5 @@
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import { accountsStore } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -7,9 +7,9 @@ import {
 } from "$tests/mocks/accounts.store.mock";
 import { get } from "svelte/store";
 
-describe("accountsStore", () => {
+describe("icpAccountsStore", () => {
   const expectStoreInitialValues = () => {
-    const initState: AccountsStoreData = get(accountsStore);
+    const initState: IcpAccountsStoreData = get(icpAccountsStore);
 
     expect(initState.main).toBeUndefined();
     expect(initState.subAccounts).toBeUndefined();
@@ -18,8 +18,8 @@ describe("accountsStore", () => {
 
   // Convenience functions for tests that don't care about the functionality of
   // the queued store to handle out of order responses.
-  const accountsStoreSet = (accounts: AccountsStoreData) => {
-    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+  const accountsStoreSet = (accounts: IcpAccountsStoreData) => {
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.set(accounts);
   };
 
@@ -30,17 +30,17 @@ describe("accountsStore", () => {
     accountIdentifier: string;
     balanceE8s: bigint;
   }) => {
-    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.setBalance({ accountIdentifier, balanceE8s, certified: true });
   };
 
   const accountsStoreReset = () => {
-    const mutableStore = accountsStore.getSingleMutationAccountsStore();
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.reset({ certified: true });
   };
 
   beforeEach(() => {
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
   });
 
   it("initializes to undefined", () => {
@@ -50,12 +50,12 @@ describe("accountsStore", () => {
   it("should set main account", () => {
     accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-    const { main } = get(accountsStore);
+    const { main } = get(icpAccountsStore);
     expect(main).toEqual(mockMainAccount);
   });
 
   it("should set certified data", () => {
-    const { certified: initialCertified } = get(accountsStore);
+    const { certified: initialCertified } = get(icpAccountsStore);
     expect(initialCertified).toBe(undefined);
 
     accountsStoreSet({
@@ -64,7 +64,7 @@ describe("accountsStore", () => {
       certified: true,
     });
 
-    const { certified } = get(accountsStore);
+    const { certified } = get(icpAccountsStore);
     expect(certified).toBeTruthy();
   });
 
@@ -75,23 +75,23 @@ describe("accountsStore", () => {
   });
 
   it("should not override new data with stale data", () => {
-    const mutableStore1 = accountsStore.getSingleMutationAccountsStore();
+    const mutableStore1 = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore1.set({
       main: mockMainAccount,
       subAccounts: [],
       certified: false,
     });
 
-    expect(get(accountsStore).subAccounts).toHaveLength(0);
+    expect(get(icpAccountsStore).subAccounts).toHaveLength(0);
 
-    const mutableStore2 = accountsStore.getSingleMutationAccountsStore();
+    const mutableStore2 = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore2.set({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       certified: false,
     });
 
-    expect(get(accountsStore).subAccounts).toHaveLength(1);
+    expect(get(icpAccountsStore).subAccounts).toHaveLength(1);
 
     // Slow update response for out-dated state without subaccount
     mutableStore1.set({
@@ -101,14 +101,14 @@ describe("accountsStore", () => {
     });
 
     // Should not have overridden the newer data with subaccount
-    expect(get(accountsStore).subAccounts).toHaveLength(1);
+    expect(get(icpAccountsStore).subAccounts).toHaveLength(1);
   });
 
   describe("setBalance", () => {
     it("should set balance for main account", () => {
       accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-      expect(get(accountsStore)?.main.balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(
         mockMainAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
@@ -117,7 +117,7 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should set balance for subaccount", () => {
@@ -126,7 +126,7 @@ describe("accountsStore", () => {
         subAccounts: [mockSubAccount],
       });
 
-      expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
         mockSubAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
@@ -135,7 +135,7 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      const store = get(accountsStore);
+      const store = get(icpAccountsStore);
       expect(store?.subAccounts[0].balanceE8s).toEqual(newBalanceE8s);
       expect(store.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
     });
@@ -147,7 +147,7 @@ describe("accountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
         mockHardwareWalletAccount.balanceE8s
       );
       const newBalanceE8s = BigInt(100);
@@ -156,7 +156,7 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(accountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
         newBalanceE8s
       );
     });
@@ -174,7 +174,7 @@ describe("accountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      const store = get(accountsStore);
+      const store = get(icpAccountsStore);
       expect(store?.hardwareWallets[0].balanceE8s).toEqual(
         mockHardwareWalletAccount.balanceE8s
       );
@@ -211,13 +211,14 @@ describe("accountsStore", () => {
         mainBalance: bigint;
         subBalance: bigint;
       }) => {
-        expect(get(accountsStore)?.main.balanceE8s).toEqual(mainBalance);
-        expect(get(accountsStore)?.subAccounts[0].balanceE8s).toEqual(
+        expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(mainBalance);
+        expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
           subBalance
         );
       };
 
-      const mutableStore1 = accountsStore.getSingleMutationAccountsStore();
+      const mutableStore1 =
+        icpAccountsStore.getSingleMutationIcpAccountsStore();
       mutableStore1.set(
         dataWithBalances({
           mainBalance: mainBalance1,
@@ -227,7 +228,8 @@ describe("accountsStore", () => {
       );
       expectBalances({ mainBalance: mainBalance1, subBalance: subBalance1 });
 
-      const mutableStore2 = accountsStore.getSingleMutationAccountsStore();
+      const mutableStore2 =
+        icpAccountsStore.getSingleMutationIcpAccountsStore();
       mutableStore2.setBalance({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: subBalance2,

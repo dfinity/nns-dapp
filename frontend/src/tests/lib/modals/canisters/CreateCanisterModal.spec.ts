@@ -10,7 +10,7 @@ import {
   createCanister,
   getIcpToCyclesExchangeRate,
 } from "$lib/services/canisters.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsShow } from "$lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
@@ -44,7 +44,7 @@ jest.mock("$lib/stores/toasts.store", () => {
 
 describe("CreateCanisterModal", () => {
   jest
-    .spyOn(accountsStore, "subscribe")
+    .spyOn(icpAccountsStore, "subscribe")
     .mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );

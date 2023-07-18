@@ -12,8 +12,8 @@ import {
 } from "$lib/services/accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -159,7 +159,7 @@ describe("neurons-services", () => {
     spyGetNeuron.mockClear();
     jest.clearAllMocks();
     neuronsStore.reset();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
@@ -894,7 +894,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });
@@ -991,7 +991,7 @@ describe("neurons-services", () => {
     });
 
     it("should simulate merging neurons if HW controlled", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -1327,7 +1327,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });

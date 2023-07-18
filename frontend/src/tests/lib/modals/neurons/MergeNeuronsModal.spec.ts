@@ -8,8 +8,8 @@ import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
@@ -40,7 +40,7 @@ describe("MergeNeuronsModal", () => {
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockResolvedValue(testIdentity);
     jest.clearAllMocks();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
   });
@@ -71,7 +71,7 @@ describe("MergeNeuronsModal", () => {
     neurons: fakeGovernanceApi.FakeNeuronParams[],
     hardwareWalletAccounts: Account[] = []
   ): Promise<MergeNeuronsModalPo> => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: { ...mockMainAccount, principal: testIdentity.getPrincipal() },
       hardwareWallets: hardwareWalletAccounts,
     });

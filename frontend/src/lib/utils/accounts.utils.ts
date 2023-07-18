@@ -1,5 +1,5 @@
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import type {
   Account,
   AccountIdentifierText,
@@ -26,7 +26,7 @@ export const getAccountByPrincipal = ({
   accounts: { main, hardwareWallets },
 }: {
   principal: string;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): Account | undefined => {
   if (main?.principal?.toText() === principal) {
     return main;
@@ -220,7 +220,7 @@ export const accountName = ({
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
 export const sumNnsAccounts = (
-  accounts: AccountsStoreData | undefined
+  accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
   accounts?.main?.balanceE8s !== undefined
     ? sumAmountE8s(
