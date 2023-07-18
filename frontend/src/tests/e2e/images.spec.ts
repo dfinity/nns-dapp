@@ -53,7 +53,7 @@ test("Test images load on home page", async ({ page, context }) => {
       "icp-rounded.svg",
       "logo-nns.svg",
       "logo-onchain-light.svg",
-      // logo.png oare for all the different SNSes and are loaded from the
+      // logo.png are for all the different SNSes and are loaded from the
       // aggregator:
       "logo.png",
       "logo.png",
