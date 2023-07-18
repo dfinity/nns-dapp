@@ -22,15 +22,9 @@ test("Test neuron voting", async ({ page, context }) => {
     .waitFor();
   await appPo.getTokens(41);
 
-  step("Create dummy proposals");
-  await createDummyProposal(appPo);
-
-  step("Go to the neurons tab");
-  await appPo.goToNeurons();
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
-  const idsBeforeRun = await getNnsNeuronCardsIds(appPo);
-
+  // should be created before dummy proposals
   step("Stake neuron (for voting)");
+  await appPo.goToNeurons();
   const stake = 15;
   await appPo
     .getNeuronsPo()
@@ -38,8 +32,15 @@ test("Test neuron voting", async ({ page, context }) => {
     .stakeNeuron({ amount: stake, dissolveDelayDays: "max" });
 
   const neuronIds = await getNnsNeuronCardsIds(appPo);
-  expect(neuronIds).toHaveLength(idsBeforeRun.length + 1);
+  expect(neuronIds).toHaveLength(1);
   const neuronId = neuronIds[0];
+
+  step("Create dummy proposals");
+  await createDummyProposal(appPo);
+
+  step("Go to the neurons tab");
+  await appPo.goToNeurons();
+  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
 
   // get neuron
   step("Open neuron details");
