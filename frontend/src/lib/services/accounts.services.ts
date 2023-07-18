@@ -115,26 +115,24 @@ export const loadAccounts = async ({
     (type: AccountType) =>
     async (
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
-    ): Promise<Account> => {
-      const owner =
-        "principal" in account ? account.principal : identity.getPrincipal();
-
-      return {
-        identifier: icrcEnabled
-          ? encodeIcrcAccount({
-              owner,
-              ...("sub_account" in account && {
-                subaccount: arrayOfNumberToUint8Array(account.sub_account),
-              }),
-            })
-          : account.account_identifier,
-        balanceE8s: await getAccountBalance(account.account_identifier),
-        type,
-        ...("sub_account" in account && { subAccount: account.sub_account }),
-        ...("name" in account && { name: account.name }),
-        ...("principal" in account && { principal: account.principal }),
-      };
-    };
+    ): Promise<Account> => ({
+      identifier: icrcEnabled
+        ? encodeIcrcAccount({
+            owner:
+              "principal" in account
+                ? account.principal
+                : identity.getPrincipal(),
+            ...("sub_account" in account && {
+              subaccount: arrayOfNumberToUint8Array(account.sub_account),
+            }),
+          })
+        : account.account_identifier,
+      balanceE8s: await getAccountBalance(account.account_identifier),
+      type,
+      ...("sub_account" in account && { subAccount: account.sub_account }),
+      ...("name" in account && { name: account.name }),
+      ...("principal" in account && { principal: account.principal }),
+    });
 
   const [main, subAccounts, hardwareWallets] = await Promise.all([
     mapAccount("main")(mainAccount),
