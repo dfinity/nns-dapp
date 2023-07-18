@@ -38,9 +38,10 @@ describe("NnsNeuronMaturitySection", () => {
     expect(await po.getTotalMaturity()).toBe("3.14");
   });
 
-  it("should render NnsStakedMaturityItemAction", async () => {
+  it("should render item actions", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.hasStakedMaturityItemAction()).toBe(true);
+    expect(await po.hasAvailableMaturityItemAction()).toBe(true);
   });
 });

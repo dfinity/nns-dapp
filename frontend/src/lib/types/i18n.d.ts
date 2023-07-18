@@ -588,6 +588,7 @@ interface I18nNeuron_detail {
   staked_description: string;
   age_bonus_label: string;
   no_age_bonus: string;
+  available_description: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
@@ -652,6 +653,10 @@ interface I18nNeuron_detail {
   maturity_range: string;
   spawning_neuron_info: string;
   maturity_percentage: string;
+  advanced_settings_title: string;
+  advanced_settings_description: string;
+  neuron_account: string;
+  created: string;
 }
 
 interface I18nSns_launchpad {

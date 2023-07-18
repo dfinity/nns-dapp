@@ -4,6 +4,7 @@
   import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import NnsStakedMaturityActionItem from "./NnsStakedMaturityActionItem.svelte";
+  import NnsAvailableMaturityActionItem from "./NnsAvailableMaturityActionItem.svelte";
 
   export let neuron: NeuronInfo;
 </script>
@@ -18,6 +19,7 @@
   </p>
   <ul class="content">
     <NnsStakedMaturityActionItem {neuron} />
+    <NnsAvailableMaturityActionItem {neuron} />
   </ul>
 </Section>
 
@@ -34,7 +36,7 @@
   .content {
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-3x);
 
     padding: 0;
   }
