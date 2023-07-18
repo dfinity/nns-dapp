@@ -1,7 +1,8 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import type { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
 import { ProjectInfoSectionPo } from "$tests/page-objects/ProjectInfoSection.page-object";
 import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { ButtonPo } from "./Button.page-object";
 
@@ -30,6 +31,12 @@ export class ProjectDetailPo extends BasePageObject {
       .getButton();
   }
 
+  getParticipateSwapModalPo(): ParticipateSwapModalPo {
+    return this.getProjectStatusSectionPo()
+      .getParticipateButtonPo()
+      .getParticipateSwapModalPo();
+  }
+
   getProjectName(): Promise<string> {
     return this.getProjectMetadataSectionPo().getProjectName();
   }
@@ -48,6 +55,10 @@ export class ProjectDetailPo extends BasePageObject {
 
   hasCommitmentAmount(): Promise<boolean> {
     return this.getProjectStatusSectionPo().hasCommitmentAmount();
+  }
+
+  clickParticipate(): Promise<void> {
+    return this.getProjectStatusSectionPo().clickParticipate();
   }
 
   participate(params: {
