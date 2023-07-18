@@ -13,6 +13,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Improve visibility of proposal summary headers.
+
 #### Deprecated
 #### Removed
 #### Fixed
