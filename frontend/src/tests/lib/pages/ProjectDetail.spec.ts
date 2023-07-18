@@ -81,10 +81,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsSwapMetricsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
-    vi.clearAllTimers();
-    const now = Date.now();
-    vi.useFakeTimers().setSystemTime(now);
-
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
@@ -111,6 +107,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
+      vi.clearAllTimers();
+      const now = Date.now();
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
@@ -381,6 +380,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       describe("no open ticket and no commitment", () => {
         beforeEach(() => {
+          vi.clearAllTimers();
+          const now = Date.now();
+          vi.useFakeTimers().setSystemTime(now);
           vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
           vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
             rootCanisterId: Principal.fromText(rootCanisterId),
@@ -452,6 +454,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         };
 
         beforeEach(() => {
+          // The participation flow needs the real timers to pass.
+          // Otherwise the flow gets stuck waiting for the absence of the modal.
+          vi.useRealTimers();
           // Do not rely on the `loadAccounts` from the modal.
           accountsStore.setForTesting({
             main: mockMainAccount,
@@ -500,6 +505,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             amount: amountICP,
             acceptConditions: false,
           });
+
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
@@ -536,47 +542,47 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           snsQueryStore.setData(response);
           await participateInSwap();
         });
-      });
 
-      it("should participate without user interaction if there is an open ticket.", async () => {
-        const initialCommitment = { icp: [] };
-        const finalCommitment = {
-          icp: [
-            {
-              transfer_start_timestamp_seconds: BigInt(123444),
-              amount_e8s: testTicket.amount_icp_e8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
-            },
-          ],
-        };
-        vi.spyOn(snsApi, "querySnsSwapCommitment")
-          .mockResolvedValueOnce({
-            rootCanisterId: Principal.fromText(rootCanisterId),
-            myCommitment: initialCommitment,
-          } as SnsSwapCommitment)
-          .mockResolvedValue({
-            rootCanisterId: Principal.fromText(rootCanisterId),
-            myCommitment: finalCommitment,
-          } as SnsSwapCommitment);
-        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+        it("should participate without user interaction if there is an open ticket.", async () => {
+          const initialCommitment = { icp: [] };
+          const finalCommitment = {
+            icp: [
+              {
+                transfer_start_timestamp_seconds: BigInt(123444),
+                amount_e8s: testTicket.amount_icp_e8s,
+                transfer_success_timestamp_seconds: BigInt(123445),
+              },
+            ],
+          };
+          vi.spyOn(snsApi, "querySnsSwapCommitment")
+            .mockResolvedValueOnce({
+              rootCanisterId: Principal.fromText(rootCanisterId),
+              myCommitment: initialCommitment,
+            } as SnsSwapCommitment)
+            .mockResolvedValue({
+              rootCanisterId: Principal.fromText(rootCanisterId),
+              myCommitment: finalCommitment,
+            } as SnsSwapCommitment);
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
-        const { getByTestId, queryByTestId } = render(ProjectDetail, props);
+          const { getByTestId, queryByTestId } = render(ProjectDetail, props);
 
-        expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+          expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
 
-        await waitFor(() =>
-          expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
-        );
+          await waitFor(() =>
+            expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
+          );
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
-        );
+          await waitFor(() =>
+            expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+          );
 
-        expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
-        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+          expect(
+            queryByTestId("sns-user-commitment")?.querySelector(
+              "[data-tid='token-value']"
+            )?.innerHTML
+          ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+        });
       });
     });
 
@@ -592,6 +598,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
+        vi.clearAllTimers();
+        const now = Date.now();
+        vi.useFakeTimers().setSystemTime(now);
         snsQueryStore.setData(response);
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
@@ -627,6 +636,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       };
       const userCommitment = BigInt(100_000_000);
       beforeEach(() => {
+        vi.clearAllTimers();
+        const now = Date.now();
+        vi.useFakeTimers().setSystemTime(now);
         snsQueryStore.setData(responses);
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),
