@@ -16,6 +16,7 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -36,33 +37,35 @@
     openNnsNeuronModal({ type: "spawn", data: { neuron: $store.neuron } });
 </script>
 
-{#if enoughMaturity}
-  <button class="secondary" on:click={showModal}>
-    {$i18n.neuron_detail.spawn_neuron}
-  </button>
-{:else}
-  <Tooltip
-    id="spawn-maturity-button"
-    text={replacePlaceholders(
-      $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
-      {
-        $amount: formatNumber(
-          MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,
-          { minFraction: 4, maxFraction: 4 }
-        ),
-        $min: formatNumber(MIN_NEURON_STAKE / E8S_PER_ICP, {
-          minFraction: 0,
-          maxFraction: 0,
-        }),
-        $varibility: formatPercentage(SPAWN_VARIANCE_PERCENTAGE, {
-          minFraction: 0,
-          maxFraction: 0,
-        }),
-      }
-    )}
-  >
-    <button disabled class="secondary" on:click={showModal}>
+<TestIdWrapper testId="spawn-neuron-button-component">
+  {#if enoughMaturity}
+    <button class="secondary" on:click={showModal}>
       {$i18n.neuron_detail.spawn_neuron}
     </button>
-  </Tooltip>
-{/if}
+  {:else}
+    <Tooltip
+      id="spawn-maturity-button"
+      text={replacePlaceholders(
+        $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
+        {
+          $amount: formatNumber(
+            MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,
+            { minFraction: 4, maxFraction: 4 }
+          ),
+          $min: formatNumber(MIN_NEURON_STAKE / E8S_PER_ICP, {
+            minFraction: 0,
+            maxFraction: 0,
+          }),
+          $varibility: formatPercentage(SPAWN_VARIANCE_PERCENTAGE, {
+            minFraction: 0,
+            maxFraction: 0,
+          }),
+        }
+      )}
+    >
+      <button disabled class="secondary">
+        {$i18n.neuron_detail.spawn_neuron}
+      </button>
+    </Tooltip>
+  {/if}
+</TestIdWrapper>

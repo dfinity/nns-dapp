@@ -25,12 +25,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Install `ic-wasm` as part of the setup command.
 * Better visibility of upgrade cycle consumption, wasm size and memory usage.
 * Check that release-sop is the newest version when it's run.
 
 #### Changed
 
 Use faster GitHub runners for e2e tests.
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
 
 #### Deprecated
 #### Removed
