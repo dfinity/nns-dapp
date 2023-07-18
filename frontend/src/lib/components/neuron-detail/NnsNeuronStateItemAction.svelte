@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ItemAction } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import {
     ageMultiplier,
