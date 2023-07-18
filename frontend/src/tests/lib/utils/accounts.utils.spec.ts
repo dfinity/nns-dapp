@@ -243,6 +243,24 @@ describe("accounts-utils", () => {
           })
         ).toBeTruthy();
       });
+
+      it("should be a valid Icrc address for ICP universe", () => {
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: undefined,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: TransactionNetwork.ICP,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+      });
     });
 
     describe("invalidIcpAddress", () => {
