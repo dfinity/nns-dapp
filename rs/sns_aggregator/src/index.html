@@ -75,6 +75,8 @@
       section a {
         color: var(--hot-pink);
         border-radius: var(--padding-0_25x);
+        text-decoration: underline;
+        text-decoration-style: dashed;
       }
 
       section a:hover {
@@ -176,21 +178,26 @@
       }
 
       article {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr;
         align-items: center;
-        gap: var(--padding);
+
+        column-gap: var(--padding);
 
         margin: 0 0 var(--padding-2x);
       }
 
       article a {
         background: white;
+        margin: var(--padding) 0 0;
         padding: var(--padding-0_5x) var(--padding);
         border: 2px solid black;
         border-radius: var(--border-radius);
 
         box-shadow: var(--padding-0_25x) var(--padding-0_25x) black;
         text-decoration: none;
+
+        width: fit-content;
 
         color: black;
       }
@@ -253,6 +260,36 @@
         border-radius: 50%;
         border: var(--padding-0_25x) dashed black;
         padding: var(--padding-0_25x);
+
+        grid-row: 1 / 3;
+      }
+
+      mark {
+        background: none;
+        width: fit-content;
+        padding: var(--padding-0_25x) var(--padding-0_5x);
+        font-size: 0.6rem;
+        border-radius: var(--border-radius-0_5x);
+        border: calc(var(--border-size) / 2) solid
+          var(--mark-border-color, black);
+      }
+
+      mark.aborted {
+        background: var(--hot-pink);
+        color: white;
+        --mark-border-color: white;
+      }
+
+      mark.committed,
+      mark.adopted {
+        background: var(--sea-green);
+      }
+
+      mark.pending,
+      mark.open {
+        background: var(--lavender-indigo);
+        color: white;
+        --mark-border-color: white;
       }
     </style>
   </head>
@@ -310,11 +347,42 @@
     <script>
       // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns
       // Use the above for local development of this HTML page
-      const aggregatorUrl = "";
+      const aggregatorUrl =
+        "https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns";
+
+      const lifecycleText = (lifeCycle) => {
+        switch (lifeCycle) {
+          case 1:
+            return "Pending";
+          case 2:
+            return "Open";
+          case 3:
+            return "Committed";
+          case 4:
+            return "Aborted";
+          case 5:
+            return "Adopted";
+          default:
+            return "Unspecified";
+        }
+      };
+
+      const renderLifecycle = (lifecycle) => {
+        const mark = document.createElement("mark");
+
+        const text = lifecycleText(lifecycle);
+        mark.className = text.toLowerCase();
+        mark.textContent = text;
+
+        return mark;
+      };
 
       const renderSns = ({
         canister_ids: { root_canister_id },
         meta: { name },
+        swap_state: {
+          swap: { lifecycle },
+        },
       }) => {
         const article = document.createElement("article");
 
@@ -324,10 +392,14 @@
 
         const a = document.createElement("a");
         a.href = `${aggregatorUrl}/root/${root_canister_id}/slow.json`;
+        a.alt = `Open SNS Json data`;
         a.text = name;
+
+        const mark = renderLifecycle(lifecycle);
 
         article.appendChild(img);
         article.appendChild(a);
+        article.appendChild(mark);
 
         return article;
       };
