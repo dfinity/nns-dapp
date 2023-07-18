@@ -22,7 +22,6 @@ describe("SnsNeuronMaturitySection", () => {
       props: {
         neuron,
         rootCanisterId: mockCanisterId,
-        passPropNeuron: true,
         testComponent: SnsNeuronMaturitySection,
       },
     });
