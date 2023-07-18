@@ -10,6 +10,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
@@ -47,7 +48,9 @@ describe("NnsNeuronAdvancedSection", () => {
     const po = renderComponent(neuron);
 
     expect(await po.neuronId()).toBe("12345");
-    expect(await po.neuronCreated()).toBe("Jul 18, 2023 7:44 AM");
+    expect(normalizeWhitespace(await po.neuronCreated())).toBe(
+      "Jul 18, 2023 7:44 AM"
+    );
     expect(await po.neuronAge()).toBe("30 days, 10 hours");
     expect(await po.neuronAccount()).toBe("d0654c5...2ff9f32");
   });
