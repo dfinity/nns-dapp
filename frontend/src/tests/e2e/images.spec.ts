@@ -17,7 +17,7 @@ const expectImagesLoaded = async ({ page, sources }) => {
 
   await page.waitForFunction((expectedImageCount) => {
     const images = Array.from(document.querySelectorAll("img"));
-    if (images.length != expectedImageCount) {
+    if (images.length !== expectedImageCount) {
       return false;
     }
     // The browser might decide not to load images that are outside the
