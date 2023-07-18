@@ -57,10 +57,7 @@
     }
 
     :global(h2) {
-      font-size: min(
-        var(--summary-header-font-size),
-        calc(var(--summary-header-font-size) * 0.8)
-      );
+      font-size: calc(var(--summary-header-font-size) * 0.8);
     }
 
     // H3-H6 looks the same
