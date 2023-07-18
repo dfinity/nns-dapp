@@ -3,7 +3,7 @@
  */
 
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-import { transferICP } from "$lib/services/accounts.services";
+import { transferICP } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";

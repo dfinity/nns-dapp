@@ -24,7 +24,7 @@ import {
   renameSubAccount,
   syncAccounts,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -64,7 +64,7 @@ jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/icp-ledger.api");
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
-describe("accounts-services", () => {
+describe("icp-accounts.services", () => {
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {

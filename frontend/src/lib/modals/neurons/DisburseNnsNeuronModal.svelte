@@ -21,7 +21,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
 
   export let neuron: NeuronInfo;
 

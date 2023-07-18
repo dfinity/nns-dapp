@@ -3,7 +3,7 @@
  */
 
 import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
-import * as accountsServices from "$lib/services/accounts.services";
+import * as accountsServices from "$lib/services/icp-accounts.services";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import {
   modalToolbarSelector,

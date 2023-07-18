@@ -3,7 +3,7 @@
  */
 
 import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
-import { renameSubAccount } from "$lib/services/accounts.services";
+import { renameSubAccount } from "$lib/services/icp-accounts.services";
 import type { Account } from "$lib/types/account";
 import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";

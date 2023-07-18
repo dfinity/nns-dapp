@@ -53,13 +53,13 @@ import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import { getAuthenticatedIdentity } from "./auth.services";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "./accounts.services";
-import { getAuthenticatedIdentity } from "./auth.services";
+} from "./icp-accounts.services";
 import { assertLedgerVersion } from "./icp-ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 

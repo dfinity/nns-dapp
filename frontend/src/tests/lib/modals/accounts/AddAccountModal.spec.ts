@@ -3,7 +3,7 @@
  */
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
-import { addSubAccount } from "$lib/services/accounts.services";
+import { addSubAccount } from "$lib/services/icp-accounts.services";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";

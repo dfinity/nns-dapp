@@ -9,7 +9,7 @@ import {
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
