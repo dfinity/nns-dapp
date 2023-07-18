@@ -1,5 +1,5 @@
 [toolchain]
 # Please, from time to time, update this to the latest stable version on Rust Forge: https://forge.rust-lang.org/
-channel = "1.68.0"
+channel = "1.71.0"
 components = ["rustfmt", "clippy"]
 targets = [ "wasm32-unknown-unknown"]

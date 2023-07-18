@@ -8,7 +8,7 @@ use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval, TimerId};
 use std::str::FromStr;
-use std::{borrow::Borrow, time::Duration};
+use std::time::Duration;
 
 /// Collects a subset of data with high frequency during an open sale.
 #[derive(Default)]
@@ -252,7 +252,6 @@ impl FastScheduler {
             .sns_cache
             .borrow()
             .upstream_data
-            .borrow()
             .values()
             .filter_map(|value| this.start_time_for_sns(&value.swap_state).ok())
             .reduce(|a, b| if a.0 < b.0 { a } else { b })
