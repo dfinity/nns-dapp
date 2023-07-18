@@ -37,7 +37,6 @@ RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
-RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -77,7 +76,6 @@ RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfin
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
-RUN cargo binstall --no-confirm "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
