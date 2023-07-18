@@ -9,7 +9,9 @@ const expectImagesLoaded = async ({ page, sources }) => {
   );
   // We only look at the basename because the rest might differ depending on
   // the environment.
-  const baseImageSources = imageSources.map((src) => src.replace(/.*\//, ""));
+  const baseImageSources = imageSources.map((src) =>
+    src.replace(/.*\//, "").replace(/\.[0-9a-f]{8}\./, ".")
+  );
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
 
