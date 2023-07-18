@@ -17,6 +17,7 @@ import {
   mainAccount,
   sumAccounts,
   sumNnsAccounts,
+  toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import {
   mockAddressInputInvalid,
@@ -625,5 +626,21 @@ describe("accounts-utils", () => {
       expect(hasAccounts([mockMainAccount])).toBeTruthy());
 
     it("should not have accounts", () => expect(hasAccounts([])).toBe(false));
+  });
+
+  describe("toIcpAccountIdentifier", () => {
+    it("should returns an icp account identifier for an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockSnsMainAccount.identifier)).toEqual(
+        "97783b7f0f34634c06ced774bd1bd27d2c76e80b0dd88f56ad55b3ecab292f68"
+      );
+    });
+
+    it("should returns the account identifier parameter if not an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockMainAccount.identifier)).toEqual(
+        mockMainAccount.identifier
+      );
+
+      expect(toIcpAccountIdentifier("123456")).toEqual("123456");
+    });
   });
 });
