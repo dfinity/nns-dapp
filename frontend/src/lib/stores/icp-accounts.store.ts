@@ -32,7 +32,7 @@ export interface IcpAccountsStore extends Readable<IcpAccountsStoreData> {
   // response count as a single mutation and should be applied using the same
   // store. The purpose of this store is to be able to associate the query and
   // update response of the same mutation.
-  getSingleMutationAccountsStore: (
+  getSingleMutationIcpAccountsStore: (
     strategy?: QueryAndUpdateStrategy | undefined
   ) => SingleMutationIcpAccountsStore;
   resetForTesting: () => void;
@@ -55,7 +55,7 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
   const { subscribe, getSingleMutationStore, resetForTesting } =
     queuedStore<IcpAccountsStoreData>(initialAccounts);
 
-  const getSingleMutationAccountsStore = (
+  const getSingleMutationIcpAccountsStore = (
     strategy?: QueryAndUpdateStrategy | undefined
   ): SingleMutationIcpAccountsStore => {
     const { set, update, cancel } = getSingleMutationStore(strategy);
@@ -104,11 +104,11 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
 
   return {
     subscribe,
-    getSingleMutationAccountsStore,
+    getSingleMutationIcpAccountsStore,
     resetForTesting,
 
     setForTesting(accounts: IcpAccountsStoreData) {
-      const mutableStore = getSingleMutationAccountsStore();
+      const mutableStore = getSingleMutationIcpAccountsStore();
       mutableStore.set(accounts);
     },
   };

@@ -19,7 +19,7 @@ describe("icpAccountsStore", () => {
   // Convenience functions for tests that don't care about the functionality of
   // the queued store to handle out of order responses.
   const accountsStoreSet = (accounts: IcpAccountsStoreData) => {
-    const mutableStore = icpAccountsStore.getSingleMutationAccountsStore();
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.set(accounts);
   };
 
@@ -30,12 +30,12 @@ describe("icpAccountsStore", () => {
     accountIdentifier: string;
     balanceE8s: bigint;
   }) => {
-    const mutableStore = icpAccountsStore.getSingleMutationAccountsStore();
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.setBalance({ accountIdentifier, balanceE8s, certified: true });
   };
 
   const accountsStoreReset = () => {
-    const mutableStore = icpAccountsStore.getSingleMutationAccountsStore();
+    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.reset({ certified: true });
   };
 
@@ -75,7 +75,7 @@ describe("icpAccountsStore", () => {
   });
 
   it("should not override new data with stale data", () => {
-    const mutableStore1 = icpAccountsStore.getSingleMutationAccountsStore();
+    const mutableStore1 = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore1.set({
       main: mockMainAccount,
       subAccounts: [],
@@ -84,7 +84,7 @@ describe("icpAccountsStore", () => {
 
     expect(get(icpAccountsStore).subAccounts).toHaveLength(0);
 
-    const mutableStore2 = icpAccountsStore.getSingleMutationAccountsStore();
+    const mutableStore2 = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore2.set({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
@@ -217,7 +217,8 @@ describe("icpAccountsStore", () => {
         );
       };
 
-      const mutableStore1 = icpAccountsStore.getSingleMutationAccountsStore();
+      const mutableStore1 =
+        icpAccountsStore.getSingleMutationIcpAccountsStore();
       mutableStore1.set(
         dataWithBalances({
           mainBalance: mainBalance1,
@@ -227,7 +228,8 @@ describe("icpAccountsStore", () => {
       );
       expectBalances({ mainBalance: mainBalance1, subBalance: subBalance1 });
 
-      const mutableStore2 = icpAccountsStore.getSingleMutationAccountsStore();
+      const mutableStore2 =
+        icpAccountsStore.getSingleMutationIcpAccountsStore();
       mutableStore2.setBalance({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: subBalance2,
