@@ -1,5 +1,5 @@
 import type { AppPo } from "$tests/page-objects/App.page-object";
-import { getNnsNeuronCardsIds } from "$tests/utils/e2e.test-nns-neuron-utils";
+import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import { step } from "$tests/utils/e2e.test-utils";
 import { expect } from "@playwright/test";
 
