@@ -12,7 +12,7 @@ import {
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
   };

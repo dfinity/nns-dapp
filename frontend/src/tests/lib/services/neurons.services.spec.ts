@@ -76,7 +76,7 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     loadBalance: jest.fn(),
     transferICP: jest.fn().mockResolvedValue({ success: true }),

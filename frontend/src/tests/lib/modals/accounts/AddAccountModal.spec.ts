@@ -13,7 +13,7 @@ import type { SvelteComponent } from "svelte";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     addSubAccount: jest.fn().mockResolvedValue(undefined),
   };

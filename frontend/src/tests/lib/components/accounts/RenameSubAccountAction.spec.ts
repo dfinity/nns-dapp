@@ -10,7 +10,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent } from "@testing-library/dom";
 
-jest.mock("$lib/services/accounts.services");
+jest.mock("$lib/services/icp-accounts.services");
 
 describe("RenameSubAccountAction", () => {
   afterEach(() => {

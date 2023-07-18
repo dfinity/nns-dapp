@@ -15,7 +15,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     transferICP: jest.fn().mockResolvedValue({ success: true }),
   };
