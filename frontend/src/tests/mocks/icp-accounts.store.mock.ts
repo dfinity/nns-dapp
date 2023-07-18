@@ -3,7 +3,7 @@ import type {
   HardwareWalletAccountDetails,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import type { Account } from "$lib/types/account";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
@@ -72,7 +72,7 @@ export const mockAccountsStoreData = {
 
 export const mockAccountsStoreSubscribe =
   (subAccounts: Account[] = [], hardwareWalletAccounts: Account[] = []) =>
-  (run: Subscriber<AccountsStoreData>): (() => void) => {
+  (run: Subscriber<IcpAccountsStoreData>): (() => void) => {
     run({
       main: mockMainAccount,
       subAccounts,

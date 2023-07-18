@@ -3,7 +3,7 @@
   import NnsAddAccount from "$lib/components/accounts/NnsAddAccount.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { nonNullish } from "@dfinity/utils";
   import type { Account } from "$lib/types/account";
   import { onDestroy, onMount } from "svelte";
@@ -25,18 +25,18 @@
 </script>
 
 <div class="card-grid" data-tid="accounts-body">
-  {#if nonNullish($accountsStore?.main)}
+  {#if nonNullish($icpAccountsStore?.main)}
     <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
-    {@const mainAccount = $accountsStore.main}
+    {@const mainAccount = $icpAccountsStore.main}
 
     <AccountCard
       role="link"
       on:click={() => goToWallet(mainAccount)}
       hash
-      account={$accountsStore.main}
+      account={$icpAccountsStore.main}
       token={ICPToken}>{$i18n.accounts.main}</AccountCard
     >
-    {#each $accountsStore.subAccounts ?? [] as subAccount}
+    {#each $icpAccountsStore.subAccounts ?? [] as subAccount}
       <AccountCard
         role="link"
         on:click={() => goToWallet(subAccount)}
@@ -45,7 +45,7 @@
         token={ICPToken}>{subAccount.name}</AccountCard
       >
     {/each}
-    {#each $accountsStore.hardwareWallets ?? [] as walletAccount}
+    {#each $icpAccountsStore.hardwareWallets ?? [] as walletAccount}
       <AccountCard
         role="link"
         on:click={() => goToWallet(walletAccount)}

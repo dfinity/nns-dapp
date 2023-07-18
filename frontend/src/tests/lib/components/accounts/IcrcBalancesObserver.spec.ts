@@ -6,7 +6,7 @@ import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type { BalancesObserverData } from "$lib/types/icrc.observer";
 import type { PostMessageDataRequestBalances } from "$lib/types/post-message.balances";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 

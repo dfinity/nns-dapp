@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -23,7 +23,7 @@
     isNeuronControllable({
       neuron,
       identity: $authStore.identity,
-      accounts: $accountsStore,
+      accounts: $icpAccountsStore,
     }) ||
     isHotKeyControllable({
       neuron,

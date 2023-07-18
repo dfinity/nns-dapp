@@ -25,17 +25,9 @@ import {
   syncAccounts,
   transferICP,
 } from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
-import {
-  mockAccountDetails,
-  mockHardwareWalletAccount,
-  mockHardwareWalletAccountDetails,
-  mockMainAccount,
-  mockSubAccount,
-  mockSubAccountDetails,
-} from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -43,6 +35,14 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockAccountDetails,
+  mockHardwareWalletAccount,
+  mockHardwareWalletAccountDetails,
+  mockMainAccount,
+  mockSubAccount,
+  mockSubAccountDetails,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
@@ -71,7 +71,7 @@ describe("accounts-services", () => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest.clearAllMocks();
     toastsStore.reset();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
   });
 
   describe("getOrCreateAccount", () => {
@@ -220,7 +220,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -270,7 +270,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -325,14 +325,14 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: updateMainBalanceE8s, certified: true })
       );
     });
@@ -371,7 +371,7 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
@@ -382,14 +382,14 @@ describe("accounts-services", () => {
       await syncAccounts();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
       );
     });
@@ -401,10 +401,10 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
-      expect(get(accountsStore).main.balanceE8s).toEqual(
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(
         mockMainAccount.balanceE8s
       );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -421,7 +421,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should not show error if only query fails", async () => {
@@ -434,7 +434,7 @@ describe("accounts-services", () => {
           }
           throw new Error("test");
         });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -448,7 +448,7 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockRejectedValue(error);
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -494,7 +494,7 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
@@ -505,14 +505,14 @@ describe("accounts-services", () => {
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
     });
@@ -561,7 +561,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -640,7 +640,7 @@ describe("accounts-services", () => {
     });
 
     it("should sync destination balances after transfer ICP to own account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -834,7 +834,7 @@ describe("accounts-services", () => {
 
   describe("getAccountIdentity", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentity(
@@ -844,7 +844,7 @@ describe("accounts-services", () => {
     });
 
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -855,7 +855,7 @@ describe("accounts-services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -870,7 +870,7 @@ describe("accounts-services", () => {
 
   describe("getAccountIdentityByPrincipal", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentityByPrincipal(
@@ -880,7 +880,7 @@ describe("accounts-services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -893,7 +893,7 @@ describe("accounts-services", () => {
     });
 
     it("returns null if no main account nor hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -917,7 +917,7 @@ describe("accounts-services", () => {
     };
 
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();
@@ -943,7 +943,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(1);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -1000,7 +1000,7 @@ describe("accounts-services", () => {
       await advanceTime(99 * retryDelay);
       expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       return expect(accounts).toEqual(mockAccounts);
     });
 

@@ -19,12 +19,12 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
 import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";

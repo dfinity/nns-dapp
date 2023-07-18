@@ -18,15 +18,15 @@ import {
   sumAccounts,
   sumNnsAccounts,
 } from "$lib/utils/accounts.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockCanisterId } from "$tests/mocks/canisters.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
