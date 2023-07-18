@@ -18,9 +18,9 @@
 
 <Section testId="nns-neuron-voting-power-section-component">
   <h3 slot="title">{$i18n.neurons.voting_power}</h3>
-  <h3 slot="end" data-tid="voting-power">
+  <p slot="end" class="title-value" data-tid="voting-power">
     {formatVotingPower(neuron.votingPower)}
-  </h3>
+  </p>
   <p slot="description">
     {replacePlaceholders($i18n.neuron_detail.voting_power_section_description, {
       $token: ICPToken.symbol,
@@ -36,6 +36,11 @@
   p {
     margin: 0;
   }
+
+  .title-value {
+    font-size: var(--font-size-h3);
+  }
+
   .content {
     display: flex;
     flex-direction: column;

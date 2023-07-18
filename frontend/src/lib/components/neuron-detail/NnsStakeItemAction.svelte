@@ -21,11 +21,11 @@
     horizontalPadding={false}
   />
   <div class="content">
-    <p class="icp-value">
+    <h4 class="icp-value">
       <span data-tid="stake-value"
         >{formatToken({ value: neuronStake(neuron) })}</span
       ><span>{ICPToken.symbol}</span>
-    </p>
+    </h4>
     <p class="description">{$i18n.neurons.ic_stake}</p>
   </div>
   <NnsIncreaseStakeButton slot="actions" variant="secondary" />
@@ -39,7 +39,8 @@
     flex-direction: column;
     gap: var(--padding);
 
-    p {
+    p,
+    h4 {
       margin: 0;
     }
   }
