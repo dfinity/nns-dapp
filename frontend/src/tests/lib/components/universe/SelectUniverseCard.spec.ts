@@ -7,12 +7,12 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsFullProject,
   mockSummary,

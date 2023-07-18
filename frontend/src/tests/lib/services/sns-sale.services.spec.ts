@@ -27,14 +27,14 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import {
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   createSummary,
   mockProjectSubscribe,

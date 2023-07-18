@@ -16,7 +16,6 @@ import {
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -29,6 +28,7 @@ import {
   mockCanisters,
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";

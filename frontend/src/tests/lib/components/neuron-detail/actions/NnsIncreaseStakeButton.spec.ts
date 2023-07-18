@@ -4,8 +4,8 @@
 
 import NnsIncreaseStakeButton from "$lib/components/neuron-detail/actions/NnsIncreaseStakeButton.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";

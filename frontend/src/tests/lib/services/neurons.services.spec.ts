@@ -19,17 +19,17 @@ import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";

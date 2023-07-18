@@ -10,11 +10,11 @@ import Accounts from "$lib/routes/Accounts.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";

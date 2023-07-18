@@ -6,11 +6,11 @@ import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svel
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,

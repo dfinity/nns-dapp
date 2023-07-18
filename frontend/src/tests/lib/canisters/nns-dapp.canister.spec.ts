@@ -20,12 +20,12 @@ import type {
   CreateSubAccountResponse,
   GetAccountResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
-} from "$tests/mocks/accounts.store.mock";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";

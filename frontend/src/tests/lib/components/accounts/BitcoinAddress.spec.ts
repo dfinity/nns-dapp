@@ -12,13 +12,13 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
 

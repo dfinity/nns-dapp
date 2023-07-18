@@ -1,17 +1,17 @@
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
-import type { IcpAccount } from "$lib/types/account";
+import type { Account } from "$lib/types/account";
 import { isNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { queuedStore } from "./queued-store";
 
 export interface IcpAccountsStoreData {
-  main?: IcpAccount;
-  subAccounts?: IcpAccount[];
-  hardwareWallets?: IcpAccount[];
+  main?: Account;
+  subAccounts?: Account[];
+  hardwareWallets?: Account[];
   certified?: boolean;
 }
 
-export interface SingleMutationAccountsStore {
+export interface SingleMutationIcpAccountsStore {
   set: (data: IcpAccountsStoreData) => void;
   setBalance: ({
     certified,
@@ -34,7 +34,7 @@ export interface IcpAccountsStore extends Readable<IcpAccountsStoreData> {
   // update response of the same mutation.
   getSingleMutationIcpAccountsStore: (
     strategy?: QueryAndUpdateStrategy | undefined
-  ) => SingleMutationAccountsStore;
+  ) => SingleMutationIcpAccountsStore;
   resetForTesting: () => void;
   // Set the store contents if you don't care about the queryAndUpdate race
   // condition.
@@ -55,9 +55,9 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
   const { subscribe, getSingleMutationStore, resetForTesting } =
     queuedStore<IcpAccountsStoreData>(initialAccounts);
 
-  const getSingleMutationAccountsStore = (
+  const getSingleMutationIcpAccountsStore = (
     strategy?: QueryAndUpdateStrategy | undefined
-  ): SingleMutationAccountsStore => {
+  ): SingleMutationIcpAccountsStore => {
     const { set, update, cancel } = getSingleMutationStore(strategy);
 
     return {
@@ -80,7 +80,7 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
               // Ignore update if the main account is not set.
               return { main, subAccounts, hardwareWallets };
             }
-            const mapNewBalance = (account: IcpAccount) => {
+            const mapNewBalance = (account: Account) => {
               return account.identifier === accountIdentifier
                 ? { ...account, balanceE8s }
                 : account;
@@ -104,11 +104,11 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
 
   return {
     subscribe,
-    getSingleMutationIcpAccountsStore: getSingleMutationAccountsStore,
+    getSingleMutationIcpAccountsStore,
     resetForTesting,
 
     setForTesting(accounts: IcpAccountsStoreData) {
-      const mutableStore = getSingleMutationAccountsStore();
+      const mutableStore = getSingleMutationIcpAccountsStore();
       mutableStore.set(accounts);
     },
   };

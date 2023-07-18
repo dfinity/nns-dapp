@@ -23,15 +23,15 @@ import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
-  mockAccountDetails,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import {
+  mockAccountDetails,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   snsResponseFor,
   snsResponsesForLifecycle,
@@ -502,10 +502,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({
+
+          await projectDetail.clickParticipate();
+          const modal = projectDetail.getParticipateSwapModalPo();
+          await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
+          await advanceTime();
+          await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );

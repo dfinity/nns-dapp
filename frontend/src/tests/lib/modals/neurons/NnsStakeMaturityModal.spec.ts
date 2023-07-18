@@ -9,7 +9,7 @@ import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";

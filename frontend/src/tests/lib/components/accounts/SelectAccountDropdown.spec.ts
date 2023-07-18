@@ -7,12 +7,12 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 

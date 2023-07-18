@@ -8,7 +8,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("busy-services", () => {

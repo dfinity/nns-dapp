@@ -18,14 +18,14 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
-  mockAccountDetails,
-  mockAccountsStoreData,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountDetails,
+  mockAccountsStoreData,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
   createBuyersState,

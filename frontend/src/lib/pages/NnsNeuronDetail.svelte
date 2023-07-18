@@ -157,7 +157,8 @@
               <NnsNeuronVotingPowerSection {neuron} />
               <Separator spacing="none" />
               <NnsNeuronMaturitySection {neuron} />
-              <NnsNeuronAdvancedSection />
+              <Separator spacing="none" />
+              <NnsNeuronAdvancedSection {neuron} />
             </div>
           {/if}
           <Summary displayUniverse={false} />

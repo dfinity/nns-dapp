@@ -30,20 +30,20 @@ import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
-  mockAccountDetails,
-  mockHardwareWalletAccount,
-  mockHardwareWalletAccountDetails,
-  mockMainAccount,
-  mockSubAccount,
-  mockSubAccountDetails,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockAccountDetails,
+  mockHardwareWalletAccount,
+  mockHardwareWalletAccountDetails,
+  mockMainAccount,
+  mockSubAccount,
+  mockSubAccountDetails,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {

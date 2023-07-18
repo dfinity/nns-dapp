@@ -3,7 +3,7 @@
  */
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { get } from "svelte/store";
 

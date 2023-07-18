@@ -38,6 +38,7 @@
     &.flowLessCopy {
       // add padding to the right of the text to make space for the copy icon (button + padding)
       padding-right: calc(var(--padding-4x) + var(--padding-0_5x));
+      position: relative;
 
       // center vertically the copy icon
       .copy {

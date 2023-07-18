@@ -13,6 +13,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Improve visibility of proposal summary headers.
+
 #### Deprecated
 #### Removed
 #### Fixed
@@ -31,6 +33,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Use faster GitHub runners for e2e tests.
 * Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
 
 #### Deprecated

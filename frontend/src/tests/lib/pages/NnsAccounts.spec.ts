@@ -14,7 +14,7 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   advanceTime,
   runResolvedPromises,

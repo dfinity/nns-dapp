@@ -10,7 +10,7 @@ import type { Account } from "../../../../lib/types/account";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/accounts.store.mock";
+} from "../../../mocks/icp-accounts.store.mock";
 import { renderModal } from "../../../mocks/modal.mock";
 
 describe("ReceiveModal", () => {

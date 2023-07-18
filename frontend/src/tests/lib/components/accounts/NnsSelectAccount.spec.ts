@@ -4,13 +4,13 @@
 
 import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("NnsSelectAccount", () => {

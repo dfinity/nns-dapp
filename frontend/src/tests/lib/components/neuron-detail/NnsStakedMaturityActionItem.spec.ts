@@ -36,10 +36,4 @@ describe("NnsStakedMaturityActionItem", () => {
 
     expect(await po.getStakedMaturity()).toBe("3.14");
   });
-
-  it("should render stake maturity button", async () => {
-    const po = renderComponent(mockNeuron);
-
-    expect(await po.hasStakeButton()).toBe(true);
-  });
 });

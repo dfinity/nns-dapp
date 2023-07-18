@@ -8,7 +8,7 @@ import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDestinationAddress", () => {

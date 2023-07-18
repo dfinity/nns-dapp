@@ -1,7 +1,7 @@
 import type { SnsAccountsStoreData } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
+import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { encodeIcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";

@@ -6,11 +6,11 @@ import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte
 import { transferICP } from "$lib/services/accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";

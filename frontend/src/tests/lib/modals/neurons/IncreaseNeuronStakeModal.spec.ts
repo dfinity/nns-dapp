@@ -8,11 +8,11 @@ import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeMod
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";

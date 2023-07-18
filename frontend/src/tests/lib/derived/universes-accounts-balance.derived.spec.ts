@@ -5,7 +5,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";

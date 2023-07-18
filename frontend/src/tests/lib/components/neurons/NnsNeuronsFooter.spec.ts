@@ -7,8 +7,8 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import {
   buildMockNeuronsStoreSubscribe,
   mockFullNeuron,

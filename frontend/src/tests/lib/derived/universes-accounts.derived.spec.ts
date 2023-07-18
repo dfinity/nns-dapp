@@ -4,12 +4,12 @@ import { universesAccountsStore } from "$lib/derived/universes-accounts.derived"
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,

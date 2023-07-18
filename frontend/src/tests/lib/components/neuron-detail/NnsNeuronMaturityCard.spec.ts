@@ -12,14 +12,14 @@ import {
   formattedTotalMaturity,
 } from "$lib/utils/neuron.utils";
 import {
-  mockAccountsStoreSubscribe,
-  mockHardwareWalletAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";

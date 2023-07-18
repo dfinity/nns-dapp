@@ -564,6 +564,9 @@
     "voting_power_section_description": "Voting Power = ($token staked + maturity staked) x Dissolve Delay Bonus x Age Bonus",
     "maturity_section_description": "Earn rewards by voting on proposals and/or following active neurons.",
     "staked_description": "Staked",
+    "age_bonus_label": "Age bonus: $ageBonus",
+    "no_age_bonus": "No age bonus",
+    "available_description": "Available",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the neurons' fund?",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the neurons' fund?",
     "participate_community_fund": "Participate in neurons' fund.",
@@ -627,7 +630,11 @@
     "dissolve_delay_range": "Dissolve Delay Range",
     "maturity_range": "Select Maturity Range",
     "spawning_neuron_info": "When this neuron has finished spawning, newly minted ICP will be added. The quantity of new ICP minted will depend on the ICP price trend. You will then be able to disburse this new ICP if you wish.",
-    "maturity_percentage": "Percentage of maturity"
+    "maturity_percentage": "Percentage of maturity",
+    "advanced_settings_title": "Advanced details & settings",
+    "advanced_settings_description": "Advanced preferences for managing your neuron",
+    "neuron_account": "Neuron Account",
+    "created": "Date created"
   },
   "sns_launchpad": {
     "header": "Launch Pad",

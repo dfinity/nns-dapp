@@ -3,8 +3,8 @@
  */
 
 import NnsAddress from "$lib/components/accounts/NnsAddress.svelte";
-import { mockAddressInputValid } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockAddressInputValid } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsAddress", () => {

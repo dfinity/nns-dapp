@@ -26,7 +26,7 @@ import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import {
   icpAccountsStore,
-  type SingleMutationAccountsStore,
+  type SingleMutationIcpAccountsStore,
 } from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
@@ -153,7 +153,7 @@ export const loadAccounts = async ({
 };
 
 type SyncAccontsErrorHandler = (params: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => void;
@@ -169,7 +169,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
   err,
   certified,
 }: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => {

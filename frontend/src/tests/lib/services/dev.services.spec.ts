@@ -4,7 +4,7 @@
 import { getICPs } from "$lib/services/dev.services";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { mockAccountsStoreSubscribe } from "$tests/mocks/accounts.store.mock";
+import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
 import { get } from "svelte/store";
 
 describe("dev-services", () => {

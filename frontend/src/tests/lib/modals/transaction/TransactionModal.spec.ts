@@ -12,14 +12,14 @@ import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import {
-  mockAccountsStoreSubscribe,
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
