@@ -10,9 +10,9 @@ import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import type { AccountIdentifierText } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import { toToastError } from "$lib/utils/error.utils";
 import { waitForMilliseconds } from "$lib/utils/utils";
 import {
@@ -38,7 +38,7 @@ export const loadBtcAddress = async ({
   identifier,
 }: {
   minterCanisterId: CanisterId;
-  identifier: AccountIdentifierText;
+  identifier: IcrcAccountIdentifierText;
 }) => {
   const store = get(bitcoinAddressStore);
   const btcAddressLoaded = nonNullish(store[identifier]);

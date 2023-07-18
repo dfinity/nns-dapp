@@ -10,6 +10,7 @@
   import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 
   export let neuron: NeuronInfo;
+  export let variant: "primary" | "secondary" = "primary";
 
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToStake(neuron);
@@ -25,4 +26,4 @@
     });
 </script>
 
-<StakeMaturityButton {enoughMaturity} on:click={showModal} />
+<StakeMaturityButton {enoughMaturity} {variant} on:click={showModal} />

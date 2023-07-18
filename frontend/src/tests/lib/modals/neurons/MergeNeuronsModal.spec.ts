@@ -23,7 +23,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 
 jest.mock("$lib/api/governance.api");
 
@@ -87,11 +87,13 @@ describe("MergeNeuronsModal", () => {
     const controller = testIdentity.getPrincipal().toText();
     const mergeableNeuron1 = {
       neuronId: BigInt(10),
+      state: NeuronState.Locked,
       controller,
       stake: BigInt(12 * E8S_PER_ICP),
     };
     const mergeableNeuron2 = {
       neuronId: BigInt(11),
+      state: NeuronState.Locked,
       controller,
       stake: BigInt(34 * E8S_PER_ICP),
     };
@@ -349,10 +351,12 @@ describe("MergeNeuronsModal", () => {
     const controller = mockHardwareWalletAccount.principal?.toText() as string;
     const mergeableNeuron1 = {
       neuronId: BigInt(10),
+      state: NeuronState.Locked,
       controller,
     };
     const mergeableNeuron2 = {
       neuronId: BigInt(11),
+      state: NeuronState.Locked,
       controller,
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
@@ -381,10 +385,12 @@ describe("MergeNeuronsModal", () => {
   describe("when neurons from main user and hardware wallet", () => {
     const neuronHW = {
       neuronId: BigInt(10),
+      state: NeuronState.Locked,
       controller: mockHardwareWalletAccount.principal?.toText() as string,
     };
     const neuronMain = {
       neuronId: BigInt(11),
+      state: NeuronState.Locked,
       controller: testIdentity.getPrincipal().toText(),
     };
     const neurons = [neuronMain, neuronHW];

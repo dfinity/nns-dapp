@@ -156,13 +156,12 @@ jobs:
       - name: Check that metadata is present
         run: |
           scripts/dfx-wasm-metadata-add.test --verbose
-      - name: Basic downgrade-upgrade test
-        run: |
-          git fetch --depth 1 origin tag prod
-          if git diff tags/prod rs/backend | grep -q .
-          then ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
-          else echo "Skipping test as there are no relevant code changes"
-          fi
+      - name: Downgrade nns-dapp to prod and upgrade back again
+        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
+      - name: Count upgrade cycles
+        run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+      - name: Verify that metrics are present
+        run: scripts/nns-dapp/e2e-test-metrics-present
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -413,11 +412,11 @@ jobs:
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
           }
-      - name: Downgrade to prod and upgrade back again
+      - name: Downgrade sns_aggregator to prod and upgrade back again
         run: |
           set -euxo pipefail
           git fetch --depth 1 origin tag aggregator-prod
-          diff="$(git diff tags/aggregator-prod rs/sns_aggregator)"
+          diff="$(git diff tags/aggregator-prod rs/sns_aggregator .github/workflows/build.yml)"
           if test -n "${diff:-}"
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"

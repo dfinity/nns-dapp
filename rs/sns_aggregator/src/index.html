@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <title>SNS aggregator</title>
     <style>
-	.sns {
+	article {
 	  display: flex;
 	  align-items: center;
 	}
+
+    img {
+        width: 100px;
+        aspect-ratio: 1/1;
+    }
     </style>
-    <script>
-	    fetch('/v1/sns/list/latest/slow.json').then(response => response.json()).then(latest => {
-		    document.body.innerHTML +=latest.map(sns => `<div class="sns"><img src="/v1/sns/root/${sns.canister_ids.root_canister_id}/logo.png" width="100px" height="100px"></img><a href="/v1/sns/root/${sns.canister_ids.root_canister_id}/slow.json">${sns.meta.name}</a></div>`).join('')
-	    });
-    </script>
   </head>
   <body>
 	  <h1>SNS aggregator</h1>
@@ -25,5 +25,39 @@
           <li>The SNS logo is at: /v1/sns/root/$CANISTER_ID/logo.png</li>
       </ul>
       <h2>Recent SNSs</h2>
+
+      <script>
+          // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns
+          // Use the above for local development of this HTML page
+          const aggregatorUrl = "";
+
+          const renderSns = ({canister_ids: {root_canister_id}, meta: {name}}) => {
+              const article = document.createElement("article");
+
+              const img = document.createElement("img");
+              img.loading = "lazy";
+              img.src = `${aggregatorUrl}/root/${root_canister_id}/logo.png`;
+
+              const a = document.createElement("a");
+              a.href = `${aggregatorUrl}/root/${root_canister_id}/slow.json`;
+              a.text = name;
+
+              article.appendChild(img);
+              article.appendChild(a);
+
+              return article;
+          }
+
+          const renderSnses = (latest) => {
+              const fragment = document.createDocumentFragment();
+              fragment.append(...latest.map(renderSns));
+
+              document.querySelector("script")?.after(fragment);
+          }
+
+          const loadSnses = () => fetch(`${aggregatorUrl}/list/latest/slow.json`).then(response => response.json()).then(latest => renderSnses(latest));
+
+          document.addEventListener("DOMContentLoaded", loadSnses, {once: true});
+      </script>
   </body>
 </html>

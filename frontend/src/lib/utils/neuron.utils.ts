@@ -26,8 +26,9 @@ import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
-  IconLockClock,
+  IconLockClosed,
   IconLockOpen,
+  IconPace,
 } from "@dfinity/gix-components";
 import {
   NeuronState,
@@ -70,7 +71,7 @@ type StateMapper = {
 export const stateTextMapper: StateMapper = {
   [NeuronState.Locked]: {
     textKey: "locked",
-    Icon: IconLockClock,
+    Icon: IconLockClosed,
     status: "ok",
   },
   [NeuronState.Unspecified]: {
@@ -84,7 +85,7 @@ export const stateTextMapper: StateMapper = {
   },
   [NeuronState.Dissolving]: {
     textKey: "dissolving",
-    Icon: IconHistoryToggleOff,
+    Icon: IconPace,
     status: "warn",
   },
   [NeuronState.Spawning]: {
@@ -447,6 +448,9 @@ export const isEnoughMaturityToSpawn = ({
 export const isSpawning = (neuron: NeuronInfo): boolean =>
   neuron.state === NeuronState.Spawning;
 
+const isLocked = (neuron: NeuronInfo): boolean =>
+  neuron.state === NeuronState.Locked;
+
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
   neuron,
@@ -457,6 +461,7 @@ const isMergeableNeuron = ({
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
+  isLocked(neuron) &&
   isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
@@ -474,6 +479,9 @@ const getMergeableNeuronMessageKey = ({
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
+  }
+  if (!isLocked(neuron)) {
+    return "neurons.cannot_merge_neuron_state";
   }
 };
 
@@ -587,6 +595,12 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   return allHaveSameFollowees(sortedFollowees);
 };
 
+/**
+ * This function checks whether two or more neurons can be merged
+ * but it doesn't check if each neuron is mergeable.
+ *
+ * The mergeability of each neuron should be checked before calling this function.
+ */
 export const canBeMerged = (
   neurons: NeuronInfo[]
 ): { isValid: boolean; messageKey?: string } => {
