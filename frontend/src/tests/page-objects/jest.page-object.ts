@@ -111,15 +111,9 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   waitForAbsent(): Promise<void> {
-    return waitFor(
-      async () => {
-        return expect(await this.isPresent()).toBe(false);
-      },
-      // TODO: Needed for the swap participation flow. Remove.
-      // To remove we need to use different describes in ProjectDetail.spec.ts
-      // Describes that mock timers and describes that don't.
-      { timeout: 5_000 }
-    );
+    return waitFor(async () => {
+      return expect(await this.isPresent()).toBe(false);
+    });
   }
 
   // Resolves to null if the element is not present.

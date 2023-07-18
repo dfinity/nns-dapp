@@ -502,10 +502,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({
+
+          await projectDetail.clickParticipate();
+          const modal = projectDetail.getParticipateSwapModalPo();
+          await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
+          await advanceTime();
+          await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
