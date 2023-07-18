@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ItemAction } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import {
     ageMultiplier,
@@ -12,6 +11,7 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import CommonItemAction from "../ui/CommonItemAction.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -22,64 +22,33 @@
   $: ageBonus = ageMultiplier(neuron.ageSeconds);
 </script>
 
-<ItemAction testId="nns-neuron-state-item-action-component">
+<CommonItemAction testId="nns-neuron-state-item-action-component">
   <svelte:fragment slot="icon">
-    {#if stateInfo !== undefined}
-      <div class="icon">
-        <svelte:component this={stateInfo.Icon} />
-      </div>
+    {#if stateInfo?.Icon !== undefined}
+      <svelte:component this={stateInfo.Icon} />
     {/if}
   </svelte:fragment>
-  <div class="content">
-    <h4 data-tid="state-text">
-      {keyOf({ obj: $i18n.neuron_state, key: NeuronState[neuron.state] })}
-    </h4>
+  <span slot="title" data-tid="state-text">
+    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[neuron.state] })}
+  </span>
+  <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
       <Tooltip id="neuron-age-bonus" text={ageBonus.toFixed(8)}>
-        <p class="description" data-tid="age-bonus-text">
+        <span data-tid="age-bonus-text">
           {replacePlaceholders($i18n.neuron_detail.age_bonus_label, {
             $ageBonus: ageBonus.toFixed(2),
           })}
-        </p>
+        </span>
       </Tooltip>
     {:else}
-      <p class="description" data-tid="age-bonus-text">
+      <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}
-      </p>
-    {/if}
-  </div>
-  <svelte:fragment slot="actions">
-    {#if neuron.state === NeuronState.Dissolved}
-      <DisburseButton />
-    {:else}
-      <DissolveActionButton neuronState={neuron.state} />
+      </span>
     {/if}
   </svelte:fragment>
-</ItemAction>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-
-  .icon {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: var(--border-radius);
-    background: var(--content-background);
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    p,
-    h4 {
-      margin: 0;
-    }
-  }
-</style>
+  {#if neuron.state === NeuronState.Dissolved}
+    <DisburseButton />
+  {:else}
+    <DissolveActionButton neuronState={neuron.state} />
+  {/if}
+</CommonItemAction>
