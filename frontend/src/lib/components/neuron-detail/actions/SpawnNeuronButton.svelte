@@ -63,7 +63,7 @@
         }
       )}
     >
-      <button disabled class="secondary" on:click={showModal}>
+      <button disabled class="secondary">
         {$i18n.neuron_detail.spawn_neuron}
       </button>
     </Tooltip>
