@@ -32,8 +32,6 @@
 </ItemAction>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-
   .content {
     display: flex;
     flex-direction: column;

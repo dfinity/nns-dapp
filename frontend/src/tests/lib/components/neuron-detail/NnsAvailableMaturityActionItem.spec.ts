@@ -2,38 +2,45 @@
  * @jest-environment jsdom
  */
 
-import NnsStakedMaturityActionItem from "$lib/components/neuron-detail/NnsStakedMaturityActionItem.svelte";
+import NnsAvailableMaturityActionItem from "$lib/components/neuron-detail/NnsAvailableMaturityActionItem.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NnsStakedMaturityActionItemPo } from "$tests/page-objects/NnsStakedMaturityActionItem.page-object";
+import { NnsAvailableMaturityActionItemPo } from "$tests/page-objects/NnsAvailableMaturityActionItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-describe("NnsStakedMaturityActionItem", () => {
+describe("NnsAvailableMaturityActionItem", () => {
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NnsStakedMaturityActionItem,
+        testComponent: NnsAvailableMaturityActionItem,
       },
     });
 
-    return NnsStakedMaturityActionItemPo.under(
+    return NnsAvailableMaturityActionItemPo.under(
       new JestPageObjectElement(container)
     );
   };
 
-  it("should render staked maturity", async () => {
+  it("should render available maturity", async () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
-        stakedMaturityE8sEquivalent: 314000000n,
+        maturityE8sEquivalent: 314000000n,
       },
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getStakedMaturity()).toBe("3.14");
+    expect(await po.getMaturity()).toBe("3.14");
+  });
+
+  it("should render buttons", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.hasSpawnButton()).toBe(true);
+    expect(await po.hasStakeButton()).toBe(true);
   });
 });

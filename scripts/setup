@@ -283,10 +283,6 @@ install_didc_darwin() {
   rm "$tempfile"
 }
 
-install_wasm_nm() {
-  cargo binstall --no-confirm wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
-}
-
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -316,7 +312,6 @@ command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
-command -v wasm-nm || install_wasm_nm
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."
