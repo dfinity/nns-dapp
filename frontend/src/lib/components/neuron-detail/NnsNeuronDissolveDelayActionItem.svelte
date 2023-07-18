@@ -10,7 +10,6 @@
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
-  import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { keyOf } from "$lib/utils/utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
