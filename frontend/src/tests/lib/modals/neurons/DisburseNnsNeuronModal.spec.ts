@@ -8,7 +8,7 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {

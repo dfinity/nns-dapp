@@ -9,7 +9,7 @@ import {
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
@@ -76,7 +76,7 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     loadBalance: jest.fn(),
     transferICP: jest.fn().mockResolvedValue({ success: true }),
