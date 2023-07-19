@@ -92,7 +92,9 @@
     </div>
   {/if}
 
-  <NnsAutoStakeMaturity {neuron} />
+  <div class="auto-stake">
+    <NnsAutoStakeMaturity {neuron} />
+  </div>
 </CardInfo>
 
 <Separator />
@@ -101,4 +103,10 @@
   @use "../../themes/mixins/neuron";
 
   @include neuron.maturity-card-info;
+
+  .auto-stake {
+    padding: var(--padding-2x) 0 0;
+
+    --checkbox-padding: var(--padding) 0;
+  }
 </style>
