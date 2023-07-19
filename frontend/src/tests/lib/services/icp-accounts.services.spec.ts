@@ -25,6 +25,7 @@ import {
   syncAccounts,
   transferICP,
 } from "$lib/services/icp-accounts.services";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -124,7 +125,11 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       expect(queryAccountSpy).toBeCalled();
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -145,7 +150,11 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(BigInt(0));
 
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       // Called once for main, another for the subaccount
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -171,7 +180,11 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(BigInt(0));
 
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       // Called once for main, another for the hardware wallet = 2
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -206,7 +219,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified: true,
       };
-      await initAccounts();
+      await initAccounts(get(ENABLE_ICP_ICRC));
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -231,7 +244,7 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValue(new Error("test"));
 
-      await initAccounts();
+      await initAccounts(get(ENABLE_ICP_ICRC));
 
       const toastsData = get(toastsStore);
       expect(toastsData).toEqual([]);
@@ -256,7 +269,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified: true,
       };
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -282,7 +295,7 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValue(new Error(errorTest));
 
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(get(toastsStore)).toMatchObject([
         {
@@ -324,7 +337,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified,
       });
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
@@ -370,7 +383,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified,
       });
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
@@ -380,7 +393,7 @@ describe("icp-accounts.services", () => {
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newerMainBalanceE8s);
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
       await runResolvedPromises();
 
       expect(get(icpAccountsStore)).toEqual(
@@ -493,7 +506,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified,
       });
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
@@ -547,7 +560,7 @@ describe("icp-accounts.services", () => {
         hardwareWallets: [],
         certified: true,
       };
-      await syncAccounts();
+      await syncAccounts(get(ENABLE_ICP_ICRC));
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -567,7 +580,10 @@ describe("icp-accounts.services", () => {
     });
 
     it("should add a subaccount", async () => {
-      await addSubAccount({ name: "test subaccount" });
+      await addSubAccount({
+        name: "test subaccount",
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       expect(spyCreateSubAccount).toHaveBeenCalled();
     });
@@ -575,7 +591,7 @@ describe("icp-accounts.services", () => {
     it("should not sync accounts if no identity", async () => {
       setNoIdentity();
 
-      const call = async () => await syncAccounts();
+      const call = async () => await syncAccounts(get(ENABLE_ICP_ICRC));
 
       await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
 
@@ -587,7 +603,10 @@ describe("icp-accounts.services", () => {
 
       setNoIdentity();
 
-      await addSubAccount({ name: "test subaccount" });
+      await addSubAccount({
+        name: "test subaccount",
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
@@ -694,6 +713,7 @@ describe("icp-accounts.services", () => {
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockSubAccount,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
       });
 
       expect(spyRenameSubAccount).toHaveBeenCalled();
@@ -703,6 +723,7 @@ describe("icp-accounts.services", () => {
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockSubAccount,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
       });
 
       expect(queryAccountSpy).toHaveBeenCalled();
@@ -726,6 +747,7 @@ describe("icp-accounts.services", () => {
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockSubAccount,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
       });
 
       expect(spyToastError).toBeCalled();
@@ -745,6 +767,7 @@ describe("icp-accounts.services", () => {
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: undefined,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
       });
 
       expect(spyToastError).toBeCalled();
@@ -761,6 +784,7 @@ describe("icp-accounts.services", () => {
       await renameSubAccount({
         newName: "test subaccount",
         selectedAccount: mockMainAccount,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
       });
 
       expect(spyToastError).toBeCalled();
@@ -934,7 +958,7 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
 
-      await pollAccounts();
+      await pollAccounts({ icrcEnabled: get(ENABLE_ICP_ICRC) });
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(1);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
@@ -956,7 +980,10 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
 
-      await pollAccounts(false);
+      await pollAccounts({
+        certified: false,
+        icrcEnabled: get(ENABLE_ICP_ICRC),
+      });
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(1);
       expect(queryAccountSpy).toHaveBeenCalledWith({
@@ -983,7 +1010,7 @@ describe("icp-accounts.services", () => {
         .mockRejectedValueOnce(error)
         .mockResolvedValue(mockAccountDetails);
 
-      pollAccounts();
+      pollAccounts({ icrcEnabled: get(ENABLE_ICP_ICRC) });
 
       await runResolvedPromises();
       let expectedCalls = 1;
@@ -1014,7 +1041,7 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockRejectedValue(error);
 
-      pollAccounts();
+      pollAccounts({ icrcEnabled: get(ENABLE_ICP_ICRC) });
 
       await runResolvedPromises();
       let expectedCalls = 1;

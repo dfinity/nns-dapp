@@ -18,6 +18,7 @@ import {
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
 import { authStore } from "$lib/stores/auth.store";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -41,6 +42,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
+import { get } from "svelte/store";
 
 describe("icp-ledger.services", () => {
   const callback = jest.fn();
@@ -147,7 +149,11 @@ describe("icp-ledger.services", () => {
 
     describe("success", () => {
       it("should sync accounts after register", async () => {
-        await registerHardwareWallet({ name: "test", ledgerIdentity });
+        await registerHardwareWallet({
+          name: "test",
+          ledgerIdentity,
+          icrcEnabled: get(ENABLE_ICP_ICRC),
+        });
 
         expect(spySyncAccounts).toHaveBeenCalled();
       });
@@ -157,7 +163,11 @@ describe("icp-ledger.services", () => {
       it("should throw an error if no name provided", async () => {
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
-        await registerHardwareWallet({ name: undefined, ledgerIdentity });
+        await registerHardwareWallet({
+          name: undefined,
+          ledgerIdentity,
+          icrcEnabled: get(ENABLE_ICP_ICRC),
+        });
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({
@@ -173,6 +183,7 @@ describe("icp-ledger.services", () => {
         await registerHardwareWallet({
           name: "test",
           ledgerIdentity: undefined,
+          icrcEnabled: get(ENABLE_ICP_ICRC),
         });
 
         expect(spyToastError).toBeCalled();
@@ -190,6 +201,7 @@ describe("icp-ledger.services", () => {
           await registerHardwareWallet({
             name: "test",
             ledgerIdentity,
+            icrcEnabled: get(ENABLE_ICP_ICRC),
           });
 
         await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));

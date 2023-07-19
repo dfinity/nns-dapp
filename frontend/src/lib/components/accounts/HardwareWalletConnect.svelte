@@ -12,6 +12,7 @@
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { busy } from "@dfinity/gix-components";
+  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   let connectionState: LedgerConnectionState =
     LedgerConnectionState.NOT_CONNECTED;
@@ -39,6 +40,7 @@
     await registerHardwareWalletProxy({
       name: $store.hardwareWalletName,
       ledgerIdentity,
+      icrcEnabled: $ENABLE_ICP_ICRC,
     });
 
     stopBusy("accounts");
