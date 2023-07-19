@@ -37,7 +37,6 @@ import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
-  mockPrincipal,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
@@ -95,7 +94,7 @@ describe("icp-accounts.services", () => {
   });
 
   const mockSnsAccountIcpAccountIdentifier = AccountIdentifier.fromPrincipal({
-    principal: mockPrincipal,
+    principal: mockSnsMainAccount.principal,
   }).toHex();
 
   describe("getOrCreateAccount", () => {
