@@ -4,6 +4,7 @@ import {
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
 import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
+import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
@@ -16,6 +17,7 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
@@ -28,6 +30,7 @@ import {
   type SingleMutationIcpAccountsStore,
 } from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type {
   Account,
   AccountIdentifierText,
@@ -36,7 +39,13 @@ import type {
   IcpAccountIdentifierText,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
-import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  findAccount,
+  getAccountByPrincipal,
+  invalidIcpAddress,
+  invalidIcrcAddress,
+} from "$lib/utils/accounts.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   isForceCallStrategy,
   notForceCallStrategy,
@@ -49,7 +58,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import {
   ICPToken,
   TokenAmount,
@@ -292,18 +301,43 @@ export const transferICP = async ({
 
     const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
-    await sendICP({
-      identity,
-      to,
-      fromSubAccount: subAccount,
-      amount: tokenAmount,
-    });
+    const validIcrcAddress = !invalidIcrcAddress(to);
+    const validIcpAddress = !invalidIcpAddress(to);
+
+    // UI validates addresses and disable form if not compliant. Therefore, this issue should unlikely happen.
+    if (!validIcrcAddress && !validIcpAddress) {
+      toastsError({
+        labelKey: "error.address_not_icp_icrc_valid",
+      });
+      return { success: false };
+    }
+
+    const feeE8s = get(mainTransactionFeeE8sStore);
+
+    await (validIcrcAddress
+      ? icrcTransfer({
+          identity,
+          to: decodeIcrcAccount(to),
+          fromSubAccount: subAccount,
+          amount: tokenAmount.toE8s(),
+          canisterId: LEDGER_CANISTER_ID,
+          createdAt: nowInBigIntNanoSeconds(),
+          fee: feeE8s,
+        })
+      : sendICP({
+          identity,
+          to,
+          fromSubAccount: subAccount,
+          amount: tokenAmount,
+        }));
 
     // Transfer can be to one of the user's account.
     const toAccount = findAccount({
       identifier: to,
       accounts: get(nnsAccountsListStore),
     });
+
+    // TODO: GIX-1704 use ICRC
     await Promise.all([
       loadBalance({ accountIdentifier: identifier }),
       nonNullish(toAccount)
