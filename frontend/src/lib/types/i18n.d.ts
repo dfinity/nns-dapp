@@ -96,6 +96,7 @@ interface I18nError {
   not_mergeable: string;
   invalid_account_id: string;
   address_not_valid: string;
+  address_not_icp_icrc_valid: string;
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;

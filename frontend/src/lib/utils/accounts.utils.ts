@@ -80,9 +80,9 @@ export const invalidAddress = ({
     });
   }
 
-  // NNS universe doesn't use ICRC yet
+  // NNS universe accepts ICP and ICRC adresses for transactions
   if (isUniverseNns(rootCanisterId)) {
-    return invalidIcpAddress(address);
+    return invalidIcrcAddress(address) && invalidIcpAddress(address);
   }
 
   // Consider it as an ICRC address
