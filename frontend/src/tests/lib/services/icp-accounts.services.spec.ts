@@ -771,6 +771,22 @@ describe("icp-accounts.services", () => {
       expect(spySendICP).toHaveBeenCalled();
     });
 
+    it("should not transfer ICP for invalid address", async () => {
+      const spy = jest
+        .spyOn(icrcLedgerApi, "icrcTransfer")
+        .mockResolvedValue(BigInt(1));
+
+      const result = await transferICP({
+        ...transferICPParams,
+        destinationAddress: "test",
+      });
+
+      expect(spySendICP).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
+
+      expect(result.success).toBeFalsy();
+    });
+
     it("should transfer ICP using an Icrc destination address", async () => {
       const spy = jest
         .spyOn(icrcLedgerApi, "icrcTransfer")
