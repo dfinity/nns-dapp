@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Improve visibility of proposal summary headers.
+* Improve copy in button to set or increase dissolve delay of a neuron.
 
 #### Deprecated
 #### Removed
