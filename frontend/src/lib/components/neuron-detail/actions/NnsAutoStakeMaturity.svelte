@@ -12,7 +12,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-  import AutoStakeMaturityCheckbox from "./AutoStakeMaturityCheckbox.svelte";
+  import AutoStakeMaturity from "./AutoStakeMaturity.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -31,7 +31,7 @@
   );
 </script>
 
-<AutoStakeMaturityCheckbox
+<AutoStakeMaturity
   bind:hasAutoStakeOn
   {disabled}
   on:nnsChange={() =>

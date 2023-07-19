@@ -6,9 +6,7 @@
   export let disabled = false;
 </script>
 
-<!-- TODO: GIX-1688 Remove with ENABLE_NEURON_SETTINGS feature flag -->
-<!-- Instead we'll use NnsAutoStakeMaturityCheckbox.svelte -->
-<div class="auto-stake">
+<div class="auto-stake" data-tid="auto-stake-maturity-checkbox-component">
   <Checkbox
     preventDefault
     inputId="auto-stake-maturity-checkbox"
@@ -22,9 +20,6 @@
 
 <style lang="scss">
   .auto-stake {
-    padding: var(--padding-2x) 0 0;
-
     --checkbox-label-order: 1;
-    --checkbox-padding: var(--padding) 0;
   }
 </style>
