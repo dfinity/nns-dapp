@@ -920,7 +920,7 @@ describe("icp-accounts.services", () => {
       expect(spyRenameSubAccount).toHaveBeenCalled();
     });
 
-    it("should rename a subaccount with Icrc address", async () => {
+    it("should rename a subaccount for Icrc address", async () => {
       const newName = "test subaccount";
 
       await renameSubAccount({
