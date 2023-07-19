@@ -234,6 +234,13 @@ export const sumAccounts = (
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
 
+/**
+ * The NNS Dapp backend accepts ICP account identifiers. The dapp now also supports Icrc textual representation, which is why we may not always know if an identifier is in ICP format or Icrc format.
+ * This utility optimistically tries to interpret the identifier passed as a parameter as an Icrc textual representation and convert it to an ICP identifier.
+ * If the conversion fails, the utility returns the identifier passed as the parameter, which could be a valid or invalid ICP identifier.
+ *
+ * @param accountIdentifier A valid or invalid ICP identifier.
+ */
 export const toIcpAccountIdentifier = (
   accountIdentifier: AccountIdentifierText
 ): IcpAccountIdentifierText => {
