@@ -52,6 +52,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
@@ -262,6 +263,50 @@ describe("icp-accounts.services", () => {
             }),
           },
         ],
+        certified: true,
+      });
+    });
+
+    it("should map ICRC identifiers with subaccounts", async () => {
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+        principal: mockMainAccount.principal,
+        sub_accounts: [
+          {
+            name: mockSubAccount.name,
+            account_identifier: mockSubAccount.icpIdentifier,
+            sub_account: mockSubAccount.subAccount,
+          },
+        ],
+        hardware_wallet_accounts: [],
+        account_identifier: mockMainAccount.identifier,
+      });
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      const certified = true;
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: true,
+      });
+
+      expect(result).toEqual({
+        main: {
+          ...mockMainAccount,
+          identifier: encodeIcrcAccount({
+            owner: mockMainAccount.principal,
+          }),
+        },
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            identifier: encodeIcrcAccount({
+              owner: mockHardwareWalletAccount.principal,
+              subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
+            }),
+          },
+        ],
+        hardwareWallets: [],
         certified: true,
       });
     });
