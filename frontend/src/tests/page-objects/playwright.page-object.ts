@@ -75,6 +75,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.getAttribute(attribute);
   }
 
+  isChecked(): Promise<boolean | null> {
+    return this.locator.isChecked();
+  }
+
   async getClasses(): Promise<string[] | null> {
     const classNames = await this.getAttribute("class");
     return classNames?.split(" ");

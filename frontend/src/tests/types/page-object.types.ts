@@ -26,6 +26,7 @@ export interface PageObjectElement {
   waitForAbsent(timeout?: number): Promise<void>;
   getText(): Promise<string | null>;
   getAttribute(attribute: string): Promise<string | null>;
+  isChecked(): Promise<boolean | null>;
   getClasses(): Promise<string[] | null>;
   click(): Promise<void>;
   typeText(text: string): Promise<void>;

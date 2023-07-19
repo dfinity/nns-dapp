@@ -132,6 +132,11 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && this.element.getAttribute(attribute);
   }
 
+  // Resolves to null if the element is not present.
+  async isChecked(): Promise<boolean | null> {
+    return this.element && (this.element as HTMLInputElement).checked;
+  }
+
   async getClasses(): Promise<string[] | null> {
     return this.element && Array.from(this.element.classList);
   }
