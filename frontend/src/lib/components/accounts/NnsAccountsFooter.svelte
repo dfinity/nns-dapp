@@ -6,7 +6,7 @@
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import { nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import { syncAccounts } from "$lib/services/accounts.services";
+  import { syncAccounts } from "$lib/services/icp-accounts.services";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");

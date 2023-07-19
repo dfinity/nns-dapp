@@ -8,7 +8,7 @@
     getAccountTransactions,
     loadBalance,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";

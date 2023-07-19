@@ -4,7 +4,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export class PlaywrightPageObjectElement implements PageObjectElement {
   readonly locator: Locator;
 
-  constructor(locator: Locator | Page) {
+  constructor(locator: Locator) {
     this.locator = locator;
   }
 
@@ -100,7 +100,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.type(text);
   }
 
-  selectOption(text: string): Promise<void> {
-    return this.locator.selectOption(text);
+  async selectOption(text: string): Promise<void> {
+    await this.locator.selectOption(text);
   }
 }

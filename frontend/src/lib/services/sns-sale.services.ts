@@ -12,8 +12,8 @@ import {
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
-import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
+import { loadBalance } from "$lib/services/icp-accounts.services";
 import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";

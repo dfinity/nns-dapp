@@ -14,12 +14,6 @@ test("Test neuron voting", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  // We need an account before we can get ICP.
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getMainAccountCardPo()
-    .waitFor();
   await appPo.getTokens(41);
 
   // should be created before dummy proposals
