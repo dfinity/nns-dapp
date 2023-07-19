@@ -4,7 +4,6 @@
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
-import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
 import { toastsStore } from "@dfinity/gix-components";
@@ -39,7 +38,7 @@ describe("app-services", () => {
   it("should init Nns", async () => {
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    await initAppPrivateData(get(ENABLE_ICP_ICRC));
+    await initAppPrivateData();
 
     // query + update calls
     const numberOfCalls = 2;
@@ -54,7 +53,7 @@ describe("app-services", () => {
   });
 
   it("shuold init SNS", async () => {
-    await initAppPrivateData(get(ENABLE_ICP_ICRC));
+    await initAppPrivateData();
 
     await expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
   });
@@ -62,7 +61,7 @@ describe("app-services", () => {
   it("should not show errors if loading accounts fails", async () => {
     mockNNSDappCanister.getAccount.mockRejectedValue(new Error("test"));
     mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    await initAppPrivateData(get(ENABLE_ICP_ICRC));
+    await initAppPrivateData();
 
     // query + update calls
     const numberOfCalls = 2;

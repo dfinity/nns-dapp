@@ -36,13 +36,7 @@ const getMainAccount = async (): Promise<IcpAccount> => {
   });
 };
 
-export const getICPs = async ({
-  icps,
-  icrcEnabled,
-}: {
-  icps: number;
-  icrcEnabled: boolean;
-}) => {
+export const getICPs = async (icps: number) => {
   const main = await getMainAccount();
 
   if (!main) {
@@ -54,7 +48,7 @@ export const getICPs = async ({
     accountIdentifier: main.identifier,
   });
 
-  await syncAccounts(icrcEnabled);
+  await syncAccounts();
 };
 
 export const getTokens = async ({
