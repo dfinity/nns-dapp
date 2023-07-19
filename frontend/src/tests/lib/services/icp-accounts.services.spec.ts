@@ -25,6 +25,7 @@ import {
   syncAccounts,
   transferICP,
 } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -76,6 +77,7 @@ describe("icp-accounts.services", () => {
     jest.clearAllMocks();
     toastsStore.reset();
     icpAccountsStore.resetForTesting();
+    overrideFeatureFlagsStore.reset();
   });
 
   describe("getOrCreateAccount", () => {
@@ -211,7 +213,6 @@ describe("icp-accounts.services", () => {
       const result = await loadAccounts({
         identity: mockIdentity,
         certified,
-        icrcEnabled: false,
       });
 
       expect(result).toEqual({
@@ -239,10 +240,12 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
       const certified = true;
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
+
       const result = await loadAccounts({
         identity: mockIdentity,
         certified,
-        icrcEnabled: true,
       });
 
       expect(result).toEqual({
@@ -288,10 +291,12 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
       const certified = true;
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
+
       const result = await loadAccounts({
         identity: mockIdentity,
         certified,
-        icrcEnabled: true,
       });
 
       expect(result).toEqual({
@@ -1090,9 +1095,7 @@ describe("icp-accounts.services", () => {
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
 
-      await pollAccounts({
-        certified: false,
-      });
+      await pollAccounts(false);
 
       expect(queryAccountSpy).toHaveBeenCalledTimes(1);
       expect(queryAccountSpy).toHaveBeenCalledWith({
