@@ -47,7 +47,7 @@ describe("IncreaseDissolveDelayButton", () => {
   });
 
   it("opens Increase Dissolve Delay Modal", async () => {
-    const { container, getByTestId } = render(NeuronContextTest, {
+    const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
         testComponent: IncreaseDissolveDelayButton,
@@ -58,10 +58,14 @@ describe("IncreaseDissolveDelayButton", () => {
       element: new JestPageObjectElement(container),
     });
 
+    expect(
+      queryByTestId("increase-dissolve-delay-modal-component")
+    ).not.toBeInTheDocument();
+
     await po.click();
 
     expect(
-      getByTestId("increase-dissolve-delay-modal-component")
+      queryByTestId("increase-dissolve-delay-modal-component")
     ).toBeInTheDocument();
   });
 });

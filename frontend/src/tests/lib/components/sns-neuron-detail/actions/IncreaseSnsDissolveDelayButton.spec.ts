@@ -77,7 +77,7 @@ describe("IncreaseSnsDissolveDelayButton", () => {
   });
 
   it("should open increase increase dissolve delay modal", async () => {
-    const { container, getByTestId } = render(SnsNeuronContextTest, {
+    const { container, queryByTestId } = render(SnsNeuronContextTest, {
       props: {
         neuron: mockSnsNeuron,
         passPropNeuron: true,
@@ -89,11 +89,15 @@ describe("IncreaseSnsDissolveDelayButton", () => {
     const po = ButtonPo.under({
       element: new JestPageObjectElement(container),
     });
+    expect(
+      queryByTestId("increase-sns-dissolve-delay-modal-component")
+    ).not.toBeInTheDocument();
+
     await po.click();
 
     await waitFor(() =>
       expect(
-        getByTestId("increase-sns-dissolve-delay-modal-component")
+        queryByTestId("increase-sns-dissolve-delay-modal-component")
       ).toBeInTheDocument()
     );
   });
