@@ -36,9 +36,7 @@ describe("NnsNeuronMaturityCard", () => {
   };
 
   beforeAll(() =>
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   it("renders maturity title", () => {

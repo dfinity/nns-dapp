@@ -20,9 +20,7 @@ vi.mock("$lib/services/icp-accounts.services", () => {
 
 describe("IcpTransactionModal", () => {
   beforeAll(() =>
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   const renderTransactionModal = () =>
@@ -32,9 +30,9 @@ describe("IcpTransactionModal", () => {
     });
 
   beforeEach(() => {
-    vi
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount])
+    );
   });
 
   it("should transfer icps", async () => {

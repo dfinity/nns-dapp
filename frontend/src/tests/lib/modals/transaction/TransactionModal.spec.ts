@@ -68,19 +68,17 @@ describe("TransactionModal", () => {
     });
 
   beforeAll(() =>
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   beforeEach(() => {
-    vi
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount])
+    );
 
-    vi
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });

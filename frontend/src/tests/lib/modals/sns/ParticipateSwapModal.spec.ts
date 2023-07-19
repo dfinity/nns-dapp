@@ -44,9 +44,7 @@ vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/services/sns.services", () => {
   return {
-    initiateSnsSaleParticipation: vi
-      .fn()
-      .mockResolvedValue({ success: true }),
+    initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
     getSwapAccount: vi
       .fn()
       .mockImplementation(() =>
@@ -68,9 +66,7 @@ describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
     vi.clearAllMocks();
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.mocked(initiateSnsSaleParticipation).mockClear();
     icpAccountsStore.resetForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
@@ -288,9 +284,9 @@ describe("ParticipateSwapModal", () => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));

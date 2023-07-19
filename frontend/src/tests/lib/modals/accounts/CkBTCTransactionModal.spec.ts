@@ -485,9 +485,9 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress without step transfer", async () => {
-      vi
-        .spyOn(services, "convertCkBTCToBtc")
-        .mockResolvedValue({ success: true });
+      vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+        success: true,
+      });
 
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
 

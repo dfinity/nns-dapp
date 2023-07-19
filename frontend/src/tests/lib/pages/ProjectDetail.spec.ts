@@ -34,7 +34,7 @@ import {
 } from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/vi.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -44,7 +44,6 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/sns.api");
@@ -81,9 +80,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsSwapMetricsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
+    vi.clearAllTimers();
+    const now = Date.now();
+    vi.useFakeTimers().setSystemTime(now);
+
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
-    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
+    vi
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
     fakeLocationApi.setCountryCode(userCountryCode);
@@ -96,20 +101,17 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       cf_neuron_count: [],
     });
 
-    vi.spyOn(snsMetricsApi, "querySnsSwapMetrics").mockResolvedValue(
-      rawMetricsText
-    );
+    vi
+        .spyOn(snsMetricsApi, "querySnsSwapMetrics")
+        .mockResolvedValue(rawMetricsText);
   });
 
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
-      vi.clearAllTimers();
-      const now = Date.now();
-      vi.useFakeTimers().setSystemTime(now);
+      vi
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
@@ -134,7 +136,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         await runResolvedPromises();
         let expectedCalls = 1;
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
+            expectedCalls
         );
 
         const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
@@ -144,20 +146,20 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           await advanceTime(retryDelay);
           expectedCalls += 1;
           expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-            expectedCalls
+              expectedCalls
           );
         }
         unmount();
 
         await runResolvedPromises();
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
+            expectedCalls
         );
 
         // Even after waiting a long time there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
+            expectedCalls
         );
       });
     });
@@ -219,7 +221,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         render(ProjectDetail, props);
 
         await waitFor(() =>
-          expect(snsApi.querySnsSwapCommitment).not.toBeCalled()
+            expect(snsApi.querySnsSwapCommitment).not.toBeCalled()
         );
       });
 
@@ -311,9 +313,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
   describe("logged in user", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      vi
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreSubscribe);
 
       vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
@@ -344,9 +346,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
         vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
-        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-          BigInt(1_000_000_000)
-        );
+        vi
+            .spyOn(ledgerApi, "queryAccountBalance")
+            .mockResolvedValue(BigInt(1_000_000_000));
       });
 
       it("should show user's commitment", async () => {
@@ -368,21 +370,18 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const { queryByTestId } = render(ProjectDetail, props);
 
         await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+            expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
         );
 
         expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
+            queryByTestId("sns-user-commitment")?.querySelector(
+                "[data-tid='token-value']"
+            )?.innerHTML
         ).toMatch(formatToken({ value: userCommitment }));
       });
 
       describe("no open ticket and no commitment", () => {
         beforeEach(() => {
-          vi.clearAllTimers();
-          const now = Date.now();
-          vi.useFakeTimers().setSystemTime(now);
           vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
           vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
             rootCanisterId: Principal.fromText(rootCanisterId),
@@ -395,14 +394,14 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           await runResolvedPromises();
 
-          return ProjectDetailPo.under(new VitestPageObjectElement(container));
+          return ProjectDetailPo.under(new JestPageObjectElement(container));
         };
 
         it("should enable button without loading user's country if no deny list", async () => {
           const projectDetail = await renderProjectDetail();
 
           expect(await projectDetail.getParticipateButton().isPresent()).toBe(
-            true
+              true
           );
 
           expect(get(userCountryStore)).toBe(NOT_LOADED);
@@ -424,17 +423,17 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           await runResolvedPromises();
           expect(await projectDetail.getParticipateButton().isPresent()).toBe(
-            false
+              false
           );
 
           fakeLocationApi.resume();
 
           await runResolvedPromises();
           expect(await projectDetail.getParticipateButton().isPresent()).toBe(
-            true
+              true
           );
           expect(await projectDetail.getParticipateButton().isDisabled()).toBe(
-            false
+              false
           );
         });
       });
@@ -454,9 +453,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         };
 
         beforeEach(() => {
-          // The participation flow needs the real timers to pass.
-          // Otherwise the flow gets stuck waiting for the absence of the modal.
-          vi.useRealTimers();
           // Do not rely on the `loadAccounts` from the modal.
           icpAccountsStore.setForTesting({
             main: mockMainAccount,
@@ -468,21 +464,22 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
-          vi.spyOn(snsApi, "querySnsSwapCommitment")
-            // Query call
-            .mockResolvedValueOnce({
-              rootCanisterId: Principal.fromText(rootCanisterId),
-              myCommitment: undefined,
-            } as SnsSwapCommitment)
-            // Update call
-            .mockResolvedValueOnce({
-              rootCanisterId: Principal.fromText(rootCanisterId),
-              myCommitment: undefined,
-            } as SnsSwapCommitment)
-            .mockResolvedValue({
-              rootCanisterId: Principal.fromText(rootCanisterId),
-              myCommitment: finalCommitment,
-            } as SnsSwapCommitment);
+          vi
+              .spyOn(snsApi, "querySnsSwapCommitment")
+              // Query call
+              .mockResolvedValueOnce({
+                rootCanisterId: Principal.fromText(rootCanisterId),
+                myCommitment: undefined,
+              } as SnsSwapCommitment)
+              // Update call
+              .mockResolvedValueOnce({
+                rootCanisterId: Principal.fromText(rootCanisterId),
+                myCommitment: undefined,
+              } as SnsSwapCommitment)
+              .mockResolvedValue({
+                rootCanisterId: Principal.fromText(rootCanisterId),
+                myCommitment: finalCommitment,
+              } as SnsSwapCommitment);
         });
 
         const participateInSwap = async () => {
@@ -491,23 +488,27 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           await runResolvedPromises();
 
           const projectDetail = ProjectDetailPo.under(
-            new VitestPageObjectElement(container)
+              new JestPageObjectElement(container)
           );
 
           await waitFor(async () =>
-            expect(
-              await projectDetail.getParticipateButton().isDisabled()
-            ).toBe(false)
+              expect(
+                  await projectDetail.getParticipateButton().isDisabled()
+              ).toBe(false)
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({
+
+          await projectDetail.clickParticipate();
+          const modal = projectDetail.getParticipateSwapModalPo();
+          await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
-
+          await advanceTime();
+          await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
-            formattedAmountICP
+              formattedAmountICP
           );
         };
 
@@ -530,7 +531,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         it("when restricted countries and getting location fails", async () => {
           vi.spyOn(console, "error").mockImplementation(() => undefined);
           fakeLocationApi.setCountryCode(
-            new Error("Failed to get user location")
+              new Error("Failed to get user location")
           );
 
           const response = snsResponseFor({
@@ -542,19 +543,21 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           snsQueryStore.setData(response);
           await participateInSwap();
         });
+      });
 
-        it("should participate without user interaction if there is an open ticket.", async () => {
-          const initialCommitment = { icp: [] };
-          const finalCommitment = {
-            icp: [
-              {
-                transfer_start_timestamp_seconds: BigInt(123444),
-                amount_e8s: testTicket.amount_icp_e8s,
-                transfer_success_timestamp_seconds: BigInt(123445),
-              },
-            ],
-          };
-          vi.spyOn(snsApi, "querySnsSwapCommitment")
+      it("should participate without user interaction if there is an open ticket.", async () => {
+        const initialCommitment = { icp: [] };
+        const finalCommitment = {
+          icp: [
+            {
+              transfer_start_timestamp_seconds: BigInt(123444),
+              amount_e8s: testTicket.amount_icp_e8s,
+              transfer_success_timestamp_seconds: BigInt(123445),
+            },
+          ],
+        };
+        vi
+            .spyOn(snsApi, "querySnsSwapCommitment")
             .mockResolvedValueOnce({
               rootCanisterId: Principal.fromText(rootCanisterId),
               myCommitment: initialCommitment,
@@ -563,26 +566,25 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
               rootCanisterId: Principal.fromText(rootCanisterId),
               myCommitment: finalCommitment,
             } as SnsSwapCommitment);
-          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
-          const { getByTestId, queryByTestId } = render(ProjectDetail, props);
+        const { getByTestId, queryByTestId } = render(ProjectDetail, props);
 
-          expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+        expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
 
-          await waitFor(() =>
+        await waitFor(() =>
             expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
-          );
+        );
 
-          await waitFor(() =>
+        await waitFor(() =>
             expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
-          );
+        );
 
-          expect(
+        expect(
             queryByTestId("sns-user-commitment")?.querySelector(
-              "[data-tid='token-value']"
+                "[data-tid='token-value']"
             )?.innerHTML
-          ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
-        });
+        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
       });
     });
 
@@ -598,9 +600,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        vi.clearAllTimers();
-        const now = Date.now();
-        vi.useFakeTimers().setSystemTime(now);
         snsQueryStore.setData(response);
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
@@ -636,9 +635,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       };
       const userCommitment = BigInt(100_000_000);
       beforeEach(() => {
-        vi.clearAllTimers();
-        const now = Date.now();
-        vi.useFakeTimers().setSystemTime(now);
         snsQueryStore.setData(responses);
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId: Principal.fromText(rootCanisterId),
@@ -687,13 +683,13 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const { queryByTestId } = render(ProjectDetail, props);
 
         await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+            expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
         );
 
         expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
+            queryByTestId("sns-user-commitment")?.querySelector(
+                "[data-tid='token-value']"
+            )?.innerHTML
         ).toMatch(formatToken({ value: userCommitment }));
       });
     });
@@ -707,9 +703,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      vi
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
     it("should redirect to launchpad", async () => {
@@ -734,9 +730,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     beforeEach(() => {
       snsQueryStore.setData(responses);
       page.mock({ data: { universe: null } });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      vi
+          .spyOn(authStore, "subscribe")
+          .mockImplementation(mockAuthStoreNoIdentitySubscribe);
     });
 
     it("should redirect to launchpad", async () => {

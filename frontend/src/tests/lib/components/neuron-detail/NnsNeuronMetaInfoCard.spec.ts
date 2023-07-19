@@ -24,15 +24,11 @@ describe("NnsNeuronMetaInfoCard", () => {
   };
 
   beforeAll(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
-    vi
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+    );
   });
 
   it("renders neuron id", () => {

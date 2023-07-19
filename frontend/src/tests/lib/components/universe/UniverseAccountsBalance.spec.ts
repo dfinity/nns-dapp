@@ -41,13 +41,13 @@ describe("UniverseAccountsBalance", () => {
       data: { universe: mockSnsCanisterId.toText() },
     });
 
-    vi
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
-    vi
-      .spyOn(snsProjectsCommittedStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   afterAll(() => vi.clearAllMocks());
@@ -77,14 +77,9 @@ describe("UniverseAccountsBalance", () => {
   });
 
   describe("balance", () => {
-    vi
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(
-          [mockSubAccount],
-          [mockHardwareWalletAccount]
-        )
-      );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
 
     afterAll(() => vi.clearAllMocks());
 

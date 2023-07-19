@@ -33,9 +33,9 @@ describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
 
   beforeEach(() => {
-    vi
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
     vi.clearAllMocks();
     icpAccountsStore.resetForTesting();
     neuronsStore.reset();

@@ -107,9 +107,7 @@ describe("SnsVotingCard", () => {
 
   beforeEach(() => {
     snsNeuronsStore.reset();
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();

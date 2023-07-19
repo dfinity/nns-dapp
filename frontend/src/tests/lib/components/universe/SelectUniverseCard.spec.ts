@@ -123,14 +123,9 @@ describe("SelectUniverseCard", () => {
   });
 
   describe("project-balance", () => {
-    vi
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(
-          [mockSubAccount],
-          [mockHardwareWalletAccount]
-        )
-      );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
 
     afterAll(() => vi.clearAllMocks());
 

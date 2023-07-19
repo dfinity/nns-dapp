@@ -36,9 +36,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  vi
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("signed in", () => {
     beforeEach(() => {

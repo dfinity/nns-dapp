@@ -96,15 +96,15 @@ describe("NnsStakeNeuronModal", () => {
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-      vi
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
-      vi
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(() => mock<GovernanceCanister>());
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(() =>
+        mock<GovernanceCanister>()
+      );
       queryBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
@@ -415,9 +415,9 @@ describe("NnsStakeNeuronModal", () => {
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     const createNeuron = async ({
@@ -531,12 +531,12 @@ describe("NnsStakeNeuronModal", () => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       icpAccountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      vi
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
     });
     it("should load and then show the accounts", async () => {
       const { queryByTestId } = await renderModal({
@@ -560,9 +560,9 @@ describe("NnsStakeNeuronModal", () => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));

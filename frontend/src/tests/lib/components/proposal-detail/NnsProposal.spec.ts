@@ -80,11 +80,9 @@ describe("Proposal", () => {
   });
 
   it("should render proposal navigation", async () => {
-    vi
-      .spyOn(filteredProposals, "subscribe")
-      .mockImplementation(
-        createMockProposalsStoreSubscribe(generateMockProposals(10))
-      );
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
 
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(

@@ -144,12 +144,12 @@ describe("DisburseNnsNeuronModal", () => {
     });
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      vi
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       const { queryByTestId } = await renderDisburseModal(mockNeuron);
 
       expect(queryByTestId("account-card")).not.toBeInTheDocument();
@@ -170,9 +170,9 @@ describe("DisburseNnsNeuronModal", () => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));

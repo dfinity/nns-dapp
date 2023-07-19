@@ -31,13 +31,11 @@ describe("SnsNeuronMetaInfoCard", () => {
   const now = 1686806749421;
   const nowSeconds = Math.floor(now / 1000);
   beforeEach(() => {
-    vi
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
 
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     vi.useFakeTimers().setSystemTime(now);
   });

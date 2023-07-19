@@ -22,9 +22,7 @@ describe("tvl services", () => {
   };
 
   it("should get tvl", async () => {
-    const spyQueryTVL = vi
-      .spyOn(tvlApi, "queryTVL")
-      .mockResolvedValue(result);
+    const spyQueryTVL = vi.spyOn(tvlApi, "queryTVL").mockResolvedValue(result);
 
     await queryTVL(params);
 

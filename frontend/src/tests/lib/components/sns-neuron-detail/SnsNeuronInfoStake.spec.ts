@@ -36,9 +36,7 @@ describe("SnsNeuronInfoStake", () => {
 
     snsQueryStore.setData(data);
 
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const allPermissions: NeuronPermission[] = [

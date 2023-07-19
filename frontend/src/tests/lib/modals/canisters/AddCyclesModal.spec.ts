@@ -31,11 +31,9 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("AddCyclesModal", () => {
-  vi
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
 
   const reloadDetails = vi.fn();
   const props = { reloadDetails };
