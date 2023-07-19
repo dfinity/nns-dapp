@@ -165,7 +165,7 @@ const syncAccountsWithErrorHandler = (
   errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
   const mutableStore =
-    icpAccountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
   return queryAndUpdate<IcpAccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => mutableStore.set(accounts),
@@ -203,7 +203,7 @@ export const loadBalance = async ({
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore =
-    icpAccountsStore.getSingleMutationAccountsStore(strategy);
+    icpAccountsStore.getSingleMutationIcpAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
       queryAccountBalance({ identity, certified, accountIdentifier }),
@@ -466,7 +466,7 @@ export const pollAccounts = async (certified = true) => {
   }
 
   const mutableStore =
-    icpAccountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
   try {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({
