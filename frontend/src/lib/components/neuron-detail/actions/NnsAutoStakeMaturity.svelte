@@ -10,9 +10,9 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import AutoStakeMaturityCheckbox from "./AutoStakeMaturityCheckbox.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -31,7 +31,7 @@
   );
 </script>
 
-<AutoStakeMaturity
+<AutoStakeMaturityCheckbox
   bind:hasAutoStakeOn
   {disabled}
   on:nnsChange={() =>
