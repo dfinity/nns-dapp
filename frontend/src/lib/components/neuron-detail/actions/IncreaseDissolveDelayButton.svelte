@@ -6,12 +6,16 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
+  import { NeuronState } from "@dfinity/nns";
 
   export let variant: "primary" | "secondary" = "primary";
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
+
+  let isUnlocked: boolean;
+  $: isUnlocked = $store.neuron?.state === NeuronState.Dissolved;
 </script>
 
 <button
@@ -21,5 +25,8 @@
     openNnsNeuronModal({
       type: "increase-dissolve-delay",
       data: { neuron: $store.neuron },
-    })}>{$i18n.neuron_detail.increase_dissolve_delay}</button
+    })}
+  >{isUnlocked
+    ? $i18n.neurons.set_dissolve_delay
+    : $i18n.neuron_detail.increase_dissolve_delay}</button
 >

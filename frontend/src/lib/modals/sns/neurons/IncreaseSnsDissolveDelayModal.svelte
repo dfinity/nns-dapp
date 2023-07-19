@@ -78,7 +78,13 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  testId="increase-sns-dissolve-delay-modal-component"
+>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep?.name === "SetSnsDissolveDelay"}
     <SetSnsDissolveDelay
