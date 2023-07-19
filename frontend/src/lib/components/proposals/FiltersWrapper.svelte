@@ -1,4 +1,4 @@
-<div class="filters" data-tid="proposals-filters">
+<div class="filters" data-tid="filter-wrapper-component">
   <slot />
 </div>
 

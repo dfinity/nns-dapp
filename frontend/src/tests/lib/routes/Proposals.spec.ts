@@ -60,7 +60,7 @@ describe("Proposals", () => {
 
   it("should render NnsProposals by default", () => {
     const { queryByTestId } = render(Proposals);
-    expect(queryByTestId("proposals-filters")).toBeInTheDocument();
+    expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument();
   });
 
   describe("sns", () => {
@@ -78,7 +78,7 @@ describe("Proposals", () => {
 
       const { queryByTestId } = render(Proposals);
 
-      expect(queryByTestId("proposals-filters")).toBeInTheDocument();
+      expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument();
 
       const selectElement = queryByTestId(
         "select-project-dropdown"
@@ -91,14 +91,14 @@ describe("Proposals", () => {
         });
 
       await waitFor(() =>
-        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+        expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument()
       );
     });
 
     it("should be able to go back to nns after going to a project", async () => {
       const { queryByTestId } = render(Proposals);
 
-      expect(queryByTestId("proposals-filters")).toBeInTheDocument();
+      expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument();
 
       const selectElement = queryByTestId(
         "select-project-dropdown"
@@ -111,7 +111,7 @@ describe("Proposals", () => {
         });
 
       await waitFor(() =>
-        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+        expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument()
       );
 
       selectElement &&
@@ -119,7 +119,7 @@ describe("Proposals", () => {
           target: { value: OWN_CANISTER_ID.toText() },
         });
       await waitFor(() =>
-        expect(queryByTestId("proposals-filters")).toBeInTheDocument()
+        expect(queryByTestId("filter-wrapper-component")).toBeInTheDocument()
       );
     });
   });
