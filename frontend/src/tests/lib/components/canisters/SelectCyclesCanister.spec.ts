@@ -3,7 +3,6 @@ import en from "$tests/mocks/i18n.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import SelectCyclesCanisterTest from "./SelectCyclesCanisterTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {

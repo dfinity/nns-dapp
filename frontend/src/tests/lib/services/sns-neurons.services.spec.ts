@@ -48,7 +48,6 @@ import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
-import { vi } from "vitest";
 
 const {
   syncSnsNeurons,

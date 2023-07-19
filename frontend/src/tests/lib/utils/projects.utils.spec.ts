@@ -31,7 +31,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { vi } from "vitest";
 
 describe("project-utils", () => {
   const summaryUsRestricted: SnsSummary = createSummary({

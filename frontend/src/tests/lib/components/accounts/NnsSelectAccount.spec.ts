@@ -8,7 +8,6 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("NnsSelectAccount", () => {
   beforeEach(() => {

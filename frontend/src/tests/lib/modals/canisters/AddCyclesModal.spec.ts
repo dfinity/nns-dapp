@@ -14,7 +14,6 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { vi } from "vitest";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {

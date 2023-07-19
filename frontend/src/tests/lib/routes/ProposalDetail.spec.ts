@@ -9,7 +9,6 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

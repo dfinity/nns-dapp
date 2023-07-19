@@ -10,7 +10,6 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/icp-accounts.services", () => {
   return {

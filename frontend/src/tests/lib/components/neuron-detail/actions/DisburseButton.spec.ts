@@ -4,7 +4,6 @@ import en from "$tests/mocks/i18n.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("DisburseButton", () => {

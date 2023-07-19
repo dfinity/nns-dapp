@@ -10,7 +10,6 @@ import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
 vi.mock("$lib/api/ckbtc-minter.api", () => ({

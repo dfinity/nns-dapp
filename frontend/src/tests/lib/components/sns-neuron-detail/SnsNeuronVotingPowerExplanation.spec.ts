@@ -9,7 +9,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("SnsNeuronVotingPowerExplanation", () => {
   const now = 1686806749421;

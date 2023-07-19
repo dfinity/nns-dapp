@@ -28,7 +28,6 @@ import {
   decodeIcrcAccount,
   encodeIcrcAccount,
 } from "@dfinity/ledger";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/services/ckbtc-transactions.services", () => {

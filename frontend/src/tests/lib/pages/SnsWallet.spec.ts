@@ -23,7 +23,6 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/services/sns-accounts.services", () => {

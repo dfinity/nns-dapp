@@ -11,7 +11,6 @@ import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {

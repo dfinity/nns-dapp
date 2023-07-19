@@ -1,6 +1,5 @@
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {

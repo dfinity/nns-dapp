@@ -6,7 +6,6 @@ import Layout from "$routes/(app)/(u)/(detail)/proposal/+layout.svelte";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("Layout", () => {
   afterAll(() => {

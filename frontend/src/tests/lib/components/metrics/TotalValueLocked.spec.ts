@@ -3,7 +3,6 @@ import type { MetricsCallback } from "$lib/services/$public/worker-metrics.servi
 import { metricsStore } from "$lib/stores/metrics.store";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;

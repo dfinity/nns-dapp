@@ -8,7 +8,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { get } from "svelte/store";
-import { vi, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 
 describe("nns-reward-event-services", () => {
   let spyQueryLatestRewardEvent: SpyInstance;

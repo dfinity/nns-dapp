@@ -16,7 +16,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { SpyInstance, vi } from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");

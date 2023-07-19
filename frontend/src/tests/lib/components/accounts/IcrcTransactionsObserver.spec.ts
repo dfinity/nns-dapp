@@ -5,7 +5,6 @@ import type { PostMessageDataRequestTransactions } from "$lib/types/post-message
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 let spyPostMessage;
 

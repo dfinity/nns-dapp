@@ -25,7 +25,6 @@ import {
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("proposals-services", () => {
   describe("logged in user", () => {

@@ -13,7 +13,6 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");

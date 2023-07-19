@@ -1,5 +1,4 @@
 import { queryUserCountryLocation } from "$lib/api/location.api";
-import { vi } from "vitest";
 
 describe("location api", () => {
   describe("queryUserCountryLocation", () => {

@@ -19,7 +19,6 @@ import { Vote } from "@dfinity/nns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

@@ -7,7 +7,6 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("VotingHistoryModal", () => {
   const props = {

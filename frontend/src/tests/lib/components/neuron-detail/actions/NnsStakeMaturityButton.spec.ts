@@ -2,7 +2,6 @@ import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsSta
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("NnsStakeMaturityButton", () => {

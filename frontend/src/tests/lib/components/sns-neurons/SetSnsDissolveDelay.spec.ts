@@ -19,7 +19,6 @@ import {
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ConfirmSnsDissolveDelay", () => {
   const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);

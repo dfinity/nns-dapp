@@ -29,9 +29,7 @@ describe("SetDissolveDelay", () => {
           minDissolveDelayDescription: "",
         },
       });
-      const po = SetDissolveDelayPo.under(
-        new JestPageObjectElement(container)
-      );
+      const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
       await po.clickMax();

@@ -16,7 +16,6 @@ import {
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
 describe("BitcoinAddress", () => {

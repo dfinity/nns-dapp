@@ -1,7 +1,6 @@
 import { initAppAuth } from "$lib/services/$public/app.services";
 import App from "$routes/(login)/+layout.svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/app.services", () => ({
   initAppAuth: vi.fn(() => Promise.resolve()),

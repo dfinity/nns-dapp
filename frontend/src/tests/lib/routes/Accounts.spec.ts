@@ -26,7 +26,6 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import WalletTest from "../pages/AccountsTest.svelte";
 
 vi.mock("$lib/services/sns-accounts.services", () => {

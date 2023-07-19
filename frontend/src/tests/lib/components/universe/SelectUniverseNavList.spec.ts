@@ -9,7 +9,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("SelectUniverseNavList", () => {
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(

@@ -28,7 +28,6 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("NNSDapp", () => {

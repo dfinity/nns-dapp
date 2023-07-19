@@ -32,7 +32,6 @@ import {
 } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

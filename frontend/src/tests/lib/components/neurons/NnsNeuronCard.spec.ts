@@ -11,7 +11,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("NnsNeuronCard", () => {
   beforeAll(() => {

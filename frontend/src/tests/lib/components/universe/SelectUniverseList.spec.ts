@@ -8,7 +8,6 @@ import {
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("SelectUniverseList", () => {
   const projects = [

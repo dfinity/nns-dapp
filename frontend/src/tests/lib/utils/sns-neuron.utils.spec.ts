@@ -82,7 +82,6 @@ import {
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { vi } from "vitest";
 
 vi.mock("$lib/constants/sns-neurons.constants.ts", async () => ({
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

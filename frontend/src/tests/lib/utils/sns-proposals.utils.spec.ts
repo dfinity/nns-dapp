@@ -30,7 +30,6 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { vi } from "vitest";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {

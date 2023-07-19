@@ -13,7 +13,6 @@ import type { SnsProposalData } from "@dfinity/sns";
 import { SnsVote } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("sns-vote-registration-services", () => {
   const rootCanisterId = mockPrincipal;

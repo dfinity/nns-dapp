@@ -17,7 +17,6 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { GovernanceError, Vote, type ProposalInfo } from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 // mock loadProposal
 let proposalInfoIdIndex = 0;

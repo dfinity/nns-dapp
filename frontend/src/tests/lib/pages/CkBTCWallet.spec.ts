@@ -24,7 +24,6 @@ import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
 

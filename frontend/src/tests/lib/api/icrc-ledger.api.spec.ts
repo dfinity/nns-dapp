@@ -11,7 +11,6 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger api", () => {

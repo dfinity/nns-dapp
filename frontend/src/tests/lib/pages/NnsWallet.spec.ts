@@ -29,7 +29,7 @@ import {
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { SpyInstance, vi } from "vitest";
+import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");

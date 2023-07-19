@@ -20,7 +20,6 @@ import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

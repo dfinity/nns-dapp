@@ -20,7 +20,6 @@ import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import type { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {

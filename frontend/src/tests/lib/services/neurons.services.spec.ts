@@ -40,7 +40,6 @@ import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 const {

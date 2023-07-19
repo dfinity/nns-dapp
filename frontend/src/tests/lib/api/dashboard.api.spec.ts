@@ -1,6 +1,5 @@
 import { fetchTransactionRate } from "$lib/api/dashboard.api";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
-import { vi } from "vitest";
 
 describe("Dashboard API", () => {
   beforeEach(() => {

@@ -2,7 +2,6 @@ import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {

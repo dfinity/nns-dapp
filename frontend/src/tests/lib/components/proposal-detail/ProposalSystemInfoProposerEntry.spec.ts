@@ -7,7 +7,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ProposalMeta", () => {
   beforeEach(() => {

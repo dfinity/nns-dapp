@@ -23,7 +23,6 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("utils", () => {
   beforeEach(() => {

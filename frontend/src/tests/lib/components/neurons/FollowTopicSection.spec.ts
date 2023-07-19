@@ -1,6 +1,5 @@
 import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import FollowTopicsSectionTest from "./FollowTopicSectionTest.svelte";
 
 describe("FollowTopicsSection", () => {

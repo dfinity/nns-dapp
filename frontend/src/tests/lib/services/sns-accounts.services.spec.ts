@@ -11,7 +11,6 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-transactions.services", () => ({
   loadSnsAccountTransactions: vi.fn(),

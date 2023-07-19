@@ -25,7 +25,6 @@ import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 import type { ComponentProps } from "svelte/types/runtime";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-accounts.services");
 

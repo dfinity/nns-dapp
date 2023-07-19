@@ -6,7 +6,6 @@ import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/sns-aggregator.api");

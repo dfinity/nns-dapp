@@ -5,7 +5,6 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { mockBTCAddressMainnet } from "../../../mocks/ckbtc-accounts.mock";
 
 describe("AddressInput", () => {

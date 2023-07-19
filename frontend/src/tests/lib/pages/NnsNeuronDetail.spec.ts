@@ -14,7 +14,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 // Used when NeuronFollowingCard is mounted
 vi.mock("$lib/services/known-neurons.services", () => {

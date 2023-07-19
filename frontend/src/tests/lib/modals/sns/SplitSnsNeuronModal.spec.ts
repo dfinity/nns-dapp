@@ -7,7 +7,6 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

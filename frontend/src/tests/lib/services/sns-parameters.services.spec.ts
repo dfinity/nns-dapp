@@ -4,7 +4,6 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("sns-parameters-services", () => {
   describe("loadSnsParameters", () => {

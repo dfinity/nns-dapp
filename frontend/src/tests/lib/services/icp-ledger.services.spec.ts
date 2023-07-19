@@ -37,7 +37,6 @@ import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("ledger-services", () => {

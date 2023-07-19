@@ -3,7 +3,6 @@ import {
   markdownToHTML,
   targetBlankLinkRenderer,
 } from "$lib/utils/html.utils";
-import { vi } from "vitest";
 
 describe("markdown.utils", () => {
   describe("targetBlankLinkRenderer", () => {

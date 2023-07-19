@@ -10,7 +10,6 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { vi } from "vitest";
 
 vi.mock("$lib/proxy/api.import.proxy");
 const mainBalance = BigInt(10_000_000);

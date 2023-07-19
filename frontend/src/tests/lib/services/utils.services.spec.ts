@@ -7,7 +7,6 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { tick } from "svelte";
-import { vi } from "vitest";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {

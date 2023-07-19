@@ -1,5 +1,4 @@
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NeuronConfirmActionScreenTest from "./NeuronConfirmActionScreenTest.svelte";
 
 describe("NeuronConfirmActionScreen", () => {

@@ -8,7 +8,6 @@ import {
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("TransactionReview", () => {
   vi.spyOn(authStore, "subscribe").mockImplementation(

@@ -5,7 +5,7 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 import WalletContextTest from "./WalletContextTest.svelte";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy");

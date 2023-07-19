@@ -13,7 +13,6 @@ import {
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

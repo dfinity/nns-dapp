@@ -17,7 +17,6 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("universes-tokens", () => {
   describe("complete data set", () => {

@@ -33,7 +33,6 @@ import {
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("UniverseAccountsBalance", () => {
   beforeAll(() => {

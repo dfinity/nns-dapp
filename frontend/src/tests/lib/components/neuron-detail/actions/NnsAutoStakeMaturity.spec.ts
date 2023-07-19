@@ -5,7 +5,6 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {

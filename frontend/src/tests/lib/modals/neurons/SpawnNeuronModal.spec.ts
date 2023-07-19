@@ -9,7 +9,6 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

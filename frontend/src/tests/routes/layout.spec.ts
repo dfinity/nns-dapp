@@ -9,7 +9,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: vi.fn(() =>

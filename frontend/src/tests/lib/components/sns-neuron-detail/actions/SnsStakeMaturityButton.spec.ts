@@ -3,7 +3,6 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsStakeMaturityButton", () => {

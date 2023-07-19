@@ -89,7 +89,6 @@ import {
 } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("neuron-utils", () => {
   beforeAll(() => vi.useFakeTimers().setSystemTime(Date.now()));

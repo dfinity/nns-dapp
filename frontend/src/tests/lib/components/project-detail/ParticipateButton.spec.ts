@@ -28,7 +28,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ParticipateButton", () => {
   const { ticket: testTicket } = snsTicketMock({

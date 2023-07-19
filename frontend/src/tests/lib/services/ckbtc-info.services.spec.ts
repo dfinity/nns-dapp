@@ -10,7 +10,6 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {

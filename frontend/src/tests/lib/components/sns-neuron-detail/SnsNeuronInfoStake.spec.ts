@@ -55,9 +55,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron: neuronWithPermissions,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.hasDisburseButton()).toBe(true);
   });
@@ -69,9 +67,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasDisburseButton()).toBe(false);
@@ -89,9 +85,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.getDisburseButtonPo().isDisabled()).toBe(true);
@@ -113,9 +107,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.hasDissolveButton()).toBe(true);
   });
@@ -131,9 +123,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasDissolveButton()).toBe(false);
@@ -151,9 +141,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.getDissolveButtonPo().isDisabled()).toBe(true);
@@ -168,9 +156,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -182,9 +168,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
@@ -201,9 +185,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.getIncreaseDissolveDelayButtonPo().isDisabled()).toBe(true);
@@ -216,9 +198,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
 
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.hasIncreaseStakeButton()).toBe(true);
   });
@@ -233,9 +213,7 @@ describe("SnsNeuronInfoStake", () => {
       neuron,
       reload: vi.fn(),
     });
-    const po = SnsNeuronInfoStakePo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = SnsNeuronInfoStakePo.under(new JestPageObjectElement(container));
 
     expect(await po.isContentLoaded()).toBe(true);
     expect(await po.hasIncreaseStakeButton()).toBe(false);

@@ -4,7 +4,6 @@ import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("sns-swap-metrics", () => {
   beforeEach(() => {

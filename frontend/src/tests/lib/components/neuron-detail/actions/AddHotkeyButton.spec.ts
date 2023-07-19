@@ -2,7 +2,6 @@ import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButt
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("AddHotkeyButton", () => {

@@ -15,7 +15,6 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/stores/toasts.store", () => {
   return {

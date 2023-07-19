@@ -7,7 +7,6 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function

@@ -10,7 +10,6 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ProjectCard", () => {
   vi.spyOn(authStore, "subscribe").mockImplementation(

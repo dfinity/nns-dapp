@@ -14,7 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy");

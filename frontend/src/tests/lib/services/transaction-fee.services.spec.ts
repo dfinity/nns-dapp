@@ -3,7 +3,6 @@ import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("transactionFee-services", () => {
   const fee = BigInt(30_000);

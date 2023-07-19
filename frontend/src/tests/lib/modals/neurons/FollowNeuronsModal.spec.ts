@@ -4,7 +4,6 @@ import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

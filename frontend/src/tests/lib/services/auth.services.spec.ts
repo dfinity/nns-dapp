@@ -16,7 +16,6 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("auth-services", () => {

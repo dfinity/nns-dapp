@@ -23,7 +23,6 @@ import {
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 const permissionsWithTypeVote = [
   {

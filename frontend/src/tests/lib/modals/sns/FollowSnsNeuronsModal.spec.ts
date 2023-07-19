@@ -8,7 +8,6 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { render, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 describe("FollowSnsNeuronsModal", () => {
   const neuron = {

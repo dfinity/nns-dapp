@@ -16,7 +16,6 @@ import {
   type NeuronInfo,
 } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {

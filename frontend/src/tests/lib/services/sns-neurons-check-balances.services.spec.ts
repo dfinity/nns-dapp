@@ -9,7 +9,6 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { neuronSubaccount, type SnsNeuronId } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("sns-neurons-check-balances-services", () => {
   describe("checkSnsNeuronBalances", () => {

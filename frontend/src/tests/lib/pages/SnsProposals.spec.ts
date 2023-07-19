@@ -21,7 +21,6 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/sns-governance.api");
 

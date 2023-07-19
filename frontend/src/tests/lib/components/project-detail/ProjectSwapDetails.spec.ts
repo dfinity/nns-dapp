@@ -42,9 +42,7 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
     expect(await po.getMinParticipants()).toEqual("1’430");
   });
@@ -115,9 +113,7 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
     expect(await po.getTotalSupply()).toMatch(
       formatToken({ value: totalSupply })
@@ -131,9 +127,7 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
     expect(await po.getExcludedCountriesPo().isPresent()).toBe(false);
   });
@@ -145,9 +139,7 @@ describe("ProjectSwapDetails", () => {
       Component: ProjectSwapDetails,
     });
 
-    const po = ProjectSwapDetailsPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProjectSwapDetailsPo.under(new JestPageObjectElement(container));
 
     expect(await po.getExcludedCountriesPo().getValueText()).toBe("CH, US");
   });

@@ -19,7 +19,8 @@
       "$mocks/*": ["__mocks__/*"],
       "$tests": ["src/tests"],
       "$tests/*": ["src/tests/*"]
-    }
+    },
+    "types": ["vitest/globals", "node", "jest", "@testing-library/jest-dom"]
   },
   "include": [
     ".svelte-kit/ambient.d.ts",

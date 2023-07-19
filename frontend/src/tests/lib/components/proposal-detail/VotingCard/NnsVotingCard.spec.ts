@@ -19,7 +19,6 @@ import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
-import { vi } from "vitest";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {

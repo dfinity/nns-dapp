@@ -21,7 +21,6 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/sns.services", () => ({
   loadSnsNervousSystemFunctions: vi.fn(),

@@ -1,7 +1,6 @@
 /**
  * @vi-environment jsdom
  */
-
 import { createSubAccount } from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -18,7 +17,7 @@ import {
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { vi, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("$lib/api/accounts.api", () => {
   return {

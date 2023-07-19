@@ -1,7 +1,6 @@
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import LayoutTest from "./LayoutTest.svelte";
 
 vi.mock("$lib/services/$public/worker-metrics.services", () => ({

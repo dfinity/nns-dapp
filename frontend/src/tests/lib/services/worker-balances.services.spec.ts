@@ -3,7 +3,6 @@ import { initBalancesWorker } from "$lib/services/worker-balances.services";
 import type { PostMessageDataRequestBalances } from "$lib/types/post-message.balances";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { vi } from "vitest";
 
 describe("initBalancesWorker", () => {
   let spyPostMessage;

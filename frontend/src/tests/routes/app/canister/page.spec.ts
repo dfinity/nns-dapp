@@ -5,7 +5,6 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("Canister page", () => {
   vi.spyOn(authStore, "subscribe").mockImplementation(

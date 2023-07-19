@@ -7,7 +7,6 @@ import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/worker-metrics.services", () => ({
   initMetricsWorker: vi.fn(() =>

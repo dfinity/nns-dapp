@@ -29,7 +29,6 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
 vi.mock("$lib/api/ckbtc-minter.api");

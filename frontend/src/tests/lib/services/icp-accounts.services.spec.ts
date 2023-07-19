@@ -47,7 +47,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { SpyInstance, vi } from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {

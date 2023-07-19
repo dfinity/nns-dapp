@@ -20,7 +20,6 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("SnsBalancesObserver", () => {
   type BalancesMessageEvent = MessageEvent<

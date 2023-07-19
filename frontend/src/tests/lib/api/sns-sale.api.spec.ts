@@ -20,7 +20,7 @@ import {
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { SnsSwapCanister } from "@dfinity/sns";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");

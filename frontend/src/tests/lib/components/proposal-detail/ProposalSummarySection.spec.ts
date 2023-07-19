@@ -3,7 +3,6 @@ import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySec
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
@@ -22,9 +21,7 @@ describe("ProposalSummarySection", () => {
 
     await runResolvedPromises();
 
-    return ProposalSummarySectionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return ProposalSummarySectionPo.under(new JestPageObjectElement(container));
   };
 
   it("should render title", async () => {

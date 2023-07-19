@@ -3,7 +3,6 @@ import { TextInputFormPo } from "$tests/page-objects/TextInputForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("TextInputForm", () => {
   const mandatoryProps = {

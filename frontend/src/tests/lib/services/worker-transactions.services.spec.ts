@@ -3,7 +3,6 @@ import { initTransactionsWorker } from "$lib/services/worker-transactions.servic
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { vi } from "vitest";
 
 describe("initTransactionsWorker", () => {
   let spyPostMessage;

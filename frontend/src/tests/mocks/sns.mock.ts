@@ -13,7 +13,6 @@ import { toNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
-import { vi } from "vitest";
 
 export const snsTicketMock = ({
   rootCanisterId,

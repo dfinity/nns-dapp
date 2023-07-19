@@ -7,7 +7,6 @@ import {
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
-import { vi } from "vitest";
 
 describe("busy-services", () => {
   const startBusySpy = vi

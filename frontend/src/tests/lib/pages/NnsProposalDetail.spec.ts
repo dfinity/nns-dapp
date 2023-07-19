@@ -20,7 +20,6 @@ import {
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

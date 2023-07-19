@@ -1,6 +1,5 @@
 // Values used during unit testing for the constants in
 // frontend/src/lib/constants/mockable.constants.ts
-
 import type * as mockableConstants from "$lib/constants/mockable.constants";
 
 type MockableConstantsKey = keyof typeof mockableConstants;

@@ -25,7 +25,6 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

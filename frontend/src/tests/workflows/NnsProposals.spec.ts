@@ -16,7 +16,6 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { vi } from "vitest";
 
 const proposal = {
   ...mockProposalInfo,

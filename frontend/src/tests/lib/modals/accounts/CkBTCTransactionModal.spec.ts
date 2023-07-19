@@ -34,7 +34,6 @@ import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {

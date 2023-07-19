@@ -4,7 +4,6 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("@dfinity/agent");

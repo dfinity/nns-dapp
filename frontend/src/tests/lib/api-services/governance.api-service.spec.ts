@@ -17,7 +17,7 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

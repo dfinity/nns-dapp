@@ -18,7 +18,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

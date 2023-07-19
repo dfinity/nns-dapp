@@ -24,7 +24,6 @@ import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

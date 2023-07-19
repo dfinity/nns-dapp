@@ -2,8 +2,7 @@ import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { vi } from "vitest";
-import mock from "vitest-mock-extended/lib/Mock";
+import { mock } from "vitest-mock-extended";
 
 vi.mock("@dfinity/agent", async () => {
   const agent = vi.importActual("@dfinity/agent");

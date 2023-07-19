@@ -32,7 +32,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 
 const {
   getSwapAccount,

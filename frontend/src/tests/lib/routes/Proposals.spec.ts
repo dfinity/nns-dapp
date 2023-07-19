@@ -17,7 +17,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/sns.services", () => {
   return {

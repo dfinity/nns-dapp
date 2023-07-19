@@ -6,7 +6,6 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

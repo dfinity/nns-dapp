@@ -5,7 +5,6 @@ import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuron
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("SnsNeuronVestingPeriodRemaining", () => {
   const now = 1686806749421;

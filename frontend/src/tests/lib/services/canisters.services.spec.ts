@@ -33,7 +33,6 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/canisters.api");

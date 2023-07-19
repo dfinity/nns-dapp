@@ -54,7 +54,7 @@ import {
   type SnsProposalId,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");

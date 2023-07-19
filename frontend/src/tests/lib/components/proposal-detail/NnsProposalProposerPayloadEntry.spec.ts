@@ -7,7 +7,6 @@ import {
 } from "$tests/mocks/proposal.mock";
 import type { Proposal } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 import { simplifyJson } from "../common/Json.spec";
 

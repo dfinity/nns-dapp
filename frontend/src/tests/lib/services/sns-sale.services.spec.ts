@@ -75,8 +75,8 @@ import {
   toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { vi, type Mock } from "vitest";
-import mock from "vitest-mock-extended/lib/Mock";
+import type { Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
 vi.mock("$lib/api/agent.api", () => {

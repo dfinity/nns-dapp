@@ -7,7 +7,6 @@ import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = BigInt(100 * E8S_PER_ICP);

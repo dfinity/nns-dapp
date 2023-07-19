@@ -6,7 +6,6 @@ import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("sns-tokens-services", () => {
   describe("loadSnsTokens", () => {

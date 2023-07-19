@@ -13,7 +13,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { vi } from "vitest";
 
 describe("ProjectTimeline", () => {
   const now = Date.now();

@@ -23,7 +23,6 @@ import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-parameters.services");

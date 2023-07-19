@@ -12,7 +12,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsIncreaseStakeButton", () => {

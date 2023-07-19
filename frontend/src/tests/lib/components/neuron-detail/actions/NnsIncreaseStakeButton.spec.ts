@@ -5,7 +5,6 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("NnsIncreaseStakeButton", () => {

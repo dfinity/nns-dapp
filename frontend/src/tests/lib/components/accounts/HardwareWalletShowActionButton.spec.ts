@@ -2,7 +2,7 @@ import HardwareWalletShowAction from "$lib/components/accounts/HardwareWalletSho
 import { showAddressAndPubKeyOnHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 

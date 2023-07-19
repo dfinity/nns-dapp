@@ -11,7 +11,6 @@ import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("ckbtc-transactions-services", () => {
   beforeEach(() => {

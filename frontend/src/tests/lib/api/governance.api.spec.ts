@@ -28,7 +28,6 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, LedgerCanister, Topic, Vote } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/agent.api", () => {

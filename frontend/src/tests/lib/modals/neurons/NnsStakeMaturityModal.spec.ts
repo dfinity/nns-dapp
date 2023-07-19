@@ -11,7 +11,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

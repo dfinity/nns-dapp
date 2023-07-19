@@ -15,7 +15,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/sns-governance.api");
 

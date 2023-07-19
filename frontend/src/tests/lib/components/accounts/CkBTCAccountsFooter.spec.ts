@@ -9,7 +9,6 @@ import { mockTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 import CkBTCAccountsTest from "./CkBTCAccountsTest.svelte";
 

@@ -5,7 +5,6 @@ import type { PostMessageDataRequestBalances } from "$lib/types/post-message.bal
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("IcrcBalancesObserver", () => {
   let spyPostMessage;

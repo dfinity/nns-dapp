@@ -9,7 +9,6 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("universes-accounts-balance.derived", () => {
   vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(

@@ -36,7 +36,7 @@ import {
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { vi, type Mock } from "vitest";
+import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");

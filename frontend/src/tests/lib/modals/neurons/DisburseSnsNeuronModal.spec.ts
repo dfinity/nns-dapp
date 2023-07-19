@@ -20,7 +20,6 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-accounts.services");

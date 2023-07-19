@@ -9,7 +9,6 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("Login", () => {
   describe("Manual sign-in", () => {

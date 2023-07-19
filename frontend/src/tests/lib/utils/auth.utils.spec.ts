@@ -1,7 +1,6 @@
 import { isSignedIn, loadIdentity } from "$lib/utils/auth.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AuthClient } from "@dfinity/auth-client";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("auth-utils", () => {

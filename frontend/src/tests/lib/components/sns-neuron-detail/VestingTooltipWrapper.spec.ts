@@ -22,9 +22,7 @@ describe("VestingTooltipWrapper", () => {
       },
     });
 
-    return VestingTooltipWrapperPo.under(
-      new JestPageObjectElement(container)
-    );
+    return VestingTooltipWrapperPo.under(new JestPageObjectElement(container));
   };
 
   it("should not render tooltip if neuron is not vesting", async () => {

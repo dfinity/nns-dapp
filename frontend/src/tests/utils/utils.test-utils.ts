@@ -1,6 +1,5 @@
 import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
-import { vi } from "vitest";
 
 export const silentConsoleErrors = () =>
   vi.spyOn(console, "error").mockImplementation(vi.fn);

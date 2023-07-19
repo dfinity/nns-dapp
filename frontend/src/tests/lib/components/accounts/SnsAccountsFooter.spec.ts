@@ -15,7 +15,6 @@ import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../../__mocks__/$app/stores";
 
 vi.mock("$lib/services/sns-accounts.services", () => {

@@ -11,7 +11,6 @@ import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
-import { vi } from "vitest";
 import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;

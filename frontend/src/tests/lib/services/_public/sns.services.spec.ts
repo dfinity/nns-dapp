@@ -26,7 +26,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/sns.api");
 vi.mock("$lib/api/sns-aggregator.api");

@@ -7,7 +7,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
   return {

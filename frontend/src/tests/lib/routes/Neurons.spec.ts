@@ -15,7 +15,6 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 vi.mock("$lib/api/sns-aggregator.api");

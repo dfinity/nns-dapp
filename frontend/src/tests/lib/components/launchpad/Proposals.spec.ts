@@ -5,7 +5,6 @@ import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/sns.services", () => {
   return {

@@ -14,7 +14,6 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 const listSnsesSpy = vi.fn().mockResolvedValue(deployedSnsMock);

@@ -1,6 +1,5 @@
 import { initAppPublicData } from "$lib/services/$public/app.services";
 import { loadSnsProjects } from "$lib/services/$public/sns.services";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/$public/sns.services", () => {
   return {

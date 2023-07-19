@@ -3,7 +3,6 @@ import en from "$tests/mocks/i18n.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {

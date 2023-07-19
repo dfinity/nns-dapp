@@ -2,7 +2,6 @@ import Markdown from "$lib/components/ui/Markdown.svelte";
 import { mockWaiting } from "$tests/mocks/timeout.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 let transform: (unknown) => Promise<unknown>;
 vi.mock("$lib/utils/html.utils", () => ({

@@ -7,7 +7,6 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("ckbtc-tokens-services", () => {
   describe("loadCkBTCTokens", () => {

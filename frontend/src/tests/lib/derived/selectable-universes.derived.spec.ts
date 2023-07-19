@@ -9,7 +9,6 @@ import {
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {

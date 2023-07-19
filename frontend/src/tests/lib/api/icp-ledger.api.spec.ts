@@ -7,7 +7,6 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.api", () => {

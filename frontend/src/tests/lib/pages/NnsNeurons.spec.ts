@@ -9,7 +9,6 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
 

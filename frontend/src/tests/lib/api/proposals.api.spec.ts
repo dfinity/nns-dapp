@@ -9,7 +9,6 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { GovernanceCanister } from "@dfinity/nns";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {

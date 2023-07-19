@@ -2,7 +2,6 @@ import * as utils from "$lib/api/agent.api";
 import { OLD_MAINNET_IDENTITY_SERVICE_URL } from "$lib/constants/identity.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("auth-store", () => {

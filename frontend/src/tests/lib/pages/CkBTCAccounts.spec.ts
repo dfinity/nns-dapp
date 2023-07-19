@@ -15,7 +15,6 @@ import {
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import { page } from "../../../../__mocks__/$app/stores";
 
 vi.mock("$lib/services/ckbtc-accounts.services", () => {

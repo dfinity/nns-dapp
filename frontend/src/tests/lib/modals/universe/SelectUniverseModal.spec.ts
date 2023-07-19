@@ -10,7 +10,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("SelectUniverseModal", () => {
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(

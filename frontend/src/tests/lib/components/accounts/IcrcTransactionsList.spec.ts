@@ -10,7 +10,6 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("IcrcTransactionList", () => {
   const renderIcrcTransactionList = ({

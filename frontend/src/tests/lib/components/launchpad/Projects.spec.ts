@@ -7,7 +7,6 @@ import {
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("Projects", () => {
   beforeEach(() => {

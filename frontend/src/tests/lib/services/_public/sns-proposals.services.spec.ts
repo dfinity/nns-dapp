@@ -28,7 +28,6 @@ import {
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("sns-proposals services", () => {
   beforeEach(() => {

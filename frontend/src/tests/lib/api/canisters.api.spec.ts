@@ -28,7 +28,6 @@ import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
 import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
 import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {

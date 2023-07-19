@@ -24,7 +24,6 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("SelectUniverseDropdown", () => {
   vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(

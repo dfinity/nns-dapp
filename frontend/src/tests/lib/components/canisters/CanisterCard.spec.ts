@@ -1,7 +1,6 @@
 import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/worker-cycles.services", () => ({
   initCyclesWorker: vi.fn(() =>

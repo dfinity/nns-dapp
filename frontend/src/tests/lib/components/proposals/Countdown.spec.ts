@@ -3,7 +3,6 @@ import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("Countdown", () => {
   beforeEach(() => {

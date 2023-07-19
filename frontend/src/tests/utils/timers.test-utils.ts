@@ -1,5 +1,4 @@
 import { nonNullish } from "@dfinity/utils";
-import { vi } from "vitest";
 
 const originalTimeout = setTimeout;
 

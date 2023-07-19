@@ -16,7 +16,6 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => vi.clearAllMocks());

@@ -8,7 +8,6 @@ import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 vi.mock("$lib/services/sns-neurons.services", () => {

@@ -6,7 +6,6 @@ import Layout from "$routes/(app)/(nns)/settings/+layout.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 let referrer = undefined;
 

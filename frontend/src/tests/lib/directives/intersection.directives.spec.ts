@@ -5,7 +5,6 @@ import {
   mockIntersectionObserverIsIntersecting,
 } from "$tests/mocks/infinitescroll.mock";
 import { render } from "@testing-library/svelte";
-import { vi } from "vitest";
 import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {

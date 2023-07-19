@@ -15,7 +15,6 @@ import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 describe("CkBTCBalancesObserver", () => {
   type BalancesMessageEvent = MessageEvent<

@@ -4,7 +4,6 @@ import * as tvlApi from "$lib/worker-api/tvl.worker-api";
 import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("tvl services", () => {
   const params = {

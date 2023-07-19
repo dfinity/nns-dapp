@@ -13,7 +13,6 @@ import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
 describe("ProjectStatusSection", () => {
   beforeEach(() => {

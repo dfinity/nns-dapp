@@ -21,7 +21,6 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
-import { vi } from "vitest";
 
 vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {

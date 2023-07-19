@@ -14,7 +14,6 @@ import {
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {

@@ -10,7 +10,6 @@ import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
 vi.mock("$lib/utils/html.utils", () => ({
@@ -85,9 +84,7 @@ describe("Proposal", () => {
     );
 
     const { container } = renderProposalModern(5n);
-    const po = ProposalNavigationPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);

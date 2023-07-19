@@ -8,7 +8,6 @@ import type { GetTransactionsResponse } from "$lib/canisters/nns-dapp/nns-dapp.t
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
-import { vi } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 describe("accounts-api", () => {
