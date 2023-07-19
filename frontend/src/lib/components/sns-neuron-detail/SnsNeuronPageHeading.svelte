@@ -13,10 +13,10 @@
     getSnsNeuronStake,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import PageHeading from "../common/PageHeading.svelte";
+  import { formatVotingPower } from "$lib/utils/neuron.utils";
 
   export let parameters: SnsNervousSystemParameters;
 
@@ -45,13 +45,13 @@
       <AmountDisplay {amount} size="huge" singleLine />
     {/if}
   </svelte:fragment>
-  <svelte:fragment slot="subtitle">
+  <span slot="subtitle" data-tid="voting-power">
     {#if nonNullish(neuron)}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-        $votingPower: formatNumber(
+        $votingPower: formatVotingPower(
           snsNeuronVotingPower({ neuron, snsParameters: parameters })
         ),
       })}
     {/if}
-  </svelte:fragment>
+  </span>
 </PageHeading>
