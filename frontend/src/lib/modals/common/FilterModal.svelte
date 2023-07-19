@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish } from "@dfinity/utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   // Source: https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#solution
   type T = $$Generic;
@@ -53,57 +54,59 @@
   };
 </script>
 
-{#if !loading}
-  <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
-    <slot slot="title" name="title" />
+<TestIdWrapper testId="filter-modal-component">
+  {#if !loading}
+    <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+      <slot slot="title" name="title" />
 
-    <div slot="sub-title" class="toggle-all-wrapper">
-      <button
-        class="text"
-        data-tid="filter-modal-select-all"
-        on:click={selectAll}>{$i18n.voting.check_all}</button
-      >
-      <button
-        class="text"
-        data-tid="filter-modal-clear"
-        on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
-      >
-    </div>
-
-    {#if filters}
-      <div class="filters">
-        {#each filters as { id, name, checked } (id)}
-          <Checkbox inputId={id} {checked} on:nnsChange={() => onChange(id)}
-            >{name}</Checkbox
-          >
-        {/each}
+      <div slot="sub-title" class="toggle-all-wrapper">
+        <button
+          class="text"
+          data-tid="filter-modal-select-all"
+          on:click={selectAll}>{$i18n.voting.check_all}</button
+        >
+        <button
+          class="text"
+          data-tid="filter-modal-clear"
+          on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
+        >
       </div>
-    {:else}
-      <Spinner />
-    {/if}
 
-    <svelte:fragment slot="footer">
-      <button
-        class="secondary"
-        type="button"
-        aria-label="select-all-filters"
-        data-tid="close"
-        on:click={close}
-      >
-        {$i18n.core.cancel}
-      </button>
-      <button
-        class="primary"
-        type="button"
-        aria-label="clear-filters"
-        on:click={filter}
-        data-tid="apply-filters"
-      >
-        {$i18n.core.filter}
-      </button>
-    </svelte:fragment>
-  </Modal>
-{/if}
+      {#if filters}
+        <div class="filters">
+          {#each filters as { id, name, checked } (id)}
+            <Checkbox inputId={id} {checked} on:nnsChange={() => onChange(id)}
+              >{name}</Checkbox
+            >
+          {/each}
+        </div>
+      {:else}
+        <Spinner />
+      {/if}
+
+      <svelte:fragment slot="footer">
+        <button
+          class="secondary"
+          type="button"
+          aria-label="close-filters"
+          data-tid="close"
+          on:click={close}
+        >
+          {$i18n.core.cancel}
+        </button>
+        <button
+          class="primary"
+          type="button"
+          aria-label="apply-filters"
+          on:click={filter}
+          data-tid="apply-filters"
+        >
+          {$i18n.core.filter}
+        </button>
+      </svelte:fragment>
+    </Modal>
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   .filters {
