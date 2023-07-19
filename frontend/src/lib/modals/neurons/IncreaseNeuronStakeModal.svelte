@@ -14,7 +14,6 @@
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { pollAccounts } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
 
@@ -23,7 +22,7 @@
   };
 
   onMount(() => {
-    pollAccounts({ icrcEnabled: $ENABLE_ICP_ICRC });
+    pollAccounts();
   });
 
   let currentStep: WizardStep | undefined;

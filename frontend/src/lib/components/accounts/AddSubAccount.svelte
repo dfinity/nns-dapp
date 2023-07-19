@@ -9,7 +9,6 @@
     type AddAccountContext,
   } from "$lib/types/add-account.context";
   import TextInputForm from "../common/TextInputForm.svelte";
-  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   let newAccountName = "";
 
@@ -26,7 +25,6 @@
 
     await addSubAccount({
       name: newAccountName,
-      icrcEnabled: $ENABLE_ICP_ICRC,
     });
 
     stopBusy("accounts");

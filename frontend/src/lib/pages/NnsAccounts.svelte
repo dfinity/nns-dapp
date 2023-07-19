@@ -12,12 +12,11 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { ICPToken } from "@dfinity/utils";
-  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   export let goToWallet: (account: Account) => Promise<void>;
 
   onMount(() => {
-    pollAccounts({ icrcEnabled: $ENABLE_ICP_ICRC });
+    pollAccounts();
   });
 
   onDestroy(() => {

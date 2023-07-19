@@ -17,13 +17,7 @@ import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getTestBalance = getTestAccountBalance;
 
-export const getICPs = async ({
-  icps,
-  icrcEnabled,
-}: {
-  icps: number;
-  icrcEnabled: boolean;
-}) => {
+export const getICPs = async (icps: number) => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
 
   if (!main) {
@@ -35,7 +29,7 @@ export const getICPs = async ({
     accountIdentifier: main.identifier,
   });
 
-  await syncAccounts(icrcEnabled);
+  await syncAccounts();
 };
 
 export const getTokens = async ({

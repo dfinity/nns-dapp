@@ -8,7 +8,6 @@
   } from "$lib/services/worker-auth.services";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   let ready = false;
 
@@ -36,7 +35,7 @@
     toastsClean();
 
     // Load app global stores data
-    await initAppPrivateDataProxy($ENABLE_ICP_ICRC);
+    await initAppPrivateDataProxy();
   };
 
   onMount(async () => {
