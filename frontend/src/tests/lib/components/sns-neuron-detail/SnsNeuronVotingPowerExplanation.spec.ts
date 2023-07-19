@@ -5,7 +5,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronVotingPowerExplanationPo } from "$tests/page-objects/SnsNeuronVotingPowerExplanation.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -38,7 +38,7 @@ describe("SnsNeuronVotingPowerExplanation", () => {
     });
 
     return SnsNeuronVotingPowerExplanationPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

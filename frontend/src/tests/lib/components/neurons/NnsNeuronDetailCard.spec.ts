@@ -1,14 +1,14 @@
 import NnsNeuronDetailCard from "$lib/components/neurons/NnsNeuronDetailCard.svelte";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDetailCardPo } from "$tests/page-objects/NnsNeuronDetailCard.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronDetailCard", () => {
   const renderComponent = (neuron) => {
     const { container } = render(NnsNeuronDetailCard, { neuron });
     return NnsNeuronDetailCardPo.under({
-      element: new VitestPageObjectElement(container),
+      element: new JestPageObjectElement(container),
     });
   };
 

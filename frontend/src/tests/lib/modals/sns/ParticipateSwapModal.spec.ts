@@ -31,7 +31,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
@@ -91,7 +91,7 @@ describe("ParticipateSwapModal", () => {
 
   const renderSwapModalPo = async (params: SwapModalParams = {}) => {
     const { container } = await renderSwapModal(params);
-    return new ParticipateSwapModalPo(new VitestPageObjectElement(container));
+    return new ParticipateSwapModalPo(new JestPageObjectElement(container));
   };
 
   const renderEnter10ICPAndNext = async (

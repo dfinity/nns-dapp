@@ -1,6 +1,6 @@
 import TextInputForm from "$lib/components/common/TextInputForm.svelte";
 import { TextInputFormPo } from "$tests/page-objects/TextInputForm.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -20,7 +20,7 @@ describe("TextInputForm", () => {
     });
 
     return TextInputFormPo.under({
-      element: new VitestPageObjectElement(container),
+      element: new JestPageObjectElement(container),
       testId,
     });
   };

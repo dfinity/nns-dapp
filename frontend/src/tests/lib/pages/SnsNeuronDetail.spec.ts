@@ -27,7 +27,7 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -87,7 +87,7 @@ describe("SnsNeuronDetail", () => {
     const { container } = render(SnsNeuronDetail, props);
 
     await runResolvedPromises();
-    return SnsNeuronDetailPo.under(new VitestPageObjectElement(container));
+    return SnsNeuronDetailPo.under(new JestPageObjectElement(container));
   };
 
   const validNeuronId: SnsNeuronId = {

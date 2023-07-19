@@ -17,7 +17,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { vi } from "vitest";
@@ -77,7 +77,7 @@ describe("MergeNeuronsModal", () => {
     const { container } = await renderModal({
       component: MergeNeuronsModal,
     });
-    return MergeNeuronsModalPo.under(new VitestPageObjectElement(container));
+    return MergeNeuronsModalPo.under(new JestPageObjectElement(container));
   };
 
   describe("when mergeable neurons by user", () => {

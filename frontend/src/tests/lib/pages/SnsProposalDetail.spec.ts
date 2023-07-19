@@ -16,7 +16,7 @@ import {
   createSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
@@ -44,7 +44,7 @@ describe("SnsProposalDetail", () => {
 
     await runResolvedPromises();
 
-    return SnsProposalDetailPo.under(new VitestPageObjectElement(container));
+    return SnsProposalDetailPo.under(new JestPageObjectElement(container));
   };
 
   describe("not logged in", () => {
@@ -70,7 +70,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new VitestPageObjectElement(container)
+        new JestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
     });
@@ -89,7 +89,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new VitestPageObjectElement(container)
+        new JestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
       expect(await po.isContentLoaded()).toBe(false);
@@ -199,7 +199,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new VitestPageObjectElement(container)
+        new JestPageObjectElement(container)
       );
       expect(await po.getSkeletonDetails().isPresent()).toBe(true);
       expect(await po.isContentLoaded()).toBe(false);
@@ -253,7 +253,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new VitestPageObjectElement(container)
+        new JestPageObjectElement(container)
       );
 
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
@@ -325,7 +325,7 @@ describe("SnsProposalDetail", () => {
         },
       });
       const po = SnsProposalDetailPo.under(
-        new VitestPageObjectElement(container)
+        new JestPageObjectElement(container)
       );
 
       await runResolvedPromises();

@@ -1,6 +1,6 @@
 import ProposalSummarySection from "$lib/components/proposal-detail/ProposalSummarySection.svelte";
 import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -23,7 +23,7 @@ describe("ProposalSummarySection", () => {
     await runResolvedPromises();
 
     return ProposalSummarySectionPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

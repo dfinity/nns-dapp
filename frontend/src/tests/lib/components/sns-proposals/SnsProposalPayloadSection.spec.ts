@@ -2,7 +2,7 @@ import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposal
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalPayloadSectionPo } from "$tests/page-objects/SnsProposalPayloadSection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -21,7 +21,7 @@ describe("SnsProposalPayloadSection", () => {
     await runResolvedPromises();
 
     return SnsProposalPayloadSectionPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

@@ -34,7 +34,7 @@ import {
 } from "$tests/mocks/sns-response.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/vi.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,

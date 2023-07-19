@@ -10,7 +10,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -130,7 +130,7 @@ describe("NeuronDetail", () => {
 
     await runResolvedPromises();
 
-    const po = NnsNeuronDetailPo.under(new VitestPageObjectElement(container));
+    const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
 
     expect(await po.getMaturityCardPo().getLastDistributionMaturity()).toEqual(
       "May 19, 1992"

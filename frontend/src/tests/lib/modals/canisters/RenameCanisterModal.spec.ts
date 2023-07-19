@@ -4,7 +4,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId, mockCanisters } from "$tests/mocks/canisters.mock";
 import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
@@ -26,7 +26,7 @@ describe("RenameCanisterModal", () => {
       props: { canisterId, name },
     });
 
-    return RenameCanisterModalPo.under(new VitestPageObjectElement(container));
+    return RenameCanisterModalPo.under(new JestPageObjectElement(container));
   };
 
   it("calls the canister api to rename canister", async () => {

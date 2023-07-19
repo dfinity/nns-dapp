@@ -1,12 +1,12 @@
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalNavigation", () => {
   const renderComponent = (props) => {
     const { container } = render(ProposalNavigation, { props });
-    return ProposalNavigationPo.under(new VitestPageObjectElement(container));
+    return ProposalNavigationPo.under(new JestPageObjectElement(container));
   };
 
   describe("not rendered", () => {

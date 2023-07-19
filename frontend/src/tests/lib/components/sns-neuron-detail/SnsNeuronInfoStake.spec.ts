@@ -15,7 +15,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import {
   SnsNeuronPermissionType,
@@ -56,7 +56,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.hasDisburseButton()).toBe(true);
@@ -70,7 +70,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -90,7 +90,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -114,7 +114,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.hasDissolveButton()).toBe(true);
@@ -132,7 +132,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -152,7 +152,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -169,7 +169,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
@@ -183,7 +183,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -202,7 +202,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -217,7 +217,7 @@ describe("SnsNeuronInfoStake", () => {
     });
 
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.hasIncreaseStakeButton()).toBe(true);
@@ -234,7 +234,7 @@ describe("SnsNeuronInfoStake", () => {
       reload: vi.fn(),
     });
     const po = SnsNeuronInfoStakePo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);

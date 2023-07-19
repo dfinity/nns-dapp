@@ -5,7 +5,7 @@ import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -21,7 +21,7 @@ describe("NnsNeuronAdvancedSection", () => {
     });
 
     return NnsNeuronAdvancedSectionPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

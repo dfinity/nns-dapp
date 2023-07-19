@@ -7,7 +7,7 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { UniversePageSummaryPo } from "$tests/page-objects/UniversePageSummary.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("UniversePageSummary", () => {
@@ -16,7 +16,7 @@ describe("UniversePageSummary", () => {
       props: { universe },
     });
 
-    return UniversePageSummaryPo.under(new VitestPageObjectElement(container));
+    return UniversePageSummaryPo.under(new JestPageObjectElement(container));
   };
 
   it("shout render IC", async () => {

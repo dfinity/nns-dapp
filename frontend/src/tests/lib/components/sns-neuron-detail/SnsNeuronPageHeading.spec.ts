@@ -5,7 +5,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 
 describe("SnsNeuronPageHeading", () => {
@@ -19,7 +19,7 @@ describe("SnsNeuronPageHeading", () => {
       },
     });
 
-    return SnsNeuronPageHeadingPo.under(new VitestPageObjectElement(container));
+    return SnsNeuronPageHeadingPo.under(new JestPageObjectElement(container));
   };
 
   it("should render the neuron's stake", async () => {

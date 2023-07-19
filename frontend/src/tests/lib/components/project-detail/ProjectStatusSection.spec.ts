@@ -10,7 +10,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -34,7 +34,7 @@ describe("ProjectStatusSection", () => {
       swapCommitment,
       Component: ProjectStatusSection,
     });
-    return new ProjectStatusSectionPo(new VitestPageObjectElement(container));
+    return new ProjectStatusSectionPo(new JestPageObjectElement(container));
   };
 
   it("should render subtitle", () => {

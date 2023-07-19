@@ -2,7 +2,7 @@ import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronSta
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateItemAction.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
@@ -17,7 +17,7 @@ describe("NnsNeuronStateItemAction", () => {
     });
 
     return NnsNeuronStateItemActionPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

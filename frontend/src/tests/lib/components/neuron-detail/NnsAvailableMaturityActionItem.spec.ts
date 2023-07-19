@@ -1,7 +1,7 @@
 import NnsAvailableMaturityActionItem from "$lib/components/neuron-detail/NnsAvailableMaturityActionItem.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsAvailableMaturityActionItemPo } from "$tests/page-objects/NnsAvailableMaturityActionItem.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
@@ -16,7 +16,7 @@ describe("NnsAvailableMaturityActionItem", () => {
     });
 
     return NnsAvailableMaturityActionItemPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

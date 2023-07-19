@@ -11,7 +11,7 @@ import {
   mockCanisterId,
 } from "$tests/mocks/canisters.mock";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
@@ -164,7 +164,7 @@ describe("CanisterDetail", () => {
     it("should rename the canister successfully", async () => {
       const { container } = render(CanisterDetail, props);
 
-      const po = CanisterDetailPo.under(new VitestPageObjectElement(container));
+      const po = CanisterDetailPo.under(new JestPageObjectElement(container));
 
       await runResolvedPromises();
 

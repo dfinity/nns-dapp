@@ -1,5 +1,5 @@
 import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
 import AdditionalInfoFormTest from "./AdditionalInfoFormTest.svelte";
@@ -15,7 +15,7 @@ const renderComponent = ({
     conditionsToAccept,
     areConditionsAcceptedStore,
   });
-  return AdditionalInfoFormPo.under(new VitestPageObjectElement(container));
+  return AdditionalInfoFormPo.under(new JestPageObjectElement(container));
 };
 
 describe("AdditionalInfoForm", () => {

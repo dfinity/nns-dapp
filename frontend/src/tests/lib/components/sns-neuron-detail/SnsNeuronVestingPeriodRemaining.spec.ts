@@ -2,7 +2,7 @@ import SnsNeuronVestingPeriodRemaining from "$lib/components/sns-neuron-detail/S
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
@@ -23,7 +23,7 @@ describe("SnsNeuronVestingPeriodRemaining", () => {
     });
 
     return SnsNeuronVestingPeriodRemainingPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

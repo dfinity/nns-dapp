@@ -8,7 +8,7 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { vi } from "vitest";
 
@@ -88,7 +88,7 @@ describe("ProjectCard", () => {
         },
       });
 
-      const po = ProjectCardPo.under(new VitestPageObjectElement(container));
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
 
       expect(await po.isHighlighted()).toBe(true);
     });
@@ -106,7 +106,7 @@ describe("ProjectCard", () => {
         },
       });
 
-      const po = ProjectCardPo.under(new VitestPageObjectElement(container));
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
 
       expect(await po.isHighlighted()).toBe(false);
     });

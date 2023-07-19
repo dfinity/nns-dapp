@@ -1,5 +1,5 @@
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { render } from "@testing-library/svelte";
 
@@ -16,7 +16,7 @@ describe("VotesResults", () => {
       },
     });
 
-    return VotesResultPo.under(new VitestPageObjectElement(container));
+    return VotesResultPo.under(new JestPageObjectElement(container));
   };
 
   it('should render "Adopt" value', async () => {

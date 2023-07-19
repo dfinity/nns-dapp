@@ -19,7 +19,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
@@ -113,7 +113,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     );
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getSplitButtonPo().isDisabled()).toBe(true);
@@ -130,7 +130,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithPositiveAge);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -160,7 +160,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuron, snsParameters);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.isContentLoaded()).toBe(true);
@@ -176,7 +176,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithPositiveAge);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getNeuronAge()).toBe("30 days, 10 hours");
@@ -191,7 +191,7 @@ describe("SnsNeuronMetaInfoCard", () => {
     const { container } = renderSnsNeuronCmp([], neuronWithAge0);
 
     const po = SnsNeuronMetaInfoCardPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.hasNeuronAge()).toBe(false);

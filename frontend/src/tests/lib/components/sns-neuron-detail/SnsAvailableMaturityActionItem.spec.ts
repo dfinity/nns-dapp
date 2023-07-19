@@ -2,7 +2,7 @@ import SnsAvailableMaturityActionItem from "$lib/components/sns-neuron-detail/Sn
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsAvailableMaturityActionItemPo } from "$tests/page-objects/SnsAvailableMaturityActionItem.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
@@ -23,7 +23,7 @@ describe("SnsAvailableMaturityActionItem", () => {
     });
 
     return SnsAvailableMaturityActionItemPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 

@@ -2,7 +2,7 @@ import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
 import { SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -16,7 +16,7 @@ describe("SnsNeuronAge", () => {
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronAge, { props: { neuron } });
 
-    return SnsNeuronAgePo.under(new VitestPageObjectElement(container));
+    return SnsNeuronAgePo.under(new JestPageObjectElement(container));
   };
 
   it("should render neuron age if greater than 0", async () => {

@@ -24,7 +24,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
@@ -299,7 +299,7 @@ describe("ParticipateButton", () => {
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
 
-      const tooltipPo = new TooltipPo(new VitestPageObjectElement(container));
+      const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
       expect(await tooltipPo.getText()).toBe("Maximum commitment reached");
     });
 
@@ -327,7 +327,7 @@ describe("ParticipateButton", () => {
       ) as HTMLButtonElement;
       expect(button.getAttribute("disabled")).not.toBeNull();
 
-      const tooltipPo = new TooltipPo(new VitestPageObjectElement(container));
+      const tooltipPo = new TooltipPo(new JestPageObjectElement(container));
       expect(await tooltipPo.getText()).toBe(
         "You are not eligible to participate in this swap."
       );

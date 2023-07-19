@@ -1,7 +1,7 @@
 import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsProposalData } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -31,7 +31,7 @@ describe("SnsProposalVotingSection", () => {
       },
     });
 
-    const containerPo = new VitestPageObjectElement(container);
+    const containerPo = new JestPageObjectElement(container);
     const po = SnsProposalVotingSectionPo.under(containerPo);
     const votesResultsPo = await po.getVotingsResultsPo();
 

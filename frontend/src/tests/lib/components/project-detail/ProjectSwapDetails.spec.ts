@@ -11,7 +11,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TokenAmount } from "@dfinity/utils";
 
 describe("ProjectSwapDetails", () => {
@@ -43,7 +43,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const po = ProjectSwapDetailsPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getMinParticipants()).toEqual("1’430");
@@ -116,7 +116,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const po = ProjectSwapDetailsPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getTotalSupply()).toMatch(
@@ -132,7 +132,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const po = ProjectSwapDetailsPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getExcludedCountriesPo().isPresent()).toBe(false);
@@ -146,7 +146,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     const po = ProjectSwapDetailsPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
 
     expect(await po.getExcludedCountriesPo().getValueText()).toBe("CH, US");

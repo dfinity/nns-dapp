@@ -6,7 +6,7 @@ import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.moc
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 
 describe("SnsNeuronPageHeader", () => {
@@ -17,7 +17,7 @@ describe("SnsNeuronPageHeader", () => {
       reload: vi.fn(),
     });
 
-    return SnsNeuronPageHeaderPo.under(new VitestPageObjectElement(container));
+    return SnsNeuronPageHeaderPo.under(new JestPageObjectElement(container));
   };
   it("should render the Sns universe name", async () => {
     const projectName = "Tetris";

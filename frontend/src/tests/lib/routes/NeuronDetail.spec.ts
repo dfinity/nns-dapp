@@ -12,7 +12,7 @@ import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
@@ -55,7 +55,7 @@ describe("NeuronDetail", () => {
     it("should load", async () => {
       fakeGovernanceApi.pause();
       const { container } = render(NeuronDetail, nnsProps);
-      const po = NeuronDetailPo.under(new VitestPageObjectElement(container));
+      const po = NeuronDetailPo.under(new JestPageObjectElement(container));
 
       expect(await po.hasSnsNeuronDetailPo()).toBe(false);
       expect(await po.hasNnsNeuronDetailPo()).toBe(true);
@@ -96,7 +96,7 @@ describe("NeuronDetail", () => {
       fakeSnsGovernanceApi.pause();
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
 
-      const po = NeuronDetailPo.under(new VitestPageObjectElement(container));
+      const po = NeuronDetailPo.under(new JestPageObjectElement(container));
       expect(await po.isContentLoaded()).toBe(false);
       fakeSnsGovernanceApi.resume();
       await waitFor(async () => {
@@ -109,7 +109,7 @@ describe("NeuronDetail", () => {
 
     it("should load if sns projects are loaded after initial rendering", async () => {
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
-      const po = NeuronDetailPo.under(new VitestPageObjectElement(container));
+      const po = NeuronDetailPo.under(new JestPageObjectElement(container));
       expect(await po.isContentLoaded()).toBe(false);
 
       // Load SNS projects after rendering to make sure we don't load

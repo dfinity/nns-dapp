@@ -1,7 +1,7 @@
 import SnsProposalSummarySection from "$lib/components/sns-proposals/SnsProposalSummarySection.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
-import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -20,7 +20,7 @@ describe("SnsProposalSummarySection", () => {
     await runResolvedPromises();
 
     return ProposalSummarySectionPo.under(
-      new VitestPageObjectElement(container)
+      new JestPageObjectElement(container)
     );
   };
 
