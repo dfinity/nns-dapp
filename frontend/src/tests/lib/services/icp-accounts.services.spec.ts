@@ -51,6 +51,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { encodeIcrcAccount } from "@dfinity/ledger";
 import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
@@ -197,6 +198,71 @@ describe("icp-accounts.services", () => {
           mockHardwareWalletAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
+      });
+    });
+
+    it("should map ICP identifiers only", async () => {
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockMainAccount.balanceE8s);
+      const certified = true;
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: false,
+      });
+
+      expect(result).toEqual({
+        main: mockMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      });
+    });
+
+    it("should map ICRC identifiers", async () => {
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+        principal: mockMainAccount.principal,
+        sub_accounts: [],
+        hardware_wallet_accounts: [
+          {
+            principal: mockHardwareWalletAccount.principal,
+            name: mockHardwareWalletAccount.name,
+            account_identifier: mockHardwareWalletAccount.icpIdentifier,
+          },
+        ],
+        account_identifier: mockMainAccount.identifier,
+      });
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      const certified = true;
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+        icrcEnabled: true,
+      });
+
+      expect(result).toEqual({
+        main: {
+          ...mockMainAccount,
+          identifier: encodeIcrcAccount({
+            owner: mockMainAccount.principal,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [
+          {
+            ...mockHardwareWalletAccount,
+            identifier: encodeIcrcAccount({
+              owner: mockHardwareWalletAccount.principal,
+            }),
+          },
+        ],
+        certified: true,
       });
     });
   });
