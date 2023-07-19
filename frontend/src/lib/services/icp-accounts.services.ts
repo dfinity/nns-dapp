@@ -21,6 +21,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import {
   icpAccountsStore,
@@ -31,6 +32,7 @@ import type {
   Account,
   AccountIdentifierText,
   AccountType,
+  IcpAccount,
   IcpAccountIdentifierText,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -47,7 +49,13 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -94,12 +102,25 @@ export const loadAccounts = async ({
     certified,
   });
 
+  const icrcEnabled = get(ENABLE_ICP_ICRC);
+
   const mapAccount =
     (type: AccountType) =>
     async (
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
-    ): Promise<Account> => ({
-      identifier: account.account_identifier,
+    ): Promise<IcpAccount> => ({
+      identifier: icrcEnabled
+        ? encodeIcrcAccount({
+            owner:
+              "principal" in account
+                ? account.principal
+                : identity.getPrincipal(),
+            ...("sub_account" in account && {
+              subaccount: arrayOfNumberToUint8Array(account.sub_account),
+            }),
+          })
+        : account.account_identifier,
+      icpIdentifier: account.account_identifier,
       balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),

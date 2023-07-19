@@ -147,7 +147,10 @@ describe("icp-ledger.services", () => {
 
     describe("success", () => {
       it("should sync accounts after register", async () => {
-        await registerHardwareWallet({ name: "test", ledgerIdentity });
+        await registerHardwareWallet({
+          name: "test",
+          ledgerIdentity,
+        });
 
         expect(spySyncAccounts).toHaveBeenCalled();
       });
@@ -157,7 +160,10 @@ describe("icp-ledger.services", () => {
       it("should throw an error if no name provided", async () => {
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
-        await registerHardwareWallet({ name: undefined, ledgerIdentity });
+        await registerHardwareWallet({
+          name: undefined,
+          ledgerIdentity,
+        });
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({

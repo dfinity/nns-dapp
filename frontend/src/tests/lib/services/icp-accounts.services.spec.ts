@@ -25,6 +25,7 @@ import {
   syncAccounts,
   transferICP,
 } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
@@ -50,6 +51,10 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { encodeIcrcAccount } from "@dfinity/ledger";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
@@ -72,6 +77,7 @@ describe("icp-accounts.services", () => {
     jest.clearAllMocks();
     toastsStore.reset();
     icpAccountsStore.resetForTesting();
+    overrideFeatureFlagsStore.reset();
   });
 
   describe("getOrCreateAccount", () => {
@@ -124,7 +130,10 @@ describe("icp-accounts.services", () => {
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(BigInt(0));
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
 
       expect(queryAccountSpy).toBeCalled();
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -145,7 +154,10 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(BigInt(0));
 
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
 
       // Called once for main, another for the subaccount
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -171,7 +183,10 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(BigInt(0));
 
       const certified = true;
-      await loadAccounts({ identity: mockIdentity, certified });
+      await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
 
       // Called once for main, another for the hardware wallet = 2
       expect(queryAccountBalanceSpy).toBeCalledWith({
@@ -184,6 +199,126 @@ describe("icp-accounts.services", () => {
           mockHardwareWalletAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
+      });
+    });
+
+    it("should map ICP identifiers only", async () => {
+      jest
+        .spyOn(nnsdappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockMainAccount.balanceE8s);
+      const certified = true;
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
+
+      expect(result).toEqual({
+        main: mockMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      });
+    });
+
+    it("should map ICRC identifiers", async () => {
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+        principal: mockMainAccount.principal,
+        sub_accounts: [],
+        hardware_wallet_accounts: [
+          {
+            principal: mockHardwareWalletAccount.principal,
+            name: mockHardwareWalletAccount.name,
+            account_identifier: mockHardwareWalletAccount.icpIdentifier,
+          },
+        ],
+        account_identifier: mockMainAccount.identifier,
+      });
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      const certified = true;
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
+
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
+
+      expect(result).toEqual({
+        main: {
+          ...mockMainAccount,
+          identifier: encodeIcrcAccount({
+            owner: mockMainAccount.principal,
+          }),
+        },
+        subAccounts: [],
+        hardwareWallets: [
+          {
+            ...mockHardwareWalletAccount,
+            identifier: encodeIcrcAccount({
+              owner: mockHardwareWalletAccount.principal,
+            }),
+          },
+        ],
+        certified: true,
+      });
+    });
+
+    it("should map ICRC identifiers with subaccounts", async () => {
+      const principal = Principal.fromText(
+        "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+      );
+
+      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+        principal,
+        sub_accounts: [
+          {
+            name: mockSubAccount.name,
+            account_identifier: mockSubAccount.icpIdentifier,
+            sub_account: mockSubAccount.subAccount,
+          },
+        ],
+        hardware_wallet_accounts: [],
+        account_identifier: AccountIdentifier.fromPrincipal({
+          principal,
+        }).toHex(),
+      });
+      jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      const certified = true;
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
+
+      const result = await loadAccounts({
+        identity: mockIdentity,
+        certified,
+      });
+
+      expect(result).toEqual({
+        main: {
+          ...mockMainAccount,
+          identifier: encodeIcrcAccount({
+            owner: principal,
+          }),
+          icpIdentifier: AccountIdentifier.fromPrincipal({ principal }).toHex(),
+          principal,
+        },
+        subAccounts: [
+          {
+            ...mockSubAccount,
+            identifier: encodeIcrcAccount({
+              owner: principal,
+              subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
+            }),
+          },
+        ],
+        hardwareWallets: [],
+        certified: true,
       });
     });
   });
@@ -567,7 +702,9 @@ describe("icp-accounts.services", () => {
     });
 
     it("should add a subaccount", async () => {
-      await addSubAccount({ name: "test subaccount" });
+      await addSubAccount({
+        name: "test subaccount",
+      });
 
       expect(spyCreateSubAccount).toHaveBeenCalled();
     });
@@ -587,7 +724,9 @@ describe("icp-accounts.services", () => {
 
       setNoIdentity();
 
-      await addSubAccount({ name: "test subaccount" });
+      await addSubAccount({
+        name: "test subaccount",
+      });
 
       expect(spyToastError).toBeCalled();
       expect(spyToastError).toBeCalledWith({
