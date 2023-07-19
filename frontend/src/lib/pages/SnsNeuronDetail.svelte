@@ -13,6 +13,7 @@
   import { writable } from "svelte/store";
   import { onMount, setContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { queuedStore } from "$lib/stores/queued-store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
@@ -48,7 +49,7 @@
 
   export let neuronId: string | null | undefined;
 
-  const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
+  const selectedSnsNeuronStore = queuedStore<SelectedSnsNeuronStore>({
     selected: undefined,
     neuron: undefined,
   });
@@ -87,15 +88,26 @@
   ) => {
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
+      const mutableSnsNeuronStore =
+        selectedSnsNeuronStore.getSingleMutationStore();
       await getSnsNeuron({
         forceFetch,
         rootCanisterId: selected.rootCanisterId,
         neuronIdHex: selected.neuronIdHex,
-        onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
-          selectedSnsNeuronStore.update((store) => ({
-            ...store,
-            neuron: snsNeuron,
-          }));
+        onLoad: ({
+          certified,
+          neuron: snsNeuron,
+        }: {
+          certified: boolean;
+          neuron: SnsNeuron;
+        }) => {
+          mutableSnsNeuronStore.update({
+            mutation: (store) => ({
+              ...store,
+              neuron: snsNeuron,
+            }),
+            certified,
+          });
         },
         onError: () => {
           toastsError({
@@ -118,12 +130,15 @@
     try {
       const rootCanisterId = Principal.fromText($pageStore.universe);
       // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
-      selectedSnsNeuronStore.set({
-        selected: {
-          neuronIdHex: neuronId,
-          rootCanisterId,
+      selectedSnsNeuronStore.getSingleMutationStore().set({
+        data: {
+          selected: {
+            neuronIdHex: neuronId,
+            rootCanisterId,
+          },
+          neuron: null,
         },
-        neuron: null,
+        certified: true,
       });
 
       await Promise.all([
