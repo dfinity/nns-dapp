@@ -1,4 +1,4 @@
-import { NnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
+import { NnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/NnsNeuronDissolveDelayActionItem.page-object";
 import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateItemAction.page-object";
 import { NnsStakeItemActionPo } from "$tests/page-objects/NnsStakeItemAction.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
