@@ -144,18 +144,24 @@ export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
 
-export const findAccount = ({
+export const findAccount = <T extends Account>({
   identifier,
   accounts,
 }: {
-  identifier: string | undefined | null;
-  accounts: Account[];
-}): Account | undefined => {
-  if (identifier === undefined || identifier === null) {
+  identifier: AccountIdentifierText | undefined | null;
+  accounts: T[];
+}): T | undefined => {
+  if (isNullish(identifier)) {
     return undefined;
   }
 
-  return accounts.find(({ identifier: id }) => id === identifier);
+  return accounts.find((account) => {
+    const { identifier: id } = account;
+    return (
+      id === identifier ||
+      ("icpIdentifier" in account && account.icpIdentifier === identifier)
+    );
+  });
 };
 
 export const getAccountByRootCanister = ({

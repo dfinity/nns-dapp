@@ -433,6 +433,46 @@ describe("accounts-utils", () => {
         })
       ).toEqual(mockSubAccount);
     });
+
+    it("should return corresponding account if icrc matches", () => {
+      const snsAccounts = [mockSnsMainAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsMainAccount);
+      expect(
+        findAccount({
+          identifier: mockSnsSubAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsSubAccount);
+    });
+
+    it("should return corresponding account for icrc or icp matches", () => {
+      const icpAccount = {
+        ...mockSnsMainAccount,
+        icpIdentifier: "test",
+      };
+
+      const icpAccounts = [icpAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
+
+      expect(
+        findAccount({
+          identifier: icpAccount.icpIdentifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
+    });
   });
 
   describe("getAccountByRootCanister", () => {

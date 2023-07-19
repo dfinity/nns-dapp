@@ -36,7 +36,6 @@ import type {
   AccountIdentifierText,
   AccountType,
   IcpAccount,
-  IcpAccountIdentifierText,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
 import {
@@ -44,6 +43,7 @@ import {
   getAccountByPrincipal,
   invalidIcpAddress,
   invalidIcrcAddress,
+  toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
@@ -63,6 +63,7 @@ import {
   ICPToken,
   TokenAmount,
   arrayOfNumberToUint8Array,
+  isNullish,
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -229,7 +230,7 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: IcpAccountIdentifierText;
+  accountIdentifier: AccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
   const mutableStore =
@@ -239,7 +240,7 @@ export const loadBalance = async ({
       queryAccountBalance({
         identity,
         certified,
-        icpAccountIdentifier: accountIdentifier,
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
       }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
@@ -384,7 +385,7 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        icpAccountIdentifier: accountIdentifier,
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
@@ -441,7 +442,7 @@ export const renameSubAccount = async ({
   newName: string;
   selectedAccount: Account | undefined;
 }): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
+  if (isNullish(selectedAccount)) {
     return renameError({ labelKey: "error.rename_subaccount_no_account" });
   }
 
@@ -457,7 +458,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subIcpAccountIdentifier: identifier,
+      subIcpAccountIdentifier: toIcpAccountIdentifier(identifier),
     });
 
     await syncAccounts();
