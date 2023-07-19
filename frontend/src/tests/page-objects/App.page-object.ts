@@ -3,6 +3,7 @@ import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
+import { LoginLinksPo } from "$tests/page-objects/LoginLinks.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
@@ -14,6 +15,10 @@ import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class AppPo extends BasePageObject {
+  getLoginLinksPo(): LoginLinksPo {
+    return LoginLinksPo.under(this.root);
+  }
+
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
   }
