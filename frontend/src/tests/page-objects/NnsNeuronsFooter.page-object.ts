@@ -39,7 +39,7 @@ export class NnsNeuronsFooterPo extends BasePageObject {
     dissolveDelayDays,
   }: {
     amount: number;
-    dissolveDelayDays: "max" | 0;
+    dissolveDelayDays: "max" | number;
   }): Promise<void> {
     await this.clickStakeNeuronsButton();
     const modal = this.getNnsStakeNeuronModalPo();
