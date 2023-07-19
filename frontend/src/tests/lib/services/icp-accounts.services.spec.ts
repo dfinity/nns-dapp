@@ -4,11 +4,13 @@
 
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import {
@@ -29,6 +31,7 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
@@ -58,10 +61,14 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 
 jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
@@ -792,6 +799,50 @@ describe("icp-accounts.services", () => {
       await transferICP(transferICPParams);
 
       expect(spySendICP).toHaveBeenCalled();
+    });
+
+    it("should not transfer ICP for invalid address", async () => {
+      const spy = jest
+        .spyOn(icrcLedgerApi, "icrcTransfer")
+        .mockResolvedValue(BigInt(1));
+
+      const result = await transferICP({
+        ...transferICPParams,
+        destinationAddress: "test",
+      });
+
+      expect(spySendICP).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
+
+      expect(result.success).toBeFalsy();
+    });
+
+    it("should transfer ICP using an Icrc destination address", async () => {
+      const spy = jest
+        .spyOn(icrcLedgerApi, "icrcTransfer")
+        .mockResolvedValue(BigInt(1));
+
+      await transferICP({
+        ...transferICPParams,
+        destinationAddress: mockSnsMainAccount.identifier,
+      });
+
+      expect(spySendICP).not.toHaveBeenCalled();
+
+      const feeE8s = get(mainTransactionFeeE8sStore);
+
+      expect(spy).toHaveBeenCalledWith({
+        amount: TokenAmount.fromNumber({
+          amount: transferICPParams.amount,
+          token: ICPToken,
+        }).toE8s(),
+        canisterId: LEDGER_CANISTER_ID,
+        createdAt: expect.any(BigInt),
+        fee: feeE8s,
+        fromSubAccount: undefined,
+        identity: mockIdentity,
+        to: decodeIcrcAccount(mockSnsMainAccount.identifier),
+      });
     });
 
     it("should sync balances after transfer ICP", async () => {

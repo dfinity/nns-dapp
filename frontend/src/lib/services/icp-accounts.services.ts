@@ -63,7 +63,8 @@ import {
   ICPToken,
   TokenAmount,
   arrayOfNumberToUint8Array,
-  nonNullish, isNullish,
+  isNullish,
+  nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -301,8 +302,6 @@ export const transferICP = async ({
 
     const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
-    const feeE8s = get(mainTransactionFeeE8sStore);
-
     const validIcrcAddress = !invalidIcrcAddress(to);
     const validIcpAddress = !invalidIcpAddress(to);
 
@@ -313,6 +312,8 @@ export const transferICP = async ({
       });
       return { success: false };
     }
+
+    const feeE8s = get(mainTransactionFeeE8sStore);
 
     await (validIcrcAddress
       ? icrcTransfer({

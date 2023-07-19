@@ -11,6 +11,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Support for ICP transactions with Icrc addresses as the destination.
+
 #### Changed
 
 * Improve visibility of proposal summary headers.
