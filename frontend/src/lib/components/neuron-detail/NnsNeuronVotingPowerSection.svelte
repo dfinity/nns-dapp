@@ -7,6 +7,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
+  import NnsNeuronDissolveDelayActionItem from "./NnsNeuronDissolveDelayActionItem.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -30,6 +31,7 @@
   <ul class="content">
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
+    <NnsNeuronDissolveDelayActionItem {neuron} />
   </ul>
 </Section>
 

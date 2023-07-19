@@ -34,4 +34,18 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
   lastRewardsDistribution(): Promise<string> {
     return this.getText("last-rewards-distribution");
   }
+
+  hasStakeMaturityCheckbox(): Promise<boolean> {
+    return this.root
+      .byTestId("auto-stake-maturity-checkbox-component")
+      .isPresent();
+  }
+
+  hasJoinNeuronsFundCheckbox(): Promise<boolean> {
+    return this.root.querySelector("#join-community-fund-checkbox").isPresent();
+  }
+
+  hasSplitNeuronButton(): Promise<boolean> {
+    return this.getButton("split-nns-neuron-button-component").isPresent();
+  }
 }
