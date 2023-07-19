@@ -1,19 +1,15 @@
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
-import type {
-  Account,
-  AccountIdentifierText,
-  IcpAccountIdentifierText,
-} from "$lib/types/account";
+import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import { decodeIcrcAccount } from "@dfinity/ledger";
-import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
+import { checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
 
 /*
@@ -233,37 +229,3 @@ export const sumAccounts = (
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
-
-export const toIcpAccountIdentifier = (
-  accountIdentifier: AccountIdentifierText
-): IcpAccountIdentifierText => {
-  try {
-    return maybeIcrcToIcpAccountIdentifier(accountIdentifier);
-  } catch (err: unknown) {
-    // We ignore the error. The provided account identifier was not a valid Icrc account identifier.
-    // We continue with the provided account identifier which might either be a valid Icp account identifier or just incorrect.
-  }
-
-  return accountIdentifier;
-};
-
-const maybeIcrcToIcpAccountIdentifier = (
-  accountIdentifier: AccountIdentifierText
-): IcpAccountIdentifierText => {
-  const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
-
-  const sub = nonNullish(subaccount)
-    ? SubAccount.fromBytes(subaccount)
-    : undefined;
-
-  if (sub instanceof Error) {
-    throw sub;
-  }
-
-  return AccountIdentifier.fromPrincipal({
-    principal,
-    ...(nonNullish(sub) && {
-      subAccount: sub,
-    }),
-  }).toHex();
-};
