@@ -12,7 +12,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
-  import { pollAccounts } from "$lib/services/accounts.services";
+  import { pollAccounts } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
   import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 

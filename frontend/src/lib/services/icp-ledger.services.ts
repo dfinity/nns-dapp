@@ -12,8 +12,8 @@ import { smallerVersion } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { principalToAccountIdentifier, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { syncAccounts } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
+import { syncAccounts } from "./icp-accounts.services";
 
 export interface ConnectToHardwareWalletParams {
   connectionState: LedgerConnectionState;

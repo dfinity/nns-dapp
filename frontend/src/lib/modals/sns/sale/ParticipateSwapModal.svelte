@@ -42,7 +42,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
   import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 

@@ -6,7 +6,7 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import {

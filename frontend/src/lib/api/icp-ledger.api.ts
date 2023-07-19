@@ -70,8 +70,10 @@ export const transactionFee = async ({
   return fee;
 };
 
-// TODO: GIX-1704 use ICRC
-// @deprecated
+/**
+ * TODO(GIX-1704): fetch accounts' balances with ICRC
+ * @deprecated
+ */
 export const queryAccountBalance = async ({
   icpAccountIdentifier,
   identity,

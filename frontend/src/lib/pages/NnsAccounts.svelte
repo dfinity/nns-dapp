@@ -10,7 +10,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import { ICPToken } from "@dfinity/utils";
   import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 

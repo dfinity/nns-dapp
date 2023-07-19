@@ -1,5 +1,5 @@
 import { loadSnsProjects } from "./$public/sns.services";
-import { initAccounts } from "./accounts.services";
+import { initAccounts } from "./icp-accounts.services";
 
 export const initAppPrivateData = (
   icrcEnabled: boolean

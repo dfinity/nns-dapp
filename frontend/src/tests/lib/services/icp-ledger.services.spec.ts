@@ -6,8 +6,8 @@ import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
-import * as accountsServices from "$lib/services/accounts.services";
 import * as authServices from "$lib/services/auth.services";
+import * as accountsServices from "$lib/services/icp-accounts.services";
 import {
   assertLedgerVersion,
   connectToHardwareWallet,
