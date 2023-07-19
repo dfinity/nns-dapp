@@ -24,7 +24,7 @@ import {
   renameSubAccount,
   syncAccounts,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";

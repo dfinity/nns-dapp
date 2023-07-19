@@ -21,7 +21,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
 
   export let neuron: NeuronInfo;
