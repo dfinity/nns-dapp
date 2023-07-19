@@ -10,12 +10,31 @@ import {
   snsAccountsStore,
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
+import type { IcpAccount } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getTestBalance = getTestAccountBalance;
+
+const getMainAccount = async (): Promise<IcpAccount> => {
+  const { main }: IcpAccountsStoreData = get(icpAccountsStore);
+  if (nonNullish(main)) {
+    return main;
+  }
+  return new Promise((resolve) => {
+    const unsubscribe = icpAccountsStore.subscribe(
+      ({ main }: IcpAccountsStoreData) => {
+        if (nonNullish(main)) {
+          unsubscribe();
+          resolve(main);
+        }
+      }
+    );
+  });
+};
 
 export const getICPs = async ({
   icps,
@@ -24,7 +43,7 @@ export const getICPs = async ({
   icps: number;
   icrcEnabled: boolean;
 }) => {
-  const { main }: IcpAccountsStoreData = get(icpAccountsStore);
+  const main = await getMainAccount();
 
   if (!main) {
     throw new Error("No account found to get ICPs");
