@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
