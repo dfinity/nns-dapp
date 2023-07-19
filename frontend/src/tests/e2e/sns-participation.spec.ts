@@ -13,11 +13,6 @@ test("Test SNS participation", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP to participate in the sale");
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getMainAccountCardPo()
-    .waitFor();
   await appPo.getTokens(20);
 
   step("D001: User can see the list of open sales");

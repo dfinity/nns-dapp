@@ -12,12 +12,6 @@ test("Test merge neurons", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  // We need an account before we can get ICP.
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getMainAccountCardPo()
-    .waitFor();
   await appPo.getTokens(10);
 
   step("Go to the neurons tab");
