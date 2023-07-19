@@ -89,6 +89,8 @@
   >;
 </script>
 
+<svelte:options accessors/>
+
 <CkBTCWalletTransactionsObserver
   {indexCanisterId}
   {account}
