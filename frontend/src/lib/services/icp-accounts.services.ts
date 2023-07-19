@@ -21,11 +21,11 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import {
-  accountsStore,
-  type SingleMutationAccountsStore,
-} from "$lib/stores/accounts.store";
+  icpAccountsStore,
+  type SingleMutationIcpAccountsStore,
+} from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type {
   Account,
@@ -80,13 +80,13 @@ export const loadAccounts = async ({
 }: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData> => {
+}): Promise<IcpAccountsStoreData> => {
   // Helper
   const getAccountBalance = (identifierString: string): Promise<bigint> =>
     queryAccountBalance({
       identity,
       certified,
-      accountIdentifier: identifierString,
+      icpAccountIdentifier: identifierString,
     });
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
@@ -124,7 +124,7 @@ export const loadAccounts = async ({
 };
 
 type SyncAccontsErrorHandler = (params: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => void;
@@ -140,7 +140,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
   err,
   certified,
 }: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => {
@@ -165,8 +165,8 @@ const syncAccountsWithErrorHandler = (
   errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
   const mutableStore =
-    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
-  return queryAndUpdate<AccountsStoreData, unknown>({
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
+  return queryAndUpdate<IcpAccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => mutableStore.set(accounts),
     onError: ({ error: err, certified }) => {
@@ -202,10 +202,15 @@ export const loadBalance = async ({
   accountIdentifier: IcpAccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
-  const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
+  const mutableStore =
+    icpAccountsStore.getSingleMutationIcpAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
-      queryAccountBalance({ identity, certified, accountIdentifier }),
+      queryAccountBalance({
+        identity,
+        certified,
+        icpAccountIdentifier: accountIdentifier,
+      }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
         certified,
@@ -324,7 +329,7 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        accountIdentifier,
+        icpAccountIdentifier: accountIdentifier,
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
@@ -363,7 +368,7 @@ export const getAccountIdentity = async (
 export const getAccountIdentityByPrincipal = async (
   principalString: string
 ): Promise<Identity | LedgerIdentity | undefined> => {
-  const accounts = get(accountsStore);
+  const accounts = get(icpAccountsStore);
   const account = getAccountByPrincipal({
     principal: principalString,
     accounts,
@@ -397,7 +402,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subAccountIdentifier: identifier,
+      subIcpAccountIdentifier: identifier,
     });
 
     await syncAccounts();
@@ -430,7 +435,7 @@ const pollAccountsId = Symbol("poll-accounts");
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData> =>
+}): Promise<IcpAccountsStoreData> =>
   poll({
     fn: () => loadAccounts(params),
     // Any error is an unknown error and worth a retry
@@ -452,7 +457,7 @@ const pollLoadAccounts = async (params: {
  */
 export const pollAccounts = async (certified = true) => {
   const overrideCertified = isForceCallStrategy() ? false : certified;
-  const accounts = get(accountsStore);
+  const accounts = get(icpAccountsStore);
 
   // Skip if accounts are already loaded and certified
   // `certified` might be `undefined` if not yet loaded.
@@ -465,7 +470,7 @@ export const pollAccounts = async (certified = true) => {
   }
 
   const mutableStore =
-    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
   try {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({

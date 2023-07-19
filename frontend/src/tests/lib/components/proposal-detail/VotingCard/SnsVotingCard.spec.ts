@@ -93,7 +93,7 @@ describe("SnsVotingCard", () => {
       permissions: permissionsWithTypeVote,
     },
   ];
-  const spyRegisterVote = jest
+  const spyRegisterVote = vi
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
   const spyOnReloadProposal = vi.fn();
@@ -107,7 +107,7 @@ describe("SnsVotingCard", () => {
 
   beforeEach(() => {
     snsNeuronsStore.reset();
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 

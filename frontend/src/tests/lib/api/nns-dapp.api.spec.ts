@@ -1,8 +1,7 @@
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { mockAccountDetails } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { vi } from "vitest";
+import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {

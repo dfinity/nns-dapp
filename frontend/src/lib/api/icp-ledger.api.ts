@@ -70,20 +70,24 @@ export const transactionFee = async ({
   return fee;
 };
 
+/**
+ * TODO(GIX-1704): fetch accounts' balances with ICRC
+ * @deprecated
+ */
 export const queryAccountBalance = async ({
-  accountIdentifier,
+  icpAccountIdentifier,
   identity,
   certified,
 }: {
   certified: boolean;
   identity: Identity;
-  accountIdentifier: IcpAccountIdentifierText;
+  icpAccountIdentifier: IcpAccountIdentifierText;
 }) => {
   logWithTimestamp(`Get account balance call...`);
   const { canister } = await ledgerCanister({ identity });
 
   const e8sBalance = await canister.accountBalance({
-    accountIdentifier: AccountIdentifier.fromHex(accountIdentifier),
+    accountIdentifier: AccountIdentifier.fromHex(icpAccountIdentifier),
     certified,
   });
 

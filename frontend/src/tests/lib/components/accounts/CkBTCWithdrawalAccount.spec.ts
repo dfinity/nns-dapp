@@ -292,11 +292,11 @@ describe("CkBTCWithdrawalAccount", () => {
     let spyUpdateBalance;
 
     beforeEach(() => {
-      jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
-        .mockResolvedValue(mockCkBTCWithdrawalAccount);
+      vi.spyOn(ledgerApi, "getCkBTCAccount").mockResolvedValue(
+        mockCkBTCWithdrawalAccount
+      );
 
-      spyUpdateBalance = jest
+      spyUpdateBalance = vi
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(undefined);
     });

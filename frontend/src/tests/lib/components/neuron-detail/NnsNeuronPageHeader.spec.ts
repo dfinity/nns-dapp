@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";

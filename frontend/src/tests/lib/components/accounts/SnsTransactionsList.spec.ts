@@ -51,9 +51,9 @@ describe("SnsTransactionList", () => {
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
 
-    jest
-      .spyOn(snsProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   it("should call service to load transactions", () => {
@@ -75,9 +75,9 @@ describe("SnsTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderSnsTransactionList(
       mockSnsMainAccount,

@@ -17,9 +17,9 @@ describe("transactions.worker-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
   const transaction = {

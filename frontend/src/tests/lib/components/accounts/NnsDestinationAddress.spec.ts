@@ -1,10 +1,10 @@
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDestinationAddress", () => {
@@ -13,11 +13,9 @@ describe("NnsDestinationAddress", () => {
     identifier: `test-subaccount2-identifier`,
   };
 
-  jest
-    .spyOn(accountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
-    );
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
+  );
 
   it("should render an input to enter an address", () => {
     const { container } = render(NnsDestinationAddress);

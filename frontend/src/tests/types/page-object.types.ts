@@ -1,6 +1,6 @@
 /**
  * A platform agnostic interface for page objects to interact with elements.
- * Platforms might include Jest and Playwright.
+ * Platforms might include vi and Playwright.
  */
 export interface PageObjectElement {
   querySelector(selector: string): PageObjectElement;

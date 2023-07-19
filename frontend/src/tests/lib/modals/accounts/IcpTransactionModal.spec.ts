@@ -1,18 +1,18 @@
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
-import { transferICP } from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { transferICP } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { vi } from "vitest";
 
-vi.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
     transferICP: vi.fn().mockResolvedValue({ success: true }),
   };
@@ -20,7 +20,9 @@ vi.mock("$lib/services/accounts.services", () => {
 
 describe("IcpTransactionModal", () => {
   beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
+    vi
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe)
   );
 
   const renderTransactionModal = () =>
@@ -30,9 +32,9 @@ describe("IcpTransactionModal", () => {
     });
 
   beforeEach(() => {
-    vi.spyOn(accountsStore, "subscribe").mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount])
-    );
+    vi
+      .spyOn(icpAccountsStore, "subscribe")
+      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
   });
 
   it("should transfer icps", async () => {

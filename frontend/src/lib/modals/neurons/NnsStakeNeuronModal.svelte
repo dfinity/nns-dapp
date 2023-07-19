@@ -21,7 +21,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import { nonNullish } from "@dfinity/utils";
 
   onMount(() => {

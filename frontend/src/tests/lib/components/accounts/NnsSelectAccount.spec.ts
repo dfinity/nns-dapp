@@ -1,17 +1,18 @@
 import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
+import { vi } from "vitest";
 
 describe("NnsSelectAccount", () => {
   beforeEach(() => {
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
   });
 
   it("should render a skeleton-card until accounts loaded", () => {
@@ -23,9 +24,9 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should render list of accounts once loaded", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe()
+    );
 
     const { getByText } = render(NnsSelectAccount);
 
@@ -38,11 +39,9 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should not render hardware wallets when prop hideHardwareWalletAccounts is true", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-      );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+    );
 
     const { queryByText } = render(NnsSelectAccount, {
       props: { hideHardwareWalletAccounts: true },
@@ -63,7 +62,7 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should render a title with subaccount", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,
@@ -81,7 +80,7 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should render a title with hardware wallet", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: [mockSubAccount],
@@ -99,7 +98,7 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should not render a title with hardware wallet if these kind of accounts should be hidden", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: [mockSubAccount],
@@ -116,7 +115,7 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should render no title if no accounts listed", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: undefined,
@@ -132,9 +131,9 @@ describe("NnsSelectAccount", () => {
   });
 
   it("should filter an account for a given identifier", () => {
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe()
+    );
 
     const { getByText } = render(NnsSelectAccount, {
       props: {

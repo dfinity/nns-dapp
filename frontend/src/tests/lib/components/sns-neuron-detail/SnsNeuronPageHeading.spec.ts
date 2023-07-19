@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import {
@@ -17,7 +13,7 @@ describe("SnsNeuronPageHeading", () => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronPageHeading,
       neuron,
-      reload: jest.fn(),
+      reload: vi.fn(),
       props: {
         parameters: snsNervousSystemParametersMock,
       },

@@ -1,6 +1,6 @@
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
-import { addSubAccount } from "$lib/services/accounts.services";
+import { addSubAccount } from "$lib/services/icp-accounts.services";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -11,7 +11,7 @@ import { vi } from "vitest";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-vi.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
     addSubAccount: vi.fn().mockResolvedValue(undefined),
   };
@@ -19,12 +19,14 @@ vi.mock("$lib/services/accounts.services", () => {
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
-    connectToHardwareWalletProxy: vi.fn().mockImplementation(async (callback) =>
-      callback({
-        connectionState: LedgerConnectionState.CONNECTED,
-        ledgerIdentity: mockIdentity,
-      })
-    ),
+    connectToHardwareWalletProxy: vi
+      .fn()
+      .mockImplementation(async (callback) =>
+        callback({
+          connectionState: LedgerConnectionState.CONNECTED,
+          ledgerIdentity: mockIdentity,
+        })
+      ),
     registerHardwareWalletProxy: vi.fn().mockResolvedValue(undefined),
   };
 });

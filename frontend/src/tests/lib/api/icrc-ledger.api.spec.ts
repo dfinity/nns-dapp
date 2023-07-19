@@ -23,7 +23,7 @@ describe("icrc-ledger api", () => {
     );
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {
@@ -96,7 +96,7 @@ describe("icrc-ledger api", () => {
 
   describe("execute transfer", () => {
     it("successfully calls transfer api", async () => {
-      const transferSpy = jest.fn().mockResolvedValue(undefined);
+      const transferSpy = vi.fn().mockResolvedValue(undefined);
 
       await executeIcrcTransfer({
         to: { owner: mockIdentity.getPrincipal() },

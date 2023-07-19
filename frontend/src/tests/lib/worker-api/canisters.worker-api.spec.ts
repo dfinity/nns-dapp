@@ -28,9 +28,9 @@ describe("canisters-worker-api", () => {
     vi.resetAllMocks();
 
     const mockICManagementCanister = mock<ICManagementCanister>();
-    jest
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
     mockICManagementCanister.canisterStatus.mockResolvedValue(response);
   });

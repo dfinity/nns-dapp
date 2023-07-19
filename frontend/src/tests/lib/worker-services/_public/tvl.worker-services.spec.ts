@@ -22,7 +22,7 @@ describe("tvl services", () => {
   };
 
   it("should get tvl", async () => {
-    const spyQueryTVL = jest
+    const spyQueryTVL = vi
       .spyOn(tvlApi, "queryTVL")
       .mockResolvedValue(result);
 

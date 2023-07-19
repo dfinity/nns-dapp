@@ -1,11 +1,11 @@
 import { startBusyNeuron } from "$lib/services/busy.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { vi } from "vitest";
 
@@ -19,7 +19,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy without message if neuron is not controlled by hardware wallet", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
     });
     const neuron = {
@@ -39,7 +39,7 @@ describe("busy-services", () => {
   });
 
   it("call start busy with message if neuron controlled by hardware wallet", async () => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });

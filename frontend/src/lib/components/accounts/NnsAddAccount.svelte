@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
@@ -16,7 +16,7 @@
     <AddAccountModal on:nnsClose={closeModal} />
   {/if}
 
-  {#if nonNullish($accountsStore)}
+  {#if nonNullish($icpAccountsStore)}
     <button
       class="card"
       on:click={openAddAccountModal}

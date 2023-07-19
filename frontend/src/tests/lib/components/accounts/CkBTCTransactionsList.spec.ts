@@ -100,9 +100,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderCkBTCTransactionList();
 
@@ -125,9 +125,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { getByTestId } = renderCkBTCTransactionList();
 
@@ -152,9 +152,9 @@ describe("CkBTCTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { getByTestId } = renderCkBTCTransactionList();
 

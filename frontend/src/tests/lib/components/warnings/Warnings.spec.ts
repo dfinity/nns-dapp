@@ -132,7 +132,7 @@ describe("Warnings", () => {
 
     describe("signed in", () => {
       beforeEach(() =>
-        jest
+        vi
           .spyOn(authStore, "subscribe")
           .mockImplementation(mockAuthStoreSubscribe)
       );
@@ -213,7 +213,7 @@ describe("Warnings", () => {
 
     describe("signed in", () => {
       beforeAll(() =>
-        jest
+        vi
           .spyOn(authStore, "subscribe")
           .mockImplementation(mockAuthStoreSubscribe)
       );

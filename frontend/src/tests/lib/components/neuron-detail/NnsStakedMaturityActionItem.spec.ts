@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsStakedMaturityActionItem from "$lib/components/neuron-detail/NnsStakedMaturityActionItem.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakedMaturityActionItemPo } from "$tests/page-objects/NnsStakedMaturityActionItem.page-object";

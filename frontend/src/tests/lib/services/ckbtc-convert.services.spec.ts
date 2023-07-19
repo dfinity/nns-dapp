@@ -12,7 +12,6 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -21,6 +20,7 @@ import {
   mockCkBTCToken,
   mockCkBTCWithdrawalAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import {

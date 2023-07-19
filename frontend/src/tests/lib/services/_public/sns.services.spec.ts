@@ -173,7 +173,7 @@ describe("SNS public services", () => {
     });
 
     it("loads derived state from property derived state", async () => {
-      jest
+      vi
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
 

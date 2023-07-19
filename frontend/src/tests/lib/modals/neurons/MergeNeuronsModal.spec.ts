@@ -4,22 +4,22 @@ import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
+import { createMockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { createMockIdentity } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { VitestPageObjectElement } from "$tests/page-objects/vitest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { vi } from "vitest";
 
 vi.mock("$lib/api/governance.api");
@@ -33,11 +33,11 @@ describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
 
   beforeEach(() => {
-    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
-      testIdentity
-    );
+    vi
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
     vi.clearAllMocks();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
   });
@@ -68,7 +68,7 @@ describe("MergeNeuronsModal", () => {
     neurons: fakeGovernanceApi.FakeNeuronParams[],
     hardwareWalletAccounts: Account[] = []
   ): Promise<MergeNeuronsModalPo> => {
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: { ...mockMainAccount, principal: testIdentity.getPrincipal() },
       hardwareWallets: hardwareWalletAccounts,
     });

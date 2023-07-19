@@ -28,8 +28,8 @@ import {
 } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
+import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({

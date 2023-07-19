@@ -64,11 +64,11 @@ import {
   type IneligibleNeuronData,
   type InvalidState,
 } from "$lib/utils/neuron.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockFullNeuron,
   mockNeuron,

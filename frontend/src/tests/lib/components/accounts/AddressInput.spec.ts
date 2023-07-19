@@ -1,9 +1,9 @@
 import AddressInput from "$lib/components/accounts/AddressInput.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { vi } from "vitest";
 import { mockBTCAddressMainnet } from "../../../mocks/ckbtc-accounts.mock";

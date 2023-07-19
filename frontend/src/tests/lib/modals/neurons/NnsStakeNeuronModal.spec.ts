@@ -1,34 +1,30 @@
-/**
- * @vi-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import {
@@ -41,7 +37,7 @@ import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
-import { vi, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -96,19 +92,19 @@ describe("NnsStakeNeuronModal", () => {
     const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
-      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-        mock<LedgerCanister>()
-      );
-      vi.spyOn(GovernanceCanister, "create").mockImplementation(() =>
-        mock<GovernanceCanister>()
-      );
+      vi
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+      vi
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation(() => mock<LedgerCanister>());
+      vi
+        .spyOn(GovernanceCanister, "create")
+        .mockImplementation(() => mock<GovernanceCanister>());
       queryBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
@@ -306,15 +302,15 @@ describe("NnsStakeNeuronModal", () => {
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: true,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: false,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
@@ -415,13 +411,13 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      vi
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     const createNeuron = async ({
@@ -533,14 +529,14 @@ describe("NnsStakeNeuronModal", () => {
   describe("when accounts are not loaded", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
-      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
-      );
+      vi
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      vi
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     });
     it("should load and then show the accounts", async () => {
       const { queryByTestId } = await renderModal({
@@ -556,17 +552,17 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: vi.SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       vi.clearAllTimers();
       vi.clearAllMocks();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
+      vi
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));

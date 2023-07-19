@@ -1,18 +1,18 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 import { vi } from "vitest";
 
 describe("universes-accounts-balance.derived", () => {
-  vi.spyOn(accountsStore, "subscribe").mockImplementation(
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
     mockAccountsStoreSubscribe([], [])
   );
 

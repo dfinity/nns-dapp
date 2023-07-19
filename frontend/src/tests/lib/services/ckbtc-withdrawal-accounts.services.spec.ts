@@ -32,7 +32,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
       });
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
-      const spyGetCkBTCAccount = jest
+      const spyGetCkBTCAccount = vi
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
 
@@ -56,7 +56,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
 
     it("should not be affected by FORCE_CALL_STRATEGY", async () => {
       mockedConstants.FORCE_CALL_STRATEGY = "query";
-      const spyGetCkBTCAccount = jest
+      const spyGetCkBTCAccount = vi
         .spyOn(ledgerApi, "getCkBTCAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
 
@@ -87,9 +87,9 @@ describe("ckbtc-withdrawal-accounts.services", () => {
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
-      jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
-        .mockImplementation(() => Promise.reject(undefined));
+      vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+        Promise.reject(undefined)
+      );
 
       await loadCkBTCWithdrawalAccount({
         universeId: CKBTC_UNIVERSE_CANISTER_ID,

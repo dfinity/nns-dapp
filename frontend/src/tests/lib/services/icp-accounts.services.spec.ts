@@ -1,7 +1,3 @@
-/**
- * @vi-environment jsdom
- */
-
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -24,18 +20,10 @@ import {
   renameSubAccount,
   syncAccounts,
   transferICP,
-} from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+} from "$lib/services/icp-accounts.services";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
-import {
-  mockAccountDetails,
-  mockHardwareWalletAccount,
-  mockHardwareWalletAccountDetails,
-  mockMainAccount,
-  mockSubAccount,
-  mockSubAccountDetails,
-} from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -43,6 +31,14 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockAccountDetails,
+  mockHardwareWalletAccount,
+  mockHardwareWalletAccountDetails,
+  mockMainAccount,
+  mockSubAccount,
+  mockSubAccountDetails,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
@@ -51,7 +47,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { vi, type SpyInstance } from "vitest";
+import { SpyInstance, vi } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
@@ -65,14 +61,14 @@ vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
-describe("accounts-services", () => {
+describe("icp-accounts.services", () => {
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(vi.fn);
     vi.clearAllMocks();
     toastsStore.reset();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
   });
 
   describe("getOrCreateAccount", () => {
@@ -131,7 +127,7 @@ describe("accounts-services", () => {
       expect(queryAccountBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
       });
     });
 
@@ -150,12 +146,12 @@ describe("accounts-services", () => {
 
       // Called once for main, another for the subaccount
       expect(queryAccountBalanceSpy).toBeCalledWith({
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
       });
       expect(queryAccountBalanceSpy).toBeCalledWith({
-        accountIdentifier: mockSubAccountDetails.account_identifier,
+        icpAccountIdentifier: mockSubAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
       });
@@ -176,12 +172,13 @@ describe("accounts-services", () => {
 
       // Called once for main, another for the hardware wallet = 2
       expect(queryAccountBalanceSpy).toBeCalledWith({
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
       });
       expect(queryAccountBalanceSpy).toBeCalledWith({
-        accountIdentifier: mockHardwareWalletAccountDetails.account_identifier,
+        icpAccountIdentifier:
+          mockHardwareWalletAccountDetails.account_identifier,
         certified,
         identity: mockIdentity,
       });
@@ -211,17 +208,17 @@ describe("accounts-services", () => {
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -259,17 +256,17 @@ describe("accounts-services", () => {
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -323,14 +320,14 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: updateMainBalanceE8s, certified: true })
       );
     });
@@ -368,7 +365,7 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
@@ -379,14 +376,14 @@ describe("accounts-services", () => {
       await syncAccounts();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
       );
     });
@@ -398,27 +395,27 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
-      expect(get(accountsStore).main.balanceE8s).toEqual(
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(
         mockMainAccount.balanceE8s
       );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
 
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockMainAccount.identifier,
+        icpAccountIdentifier: mockMainAccount.identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockMainAccount.identifier,
+        icpAccountIdentifier: mockMainAccount.identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should not show error if only query fails", async () => {
@@ -431,7 +428,7 @@ describe("accounts-services", () => {
           }
           throw new Error("test");
         });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -445,7 +442,7 @@ describe("accounts-services", () => {
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockRejectedValue(error);
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -490,7 +487,7 @@ describe("accounts-services", () => {
       });
       await syncAccounts();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
@@ -501,14 +498,14 @@ describe("accounts-services", () => {
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
-      expect(get(accountsStore)).toEqual(
+      expect(get(icpAccountsStore)).toEqual(
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
     });
@@ -547,17 +544,17 @@ describe("accounts-services", () => {
       expect(queryAccountSpy).toHaveBeenCalledTimes(2);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -622,19 +619,19 @@ describe("accounts-services", () => {
 
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: sourceAccount.identifier,
+        icpAccountIdentifier: sourceAccount.identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: sourceAccount.identifier,
+        icpAccountIdentifier: sourceAccount.identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(2);
     });
 
     it("should sync destination balances after transfer ICP to own account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -645,22 +642,22 @@ describe("accounts-services", () => {
 
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockSubAccount.identifier,
+        icpAccountIdentifier: mockSubAccount.identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockSubAccount.identifier,
+        icpAccountIdentifier: mockSubAccount.identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: sourceAccount.identifier,
+        icpAccountIdentifier: sourceAccount.identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: sourceAccount.identifier,
+        icpAccountIdentifier: sourceAccount.identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledTimes(4);
@@ -701,12 +698,12 @@ describe("accounts-services", () => {
       expect(queryAccountSpy).toHaveBeenCalled();
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: true,
       });
     });
@@ -828,7 +825,7 @@ describe("accounts-services", () => {
 
   describe("getAccountIdentity", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentity(
@@ -838,7 +835,7 @@ describe("accounts-services", () => {
     });
 
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -849,7 +846,7 @@ describe("accounts-services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -864,7 +861,7 @@ describe("accounts-services", () => {
 
   describe("getAccountIdentityByPrincipal", () => {
     it("returns user identity if main account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentityByPrincipal(
@@ -874,7 +871,7 @@ describe("accounts-services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -887,7 +884,7 @@ describe("accounts-services", () => {
     });
 
     it("returns null if no main account nor hardware wallet account", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -911,7 +908,7 @@ describe("accounts-services", () => {
     };
 
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       vi.clearAllTimers();
       vi.clearAllMocks();
       cancelPollAccounts();
@@ -932,12 +929,12 @@ describe("accounts-services", () => {
       expect(queryAccountSpy).toHaveBeenCalledTimes(1);
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: true,
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(1);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
     });
 
@@ -958,7 +955,7 @@ describe("accounts-services", () => {
       });
       expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
         identity: mockIdentity,
-        accountIdentifier: mockAccountDetails.account_identifier,
+        icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
       });
     });
@@ -994,7 +991,7 @@ describe("accounts-services", () => {
       await advanceTime(99 * retryDelay);
       expect(queryAccountSpy).toBeCalledTimes(expectedCalls);
 
-      const accounts = get(accountsStore);
+      const accounts = get(icpAccountsStore);
       return expect(accounts).toEqual(mockAccounts);
     });
 

@@ -1,22 +1,18 @@
-/**
- * @vi-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { disburse } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
@@ -27,7 +23,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
-import { vi, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
@@ -54,7 +50,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -144,16 +140,16 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts store is empty", () => {
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
     });
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
-      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
-      );
+      vi
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+      vi
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
       const { queryByTestId } = await renderDisburseModal(mockNeuron);
 
       expect(queryByTestId("account-card")).not.toBeInTheDocument();
@@ -168,15 +164,15 @@ describe("DisburseNnsNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       vi.clearAllTimers();
       vi.clearAllMocks();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
+      vi
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));

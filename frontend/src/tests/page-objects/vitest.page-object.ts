@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from "@testing-library/svelte";
 const SELF_SELECTOR = ":scope";
 
 /**
- * An implementation of the PageObjectElement interface for Jest unit tests.
+ * An implementation of the PageObjectElement interface for vi unit tests.
  */
 export class VitestPageObjectElement implements PageObjectElement {
   private element: Element | null;

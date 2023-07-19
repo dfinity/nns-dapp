@@ -3,8 +3,8 @@ import * as api from "$lib/api/governance.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
-import * as accountsServices from "$lib/services/accounts.services";
 import * as authServices from "$lib/services/auth.services";
+import * as accountsServices from "$lib/services/icp-accounts.services";
 import {
   assertLedgerVersion,
   connectToHardwareWallet,
@@ -13,7 +13,7 @@ import {
   registerHardwareWallet,
   resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
-} from "$lib/services/ledger.services";
+} from "$lib/services/icp-ledger.services";
 import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -309,7 +309,7 @@ describe("ledger-services", () => {
 
     describe("success", () => {
       beforeAll(() =>
-        jest
+        vi
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(
             async (): Promise<LedgerIdentity> => mockLedgerIdentity
@@ -325,7 +325,7 @@ describe("ledger-services", () => {
 
     describe("error", () => {
       beforeAll(() =>
-        jest
+        vi
           .spyOn(LedgerIdentity, "create")
           .mockImplementation(async (): Promise<LedgerIdentity> => {
             throw new LedgerErrorKey("error__ledger.please_open");

@@ -16,9 +16,9 @@ describe("balances.worker-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
   const accountIdentifiers = [

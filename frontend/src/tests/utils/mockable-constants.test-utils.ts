@@ -6,7 +6,7 @@ import type * as mockableConstants from "$lib/constants/mockable.constants";
 type MockableConstantsKey = keyof typeof mockableConstants;
 type MockableConstants = { [K in MockableConstantsKey]: unknown };
 
-// Default values are set from jest-setup.ts:
+// Default values are set from vi-setup.ts:
 let defaultTestConstants: MockableConstants;
 
 export const mockedConstants: MockableConstants = {

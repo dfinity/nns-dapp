@@ -38,7 +38,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should get bitcoin address", async () => {
-      const spyGetAddress = jest
+      const spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
@@ -75,7 +75,7 @@ describe("ckbtc-minter-services", () => {
     };
 
     it("should update balance", async () => {
-      const spyUpdateBalance = jest
+      const spyUpdateBalance = vi
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(mockUpdateBalanceOk);
 
@@ -118,11 +118,11 @@ describe("ckbtc-minter-services", () => {
     });
 
     it("should start and stop busy", async () => {
-      const startBusySpy = jest
+      const startBusySpy = vi
         .spyOn(busyStore, "startBusy")
         .mockImplementation(vi.fn());
 
-      const stopBusySpy = jest
+      const stopBusySpy = vi
         .spyOn(busyStore, "stopBusy")
         .mockImplementation(vi.fn());
 
@@ -227,11 +227,11 @@ describe("ckbtc-minter-services", () => {
 
     describe("no ui indicators", () => {
       it("should not start and stop busy", async () => {
-        const startBusySpy = jest
+        const startBusySpy = vi
           .spyOn(busyStore, "startBusy")
           .mockImplementation(vi.fn());
 
-        const stopBusySpy = jest
+        const stopBusySpy = vi
           .spyOn(busyStore, "stopBusy")
           .mockImplementation(vi.fn());
 
@@ -245,7 +245,7 @@ describe("ckbtc-minter-services", () => {
       });
 
       it("should not toast success if no ui indicators", async () => {
-        const spyUpdateBalance = jest
+        const spyUpdateBalance = vi
           .spyOn(minterApi, "updateBalance")
           .mockResolvedValue(mockUpdateBalanceOk);
 
@@ -288,7 +288,7 @@ describe("ckbtc-minter-services", () => {
     it("should call estimate fee", async () => {
       const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
-      const spyEstimateFee = jest
+      const spyEstimateFee = vi
         .spyOn(minterApi, "estimateFee")
         .mockResolvedValue(result);
 
@@ -323,7 +323,7 @@ describe("ckbtc-minter-services", () => {
         subaccount: [],
       };
 
-      const spyGetWithdrawal = jest
+      const spyGetWithdrawal = vi
         .spyOn(minterApi, "getWithdrawalAccount")
         .mockResolvedValue(result);
 

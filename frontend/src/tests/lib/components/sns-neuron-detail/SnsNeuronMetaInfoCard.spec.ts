@@ -31,11 +31,11 @@ describe("SnsNeuronMetaInfoCard", () => {
   const now = 1686806749421;
   const nowSeconds = Math.floor(now / 1000);
   beforeEach(() => {
-    jest
+    vi
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
       .mockImplementation(mockTokenStore);
 
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 

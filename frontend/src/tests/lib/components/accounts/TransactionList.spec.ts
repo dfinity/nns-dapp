@@ -4,8 +4,8 @@ import {
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockReceivedFromMainAccountTransaction } from "$tests/mocks/transaction.mock";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";

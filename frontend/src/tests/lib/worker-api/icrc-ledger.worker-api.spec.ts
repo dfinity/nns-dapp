@@ -12,9 +12,9 @@ describe("icrc-ledger.worker-api", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
   const params = {

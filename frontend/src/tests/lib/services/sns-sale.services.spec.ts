@@ -13,9 +13,9 @@ import {
   participateInSnsSale,
   restoreSnsSaleParticipation,
 } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -23,14 +23,14 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import {
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   createSummary,
   mockProjectSubscribe,
@@ -163,7 +163,7 @@ describe("sns-api", () => {
     vi.clearAllMocks();
 
     snsTicketsStore.reset();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
@@ -210,13 +210,11 @@ describe("sns-api", () => {
     );
 
     // `getOpenTicket` is mocked from the SnsSwapCanister not the wrapper
-    jest
-      .spyOn(SnsSwapCanister, "create")
-      .mockImplementation((): SnsSwapCanister => snsSwapCanister);
+    vi.spyOn(SnsSwapCanister, "create").mockImplementation(
+      (): SnsSwapCanister => snsSwapCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   describe("loadOpenTicket", () => {
@@ -835,7 +833,7 @@ describe("sns-api", () => {
       snsSwapCanister.getOpenTicket.mockResolvedValue(undefined);
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const updateProgressSpy = vi.fn().mockResolvedValue(undefined);
-      const startBusySpy = jest
+      const startBusySpy = vi
         .spyOn(busyStore, "startBusy")
         .mockImplementation(vi.fn());
 
@@ -957,9 +955,9 @@ describe("sns-api", () => {
 
     it("should handle errors", async () => {
       // remove the sns-project
-      jest
-        .spyOn(snsProjectsStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([]));
+      vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([])
+      );
 
       const account = {
         ...mockMainAccount,
@@ -995,7 +993,7 @@ describe("sns-api", () => {
       vi.useFakeTimers().setSystemTime(now);
     });
     it("should call postprocess and APIs", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
@@ -1022,13 +1020,13 @@ describe("sns-api", () => {
     });
 
     it("should update account's balance in the store", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(accountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1039,7 +1037,7 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
 
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
     });
 
     it("should update subaccounts's balance in the store", async () => {
@@ -1048,14 +1046,14 @@ describe("sns-api", () => {
         owner: mockIdentity.getPrincipal(),
         subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
       });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(accountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1066,7 +1064,7 @@ describe("sns-api", () => {
         ticket: snsTicket.ticket,
       });
 
-      expect(get(accountsStore).subAccounts[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore).subAccounts[0].balanceE8s).toEqual(
         newBalanceE8s
       );
     });

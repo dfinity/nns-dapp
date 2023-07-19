@@ -227,17 +227,17 @@ describe("sns-neurons-services", () => {
       const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
-      const spyNeuronQuery = jest
+      const spyNeuronQuery = vi
         .spyOn(governanceApi, "getSnsNeuron")
         .mockImplementation(() => Promise.resolve(neuron));
-      const spyNeuronBalance = jest
+      const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementationOnce(() =>
           Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
         )
         .mockImplementationOnce(() => Promise.resolve(BigInt(200_000_000)))
         .mockImplementation(() => Promise.resolve(BigInt(0)));
-      const spyClaimNeuron = jest
+      const spyClaimNeuron = vi
         .spyOn(governanceApi, "claimNeuron")
         .mockImplementation(() => Promise.resolve(undefined));
       await syncSnsNeurons(mockPrincipal);
@@ -260,7 +260,7 @@ describe("sns-neurons-services", () => {
         neurons: [mockSnsNeuron],
         certified: true,
       });
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.reject(undefined));
 
@@ -290,7 +290,7 @@ describe("sns-neurons-services", () => {
         ...mockSnsNeuron,
         id: [neuronId] as [SnsNeuronId],
       };
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       await loadNeurons({ rootCanisterId: mockPrincipal, certified: true });
@@ -319,13 +319,13 @@ describe("sns-neurons-services", () => {
           ...mockSnsNeuron,
           id: [neuronId] as [SnsNeuronId],
         };
-        const spyNeuronBalance = jest
+        const spyNeuronBalance = vi
           .spyOn(governanceApi, "getNeuronBalance")
           .mockImplementationOnce(() =>
             Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
           )
           .mockImplementation(() => Promise.resolve(BigInt(0)));
-        const spyQuery = jest
+        const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve(neuron));
         const onLoad = async ({
@@ -367,11 +367,11 @@ describe("sns-neurons-services", () => {
           ...neuron,
           cached_neuron_stake_e8s: stake,
         };
-        const spyNeuronBalance = jest
+        const spyNeuronBalance = vi
           .spyOn(governanceApi, "getNeuronBalance")
           .mockImplementationOnce(() => Promise.resolve(stake))
           .mockImplementation(() => Promise.resolve(BigInt(0)));
-        const spyQuery = jest
+        const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           // First is the query call and returns old neuron
           .mockImplementationOnce(() => Promise.resolve(neuron))
@@ -379,7 +379,7 @@ describe("sns-neurons-services", () => {
           .mockImplementationOnce(() => Promise.resolve(neuron))
           // After refreshing we get the updated neuron.
           .mockImplementation(() => Promise.resolve(updatedNeuron));
-        const spyRefreshNeuron = jest
+        const spyRefreshNeuron = vi
           .spyOn(governanceApi, "refreshNeuron")
           .mockImplementation(() => Promise.resolve(undefined));
         const onLoad = ({
@@ -408,7 +408,7 @@ describe("sns-neurons-services", () => {
 
     it("should return neuron if it's in the store", () =>
       new Promise<void>((done) => {
-        const spyQuery = jest
+        const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve(mockSnsNeuron));
         snsNeuronsStore.setNeurons({
@@ -440,7 +440,7 @@ describe("sns-neurons-services", () => {
 
     it("should call api even if it's in the store when forceFetch", () =>
       new Promise<void>((done) => {
-        const spyQuery = jest
+        const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve({ ...mockSnsNeuron }));
         snsNeuronsStore.setNeurons({
@@ -473,7 +473,7 @@ describe("sns-neurons-services", () => {
 
     it("should call onError callback when call failes", () =>
       new Promise<void>((done) => {
-        const spyQuery = jest
+        const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.reject());
         const onLoad = vi.fn();
@@ -497,7 +497,7 @@ describe("sns-neurons-services", () => {
 
   describe("addHotkey", () => {
     it("should call api.addNeuronPermissions", async () => {
-      const spyAdd = jest
+      const spyAdd = vi
         .spyOn(governanceApi, "addNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
       const hotkey = Principal.fromText("aaaaa-aa");
@@ -519,7 +519,7 @@ describe("sns-neurons-services", () => {
 
   describe("removeHotkey", () => {
     it("should call api.addNeuronPermissions", async () => {
-      const spyAdd = jest
+      const spyAdd = vi
         .spyOn(governanceApi, "removeNeuronPermissions")
         .mockImplementation(() => Promise.resolve());
       const hotkey = "aaaaa-aa";
@@ -545,7 +545,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
-      const spyOnDisburse = jest
+      const spyOnDisburse = vi
         .spyOn(governanceApi, "disburse")
         .mockImplementation(() => Promise.resolve());
 
@@ -570,7 +570,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
-      const spyOnStartDissolving = jest
+      const spyOnStartDissolving = vi
         .spyOn(governanceApi, "startDissolving")
         .mockImplementation(() => Promise.resolve());
 
@@ -595,7 +595,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
 
-      const spyOnStopDissolving = jest
+      const spyOnStopDissolving = vi
         .spyOn(governanceApi, "stopDissolving")
         .mockImplementation(() => Promise.resolve());
 
@@ -615,15 +615,15 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
-    const spyOnSetDissolveDelay = jest
+    const spyOnSetDissolveDelay = vi
       .spyOn(governanceApi, "setDissolveDelay")
       .mockImplementation(() => Promise.resolve());
     const nowInSeconds = 1689063315;
     const now = nowInSeconds * 1000;
 
     beforeEach(() => {
-      jest.clearAllTimers();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.clearAllTimers();
+      vi.useFakeTimers().setSystemTime(now);
       spyOnSetDissolveDelay.mockClear();
     });
 
@@ -661,10 +661,10 @@ describe("sns-neurons-services", () => {
         fee: BigInt(100),
         certified: true,
       });
-      const spyStake = jest
+      const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
-      const spyQuery = jest
+      const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
 
@@ -682,7 +682,7 @@ describe("sns-neurons-services", () => {
 
     it("should not call sns api stakeNeuron if fee is not present", async () => {
       transactionsFeesStore.reset();
-      const spyStake = jest
+      const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
 
@@ -699,7 +699,7 @@ describe("sns-neurons-services", () => {
 
   describe("increaseStakeNeuron", () => {
     it("should call api.increaseStakeNeuron and load sns accounts", async () => {
-      const spyOnIncreaseStakeNeuron = jest
+      const spyOnIncreaseStakeNeuron = vi
         .spyOn(api, "increaseStakeNeuron")
         .mockImplementation(() => Promise.resolve());
 
@@ -737,7 +737,7 @@ describe("sns-neurons-services", () => {
       const rootCanisterId = mockPrincipal;
       const percentageToStake = 60;
 
-      const spyOnStakeMaturity = jest
+      const spyOnStakeMaturity = vi
         .spyOn(governanceApi, "stakeMaturity")
         .mockImplementation(() => Promise.resolve());
 
@@ -759,7 +759,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("addFollowee ", () => {
-    const setFolloweesSpy = jest
+    const setFolloweesSpy = vi
       .spyOn(governanceApi, "setFollowees")
       .mockImplementation(() => Promise.resolve());
 
@@ -776,7 +776,7 @@ describe("sns-neurons-services", () => {
     afterEach(() => vi.clearAllMocks());
 
     it("should call sns api setFollowees with new followee when topic already has followees", async () => {
-      const queryNeuronSpy = jest
+      const queryNeuronSpy = vi
         .spyOn(governanceApi, "querySnsNeuron")
         .mockResolvedValue(mockSnsNeuron);
       const neuron: SnsNeuron = {
@@ -801,9 +801,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees with new followee when topic has no followees", async () => {
-      jest
-        .spyOn(governanceApi, "querySnsNeuron")
-        .mockResolvedValue(mockSnsNeuron);
+      vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
+        mockSnsNeuron
+      );
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[BigInt(4), { followees: [followee1] }]],
@@ -825,9 +825,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when new followee is in the list", async () => {
-      jest
-        .spyOn(governanceApi, "querySnsNeuron")
-        .mockResolvedValue(mockSnsNeuron);
+      vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
+        mockSnsNeuron
+      );
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -844,9 +844,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api setFollowees when new followee is the same neuron", async () => {
-      jest
-        .spyOn(governanceApi, "querySnsNeuron")
-        .mockResolvedValue(mockSnsNeuron);
+      vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
+        mockSnsNeuron
+      );
       const neuronIdHext = getSnsNeuronIdAsHexString(mockSnsNeuron);
       await addFollowee({
         rootCanisterId,
@@ -881,7 +881,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("removeFollowee ", () => {
-    const setFolloweesSpy = jest
+    const setFolloweesSpy = vi
       .spyOn(governanceApi, "setFollowees")
       .mockImplementation(() => Promise.resolve());
 
@@ -939,9 +939,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api setFollowees when followee is not in the list", async () => {
-      jest
-        .spyOn(governanceApi, "querySnsNeuron")
-        .mockResolvedValue(mockSnsNeuron);
+      vi.spyOn(governanceApi, "querySnsNeuron").mockResolvedValue(
+        mockSnsNeuron
+      );
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee2] }]],
@@ -965,7 +965,7 @@ describe("sns-neurons-services", () => {
       const rootCanisterId = mockPrincipal;
       const percentageToStake = 60;
 
-      const spyOnStakeMaturity = jest
+      const spyOnStakeMaturity = vi
         .spyOn(governanceApi, "stakeMaturity")
         .mockImplementation(() => Promise.resolve());
 
@@ -987,7 +987,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("toggleAutoStakeMaturity", () => {
-    const spyOnStakeMaturity = jest
+    const spyOnStakeMaturity = vi
       .spyOn(governanceApi, "autoStakeMaturity")
       .mockImplementation(() => Promise.resolve());
 

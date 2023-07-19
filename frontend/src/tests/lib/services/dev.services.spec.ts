@@ -1,10 +1,10 @@
 import { getICPs } from "$lib/services/dev.services";
-import { accountsStore } from "$lib/stores/accounts.store";
-import { mockAccountsStoreSubscribe } from "$tests/mocks/accounts.store.mock";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
 
 describe("dev-services", () => {
   beforeEach(() => {
-    vi.spyOn(accountsStore, "subscribe").mockImplementation(
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe()
     );
   });

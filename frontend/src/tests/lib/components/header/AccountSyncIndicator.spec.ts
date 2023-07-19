@@ -16,9 +16,9 @@ import {
 import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   beforeEach(() => {
     syncStore.reset();

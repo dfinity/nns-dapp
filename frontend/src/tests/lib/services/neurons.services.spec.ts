@@ -9,20 +9,15 @@ import {
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
@@ -30,6 +25,11 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";
@@ -77,7 +77,7 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-vi.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
     loadBalance: vi.fn(),
     transferICP: vi.fn().mockResolvedValue({ success: true }),
@@ -160,7 +160,7 @@ describe("neurons-services", () => {
     spyGetNeuron.mockClear();
     vi.clearAllMocks();
     neuronsStore.reset();
-    accountsStore.resetForTesting();
+    icpAccountsStore.resetForTesting();
     resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
@@ -251,9 +251,9 @@ describe("neurons-services", () => {
     it(`stakeNeuron return undefined if amount less than ${
       E8S_PER_ICP / E8S_PER_ICP
     } ICP`, async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: 0.1,
@@ -266,9 +266,9 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: NaN,
@@ -281,9 +281,9 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       // 10 ICPs
       const amount = 10;
@@ -315,7 +315,7 @@ describe("neurons-services", () => {
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = jest
+    const spyQueryNeurons = vi
       .spyOn(api, "queryNeurons")
       .mockResolvedValue(neurons);
 
@@ -895,7 +895,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });
@@ -992,7 +992,7 @@ describe("neurons-services", () => {
     });
 
     it("should simulate merging neurons if HW controlled", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -1328,7 +1328,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });

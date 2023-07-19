@@ -11,9 +11,9 @@ describe("icrc-index.worker-api", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
   const params = {

@@ -22,7 +22,7 @@ describe("ckbtc-info-services", () => {
     let spyGetMinterInfo;
 
     beforeEach(() => {
-      spyGetMinterInfo = jest
+      spyGetMinterInfo = vi
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
     });
@@ -93,7 +93,7 @@ describe("ckbtc-info-services", () => {
     afterEach(() => vi.clearAllMocks());
 
     it("should not reload info if already loaded", async () => {
-      const spyGetMinterInfo = jest
+      const spyGetMinterInfo = vi
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
 

@@ -485,7 +485,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress without step transfer", async () => {
-      jest
+      vi
         .spyOn(services, "convertCkBTCToBtc")
         .mockResolvedValue({ success: true });
 

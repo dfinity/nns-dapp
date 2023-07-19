@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

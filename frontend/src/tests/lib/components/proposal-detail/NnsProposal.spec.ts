@@ -80,7 +80,7 @@ describe("Proposal", () => {
   });
 
   it("should render proposal navigation", async () => {
-    jest
+    vi
       .spyOn(filteredProposals, "subscribe")
       .mockImplementation(
         createMockProposalsStoreSubscribe(generateMockProposals(10))

@@ -21,14 +21,14 @@
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
   let controlledByHardwareWallet: boolean;
   $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
     neuron,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   const hardwareWalletSteps: WizardSteps = [

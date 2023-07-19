@@ -10,8 +10,8 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
@@ -53,13 +53,13 @@ import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
+import { getAuthenticatedIdentity } from "./auth.services";
 import {
   getAccountIdentity,
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "./accounts.services";
-import { getAuthenticatedIdentity } from "./auth.services";
+} from "./icp-accounts.services";
 import { assertLedgerVersion } from "./icp-ledger.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
@@ -419,7 +419,7 @@ export const mergeNeurons = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       targetNeuronId
     );
-    const accounts = get(accountsStore);
+    const accounts = get(icpAccountsStore);
     if (
       isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
     ) {
@@ -607,7 +607,7 @@ export const splitNeuron = async ({
     const identity: Identity = await getIdentityOfControllerByNeuronId(
       neuron.neuronId
     );
-    const accounts = get(accountsStore);
+    const accounts = get(icpAccountsStore);
     if (isNeuronControlledByHardwareWallet({ neuron, accounts })) {
       await assertLedgerVersion({
         identity,

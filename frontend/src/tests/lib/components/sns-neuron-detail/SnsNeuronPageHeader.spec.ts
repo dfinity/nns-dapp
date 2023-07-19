@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
@@ -18,7 +14,7 @@ describe("SnsNeuronPageHeader", () => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronPageHeader,
       neuron,
-      reload: jest.fn(),
+      reload: vi.fn(),
     });
 
     return SnsNeuronPageHeaderPo.under(new VitestPageObjectElement(container));

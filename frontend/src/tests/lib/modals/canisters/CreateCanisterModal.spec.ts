@@ -7,16 +7,16 @@ import {
   createCanister,
   getIcpToCyclesExchangeRate,
 } from "$lib/services/canisters.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsShow } from "$lib/stores/toasts.store";
+import { mockCanister } from "$tests/mocks/canisters.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockCanister } from "$tests/mocks/canisters.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
@@ -41,9 +41,11 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("CreateCanisterModal", () => {
-  vi.spyOn(accountsStore, "subscribe").mockImplementation(
-    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-  );
+  vi
+    .spyOn(icpAccountsStore, "subscribe")
+    .mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+    );
 
   beforeEach(() => {
     vi.clearAllMocks();

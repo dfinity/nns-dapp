@@ -1,7 +1,7 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { canistersStore } from "$lib/stores/canisters.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -99,7 +99,7 @@ export const initDebugStore = () =>
     [
       // TODO (L2-611): anonymize wallet id and neuron ids
       busyStore,
-      accountsStore,
+      icpAccountsStore,
       neuronsStore,
       knownNeuronsStore,
       canistersStore,

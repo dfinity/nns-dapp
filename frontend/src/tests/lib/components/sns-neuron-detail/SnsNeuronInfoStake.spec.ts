@@ -36,7 +36,7 @@ describe("SnsNeuronInfoStake", () => {
 
     snsQueryStore.setData(data);
 
-    jest
+    vi
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });

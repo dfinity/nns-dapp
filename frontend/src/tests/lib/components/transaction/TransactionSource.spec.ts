@@ -1,7 +1,7 @@
 import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 import { formatToken } from "$lib/utils/token.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 

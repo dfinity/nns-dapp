@@ -7,14 +7,14 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
@@ -46,7 +46,7 @@ describe("Accounts", () => {
 
   it("should create a subaccount in NNS", async () => {
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],

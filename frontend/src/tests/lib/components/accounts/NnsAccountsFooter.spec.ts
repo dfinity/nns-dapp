@@ -1,5 +1,5 @@
 import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
-import * as accountsServices from "$lib/services/accounts.services";
+import * as accountsServices from "$lib/services/icp-accounts.services";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import {
   modalToolbarSelector,
@@ -7,9 +7,8 @@ import {
 } from "$tests/mocks/modal.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { vi } from "vitest";
 
-vi.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
     syncAccounts: vi.fn().mockResolvedValue(undefined),
   };

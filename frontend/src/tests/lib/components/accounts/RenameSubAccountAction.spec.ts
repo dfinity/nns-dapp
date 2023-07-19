@@ -1,13 +1,12 @@
 import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
-import { renameSubAccount } from "$lib/services/accounts.services";
+import { renameSubAccount } from "$lib/services/icp-accounts.services";
 import type { Account } from "$lib/types/account";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent } from "@testing-library/dom";
-import { vi, type Mock } from "vitest";
 
-vi.mock("$lib/services/accounts.services");
+vi.mock("$lib/services/icp-accounts.services");
 
 describe("RenameSubAccountAction", () => {
   afterEach(() => {
@@ -18,7 +17,7 @@ describe("RenameSubAccountAction", () => {
   let spy;
 
   beforeAll(() => {
-    spy = (renameSubAccount as Mock).mockImplementation(async () => {
+    spy = (renameSubAccount as vi.Mock).mockImplementation(async () => {
       // Do nothing test
     });
   });
