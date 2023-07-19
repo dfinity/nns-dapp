@@ -334,6 +334,19 @@ pub fn add_assets_tar_xz() {
     })
 }
 
+/// Generates a lot of toy accounts for testing.
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[export_name = "canister_update generate_toy_accounts"]
+pub fn generate_toy_accounts() {
+    over(candid_one, |()| {
+        let caller = ic_cdk::caller();
+        if !ic_cdk::api::is_controller(&caller) {
+            dfn_core::api::trap_with("Only the controller may generate toy accounts");
+        }
+        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(100_000));
+    })
+}
+
 #[derive(CandidType)]
 pub enum GetAccountResponse {
     Ok(AccountDetails),

@@ -1669,5 +1669,7 @@ pub enum TransferResult {
     },
 }
 
+#[cfg(any(test, feature = "toy_data_gen"))]
+pub(crate) mod toy_data;
 #[cfg(test)]
 pub(crate) mod tests;
