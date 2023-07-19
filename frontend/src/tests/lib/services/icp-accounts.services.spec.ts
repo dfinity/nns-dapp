@@ -52,6 +52,8 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger";
+import { AccountIdentifier } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -268,8 +270,12 @@ describe("icp-accounts.services", () => {
     });
 
     it("should map ICRC identifiers with subaccounts", async () => {
+      const principal = Principal.fromText(
+        "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
+      );
+
       jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
-        principal: mockMainAccount.principal,
+        principal,
         sub_accounts: [
           {
             name: mockSubAccount.name,
@@ -278,7 +284,9 @@ describe("icp-accounts.services", () => {
           },
         ],
         hardware_wallet_accounts: [],
-        account_identifier: mockMainAccount.identifier,
+        account_identifier: AccountIdentifier.fromPrincipal({
+          principal,
+        }).toHex(),
       });
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -294,14 +302,16 @@ describe("icp-accounts.services", () => {
         main: {
           ...mockMainAccount,
           identifier: encodeIcrcAccount({
-            owner: mockMainAccount.principal,
+            owner: principal,
           }),
+          icpIdentifier: AccountIdentifier.fromPrincipal({ principal }).toHex(),
+          principal,
         },
         subAccounts: [
           {
             ...mockSubAccount,
             identifier: encodeIcrcAccount({
-              owner: mockHardwareWalletAccount.principal,
+              owner: principal,
               subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
             }),
           },
