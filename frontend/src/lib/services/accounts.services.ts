@@ -86,7 +86,7 @@ export const loadAccounts = async ({
     queryAccountBalance({
       identity,
       certified,
-      accountIdentifier: identifierString,
+      icpAccountIdentifier: identifierString,
     });
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
@@ -206,7 +206,11 @@ export const loadBalance = async ({
     icpAccountsStore.getSingleMutationIcpAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
-      queryAccountBalance({ identity, certified, accountIdentifier }),
+      queryAccountBalance({
+        identity,
+        certified,
+        icpAccountIdentifier: accountIdentifier,
+      }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
         certified,
