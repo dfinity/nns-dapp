@@ -52,7 +52,7 @@ describe("CkBTCTransactionList", () => {
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
-  afterAll(() => vi.useRealTimers());
+  afterEach(() => vi.useRealTimers());
 
   it("should call service to load transactions", () => {
     const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");

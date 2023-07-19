@@ -91,9 +91,9 @@ import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
-  beforeAll(() => vi.useFakeTimers().setSystemTime(Date.now()));
+  beforeEach(() => vi.useFakeTimers().setSystemTime(Date.now()));
 
-  afterAll(() => vi.useRealTimers());
+  afterEach(() => vi.useRealTimers());
 
   describe("votingPower", () => {
     const tokenStake = TokenAmount.fromString({
