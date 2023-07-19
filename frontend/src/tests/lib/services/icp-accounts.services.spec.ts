@@ -9,6 +9,7 @@ import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import {
   addSubAccount,
@@ -29,9 +30,11 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
+import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
   mockIdentity,
   mockIdentityErrorMsg,
+  mockPrincipal,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
@@ -44,6 +47,10 @@ import {
   mockSubAccount,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockSnsMainAccount,
+  mockSnsSubAccount,
+} from "$tests/mocks/sns-accounts.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
@@ -79,6 +86,10 @@ describe("icp-accounts.services", () => {
     icpAccountsStore.resetForTesting();
     overrideFeatureFlagsStore.reset();
   });
+
+  const mockSnsAccountIcpAccountIdentifier = AccountIdentifier.fromPrincipal({
+    principal: mockPrincipal,
+  }).toHex();
 
   describe("getOrCreateAccount", () => {
     it("should not call nnsdapp addAccount if getAccount already returns account", async () => {
@@ -652,6 +663,26 @@ describe("icp-accounts.services", () => {
         accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
     });
+
+    it("should query account balance for Icrc address", async () => {
+      const newBalanceE8s = BigInt(10_000_000);
+      const queryAccountBalanceSpy = jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(newBalanceE8s);
+
+      await loadBalance({ accountIdentifier: mockSnsMainAccount.identifier });
+
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        icpAccountIdentifier: mockSnsAccountIcpAccountIdentifier,
+        certified: true,
+      });
+      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        icpAccountIdentifier: mockSnsAccountIcpAccountIdentifier,
+        certified: false,
+      });
+    });
   });
 
   describe("services", () => {
@@ -838,6 +869,23 @@ describe("icp-accounts.services", () => {
       expect(spyRenameSubAccount).toHaveBeenCalled();
     });
 
+    it("should rename a subaccount with Icrc address", async () => {
+      const newName = "test subaccount";
+
+      await renameSubAccount({
+        newName,
+        selectedAccount: mockSnsSubAccount,
+      });
+
+      expect(spyRenameSubAccount).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        newName,
+        subIcpAccountIdentifier: toIcpAccountIdentifier(
+          mockSnsSubAccount.identifier
+        ),
+      });
+    });
+
     it("should sync accounts after rename", async () => {
       await renameSubAccount({
         newName: "test subaccount",
@@ -930,6 +978,27 @@ describe("icp-accounts.services", () => {
       });
       expect(spyGetTransactions).toBeCalled();
       expect(spyGetTransactions).toBeCalledTimes(2);
+    });
+
+    it("should call getTransactions for Icrc address", async () => {
+      await getAccountTransactions({
+        accountIdentifier: mockSnsMainAccount.identifier,
+        onLoad,
+      });
+
+      const params = {
+        identity: mockIdentity,
+        icpAccountIdentifier: mockSnsAccountIcpAccountIdentifier,
+        certified: true,
+        offset: 0,
+        pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
+      };
+
+      expect(spyGetTransactions).toHaveBeenCalledWith(params);
+      expect(spyGetTransactions).toHaveBeenCalledWith({
+        ...params,
+        certified: false,
+      });
     });
 
     it("should call onLoad", async () => {

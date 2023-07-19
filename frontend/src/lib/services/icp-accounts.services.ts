@@ -63,7 +63,7 @@ import {
   ICPToken,
   TokenAmount,
   arrayOfNumberToUint8Array,
-  nonNullish,
+  nonNullish, isNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -441,7 +441,7 @@ export const renameSubAccount = async ({
   newName: string;
   selectedAccount: Account | undefined;
 }): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
+  if (isNullish(selectedAccount)) {
     return renameError({ labelKey: "error.rename_subaccount_no_account" });
   }
 
