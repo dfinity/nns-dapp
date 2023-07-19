@@ -305,12 +305,12 @@ describe("NnsStakeNeuronModal", () => {
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: true,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: false,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
       expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
