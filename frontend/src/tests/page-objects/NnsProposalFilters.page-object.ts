@@ -4,7 +4,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NnsProposalFiltersPo extends BasePageObject {
-  private static readonly TID = "filter-wrapper-component";
+  private static readonly TID = "nns-proposals-filters-component";
 
   static under(element: PageObjectElement): NnsProposalFiltersPo {
     return new NnsProposalFiltersPo(element.byTestId(NnsProposalFiltersPo.TID));
@@ -35,20 +35,17 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return FilterModalPo.under(this.root);
   }
 
-  async selectFilterTopics(topics: string[]): Promise<void> {
+  async setTopicFilter(topics: string[]): Promise<void> {
     await this.getFiltersByTopicsButtonPo().click();
 
-    const filterModalPo = this.getFilterModalPo();
-    await filterModalPo.waitFor();
-
     // deselect all
-    await filterModalPo.getClearSelectionButtonPo().click();
+    await this.getFilterModalPo().clickClearSelectionButton();
 
     // select items by topics
-    const filterEntries = await filterModalPo.getFilterEntryPos();
-    const itemTexts = await Promise.all(
-      filterEntries.map((item) => item.getText())
-    );
+    const filterEntries = await this.getFilterModalPo().getFilterEntryPos();
+    const itemTexts = (
+      await Promise.all(filterEntries.map((item) => item.getText()))
+    ).map((text) => text.trim());
 
     for (const topic of topics) {
       const index = itemTexts.findIndex((item) => item === topic);
@@ -57,10 +54,7 @@ export class NnsProposalFiltersPo extends BasePageObject {
       }
     }
 
-    // TODO: confirm selection and close modal
-
-    // TODO: wait for skeleton to disappear
-
-    // TODO: validate filter results
+    await this.getFilterModalPo().clickConfirmButton();
+    await this.getFilterModalPo().waitForClosed();
   }
 }

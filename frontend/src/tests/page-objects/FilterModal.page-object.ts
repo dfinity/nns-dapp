@@ -4,27 +4,38 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class FilterModalPo extends BasePageObject {
-  private static readonly TID = "filter-modal-component";
+  private static readonly TID = "filter-modal";
 
   static under(element: PageObjectElement): FilterModalPo {
     return new FilterModalPo(element.byTestId(FilterModalPo.TID));
   }
 
-  getSelectAllButtonPo(): ButtonPo {
+  clickSelectAllButtonPo(): Promise<void> {
     return ButtonPo.under({
       element: this.root,
       testId: "filter-modal-select-all",
-    });
+    }).click();
   }
 
-  getClearSelectionButtonPo(): ButtonPo {
+  clickClearSelectionButton(): Promise<void> {
     return ButtonPo.under({
       element: this.root,
       testId: "filter-modal-clear",
-    });
+    }).click();
   }
 
   getFilterEntryPos(): Promise<CheckboxPo[]> {
     return CheckboxPo.allUnder(this.root);
+  }
+
+  clickConfirmButton(): Promise<void> {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "apply-filters",
+    }).click();
+  }
+
+  waitForClosed(): Promise<void> {
+    return this.root.waitForAbsent();
   }
 }

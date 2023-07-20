@@ -1,3 +1,4 @@
+import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,6 +12,10 @@ export class ProposalsPo extends BasePageObject {
 
   getNnsProposalListPo(): NnsProposalListPo {
     return NnsProposalListPo.under(this.root);
+  }
+
+  getNnsProposalFiltersPo(): NnsProposalFiltersPo {
+    return NnsProposalFiltersPo.under(this.root);
   }
 
   async waitForContentLoaded(): Promise<void> {
