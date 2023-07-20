@@ -17,10 +17,12 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
+  createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
@@ -93,6 +95,36 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
+  });
+
+  it("should use current dissolve delay value when locked", async () => {
+    const dissolveDelaySeconds = 12345555n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+      dissolveDelaySeconds,
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      dissolveDelaySeconds.toString()
+    );
+  });
+
+  it("should use current dissolve delay value when dissolving", async () => {
+    const whenDissolvedTimestampSeconds = BigInt(
+      nowInSeconds + SECONDS_IN_YEAR
+    );
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      whenDissolvedTimestampSeconds,
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      SECONDS_IN_YEAR.toString()
+    );
   });
 
   it("should have the update delay button disabled by default", async () => {
