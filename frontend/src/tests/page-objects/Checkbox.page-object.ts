@@ -2,7 +2,7 @@ import { SimpleBasePageObject } from "$tests/page-objects/simple-base.page-objec
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class CheckboxPo extends SimpleBasePageObject {
-  private static readonly TID = "checkbox";
+  private static readonly TID = "checkbox-component";
 
   static under({ element }: { element: PageObjectElement }): CheckboxPo {
     return new CheckboxPo(element.byTestId(CheckboxPo.TID));
@@ -18,11 +18,15 @@ export class CheckboxPo extends SimpleBasePageObject {
     return this.root.click();
   }
 
+  getCheckboxInput(): PageObjectElement {
+    return this.root.byTestId("checkbox");
+  }
+
   async isDisabled(): Promise<boolean> {
-    return (await this.root.getAttribute("disabled")) !== null;
+    return (await this.getCheckboxInput().getAttribute("disabled")) !== null;
   }
 
   async isChecked(): Promise<boolean> {
-    return await this.root.isChecked();
+    return await this.getCheckboxInput().isChecked();
   }
 }
