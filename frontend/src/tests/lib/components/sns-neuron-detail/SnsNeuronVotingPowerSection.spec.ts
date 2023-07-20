@@ -3,7 +3,7 @@
  */
 
 import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
-import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -14,14 +14,14 @@ import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVoti
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
 
 describe("NnsStakeItemAction", () => {
+  const nowInSeconds = 1689843195;
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = renderSelectedSnsNeuronContext({
-      Component: SnsNeuronVotingPowerSection,
-      neuron,
-      reload: () => undefined,
+    const { container } = render(SnsNeuronVotingPowerSection, {
       props: {
+        neuron,
         parameters: snsNervousSystemParametersMock,
         token: mockToken,
       },
@@ -32,16 +32,23 @@ describe("NnsStakeItemAction", () => {
     );
   };
 
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(nowInSeconds * 1000);
+  });
+
   it("should render voting power", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       stake: 314000000n,
       stakedMaturity: 100000000n,
       state: NeuronState.Locked,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
+      ageSinceSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getVotingPower()).toBe("5.28");
+    expect(await po.getVotingPower()).toBe("5.23");
   });
 
   it("should render item actions", async () => {
