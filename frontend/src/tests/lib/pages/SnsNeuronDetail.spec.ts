@@ -200,6 +200,13 @@ describe("SnsNeuronDetail", () => {
   });
 
   describe("when neuron is not found", () => {
+    beforeEach(() => {
+      page.mock({
+        data: { universe: rootCanisterId.toText() },
+        routeId: AppPath.Neuron,
+      });
+    });
+
     const props = {
       neuronId: nonExistingNeuronId,
     };
