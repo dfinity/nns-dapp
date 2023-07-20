@@ -22,6 +22,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 #### Fixed
 
+* Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
+
 #### Security
 
 #### Not Published
