@@ -10,7 +10,6 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
-import { assertNonNullish } from "$tests/utils/utils.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -18,6 +17,7 @@ import type {
   SnsNervousSystemFunction,
   SnsNervousSystemParameters,
   SnsNeuronId,
+  SnsNeuronPermissionType,
   SnsProposalData,
   SnsProposalId,
 } from "@dfinity/sns";
@@ -26,7 +26,7 @@ import {
   neuronSubaccount,
   type SnsNeuron,
 } from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-governance.api";
 
@@ -40,6 +40,8 @@ const fakeFunctions = {
   claimNeuron,
   queryProposals,
   queryProposal,
+  addNeuronPermissions,
+  removeNeuronPermissions,
 };
 
 //////////////////////////////////////////////
@@ -85,6 +87,18 @@ const getNeuron = ({
   );
 };
 
+const getNeuronOrThrow = (params: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+}): SnsNeuron => {
+  const neuron = getNeuron(params);
+  if (isNullish(neuron)) {
+    throw new SnsGovernanceError("No neuron for given NeuronId.");
+  }
+  return neuron;
+};
+
 const getProposals = (keyParams: KeyParams) => {
   const key = mapKey(keyParams);
   let proposalsList = proposals.get(key);
@@ -103,6 +117,54 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
     nervousFunctions.set(key, nervousFunctionsList);
   }
   return nervousFunctionsList;
+};
+
+const getNeuronPrincipalPermissionEntry = ({
+  principal,
+  neuronId,
+  ...keyParams
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): { permission_type: Int32Array } => {
+  const neuron = getNeuronOrThrow({ ...keyParams, neuronId });
+  let permissionEntry = neuron.permissions.find(
+    (entry) => fromNullable(entry.principal).toText() === principal.toText()
+  );
+  if (isNullish(permissionEntry)) {
+    permissionEntry = {
+      principal: toNullable(principal),
+      permission_type: new Int32Array(),
+    };
+    neuron.permissions.push(permissionEntry);
+  }
+  return permissionEntry;
+};
+
+const getNeuronPrincipalPermissions = (entryParams: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): SnsNeuronPermissionType[] => {
+  const entry = getNeuronPrincipalPermissionEntry(entryParams);
+  return Array.from(entry.permission_type);
+};
+
+const setNeuronPrincipalPermissions = ({
+  permissions,
+  ...entryParams
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}) => {
+  const entry = getNeuronPrincipalPermissionEntry(entryParams);
+  entry.permission_type = Int32Array.from(permissions);
 };
 
 ////////////////////////
@@ -165,7 +227,7 @@ async function refreshNeuron(params: {
   identity: Identity;
   neuronId: SnsNeuronId;
 }): Promise<void> {
-  assertNonNullish(getNeuron(params));
+  getNeuronOrThrow(params);
 }
 
 async function claimNeuron({
@@ -219,11 +281,7 @@ async function getSnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron> {
-  const neuron = getNeuron({ ...keyParams, neuronId });
-  if (isNullish(neuron)) {
-    throw new SnsGovernanceError("No neuron for given NeuronId.");
-  }
-  return neuron;
+  return getNeuronOrThrow({ ...keyParams, neuronId });
 }
 
 async function queryProposals({
@@ -263,6 +321,49 @@ async function queryProposal({
     );
   }
   return proposal;
+}
+
+async function addNeuronPermissions({
+  permissions,
+  ...permissionEntryParams
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> {
+  const currentPermissions = getNeuronPrincipalPermissions(
+    permissionEntryParams
+  );
+  const newPermissions = Array.from(
+    new Set([...currentPermissions, ...permissions])
+  );
+  setNeuronPrincipalPermissions({
+    ...permissionEntryParams,
+    permissions: newPermissions,
+  });
+}
+
+async function removeNeuronPermissions({
+  permissions,
+  ...permissionEntryParams
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  permissions: SnsNeuronPermissionType[];
+  principal: Principal;
+  neuronId: SnsNeuronId;
+}): Promise<void> {
+  const currentPermissions = getNeuronPrincipalPermissions(
+    permissionEntryParams
+  );
+  const toRemove = new Set(permissions);
+  const newPermissions = currentPermissions.filter((p) => !toRemove.has(p));
+  setNeuronPrincipalPermissions({
+    ...permissionEntryParams,
+    permissions: newPermissions,
+  });
 }
 
 /////////////////////////////////
