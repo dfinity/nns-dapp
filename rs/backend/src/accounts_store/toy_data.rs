@@ -1,12 +1,14 @@
 //! Test data for unit tests and test networks.
 
-use crate::accounts_store::{AccountsStore, PrincipalId, RegisterHardwareWalletRequest};
+use crate::accounts_store::{AccountsStore, PrincipalId, RegisterHardwareWalletRequest, TransactionType};
+use icp_ledger::AccountIdentifier;
 
 
 impl AccountsStore {
     pub fn create_toy_accounts(&mut self, num_accounts: u64) {
         const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
         const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy account have between 0 and this many hardware wallets.
+        const MAX_PENDING_TRANSACTIONS_PER_ACCOUNT: u64 = 10; // Toy accounts have between 0 and this many pending transactions.
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
         let num_existing_accounts = self.accounts.len() as u64;
         // Creates accounts:
@@ -20,6 +22,11 @@ impl AccountsStore {
             // Successive accounts have 0, 1, 2 ... MAX_HARDWARE_WALLETS_PER_ACCOUNT-1 hardware wallets, restarting at 0.
             for hardware_wallet_index in 0..(toy_account_index % (MAX_HARDWARE_WALLETS_PER_ACCOUNT+1)) {
                 self.register_hardware_wallet(account, RegisterHardwareWalletRequest{name: format!("hw_wallet_{toy_account_index}_{hardware_wallet_index}"), principal: account});
+            }
+            for pending_transaction_index in 0..(toy_account_index % (MAX_PENDING_TRANSACTIONS_PER_ACCOUNT+1)) {
+                let from = AccountIdentifier::from(PrincipalId::new_user_test_id(toy_account_index + pending_transaction_index));
+                let to = AccountIdentifier::from(PrincipalId::new_user_test_id(toy_account_index + pending_transaction_index + 1));
+                self.add_pending_transaction(from, to, TransactionType::StakeNeuron);
             }
         }
     }
