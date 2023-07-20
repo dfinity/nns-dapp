@@ -203,8 +203,6 @@ describe("SnsNeuronDetail", () => {
     const hotkeyPrincipal =
       "dskxv-lqp33-5g7ev-qesdj-fwwkb-3eze4-6tlur-42rxy-n4gag-6t4a3-tae";
 
-    beforeEach(() => {});
-
     it("can not be added without permission", async () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
