@@ -5,14 +5,19 @@ use crate::accounts_store::{AccountsStore, PrincipalId};
 
 impl AccountsStore {
     pub fn create_toy_accounts(&mut self, num_accounts: u64) {
+        const SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3;
         let num_existing_accounts = self.accounts.len() as u64;
         for i in num_existing_accounts..(num_existing_accounts + num_accounts) {
             let account = PrincipalId::new_user_test_id(i);
             self.add_account(account);
+            for i in 0..SUB_ACCOUNTS_PER_ACCOUNT {
+                self.create_sub_account(account, format!("sub_account_{}", i));
+            }
         }
     }
 }
 
+#[allow(dead_code)]
 fn large_accounts_store(num_accounts: u64) -> AccountsStore {
     let mut accounts_store = AccountsStore::default();
     accounts_store.create_toy_accounts(num_accounts);
@@ -21,7 +26,7 @@ fn large_accounts_store(num_accounts: u64) -> AccountsStore {
     /* 
     AccountsStore {
         accounts: HashMap<Vec<u8>, Account>,
-        hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
+        hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,  
         // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
         pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
     
