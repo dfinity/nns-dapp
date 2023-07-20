@@ -7,19 +7,19 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
@@ -82,7 +82,7 @@ describe("NnsWallet", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       cancelPollAccounts();
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -126,7 +126,7 @@ describe("NnsWallet", () => {
   describe("accounts loaded", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      accountsStore.setForTesting(mockAccountsStoreData);
+      icpAccountsStore.setForTesting(mockAccountsStoreData);
     });
 
     it("should render nns project name", async () => {
@@ -241,7 +241,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Hardware Wallet)", () => {
     beforeEach(() => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -269,7 +269,7 @@ describe("NnsWallet", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();

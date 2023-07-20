@@ -4,22 +4,22 @@
 
 import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
   formattedStakedMaturity,
   formattedTotalMaturity,
 } from "$lib/utils/neuron.utils";
 import {
-  mockAccountsStoreSubscribe,
-  mockHardwareWalletAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
@@ -205,7 +205,7 @@ describe("NnsNeuronMaturityCard", () => {
   describe("hw", () => {
     beforeAll(() =>
       jest
-        .spyOn(accountsStore, "subscribe")
+        .spyOn(icpAccountsStore, "subscribe")
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
         )

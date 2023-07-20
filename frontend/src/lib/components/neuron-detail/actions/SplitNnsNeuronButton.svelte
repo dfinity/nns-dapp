@@ -13,6 +13,7 @@
   import { ICPToken } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
+  export let variant: "primary" | "secondary" = "primary";
 
   let splittable: boolean;
   $: splittable = neuronCanBeSplit({
@@ -22,10 +23,12 @@
 
   const openModal = () =>
     openNnsNeuronModal({ type: "split-neuron", data: { neuron } });
+
+  const testId = "split-nns-neuron-button-component";
 </script>
 
 {#if splittable}
-  <button on:click={openModal} class="primary"
+  <button on:click={openModal} class={variant} data-tid={testId}
     >{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
@@ -42,7 +45,7 @@
       }
     )}
   >
-    <button on:click={openModal} class="primary" disabled
+    <button on:click={openModal} class={variant} disabled data-tid={testId}
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>

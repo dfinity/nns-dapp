@@ -11,13 +11,18 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Support for ICP transactions with Icrc addresses as the destination.
+
 #### Changed
 
 * Improve visibility of proposal summary headers.
+* Improve copy in button to set or increase dissolve delay of a neuron.
 
 #### Deprecated
 #### Removed
 #### Fixed
+
+* Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
 
 #### Security
 
@@ -30,11 +35,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Install `ic-wasm` as part of the setup command.
 * Better visibility of upgrade cycle consumption, wasm size and memory usage.
 * Check that release-sop is the newest version when it's run.
+* Compile end-to-end tests to catch type errors.
 
 #### Changed
 
 * Use faster GitHub runners for e2e tests.
 * Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+* Migrate some e2e tests from wdio to playwright.
 
 #### Deprecated
 #### Removed

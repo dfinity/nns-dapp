@@ -9,7 +9,7 @@ import {
   mockAccountDetails,
   mockMainAccount,
   mockSubAccountDetails,
-} from "./accounts.store.mock";
+} from "./icp-accounts.store.mock";
 
 // eslint-disable-next-line
 // @ts-ignore: test file

@@ -5,14 +5,14 @@ import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svel
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsFullProject,
   mockSummary,
@@ -127,7 +127,7 @@ describe("SelectUniverseCard", () => {
 
   describe("project-balance", () => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(
         mockAccountsStoreSubscribe(
           [mockSubAccount],

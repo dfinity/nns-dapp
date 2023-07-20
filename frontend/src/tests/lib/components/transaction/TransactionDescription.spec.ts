@@ -4,8 +4,8 @@
 
 import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionDescription", () => {

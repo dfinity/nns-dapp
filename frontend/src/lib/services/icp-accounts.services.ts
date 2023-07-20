@@ -4,6 +4,7 @@ import {
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
 import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
+import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
@@ -16,25 +17,35 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import {
-  accountsStore,
-  type SingleMutationAccountsStore,
-} from "$lib/stores/accounts.store";
+  icpAccountsStore,
+  type SingleMutationIcpAccountsStore,
+} from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type {
   Account,
   AccountIdentifierText,
   AccountType,
-  IcpAccountIdentifierText,
+  IcpAccount,
 } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";
-import { findAccount, getAccountByPrincipal } from "$lib/utils/accounts.utils";
+import {
+  findAccount,
+  getAccountByPrincipal,
+  invalidIcpAddress,
+  invalidIcrcAddress,
+  toIcpAccountIdentifier,
+} from "$lib/utils/accounts.utils";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   isForceCallStrategy,
   notForceCallStrategy,
@@ -47,7 +58,14 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { ICPToken, TokenAmount, nonNullish } from "@dfinity/utils";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate } from "./utils.services";
@@ -80,13 +98,13 @@ export const loadAccounts = async ({
 }: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData> => {
+}): Promise<IcpAccountsStoreData> => {
   // Helper
   const getAccountBalance = (identifierString: string): Promise<bigint> =>
     queryAccountBalance({
       identity,
       certified,
-      accountIdentifier: identifierString,
+      icpAccountIdentifier: identifierString,
     });
 
   const mainAccount: AccountDetails = await getOrCreateAccount({
@@ -94,12 +112,25 @@ export const loadAccounts = async ({
     certified,
   });
 
+  const icrcEnabled = get(ENABLE_ICP_ICRC);
+
   const mapAccount =
     (type: AccountType) =>
     async (
       account: AccountDetails | HardwareWalletAccountDetails | SubAccountDetails
-    ): Promise<Account> => ({
-      identifier: account.account_identifier,
+    ): Promise<IcpAccount> => ({
+      identifier: icrcEnabled
+        ? encodeIcrcAccount({
+            owner:
+              "principal" in account
+                ? account.principal
+                : identity.getPrincipal(),
+            ...("sub_account" in account && {
+              subaccount: arrayOfNumberToUint8Array(account.sub_account),
+            }),
+          })
+        : account.account_identifier,
+      icpIdentifier: account.account_identifier,
       balanceE8s: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
@@ -124,7 +155,7 @@ export const loadAccounts = async ({
 };
 
 type SyncAccontsErrorHandler = (params: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => void;
@@ -140,7 +171,7 @@ const defaultErrorHandlerAccounts: SyncAccontsErrorHandler = ({
   err,
   certified,
 }: {
-  mutableStore: SingleMutationAccountsStore;
+  mutableStore: SingleMutationIcpAccountsStore;
   err: unknown;
   certified: boolean;
 }) => {
@@ -165,8 +196,8 @@ const syncAccountsWithErrorHandler = (
   errorHandler: SyncAccontsErrorHandler
 ): Promise<void> => {
   const mutableStore =
-    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
-  return queryAndUpdate<AccountsStoreData, unknown>({
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
+  return queryAndUpdate<IcpAccountsStoreData, unknown>({
     request: (options) => loadAccounts(options),
     onLoad: ({ response: accounts }) => mutableStore.set(accounts),
     onError: ({ error: err, certified }) => {
@@ -199,13 +230,18 @@ export const initAccounts = () => syncAccountsWithErrorHandler(ignoreErrors);
 export const loadBalance = async ({
   accountIdentifier,
 }: {
-  accountIdentifier: IcpAccountIdentifierText;
+  accountIdentifier: AccountIdentifierText;
 }): Promise<void> => {
   const strategy = FORCE_CALL_STRATEGY;
-  const mutableStore = accountsStore.getSingleMutationAccountsStore(strategy);
+  const mutableStore =
+    icpAccountsStore.getSingleMutationIcpAccountsStore(strategy);
   return queryAndUpdate<bigint, unknown>({
     request: ({ identity, certified }) =>
-      queryAccountBalance({ identity, certified, accountIdentifier }),
+      queryAccountBalance({
+        identity,
+        certified,
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
+      }),
     onLoad: ({ certified, response: balanceE8s }) => {
       mutableStore.setBalance({
         certified,
@@ -266,18 +302,43 @@ export const transferICP = async ({
 
     const tokenAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
 
-    await sendICP({
-      identity,
-      to,
-      fromSubAccount: subAccount,
-      amount: tokenAmount,
-    });
+    const validIcrcAddress = !invalidIcrcAddress(to);
+    const validIcpAddress = !invalidIcpAddress(to);
+
+    // UI validates addresses and disable form if not compliant. Therefore, this issue should unlikely happen.
+    if (!validIcrcAddress && !validIcpAddress) {
+      toastsError({
+        labelKey: "error.address_not_icp_icrc_valid",
+      });
+      return { success: false };
+    }
+
+    const feeE8s = get(mainTransactionFeeE8sStore);
+
+    await (validIcrcAddress
+      ? icrcTransfer({
+          identity,
+          to: decodeIcrcAccount(to),
+          fromSubAccount: subAccount,
+          amount: tokenAmount.toE8s(),
+          canisterId: LEDGER_CANISTER_ID,
+          createdAt: nowInBigIntNanoSeconds(),
+          fee: feeE8s,
+        })
+      : sendICP({
+          identity,
+          to,
+          fromSubAccount: subAccount,
+          amount: tokenAmount,
+        }));
 
     // Transfer can be to one of the user's account.
     const toAccount = findAccount({
       identifier: to,
       accounts: get(nnsAccountsListStore),
     });
+
+    // TODO: GIX-1704 use ICRC
     await Promise.all([
       loadBalance({ accountIdentifier: identifier }),
       nonNullish(toAccount)
@@ -324,7 +385,7 @@ export const getAccountTransactions = async ({
       getTransactions({
         identity,
         certified,
-        accountIdentifier,
+        icpAccountIdentifier: toIcpAccountIdentifier(accountIdentifier),
         pageSize: DEFAULT_TRANSACTION_PAGE_LIMIT,
         offset: 0,
       }),
@@ -363,7 +424,7 @@ export const getAccountIdentity = async (
 export const getAccountIdentityByPrincipal = async (
   principalString: string
 ): Promise<Identity | LedgerIdentity | undefined> => {
-  const accounts = get(accountsStore);
+  const accounts = get(icpAccountsStore);
   const account = getAccountByPrincipal({
     principal: principalString,
     accounts,
@@ -381,7 +442,7 @@ export const renameSubAccount = async ({
   newName: string;
   selectedAccount: Account | undefined;
 }): Promise<{ success: boolean; err?: string }> => {
-  if (!selectedAccount) {
+  if (isNullish(selectedAccount)) {
     return renameError({ labelKey: "error.rename_subaccount_no_account" });
   }
 
@@ -397,7 +458,7 @@ export const renameSubAccount = async ({
     await renameSubAccountApi({
       newName,
       identity,
-      subAccountIdentifier: identifier,
+      subIcpAccountIdentifier: toIcpAccountIdentifier(identifier),
     });
 
     await syncAccounts();
@@ -430,7 +491,7 @@ const pollAccountsId = Symbol("poll-accounts");
 const pollLoadAccounts = async (params: {
   identity: Identity;
   certified: boolean;
-}): Promise<AccountsStoreData> =>
+}): Promise<IcpAccountsStoreData> =>
   poll({
     fn: () => loadAccounts(params),
     // Any error is an unknown error and worth a retry
@@ -452,7 +513,7 @@ const pollLoadAccounts = async (params: {
  */
 export const pollAccounts = async (certified = true) => {
   const overrideCertified = isForceCallStrategy() ? false : certified;
-  const accounts = get(accountsStore);
+  const accounts = get(icpAccountsStore);
 
   // Skip if accounts are already loaded and certified
   // `certified` might be `undefined` if not yet loaded.
@@ -465,7 +526,7 @@ export const pollAccounts = async (certified = true) => {
   }
 
   const mutableStore =
-    accountsStore.getSingleMutationAccountsStore(FORCE_CALL_STRATEGY);
+    icpAccountsStore.getSingleMutationIcpAccountsStore(FORCE_CALL_STRATEGY);
   try {
     const identity = await getAuthenticatedIdentity();
     const certifiedAccounts = await pollLoadAccounts({

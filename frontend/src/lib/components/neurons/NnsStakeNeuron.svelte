@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { loadBalance } from "$lib/services/accounts.services";
+  import { loadBalance } from "$lib/services/icp-accounts.services";
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";

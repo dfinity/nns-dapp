@@ -7,6 +7,7 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
+import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
@@ -339,4 +340,9 @@ export const mockQueryMetadata: QuerySnsMetadata = {
 export const mockTokenStore = (run: Subscriber<Token>) => {
   run(mockSnsToken);
   return () => undefined;
+};
+
+export const mockUniverse: Universe = {
+  canisterId: principal(0).toText(),
+  summary: mockSnsFullProject.summary,
 };

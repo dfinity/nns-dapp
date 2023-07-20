@@ -6,7 +6,7 @@
   import { Spinner } from "@dfinity/gix-components";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -25,7 +25,7 @@
   $: isControllableByUser = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
   let isControllableByHotkey: boolean;
   $: isControllableByHotkey = isHotKeyControllable({

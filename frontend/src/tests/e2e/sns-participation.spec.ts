@@ -7,21 +7,12 @@ import { expect, test } from "@playwright/test";
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
-  await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
-  step("Get some ICP to participate in the sale");
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getMainAccountCardPo()
-    .waitFor();
-  await appPo.getTokens(20);
-
   step("D001: User can see the list of open sales");
-  await appPo.goToLaunchpad();
+  await appPo.getLoginLinksPo().goToLaunchpad();
 
   await appPo.getLaunchpadPo().getOpenProjectsPo().waitForContentLoaded();
   const openProjects: ProjectCardPo[] = await appPo
@@ -47,6 +38,13 @@ test("Test SNS participation", async ({ page, context }) => {
   expect(`Project ${projectName}`).toBe(snsProjectName);
   expect(await projectDetail.getTokenSymbol()).not.toBe("");
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
+
+  await signInWithNewUser({ page, context });
+
+  step("Get some ICP to participate in the sale");
+  await appPo.goBack();
+  await appPo.getTokens(20);
+  await openProjects[0].click();
 
   step("D004: User can participate in a sale");
   expect(await projectDetail.hasCommitmentAmount()).toBe(false);

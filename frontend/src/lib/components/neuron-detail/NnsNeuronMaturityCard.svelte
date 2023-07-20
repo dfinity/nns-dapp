@@ -17,7 +17,7 @@
     formattedTotalMaturity,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { nonNullish } from "@dfinity/utils";
@@ -29,7 +29,7 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   let showDetails: boolean;
@@ -92,7 +92,9 @@
     </div>
   {/if}
 
-  <NnsAutoStakeMaturity {neuron} />
+  <div class="auto-stake">
+    <NnsAutoStakeMaturity {neuron} />
+  </div>
 </CardInfo>
 
 <Separator />
@@ -101,4 +103,10 @@
   @use "../../themes/mixins/neuron";
 
   @include neuron.maturity-card-info;
+
+  .auto-stake {
+    padding: var(--padding-2x) 0 0;
+
+    --checkbox-padding: var(--padding) 0;
+  }
 </style>

@@ -1,6 +1,6 @@
 import type { WalletStore } from "$lib/types/wallet.context";
 import { writable } from "svelte/store";
-import { mockMainAccount } from "./accounts.store.mock";
+import { mockMainAccount } from "./icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "./neurons.mock";
 
 export const mockNeuronStake = {

@@ -2,13 +2,13 @@
  * @jest-environment jsdom
  */
 import { getICPs } from "$lib/services/dev.services";
-import { accountsStore } from "$lib/stores/accounts.store";
-import { mockAccountsStoreSubscribe } from "$tests/mocks/accounts.store.mock";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
 
 describe("dev-services", () => {
   beforeEach(() => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe());
   });
 

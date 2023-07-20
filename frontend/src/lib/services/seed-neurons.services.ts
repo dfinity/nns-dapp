@@ -2,8 +2,8 @@ import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
@@ -18,7 +18,7 @@ const buf2hex = (buffer: ArrayBuffer): string =>
 // Method to be used only from the Dev Tools console.
 // This code is temporary and should be removed.
 export const claimSeedNeurons = async () => {
-  const accounts = get(accountsStore);
+  const accounts = get(icpAccountsStore);
   const hardwareWallet = accounts.hardwareWallets?.[0];
   if (accounts?.main === undefined) {
     alert("Account not yet loaded. Wait a little longer and try again.");

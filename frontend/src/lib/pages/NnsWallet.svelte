@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { setContext, onMount, onDestroy } from "svelte";
+  import { onDestroy, onMount, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
@@ -8,9 +8,9 @@
     getAccountTransactions,
     loadBalance,
     pollAccounts,
-  } from "$lib/services/accounts.services";
-  import { accountsStore } from "$lib/stores/accounts.store";
-  import { Spinner, busy } from "@dfinity/gix-components";
+  } from "$lib/services/icp-accounts.services";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { busy, Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
@@ -34,13 +34,11 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { Island } from "@dfinity/gix-components";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
   import Summary from "$lib/components/summary/Summary.svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import { ICPToken } from "@dfinity/utils";
-  import type { IcpAccountIdentifierText } from "$lib/types/account";
+  import type { AccountIdentifierText } from "$lib/types/account";
 
   onMount(() => {
     pollAccounts();
@@ -55,10 +53,10 @@
   let transactions: Transaction[] | undefined;
 
   const reloadTransactions = (
-    accountIdentifier: IcpAccountIdentifierText
+    accountIdentifier: AccountIdentifierText
   ): Promise<void> =>
     getAccountTransactions({
-      accountIdentifier,
+      accountIdentifier: accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
         if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
@@ -92,7 +90,7 @@
     // handle unknown accountIdentifier from URL
     if (
       account === undefined &&
-      $accountsStore.main !== undefined &&
+      $icpAccountsStore.main !== undefined &&
       $pageStore.path === AppPath.Wallet
     ) {
       toastsError({

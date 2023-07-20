@@ -26,32 +26,32 @@ export const createSubAccount = async ({
 
 export const getTransactions = async ({
   identity,
-  accountIdentifier,
+  icpAccountIdentifier,
   pageSize,
   offset,
   certified,
 }: {
   identity: Identity;
-  accountIdentifier: AccountIdentifierString;
+  icpAccountIdentifier: AccountIdentifierString;
   pageSize: number;
   offset: number;
   certified: boolean;
 }): Promise<Transaction[]> => {
   logWithTimestamp(
-    `Loading Transactions ${hashCode(accountIdentifier)} call...`
+    `Loading Transactions ${hashCode(icpAccountIdentifier)} call...`
   );
 
   const { canister } = await nnsDappCanister({ identity });
 
   const { transactions } = await canister.getTransactions({
-    accountIdentifier,
+    accountIdentifier: icpAccountIdentifier,
     pageSize,
     offset,
     certified,
   });
 
   logWithTimestamp(
-    `Loading Transactions ${hashCode(accountIdentifier)} complete.`
+    `Loading Transactions ${hashCode(icpAccountIdentifier)} complete.`
   );
 
   return transactions;
@@ -60,24 +60,24 @@ export const getTransactions = async ({
 export const renameSubAccount = async ({
   newName,
   identity,
-  subAccountIdentifier,
+  subIcpAccountIdentifier,
 }: {
   newName: string;
   identity: Identity;
-  subAccountIdentifier: AccountIdentifierString;
+  subIcpAccountIdentifier: AccountIdentifierString;
 }): Promise<void> => {
   logWithTimestamp(
-    `Renaming SubAccount ${hashCode(subAccountIdentifier)} call...`
+    `Renaming SubAccount ${hashCode(subIcpAccountIdentifier)} call...`
   );
 
   const { canister } = await nnsDappCanister({ identity });
 
   await canister.renameSubAccount({
     new_name: newName,
-    account_identifier: subAccountIdentifier,
+    account_identifier: subIcpAccountIdentifier,
   });
 
   logWithTimestamp(
-    `Renaming SubAccount ${hashCode(subAccountIdentifier)} complete.`
+    `Renaming SubAccount ${hashCode(subIcpAccountIdentifier)} complete.`
   );
 };

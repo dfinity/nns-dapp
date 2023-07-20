@@ -13,8 +13,8 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
@@ -23,15 +23,15 @@ import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
-  mockAccountDetails,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import {
+  mockAccountDetails,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   snsResponseFor,
   snsResponsesForLifecycle,
@@ -458,7 +458,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         beforeEach(() => {
           // Do not rely on the `loadAccounts` from the modal.
-          accountsStore.setForTesting({
+          icpAccountsStore.setForTesting({
             main: mockMainAccount,
             subAccounts: [],
             hardwareWallets: [],
@@ -502,10 +502,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({
+
+          await projectDetail.clickParticipate();
+          const modal = projectDetail.getParticipateSwapModalPo();
+          await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
+          await advanceTime();
+          await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );

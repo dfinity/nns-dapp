@@ -5,7 +5,7 @@
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
 import { SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
@@ -71,5 +71,13 @@ describe("NnsNeuronAdvancedSection", () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.lastRewardsDistribution()).toBe("May 19, 1992");
+  });
+
+  it("should render actions", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.hasStakeMaturityCheckbox()).toBe(true);
+    expect(await po.hasJoinNeuronsFundCheckbox()).toBe(true);
+    expect(await po.hasSplitNeuronButton()).toBe(true);
   });
 });
