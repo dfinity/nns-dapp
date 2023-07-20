@@ -28,13 +28,17 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -53,7 +57,12 @@ describe("SnsNeuronDetail", () => {
     lifecycle: SnsSwapLifecycle.Committed,
   });
   const projectName = "Test SNS";
-  const nonExistingNeuronId = "111111";
+
+  const nonExistingNeuron = createMockSnsNeuron({
+    id: [1, 1, 1, 1, 1],
+  });
+  const nonExistingNeuronId = getSnsNeuronIdAsHexString(nonExistingNeuron);
+
   // Clone the summary to avoid mutating the mock
   const summary = { ...responses[0][0] };
   summary.metadata.name = [projectName];
@@ -219,6 +228,19 @@ describe("SnsNeuronDetail", () => {
         expect(path).toEqual(AppPath.Neurons);
       });
       expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
+      const expectedParams = {
+        identity: mockIdentity,
+        rootCanisterId,
+        neuronId: fromNullable(nonExistingNeuron.id),
+      };
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledWith({
+        ...expectedParams,
+        certified: false,
+      });
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledWith({
+        ...expectedParams,
+        certified: true,
+      });
     });
   });
 });
