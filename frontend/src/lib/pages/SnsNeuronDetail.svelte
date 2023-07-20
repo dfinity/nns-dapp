@@ -157,6 +157,7 @@
               <SnsNeuronPageHeading {parameters} />
               <Separator spacing="none" />
               <SnsNeuronVotingPowerSection {parameters} {token} />
+              <Separator spacing="none" />
               <SnsNeuronMaturitySection />
               <SnsNeuronAdvancedSection />
             </div>
