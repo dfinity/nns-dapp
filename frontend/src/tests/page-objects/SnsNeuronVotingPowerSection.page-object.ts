@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SnsNeuronStateItemActionPo } from "./SnsNeuronStateItemAction.page-object";
 import { SnsStakeItemActionPo } from "./SnsStakeItemAction.page-object";
 
 export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
@@ -21,5 +22,13 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
 
   hasStakeItemAction(): Promise<boolean> {
     return this.getStakeItemActionPo().isPresent();
+  }
+
+  getStateItemActionPo(): SnsNeuronStateItemActionPo {
+    return SnsNeuronStateItemActionPo.under(this.root);
+  }
+
+  hasStateItemAction(): Promise<boolean> {
+    return this.getStateItemActionPo().isPresent();
   }
 }
