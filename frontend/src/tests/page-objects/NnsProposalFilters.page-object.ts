@@ -35,26 +35,36 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return FilterModalPo.under(this.root);
   }
 
-  async setTopicFilter(topics: string[]): Promise<void> {
-    await this.getFiltersByTopicsButtonPo().click();
-
+  async preselectEntriesInFilterModal(labels: string[]): Promise<void> {
     // deselect all
     await this.getFilterModalPo().clickClearSelectionButton();
 
-    // select items by topics
+    // select items by text
     const filterEntries = await this.getFilterModalPo().getFilterEntryPos();
     const itemTexts = (
       await Promise.all(filterEntries.map((item) => item.getText()))
     ).map((text) => text.trim());
 
-    for (const topic of topics) {
-      const index = itemTexts.findIndex((item) => item === topic);
+    for (const label of labels) {
+      const index = itemTexts.findIndex((item) => item === label);
       if (index !== -1) {
         await filterEntries[index].click();
+      } else {
+        throw new Error(`Label "${label}" not found in filter entries`);
       }
     }
 
     await this.getFilterModalPo().clickConfirmButton();
     await this.getFilterModalPo().waitForClosed();
+  }
+
+  async setTopicFilter(topics: string[]): Promise<void> {
+    await this.getFiltersByTopicsButtonPo().click();
+    return this.preselectEntriesInFilterModal(topics);
+  }
+
+  async setStatusFilter(statuses: string[]): Promise<void> {
+    await this.getFiltersByStatusButtonPo().click();
+    return this.preselectEntriesInFilterModal(statuses);
   }
 }
