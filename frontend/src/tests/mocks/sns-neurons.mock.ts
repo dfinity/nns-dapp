@@ -36,6 +36,7 @@ export const createMockSnsNeuron = ({
   ageSinceSeconds = BigInt(1000),
   stakedMaturity = BigInt(100_000_000),
   maturity = BigInt(100_000_000),
+  createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
 }: {
   stake?: bigint;
   id: number[];
@@ -51,6 +52,7 @@ export const createMockSnsNeuron = ({
   ageSinceSeconds?: bigint;
   stakedMaturity?: bigint;
   maturity?: bigint;
+  createdTimestampSeconds?: bigint;
 }): SnsNeuron => {
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
@@ -58,7 +60,7 @@ export const createMockSnsNeuron = ({
     source_nns_neuron_id: [],
     maturity_e8s_equivalent: maturity,
     cached_neuron_stake_e8s: stake,
-    created_timestamp_seconds: BigInt(nowInSeconds() - SECONDS_IN_DAY),
+    created_timestamp_seconds: createdTimestampSeconds,
     staked_maturity_e8s_equivalent: [stakedMaturity],
     auto_stake_maturity: [],
     aging_since_timestamp_seconds: ageSinceSeconds,
