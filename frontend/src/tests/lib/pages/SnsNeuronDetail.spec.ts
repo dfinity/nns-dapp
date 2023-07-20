@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -52,6 +53,7 @@ describe("SnsNeuronDetail", () => {
     lifecycle: SnsSwapLifecycle.Committed,
   });
   const projectName = "Test SNS";
+  const nonExistingNeuronId = "111111";
   // Clone the summary to avoid mutating the mock
   const summary = { ...responses[0][0] };
   summary.metadata.name = [projectName];
@@ -193,14 +195,13 @@ describe("SnsNeuronDetail", () => {
         const { path } = get(pageStore);
         expect(path).toEqual(AppPath.Neurons);
       });
+      expect(snsGovernanceApi.getSnsNeuron).not.toBeCalled();
     });
   });
 
   describe("when neuron is not found", () => {
-    beforeEach(() => page.mock({ data: { universe: "invalid-project-id" } }));
-
     const props = {
-      neuronId: getSnsNeuronIdAsHexString(mockSnsNeuron),
+      neuronId: nonExistingNeuronId,
     };
 
     it("should redirect", async () => {
@@ -210,6 +211,7 @@ describe("SnsNeuronDetail", () => {
         const { path } = get(pageStore);
         expect(path).toEqual(AppPath.Neurons);
       });
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
     });
   });
 });
