@@ -345,7 +345,7 @@
     </main>
 
     <script>
-      // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns
+      // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io
       // Use the above for local development of this HTML page
       const aggregatorUrl = "";
 
@@ -411,7 +411,7 @@
       };
 
       const loadSnses = () =>
-        fetch(`${aggregatorUrl}/list/latest/slow.json`)
+        fetch(`${aggregatorUrl}/v1/sns/list/latest/slow.json`)
           .then((response) => response.json())
           .then((latest) => renderSnses(latest));
 
