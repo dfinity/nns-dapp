@@ -119,7 +119,7 @@ const getNervousFunctions = (rootCanisterId: Principal) => {
   return nervousFunctionsList;
 };
 
-const getNeuronPrincipalPermissionEntry = ({
+const getOrCreateNeuronPrincipalPermissionEntry = ({
   principal,
   neuronId,
   ...keyParams
@@ -149,7 +149,7 @@ const getNeuronPrincipalPermissions = (entryParams: {
   principal: Principal;
   neuronId: SnsNeuronId;
 }): SnsNeuronPermissionType[] => {
-  const entry = getNeuronPrincipalPermissionEntry(entryParams);
+  const entry = getOrCreateNeuronPrincipalPermissionEntry(entryParams);
   return Array.from(entry.permission_type);
 };
 
@@ -163,7 +163,7 @@ const setNeuronPrincipalPermissions = ({
   principal: Principal;
   neuronId: SnsNeuronId;
 }) => {
-  const entry = getNeuronPrincipalPermissionEntry(entryParams);
+  const entry = getOrCreateNeuronPrincipalPermissionEntry(entryParams);
   entry.permission_type = Int32Array.from(permissions);
 };
 
