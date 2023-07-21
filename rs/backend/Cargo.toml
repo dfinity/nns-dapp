@@ -60,3 +60,4 @@ anyhow = "1.0.68"
 [features]
 production=[]
 test=[]
+# TODO: Define noassets as a feature flag, to keep different build flavours consistent.

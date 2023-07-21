@@ -218,9 +218,9 @@ COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
-COPY --from=build_nnsdapp /build/nns-dapp-test.wasm.gz /
-COPY --from=build_nnsdapp /build/nns-dapp-production.wasm.gz /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp-test.wasm.gz /nns-dapp_noassets.wasm.gz
+COPY --from=build_nnsdapp /build/nns-dapp_test.wasm.gz /
+COPY --from=build_nnsdapp /build/nns-dapp_production.wasm.gz /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp_test.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
 COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /
