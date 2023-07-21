@@ -7,7 +7,6 @@
   import { onMount } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish } from "@dfinity/utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   // Source: https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#solution
   type T = $$Generic;
@@ -74,8 +73,11 @@
     {#if filters}
       <div class="filters">
         {#each filters as { id, name, checked } (id)}
-          <Checkbox inputId={id} {checked} on:nnsChange={() => onChange(id)}
-            >{name}</Checkbox
+          <Checkbox
+            testId={`${id}`}
+            inputId={id}
+            {checked}
+            on:nnsChange={() => onChange(id)}>{name}</Checkbox
           >
         {/each}
       </div>

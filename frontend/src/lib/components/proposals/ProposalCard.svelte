@@ -37,7 +37,7 @@
       {/if}
 
       {#if topic !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="proposal-topic">
           <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
           <span slot="value" class="meta-data-value">{topic ?? ""}</span>
         </KeyValuePair>
@@ -57,7 +57,7 @@
       <p class="description">{title}</p>
     </blockquote>
 
-    <KeyValuePair>
+    <KeyValuePair testId="proposal-status">
       <p slot="key" class={`${color ?? ""} status`}>
         {statusString}
       </p>
