@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
+import type { ButtonPo } from "./Button.page-object";
 import { RenameCanisterModalPo } from "./RenameCanisterModal.page-object";
 
 export class CanisterDetailPo extends BasePageObject {
@@ -11,10 +11,7 @@ export class CanisterDetailPo extends BasePageObject {
   }
 
   getRenameButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "rename-canister-button-component",
-    });
+    return this.getButton("rename-canister-button-component");
   }
 
   clickRename(): Promise<void> {
