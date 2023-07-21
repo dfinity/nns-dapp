@@ -59,6 +59,7 @@ jobs:
       - name: Run Tests
         shell: bash
         run: |
+          touch assets.tar.xz
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
