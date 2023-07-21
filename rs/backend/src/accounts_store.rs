@@ -26,6 +26,7 @@ type TransactionIndex = u64;
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
+    // TODO: Transition to AccountIdentifiers when we store accounts in stable memory.
     // To be stored as a stable BTreeMap with 1Kb pages (expandable).
     accounts: HashMap<Vec<u8>, Account>,
     // To be stored as a stable BTreeMap with 128 byte pages (expandable).  Size should be enough for a hardware wallet with two accounts, no more.
