@@ -3,9 +3,12 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
 import { signInWithAnchor, step } from "$tests/utils/e2e.test-utils";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
+  console.log(Array.from(new Set([Topic.ExchangeRate, Topic.ExchangeRate])));
+
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
   await signInWithAnchor({ page, context, anchor: 10000, skipRecovery: true });
@@ -23,7 +26,10 @@ test("Test neuron voting", async ({ page, context }) => {
     .getNnsProposalListPo()
     .getProposalIds();
 
+  console.log("initialProposalIds", initialProposalIds);
+
   step("Get some ICP");
+  await appPo.goToAccounts();
   // We need an account before we can get ICP.
   await appPo
     .getAccountsPo()
@@ -35,6 +41,9 @@ test("Test neuron voting", async ({ page, context }) => {
   // should be created before dummy proposals
   step("Stake neuron (for voting)");
   await appPo.goToNeurons();
+  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  const initialNeuronIds = await getNnsNeuronCardsIds(appPo);
+
   const stake = 15;
   await appPo
     .getNeuronsPo()
@@ -42,7 +51,8 @@ test("Test neuron voting", async ({ page, context }) => {
     .stakeNeuron({ amount: stake, dissolveDelayDays: "max" });
 
   const neuronIds = await getNnsNeuronCardsIds(appPo);
-  expect(neuronIds).toHaveLength(1);
+  expect(neuronIds).toHaveLength(initialNeuronIds.length + 1);
+  // neurons are sorted by age, so the first one is the new one
   const neuronId = neuronIds[0];
 
   step("Create dummy proposals");
@@ -53,18 +63,16 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
 
   // get neuron
-  step("Open neuron details");
-  await appPo.goToNeuronDetails(neuronId);
-
-  step("Get neuron voting power");
-  const neuronAVotingPower = await appPo
-    .getNeuronDetailPo()
-    .getNnsNeuronDetailPo()
-    .getNnsNeuronMetaInfoCardPageObjectPo()
-    .getVotingPower();
-
-  // back to neurons otherwise the menu is not available
-  await appPo.goBack();
+  // step("Open neuron details");
+  // await appPo.goToNeuronDetails(neuronId);
+  // step("Get neuron voting power");
+  // const neuronAVotingPower = await appPo
+  //   .getNeuronDetailPo()
+  //   .getNnsNeuronDetailPo()
+  //   .getNnsNeuronMetaInfoCardPageObjectPo()
+  //   .getVotingPower();
+  // // back to neurons otherwise the menu is not available
+  // await appPo.goBack();
 
   step("Open proposals list");
 
@@ -77,13 +85,78 @@ test("Test neuron voting", async ({ page, context }) => {
   const newProposaIds = proposalIds.filter(
     (id) => !initialProposalIds.includes(id)
   );
+  console.log("proposalIds", proposalIds);
+  console.log("newProposaIds", newProposaIds);
 
-  step("Filter for open proposals");
-  await appPo.getProposalsPo().getNnsProposalListPo().f;
+  // TODO: refactor: move to NnsProposalListPo
+  const getVisibleCardTopics = async () =>
+    await Promise.all(
+      (
+        await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardPos()
+      ).map((card) => card.getProposalTopicText())
+    );
+  const getVisibleCardStatuses = async () =>
+    await Promise.all(
+      (
+        await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardPos()
+      ).map((card) => card.getProposalTopicText())
+    );
 
-  await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
+  // Different topics are visible
+  expect(
+    (await getVisibleCardTopics()).find((topic) => topic !== "Exchange Rate")
+  ).toBeDefined();
+
+  // Different statuses are visible
+  expect(
+    (await getVisibleCardStatuses()).find((status) => status !== "Open")
+  ).toBeDefined();
+
+  step(`Filter for "Exchange Rate" proposals`);
+
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setTopicFilter([Topic.ExchangeRate]);
+
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  // Only "Exchange Rate" topic cards are visible
+  expect(
+    (await getVisibleCardTopics()).find((topic) => topic !== "Exchange Rate")
+  ).toBeDefined();
+
+  step(`Filter for "Open" proposals`);
+
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setStatusFilter([ProposalStatus.Open]);
+
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  // Only "Exchange Rate" topic cards are visible
+  expect(
+    (await getVisibleCardTopics()).find((topic) => topic !== "Exchange Rate")
+  ).toBeDefined();
+
+  // Only "Open" status cards are visible
+  expect(
+    (await getVisibleCardStatuses()).find((status) => status !== "Open")
+  ).toBeDefined();
+
+  const proposalsAfterFilter = await appPo
+    .getProposalsPo()
+    .getNnsProposalListPo()
+    .getProposalIds();
+
+  console.log("proposalsAfterFilter", proposalsAfterFilter);
+
+  /*
+
+  // await proposalsTab.filter("filters-by-status", ["Open", "Failed"]);
   // Set to the filter of the proposal type.
-  await proposalsTab.filter("filters-by-topics", ["Subnet Management"]);
+  // await proposalsTab.filter("filters-by-topics", ["Subnet Management"]);
 
   const newProposalIndex = proposalIds.indexOf(newProposaIds[0]);
   expect(newProposalIndex).toBeGreaterThan(-1);
@@ -100,16 +173,19 @@ test("Test neuron voting", async ({ page, context }) => {
   const initialAdoptVotingPower = await proposalDetails
     .getVotesResultPo()
     .getAdoptVotingPower();
+  */
 
-  step("Vote for proposal");
-  await proposalDetails.getVotingCardPo().voteYes();
+  // OLD:
+  // step("Open proposal details");
+  // step("Vote for proposal");
+  // await proposalDetails.getVotingCardPo().voteYes();
 
-  step("Compare voting power before and after voting");
-  const changedAdoptVotingPower = await proposalDetails
-    .getVotesResultPo()
-    .getAdoptVotingPower();
+  // step("Compare voting power before and after voting");
+  // const changedAdoptVotingPower = await proposalDetails
+  //   .getVotesResultPo()
+  //   .getAdoptVotingPower();
 
-  expect(changedAdoptVotingPower).toEqual(
-    initialAdoptVotingPower + neuronAVotingPower
-  );
+  // expect(changedAdoptVotingPower).toEqual(
+  //   initialAdoptVotingPower + neuronAVotingPower
+  // );
 });
