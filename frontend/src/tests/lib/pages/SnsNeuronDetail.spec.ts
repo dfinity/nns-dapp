@@ -291,7 +291,7 @@ describe("SnsNeuronDetail", () => {
       // Delay certified responses for getSnsNeuron
       fakeSnsGovernanceApi.pauseFor(
         ({ functionName, args }) =>
-          functionName == "getSnsNeuron" &&
+          functionName === "getSnsNeuron" &&
           typeof args[0] === "object" &&
           "certified" in args[0] &&
           args[0].certified === true
