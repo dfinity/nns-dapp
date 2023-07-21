@@ -10,7 +10,6 @@
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
   } from "$lib/types/sns-neuron-detail.context";
-  import { writable } from "svelte/store";
   import { onMount, setContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { queuedStore } from "$lib/stores/queued-store";
