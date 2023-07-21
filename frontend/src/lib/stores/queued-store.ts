@@ -95,6 +95,15 @@ export const queuedStore = <StoreData>(
     certified: boolean;
     mutation: Mutation<StoreData>;
   }): void => {
+    // Uncomment to disable queueing. Useful to verify that a unit test
+    // actually exposes the race condition that is fixed by the queued store.
+    //
+    // if (true === true) {
+    //   certifiedData = mutation(certifiedData);
+    //   set(certifiedData);
+    //   return;
+    // }
+
     // Update the entry in the queue with the given mutation key.
     const entry = mutationQueue.find(
       (entry) => entry.mutationKey === mutationKey
