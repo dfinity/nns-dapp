@@ -16,6 +16,9 @@ fi
 SOURCE_DIR="$PWD/scripts"
 PATH="$SOURCE_DIR:$PATH"
 
+# Defines NNS_DAPP_BUILD_FLAVOURS:
+source "${SOURCE_DIR}/nns-dapp/flavours.bash"
+
 print_help() {
   cat <<-"EOF"
 
@@ -46,6 +49,7 @@ print_docker_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+clap.define short=f long=flavour desc="The flavour of build.  One of: ${NNS_DAPP_BUILD_FLAVOURS[*]}" variable=DFX_NETWORK default="production"
 clap.define short=t long=target desc="The target in the docker file" variable=DFX_TARGET default="scratch"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"

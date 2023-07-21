@@ -89,6 +89,8 @@ COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
+ARG DFX_FLAVOUR=production
+RUN [[ "${DFX_FLAVOUR:-}" == "prod" ]] || [[ "${DFX_NETWORK}" != "mainnet" ]] || { echo "Mainnet must use prod builds." ; exit 1 ; } >&2
 RUN mkdir -p frontend
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-arg-${DFX_NETWORK}.bin
@@ -146,7 +148,8 @@ WORKDIR /build
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-RUN ./build-backend.sh
+ARG DFX_FLAVOUR=production
+RUN export DFX_FLAVOUR && ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
@@ -178,7 +181,8 @@ RUN tar -cJf assets.tar.xz -T /dev/null
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-RUN ./build-backend.sh
+ARG DFX_FLAVOUR=production
+RUN export DFX_FLAVOUR && ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
