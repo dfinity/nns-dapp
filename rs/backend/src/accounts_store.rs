@@ -34,9 +34,12 @@ pub struct AccountsStore {
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
     // To be stored as a VecDeque implemented on top of a stable BTreeMap with ?200 byte pages.
     transactions: VecDeque<Transaction>,
-    // To be stored as a stable BTreeMap with 1Kb pages (expandable).
+    // To be stored as a stable BTreeMap with about 128 byte pages.
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
+    // Probably always stored on the heap.  In stable memory?  We could assign 4 bytes, say, of control data.
     block_height_synced_up_to: Option<BlockIndex>,
+    // This will need another vec-deque, based on a BTreeMap.
+    // Size: Need a metric with the size of this thing.
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
     sub_accounts_count: u64,
