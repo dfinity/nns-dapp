@@ -33,20 +33,11 @@ jobs:
                   git diff
                   exit 1
           }
-  rust-lint:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Lint rust code
-        run: ./scripts/lint-rs
   cargo-tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest-m]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
@@ -56,10 +47,11 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
+      - name: Lint rust code
+        run: ./scripts/lint-rs
       - name: Run Tests
         shell: bash
         run: |
-          touch assets.tar.xz
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
