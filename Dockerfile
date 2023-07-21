@@ -89,8 +89,6 @@ COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
-ARG DFX_FLAVOUR=production
-RUN [[ "${DFX_FLAVOUR:-}" == "prod" ]] || [[ "${DFX_NETWORK}" != "mainnet" ]] || { echo "Mainnet must use prod builds." ; exit 1 ; } >&2
 RUN mkdir -p frontend
 RUN ./config.sh
 RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-arg-${DFX_NETWORK}.bin
@@ -148,8 +146,7 @@ WORKDIR /build
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-ARG DFX_FLAVOUR=production
-RUN export DFX_FLAVOUR && ./build-backend.sh
+RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
@@ -181,8 +178,7 @@ RUN tar -cJf assets.tar.xz -T /dev/null
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-ARG DFX_FLAVOUR=production
-RUN export DFX_FLAVOUR && ./build-backend.sh
+RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
@@ -222,7 +218,9 @@ COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm.gz /nns-dapp_noassets.wasm.gz
+COPY --from=build_nnsdapp /build/nns-dapp-test.wasm.gz /
+COPY --from=build_nnsdapp /build/nns-dapp-production.wasm.gz /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp-test.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
 COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /
