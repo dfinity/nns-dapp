@@ -40,13 +40,6 @@ jobs:
         os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
       - name: Lint rust code
         run: ./scripts/lint-rs
   cargo-tests:
