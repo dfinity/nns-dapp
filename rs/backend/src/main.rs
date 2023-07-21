@@ -338,12 +338,12 @@ pub fn add_assets_tar_xz() {
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[export_name = "canister_update generate_toy_accounts"]
 pub fn generate_toy_accounts() {
-    over(candid_one, |()| {
+    over(candid_one, |num_accounts: u128| {
         let caller = ic_cdk::caller();
         if !ic_cdk::api::is_controller(&caller) {
             dfn_core::api::trap_with("Only the controller may generate toy accounts");
         }
-        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(100_000));
+        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64));
     })
 }
 

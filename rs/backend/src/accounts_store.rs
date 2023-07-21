@@ -26,11 +26,13 @@ type TransactionIndex = u64;
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
+    // To be stored as a stable BTreeMap with 1Kb pages (expandable).
     accounts: HashMap<Vec<u8>, Account>,
+    // To be stored as a stable BTreeMap with 128 byte pages (expandable).  Size should be enough for a hardware wallet with two accounts, no more.
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-
+    // TODO:
     transactions: VecDeque<Transaction>,
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
@@ -1669,7 +1671,7 @@ pub enum TransferResult {
     },
 }
 
-#[cfg(any(test, feature = "toy_data_gen"))]
-pub(crate) mod toy_data;
 #[cfg(test)]
 pub(crate) mod tests;
+#[cfg(any(test, feature = "toy_data_gen"))]
+pub(crate) mod toy_data;
