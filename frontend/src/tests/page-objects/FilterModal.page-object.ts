@@ -28,6 +28,13 @@ export class FilterModalPo extends BasePageObject {
     return CheckboxPo.allUnder(this.root);
   }
 
+  getFilterEntryByIdPo(testId: string): CheckboxPo {
+    return CheckboxPo.under({
+      element: this.root,
+      testId,
+    });
+  }
+
   clickConfirmButton(): Promise<void> {
     return ButtonPo.under({
       element: this.root,
