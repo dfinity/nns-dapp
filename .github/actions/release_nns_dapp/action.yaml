@@ -20,7 +20,7 @@ runs:
         cd "${{ inputs.assets_dir }}"
         daily_build_name="nns-dapp-$(git rev-parse HEAD).wasm.gz"
         cp nns-dapp.wasm.gz "$daily_build_name"
-        artefacts=(nns-dapp.wasm.gz sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz assets.tar.xz "$daily_build_name" nns-dapp-arg-{mainnet,local}.{did,bin})
+        artefacts=(nns-dapp.wasm.gz nns-dapp_noassets.wasm.gz nns-dapp_production.wasm.gz nns-dapp_test.wasm.gz sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz assets.tar.xz "$daily_build_name" nns-dapp-arg-{mainnet,local}.{did,bin})
         # For backwards compatibility we publish the wasms with a .wasm suffix as well:
         for file in "${artefacts[@]}" ; do
           [[ "${file}" == "${file%.wasm.gz}" ]]  || {

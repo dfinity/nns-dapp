@@ -6,7 +6,7 @@ TOPLEVEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${TOPLEVEL}/scripts/nns-dapp/flavours.bash"
 
 ###############
-# backend # (output: nns-dapp-test.wasm.gz, nns-dapp-production.wasm.gz and, for backwards compatibility nns-dapp.wasm.gz)
+# backend # (output: nns-dapp_test.wasm.gz, nns-dapp_production.wasm.gz and, for backwards compatibility, nns-dapp.wasm.gz)
 ###############
 
 for DFX_FLAVOUR in "${NNS_DAPP_BUILD_FLAVOURS[@]}"; do

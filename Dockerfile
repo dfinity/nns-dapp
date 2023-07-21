@@ -129,6 +129,7 @@ COPY ./rs/backend /build/rs/backend
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
+COPY ./scripts/nns-dapp/flavours.bash /build/scripts/nns-dapp/flavours.bash
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
 COPY ./Cargo.lock /build/
@@ -160,6 +161,7 @@ COPY ./rs/backend /build/rs/backend
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
+COPY ./scripts/nns-dapp/flavours.bash /build/scripts/nns-dapp/flavours.bash
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
 COPY ./Cargo.lock /build/
