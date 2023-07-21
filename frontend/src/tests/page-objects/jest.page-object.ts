@@ -130,6 +130,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
+  async isChecked(): Promise<boolean | null> {
+    return this.element && (this.element as HTMLInputElement).checked;
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);
