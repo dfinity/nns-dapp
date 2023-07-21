@@ -33,7 +33,7 @@ jobs:
                   git diff
                   exit 1
           }
-  lint-rust:
+  rust-lint:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
