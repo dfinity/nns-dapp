@@ -55,5 +55,6 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(mockSnsNeuron);
 
     expect(await po.hasStakeItemAction()).toBe(true);
+    expect(await po.hasStateItemAction()).toBe(true);
   });
 });
