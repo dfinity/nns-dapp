@@ -12,15 +12,19 @@ print_help() {
 	EOF
 }
 
+# shellcheck disable=SC2016
+DFX_WASM_PATH_DEFAULT_TEMPLATE='nns-dapp_${DFX_FLAVOUR}.wasm.gz'
+
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=w long=wasm desc="The location of the nns-dapp wasm." variable=DFX_WASM_PATH default="nns-dapp.wasm.gz"
+clap.define short=w long=wasm desc="The location of the nns-dapp wasm." variable=DFX_WASM_PATH default="$DFX_WASM_PATH_DEFAULT_TEMPLATE"
 clap.define short=u long=update-golden desc="Update the exports golden file" variable=UPDATE_GOLDEN nargs=0 default="false"
 clap.define short=f long=flavour desc="The build flavour.  One of: ${NNS_DAPP_BUILD_FLAVOURS[*]}" variable=DFX_FLAVOUR default="production"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+[[ "$DFX_WASM_PATH" != "$DFX_WASM_PATH_DEFAULT_TEMPLATE" ]] || DFX_WASM_PATH="$(eval echo "${DFX_WASM_PATH_DEFAULT_TEMPLATE}")"
 GOLDEN_FILE="rs/backend/nns-dapp-exports-${DFX_FLAVOUR}.txt"
 
 wasm_exports() {

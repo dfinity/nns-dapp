@@ -21,4 +21,4 @@ for DFX_FLAVOUR in "${NNS_DAPP_BUILD_FLAVOURS[@]}"; do
 done
 
 # For backwards compatibility:
-cp nns-dapp-production.wasm.gz nns-dapp.wasm.gz
+cp nns-dapp_production.wasm.gz nns-dapp.wasm.gz
