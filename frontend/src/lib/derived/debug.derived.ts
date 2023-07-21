@@ -26,12 +26,7 @@ import type { SelectedSnsNeuronStore } from "$lib/types/sns-neuron-detail.contex
 import type { WalletStore } from "$lib/types/wallet.context";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { SnsProposalData } from "@dfinity/sns";
-import {
-  derived,
-  readable,
-  writable,
-  type Readable,
-} from "svelte/store";
+import { derived, readable, writable, type Readable } from "svelte/store";
 
 const createDerivedStore = <T>(store: Readable<T>): Readable<T> =>
   derived(store, (store) => store);
