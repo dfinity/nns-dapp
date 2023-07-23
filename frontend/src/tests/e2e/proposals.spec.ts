@@ -33,9 +33,10 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goToProposals();
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
-  step(`Filter proposals by Topic (ExchangeRate)`);
+  step(`Filter proposals by Topic`);
   const visibleCardTopics = async () =>
     await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardTopics();
+  const initialVisibleCardTopics = await visibleCardTopics();
 
   expect(Array.from(new Set(await visibleCardTopics())).length).toBeGreaterThan(
     1
@@ -48,8 +49,18 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   expect(Array.from(new Set(await visibleCardTopics()))).toHaveLength(1);
+  expect((await visibleCardTopics())[0]).toEqual("Exchange Rate");
 
-  step("Filter by status");
+  // Reset topic filter
+  await appPo.getProposalsPo().getNnsProposalFiltersPo().setTopicFilter([]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  expect(
+    Array.from(new Set(await visibleCardTopics())).length
+  ).toBeGreaterThanOrEqual(
+    Array.from(new Set(initialVisibleCardTopics)).length
+  );
+
+  step("Filter proposals by Status");
   const visibleCardStatuses = () =>
     appPo.getProposalsPo().getNnsProposalListPo().getProposalCardStatuses();
   // Open status cards are visible
