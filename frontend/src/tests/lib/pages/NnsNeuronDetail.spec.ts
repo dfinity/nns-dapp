@@ -137,9 +137,9 @@ describe("NeuronDetail", () => {
         canisterId: OWN_CANISTER_ID,
       });
 
-      await waitFor(async () =>
-        expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0)
-      );
+      await po.getSkeletonCardPo().waitFor();
+
+      expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
     });
 
     it("should render last maturity distribution", async () => {

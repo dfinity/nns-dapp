@@ -21,6 +21,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return SkeletonCardPo.allUnder(this.root);
   }
 
+  getSkeletonCardPo(): SkeletonCardPo {
+    return SkeletonCardPo.under(this.root);
+  }
+
   getNnsNeuronMetaInfoCardPageObjectPo(): NnsNeuronMetaInfoCardPageObjectPo {
     return NnsNeuronMetaInfoCardPageObjectPo.under(this.root);
   }
@@ -49,10 +53,6 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getMaturityCardPo(): NnsNeuronMaturityCardPo {
     return NnsNeuronMaturityCardPo.under(this.root);
-  }
-
-  getStakeInfoCardPo() {
-    return NnsNeuronInfoStakePo;
   }
 
   // TODO: To be removed https://dfinity.atlassian.net/browse/GIX-1688
