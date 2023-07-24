@@ -8,6 +8,7 @@ import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVoti
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";
@@ -64,6 +65,18 @@ export class NnsNeuronDetailPo extends BasePageObject {
     await this.getNnsNeuronModalsPo()
       .getDisburseNnsNeuronModalPo()
       .disburseNeuron();
+  }
+
+  getPageHeaderPo(): NnsNeuronPageHeaderPo {
+    return NnsNeuronPageHeaderPo.under(this.root);
+  }
+
+  getNeuronId(): Promise<string> {
+    return this.getPageHeaderPo().getNeuronId();
+  }
+
+  getUniverse(): Promise<string> {
+    return this.getPageHeaderPo().getUniverse();
   }
 
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {

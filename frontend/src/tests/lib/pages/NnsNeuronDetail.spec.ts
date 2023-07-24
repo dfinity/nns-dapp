@@ -85,6 +85,70 @@ describe("NeuronDetail", () => {
       expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
     });
+
+    it("should display skeletons", async () => {
+      const { container } = render(NnsNeuronDetail, {
+        props: {
+          neuronIdText: `${neuronId}`,
+        },
+      });
+
+      const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+
+      expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
+    });
+
+    it("should hide skeletons after neuron data are available", async () => {
+      const { container } = render(NnsNeuronDetail, {
+        props: {
+          neuronIdText: `${neuronId}`,
+        },
+      });
+
+      const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+
+      expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
+
+      await runResolvedPromises();
+
+      expect((await po.getSkeletonCardPos()).length).toBe(0);
+    });
+
+    it("should show the proper neuron id", async () => {
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getNeuronId()).toEqual(`${neuronId}`);
+    });
+
+    it("should render nns project name", async () => {
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getUniverse()).toBe("Internet Computer");
+    });
+
+    it("should show skeletons when neuron is in voting process", async () => {
+      const po = await renderComponent(`${neuronId}`);
+
+      expect((await po.getSkeletonCardPos()).length).toBe(0);
+
+      voteRegistrationStore.add({
+        ...mockVoteRegistration,
+        neuronIdStrings: [`${neuronId}`],
+        canisterId: OWN_CANISTER_ID,
+      });
+
+      await waitFor(async () =>
+        expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0)
+      );
+    });
+
+    it("should render last maturity distribution", async () => {
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getAdvancedSectionPo().lastRewardsDistribution()).toEqual(
+        "May 19, 1992"
+      );
+    });
   });
 
   describe("when old neuron details page", () => {
