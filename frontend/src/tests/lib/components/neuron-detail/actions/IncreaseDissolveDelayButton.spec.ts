@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IncreaseDissolveDelayButton from "$lib/components/neuron-detail/actions/IncreaseDissolveDelayButton.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
@@ -12,7 +8,7 @@ import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("IncreaseDissolveDelayButton", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const renderComponent = (neuron: NeuronInfo) => {

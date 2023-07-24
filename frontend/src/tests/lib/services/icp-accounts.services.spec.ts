@@ -217,10 +217,10 @@ describe("icp-accounts.services", () => {
     });
 
     it("should map ICP identifiers only", async () => {
-      jest
+      vi
         .spyOn(nnsdappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
-      jest
+      vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mockMainAccount.balanceE8s);
       const certified = true;
@@ -238,7 +238,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should map ICRC identifiers", async () => {
-      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
         principal: mockMainAccount.principal,
         sub_accounts: [],
         hardware_wallet_accounts: [
@@ -250,7 +250,7 @@ describe("icp-accounts.services", () => {
         ],
         account_identifier: mockMainAccount.identifier,
       });
-      jest
+      vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
       const certified = true;
@@ -287,7 +287,7 @@ describe("icp-accounts.services", () => {
         "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
       );
 
-      jest.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
         principal,
         sub_accounts: [
           {
@@ -301,7 +301,7 @@ describe("icp-accounts.services", () => {
           principal,
         }).toHex(),
       });
-      jest
+      vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
       const certified = true;
@@ -664,7 +664,7 @@ describe("icp-accounts.services", () => {
 
     it("should query account balance for Icrc address", async () => {
       const newBalanceE8s = BigInt(10_000_000);
-      const queryAccountBalanceSpy = jest
+      const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
 
@@ -791,7 +791,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should not transfer ICP for invalid address", async () => {
-      const spy = jest
+      const spy = vi
         .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockResolvedValue(BigInt(1));
 
@@ -807,7 +807,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should transfer ICP using an Icrc destination address", async () => {
-      const spy = jest
+      const spy = vi
         .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockResolvedValue(BigInt(1));
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import {
@@ -33,8 +29,8 @@ describe("NnsStakeItemAction", () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(nowInSeconds * 1000);
+    vi.useFakeTimers();
+    vi.setSystemTime(nowInSeconds * 1000);
   });
 
   it("should render voting power", async () => {

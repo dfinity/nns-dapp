@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronDissolveDelayActionItem from "$lib/components/neuron-detail/NnsNeuronDissolveDelayActionItem.svelte";
 import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

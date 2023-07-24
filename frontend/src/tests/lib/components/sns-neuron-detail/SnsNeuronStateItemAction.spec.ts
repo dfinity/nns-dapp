@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronStateItemAction from "$lib/components/sns-neuron-detail/SnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import {
@@ -30,8 +26,8 @@ describe("SnsNeuronStateItemAction", () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(nowInSeconds * 1000);
+    vi.useFakeTimers();
+    vi.setSystemTime(nowInSeconds * 1000);
   });
 
   it("should render locked text and Start dissolving button if neuron is locked", async () => {

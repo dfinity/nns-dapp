@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -28,8 +24,8 @@ describe("SnsNeuronAdvancedSection", () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(nowInSeconds * 1000);
+    vi.useFakeTimers();
+    vi.setSystemTime(nowInSeconds * 1000);
   });
 
   it("should render neuron data", async () => {
