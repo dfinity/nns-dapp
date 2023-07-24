@@ -116,7 +116,8 @@ jobs:
           # How to add a github summary: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-adding-a-job-summary
           set -x
           {
-                  printf "## Deployed %s\n\nCommit: %s\nRef: %s\n\n" "${{ inputs.canisters }}" "$(git rev-parse HEAD)" "${{ github.ref }}"
+            commit="$(git rev-parse HEAD)"
+            printf "## Deployed %s\n\nCommit: %s\nRef: %s\n\n" "${{ inputs.canisters }}" "[$commit](https://github.com/dfinity/nns-dapp/commit/$commit)" "${{ github.ref }}"
             for canister in nns-dapp sns_aggregator ; do
               printf "## %s\n\n" "$canister"
               printf "URL:    "
