@@ -753,9 +753,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("addFollowee ", () => {
-    const setFolloweesSpy = vi
-      .spyOn(governanceApi, "setFollowees")
-      .mockImplementation(() => Promise.resolve());
+    let setFolloweesSpy;
 
     const followee1: SnsNeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
@@ -767,7 +765,13 @@ describe("sns-neurons-services", () => {
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
 
-    afterEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      setFolloweesSpy = vi
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.resolve());
+    });
 
     it("should call sns api setFollowees with new followee when topic already has followees", async () => {
       const queryNeuronSpy = vi
@@ -875,9 +879,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("removeFollowee ", () => {
-    const setFolloweesSpy = vi
-      .spyOn(governanceApi, "setFollowees")
-      .mockImplementation(() => Promise.resolve());
+    let setFolloweesSpy;
 
     const followee1: SnsNeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
@@ -888,7 +890,13 @@ describe("sns-neurons-services", () => {
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
 
-    afterEach(() => vi.clearAllMocks());
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      setFolloweesSpy = vi
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.resolve());
+    });
 
     it("should call sns api setFollowees with followee removed from list", async () => {
       const neuron: SnsNeuron = {
