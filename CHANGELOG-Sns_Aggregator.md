@@ -16,7 +16,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Removed
 ### Deprecated
 
-## Release candidate
+## [Proposal 123719](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123719)
 
 ### Added
 - Style (UI design) for the landing page
