@@ -8,7 +8,7 @@ const expectSignedOut = async (appPo: AppPo) => {
 };
 
 const expectSignedInAccountsPage = async (appPo: AppPo) => {
-  // The sign in button might be absent just because the app is still lading.
+  // The sign in button might be absent just because the app is still loading.
   // So we wait for the accounts page to be present before checkign for the sign
   // in button.
   await appPo.getAccountsPo().waitFor();
