@@ -13,6 +13,7 @@ export type AccountType =
 
 export type IcpAccountIdentifierText = AccountIdentifierString;
 
+// TODO: IcpAccountIdentifierText to be removed here and inline type
 export type AccountIdentifierText =
   | IcpAccountIdentifierText
   | IcrcAccountIdentifierText;
@@ -26,4 +27,10 @@ export interface Account {
   name?: string;
   subAccount?: SubAccountArray;
   type: AccountType;
+}
+
+export interface IcpAccount extends Account {
+  // TODO: IcpAccountIdentifierText to be ultimately removed
+  // @deprecated
+  icpIdentifier?: IcpAccountIdentifierText;
 }

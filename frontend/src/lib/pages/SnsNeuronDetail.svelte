@@ -44,6 +44,7 @@
   import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 
   export let neuronId: string | null | undefined;
 
@@ -76,6 +77,10 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
+
+  let governanceCanisterId: Principal | undefined;
+  $: governanceCanisterId =
+    $selectedUniverseStore.summary?.governanceCanisterId;
 
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
@@ -151,14 +156,23 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters)}
+          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron)}
             <div class="section-wrapper">
               <SnsNeuronPageHeader />
               <SnsNeuronPageHeading {parameters} />
               <Separator spacing="none" />
-              <SnsNeuronVotingPowerSection />
+              <SnsNeuronVotingPowerSection
+                neuron={$selectedSnsNeuronStore.neuron}
+                {parameters}
+                {token}
+              />
+              <Separator spacing="none" />
               <SnsNeuronMaturitySection />
-              <SnsNeuronAdvancedSection />
+              <Separator spacing="none" />
+              <SnsNeuronAdvancedSection
+                neuron={$selectedSnsNeuronStore.neuron}
+                {governanceCanisterId}
+              />
             </div>
           {/if}
           <Summary />

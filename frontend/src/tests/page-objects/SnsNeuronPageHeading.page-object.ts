@@ -18,4 +18,8 @@ export class SnsNeuronPageHeadingPo extends BasePageObject {
   getStake(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
   }
+
+  getVotingPower(): Promise<string> {
+    return this.getText("voting-power");
+  }
 }

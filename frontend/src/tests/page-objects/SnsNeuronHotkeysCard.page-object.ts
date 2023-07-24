@@ -1,3 +1,4 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -45,8 +46,12 @@ export class SnsNeuronHotkeysCardPo extends BasePageObject {
     throw new Error(`Hotkey not found: ${principal}`);
   }
 
+  getAddHotkeyButtonPo(): ButtonPo {
+    return ButtonPo.under({ element: this.root, testId: "add-hotkey-button" });
+  }
+
   clickAddHotkey(): Promise<void> {
-    return this.click("add-hotkey-button");
+    return this.getAddHotkeyButtonPo().click();
   }
 
   async removeHotkey(principal: string): Promise<void> {

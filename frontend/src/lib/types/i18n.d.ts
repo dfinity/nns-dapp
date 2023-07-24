@@ -96,6 +96,7 @@ interface I18nError {
   not_mergeable: string;
   invalid_account_id: string;
   address_not_valid: string;
+  address_not_icp_icrc_valid: string;
   invalid_percentage: string;
   principal_not_valid: string;
   input_length: string;
@@ -587,7 +588,9 @@ interface I18nNeuron_detail {
   maturity_section_description: string;
   staked_description: string;
   age_bonus_label: string;
+  dissolve_bonus_label: string;
   no_age_bonus: string;
+  no_dissolve_bonus: string;
   available_description: string;
   join_community_fund_description: string;
   leave_community_fund_description: string;
@@ -653,6 +656,9 @@ interface I18nNeuron_detail {
   maturity_range: string;
   spawning_neuron_info: string;
   maturity_percentage: string;
+  dissolve_delay_row_title: string;
+  remaining_title: string;
+  unspecified: string;
   advanced_settings_title: string;
   advanced_settings_description: string;
   neuron_account: string;
