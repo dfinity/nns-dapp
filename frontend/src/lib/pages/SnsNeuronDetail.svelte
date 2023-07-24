@@ -181,7 +181,9 @@
                 {token}
               />
               <Separator spacing="none" />
-              <SnsNeuronMaturitySection />
+              <SnsNeuronMaturitySection
+                neuron={$selectedSnsNeuronStore.neuron}
+              />
               <Separator spacing="none" />
               <SnsNeuronAdvancedSection
                 neuron={$selectedSnsNeuronStore.neuron}
