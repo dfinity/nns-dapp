@@ -286,12 +286,10 @@ pub fn insert_favicon() {
 pub fn insert_home_page() {
     STATE.with(|state| {
         let path = "/index.html";
-        if state.stable.borrow().assets.borrow().get(path).is_none() {
-            let asset = Asset {
-                headers: Vec::new(),
-                bytes: include_bytes!("index.html").to_vec(),
-            };
-            insert_asset(path, asset);
-        }
+        let asset = Asset {
+            headers: Vec::new(),
+            bytes: include_bytes!("index.html").to_vec(),
+        };
+        insert_asset(path, asset);
     });
 }
