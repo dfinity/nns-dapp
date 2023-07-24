@@ -270,6 +270,56 @@ describe("SnsNeuronDetail", () => {
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
     });
+
+    it("old update response doesn't replace newer state", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+        ],
+      });
+
+      // Delay certified responses for getSnsNeuron
+      fakeSnsGovernanceApi.pauseFor(
+        ({ functionName, args }) =>
+          functionName === "getSnsNeuron" &&
+          typeof args[0] === "object" &&
+          "certified" in args[0] &&
+          args[0].certified === true
+      );
+
+      const po = await renderComponent(props);
+
+      // The certified response for the original getSnsNeuron call is pending.
+      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(1);
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+
+      // Now the certified response for the neuron with hotkey removed is also
+      // pending.
+      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(2);
+
+      // Now we resolve the certified response from before the hotkey was
+      // deleted. It should not cause the hotkey to reappear.
+      fakeSnsGovernanceApi.resolvePendingCalls(1);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
   });
 
   describe("when project is an invalid canister id", () => {

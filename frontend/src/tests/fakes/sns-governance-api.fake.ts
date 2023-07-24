@@ -99,6 +99,14 @@ const getNeuronOrThrow = (params: {
   return neuron;
 };
 
+// We update neuron permissions in place, so we need to copy the neurons when
+// responding to API queries.
+const copyNeuron = (neuron: SnsNeuron): SnsNeuron =>
+  neuron && {
+    ...neuron,
+    permissions: neuron.permissions.map((entry) => ({ ...entry })),
+  };
+
 const getProposals = (keyParams: KeyParams) => {
   const key = mapKey(keyParams);
   let proposalsList = proposals.get(key);
@@ -255,7 +263,9 @@ async function querySnsNeurons({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsNeuron[]> {
-  return neurons.get(mapKey({ identity, rootCanisterId })) || [];
+  return (neurons.get(mapKey({ identity, rootCanisterId })) || []).map(
+    copyNeuron
+  );
 }
 
 async function querySnsNeuron({
@@ -268,7 +278,7 @@ async function querySnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron | undefined> {
-  return getNeuron({ ...keyParams, neuronId });
+  return copyNeuron(getNeuron({ ...keyParams, neuronId }));
 }
 
 async function getSnsNeuron({
@@ -281,7 +291,7 @@ async function getSnsNeuron({
   certified: boolean;
   neuronId: SnsNeuronId;
 }): Promise<SnsNeuron> {
-  return getNeuronOrThrow({ ...keyParams, neuronId });
+  return copyNeuron(getNeuronOrThrow({ ...keyParams, neuronId }));
 }
 
 async function queryProposals({
@@ -372,6 +382,9 @@ async function removeNeuronPermissions({
 
 const {
   pause,
+  pauseFor,
+  getPendingCount: getPendingCallsCount,
+  resolvePending: resolvePendingCalls,
   resume,
   reset: resetPaused,
   pausableFunctions: implementedFunctions,
@@ -384,7 +397,7 @@ const reset = () => {
   resetPaused();
 };
 
-export { pause, resume };
+export { pause, pauseFor, getPendingCallsCount, resolvePendingCalls, resume };
 
 const createNeuronId = ({
   identity,

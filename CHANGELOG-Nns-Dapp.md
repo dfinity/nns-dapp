@@ -37,6 +37,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Check that release-sop is the newest version when it's run.
 * Compile end-to-end tests to catch type errors.
 * Support SNS neuron permission in fake SNS governance API.
+* Support selective pausing and resuming in API fakes.
 
 #### Changed
 
