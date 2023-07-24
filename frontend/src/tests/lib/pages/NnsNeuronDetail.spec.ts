@@ -42,6 +42,17 @@ describe("NeuronDetail", () => {
       new Date("1992-05-22T21:00:00").getTime() / 1000
     ),
   };
+  const renderComponent = async (neuronId: string) => {
+    const { container } = render(NnsNeuronDetail, {
+      props: {
+        neuronIdText: neuronId,
+      },
+    });
+
+    await runResolvedPromises();
+
+    return NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+  };
 
   const querySkeleton = (container: HTMLElement): HTMLElement | null =>
     container.querySelector('[data-tid="skeleton-card"]');
@@ -54,18 +65,6 @@ describe("NeuronDetail", () => {
   });
 
   describe("when new neuron details page", () => {
-    const renderComponent = async (neuronId: string) => {
-      const { container } = render(NnsNeuronDetail, {
-        props: {
-          neuronIdText: neuronId,
-        },
-      });
-
-      await runResolvedPromises();
-
-      return NnsNeuronDetailPo.under(new JestPageObjectElement(container));
-    };
-
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", true);
     });
@@ -73,6 +72,15 @@ describe("NeuronDetail", () => {
     it("renders new sections", async () => {
       const po = await renderComponent(`${neuronId}`);
 
+      // Old components
+      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
+      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
+        false
+      );
+      expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
+      expect(await po.hasJoinFundCard()).toBe(false);
+
+      // New components
       expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
       expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
@@ -82,6 +90,23 @@ describe("NeuronDetail", () => {
   describe("when old neuron details page", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
+    });
+
+    it("renders old sections", async () => {
+      const po = await renderComponent(`${neuronId}`);
+
+      // Old components
+      expect(await po.getMaturityCardPo().isPresent()).toBe(true);
+      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
+        true
+      );
+      expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(true);
+      expect(await po.hasJoinFundCard()).toBe(true);
+
+      // New components
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(false);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(false);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(false);
     });
 
     it("should query neurons", async () => {

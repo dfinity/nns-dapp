@@ -50,6 +50,15 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return NnsNeuronMaturityCardPo.under(this.root);
   }
 
+  getStakeInfoCardPo() {
+    return NnsNeuronInfoStakePo;
+  }
+
+  // TODO: To be removed https://dfinity.atlassian.net/browse/GIX-1688
+  hasJoinFundCard(): Promise<boolean> {
+    return this.root.byTestId("neuron-join-fund-card-component").isPresent();
+  }
+
   async disburseNeuron(): Promise<void> {
     await this.getNnsNeuronInfoStakePo().clickDisburse();
     await this.getNnsNeuronModalsPo()

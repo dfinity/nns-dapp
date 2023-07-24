@@ -186,6 +186,11 @@ describe("SnsNeuronDetail", () => {
     it("should render cards", async () => {
       const po = await renderComponent(props);
 
+      // New sections
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(false);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(false);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(false);
+
       expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
       expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
       expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
