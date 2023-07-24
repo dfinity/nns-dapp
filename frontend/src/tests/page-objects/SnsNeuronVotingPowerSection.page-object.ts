@@ -37,7 +37,7 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
     return SnsNeuronDissolveDelayActionItemPo.under(this.root);
   }
 
-  hasDisslveDelayItemActionPo(): Promise<boolean> {
+  hasDissolveDelayItemActionPo(): Promise<boolean> {
     return this.getDisslveDelayItemActionPo().isPresent();
   }
 }
