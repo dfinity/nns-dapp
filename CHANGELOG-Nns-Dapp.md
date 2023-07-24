@@ -7,6 +7,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
 
 ## Unreleased
+
+### Application
+#### Added
+#### Changed
+
+- bump agent-js `v0.18.1`
+
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+#### Not Published
+
+### Operations
+#### Added
+#### Changed
+#### Deprecated
+#### Removed
+#### Fixed
+#### Security
+
+## Proposal 123718
 ### Application
 
 #### Added
