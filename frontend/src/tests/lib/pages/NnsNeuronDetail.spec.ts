@@ -6,6 +6,7 @@ import * as api from "$lib/api/governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -52,91 +53,127 @@ describe("NeuronDetail", () => {
     jest.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
   });
 
-  it("should query neurons", async () => {
-    render(NnsNeuronDetail, props);
+  describe("when new neuron details page", () => {
+    const renderComponent = async (neuronId: string) => {
+      const { container } = render(NnsNeuronDetail, {
+        props: {
+          neuronIdText: neuronId,
+        },
+      });
 
-    await waitFor(() => expect(api.queryNeurons).toHaveBeenCalled());
-  });
+      await runResolvedPromises();
 
-  it("should display skeletons", () => {
-    const { container } = render(NnsNeuronDetail, props);
+      return NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+    };
 
-    expect(querySkeleton(container)).not.toBeNull();
-  });
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", true);
+    });
 
-  it("should show the proper neuron id", async () => {
-    const { getByTestId } = render(NnsNeuronDetail, props);
+    it("renders new sections", async () => {
+      const po = await renderComponent(`${neuronId}`);
 
-    await waitFor(() => {
-      const neuronIdElement = getByTestId("neuron-id");
-      expect(neuronIdElement).not.toBeNull();
-      expect(neuronIdElement.textContent).toEqual(`${neuronId}`);
-      expect(neuronIdElement.textContent).not.toEqual(`${mockNeuron.neuronId}`);
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
     });
   });
 
-  const testTitle = async ({
-    intersecting,
-    text,
-  }: {
-    intersecting: boolean;
-    text: string;
-  }) => {
-    const { getByTestId } = render(NnsNeuronDetail, props);
-
-    await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
-
-    const element = getByTestId("neuron-id-title") as HTMLElement;
-    dispatchIntersecting({ element, intersecting });
-
-    const title = get(layoutTitleStore);
-    await waitFor(() => expect(title).toEqual(text));
-  };
-
-  it("should render a title with neuron ID if title is not intersecting viewport", async () =>
-    await testTitle({
-      intersecting: false,
-      text: `${en.core.icp} – ${neuronId}`,
-    }));
-
-  it("should render a static title if title is intersecting viewport", async () =>
-    await testTitle({ intersecting: true, text: en.neuron_detail.title }));
-
-  it("should hide skeletons after neuron data are available", async () => {
-    const { container } = render(NnsNeuronDetail, props);
-
-    await waitFor(() => expect(querySkeleton(container)).toBeNull());
-  });
-
-  it("should render nns project name", async () => {
-    const { getByTestId } = render(NnsNeuronDetail, props);
-
-    await waitFor(() => expect(getByTestId("projects-summary")).not.toBeNull());
-  });
-
-  it("should show skeletons when neuron is in voting process", async () => {
-    const { container } = render(NnsNeuronDetail, props);
-
-    await waitFor(() => expect(querySkeleton(container)).toBeNull());
-
-    voteRegistrationStore.add({
-      ...mockVoteRegistration,
-      neuronIdStrings: [`${neuronId}`],
-      canisterId: OWN_CANISTER_ID,
+  describe("when old neuron details page", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
     });
 
-    await waitFor(() => expect(querySkeleton(container)).not.toBeNull());
-  });
+    it("should query neurons", async () => {
+      render(NnsNeuronDetail, props);
 
-  it("should render last maturity distribution", async () => {
-    const { container } = render(NnsNeuronDetail, props);
+      await waitFor(() => expect(api.queryNeurons).toHaveBeenCalled());
+    });
 
-    await runResolvedPromises();
+    it("should display skeletons", () => {
+      const { container } = render(NnsNeuronDetail, props);
 
-    const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+      expect(querySkeleton(container)).not.toBeNull();
+    });
 
-    expect(await po.getMaturityCardPo().getLastDistributionMaturity()).toEqual(
-      "May 19, 1992"
-    );
+    it("should show the proper neuron id", async () => {
+      const { getByTestId } = render(NnsNeuronDetail, props);
+
+      await waitFor(() => {
+        const neuronIdElement = getByTestId("neuron-id");
+        expect(neuronIdElement).not.toBeNull();
+        expect(neuronIdElement.textContent).toEqual(`${neuronId}`);
+        expect(neuronIdElement.textContent).not.toEqual(
+          `${mockNeuron.neuronId}`
+        );
+      });
+    });
+
+    const testTitle = async ({
+      intersecting,
+      text,
+    }: {
+      intersecting: boolean;
+      text: string;
+    }) => {
+      const { getByTestId } = render(NnsNeuronDetail, props);
+
+      await waitFor(() => expect(getByTestId("neuron-id")).not.toBeNull());
+
+      const element = getByTestId("neuron-id-title") as HTMLElement;
+      dispatchIntersecting({ element, intersecting });
+
+      const title = get(layoutTitleStore);
+      await waitFor(() => expect(title).toEqual(text));
+    };
+
+    it("should render a title with neuron ID if title is not intersecting viewport", async () =>
+      await testTitle({
+        intersecting: false,
+        text: `${en.core.icp} – ${neuronId}`,
+      }));
+
+    it("should render a static title if title is intersecting viewport", async () =>
+      await testTitle({ intersecting: true, text: en.neuron_detail.title }));
+
+    it("should hide skeletons after neuron data are available", async () => {
+      const { container } = render(NnsNeuronDetail, props);
+
+      await waitFor(() => expect(querySkeleton(container)).toBeNull());
+    });
+
+    it("should render nns project name", async () => {
+      const { getByTestId } = render(NnsNeuronDetail, props);
+
+      await waitFor(() =>
+        expect(getByTestId("projects-summary")).not.toBeNull()
+      );
+    });
+
+    it("should show skeletons when neuron is in voting process", async () => {
+      const { container } = render(NnsNeuronDetail, props);
+
+      await waitFor(() => expect(querySkeleton(container)).toBeNull());
+
+      voteRegistrationStore.add({
+        ...mockVoteRegistration,
+        neuronIdStrings: [`${neuronId}`],
+        canisterId: OWN_CANISTER_ID,
+      });
+
+      await waitFor(() => expect(querySkeleton(container)).not.toBeNull());
+    });
+
+    it("should render last maturity distribution", async () => {
+      const { container } = render(NnsNeuronDetail, props);
+
+      await runResolvedPromises();
+
+      const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+
+      expect(
+        await po.getMaturityCardPo().getLastDistributionMaturity()
+      ).toEqual("May 19, 1992");
+    });
   });
 });

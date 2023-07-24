@@ -1,7 +1,10 @@
+import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { NnsNeuronInfoStakePo } from "$tests/page-objects/NnsNeuronInfoStake.page-object";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
+import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
 import { NnsNeuronMetaInfoCardPageObjectPo } from "$tests/page-objects/NnsNeuronMetaInfoCard.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
+import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -52,5 +55,17 @@ export class NnsNeuronDetailPo extends BasePageObject {
     await this.getNnsNeuronModalsPo()
       .getDisburseNnsNeuronModalPo()
       .disburseNeuron();
+  }
+
+  getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
+    return NnsNeuronVotingPowerSectionPo.under(this.root);
+  }
+
+  getMaturitySectionPo(): NnsNeuronMaturitySectionPo {
+    return NnsNeuronMaturitySectionPo.under(this.root);
+  }
+
+  getAdvancedSectionPo(): NnsNeuronAdvancedSectionPo {
+    return NnsNeuronAdvancedSectionPo.under(this.root);
   }
 }
