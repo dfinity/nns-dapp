@@ -13,6 +13,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+- bump agent-js `v0.18.1`
+
 #### Deprecated
 #### Removed
 #### Fixed
