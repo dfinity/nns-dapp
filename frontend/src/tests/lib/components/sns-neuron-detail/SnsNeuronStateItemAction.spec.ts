@@ -71,7 +71,7 @@ describe("SnsNeuronStateItemAction", () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
-      ageSinceSeconds: BigInt(nowInSeconds - SECONDS_IN_FOUR_YEARS),
+      ageSinceTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_FOUR_YEARS),
     });
     const po = renderComponent(neuron);
 
