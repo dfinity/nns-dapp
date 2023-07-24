@@ -19,7 +19,7 @@ describe("sns-aggregator api", () => {
       global.fetch = mockFetch;
       await querySnsProjects();
       expect(mockFetch).toHaveBeenCalledWith(
-        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page/0/slow.json`
+        `https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network/v1/sns/list/page/0/slow.json`
       );
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
@@ -42,10 +42,10 @@ describe("sns-aggregator api", () => {
       global.fetch = mockFetch;
       await querySnsProjects();
       expect(mockFetch).toHaveBeenCalledWith(
-        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page/0/slow.json`
+        `https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network/v1/sns/list/page/0/slow.json`
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page/1/slow.json`
+        `https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network/v1/sns/list/page/1/slow.json`
       );
       expect(mockFetch).toHaveBeenCalledTimes(2);
     });

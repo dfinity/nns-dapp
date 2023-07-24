@@ -32,7 +32,7 @@ export const aggregatorSnsMock: CachedSns = {
     name: ["Community Fund Demo"],
     description: ["This is my awesome project"],
     logo: [
-      "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/4nwps-saaaa-aaaaa-aabjq-cai/logo.png",
+      "https://5v72r-4aaaa-aaaaa-aabnq-cai.raw.small12.testnet.dfinity.network/v1/sns/root/4nwps-saaaa-aaaaa-aabjq-cai/logo.png",
     ],
   },
   parameters: {
