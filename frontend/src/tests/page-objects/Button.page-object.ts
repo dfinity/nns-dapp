@@ -23,4 +23,8 @@ export class ButtonPo extends SimpleBasePageObject {
   async isDisabled(): Promise<boolean> {
     return (await this.root.getAttribute("disabled")) !== null;
   }
+
+  getClasses(): Promise<string[]> {
+    return this.root.getClasses();
+  }
 }
