@@ -115,8 +115,6 @@ describe("NeuronDetail", () => {
       fakeGovernanceApi.resume();
 
       await po.getSkeletonCardPo().waitForAbsent();
-
-      expect((await po.getSkeletonCardPos()).length).toBe(0);
     });
 
     it("should show the proper neuron id", async () => {
@@ -143,8 +141,6 @@ describe("NeuronDetail", () => {
       });
 
       await po.getSkeletonCardPo().waitFor();
-
-      expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
     });
 
     it("should render last maturity distribution", async () => {
