@@ -55,7 +55,7 @@ describe("auth-services", () => {
         async (): Promise<AuthClient> => mockAuthClient
       );
 
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call auth-client login on login", async () => {

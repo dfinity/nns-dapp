@@ -33,7 +33,7 @@ describe("ckbtc-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
@@ -203,7 +203,7 @@ describe("ckbtc-accounts-services", () => {
     });
 
     it("should show toast and return success false if transfer fails", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
       tokensStore.setTokens(mockTokens);
 
       const spyTransfer = vi

@@ -25,7 +25,7 @@ describe("app-services", () => {
       (): NNSDappCanister => mockNNSDappCanister
     );
 
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
 
     vi.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([
       aggregatorSnsMock,

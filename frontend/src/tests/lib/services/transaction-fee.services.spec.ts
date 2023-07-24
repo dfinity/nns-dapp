@@ -15,7 +15,7 @@ describe("transactionFee-services", () => {
           .spyOn(snsApi, "transactionFee")
           .mockResolvedValue(fee);
         // Avoid to print errors during test
-        vi.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockReturnValue();
       });
 
       afterEach(() => {
@@ -59,7 +59,7 @@ describe("transactionFee-services", () => {
     describe("error", () => {
       beforeEach(() => {
         // Avoid to print errors during test
-        vi.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockReturnValue();
       });
 
       it("should call error callback", async () => {

@@ -12,7 +12,7 @@ describe("location services", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
   });
 
   describe("loadUserLocation", () => {

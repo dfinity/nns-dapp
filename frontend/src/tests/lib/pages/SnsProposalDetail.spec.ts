@@ -50,7 +50,7 @@ describe("SnsProposalDetail", () => {
   describe("not logged in", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
       authStore.setForTesting(undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
@@ -271,7 +271,7 @@ describe("SnsProposalDetail", () => {
   describe("not logged in that logs in afterwards", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 

@@ -86,7 +86,7 @@ describe("ckbtc-accounts-balance.services", () => {
   });
 
   it("should toast error", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);

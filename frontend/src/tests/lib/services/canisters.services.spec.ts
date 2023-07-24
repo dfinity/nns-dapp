@@ -56,7 +56,7 @@ describe("canisters-services", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
 
     toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });

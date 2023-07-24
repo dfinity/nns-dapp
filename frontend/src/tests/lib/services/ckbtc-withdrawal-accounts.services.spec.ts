@@ -20,7 +20,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
       resetMockedConstants();
       vi.clearAllMocks();
       ckBTCWithdrawalAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     const spyGetWithdrawalAccount = vi

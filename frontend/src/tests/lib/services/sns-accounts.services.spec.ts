@@ -21,7 +21,7 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call api.getSnsAccounts and load neurons in store", async () => {
@@ -90,7 +90,7 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
     it("should call sns accounts and transaction fee and load them in store", async () => {
       const spyAccountsQuery = vi
@@ -123,7 +123,7 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     afterEach(() => {

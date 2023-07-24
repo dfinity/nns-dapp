@@ -67,7 +67,7 @@ describe("ckbtc-convert-services", () => {
       () => minterCanisterMock
     );
 
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
 
     const now = Date.now();
     vi.useFakeTimers().setSystemTime(now);

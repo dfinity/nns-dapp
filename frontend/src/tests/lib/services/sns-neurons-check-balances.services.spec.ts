@@ -15,7 +15,7 @@ describe("sns-neurons-check-balances-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsNeuronsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should check balance and not refresh when balance matches stake", async () => {

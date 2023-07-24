@@ -66,7 +66,7 @@ describe("ckbtc-minter-services", () => {
 
   describe("updateBalance", () => {
     beforeEach(() =>
-      vi.spyOn(console, "error").mockImplementation(() => undefined)
+      vi.spyOn(console, "error").mockReturnValue()
     );
 
     const params = {

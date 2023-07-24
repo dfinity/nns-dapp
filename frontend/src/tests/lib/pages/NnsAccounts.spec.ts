@@ -160,7 +160,7 @@ describe("NnsAccounts", () => {
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should stop polling", async () => {

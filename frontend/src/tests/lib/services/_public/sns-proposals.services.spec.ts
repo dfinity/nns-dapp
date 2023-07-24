@@ -225,7 +225,7 @@ describe("sns-proposals services", () => {
     });
 
     it("should handle errors", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(api, "registerVote").mockRejectedValue(new Error());
       const spyToastError = vi.spyOn(toastsFunctions, "toastsError");
 

@@ -252,7 +252,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should empty store if update call fails", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
 
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
@@ -276,7 +276,7 @@ describe("sns-neurons-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsNeuronsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call api.querySnsNeurons and load neurons in store", async () => {
@@ -305,7 +305,7 @@ describe("sns-neurons-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsNeuronsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockReturnValue();
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", () =>
       new Promise<void>((done) => {

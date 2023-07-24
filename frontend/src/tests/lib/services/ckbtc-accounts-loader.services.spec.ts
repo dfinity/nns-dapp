@@ -195,7 +195,7 @@ describe("ckbtc-accounts-loader-services", () => {
       let spyOnToastsError;
 
       beforeEach(() => {
-        vi.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockReturnValue();
         vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
 
         spyOnToastsError = vi.spyOn(toastsStore, "toastsError");

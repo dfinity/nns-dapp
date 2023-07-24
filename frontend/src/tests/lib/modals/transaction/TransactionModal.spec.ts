@@ -80,7 +80,7 @@ describe("TransactionModal", () => {
       mockSnsAccountsStoreSubscribe(mockPrincipal)
     );
 
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
   });
 
   const renderEnter10ICPAndNext = async ({

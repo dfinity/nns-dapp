@@ -526,7 +526,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("when restricted countries and getting location fails", async () => {
-          vi.spyOn(console, "error").mockImplementation(() => undefined);
+          vi.spyOn(console, "error").mockReturnValue();
           fakeLocationApi.setCountryCode(
             new Error("Failed to get user location")
           );

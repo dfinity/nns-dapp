@@ -12,7 +12,7 @@ describe("tvl services", () => {
   };
 
   beforeEach(() =>
-    vi.spyOn(console, "error").mockImplementation(() => undefined)
+    vi.spyOn(console, "error").mockReturnValue()
   );
 
   const result = {

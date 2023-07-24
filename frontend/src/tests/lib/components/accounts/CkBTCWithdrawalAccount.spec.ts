@@ -28,7 +28,7 @@ describe("CkBTCWithdrawalAccount", () => {
     vi.clearAllMocks();
     vi.resetAllMocks();
 
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockReturnValue();
 
     ckBTCWithdrawalAccountsStore.reset();
 
