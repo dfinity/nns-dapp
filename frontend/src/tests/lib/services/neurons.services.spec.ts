@@ -1660,7 +1660,7 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       expect(spyGetNeuron).not.toBeCalled();
       await loadNeuron({
         neuronId: mockNeuron.neuronId,

@@ -140,7 +140,7 @@ describe("proposals-services", () => {
         vi.spyOn(api, "queryProposal").mockImplementation(() => {
           throw new Error("test-message");
         });
-        vi.spyOn(console, "error").mockImplementation(vi.fn);
+        vi.spyOn(console, "error").mockReturnValue();
       });
       afterEach(() => vi.clearAllMocks());
 
@@ -206,7 +206,7 @@ describe("proposals-services", () => {
     beforeEach(() => {
       resetIdentity();
       vi.clearAllMocks();
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
@@ -305,7 +305,7 @@ describe("proposals-services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call queryProposalPayload", async () => {

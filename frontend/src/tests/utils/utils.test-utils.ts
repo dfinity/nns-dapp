@@ -2,7 +2,7 @@ import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
 export const silentConsoleErrors = () =>
-  vi.spyOn(console, "error").mockImplementation(vi.fn);
+  vi.spyOn(console, "error").mockReturnValue();
 
 export const clickByTestId = async (
   queryByTestId: (matcher: string) => HTMLElement | null,

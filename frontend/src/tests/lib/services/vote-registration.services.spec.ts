@@ -389,7 +389,7 @@ describe("vote-registration-services", () => {
     };
 
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     afterAll(() => {
@@ -511,7 +511,7 @@ describe("vote-registration-services", () => {
 
   describe("identity errors", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       setNoIdentity();
     });
 
@@ -542,7 +542,7 @@ describe("vote-registration-services", () => {
 
   describe("processRegisterVoteErrors", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     afterAll(() => {

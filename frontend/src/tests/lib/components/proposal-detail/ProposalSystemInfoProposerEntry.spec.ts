@@ -10,7 +10,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("ProposalMeta", () => {
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
   });
 
   vi.spyOn(authStore, "subscribe").mockImplementation(

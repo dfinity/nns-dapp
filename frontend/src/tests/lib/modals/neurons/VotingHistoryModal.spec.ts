@@ -17,7 +17,7 @@ describe("VotingHistoryModal", () => {
     new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(GovernanceCanister, "create").mockImplementation(
       (): GovernanceCanister => mockGovernanceCanister
     );

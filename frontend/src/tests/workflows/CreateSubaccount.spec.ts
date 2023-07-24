@@ -34,7 +34,7 @@ describe("Accounts", () => {
   let queryAccountSpy: SpyInstance;
   beforeEach(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     queryAccountBalanceSpy = vi
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(BigInt(0));
