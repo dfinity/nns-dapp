@@ -78,16 +78,16 @@ echo "***********************************************************"
 set +e
 
 # Run frontend development server.
-cd "$TOP_DIR"
-DFX_NETWORK=local ./config.sh
+# cd "$TOP_DIR"
+# DFX_NETWORK=local ./config.sh
 # cd frontend
 # npm ci
 # npm run dev
 
-cd "$HOME"
-dfx stop
+# cd "$HOME"
+# dfx stop
 
 # Wait for the replica to stop before moving state around.
-while pgrep replica; do sleep 1; done
+# while pgrep replica; do sleep 1; done
 
 # The trap set above will restore the state before this script exits.
