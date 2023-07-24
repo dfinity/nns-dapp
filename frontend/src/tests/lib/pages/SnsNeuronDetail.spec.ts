@@ -12,6 +12,7 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -117,6 +118,40 @@ describe("SnsNeuronDetail", () => {
   const validNeuronIdAsHexString = subaccountToHexString(validNeuronId.id);
   const neuronStake = 1;
 
+  describe("with new settings", () => {
+    beforeEach(() => {
+      page.mock({
+        data: { universe: rootCanisterIdMock.toText() },
+        routeId: AppPath.Neuron,
+      });
+
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+      });
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", true);
+    });
+
+    it("should render new sections", async () => {
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      // Old cards should not be present
+      expect(await po.getMetaInfoCardPo().isPresent()).toBe(false);
+      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
+      expect(await po.getStakeCardPo().isPresent()).toBe(false);
+
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+      expect(await po.getFollowingCardPo().isPresent()).toBe(true);
+      expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+    });
+  });
+
   describe("when neuron and projects are valid and present", () => {
     const props = {
       neuronId: validNeuronIdAsHexString,
@@ -132,6 +167,8 @@ describe("SnsNeuronDetail", () => {
         id: [validNeuronId],
         cached_neuron_stake_e8s: numberToE8s(neuronStake),
       });
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
     });
 
     it("should load neuron details", async () => {
@@ -148,6 +185,11 @@ describe("SnsNeuronDetail", () => {
 
     it("should render cards", async () => {
       const po = await renderComponent(props);
+
+      // New sections
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(false);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(false);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(false);
 
       expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
       expect(await po.getHotkeysCardPo().isPresent()).toBe(true);

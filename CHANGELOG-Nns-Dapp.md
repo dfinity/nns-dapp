@@ -23,6 +23,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New NNS and SNS neuron details page layout.
+
 ### Operations
 
 #### Added

@@ -7,6 +7,7 @@
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -17,23 +18,25 @@
   });
 </script>
 
-{#if isControlledByUser}
-  <CardInfo>
-    <KeyValuePairInfo testId="join-community-fund">
-      <h3 slot="key">{$i18n.neurons.community_fund_title}</h3>
+<TestIdWrapper testId="neuron-join-fund-card-component">
+  {#if isControlledByUser}
+    <CardInfo>
+      <KeyValuePairInfo testId="join-community-fund">
+        <h3 slot="key">{$i18n.neurons.community_fund_title}</h3>
 
-      <div class="info" slot="info">
-        <Html text={$i18n.neuron_detail.community_fund_more_info} />
+        <div class="info" slot="info">
+          <Html text={$i18n.neuron_detail.community_fund_more_info} />
+        </div>
+      </KeyValuePairInfo>
+
+      <div class="join">
+        <JoinCommunityFundCheckbox {neuron} />
       </div>
-    </KeyValuePairInfo>
+    </CardInfo>
 
-    <div class="join">
-      <JoinCommunityFundCheckbox {neuron} />
-    </div>
-  </CardInfo>
-
-  <Separator />
-{/if}
+    <Separator />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   h3 {
