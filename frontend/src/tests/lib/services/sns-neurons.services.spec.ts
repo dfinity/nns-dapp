@@ -73,6 +73,16 @@ vi.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("sns-neurons-services", () => {
+  const subaccount: Uint8Array = neuronSubaccount({
+    controller: mockIdentity.getPrincipal(),
+    index: 0,
+  });
+  const neuronId: SnsNeuronId = { id: subaccount };
+  const mockNeuron = {
+    ...mockSnsNeuron,
+    id: [neuronId] as [SnsNeuronId],
+  };
+
   describe("syncSnsNeurons", () => {
     beforeEach(() => {
       vi.clearAllMocks();
@@ -92,18 +102,9 @@ describe("sns-neurons-services", () => {
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const subaccount: Uint8Array = neuronSubaccount({
-          controller: mockIdentity.getPrincipal(),
-          index: 0,
-        });
-        const neuronId: SnsNeuronId = { id: subaccount };
-        const neuron = {
-          ...mockSnsNeuron,
-          id: [neuronId] as [SnsNeuronId],
-        };
         const spyQuery = vi
           .spyOn(governanceApi, "querySnsNeurons")
-          .mockImplementation(() => Promise.resolve([neuron]));
+          .mockImplementation(() => Promise.resolve([mockNeuron]));
         const spyNeuronBalance = vi
           .spyOn(governanceApi, "getNeuronBalance")
           .mockImplementationOnce(() =>
@@ -1107,8 +1108,8 @@ describe("sns-neurons-services", () => {
         .spyOn(governanceApi, "splitNeuron")
         .mockImplementation(() => Promise.resolve());
       const spyLoadNeurons = vi
-        .spyOn(services, "loadNeurons")
-        .mockResolvedValue(undefined);
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockNeuron]));
       const amount = 10;
 
       const neuronMinimumStake = 1000n;
