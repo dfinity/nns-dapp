@@ -80,9 +80,9 @@ set +e
 # Run frontend development server.
 cd "$TOP_DIR"
 DFX_NETWORK=local ./config.sh
-cd frontend
-npm ci
-npm run dev
+# cd frontend
+# npm ci
+# npm run dev
 
 cd "$HOME"
 dfx stop

@@ -6,6 +6,9 @@ import { expect, test } from "@playwright/test";
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
+  // await page.evaluate(() =>
+  //   (window as any).__featureFlags.ENABLE_NEURON_SETTINGS.overrideWith(true)
+  // );
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
