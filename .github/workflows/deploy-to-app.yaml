@@ -115,8 +115,9 @@ jobs:
         run: |
           # How to add a github summary: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-adding-a-job-summary
           set -x
-          for canister in nns-dapp sns_aggregator ; do
-            {
+          {
+            printf "# Deployed ${{ github.ref }}"
+            for canister in nns-dapp sns_aggregator ; do
               printf "## %s\n\n" "$canister"
               printf "URL:    "
               dfx-canister-url --network "$DFX_NETWORK" "$canister"
@@ -125,5 +126,5 @@ jobs:
               echo
               dfx canister info --network "$DFX_NETWORK" "$canister"
               echo
-            } >> $GITHUB_STEP_SUMMARY || true
-          done
+            done
+          } >> $GITHUB_STEP_SUMMARY || true
