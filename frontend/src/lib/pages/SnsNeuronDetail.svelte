@@ -190,17 +190,19 @@
                 {token}
                 {transactionFee}
               />
+              <Separator spacing="none" />
             </div>
-          {/if}
-          <Summary />
-
-          {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
-            <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
           {:else}
-            <SkeletonCard size="large" cardType="info" separator />
+            <Summary />
+
+            {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
+              <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
+            {:else}
+              <SkeletonCard size="large" cardType="info" separator />
+            {/if}
+            <SnsNeuronInfoStake />
+            <SnsNeuronMaturityCard />
           {/if}
-          <SnsNeuronInfoStake />
-          <SnsNeuronMaturityCard />
           <SnsNeuronFollowingCard />
           {#if nonNullish(parameters)}
             <SnsNeuronHotkeysCard {parameters} />
@@ -221,6 +223,6 @@
   .section-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-3x);
+    gap: var(--padding-4x);
   }
 </style>

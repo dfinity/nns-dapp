@@ -33,7 +33,7 @@ export const createMockSnsNeuron = ({
   whenDissolvedTimestampSeconds = BigInt(
     Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
   ),
-  ageSinceSeconds = BigInt(1000),
+  ageSinceTimestampSeconds = BigInt(1000),
   stakedMaturity = BigInt(100_000_000),
   maturity = BigInt(100_000_000),
   createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
@@ -49,7 +49,7 @@ export const createMockSnsNeuron = ({
   votingPowerMultiplier?: bigint;
   dissolveDelaySeconds?: bigint;
   whenDissolvedTimestampSeconds?: bigint;
-  ageSinceSeconds?: bigint;
+  ageSinceTimestampSeconds?: bigint;
   stakedMaturity?: bigint;
   maturity?: bigint;
   createdTimestampSeconds?: bigint;
@@ -63,7 +63,7 @@ export const createMockSnsNeuron = ({
     created_timestamp_seconds: createdTimestampSeconds,
     staked_maturity_e8s_equivalent: [stakedMaturity],
     auto_stake_maturity: [],
-    aging_since_timestamp_seconds: ageSinceSeconds,
+    aging_since_timestamp_seconds: ageSinceTimestampSeconds,
     voting_power_percentage_multiplier: votingPowerMultiplier,
     dissolve_state:
       state === undefined || state === NeuronState.Dissolved

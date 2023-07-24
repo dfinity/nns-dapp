@@ -33,12 +33,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Support for ICP transactions with Icrc addresses as the destination.
-
 #### Changed
-
-* Improve visibility of proposal summary headers.
-* Improve copy in button to set or increase dissolve delay of a neuron.
 
 #### Deprecated
 #### Removed
@@ -50,22 +45,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New NNS and SNS neuron details page layout.
+
 ### Operations
 
 #### Added
 
-* Install `ic-wasm` as part of the setup command.
-* Better visibility of upgrade cycle consumption, wasm size and memory usage.
-* Check that release-sop is the newest version when it's run.
-* Compile end-to-end tests to catch type errors.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
 
 #### Changed
 
-* Use faster GitHub runners for e2e tests.
-* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
-* Migrate some e2e tests from wdio to playwright.
 * Upgraded to Playwright 1.36.
 
 #### Deprecated
@@ -74,6 +64,34 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 #### Security
+
+## Proposal 123718
+
+### Application
+
+#### Added
+
+* Support for ICP transactions with Icrc addresses as the destination.
+
+#### Changed
+
+* Improve visibility of proposal summary headers.
+* Improve copy in button to set or increase dissolve delay of a neuron.
+
+### Operations
+
+#### Added
+
+* Install `ic-wasm` as part of the setup command.
+* Better visibility of upgrade cycle consumption, wasm size and memory usage.
+* Check that release-sop is the newest version when it's run.
+* Compile end-to-end tests to catch type errors.
+
+#### Changed
+
+* Use faster GitHub runners for e2e tests.
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+* Migrate some e2e tests from wdio to playwright.
 
 ## Proposal 123471
 ### Application
