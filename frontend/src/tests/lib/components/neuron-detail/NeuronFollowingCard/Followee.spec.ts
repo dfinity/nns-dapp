@@ -11,7 +11,7 @@ describe("Followee", () => {
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 
-  beforeEach(() => vi.spyOn(console, "error").mockImplementation(vi.fn));
+  beforeEach(() => vi.spyOn(console, "error").mockReturnValue());
 
   it("should render neuronId", () => {
     const { getByText } = render(FolloweeTest, {
