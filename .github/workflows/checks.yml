@@ -37,10 +37,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest-m]
+        os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Check for Rust changes
+        id: rust_changed
+        run: |
+          if ! git diff --quiet --merge-base main -- scripts/lint-rs Cargo.* rs
+          then echo "rust_changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.rust_changed.outputs.rust_changed == 'true'
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
@@ -48,8 +55,10 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-1
       - name: Lint rust code
+        if: steps.rust_changed.outputs.rust_changed == 'true'
         run: ./scripts/lint-rs
       - name: Run Tests
+        if: steps.rust_changed.outputs.rust_changed == 'true'
         shell: bash
         run: |
           cargo test --all-targets --all-features
