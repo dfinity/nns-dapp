@@ -11,6 +11,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 ### Changed
 ### Fixed
+* Update the index.html when it has changed.
 ### Security
 ### Not Published
 ### Removed
