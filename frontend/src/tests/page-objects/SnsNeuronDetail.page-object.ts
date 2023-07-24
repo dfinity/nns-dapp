@@ -1,11 +1,14 @@
 import { AddSnsHotkeyModalPo } from "$tests/page-objects/AddSnsHotkeyModal.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseStakeNeuronModal.page-object";
+import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowingCard.page-object";
 import { SnsNeuronHotkeysCardPo } from "$tests/page-objects/SnsNeuronHotkeysCard.page-object";
 import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
 import { SnsNeuronMaturityCardPo } from "$tests/page-objects/SnsNeuronMaturityCard.page-object";
+import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
+import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -86,5 +89,17 @@ export class SnsNeuronDetailPo extends BasePageObject {
 
   getHotkeyPrincipals(): Promise<string[]> {
     return this.getHotkeysCardPo().getHotkeyPrincipals();
+  }
+
+  getVotingPowerSectionPo(): SnsNeuronVotingPowerSectionPo {
+    return SnsNeuronVotingPowerSectionPo.under(this.root);
+  }
+
+  getMaturitySectionPo(): SnsNeuronMaturitySectionPo {
+    return SnsNeuronMaturitySectionPo.under(this.root);
+  }
+
+  getAdvancedSectionPo(): SnsNeuronAdvancedSectionPo {
+    return SnsNeuronAdvancedSectionPo.under(this.root);
   }
 }
