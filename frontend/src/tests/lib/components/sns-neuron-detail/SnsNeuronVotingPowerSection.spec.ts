@@ -56,5 +56,6 @@ describe("NnsStakeItemAction", () => {
 
     expect(await po.hasStakeItemAction()).toBe(true);
     expect(await po.hasStateItemAction()).toBe(true);
+    expect(await po.hasDissolveDelayItemActionPo()).toBe(true);
   });
 });
