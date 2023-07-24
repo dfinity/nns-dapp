@@ -4,7 +4,7 @@
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
-  import { ICPToken, TokenAmount, type Token } from "@dfinity/nns";
+  import { TokenAmount, ICPToken, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type {
     TransactionInit,
@@ -15,6 +15,8 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
+  import { decodePayment } from "@dfinity/ledger";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   export let testId: string | undefined = undefined;
   export let transactionInit: TransactionInit = {};
@@ -96,6 +98,35 @@
   const goForm = () => goStep(STEP_FORM);
 
   const onQRCode = ({ detail: value }: CustomEvent<string>) => {
+    const payment = decodePayment(value);
+
+    // if we can successfully decode a payment from the QR code, we can validate that it corresponds to the same token and also set the amount, in addition to populating the destination address.
+    if (nonNullish(payment)) {
+      const {
+        token: paymentToken,
+        identifier,
+        amount: paymentAmount,
+      } = payment;
+
+      if (paymentToken !== token.symbol.toLowerCase()) {
+        toastsError({
+          labelKey: "error.qrcode_token_incompatible",
+        });
+
+        goForm();
+        return;
+      }
+
+      selectedDestinationAddress = identifier;
+
+      if (nonNullish(paymentAmount)) {
+        amount = paymentAmount;
+      }
+
+      goForm();
+      return;
+    }
+
     selectedDestinationAddress = value;
     goForm();
   };

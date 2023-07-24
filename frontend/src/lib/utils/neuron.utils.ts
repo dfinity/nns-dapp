@@ -18,7 +18,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -26,8 +26,9 @@ import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconHistoryToggleOff,
-  IconLockClock,
+  IconLockClosed,
   IconLockOpen,
+  IconPace,
 } from "@dfinity/gix-components";
 import {
   NeuronState,
@@ -70,7 +71,7 @@ type StateMapper = {
 export const stateTextMapper: StateMapper = {
   [NeuronState.Locked]: {
     textKey: "locked",
-    Icon: IconLockClock,
+    Icon: IconLockClosed,
     status: "ok",
   },
   [NeuronState.Unspecified]: {
@@ -84,7 +85,7 @@ export const stateTextMapper: StateMapper = {
   },
   [NeuronState.Dissolving]: {
     textKey: "dissolving",
-    Icon: IconHistoryToggleOff,
+    Icon: IconPace,
     status: "warn",
   },
   [NeuronState.Spawning]: {
@@ -203,7 +204,7 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
     max: SECONDS_IN_FOUR_YEARS,
   });
 
-const bonusMultiplier = ({
+export const bonusMultiplier = ({
   amount,
   multiplier,
   max,
@@ -325,7 +326,7 @@ export const isNeuronControllable = ({
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): boolean =>
   fullNeuron?.controller !== undefined &&
   (fullNeuron.controller === identity?.getPrincipal().toText() ||
@@ -337,7 +338,7 @@ export const isNeuronControlledByHardwareWallet = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): boolean => {
   if (neuron.fullNeuron?.controller !== undefined) {
     const account = getAccountByPrincipal({
@@ -447,16 +448,20 @@ export const isEnoughMaturityToSpawn = ({
 export const isSpawning = (neuron: NeuronInfo): boolean =>
   neuron.state === NeuronState.Spawning;
 
+const isLocked = (neuron: NeuronInfo): boolean =>
+  neuron.state === NeuronState.Locked;
+
 // Tested with `mapMergeableNeurons`
 const isMergeableNeuron = ({
   neuron,
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): boolean =>
   !hasJoinedCommunityFund(neuron) &&
   !isSpawning(neuron) &&
+  isLocked(neuron) &&
   isNeuronControllable({ neuron, accounts });
 
 const getMergeableNeuronMessageKey = ({
@@ -464,7 +469,7 @@ const getMergeableNeuronMessageKey = ({
   accounts,
 }: {
   neuron: NeuronInfo;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): string | undefined => {
   if (hasJoinedCommunityFund(neuron)) {
     return "neurons.cannot_merge_neuron_community";
@@ -474,6 +479,9 @@ const getMergeableNeuronMessageKey = ({
   }
   if (!isNeuronControllable({ neuron, accounts })) {
     return "neurons.cannot_merge_neuron_hotkey";
+  }
+  if (!isLocked(neuron)) {
+    return "neurons.cannot_merge_neuron_state";
   }
 };
 
@@ -497,7 +505,7 @@ export const mapMergeableNeurons = ({
   selectedNeurons,
 }: {
   neurons: NeuronInfo[];
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
   selectedNeurons: NeuronInfo[];
 }): MergeableNeuron[] =>
   neurons
@@ -587,6 +595,12 @@ const sameManageNeuronFollowees = (neurons: NeuronInfo[]): boolean => {
   return allHaveSameFollowees(sortedFollowees);
 };
 
+/**
+ * This function checks whether two or more neurons can be merged
+ * but it doesn't check if each neuron is mergeable.
+ *
+ * The mergeability of each neuron should be checked before calling this function.
+ */
 export const canBeMerged = (
   neurons: NeuronInfo[]
 ): { isValid: boolean; messageKey?: string } => {

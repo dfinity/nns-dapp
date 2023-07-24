@@ -111,6 +111,14 @@
 
     close();
   };
+
+  const selectAll = () => {
+    selectedFilters = filtersValues.map(({ value }) => value);
+  };
+
+  const clear = () => {
+    selectedFilters = [];
+  };
 </script>
 
 <FilterModal
@@ -118,6 +126,8 @@
   on:nnsClose={close}
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
+  on:nnsSelectAll={selectAll}
+  on:nnsClearSelection={clear}
   filters={filtersValues}
 >
   <span slot="title"

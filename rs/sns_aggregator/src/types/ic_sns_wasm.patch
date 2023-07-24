@@ -1,31 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index 01542946c..043be43a0 100644
+index 2175637da..6dec6e041 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-@@ -4,7 +4,7 @@
- #![allow(non_camel_case_types)]
- #![allow(dead_code)]
- 
--use crate::types::{CandidType, Deserialize, Serialize, EmptyRecord};
-+use crate::types::{CandidType, Deserialize, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
-@@ -173,7 +173,7 @@ pub struct InsertUpgradePathEntriesResponse { error: Option<SnsWasmError> }
+@@ -228,7 +228,7 @@ pub struct InsertUpgradePathEntriesResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct list_deployed_snses_arg0 {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
  pub struct DeployedSns {
-   pub  root_canister_id: Option<candid::Principal>,
-   pub  governance_canister_id: Option<candid::Principal>,
-@@ -183,7 +183,7 @@ pub struct DeployedSns {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListDeployedSnsesResponse { instances: Vec<DeployedSns> }
-+pub struct ListDeployedSnsesResponse { pub instances: Vec<DeployedSns> }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct ListUpgradeStepsRequest {
+     pub root_canister_id: Option<candid::Principal>,
+     pub governance_canister_id: Option<candid::Principal>,

@@ -2,10 +2,11 @@ use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameSubAccountRequest, RenameSubAccountResponse, TransactionType,
+    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse, TransactionType,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
-use crate::assets::{hash_bytes, insert_asset, Asset};
+use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
@@ -48,16 +49,20 @@ fn main() {}
 #[pre_upgrade]
 fn pre_upgrade() {
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter before saving state: {}",
-        ic_cdk::api::instruction_counter()
+        "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
+        ic_cdk::api::instruction_counter(),
+        stats::gibibytes(stats::stable_memory_size_bytes()),
+        stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
         let bytes = s.encode();
         stable::set(&bytes);
     });
     dfn_core::api::print(format!(
-        "pre_upgrade instruction_counter after saving state: {}",
-        ic_cdk::api::instruction_counter()
+        "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
+        ic_cdk::api::instruction_counter(),
+        stats::gibibytes(stats::stable_memory_size_bytes()),
+        stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
 }
 
@@ -209,6 +214,17 @@ fn attach_canister_impl(request: AttachCanisterRequest) -> AttachCanisterRespons
     STATE.with(|s| s.accounts_store.borrow_mut().attach_canister(principal, request))
 }
 
+/// Renames a canister of the user.
+#[export_name = "canister_update rename_canister"]
+pub fn rename_canister() {
+    over(candid_one, rename_canister_impl);
+}
+
+fn rename_canister_impl(request: RenameCanisterRequest) -> RenameCanisterResponse {
+    let principal = dfn_core::api::caller();
+    STATE.with(|s| s.accounts_store.borrow_mut().rename_canister(principal, request))
+}
+
 /// Detaches a canister from the user's account.
 #[export_name = "canister_update detach_canister"]
 pub fn detach_canister() {
@@ -300,6 +316,22 @@ pub fn add_stable_asset() {
             }
         }
     });
+}
+
+/// Add assets to be served by the canister.
+///
+/// # Panics
+/// - Permission to upload may be denied; see `may_upload()` for details.
+#[export_name = "canister_update add_assets_tar_xz"]
+pub fn add_assets_tar_xz() {
+    over(candid_one, |asset_bytes: Vec<u8>| {
+        let caller = ic_cdk::caller();
+        let is_controller = ic_cdk::api::is_controller(&caller);
+        assets::upload::may_upload(&caller, is_controller)
+            .map_err(|e| format!("Permission to upload denied: {}", e))
+            .unwrap();
+        insert_tar_xz(asset_bytes);
+    })
 }
 
 #[derive(CandidType)]

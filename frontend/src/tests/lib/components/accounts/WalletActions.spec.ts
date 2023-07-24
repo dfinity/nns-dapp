@@ -6,7 +6,7 @@ import WalletActions from "$lib/components/accounts/WalletActions.svelte";
 import {
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { render } from "@testing-library/svelte";
 import WalletContextTest from "./WalletContextTest.svelte";
 

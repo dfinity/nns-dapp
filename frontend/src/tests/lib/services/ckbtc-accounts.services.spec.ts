@@ -1,4 +1,5 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import {
   CKBTC_INDEX_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -37,7 +38,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -56,7 +57,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
         .mockRejectedValue(new Error());
 
       const spy = jest.fn();
@@ -89,7 +90,7 @@ describe("ckbtc-accounts-services", () => {
       });
 
       jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.reject(undefined));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -112,11 +113,11 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       const spyTokenQuery = jest
-        .spyOn(ledgerApi, "getCkBTCToken")
+        .spyOn(ckbtcLedgerApi, "getCkBTCToken")
         .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
       await services.syncCkBTCAccounts({
@@ -146,7 +147,7 @@ describe("ckbtc-accounts-services", () => {
 
   describe("ckBTCTransferTokens", () => {
     const spyAccounts = jest
-      .spyOn(ledgerApi, "getCkBTCAccount")
+      .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
       .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
     beforeEach(() => {
@@ -162,7 +163,7 @@ describe("ckbtc-accounts-services", () => {
       tokensStore.setTokens(mockTokens);
 
       const spyTransfer = jest
-        .spyOn(ledgerApi, "ckBTCTransfer")
+        .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockResolvedValue(456n);
 
       const { blockIndex } = await services.ckBTCTransferTokens({
@@ -183,7 +184,7 @@ describe("ckbtc-accounts-services", () => {
       tokensStore.setTokens(mockTokens);
 
       const spyTransfer = jest
-        .spyOn(ledgerApi, "ckBTCTransfer")
+        .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockResolvedValue(456n);
 
       const { blockIndex } = await services.ckBTCTransferTokens({
@@ -206,7 +207,7 @@ describe("ckbtc-accounts-services", () => {
       tokensStore.setTokens(mockTokens);
 
       const spyTransfer = jest
-        .spyOn(ledgerApi, "ckBTCTransfer")
+        .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockRejectedValue(new Error("test error"));
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
@@ -230,7 +231,7 @@ describe("ckbtc-accounts-services", () => {
       tokensStore.reset();
 
       const spyTransfer = jest
-        .spyOn(ledgerApi, "ckBTCTransfer")
+        .spyOn(icrcLedgerApi, "icrcTransfer")
         .mockRejectedValue(new Error("test error"));
 
       const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");

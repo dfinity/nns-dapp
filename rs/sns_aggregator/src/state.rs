@@ -14,7 +14,7 @@ use crate::{
 use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
-use ic_cdk::timer::TimerId;
+use ic_cdk_timers::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::str::FromStr;

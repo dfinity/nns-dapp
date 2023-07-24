@@ -2,8 +2,13 @@
  * @jest-environment jsdom
  */
 
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
+import {
+  HOTKEY_PERMISSIONS,
+  MANAGE_HOTKEY_PERMISSIONS,
+} from "$lib/constants/sns-neurons.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -27,13 +32,18 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -52,6 +62,12 @@ describe("SnsNeuronDetail", () => {
     lifecycle: SnsSwapLifecycle.Committed,
   });
   const projectName = "Test SNS";
+
+  const nonExistingNeuron = createMockSnsNeuron({
+    id: [1, 1, 1, 1, 1],
+  });
+  const nonExistingNeuronId = getSnsNeuronIdAsHexString(nonExistingNeuron);
+
   // Clone the summary to avoid mutating the mock
   const summary = { ...responses[0][0] };
   summary.metadata.name = [projectName];
@@ -179,6 +195,133 @@ describe("SnsNeuronDetail", () => {
     });
   });
 
+  describe("hotkey", () => {
+    const props = {
+      neuronId: validNeuronIdAsHexString,
+    };
+
+    const hotkeyPrincipal =
+      "dskxv-lqp33-5g7ev-qesdj-fwwkb-3eze4-6tlur-42rxy-n4gag-6t4a3-tae";
+
+    it("can not be added without permission", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([]),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      expect(
+        await po.getHotkeysCardPo().getAddHotkeyButtonPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("can be added", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      expect(
+        await po.getHotkeysCardPo().getAddHotkeyButtonPo().isPresent()
+      ).toBe(true);
+      await po.addHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+    });
+
+    it("can be removed", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+        ],
+      });
+      const po = await renderComponent(props);
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
+
+    it("old update response doesn't replace newer state", async () => {
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from(MANAGE_HOTKEY_PERMISSIONS),
+          },
+          {
+            principal: [Principal.fromText(hotkeyPrincipal)],
+            permission_type: Int32Array.from(HOTKEY_PERMISSIONS),
+          },
+        ],
+      });
+
+      // Delay certified responses for getSnsNeuron
+      fakeSnsGovernanceApi.pauseFor(
+        ({ functionName, args }) =>
+          functionName === "getSnsNeuron" &&
+          typeof args[0] === "object" &&
+          "certified" in args[0] &&
+          args[0].certified === true
+      );
+
+      const po = await renderComponent(props);
+
+      // The certified response for the original getSnsNeuron call is pending.
+      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(1);
+
+      expect(await po.getHotkeyPrincipals()).toEqual([hotkeyPrincipal]);
+
+      await po.removeHotkey(hotkeyPrincipal);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+
+      // Now the certified response for the neuron with hotkey removed is also
+      // pending.
+      expect(fakeSnsGovernanceApi.getPendingCallsCount()).toBe(2);
+
+      // Now we resolve the certified response from before the hotkey was
+      // deleted. It should not cause the hotkey to reappear.
+      fakeSnsGovernanceApi.resolvePendingCalls(1);
+      await runResolvedPromises();
+
+      expect(await po.getHotkeyPrincipals()).toEqual([]);
+    });
+  });
+
   describe("when project is an invalid canister id", () => {
     beforeEach(() => page.mock({ data: { universe: "invalid-project-id" } }));
 
@@ -193,14 +336,20 @@ describe("SnsNeuronDetail", () => {
         const { path } = get(pageStore);
         expect(path).toEqual(AppPath.Neurons);
       });
+      expect(snsGovernanceApi.getSnsNeuron).not.toBeCalled();
     });
   });
 
   describe("when neuron is not found", () => {
-    beforeEach(() => page.mock({ data: { universe: "invalid-project-id" } }));
+    beforeEach(() => {
+      page.mock({
+        data: { universe: rootCanisterId.toText() },
+        routeId: AppPath.Neuron,
+      });
+    });
 
     const props = {
-      neuronId: getSnsNeuronIdAsHexString(mockSnsNeuron),
+      neuronId: nonExistingNeuronId,
     };
 
     it("should redirect", async () => {
@@ -209,6 +358,20 @@ describe("SnsNeuronDetail", () => {
       await waitFor(() => {
         const { path } = get(pageStore);
         expect(path).toEqual(AppPath.Neurons);
+      });
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledTimes(2);
+      const expectedParams = {
+        identity: mockIdentity,
+        rootCanisterId,
+        neuronId: fromNullable(nonExistingNeuron.id),
+      };
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledWith({
+        ...expectedParams,
+        certified: false,
+      });
+      expect(snsGovernanceApi.getSnsNeuron).toBeCalledWith({
+        ...expectedParams,
+        certified: true,
       });
     });
   });

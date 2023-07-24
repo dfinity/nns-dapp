@@ -5,7 +5,7 @@ cd "$(dirname "$0")/../../.."
 ./scripts/docker-build
 mkdir -p release/ci
 mkdir -p release/docker
-WASM="sns_aggregator.wasm"
+WASM="sns_aggregator.wasm.gz"
 cp "$WASM" release/docker/
 
 if test -f "$WASM"; then
@@ -25,7 +25,7 @@ Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
 * ... what has changed
 * ... in simple bullet points
 
-## Commit log:
+## Commit Log:
 
 \`\`\`
 + bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/"
@@ -40,7 +40,7 @@ To build the wasm module yourself and verify its hash, run the following command
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse HEAD)"
 ./scripts/docker-build
-sha256sum sns_aggregator.wasm
+sha256sum sns_aggregator.wasm.gz
 \`\`\`
 EOF
 
@@ -56,7 +56,7 @@ To build the wasm module yourself and verify its hash, run the following command
 git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse HEAD)"
 ./scripts/docker-build
-sha256sum sns_aggregator.wasm
+sha256sum sns_aggregator.wasm.gz
 \`\`\`
 EOF
 

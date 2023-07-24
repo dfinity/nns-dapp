@@ -18,7 +18,10 @@ import {
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -38,6 +41,7 @@ describe("SnsNeuronMaturityCard", () => {
             },
             neuron,
           }),
+          reload: () => Promise.resolve(),
         } as SelectedSnsNeuronContext,
         Component: SnsNeuronMaturityCard,
       },
@@ -56,10 +60,16 @@ describe("SnsNeuronMaturityCard", () => {
   });
 
   it("renders formatted total maturity", () => {
-    const { queryByText } = renderSnsNeuronMaturityCard({ ...mockSnsNeuron });
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      stake: 200_000_000n,
+      stakedMaturity: 200_000_000n,
+      maturity: 100_000_000n,
+    });
+    const { queryByText } = renderSnsNeuronMaturityCard(neuron);
     expect(queryByText(en.neuron_detail.maturity_title)).toBeInTheDocument();
 
-    const formatted = formattedTotalMaturity({ ...mockSnsNeuron });
+    const formatted = formattedTotalMaturity(neuron);
 
     expect(queryByText(formatted)).toBeInTheDocument();
   });

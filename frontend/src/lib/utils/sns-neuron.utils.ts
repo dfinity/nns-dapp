@@ -5,6 +5,7 @@ import {
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
 import {
+  bonusMultiplier,
   votingPower,
   type CompactNeuronInfo,
   type IneligibleNeuronData,
@@ -427,7 +428,7 @@ export const isEnoughAmountToSplit = ({
   neuronMinimumStake: E8s;
 }): boolean => amount >= neuronMinimumStake + fee;
 
-export const neuronCanBeSplit = ({
+export const hasEnoughStakeToSplit = ({
   neuron,
   fee,
   neuronMinimumStake,
@@ -606,6 +607,18 @@ export const followeesByNeuronId = ({
 };
 
 /**
+ * Returns the neuron's age
+ *
+ * Backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L415
+ * @param {SnsNeuron} neuron
+ * @returns {bigint}
+ */
+export const neuronAge = ({
+  aging_since_timestamp_seconds,
+}: SnsNeuron): bigint =>
+  BigInt(Math.max(nowInSeconds() - Number(aging_since_timestamp_seconds), 0));
+
+/**
  * Returns the sns neuron voting power
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
@@ -627,7 +640,6 @@ export const snsNeuronVotingPower = ({
     newDissolveDelayInSeconds !== undefined
       ? newDissolveDelayInSeconds
       : getSnsDissolveDelaySeconds(neuron) ?? 0n;
-  const nowSeconds = nowInSeconds();
   const {
     max_dissolve_delay_seconds,
     max_neuron_age_for_age_bonus,
@@ -654,11 +666,8 @@ export const snsNeuronVotingPower = ({
     return 0;
   }
 
-  const {
-    voting_power_percentage_multiplier,
-    aging_since_timestamp_seconds,
-    staked_maturity_e8s_equivalent,
-  } = neuron;
+  const { voting_power_percentage_multiplier, staked_maturity_e8s_equivalent } =
+    neuron;
   const dissolveDelay =
     dissolveDelayInSeconds < maxDissolveDelaySeconds
       ? dissolveDelayInSeconds
@@ -672,14 +681,12 @@ export const snsNeuronVotingPower = ({
       0
     )
   );
-  const ageSeconds = BigInt(
-    Math.max(nowSeconds - Number(aging_since_timestamp_seconds), 0)
-  );
+
   const vp = Number(
     votingPower({
       stakeE8s,
       dissolveDelay,
-      ageSeconds,
+      ageSeconds: neuronAge(neuron),
       ageBonusMultiplier: Number(maxAgeBonusPercentage) / 100,
       dissolveBonusMultiplier: Number(maxDissolveDelayBonusPercentage) / 100,
       maxDissolveDelaySeconds: Number(maxDissolveDelaySeconds),
@@ -692,6 +699,62 @@ export const snsNeuronVotingPower = ({
   // Rounding to avoid RangeError when converting to BigInt
   // (voting power is similar to e8s therefore rounding should not decrease accuracy)
   return Math.round(vp * (Number(voting_power_percentage_multiplier) / 100));
+};
+
+export const dissolveDelayMultiplier = ({
+  neuron,
+  snsParameters: {
+    neuron_minimum_dissolve_delay_to_vote_seconds,
+    max_dissolve_delay_seconds,
+    max_dissolve_delay_bonus_percentage,
+  },
+}: {
+  neuron: SnsNeuron;
+  snsParameters: SnsNervousSystemParameters;
+}): number => {
+  const neuronMinimumDissolveDelayToVoteSeconds = fromDefinedNullable(
+    neuron_minimum_dissolve_delay_to_vote_seconds
+  );
+  const maxDissolveDelaySeconds = fromDefinedNullable(
+    max_dissolve_delay_seconds
+  );
+  const maxDissolveDelayBonusPercentage = fromDefinedNullable(
+    max_dissolve_delay_bonus_percentage
+  );
+  const dissolveDelayInSeconds = getSnsDissolveDelaySeconds(neuron) ?? 0n;
+  const dissolveDelay =
+    dissolveDelayInSeconds < maxDissolveDelaySeconds
+      ? dissolveDelayInSeconds
+      : maxDissolveDelaySeconds;
+
+  if (dissolveDelay < neuronMinimumDissolveDelayToVoteSeconds) {
+    return 0;
+  }
+
+  return bonusMultiplier({
+    amount: dissolveDelay,
+    multiplier: Number(maxDissolveDelayBonusPercentage) / 100,
+    max: Number(maxDissolveDelaySeconds),
+  });
+};
+
+export const ageMultiplier = ({
+  neuron,
+  snsParameters: { max_neuron_age_for_age_bonus, max_age_bonus_percentage },
+}: {
+  neuron: SnsNeuron;
+  snsParameters: SnsNervousSystemParameters;
+}): number => {
+  const maxAgeBonusPercentage = fromDefinedNullable(max_age_bonus_percentage);
+  const maxNeuronAgeForAgeBonus = fromDefinedNullable(
+    max_neuron_age_for_age_bonus
+  );
+
+  return bonusMultiplier({
+    amount: neuronAge(neuron),
+    multiplier: Number(maxAgeBonusPercentage) / 100,
+    max: Number(maxNeuronAgeForAgeBonus),
+  });
 };
 
 /** Returns the reason or undefined when the neuron is eligible to vote. */
@@ -836,3 +899,27 @@ export const snsNeuronsToIneligibleNeuronData = ({
       identity,
     }),
   }));
+
+/**
+ * Returns how long until the vesting period ends in seconds.
+ *
+ * If the vesting period has ended, returns 0.
+ */
+export const vestingInSeconds = ({
+  created_timestamp_seconds,
+  vesting_period_seconds,
+}: SnsNeuron): bigint =>
+  BigInt(
+    Math.max(
+      Number(created_timestamp_seconds) +
+        Number(fromNullable(vesting_period_seconds) ?? 0n) -
+        nowInSeconds(),
+      0
+    )
+  );
+
+/**
+ * Returns whether the neuron is still vesting.
+ */
+export const isVesting = (neuron: SnsNeuron): boolean =>
+  vestingInSeconds(neuron) > 0n;

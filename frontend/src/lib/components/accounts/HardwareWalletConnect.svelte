@@ -3,7 +3,7 @@
   import { LedgerConnectionState } from "$lib/constants/ledger.constants";
   import HardwareWalletConnectAction from "./HardwareWalletConnectAction.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { registerHardwareWalletProxy } from "$lib/proxy/ledger.services.proxy";
+  import { registerHardwareWalletProxy } from "$lib/proxy/icp-ledger.services.proxy";
   import {
     ADD_ACCOUNT_CONTEXT_KEY,
     type AddAccountContext,

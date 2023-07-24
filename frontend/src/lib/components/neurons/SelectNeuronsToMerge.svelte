@@ -2,7 +2,7 @@
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { translate } from "$lib/utils/i18n.utils";
@@ -19,7 +19,7 @@
   let neurons: MergeableNeuron[];
   $: neurons = mapMergeableNeurons({
     neurons: $definedNeuronsStore,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
     selectedNeurons: mapNeuronIds({
       neuronIds: selectedNeuronIds,
       neurons: $definedNeuronsStore,

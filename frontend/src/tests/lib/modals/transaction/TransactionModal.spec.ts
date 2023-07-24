@@ -5,27 +5,27 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import {
-  mockAccountsStoreSubscribe,
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountsStoreSubscribe,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   fireEvent,
   render,
@@ -79,7 +79,7 @@ describe("TransactionModal", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(accountsStore, "subscribe")
+      .spyOn(icpAccountsStore, "subscribe")
       .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
 
     jest

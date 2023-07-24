@@ -6,9 +6,9 @@ import AccountCard from "$lib/components/accounts/AccountCard.svelte";
 import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
-import type { Token } from "@dfinity/nns";
-import { ICPToken } from "@dfinity/nns";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import type { Token } from "@dfinity/utils";
+import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("AccountCard", () => {

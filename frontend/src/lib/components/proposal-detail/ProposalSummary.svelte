@@ -41,32 +41,35 @@
       }
     }
 
-    :global(h1) {
+    // custom h1-h2 styles
+    :global(h1),
+    :global(h2) {
       @include fonts.h4;
+      font-weight: var(--font-weight-normal);
       margin-bottom: var(--padding-2x);
+      color: var(--value-color);
+    }
+
+    // Content header font size should not be larger than the summary header font size
+    --summary-header-font-size: var(--font-size-h2);
+    :global(h1) {
+      font-size: calc(var(--summary-header-font-size) * 0.9);
     }
 
     :global(h2) {
+      font-size: calc(var(--summary-header-font-size) * 0.8);
+    }
+
+    // H3-H6 looks the same
+    :global(h3),
+    :global(h4),
+    :global(h5),
+    :global(h6) {
       @include fonts.h5;
-      margin-bottom: var(--padding-2x);
-    }
-
-    :global(h3),
-    :global(h4),
-    :global(h5),
-    :global(h6) {
-      @include fonts.standard(true);
+      font-size: var(--font-size-standard);
+      font-weight: var(--font-weight-bold);
       margin-bottom: var(--padding);
-    }
-
-    :global(h1),
-    :global(h2),
-    :global(h3),
-    :global(h4),
-    :global(h5),
-    :global(h6) {
       color: var(--value-color);
-      font-weight: 400;
     }
 
     :global(table),

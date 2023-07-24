@@ -1,0 +1,13 @@
+{
+  "args": [
+    "--new",
+    "--name",
+    "My-release"
+  ],
+  "behavior": [
+  ],
+  "expectedOutput": [
+    "Release name must start with Release-YYYY-MM-DD"
+  ],
+  "expectedExitCode": 1
+}

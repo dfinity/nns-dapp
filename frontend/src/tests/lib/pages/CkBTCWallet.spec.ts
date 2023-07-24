@@ -10,6 +10,7 @@ import {
   ckBTCTransferTokens,
   syncCkBTCAccounts,
 } from "$lib/services/ckbtc-accounts.services";
+import * as transactionsServices from "$lib/services/ckbtc-transactions.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -24,6 +25,7 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
@@ -81,6 +83,32 @@ jest.mock("$lib/services/ckbtc-info.services", () => {
   };
 });
 
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("CkBTCWallet", () => {
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,
@@ -110,7 +138,11 @@ describe("CkBTCWallet", () => {
   });
 
   describe("accounts loaded", () => {
-    beforeAll(() => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      jest.useFakeTimers().setSystemTime(new Date());
+
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
@@ -131,7 +163,7 @@ describe("CkBTCWallet", () => {
       });
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => jest.useRealTimers());
 
     it("should render ckTESTBTC name", async () => {
       const { getByTestId } = render(CkBTCWallet, props);
@@ -216,6 +248,53 @@ describe("CkBTCWallet", () => {
     it("should update account after transfer tokens", async () => {
       const result = render(CkBTCAccountsTest, { props: modalProps });
 
+      const { queryByTestId, getByTestId, container } = result;
+
+      // Check original sum
+      await waitFor(() =>
+        expect(
+          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
+        ).toContain(
+          `${formatToken({
+            value: mockCkBTCMainAccount.balanceE8s,
+            detailed: true,
+          })}`
+        )
+      );
+
+      // Make transfer
+      await waitFor(() =>
+        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
+      );
+
+      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
+      await fireEvent.click(button);
+
+      await testTransferTokens({
+        result,
+        selectedNetwork: TransactionNetwork.ICP,
+      });
+
+      await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+
+      // Account should have been updated and sum should be reflected
+      await waitFor(() =>
+        expect(
+          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
+        ).toContain(`${formatToken({ value: expectedBalanceAfterTransfer })}`)
+      );
+    });
+
+    it("should reload transactions after transfer tokens", async () => {
+      const spy = jest.spyOn(
+        transactionsServices,
+        "loadCkBTCAccountTransactions"
+      );
+
+      const result = render(CkBTCAccountsTest, { props: modalProps });
+
+      expect(spy).toBeCalledTimes(0);
+
       const { queryByTestId, getByTestId } = result;
 
       // Check original sum
@@ -243,12 +322,9 @@ describe("CkBTCWallet", () => {
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
 
-      // Account should have been updated and sum should be reflected
-      await waitFor(() =>
-        expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({ value: expectedBalanceAfterTransfer })}`
-        )
-      );
+      await advanceTime(5000);
+
+      await waitFor(() => expect(spy).toBeCalledTimes(1));
     });
 
     it("should open receive modal", async () => {
@@ -280,7 +356,7 @@ describe("CkBTCWallet", () => {
 
       await selectSegmentBTC(container);
 
-      const spy = jest.spyOn(services, "syncCkBTCAccounts");
+      const spy = jest.spyOn(services, "loadCkBTCAccounts");
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement

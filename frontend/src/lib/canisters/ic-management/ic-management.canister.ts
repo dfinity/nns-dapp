@@ -1,31 +1,34 @@
+import type { ICManagementCanisterOptions } from "@dfinity/ic-management";
 import {
-  getManagementCanister,
-  type ManagementCanisterRecord,
-} from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+  ICManagementCanister as ICMgmtCanister,
+  type CanisterStatusResponse,
+} from "@dfinity/ic-management";
+import type { Principal } from "@dfinity/principal";
 import { toCanisterDetails } from "./converters";
 import type {
   CanisterDetails,
   CanisterSettings,
-  ICMgtCanisterOptions,
 } from "./ic-management.canister.types";
 import { mapError } from "./ic-management.errors";
-import type { CanisterStatusResponse } from "./ic-management.types";
 
-const wrapWithArray = <T>(value: T | undefined): [T] | [] =>
-  value === undefined ? [] : [value];
-
+/**
+ * The ICManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.
+ * In order to maintain backwards compatibility and facilitate integration into NNS-dapp, we wrapped the new library within the existing wrapper, which extends the response of the canister.
+ *
+ * TODO: remove this wrapper and mapping of the types and use @dfinity/ic-management library only.
+ */
 export class ICManagementCanister {
-  private constructor(private readonly service: ManagementCanisterRecord) {
-    this.service = service;
+  private readonly icMgmt: ICMgmtCanister;
+
+  private constructor(options: ICManagementCanisterOptions) {
+    this.icMgmt = ICMgmtCanister.create({
+      agent: options.agent,
+      serviceOverride: options.serviceOverride,
+    });
   }
 
-  public static create(options: ICMgtCanisterOptions) {
-    const agent = options.agent;
-
-    const service = options.serviceOverride ?? getManagementCanister({ agent });
-
-    return new ICManagementCanister(service);
+  public static create(options: ICManagementCanisterOptions) {
+    return new ICManagementCanister(options);
   }
 
   /**
@@ -40,9 +43,7 @@ export class ICManagementCanister {
   ): Promise<CanisterDetails> => {
     try {
       const rawResponse: CanisterStatusResponse =
-        await this.service.canister_status({
-          canister_id: canisterId,
-        });
+        await this.icMgmt.canisterStatus(canisterId);
       return toCanisterDetails({
         response: rawResponse,
         canisterId,
@@ -61,31 +62,13 @@ export class ICManagementCanister {
    * @returns Promise<void>
    * @throws UserNotTheController, Error
    */
-  public updateSettings = async ({
-    canisterId,
-    settings: {
-      controllers,
-      freezingThreshold,
-      memoryAllocation,
-      computeAllocation,
-    },
-  }: {
+  public updateSettings = async (params: {
     canisterId: Principal;
     settings: Partial<CanisterSettings>;
   }): Promise<void> => {
     try {
       // Empty array does not change the value in the settings.
-      await this.service.update_settings({
-        canister_id: canisterId,
-        settings: {
-          controllers: wrapWithArray(
-            controllers?.map((c) => Principal.fromText(c))
-          ),
-          freezing_threshold: wrapWithArray(freezingThreshold),
-          memory_allocation: wrapWithArray(memoryAllocation),
-          compute_allocation: wrapWithArray(computeAllocation),
-        },
-      });
+      await this.icMgmt.updateSettings(params);
     } catch (error: unknown) {
       throw mapError(error);
     }

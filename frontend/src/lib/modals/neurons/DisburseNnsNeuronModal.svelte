@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { ICPToken, TokenAmount, type NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
     WizardModal,
     type WizardSteps,
@@ -20,7 +21,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
 
   export let neuron: NeuronInfo;
 
@@ -95,7 +96,13 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  testId="disburse-nns-neuron-modal-component"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment

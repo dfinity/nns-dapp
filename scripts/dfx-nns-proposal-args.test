@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Tests whether dfx-nns-proposal-args is able to get proposal args.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+PROPOSAL_IDS=(123010)
+arg_tempfile() {
+  echo ",dfx-nns-proposal-args.test.${1:-}"
+}
+
+for proposal_id in "${PROPOSAL_IDS[@]}"; do
+  (
+    echo "Proposal $proposal_id should provide JSON output including FEATURE_FLAGS"
+    # Note: This holds because the NNS-dapp args include FEATURE_FLAGS; other canister upgrade proposals
+    #       may have different args or none at all.
+    rm -f "$(arg_tempfile "$proposal_id").json"
+    COMMAND=(scripts/dfx-nns-proposal-args --network ic --proposal "$proposal_id" --format json)
+    if "${COMMAND[@]}" | jq '.' | tee "$(arg_tempfile "$proposal_id").json" | grep -wq FEATURE_FLAGS; then
+      echo "OK: JSON output looks plausible"
+    else
+      {
+        echo "ERROR: JSON output should contain human readable data.  In this example, the human readable data should include FEATURE_FLAGS."
+        echo "       Actual output is in: $(arg_tempfile "$proposal_id").json"
+        echo "       Command used: ${COMMAND[*]}"
+        exit 1
+      } >&2
+
+    fi
+  )
+
+  (
+    echo "Proposal $proposal_id should provide a SHA output."
+    # Note: This holds because the NNS-dapp args include FEATURE_FLAGS; other canister upgrade proposals
+    #       may have different args or none at all.
+    rm -f "$(arg_tempfile "$proposal_id").sha256"
+    COMMAND=(scripts/dfx-nns-proposal-args --network ic --proposal "$proposal_id" --format sha256)
+    if "${COMMAND[@]}" | tee "$(arg_tempfile "$proposal_id").sha256" | grep -qE '^[0-9a-zA-Z]{64}$'; then
+      echo "OK: sha256 looks plausible"
+    else
+      {
+        echo "ERROR: Sha256 output should contain 64 hex characters."
+        echo "       Actual output is in: $(arg_tempfile "$proposal_id").sha256"
+        echo "       Command used: ${COMMAND[*]}"
+        exit 1
+      } >&2
+
+    fi
+  )
+
+  rm -f "$(arg_tempfile "$proposal_id")".{json,sha256}
+done

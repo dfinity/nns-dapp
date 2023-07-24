@@ -2,19 +2,19 @@
  * @jest-environment jsdom
  */
 
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   advanceTime,
   runResolvedPromises,
@@ -22,7 +22,7 @@ import {
 import { render, waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
   const goToWallet = async () => {
@@ -33,7 +33,7 @@ describe("NnsAccounts", () => {
 
   describe("when there are accounts", () => {
     beforeEach(() => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [],
         hardwareWallets: [],
@@ -66,7 +66,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should render subaccount cards", () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [],
@@ -83,7 +83,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should render hardware wallet account cards", () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -103,7 +103,7 @@ describe("NnsAccounts", () => {
   describe("summary", () => {
     beforeAll(() => {
       jest.clearAllMocks();
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -120,7 +120,7 @@ describe("NnsAccounts", () => {
 
   describe("when no accounts", () => {
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
@@ -150,7 +150,7 @@ describe("NnsAccounts", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
+      icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
       jest.clearAllMocks();
       cancelPollAccounts();

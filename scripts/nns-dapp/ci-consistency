@@ -36,7 +36,7 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=l long=limit desc="The number of runs to search though" variable=DFX_LIMIT default="200"
-clap.define short=f long=file desc="The file to compare" variable=DFX_ASSET default="nns-dapp.wasm"
+clap.define short=f long=file desc="The file to compare" variable=DFX_ASSET default="nns-dapp.wasm.gz"
 clap.define short=c long=commit desc="The commit to check (will be checked out).  May be a range, as defined here: https://git-scm.com/docs/git-log" variable=DFX_COMMIT default="HEAD"
 clap.define short=n long=nth desc="Test every Nth commit" variable=DFX_NTH default="1"
 # Source the output file ----------------------------------------------------------

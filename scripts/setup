@@ -66,7 +66,9 @@ mkdir -p "$USER_BIN"
 NEW_TERMINAL_NEEDED=false
 append_to_profile() {
   printf '\n%s\n' "$1" >>"$USER_PROFILE"
+  set +eu
   . "$USER_PROFILE"
+  set -eu
   NEW_TERMINAL_NEEDED=true
 }
 
@@ -101,9 +103,16 @@ install_brew_maybe() {
   }
 }
 
+check_coreutils() {
+  : Checks that everything we need from coreutils is installed
+  for command in sha256sum date; do
+    "$command" --version | grep 'GNU coreutils' || return 1
+  done
+}
 install_coreutils_darwin() {
   echo "Installing coreutils..."
   brew install coreutils
+  append_to_profile "export PATH=\"/opt/homebrew/opt/coreutils/libexec/gnubin:\$PATH\""
 }
 install_coreutils_linux() {
   echo "Installing coreutils..."
@@ -159,7 +168,7 @@ install_rust() {
 }
 
 install_binstall() {
-  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
+  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
 }
 
 install_xz_darwin() {
@@ -174,11 +183,6 @@ install_tar_darwin() {
 }
 install_tar_linux() {
   sudo apt-get install tar
-}
-
-install_ic_cdk_optimizer() {
-  # Nit: Needs rust to be in a working state.
-  cargo binstall --no-confirm --version 0.3.2 ic-cdk-optimizer
 }
 
 is_docker_installed() {
@@ -228,6 +232,16 @@ install_ic_admin_darwin() {
     append_to_profile "export PATH=\"\$PATH:${USER_BIN}\""
 }
 
+check_ic_wasm() {
+  EXPECTED_IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  INSTALLED_IC_WASM_VERSION="$(ic-wasm --version | awk '{print $2}')"
+  [[ "${INSTALLED_IC_WASM_VERSION:-}" == "$EXPECTED_IC_WASM_VERSION" ]]
+}
+install_ic_wasm() {
+  IC_WASM_VERSION="$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)"
+  cargo binstall --force --no-confirm "ic-wasm@${IC_WASM_VERSION}"
+}
+
 install_sns_linux() {
   curl "https://download.dfinity.systems/ic/${IC_COMMIT}/release/sns.gz" | gunzip >"$USER_BIN/sns"
   chmod +x "$USER_BIN/sns"
@@ -269,10 +283,6 @@ install_didc_darwin() {
   rm "$tempfile"
 }
 
-install_wasm_nm() {
-  cargo binstall --no-confirm wasm-nm@"$(jq -r .defaults.build.config.WASM_NM_VERSION dfx.json)"
-}
-
 OS="$(uname | tr '[:upper:]' '[:lower:]')"
 
 echo "Checking that you can install software..."
@@ -285,24 +295,23 @@ install_brew_maybe
 command -v wget || "install_wget_$OS"
 command -v curl || "install_curl_$OS"
 is_docker_installed || install_docker
-command -v sha256sum || "install_coreutils_$OS"
+check_coreutils || "install_coreutils_$OS"
 command -v sponge || "install_moreutils_$OS"
 command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
 cargo binstall -V || install_binstall
+check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 command -v xz || "install_xz_$OS"
 . <(./build-config.sh)
 have_correct_dfx || install_dfx
 command -v gtar || tar --help | grep GNU >/dev/null || "install_tar_$OS"
 command -v cmake || "install_cmake_$OS"
-command -V ic-cdk-optimizer || install_ic_cdk_optimizer
 command -V ic-admin || "install_ic_admin_$OS"
 command -v sns || "install_sns_$OS"
 command -v idl2json || install_idl2json
 command -v didc || "install_didc_$OS"
-command -v wasm-nm || install_wasm_nm
 
 echo "OK, all set to go!"
 [[ "$NEW_TERMINAL_NEEDED" == "false" ]] || echo "Please open a fresh terminal for these changes to take effect."

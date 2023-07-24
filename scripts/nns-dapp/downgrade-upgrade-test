@@ -3,7 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-PROD_WASM="nns-dapp-prod_local.wasm"
+PROD_WASM="nns-dapp-prod_local.wasm.gz"
 
 help_text() {
   cat <<-EOF
@@ -21,9 +21,7 @@ clap.define short=w long=wasm desc="The wasm built from the local code." variabl
 source "$(clap.build)"
 
 verify_healthy() {
-  # Checking get_stats() is temporarily disabled, as the get_stats API is changing
-  # and the new schema is incompatible with the old.
-  # dfx canister call nns-dapp get_stats
+  dfx canister call nns-dapp get_stats
   dfx canister call nns-dapp get_canisters
 }
 
@@ -32,7 +30,7 @@ get_current_wasm() {
 }
 
 get_prod_wasm() {
-  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_local.wasm >"$PROD_WASM"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
 # Installs the current build of nns-dapp
@@ -43,7 +41,7 @@ upgrade_nnsdapp() {
 
 echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="nns-dapp.wasm"
+  CURRENT_WASM="nns-dapp.wasm.gz"
   echo "Building $CURRENT_WASM..."
   DFX_NETWORK=local ./scripts/docker-build
 }

@@ -1,0 +1,60 @@
+{
+  "args": [
+    "--continue"
+  ],
+  "behavior": [
+    {
+      "command": "git branch --show-current",
+      "stdout": "Release-2001-02-30",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse release-candidate",
+      "stdout": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "sha256 /home/runner/work/nns-dapp/release/ci/nns-dapp.wasm.gz",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "dfx canister id nns-dapp --network staging",
+      "stdout": "jefp3-bqaaa-aaaaa-aacyq-cai",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cat nns-dapp-arg-staging.did",
+      "stdout": "(record{})",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "get_module_hash_from_network staging",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Checklist file: scripts/nns-dapp/Release-2001-02-30.json",
+    "jq: error: Could not open file scripts/nns-dapp/Release-2001-02-30.json: No such file or directory"
+  ],
+  "expectedExitCode": 1
+}

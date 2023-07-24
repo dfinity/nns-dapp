@@ -7,9 +7,9 @@ import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import type { Account } from "$lib/types/account";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import { mockSubAccountArray } from "$tests/mocks/accounts.store.mock";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
@@ -22,8 +22,8 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger";
-import type { Token } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { Token } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionCard", () => {

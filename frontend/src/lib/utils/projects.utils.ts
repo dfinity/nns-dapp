@@ -1,3 +1,4 @@
+import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import { getDeniedCountries } from "$lib/getters/sns-summary";
 import type { Country } from "$lib/types/location";
@@ -6,8 +7,9 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { TokenAmount } from "@dfinity/nns";
+import type { StoreData } from "$lib/types/store";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import type { TokenAmount } from "@dfinity/utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
@@ -321,7 +323,7 @@ export const participateButtonStatus = ({
   swapCommitment: SnsSwapCommitment | undefined | null;
   loggedIn: boolean;
   ticket: SnsSwapTicket | undefined | null;
-  userCountry: Country | Error | "not loaded";
+  userCountry: StoreData<Country>;
 }): ParticipationButtonStatus => {
   if (!loggedIn) {
     return "logged-out";
@@ -359,7 +361,7 @@ export const participateButtonStatus = ({
       return "enabled";
     }
 
-    if (userCountry === "not loaded") {
+    if (userCountry === NOT_LOADED) {
       return "loading";
     }
 

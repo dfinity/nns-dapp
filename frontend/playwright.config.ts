@@ -1,6 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -8,7 +6,7 @@ dotenv.config();
 export default defineConfig({
   testDir: "./src/tests/e2e",
   /* Maximum time one test can run for. */
-  timeout: (process.env.CI ? 180 : 90) * 1000,
+  timeout: (process.env.CI ? 300 : 90) * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -24,7 +22,7 @@ export default defineConfig({
   /* Let's not enable retries until we actually need them */
   retries: 0,
   /* Number of tests that can be run in parallel. */
-  workers: process.env.CI ? 3 : 6,
+  workers: 6,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -32,9 +30,7 @@ export default defineConfig({
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.CI
-      ? process.env.VITE_OWN_CANISTER_URL
-      : "http://localhost:5173",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:5173",
     screenshot: "only-on-failure",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "retain-on-failure",

@@ -1,0 +1,48 @@
+{
+  "args": [
+    "--continue"
+  ],
+  "behavior": [
+    {
+      "command": "git branch --show-current",
+      "stdout": "Release-2001-02-29",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git rev-parse release-candidate",
+      "stdout": "ffffffffffffffffffffffffffffffffffffffffff",
+      "stderr": "",
+      "exitCode": 0
+    }
+  ],
+  "expectedOutput": [
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
+    "Start time: Was already: 2001-02-29 14:15:16",
+    "git fetch --tags --force: Was already done. Skipping.",
+    "Release SOP script is newest version: Was already: yes",
+    "git checkout -b Release-2001-02-29 origin/main: Was already done. Skipping.",
+    "Release branch: Was already: Release-2001-02-29",
+    "Current branch: Release-2001-02-29",
+    "git push origin Release-2001-02-29: Was already done. Skipping.",
+    "Release branch URL: Was already: https://github.com/dfinity/nns-dapp/tree/Release-2001-02-29",
+    "git tag -f release-candidate: Was already done. Skipping.",
+    "Release commit: Was already: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "Values don't match!",
+    "Release commit: a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "tags/release-candidate commit: ffffffffffffffffffffffffffffffffffffffffff"
+  ],
+  "expectedExitCode": 1
+}

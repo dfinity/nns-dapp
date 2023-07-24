@@ -1,0 +1,60 @@
+{
+  "args": [
+    "--new"
+  ],
+  "behavior": [
+    {
+      "command": "date +%Y-%m-%d",
+      "stdout": "2001-02-29",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git show-ref --quiet --verify refs/heads/Release-2001-02-29",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 1
+    },
+    {
+      "command": "git rev-parse --show-toplevel",
+      "stdout": "/home/runner/work/nns-dapp",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "cd /home/runner/work/nns-dapp",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "git diff --quiet --exit-code",
+      "stdout": "",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "date +%Y-%m-%d\\ %H:%M:%S",
+      "stdout": "2001-02-29 14:15:16",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "is_release_sop_script_newest_version",
+      "stdout": "The release-sop script is different from origin/main",
+      "stderr": "",
+      "exitCode": 1
+    }
+  ],
+  "expectedOutput": [
+    "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
+    "Start time: 2001-02-29 14:15:16",
+    "👇 Press enter to run the following command:",
+    "",
+    "git fetch --tags --force",
+    "",
+    "git fetch --tags --force: Done",
+    "Release SOP script is newest version: Failed"
+  ],
+  "expectedExitCode": 1
+}

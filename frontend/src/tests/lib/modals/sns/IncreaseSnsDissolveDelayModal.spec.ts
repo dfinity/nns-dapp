@@ -17,14 +17,15 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
+  createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
-import { ICPToken } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
+import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -38,6 +39,8 @@ const roundUpSecondsToWholeDays = (seconds: number): number =>
   daysToSeconds(secondsToDays(seconds));
 
 describe("IncreaseSnsDissolveDelayModal", () => {
+  const nowInSeconds = 1689063315;
+  const now = nowInSeconds * 1000;
   const neuron: SnsNeuron = {
     ...mockSnsNeuron,
     dissolve_state: [
@@ -67,6 +70,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockResolvedValue(testIdentity);
 
+    jest.clearAllTimers();
+    jest.useFakeTimers().setSystemTime(now);
+
     snsParametersStore.reset();
     snsParametersStore.setParameters({
       certified: true,
@@ -89,6 +95,36 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
+  });
+
+  it("should use current dissolve delay value when locked", async () => {
+    const dissolveDelaySeconds = 12345555n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+      dissolveDelaySeconds,
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      dissolveDelaySeconds.toString()
+    );
+  });
+
+  it("should use current dissolve delay value when dissolving", async () => {
+    const whenDissolvedTimestampSeconds = BigInt(
+      nowInSeconds + SECONDS_IN_YEAR
+    );
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      whenDissolvedTimestampSeconds,
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      SECONDS_IN_YEAR.toString()
+    );
   });
 
   it("should have the update delay button disabled by default", async () => {
@@ -140,7 +176,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1);
   });
 
   it("should be able to change dissolve delay in the confirmation screen using input", async () => {
@@ -184,10 +220,10 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledTimes(1);
-    expect(snsGovernanceApi.increaseDissolveDelay).toBeCalledWith(
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1);
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
       expect.objectContaining({
-        additionalDissolveDelaySeconds: dissolveDelaySeconds,
+        dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,
       })
     );
   });

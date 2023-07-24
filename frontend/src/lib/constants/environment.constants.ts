@@ -42,7 +42,9 @@ export interface FeatureFlags<T> {
   ENABLE_SNS_AGGREGATOR: T;
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
+  ENABLE_ICP_ICRC: T;
   ENABLE_SIMULATE_MERGE_NEURONS: T;
+  ENABLE_NEURON_SETTINGS: T;
   ENABLE_INSTANT_UNLOCK: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
@@ -58,7 +60,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_SNS_VOTING": false, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_SNS_VOTING": true, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_NEURON_SETTINGS": false, "ENABLE_INSTANT_UNLOCK": false}'
 );
 
 export const IS_TESTNET: boolean =

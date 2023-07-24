@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";

@@ -1,13 +1,12 @@
 use crate::proposals::def::*;
-use candid::parser::types::{IDLType, IDLTypes, PrimType};
-use candid::parser::value::IDLValue;
-use candid::{CandidType, Decode, Deserialize};
+use candid::parser::types::{IDLType, IDLTypes};
+use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::IDENTITY_CANISTER_ID;
 use ic_nns_governance::pb::v1::proposal::Action;
 use ic_nns_governance::pb::v1::ProposalInfo;
 use idl2json::candid_types::internal_candid_type_to_idl_type;
-use idl2json::{idl2json_with_weak_names, BytesFormat, Idl2JsonOptions};
+use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::cell::RefCell;
@@ -44,10 +43,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
 
 fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
     if cache.len() >= CACHE_SIZE_LIMIT {
-        // TODO replace this with `pop_first` once it is stablized
-        if let Some(key) = cache.iter().next().map(|(key, _)| *key) {
-            cache.remove(&key);
-        }
+        cache.pop_first();
     }
 
     cache.insert(proposal_id, payload_json);
@@ -112,23 +108,17 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
 }
 
 fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
-    if arg.is_empty() {
-        return "[]".to_owned();
-    }
-    // We support only one argument, for the time being.
-    let idl_type = arg_types
-        .args
-        .get(0)
-        .cloned()
-        .unwrap_or_else(|| IDLType::PrimT(PrimType::Null));
-
-    match Decode!(arg, IDLValue) {
-        Ok(idl_value) => {
+    // TODO: Test empty payload
+    // TODO: Test existing payloads
+    // TODO: Test muti-value payloads
+    match IDLArgs::from_bytes(arg) {
+        Ok(idl_args) => {
             let options = Idl2JsonOptions {
                 bytes_as: Some(BytesFormat::Hex),
                 long_bytes_as: None,
+                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
             };
-            let json_value = idl2json_with_weak_names(&idl_value, &idl_type, &options);
+            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &options);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),

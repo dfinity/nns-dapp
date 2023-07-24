@@ -13,14 +13,14 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
@@ -74,6 +74,32 @@ jest.mock("$lib/services/ckbtc-info.services", () => {
   };
 });
 
+jest.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: jest.fn(() =>
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
+jest.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: jest.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
+
 describe("Accounts", () => {
   beforeAll(() => {
     jest
@@ -106,7 +132,7 @@ describe("Accounts", () => {
       accounts: [mockSnsMainAccount],
     });
 
-    accountsStore.setForTesting(mockAccountsStoreData);
+    icpAccountsStore.setForTesting(mockAccountsStoreData);
   });
 
   it("should render NnsAccounts by default", () => {

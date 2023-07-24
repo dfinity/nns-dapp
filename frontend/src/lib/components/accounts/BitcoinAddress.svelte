@@ -2,7 +2,7 @@
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
-  import type { Account, AccountIdentifierText } from "$lib/types/account";
+  import type { Account } from "$lib/types/account";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import { nonNullish } from "@dfinity/utils";
   import type { BtcAddressText } from "$lib/types/bitcoin";
@@ -17,13 +17,14 @@
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 
   export let account: Account;
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let reload: () => Promise<void>;
 
-  let identifier: AccountIdentifierText;
+  let identifier: IcrcAccountIdentifierText;
   $: ({ identifier } = account);
 
   let btcAddress: undefined | BtcAddressText;

@@ -1,0 +1,55 @@
+<script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
+  import { Section } from "@dfinity/gix-components";
+  import SnsStakedMaturityActionItem from "./SnsStakedMaturityActionItem.svelte";
+  import SnsAvailableMaturityActionItem from "./SnsAvailableMaturityActionItem.svelte";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
+  import {
+    SELECTED_SNS_NEURON_CONTEXT_KEY,
+    type SelectedSnsNeuronContext,
+  } from "$lib/types/sns-neuron-detail.context";
+  import { getContext } from "svelte";
+  import { nonNullish } from "@dfinity/utils";
+
+  const { store }: SelectedSnsNeuronContext =
+    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
+
+  let neuron: SnsNeuron | undefined | null;
+  $: neuron = $store.neuron;
+</script>
+
+<Section testId="sns-neuron-maturity-section-component">
+  <h3 slot="title">{$i18n.neuron_detail.maturity_title}</h3>
+  <p slot="end" class="title-value" data-tid="total-maturity">
+    {formattedTotalMaturity(neuron)}
+  </p>
+  <p slot="description">
+    {$i18n.neuron_detail.maturity_section_description}
+  </p>
+  {#if nonNullish(neuron)}
+    <ul class="content">
+      <SnsStakedMaturityActionItem {neuron} />
+      <SnsAvailableMaturityActionItem {neuron} />
+    </ul>
+  {/if}
+</Section>
+
+<style lang="scss">
+  h3,
+  p {
+    margin: 0;
+  }
+
+  .title-value {
+    font-size: var(--font-size-h3);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
+
+    padding: 0;
+  }
+</style>

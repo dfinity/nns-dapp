@@ -4,9 +4,9 @@
 
 import RenameSubAccountModal from "$lib/modals/accounts/RenameSubAccountModal.svelte";
 import type { Account } from "$lib/types/account";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalSelectedAccountContextWrapper } from "$tests/mocks/modal.mock";
 
 describe("RenameSubAccountModal", () => {
@@ -37,6 +37,6 @@ describe("RenameSubAccountModal", () => {
   it("should render rename action", async () => {
     const { getByTestId } = await renderTestModalCmp(mockSubAccount);
 
-    expect(getByTestId("rename-subaccount-button")).not.toBeNull();
+    expect(getByTestId("confirm-text-input-screen-button")).not.toBeNull();
   });
 });

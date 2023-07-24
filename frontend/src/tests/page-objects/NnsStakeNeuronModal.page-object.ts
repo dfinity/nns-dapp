@@ -34,10 +34,18 @@ export class NnsStakeNeuronModalPo extends BasePageObject {
     return this.click("close-modal");
   }
 
-  async stake({ amount }: { amount: number }): Promise<void> {
+  async stake({
+    amount,
+    dissolveDelayDays = "max",
+  }: {
+    amount: number;
+    dissolveDelayDays?: "max" | number;
+  }): Promise<void> {
     await this.getNnsStakeNeuronPo().stake(amount);
-    await this.getSetDissolveDelayPo().setMax();
-    await this.getConfirmDissolveDelayPo().clickConfirm();
+    await this.getSetDissolveDelayPo().setDissolveDelayDays(dissolveDelayDays);
+    if (dissolveDelayDays !== 0) {
+      await this.getConfirmDissolveDelayPo().clickConfirm();
+    }
     await this.getEditFollowNeuronsPo().waitFor();
     await this.closeModal();
   }

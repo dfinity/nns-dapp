@@ -2,7 +2,6 @@
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
-. "$SOURCE_DIR/versions.bash"
 
 print_help() {
   cat <<-"EOF"
@@ -23,6 +22,7 @@ print_help() {
 	{ "canisters": {
 	    "my_canister": {
 	      "url": { "ic": "https://my-custom-url.com" },
+	      "raw_url": { "ic": "https://my-custom-raw-url.com" },
 	      ...
 	    }
 	  }
@@ -63,23 +63,24 @@ URL_TYPES=(static api)
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 clap.define short=c long=canister desc="The canister name" variable=DFX_CANISTER
 clap.define short=t long=type desc="The canister type (options: ${URL_TYPES[*]})" variable=DFX_URL_TYPE default=static
+clap.define short=r long=raw desc="Provide a raw static URL" variable=DFX_RAW nargs=0 default=""
 clap.define short=o long=open desc="Open the URL in a browser" variable=DFX_OPEN nargs=0
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 # Historically, the canister name was given as a positional argument.
 test -n "${DFX_CANISTER:-}" || (($# != 1)) || DFX_CANISTER="${1:-}"
-test -n "${DFX_CANISTER:-}" || {
-  echo "ERROR: Please specify a canister name"
-  : "TODO: Support canister IDs as well."
-  exit 1
-}
 
 # Sanity check the URL type
 printf '%s\0' "${URL_TYPES[@]}" | grep -Fxqz -- "$DFX_URL_TYPE" || {
   echo "ERROR: Unsupported URL type: '$DFX_URL_TYPE'"
   echo "       Valid options:"
   printf "       * %s\n" "${URL_TYPES[@]}"
+  exit 1
+} >&2
+[[ "${DFX_RAW:-}" != "true" ]] || [[ "$DFX_URL_TYPE" == "static" ]] || {
+  echo "ERROR:  As far as I know, there are no properly supported raw API URLs."
+  echo "        If you know otherwise, please share."
   exit 1
 } >&2
 
@@ -95,17 +96,11 @@ while ! test -e dfx.json; do
   }
 done
 
-# Some canisters have custom URLs, such as identity.ic0.app.
-if [[ "${DFX_URL_TYPE:-}" == "static" ]]; then
-  url="$(jq -r '.canisters[env.DFX_CANISTER].url[env.DFX_NETWORK] // ""' dfx.json)"
-else
-  url=""
-fi
-
-# Not found?
-# Each network also has a pattern for canister URLs of the form: https://CANISTER_ID.NETWORK_URL
+# Each network has a pattern for canister URLs of the forms:
+# - https://CANISTER_ID.NETWORK_URL
+# - https://CANISTER_ID.raw.NETWORK_URL
 canister_id() {
-  dfx canister id --network "$DFX_NETWORK" "$DFX_CANISTER"
+  dfx canister id --network "$DFX_NETWORK" "$DFX_CANISTER" 2>/dev/null || echo "$DFX_CANISTER"
 }
 inject_canister_id() {
   read -r root_url
@@ -114,37 +109,56 @@ inject_canister_id() {
   static)
     local CANISTER_ID
     CANISTER_ID="$(canister_id)"
-    printf "%s\n" "$root_url" | sed -E "s,^(https?://)?,&${CANISTER_ID}.,g"
+    # Raw may be inserted, except on localhost.
+    local RAW_PART
+    RAW_PART="${DFX_RAW:+.raw}"
+    [[ "$DFX_NETWORK" != "local" ]] || RAW_PART=""
+    printf "%s\n" "$root_url" | sed -E "s,^(https?://)?,&${CANISTER_ID}${RAW_PART:-}.,g"
     ;;
   *) printf "%s\n" "$root_url" ;;
   esac
 }
-
-# .. Maybe this is in production.  Prioritize this so that production builds are not easily affected by local configuration.
-test -n "$url" || {
-  if [[ "$DFX_NETWORK" == "ic" ]]; then
-    case "$DFX_URL_TYPE" in
-    static) url="https://$(canister_id).icp0.io" ;;
-    api) url="https://icp-api.io" ;; # Note: The canister ID is NOT provided as a subdomain and no web assets are served.
-    esac
-  fi
-}
-
-# ... The network URL may be in dfx.json or in the user's global network config, if it exists.
+# ... Network config may be in dfx.json (deprecated) or in the user's global network config, if it exists.
 GLOBAL_NETWORK_CONFIG_FILE="$HOME/.config/dfx/networks.json"
 network_config() {
   : "Getting the local and global network config..."
   jq '.networks // {}' dfx.json
   ! test -e "$GLOBAL_NETWORK_CONFIG_FILE" || cat "$GLOBAL_NETWORK_CONFIG_FILE"
 }
-test -n "${url:-}" || url="$(network_config | h="${DFX_URL_TYPE^^}_HOST" jq -re '.[env.DFX_NETWORK].config | .[env.h] // .HOST // empty' | inject_canister_id || true)"
+network_url() {
+  local network_url
+  if [[ "$DFX_NETWORK" == "ic" ]]; then
+    case "$DFX_URL_TYPE" in
+    static) network_url="https://icp0.io" ;;
+    api) network_url="https://icp-api.io" ;; # Note: The canister ID is NOT provided as a subdomain and no web assets are served.
+    esac
+  fi
+  test -n "${network_url:-}" || network_url="$(network_config | h="${DFX_URL_TYPE^^}_HOST" jq -re '.[env.DFX_NETWORK].config | .[env.h] // .HOST // empty' || true)"
+  test -n "${network_url}" || [[ "${DFX_NETWORK:-}" != "local" ]] || network_url="http://localhost:8080"
+  test -n "${network_url}" || network_url="https://${DFX_NETWORK}.testnet.dfinity.network"
+  echo "${network_url%%$'\n'*}"
+}
 
-# ... The network may be local
-test -n "${url}" || [[ "${DFX_NETWORK:-}" != "local" ]] || url="$(echo "http://localhost:8080" | inject_canister_id)"
+canister_url() {
+  local url
+  # Some canisters have custom URLs, such as identity.ic0.app.
+  if [[ "${DFX_URL_TYPE:-}" == "static" ]]; then
+    key="${DFX_RAW:+raw_}url"
+    url="$(k="$key" jq -r '.canisters[env.DFX_CANISTER][env.k][env.DFX_NETWORK] // ""' dfx.json)"
+  else
+    url=""
+  fi
+  test -n "${url}" || url="$(network_url | inject_canister_id)"
+  echo "${url:-}"
+}
 
-# Last try:  Assume the network is a testnet.
-test -n "$url" || url="$(echo "https://${DFX_NETWORK}.testnet.dfinity.network" | inject_canister_id)"
+if test -n "${DFX_CANISTER:-}"; then
+  url="$(canister_url)"
+else
+  url="$(network_url)"
+fi
 
+# What to do with our hard won information.
 if [[ "${DFX_OPEN:-}" == "true" ]]; then
   command=xdg-open                                  # Uses Linux default browser
   command -v "$command" &>/dev/null || command=open # Uses mac default browser

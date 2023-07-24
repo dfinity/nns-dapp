@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -45,6 +45,7 @@
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
     swapMetrics: $snsSwapMetricsStore,
+    derivedState: derived,
   });
 </script>
 

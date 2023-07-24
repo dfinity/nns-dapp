@@ -11,7 +11,7 @@
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
-  import { type Token, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, type Token } from "@dfinity/utils";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import {
@@ -96,6 +96,8 @@
 
     stopBusy("disburse-sns-neuron");
 
+    dispatcher("nnsClose");
+
     if (success) {
       toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
@@ -103,8 +105,6 @@
 
       await goto($neuronsPathStore, { replaceState: true });
     }
-
-    dispatcher("nnsClose");
   };
 </script>
 

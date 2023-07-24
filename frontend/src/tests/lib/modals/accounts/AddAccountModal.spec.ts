@@ -3,7 +3,7 @@
  */
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
-import { addSubAccount } from "$lib/services/accounts.services";
+import { addSubAccount } from "$lib/services/icp-accounts.services";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -13,13 +13,13 @@ import type { SvelteComponent } from "svelte";
 
 // This is the way to mock when we import in a destructured manner
 // and we want to mock the imported function
-jest.mock("$lib/services/accounts.services", () => {
+jest.mock("$lib/services/icp-accounts.services", () => {
   return {
     addSubAccount: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+jest.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
     connectToHardwareWalletProxy: jest
       .fn()
@@ -114,7 +114,7 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
 
     await waitFor(async () => {
-      const input = container.querySelector('input[name="newAccount"]');
+      const input = container.querySelector('input[name="add-text-input"]');
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
       input &&
@@ -140,7 +140,7 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
 
     await waitFor(async () => {
-      const input = container.querySelector('input[name="newAccount"]');
+      const input = container.querySelector('input[name="add-text-input"]');
       // Svelte generates code for listening to the `input` event
       // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
       input &&
@@ -160,7 +160,7 @@ describe("AddAccountModal", () => {
 
   it("should disable input and button when creating a subaccount", async () => {
     const extraChecks = (container: HTMLElement) => {
-      const input = container.querySelector('input[name="newAccount"]');
+      const input = container.querySelector('input[name="add-text-input"]');
       expect(input?.hasAttribute("disabled")).toBeTruthy();
 
       const createButton = container.querySelector('button[type="submit"]');
@@ -170,8 +170,8 @@ describe("AddAccountModal", () => {
     await testSubaccount(extraChecks);
   });
 
-  const goBack = async ({ getByTestId, getByText, title }) => {
-    const back = getByTestId("back") as HTMLButtonElement;
+  const goBack = async ({ getByTestId, getByText, title, testId = "back" }) => {
+    const back = getByTestId(testId) as HTMLButtonElement;
     fireEvent.click(back);
 
     await waitFor(() =>
@@ -205,10 +205,16 @@ describe("AddAccountModal", () => {
 
   it("should navigate back and forth between steps", async () => {
     const renderResult = await renderModal({ component: AddAccountModal });
+
     await shouldNavigateSubaccountStep(renderResult);
 
     const { getByTestId, getByText } = renderResult;
-    await goBack({ getByTestId, getByText, title: en.accounts.add_account });
+    await goBack({
+      getByTestId,
+      getByText,
+      title: en.accounts.add_account,
+      testId: "cancel",
+    });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 

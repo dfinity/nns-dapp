@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { ICPToken, TokenAmount } from "@dfinity/nns";
+  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
     createEventDispatcher,
     getContext,
@@ -42,7 +42,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {

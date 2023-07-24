@@ -1,8 +1,8 @@
-# Use this with
+# Use this with:
 #
 # docker build . -t nns-dapp
 # container_id=$(docker create nns-dapp no-op)
-# docker cp $container_id:nns-dapp.wasm nns-dapp.wasm
+# docker cp $container_id:nns-dapp.wasm.gz nns-dapp.wasm.gz
 # docker rm --volumes $container_id
 
 # Check the memory available to docker.
@@ -37,7 +37,6 @@ RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
-RUN jq -r '.defaults.build.config.WASM_NM_VERSION' dfx.json > config/wasm_nm_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
@@ -59,9 +58,6 @@ RUN curl --fail https://sh.rustup.rs -sSf \
         | sh -s -- -y --no-modify-path
 ENV PATH=/cargo/bin:$PATH
 RUN cargo --version
-# Install IC CDK optimizer
-# TODO: Make ic-cdk-optimizer support binstall, then use cargo binstall --no-confirm ic-cdk-optimizer here.
-RUN curl -L --fail --retry 5 "https://github.com/dfinity/cdk-rs/releases/download/$(cat config/optimizer_version)/ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04.tar.gz" | gunzip | tar -x "ic-cdk-optimizer-$(cat config/optimizer_version)-ubuntu-20.04/ic-cdk-optimizer" --to-stdout | install -m755 /dev/stdin /usr/local/bin/ic-cdk-optimizer
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. Then we remove the dummy source files to make sure cargo rebuild
@@ -76,13 +72,10 @@ COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
 RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
-RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-RUN dfx --version
+RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
-RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc"
-RUN didc --version
-RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash && cargo binstall -V
-RUN cargo binstall --no-confirm "wasm-nm@$(cat config/wasm_nm_version)" && command -v wasm-nm
+RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
+RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
@@ -91,6 +84,8 @@ RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && comma
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/clap.bash /build/scripts/clap.bash
 COPY .df[x]/ /build/.dfx
 WORKDIR /build
 ARG DFX_NETWORK=mainnet
@@ -105,6 +100,8 @@ RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-a
 FROM builder AS mainnet_configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh /build/
+COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
+COPY scripts/clap.bash /build/scripts/clap.bash
 WORKDIR /build
 RUN mkdir -p frontend
 ENV DFX_NETWORK=mainnet
@@ -205,14 +202,14 @@ WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
-RUN mv sns_aggregator.wasm sns_aggregator_dev.wasm
+RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
-RUN for wasm in sns_aggregator.wasm sns_aggregator_dev.wasm ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
+RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
@@ -220,9 +217,9 @@ COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
-COPY --from=build_nnsdapp /build/nns-dapp.wasm /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm /nns-dapp_noassets.wasm
+COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
+COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
-COPY --from=build_aggregate /build/sns_aggregator.wasm /
-COPY --from=build_aggregate /build/sns_aggregator_dev.wasm /
+COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /
+COPY --from=build_aggregate /build/sns_aggregator_dev.wasm.gz /

@@ -5,12 +5,12 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -50,7 +50,7 @@ describe("Wallet", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       })
     );
-    accountsStore.setForTesting(mockAccountsStoreData);
+    icpAccountsStore.setForTesting(mockAccountsStoreData);
   });
 
   beforeAll(() =>

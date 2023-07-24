@@ -10,7 +10,8 @@ import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   mockDerived,
   mockInit,
-  mockQueryMetadata,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
@@ -40,15 +41,25 @@ export const snsResponseFor = ({
   lifecycle,
   certified = false,
   restrictedCountries,
+  directParticipantCount,
+  projectName,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
   certified?: boolean;
   restrictedCountries?: string[];
+  directParticipantCount?: [] | [bigint];
+  projectName?: string;
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
-      ...mockQueryMetadata,
+      metadata: {
+        ...mockQueryMetadataResponse,
+        name: nonNullish(projectName)
+          ? [projectName]
+          : mockQueryMetadataResponse.name,
+      },
+      token: mockQueryTokenResponse,
       rootCanisterId: principal.toText(),
       certified,
     },
@@ -71,7 +82,13 @@ export const snsResponseFor = ({
           },
         ],
       }),
-      derived: [mockDerived] as [SnsSwapDerivedState],
+      derived: [
+        {
+          ...mockDerived,
+          direct_participant_count:
+            directParticipantCount ?? mockDerived.direct_participant_count,
+        },
+      ] as [SnsSwapDerivedState],
       certified,
     },
   ],

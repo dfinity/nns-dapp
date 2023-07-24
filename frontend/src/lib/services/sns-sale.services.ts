@@ -1,4 +1,4 @@
-import { sendICP } from "$lib/api/ledger.api";
+import { sendICP } from "$lib/api/icp-ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
@@ -12,8 +12,8 @@ import {
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
-import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
+import { loadBalance } from "$lib/services/icp-accounts.services";
 import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -36,9 +36,7 @@ import {
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import {
-  ICPToken,
   InsufficientFundsError,
-  TokenAmount,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
@@ -58,6 +56,8 @@ import {
   SnsSwapNewTicketError,
 } from "@dfinity/sns";
 import {
+  ICPToken,
+  TokenAmount,
   assertNonNullish,
   fromDefinedNullable,
   fromNullable,

@@ -7,40 +7,39 @@
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
-  let currentProposalIndex: number;
-  $: currentProposalIndex = proposalIds.indexOf(currentProposalId);
+  let sortedProposalIds: bigint[] = [];
+  // sort proposalIds in descent order
+  $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
 
-  let previousId: bigint | undefined;
-  $: previousId =
-    currentProposalIndex === -1
-      ? undefined
-      : proposalIds[currentProposalIndex - 1];
+  let newerId: bigint | undefined;
+  // TODO: switch to findLast() once it's available
+  // use `as bigint[]` to avoid TS error (type T | undefined is not assignable to type bigint | undefined)
+  $: newerId = ([...sortedProposalIds].reverse() as bigint[]).find(
+    (id) => id > currentProposalId
+  );
 
-  let nextId: bigint | undefined;
-  $: nextId =
-    currentProposalIndex === -1
-      ? undefined
-      : proposalIds[currentProposalIndex + 1];
+  let olderId: bigint | undefined;
+  $: olderId = sortedProposalIds.find((id) => id < currentProposalId);
 
-  const selectPrevious = () => {
-    assertNonNullish(previousId);
-    selectProposal(previousId);
+  const selectNewer = () => {
+    assertNonNullish(newerId);
+    selectProposal(newerId);
   };
-  const selectNext = () => {
-    assertNonNullish(nextId);
-    selectProposal(nextId);
+  const selectOlder = () => {
+    assertNonNullish(olderId);
+    selectProposal(olderId);
   };
 </script>
 
-{#if proposalIds.length > 1}
+{#if sortedProposalIds.length > 1}
   <div role="toolbar" data-tid="proposal-nav">
     <button
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.newer}
-      on:click={selectPrevious}
-      class:hidden={isNullish(previousId)}
-      data-tid="proposal-nav-previous"
+      on:click={selectNewer}
+      class:hidden={isNullish(newerId)}
+      data-tid="proposal-nav-newer"
     >
       <IconWest />
       {$i18n.proposal_detail.newer_short}</button
@@ -50,9 +49,9 @@
       class="ghost"
       type="button"
       aria-label={$i18n.proposal_detail.older}
-      on:click={selectNext}
-      class:hidden={isNullish(nextId)}
-      data-tid="proposal-nav-next"
+      on:click={selectOlder}
+      class:hidden={isNullish(olderId)}
+      data-tid="proposal-nav-older"
     >
       {$i18n.proposal_detail.older_short}
       <IconEast />

@@ -1,14 +1,14 @@
 import { fetchTransactionRate } from "$lib/api/dashboard.api";
-import type { TvlResult } from "$lib/canisters/tvl/tvl.types";
+import type { GetTVLResult } from "$lib/canisters/tvl/tvl.canister.types";
 import {
   SYNC_METRICS_CONFIG,
   SYNC_METRICS_TIMER_INTERVAL,
 } from "$lib/constants/metrics.constants";
-import { queryTVL } from "$lib/services/$public/tvl.service";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import type { MetricsSync } from "$lib/types/metrics";
 import type { PostMessageDataRequestMetrics } from "$lib/types/post-message.metrics";
 import type { PostMessage } from "$lib/types/post-messages";
+import { queryTVL } from "$lib/worker-services/$public/tvl.worker-services";
 
 onmessage = async ({
   data: dataMsg,
@@ -78,7 +78,7 @@ const syncMetrics = async ({
 
   try {
     const metrics = await Promise.all([
-      syncTvl ? queryTVL({ ...rest }) : Promise.resolve(undefined),
+      syncTvl ? queryTVL(rest) : Promise.resolve(undefined),
       syncTransactionRate ? fetchTransactionRate() : Promise.resolve(undefined),
     ]);
 
@@ -92,7 +92,7 @@ const syncMetrics = async ({
 };
 
 const emitCanister = ([tvl, transactionRate]: [
-  TvlResult | undefined,
+  GetTVLResult | undefined,
   DashboardMessageExecutionRateResponse | undefined
 ]) =>
   postMessage({

@@ -1,5 +1,5 @@
 import * as api from "$lib/api/canisters.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import {
   addController,
@@ -10,13 +10,14 @@ import {
   getIcpToCyclesExchangeRate,
   listCanisters,
   removeController,
+  renameCanister,
   topUpCanister,
   updateSettings,
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
+  mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
@@ -27,13 +28,14 @@ import {
   mockCanisters,
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/ledger.api");
+jest.mock("$lib/api/icp-ledger.api");
 jest.mock("$lib/api/canisters.api");
-const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
+const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);
@@ -43,6 +45,7 @@ describe("canisters-services", () => {
   let spyQueryCanisters: jest.SpyInstance;
   let spyQueryAccountBalance: jest.SpyInstance;
   let spyAttachCanister: jest.SpyInstance;
+  let spyRenameCanister: jest.SpyInstance;
   let spyDetachCanister: jest.SpyInstance;
   let spyUpdateSettings: jest.SpyInstance;
   let spyCreateCanister: jest.SpyInstance;
@@ -65,6 +68,10 @@ describe("canisters-services", () => {
       .mockResolvedValue(newBalanceE8s);
     spyAttachCanister = jest
       .spyOn(api, "attachCanister")
+      .mockImplementation(() => Promise.resolve(undefined));
+
+    spyRenameCanister = jest
+      .spyOn(api, "renameCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
     spyDetachCanister = jest
@@ -115,9 +122,16 @@ describe("canisters-services", () => {
 
   describe("attachCanister", () => {
     it("should call api to attach canister and list canisters again", async () => {
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await attachCanister({
+        canisterId: mockCanisters[0].canister_id,
+        name: mockCanisters[0].name,
+      });
       expect(response.success).toBe(true);
-      expect(spyAttachCanister).toBeCalled();
+      expect(spyAttachCanister).toBeCalledWith({
+        canisterId: mockCanisters[0].canister_id,
+        name: mockCanisters[0].name,
+        identity: mockIdentity,
+      });
       expect(spyQueryCanisters).toBeCalled();
 
       const store = get(canistersStore);
@@ -127,7 +141,42 @@ describe("canisters-services", () => {
     it("should not attach canister if no identity", async () => {
       setNoIdentity();
 
-      const response = await attachCanister(mockCanisterDetails.id);
+      const response = await attachCanister({
+        canisterId: mockCanisterDetails.id,
+      });
+      expect(response.success).toBe(false);
+      expect(spyAttachCanister).not.toBeCalled();
+      expect(spyQueryCanisters).not.toBeCalled();
+      expect(get(toastsStore)[0]).toMatchObject({
+        level: "error",
+        text: expect.stringContaining(en.error.missing_identity),
+      });
+
+      resetIdentity();
+    });
+  });
+
+  describe("renameCanister", () => {
+    it("should call api to rename canister and list canisters again", async () => {
+      const response = await renameCanister({
+        canisterId: mockCanisterDetails.id,
+        name: "test",
+      });
+      expect(response.success).toBe(true);
+      expect(spyRenameCanister).toBeCalled();
+      expect(spyQueryCanisters).toBeCalled();
+
+      const store = get(canistersStore);
+      expect(store.canisters).toEqual(mockCanisters);
+    });
+
+    it("should not attach canister if no identity", async () => {
+      setNoIdentity();
+
+      const response = await renameCanister({
+        canisterId: mockCanisterDetails.id,
+        name: "test",
+      });
       expect(response.success).toBe(false);
       expect(spyAttachCanister).not.toBeCalled();
       expect(spyQueryCanisters).not.toBeCalled();

@@ -264,11 +264,11 @@ describe("SnsProposalDetail", () => {
 
       const navigationPo = po.getProposalNavigationPo();
       expect(await navigationPo.isPresent()).toBe(true);
-      expect(await navigationPo.getNextButtonPo().isPresent()).toBe(true);
-      expect(await navigationPo.getPreviousButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
       // all buttons should be enabled
-      expect(await navigationPo.getNextButtonPo().isDisabled()).toBe(false);
-      expect(await navigationPo.getPreviousButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
     });
   });
 

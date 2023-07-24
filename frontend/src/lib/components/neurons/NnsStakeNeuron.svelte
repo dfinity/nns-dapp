@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { loadBalance } from "$lib/services/accounts.services";
+  import { loadBalance } from "$lib/services/icp-accounts.services";
   import { stakeNeuron } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
@@ -16,7 +16,7 @@
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let account: Account | undefined;
   let amount: number;

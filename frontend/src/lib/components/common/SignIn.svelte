@@ -1,27 +1,15 @@
 <script lang="ts">
-  import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
   import { Spinner } from "@dfinity/gix-components";
   import { layoutAuthReady } from "$lib/stores/layout.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-
-  // Asks the user to authenticate themselves with a TPM or similar.
-  const signIn = async () => {
-    const onError = (err: unknown) =>
-      toastsError({
-        labelKey: "error.sign_in",
-        err,
-      });
-
-    await authStore.signIn(onError);
-  };
+  import { login } from "$lib/services/auth.services";
 
   let disabled = true;
   $: disabled = $authSignedInStore || !$layoutAuthReady;
 </script>
 
-<button on:click={signIn} data-tid="login-button" class="primary" {disabled}>
+<button on:click={login} data-tid="login-button" class="primary" {disabled}>
   <slot>{$i18n.auth.login}</slot>
   {#if disabled}
     <div class="spinner">

@@ -3,14 +3,14 @@
  */
 
 import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
-import { renameSubAccount } from "$lib/services/accounts.services";
+import { renameSubAccount } from "$lib/services/icp-accounts.services";
 import type { Account } from "$lib/types/account";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent } from "@testing-library/dom";
 
-jest.mock("$lib/services/accounts.services");
+jest.mock("$lib/services/icp-accounts.services");
 
 describe("RenameSubAccountAction", () => {
   afterEach(() => {
@@ -43,7 +43,9 @@ describe("RenameSubAccountAction", () => {
   it("should not enable rename action if no new name", () => {
     const { getByTestId } = renderTestCmp(undefined);
 
-    const button = getByTestId("rename-subaccount-button") as HTMLButtonElement;
+    const button = getByTestId(
+      "confirm-text-input-screen-button"
+    ) as HTMLButtonElement;
 
     expect(button).not.toBeNull();
     expect(button.getAttribute("disabled")).not.toBeNull();
@@ -63,7 +65,9 @@ describe("RenameSubAccountAction", () => {
 
     const input = container.querySelector("input") as HTMLInputElement;
 
-    const button = getByTestId("rename-subaccount-button") as HTMLButtonElement;
+    const button = getByTestId(
+      "confirm-text-input-screen-button"
+    ) as HTMLButtonElement;
     expect(button.getAttribute("disabled")).toBeNull();
 
     await fireEvent.input(input, { target: { value: "test" } });
@@ -77,7 +81,9 @@ describe("RenameSubAccountAction", () => {
     const { container, getByTestId } = renderTestCmp(undefined);
 
     const input = container.querySelector("input") as HTMLInputElement;
-    const button = getByTestId("rename-subaccount-button") as HTMLButtonElement;
+    const button = getByTestId(
+      "confirm-text-input-screen-button"
+    ) as HTMLButtonElement;
 
     await fireEvent.input(input, { target: { value: "test" } });
 
@@ -90,7 +96,9 @@ describe("RenameSubAccountAction", () => {
     const input = container.querySelector("input") as HTMLInputElement;
     await fireEvent.input(input, { target: { value: "test" } });
 
-    const button = getByTestId("rename-subaccount-button") as HTMLButtonElement;
+    const button = getByTestId(
+      "confirm-text-input-screen-button"
+    ) as HTMLButtonElement;
     await fireEvent.click(button);
 
     expect(spy).toHaveBeenCalled();

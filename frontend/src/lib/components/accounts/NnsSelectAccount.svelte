@@ -1,11 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import AccountCard from "./AccountCard.svelte";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import { ICPToken } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let disableSelection = false;
   export let filterIdentifier: string | undefined = undefined;
@@ -18,15 +18,15 @@
   };
 
   let mainAccount: Account | undefined;
-  $: mainAccount = $accountsStore?.main;
+  $: mainAccount = $icpAccountsStore?.main;
 
   let subAccounts: Account[];
-  $: subAccounts = ($accountsStore?.subAccounts ?? []).filter(
+  $: subAccounts = ($icpAccountsStore?.subAccounts ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
 
   let hardwareWalletAccounts: Account[];
-  $: hardwareWalletAccounts = ($accountsStore?.hardwareWallets ?? []).filter(
+  $: hardwareWalletAccounts = ($icpAccountsStore?.hardwareWallets ?? []).filter(
     ({ identifier }: Account) => identifier !== filterIdentifier
   );
 

@@ -65,6 +65,20 @@ export class JestPageObjectElement implements PageObjectElement {
     // return this.querySelectorCount({ selector: `[data-tid=${tid}]`, count });
   }
 
+  private isInputElement(element: Element): element is HTMLInputElement {
+    return element.tagName === "INPUT";
+  }
+
+  async getValue() {
+    if ("value" in this.element) {
+      // TS doesn't know that the "value" property is of type string
+      return this.element.value as string;
+    }
+    throw new Error(
+      `"value" property is not supported for element: "${this.element.tagName}"`
+    );
+  }
+
   private getRootAndFullSelector(): {
     rootElement: Element;
     fullSelector: string;
@@ -97,15 +111,9 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   waitForAbsent(): Promise<void> {
-    return waitFor(
-      async () => {
-        return expect(await this.isPresent()).toBe(false);
-      },
-      // TODO: Needed for the swap participation flow. Remove.
-      // To remove we need to use different describes in ProjectDetail.spec.ts
-      // Describes that mock timers and describes that don't.
-      { timeout: 5_000 }
-    );
+    return waitFor(async () => {
+      return expect(await this.isPresent()).toBe(false);
+    });
   }
 
   // Resolves to null if the element is not present.

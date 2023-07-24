@@ -39,75 +39,126 @@ describe("ProposalNavigation", () => {
     it("should render buttons", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
+        proposalIds: [2n, 1n, 0n],
         selectProposal: jest.fn(),
       });
 
-      expect(await po.getPreviousButtonPo().isPresent()).toBe(true);
-      expect(await po.getNextButtonPo().isPresent()).toBe(true);
+      expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+      expect(await po.getOlderButtonPo().isPresent()).toBe(true);
     });
 
     it("should enable both buttons", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
+        proposalIds: [2n, 1n, 0n],
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(false);
-      expect(await po.isPreviousButtonHidden()).toBe(false);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
 
-    it("should disable previous button when it's selected", async () => {
+    it("should be visible even when the current proposal is not in the list", async () => {
       const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [1n, 2n],
+        currentProposalId: 10n,
+        proposalIds: [20n, 0n],
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(false);
-      expect(await po.isPreviousButtonHidden()).toBe(true);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
 
-    it("should disable next when it's selected", async () => {
+    it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n, 1n],
+        proposalIds: [1n, 0n],
         selectProposal: jest.fn(),
       });
 
-      expect(await po.isNextButtonHidden()).toBe(true);
-      expect(await po.isPreviousButtonHidden()).toBe(false);
+      expect(await po.isOlderButtonHidden()).toBe(false);
+      expect(await po.isNewerButtonHidden()).toBe(true);
+    });
+
+    it("should hide to-oldest-proposal when the oldest is selected", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: [2n, 1n],
+        selectProposal: jest.fn(),
+      });
+
+      expect(await po.isOlderButtonHidden()).toBe(true);
+      expect(await po.isNewerButtonHidden()).toBe(false);
     });
   });
 
-  describe("action", () => {
-    it("should emmit next click", async () => {
-      const selectProposalSpy = jest.fn();
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
-        selectProposal: selectProposalSpy,
-      });
-
-      await po.clickNext();
-
-      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(2n);
+  it("should emmit to-older-proposal click", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 2n,
+      proposalIds: [4n, 3n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
     });
 
-    it("should emmit previous click", async () => {
-      const selectProposalSpy = jest.fn();
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [0n, 1n, 2n],
-        selectProposal: selectProposalSpy,
-      });
+    await po.clickOlder();
 
-      await po.clickPrevious();
+    expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+    expect(selectProposalSpy).toHaveBeenCalledWith(1n);
+  });
 
-      expect(selectProposalSpy).toHaveBeenCalledTimes(1);
-      expect(selectProposalSpy).toHaveBeenCalledWith(0n);
+  it("should emmit to-newer-proposal click", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 2n,
+      proposalIds: [4n, 3n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
     });
+
+    await po.clickNewer();
+
+    expect(selectProposalSpy).toHaveBeenCalledTimes(1);
+    expect(selectProposalSpy).toHaveBeenCalledWith(3n);
+  });
+
+  it("should emit with right arguments for non-consecutive ids", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 13n,
+      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickNewer();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(17n);
+    await po.clickOlder();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+  });
+
+  it("should emit with right arguments even when the current id is not in the list", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 9n,
+      proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickNewer();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(13n);
+    await po.clickOlder();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(4n);
+  });
+
+  it("should sort ids", async () => {
+    const selectProposalSpy = jest.fn();
+    const po = renderComponent({
+      currentProposalId: 3n,
+      proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
+      selectProposal: selectProposalSpy,
+    });
+
+    await po.clickNewer();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(5n);
+    await po.clickOlder();
+    expect(selectProposalSpy).toHaveBeenLastCalledWith(2n);
   });
 });

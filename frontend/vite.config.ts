@@ -70,14 +70,18 @@ const config: UserConfig = {
               "frontend/src/lib/canisters",
               "frontend/src/lib/constants",
               "frontend/src/lib/derived",
+              "frontend/src/lib/getters",
               "frontend/src/lib/identities",
               "frontend/src/lib/keys",
               "frontend/src/lib/proxy",
-              "frontend/src/lib/rest",
               "frontend/src/lib/services",
               "frontend/src/lib/stores",
               "frontend/src/lib/types",
               "frontend/src/lib/utils",
+              "frontend/src/lib/worker-api",
+              "frontend/src/lib/worker-services",
+              "frontend/src/lib/worker-stores",
+              "frontend/src/lib/worker-types",
               "frontend/src/lib/worker-utils",
               "frontend/src/lib/workers",
             ].find((module) => folder.includes(module)) !== undefined
@@ -105,6 +109,9 @@ const config: UserConfig = {
         global: "globalThis",
       },
     },
+  },
+  worker: {
+    format: "es",
   },
 };
 

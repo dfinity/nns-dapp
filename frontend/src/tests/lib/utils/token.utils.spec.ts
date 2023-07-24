@@ -9,7 +9,7 @@ import {
   numberToE8s,
   sumAmountE8s,
 } from "$lib/utils/token.utils";
-import { ICPToken, TokenAmount } from "@dfinity/nns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("token-utils", () => {
   it("should format token", () => {

@@ -56,8 +56,8 @@ describe("NnsProposalProposerActionsEntry", () => {
     const [key, value] = Object.entries(
       (proposalWithMotionAction?.action as { Motion: object }).Motion
     )[0];
-    expect(getByText(key)).toBeInTheDocument();
-    expect(getByText(value)).toBeInTheDocument();
+    expect(getByText(key, { exact: false })).toBeInTheDocument();
+    expect(getByText(value, { exact: false })).toBeInTheDocument();
   });
 
   it("should render object fields as JSON", () => {
@@ -67,17 +67,7 @@ describe("NnsProposalProposerActionsEntry", () => {
       },
     });
 
-    expect(nodeProviderActions.queryAllByTestId("json").length).toBe(2);
-  });
-
-  it("should render text fields as plane text", () => {
-    const motionActions = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithMotionAction,
-      },
-    });
-
-    expect(motionActions.queryAllByTestId("json").length).toBe(0);
+    expect(nodeProviderActions.queryByTestId("json")).toBeInTheDocument();
   });
 
   it("should render undefined fields as 'undefined'", () => {
@@ -110,7 +100,7 @@ describe("NnsProposalProposerActionsEntry", () => {
       ).ExecuteNnsFunction
     )[0];
 
-    expect(getByText(key)).toBeInTheDocument();
+    expect(getByText(key, { exact: false })).toBeInTheDocument();
     expect(getByText(value)).toBeInTheDocument();
   });
 });
