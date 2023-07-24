@@ -46,6 +46,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
     );
   }
 
+  getNeuronId(): Promise<string> {
+    return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
+  }
+
   getMaturityCardPo(): NnsNeuronMaturityCardPo {
     return NnsNeuronMaturityCardPo.under(this.root);
   }

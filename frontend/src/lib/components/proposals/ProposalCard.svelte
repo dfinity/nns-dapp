@@ -44,7 +44,7 @@
       {/if}
 
       {#if proposer !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="shortened-proposer">
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
           <span slot="value" class="meta-data-value"
             >{shortenWithMiddleEllipsis(proposer, 5)}</span
