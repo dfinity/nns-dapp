@@ -159,4 +159,4 @@ export const getEnvVars = (): EnvironmentVars => {
 };
 
 export const isJuno = (): boolean =>
-  isBrowser && window.location.origin.includes("nbyi7-6aaaa-aaaal-acjtq-cai");
+  isBrowser && window.location.origin.includes("u6or3-6qaaa-aaaal-acuja-cai");
