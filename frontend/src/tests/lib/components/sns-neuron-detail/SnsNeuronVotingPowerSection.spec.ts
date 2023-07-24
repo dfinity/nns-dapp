@@ -44,7 +44,7 @@ describe("NnsStakeItemAction", () => {
       stakedMaturity: 100000000n,
       state: NeuronState.Locked,
       dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
-      ageSinceSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
+      ageSinceTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_YEAR),
     });
     const po = renderComponent(neuron);
 

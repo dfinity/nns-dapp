@@ -51,7 +51,7 @@ describe("SnsNeuronAdvancedSection", () => {
     const neuron = createMockSnsNeuron({
       id,
       createdTimestampSeconds: created,
-      ageSinceSeconds: created + BigInt(SECONDS_IN_DAY * 10),
+      ageSinceTimestampSeconds: created + BigInt(SECONDS_IN_DAY * 10),
     });
     const po = renderComponent(neuron);
 
