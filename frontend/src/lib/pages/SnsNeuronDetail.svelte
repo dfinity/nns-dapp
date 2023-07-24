@@ -156,7 +156,7 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron)}
+          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
             <div class="section-wrapper">
               <SnsNeuronPageHeader />
               <SnsNeuronPageHeading {parameters} />
@@ -172,6 +172,9 @@
               <SnsNeuronAdvancedSection
                 neuron={$selectedSnsNeuronStore.neuron}
                 {governanceCanisterId}
+                {parameters}
+                {token}
+                {transactionFee}
               />
             </div>
           {/if}
