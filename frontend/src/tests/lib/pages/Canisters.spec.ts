@@ -51,8 +51,10 @@ describe("Canisters", () => {
     expect(getByText(en.core.ic)).toBeInTheDocument();
   });
 
-  it("should subscribe to store", () =>
-    expect(authStoreMock).toHaveBeenCalled());
+  it("should subscribe to store", () => {
+    render(Canisters);
+    expect(authStoreMock).toHaveBeenCalled();
+  });
 
   it("should load canisters", () => expect(listCanisters).toHaveBeenCalled());
 
