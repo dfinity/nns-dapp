@@ -5,20 +5,30 @@
 import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import {
+  createMockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronAdvancedSection", () => {
   const nowInSeconds = 1689843195;
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(SnsNeuronAdvancedSection, {
+    const { container } = renderSelectedSnsNeuronContext({
+      Component: SnsNeuronAdvancedSection,
+      neuron,
+      reload: () => undefined,
       props: {
         neuron,
         governanceCanisterId: mockPrincipal,
+        parameters: snsNervousSystemParametersMock,
+        token: mockToken,
+        transactionFee: 10_000n,
       },
     });
 
@@ -51,5 +61,17 @@ describe("SnsNeuronAdvancedSection", () => {
     );
     expect(await po.neuronAge()).toBe("20 days, 10 hours");
     expect(await po.neuronAccount()).toBe("xlmdg-v...813ee24");
+  });
+
+  it("should render actions", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      stake: 314_000_000n,
+      maturity: 100_000_000n,
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.hasSplitNeuronButton()).toBe(true);
+    expect(await po.hasStakeMaturityCheckbox()).toBe(true);
   });
 });
