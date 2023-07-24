@@ -30,15 +30,11 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getVotingPower()).toBe("6.14");
   });
 
-  it("should render NnsStakeItemAction", async () => {
+  it("should render item actions", async () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.hasStakeItemAction()).toBe(true);
-  });
-
-  it("should render NnsNeuronStateItemAction", async () => {
-    const po = renderComponent(mockNeuron);
-
     expect(await po.hasNeuronStateItemAction()).toBe(true);
+    expect(await po.hasNeuronDissolveDelayItemAction()).toBe(true);
   });
 });

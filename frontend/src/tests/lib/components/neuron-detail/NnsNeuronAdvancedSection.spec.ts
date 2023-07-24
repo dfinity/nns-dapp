@@ -68,4 +68,12 @@ describe("NnsNeuronAdvancedSection", () => {
 
     expect(await po.lastRewardsDistribution()).toBe("May 19, 1992");
   });
+
+  it("should render actions", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.hasStakeMaturityCheckbox()).toBe(true);
+    expect(await po.hasJoinNeuronsFundCheckbox()).toBe(true);
+    expect(await po.hasSplitNeuronButton()).toBe(true);
+  });
 });

@@ -15,10 +15,7 @@ export class SetDissolveDelayPo extends BasePageObject {
   }
 
   getUpdateButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "go-confirm-delay-button",
-    });
+    return this.getButton("go-confirm-delay-button");
   }
 
   getMaxButtonPo(): ButtonPo {

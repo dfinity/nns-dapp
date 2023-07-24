@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
-import type { Writable } from "svelte/store";
+import type { Readable } from "svelte/store";
 
 /**
  * A store that contains the selected sns neuron.
@@ -19,7 +19,7 @@ export interface SelectedSnsNeuronStore {
 }
 
 export interface SelectedSnsNeuronContext {
-  store: Writable<SelectedSnsNeuronStore>;
+  store: Readable<SelectedSnsNeuronStore>;
   reload: () => Promise<void>;
 }
 

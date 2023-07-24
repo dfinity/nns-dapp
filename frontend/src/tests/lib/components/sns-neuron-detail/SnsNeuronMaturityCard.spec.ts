@@ -37,6 +37,7 @@ describe("SnsNeuronMaturityCard", () => {
             },
             neuron,
           }),
+          reload: () => Promise.resolve(),
         } as SelectedSnsNeuronContext,
         Component: SnsNeuronMaturityCard,
       },

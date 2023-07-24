@@ -67,14 +67,14 @@ describe("AddressInput", () => {
       expect(queryByTestId("input-error-message")).toBeInTheDocument();
     });
 
-    it("should show error message on blur when SNS address", async () => {
+    it("should accept ICRC address on blur", async () => {
       const { container, queryByTestId } = render(AddressInput, { props });
 
       const input = container.querySelector("input") as HTMLInputElement;
 
       await fireEvent.input(input, { target: { value: snsAccount } });
       await fireEvent.blur(input);
-      expect(queryByTestId("input-error-message")).toBeInTheDocument();
+      expect(queryByTestId("input-error-message")).not.toBeInTheDocument();
     });
 
     it("should show error message on blur when BTC address", async () => {
