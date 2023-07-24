@@ -67,11 +67,9 @@ describe("TransactionModal", () => {
       },
     });
 
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
-
   beforeEach(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );
@@ -403,7 +401,7 @@ describe("TransactionModal", () => {
     it("should disable next button if network not selected", async () => {
       const call = async () =>
         await renderEnter10ICPAndNext({
-          rootCanisterId: OWN_CANISTER_ID,
+          rootCanisterId: mockPrincipal,
           mustSelectNetwork: true,
         });
 
