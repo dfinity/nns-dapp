@@ -10,12 +10,12 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -30,18 +30,15 @@ jest.mock("$lib/services/known-neurons.services", () => {
 jest.mock("$lib/api/governance.api");
 
 describe("NeuronDetail", () => {
+  fakeGovernanceApi.install();
+
   const neuronId = BigInt(314);
-  const neuron = { ...mockNeuron, neuronId };
   const props = {
     neuronIdText: `${neuronId}`,
   };
-  const rewardEvent = {
-    ...mockRewardEvent,
-    rounds_since_last_distribution: [3n] as [bigint],
-    actual_timestamp_seconds: BigInt(
-      new Date("1992-05-22T21:00:00").getTime() / 1000
-    ),
-  };
+  const latestRewardEventTimestamp = Math.floor(
+    new Date("1992-05-22T21:00:00").getTime() / 1000
+  );
   const renderComponent = async (neuronId: string) => {
     const { container } = render(NnsNeuronDetail, {
       props: {
@@ -60,8 +57,12 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     neuronsStore.reset();
     voteRegistrationStore.reset();
-    jest.spyOn(api, "queryNeurons").mockResolvedValue([neuron, mockNeuron]);
-    jest.spyOn(api, "queryLastestRewardEvent").mockResolvedValue(rewardEvent);
+    fakeGovernanceApi.addNeuronWith({ neuronId });
+    fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
+    fakeGovernanceApi.setLatestRewardEvent({
+      rounds_since_last_distribution: [3n] as [bigint],
+      actual_timestamp_seconds: BigInt(latestRewardEventTimestamp),
+    });
   });
 
   describe("when new neuron details page", () => {
@@ -87,6 +88,7 @@ describe("NeuronDetail", () => {
     });
 
     it("should display skeletons", async () => {
+      fakeGovernanceApi.pause();
       const { container } = render(NnsNeuronDetail, {
         props: {
           neuronIdText: `${neuronId}`,
@@ -99,6 +101,7 @@ describe("NeuronDetail", () => {
     });
 
     it("should hide skeletons after neuron data are available", async () => {
+      fakeGovernanceApi.pause();
       const { container } = render(NnsNeuronDetail, {
         props: {
           neuronIdText: `${neuronId}`,
@@ -109,7 +112,9 @@ describe("NeuronDetail", () => {
 
       expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
 
-      await runResolvedPromises();
+      fakeGovernanceApi.resume();
+
+      await po.getSkeletonCardPo().waitForAbsent();
 
       expect((await po.getSkeletonCardPos()).length).toBe(0);
     });
