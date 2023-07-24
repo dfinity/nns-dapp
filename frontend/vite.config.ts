@@ -13,7 +13,7 @@ const config: UserConfig = {
   plugins: [sveltekit()],
   build: {
     target: "es2020",
-    sourcemap: "hidden",
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
