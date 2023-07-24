@@ -16,7 +16,6 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
 import { waitFor } from "@testing-library/svelte";
-import { mock } from "vitest-mock-extended";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;
@@ -46,20 +45,16 @@ describe("auth-services", () => {
   });
 
   describe("auth-client-mocked", () => {
-    const mockAuthClient = mock<AuthClient>();
-
     beforeEach(() => {
       vi.clearAllMocks();
-
-      vi.spyOn(AuthClient, "create").mockImplementation(
-        async (): Promise<AuthClient> => mockAuthClient
-      );
 
       vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should call auth-client login on login", async () => {
-      const spy = vi.spyOn(mockAuthClient, "login");
+      const spy = vi
+        .spyOn(AuthClient.prototype, "login")
+        .mockImplementation(() => undefined);
 
       await login();
 
@@ -67,7 +62,7 @@ describe("auth-services", () => {
     });
 
     it("should not toast error on auth-client error UserInterrupt", async () => {
-      vi.spyOn(mockAuthClient, "login").mockImplementation(
+      vi.spyOn(AuthClient.prototype, "login").mockImplementation(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore simplified for testing purpose
         ({ onError }: { onError: (err: unknown) => void }) => {
@@ -83,7 +78,9 @@ describe("auth-services", () => {
     });
 
     it("should call auth-client logout on logout", async () => {
-      const spy = vi.spyOn(mockAuthClient, "logout");
+      const spy = vi
+        .spyOn(AuthClient.prototype, "logout")
+        .mockImplementation(() => undefined);
 
       await logout({});
 
