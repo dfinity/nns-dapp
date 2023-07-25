@@ -41,8 +41,12 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
       .isPresent();
   }
 
+  getJoinNeuronsFundCheckbox(): PageObjectElement {
+    return this.root.querySelector("#join-community-fund-checkbox");
+  }
+
   hasJoinNeuronsFundCheckbox(): Promise<boolean> {
-    return this.root.querySelector("#join-community-fund-checkbox").isPresent();
+    return this.getJoinNeuronsFundCheckbox().isPresent();
   }
 
   hasSplitNeuronButton(): Promise<boolean> {

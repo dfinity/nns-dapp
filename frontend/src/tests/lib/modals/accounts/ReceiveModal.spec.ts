@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { fireEvent, waitFor } from "@testing-library/svelte";
-import { OWN_CANISTER_ID } from "../../../../lib/constants/canister-ids.constants";
-import type { Account } from "../../../../lib/types/account";
+import type { Account } from "$lib/types/account";
 import {
   mockMainAccount,
   mockSubAccount,
-} from "../../../mocks/icp-accounts.store.mock";
-import { renderModal } from "../../../mocks/modal.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
+import { renderModal } from "$tests/mocks/modal.mock";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 describe("ReceiveModal", () => {
   const reloadSpy = jest.fn();

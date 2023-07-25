@@ -43,3 +43,5 @@ export const PROPOSAL_COLOR: Record<
 };
 
 export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];
+
+export const PROPOSER_ID_DISPLAY_SPLIT_LENGTH = 5;

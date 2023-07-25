@@ -4,8 +4,19 @@
 
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
 import { SECONDS_IN_MONTH } from "$lib/constants/constants";
+import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
@@ -31,6 +42,10 @@ describe("NnsNeuronAdvancedSection", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+    icpAccountsStore.resetForTesting();
   });
 
   it("should render neuron data", async () => {
@@ -74,10 +89,81 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render actions", async () => {
-    const po = renderComponent(mockNeuron);
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    });
 
     expect(await po.hasStakeMaturityCheckbox()).toBe(true);
     expect(await po.hasJoinNeuronsFundCheckbox()).toBe(true);
+    expect(await po.hasSplitNeuronButton()).toBe(true);
+  });
+
+  it("should not render split neuron action if user is not the controller", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockCanisterId.toText(),
+      },
+    });
+
+    expect(await po.hasSplitNeuronButton()).toBe(false);
+  });
+
+  it("should render enabled join neurons' fund if user is the controller", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockMainAccount.principal.toText(),
+      },
+    });
+
+    expect(
+      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
+    ).toBeNull();
+  });
+
+  it("should render disabled join neurons' fund if user is not the controller", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockCanisterId.toText(),
+      },
+    });
+
+    expect(
+      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
+    ).not.toBeNull();
+  });
+
+  it("should render split button and disabled join neurons' fund if user is controlled by hardware wallet", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockHardwareWalletAccount.principal.toText(),
+      },
+    });
+
+    expect(
+      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
+    ).not.toBeNull();
     expect(await po.hasSplitNeuronButton()).toBe(true);
   });
 });
