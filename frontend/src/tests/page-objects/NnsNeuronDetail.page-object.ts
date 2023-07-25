@@ -51,10 +51,6 @@ export class NnsNeuronDetailPo extends BasePageObject {
     );
   }
 
-  getNeuronId(): Promise<string> {
-    return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
-  }
-
   getMaturityCardPo(): NnsNeuronMaturityCardPo {
     return NnsNeuronMaturityCardPo.under(this.root);
   }
@@ -75,8 +71,30 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return NnsNeuronPageHeaderPo.under(this.root);
   }
 
-  getNeuronId(): Promise<string> {
+  // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  getNeuronIdOldUi(): Promise<string | null> {
+    return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
+  }
+
+  getNeuronIdNewUi(): Promise<string | null> {
     return this.getPageHeaderPo().getNeuronId();
+  }
+
+  // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  async isNewUi(): Promise<boolean> {
+    await Promise.race([
+      this.getNnsNeuronMetaInfoCardPageObjectPo().waitFor(),
+      this.getPageHeaderPo().waitFor(),
+    ]);
+
+    return this.getPageHeaderPo().isPresent();
+  }
+
+  async getNeuronId(): Promise<string> {
+    if (await this.isNewUi()) {
+      return this.getNeuronIdNewUi();
+    }
+    return this.getNeuronIdOldUi();
   }
 
   getUniverse(): Promise<string> {
