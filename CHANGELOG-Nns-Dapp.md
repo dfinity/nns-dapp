@@ -37,7 +37,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Upgraded to Playwright 1.36.
-* E2e disburse test uses new neuron detail UI.
 
 #### Deprecated
 #### Removed
