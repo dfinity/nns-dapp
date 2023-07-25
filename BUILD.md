@@ -94,6 +94,19 @@ Our CI also performs these steps; you can compare the SHA256 with the output the
 
 TODO: When we make a proposal, we should have a corresponding release that voters can download. E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
 
+### Build flavors
+The build creates several different `nns-dapp` and `sns_aggregator` wasms.  These builds target specific use cases:
+
+| Flavor | Description | |
+| --- | --- | :---: |
+| Production | This is the production build deployed to https://nns.ic0.app |
+| Dev | This is a build for testing integration with third party canisters.  If you wish to include `nns-dapp` or the `sns_aggregator` in your CI, this build is designed to make your testing easy and convenient. |
+| Test | This is a build for testing internal functionality.  If you are changing `nns-dapp` or `sns_aggregator` functionality and need to access or modify the internal state of the nns-dapp to test, this is the build for you. |
+
+TODO: Document how to make the `sns_aggregator` collect data quickly.
+
+TODO: Document how to create accounts in the nns-dapp.
+
 ## Development
 
 Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters. Fully local development is unfortunately not yet supported and the tools for setting up a testnet are not yet available publicly. It is on the roadmap to make these tools available publicly for developers.
