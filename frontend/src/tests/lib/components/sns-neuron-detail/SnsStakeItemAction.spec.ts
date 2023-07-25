@@ -46,7 +46,7 @@ describe("SnsStakeItemAction", () => {
   it("should not render increase stake button if neuron belongs to CF", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
-      sourceNeuronId: 123455n,
+      sourceNnsNeuronId: 123455n,
     });
     const po = renderComponent(neuron);
 

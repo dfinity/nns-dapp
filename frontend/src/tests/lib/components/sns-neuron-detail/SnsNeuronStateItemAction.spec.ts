@@ -84,6 +84,7 @@ describe("SnsNeuronStateItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveButtonPo().isPresent()).toBe(false);
+    expect(await po.hasDisburseButton()).toBe(false);
   });
 
   it("should render dissolving text and Stop dissolving button if neuron is dissolving", async () => {
@@ -107,6 +108,7 @@ describe("SnsNeuronStateItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveButtonPo().isPresent()).toBe(false);
+    expect(await po.hasDisburseButton()).toBe(false);
   });
 
   it("should render unlocked text and disburse button if neuron is unlocked", async () => {
@@ -130,6 +132,7 @@ describe("SnsNeuronStateItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasDisburseButton()).toBe(false);
+    expect(await po.getDissolveButtonPo().isPresent()).toBe(false);
   });
 
   it("should render age bonus for Locked neurons", async () => {
