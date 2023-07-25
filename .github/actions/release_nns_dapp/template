@@ -4,9 +4,9 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
-  cat <<-EOF
+	cat <<-EOF
 
-	Creates the text for GitHub releases.
+		Creates the text for GitHub releases.
 	EOF
 }
 
@@ -27,21 +27,21 @@ This is \`nns-dapp\` and \`sns_aggregator\` release [$DFX_RELEASE_NAME](https://
 
 | Filename | sha256 |
 $(
-  # Prints a row in the table describing a wasm, if it exists.
-  file_row() {
-    local filename sha
-    filename="${canister}${flavor:+_}${flavor}.wasm.gz"
-    if test -e "$DFX_ASSET_DIR/$filename"; then
-      sha="$(sha256sum "$DFX_ASSET_DIR/$filename" | awk '{print $1}')"
-      printf "| %s | %s |\n" "[$filename](https://github.com/dfinity/$GITHUB_REPOSITORY/download/$DFX_RELEASE_NAME/$filename)" "$sha"
-    fi
-  }
+	# Prints a row in the table describing a wasm, if it exists.
+	file_row() {
+		local filename sha
+		filename="${canister}${flavor:+_}${flavor}.wasm.gz"
+		if test -e "$DFX_ASSET_DIR/$filename"; then
+			sha="$(sha256sum "$DFX_ASSET_DIR/$filename" | awk '{print $1}')"
+			printf "| %s | %s |\n" "[$filename](https://github.com/dfinity/$GITHUB_REPOSITORY/download/$DFX_RELEASE_NAME/$filename)" "$sha"
+		fi
+	}
 
-  for canister in nns-dapp sns_aggregator; do
-    for flavor in "" production test dev noassets; do
-      file_row
-    done
-  done
+	for canister in nns-dapp sns_aggregator; do
+		for flavor in "" production test dev noassets; do
+			file_row
+		done
+	done
 )
 
 EOF
