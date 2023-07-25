@@ -30,7 +30,6 @@ runs:
           }
         done
         ls -l "${artefacts[@]}"
-        echo GITHUB_ACTION_PATH $GITHUB_ACTION_PATH
         for tag in $(git tag --points-at HEAD) ; do
           : Creates or updates a release for the tag
           if gh release view "$tag"
