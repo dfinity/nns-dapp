@@ -31,6 +31,8 @@ const neurons: Map<string, NeuronInfo[]> = new Map();
 
 const mapKey = (identity: Identity) => identity.getPrincipal().toText();
 
+let latestRewardEvent: RewardEvent = mockRewardEvent;
+
 const getNeurons = (identity: Identity) => {
   const key = mapKey(identity);
   let neuronList = neurons.get(key);
@@ -74,7 +76,7 @@ async function queryLastestRewardEvent({
   identity: _,
   certified: __,
 }: ApiQueryParams): Promise<RewardEvent> {
-  return mockRewardEvent;
+  return latestRewardEvent;
 }
 
 async function mergeNeurons({
@@ -169,6 +171,12 @@ export const addNeurons = ({
   for (const neuron of neurons) {
     addNeuronWith({ identity, ...neuron });
   }
+};
+
+export const setLatestRewardEvent = (
+  latestRewardEventParams: Partial<RewardEvent>
+) => {
+  latestRewardEvent = { ...latestRewardEvent, ...latestRewardEventParams };
 };
 
 // Call this inside a describe() block outside beforeEach() because it defines
