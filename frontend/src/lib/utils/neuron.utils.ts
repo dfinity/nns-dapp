@@ -47,7 +47,7 @@ import {
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
-import type { SvelteComponent } from "svelte";
+import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
   isAccountHardwareWallet,
@@ -61,7 +61,7 @@ import { isDefined } from "./utils";
 
 export type StateInfo = {
   textKey: string;
-  Icon?: typeof SvelteComponent;
+  Icon?: ComponentType;
   status: "ok" | "warn" | "spawning";
 };
 

@@ -2,7 +2,7 @@
   import { Card } from "@dfinity/gix-components";
   import CardInfo from "./CardInfo.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import type { SvelteComponent } from "svelte";
+  import type { ComponentType } from "svelte";
   import type { CardType } from "$lib/types/card";
   import Separator from "$lib/components/ui/Separator.svelte";
 
@@ -10,7 +10,7 @@
   export let cardType: CardType = "card";
   export let separator = false;
 
-  const cards: Record<CardType, typeof SvelteComponent> = {
+  const cards: Record<CardType, ComponentType> = {
     card: Card,
     info: CardInfo,
   };
