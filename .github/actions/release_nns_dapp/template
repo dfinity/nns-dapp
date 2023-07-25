@@ -26,6 +26,7 @@ cat <<EOF
 This is \`nns-dapp\` and \`sns_aggregator\` release [$DFX_RELEASE_NAME](https://github.com/$GITHUB_REPOSITORY/releases/tag/$DFX_RELEASE_NAME) for commit [$GITHUB_SHA](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)
 
 | Filename | sha256 |
+|---|---|
 $(
 	# Prints a row in the table describing a wasm, if it exists.
 	file_row() {
