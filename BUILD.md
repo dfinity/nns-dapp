@@ -102,6 +102,7 @@ The build creates several different `nns-dapp` and `sns_aggregator` wasms.  Thes
 | Production | This is the production build deployed to https://nns.ic0.app |
 | Dev | This is a build for testing integration with third party canisters.  If you wish to include `nns-dapp` or the `sns_aggregator` in your CI, this build is designed to make your testing easy and convenient. |
 | Test | This is a build for testing internal functionality.  If you are changing `nns-dapp` or `sns_aggregator` functionality and need to access or modify the internal state of the nns-dapp to test, this is the build for you. |
+| Noassets | This is a build of the nns-dapp that does not include web assets.  This reduces the size of the wasm, which may be convenient in some test scenarios. Note that web assets can be uploaded to the nns-dapp after deployment by the canister controller. |
 
 TODO: Document how to make the `sns_aggregator` collect data quickly.
 
