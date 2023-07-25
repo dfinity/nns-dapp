@@ -35,7 +35,7 @@ runs:
           : Creates or updates a release for the tag
           if gh release view "$tag"
           then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
-          else gh release create --title "Release for tags/$tag" --draft --notes "$("$GITHUB_ACTION_PATH/template" --tag "$tag")" "$tag" "${artefacts[@]}"
+          else gh release create --title "Release for tags/$tag" --draft --notes "$("$GITHUB_ACTION_PATH/template" --tag "$tag" --dir .)" "$tag" "${artefacts[@]}"
           fi
           : If the tag is for a proposal or nightly, make it public
           [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }

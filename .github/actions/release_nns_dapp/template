@@ -14,6 +14,7 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=t long=tag desc="The git tag of the release" variable=DFX_RELEASE_NAME default="${GITHUB_REF_NAME:-unnamed}"
+clap.define short=d long=dir desc="The asset dir" variable=DFX_ASSET_DIR default="out"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -30,8 +31,8 @@ $(
   file_row() {
     local filename sha
     filename="${canister}${flavor:+_}${flavor}.wasm.gz"
-    if test -e "out/$filename"; then
-      sha="$(sha256sum "out/$filename" | awk '{print $1}')"
+    if test -e "$DFX_ASSET_DIR/$filename"; then
+      sha="$(sha256sum "$DFX_ASSET_DIR/$filename" | awk '{print $1}')"
       printf "| %s | %s |\n" "[$filename](https://github.com/dfinity/$GITHUB_REPOSITORY/download/$DFX_RELEASE_NAME/$filename)" "$sha"
     fi
   }
