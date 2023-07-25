@@ -61,7 +61,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   }
 
   async disburseNeuron(): Promise<void> {
-    await this.getNnsNeuronInfoStakePo().clickDisburse();
+    await this.getVotingPowerSectionPo().clickDisburse();
     await this.getNnsNeuronModalsPo()
       .getDisburseNnsNeuronModalPo()
       .disburseNeuron();
