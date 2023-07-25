@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 
 export class NnsNeuronStateItemActionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-state-item-action-component";
@@ -20,6 +21,10 @@ export class NnsNeuronStateItemActionPo extends BasePageObject {
 
   hasDisburseButton(): Promise<boolean> {
     return this.getButton("disburse-button").isPresent();
+  }
+
+  getDissolveButtonPo(): ButtonPo {
+    return this.getButton("nns-dissolve-action-button");
   }
 
   getDissolveButtonText(): Promise<string> {

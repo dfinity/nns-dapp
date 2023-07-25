@@ -11,13 +11,32 @@
   import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
   import { nonNullish } from "@dfinity/utils";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-  import { maturityLastDistribution } from "$lib/utils/neuron.utils";
+  import {
+    isNeuronControllable,
+    isNeuronControllableByUser,
+    maturityLastDistribution,
+  } from "$lib/utils/neuron.utils";
   import Hash from "../ui/Hash.svelte";
   import NnsAutoStakeMaturity from "./actions/NnsAutoStakeMaturity.svelte";
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
+
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
+
+  let isControlledByUser: boolean;
+  $: isControlledByUser = isNeuronControllableByUser({
+    neuron,
+    mainAccount: $icpAccountsStore.main,
+  });
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
@@ -79,8 +98,10 @@
       </div>
     {/if}
     <NnsAutoStakeMaturity {neuron} />
-    <JoinCommunityFundCheckbox {neuron} />
-    <SplitNnsNeuronButton {neuron} variant="secondary" />
+    <JoinCommunityFundCheckbox {neuron} disabled={!isControlledByUser} />
+    {#if isControllable}
+      <SplitNnsNeuronButton {neuron} variant="secondary" />
+    {/if}
   </div>
 </Section>
 
