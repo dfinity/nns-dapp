@@ -41,10 +41,10 @@ get_upgrade_invariants() {
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
   local prestate poststate
-  prestate="$(upgrade_invariants)"
+  prestate="$(get_upgrade_invariants)"
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
-  poststate="$(upgrade_invariants)"
+  poststate="$(get_upgrade_invariants)"
   if [[ "$prestate" != "$poststate" ]]; then
     {
       echo "ERROR: The upgrade changed the state of the canister."
