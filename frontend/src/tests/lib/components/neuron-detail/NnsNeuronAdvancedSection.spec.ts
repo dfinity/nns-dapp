@@ -147,7 +147,7 @@ describe("NnsNeuronAdvancedSection", () => {
     ).not.toBeNull();
   });
 
-  it("should render disabled join neurons' fund if user is controlled by hardware wallet", async () => {
+  it("should render split button and disabled join neurons' fund if user is controlled by hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -164,5 +164,6 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(
       await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
     ).not.toBeNull();
+    expect(await po.hasSplitNeuronButton()).toBe(true);
   });
 });

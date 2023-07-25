@@ -5,10 +5,15 @@
 import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -92,6 +97,25 @@ describe("NnsNeuronStateItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveButtonPo().isPresent()).toBe(false);
+  });
+
+  it("should render dissolve button if hardware wallet is the controller", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const neuron: NeuronInfo = {
+      ...notControlledNeuron,
+      state: NeuronState.Dissolving,
+      fullNeuron: {
+        ...notControlledNeuron.fullNeuron,
+        controller: mockHardwareWalletAccount.principal.toText(),
+      },
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getDissolveButtonPo().isPresent()).toBe(true);
   });
 
   it("should render unlocked text and disburse button if neuron is unlocked", async () => {
