@@ -8,20 +8,49 @@
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import PageHeader from "../common/PageHeader.svelte";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+
+  export let token: Token;
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let neuron: SnsNeuron | undefined | null;
   $: neuron = $store.neuron;
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    const neuronId = nonNullish(neuron)
+      ? getSnsNeuronIdAsHexString(neuron)
+      : undefined;
+
+    layoutTitleStore.set(
+      intersecting || isNullish(neuronId)
+        ? $i18n.neuron_detail.title
+        : `${token.symbol} - ${shortenWithMiddleEllipsis(neuronId)}`
+    );
+  };
 </script>
 
 <PageHeader testId="sns-neuron-page-header-component">
   <UniversePageSummary slot="start" universe={$selectedUniverseStore} />
-  <span slot="end" class="description header-end">
+  <span
+    slot="end"
+    class="description header-end"
+    data-tid="neuron-id-element"
+    use:onIntersection
+    on:nnsIntersecting={updateLayoutTitle}
+  >
     {#if nonNullish(neuron)}
       <IdentifierHash identifier={getSnsNeuronIdAsHexString(neuron)} />
     {/if}

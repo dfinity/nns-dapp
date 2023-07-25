@@ -40,4 +40,8 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
   hasNeuronDissolveDelayItemAction(): Promise<boolean> {
     return this.getNeuronDissolveDelayItemActionPo().isPresent();
   }
+
+  clickDisburse(): Promise<void> {
+    return this.getNeuronStateItemActionPo().clickDisburse();
+  }
 }

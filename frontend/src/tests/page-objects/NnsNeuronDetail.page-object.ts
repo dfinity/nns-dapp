@@ -8,6 +8,7 @@ import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVoti
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";
@@ -18,6 +19,10 @@ export class NnsNeuronDetailPo extends BasePageObject {
 
   getSkeletonCardPos(): Promise<SkeletonCardPo[]> {
     return SkeletonCardPo.allUnder(this.root);
+  }
+
+  getSkeletonCardPo(): SkeletonCardPo {
+    return SkeletonCardPo.under(this.root);
   }
 
   getNnsNeuronMetaInfoCardPageObjectPo(): NnsNeuronMetaInfoCardPageObjectPo {
@@ -50,20 +55,52 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return NnsNeuronMaturityCardPo.under(this.root);
   }
 
-  getStakeInfoCardPo() {
-    return NnsNeuronInfoStakePo;
-  }
-
   // TODO: To be removed https://dfinity.atlassian.net/browse/GIX-1688
   hasJoinFundCard(): Promise<boolean> {
     return this.root.byTestId("neuron-join-fund-card-component").isPresent();
   }
 
   async disburseNeuron(): Promise<void> {
-    await this.getNnsNeuronInfoStakePo().clickDisburse();
+    await this.getVotingPowerSectionPo().clickDisburse();
     await this.getNnsNeuronModalsPo()
       .getDisburseNnsNeuronModalPo()
       .disburseNeuron();
+  }
+
+  getPageHeaderPo(): NnsNeuronPageHeaderPo {
+    return NnsNeuronPageHeaderPo.under(this.root);
+  }
+
+  // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  //       See https://dfinity.atlassian.net/browse/GIX-1688
+  getNeuronIdOldUi(): Promise<string | null> {
+    return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
+  }
+
+  getNeuronIdNewUi(): Promise<string | null> {
+    return this.getPageHeaderPo().getNeuronId();
+  }
+
+  // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  //       See https://dfinity.atlassian.net/browse/GIX-1688
+  async isNewUi(): Promise<boolean> {
+    await Promise.race([
+      this.getNnsNeuronMetaInfoCardPageObjectPo().waitFor(),
+      this.getPageHeaderPo().waitFor(),
+    ]);
+
+    return this.getPageHeaderPo().isPresent();
+  }
+
+  async getNeuronId(): Promise<string> {
+    if (await this.isNewUi()) {
+      return this.getNeuronIdNewUi();
+    }
+    return this.getNeuronIdOldUi();
+  }
+
+  getUniverse(): Promise<string> {
+    return this.getPageHeaderPo().getUniverse();
   }
 
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
