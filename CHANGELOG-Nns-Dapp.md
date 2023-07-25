@@ -15,13 +15,18 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-- bump agent-js `v0.18.1`
+* Bump agent-js `v0.18.1`.
+* Clarify Ledger app version error message.
+* Increase the displayed size of the projects logo on the "Launchpad".
+* Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
 
 #### Deprecated
 #### Removed
 #### Fixed
 
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
+* Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
+* Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
 
 #### Security
 

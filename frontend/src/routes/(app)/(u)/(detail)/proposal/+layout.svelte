@@ -6,6 +6,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { Navigation } from "@sveltejs/kit";
   import { referrerPathForNav } from "$lib/utils/page.utils";
+  import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
 
   let referrerPath: AppPath | undefined = undefined;
   afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
@@ -16,8 +17,10 @@
     );
 </script>
 
-<Layout>
-  <Content {back}>
-    <slot />
-  </Content>
-</Layout>
+<LayoutNavGuard>
+  <Layout>
+    <Content {back}>
+      <slot />
+    </Content>
+  </Layout>
+</LayoutNavGuard>

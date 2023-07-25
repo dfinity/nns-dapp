@@ -2,20 +2,18 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
   import { initAppAuth } from "$lib/services/$public/app.services";
-  import { Layout, ContentBackdrop, Spinner } from "@dfinity/gix-components";
+  import { Layout, ContentBackdrop } from "@dfinity/gix-components";
   import LoginMenuItems from "$lib/components/login/LoginMenuItems.svelte";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
-  import { navigating } from "$app/stores";
-  import { isNullish } from "@dfinity/utils";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
+  import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
 
-<!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
-{#if isNullish($navigating)}
+<LayoutNavGuard spinnerWhileNavigating>
   <Layout layout="stretch">
     <Banner />
 
@@ -41,9 +39,7 @@
   </Layout>
 
   <Warnings bringToastsForward />
-{:else}
-  <Spinner />
-{/if}
+</LayoutNavGuard>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

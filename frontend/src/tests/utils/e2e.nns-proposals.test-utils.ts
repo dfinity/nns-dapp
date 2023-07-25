@@ -8,8 +8,10 @@ import { expect } from "@playwright/test";
  * 1. stake a neuron
  * 2. use the neuron to create dummy proposals
  * 3. disburse the neuron
+ *
+ * Returns the id of the neuron used to create the proposals.
  */
-export const createDummyProposal = async (appPo: AppPo) => {
+export const createDummyProposal = async (appPo: AppPo): Promise<string> => {
   const localStep = (message: string) =>
     step(`Create a dummy proposal > ${message}`);
 
@@ -38,5 +40,12 @@ export const createDummyProposal = async (appPo: AppPo) => {
   await localStep("Create dummy proposals");
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().createDummyProposals();
 
+  const proposer = appPo
+    .getNeuronDetailPo()
+    .getNnsNeuronDetailPo()
+    .getNeuronId();
+
   await appPo.goBack();
+
+  return proposer;
 };
