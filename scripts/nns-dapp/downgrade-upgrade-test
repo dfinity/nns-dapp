@@ -35,13 +35,15 @@ get_prod_wasm() {
 
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
-  dfx canister call nns-dapp get_stats | dl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
 }
 
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
   local prestate poststate
   prestate="$(get_upgrade_invariants)"
+  # TODO: Check that the prestate is not empty; first we need to populate the state.
+  # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
   poststate="$(get_upgrade_invariants)"
