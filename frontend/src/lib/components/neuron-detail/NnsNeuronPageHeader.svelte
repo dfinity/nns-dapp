@@ -5,13 +5,35 @@
   import { MAX_NEURON_ID_DIGITS } from "$lib/constants/neurons.constants";
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import PageHeader from "../common/PageHeader.svelte";
+  import { onIntersection } from "$lib/directives/intersection.directives";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
+  import { i18n } from "$lib/stores/i18n";
+  import type { IntersectingDetail } from "$lib/types/intersection.types";
 
   export let neuron: NeuronInfo;
+
+  const updateLayoutTitle = ($event: Event) => {
+    const {
+      detail: { intersecting },
+    } = $event as unknown as CustomEvent<IntersectingDetail>;
+
+    layoutTitleStore.set(
+      intersecting
+        ? $i18n.neuron_detail.title
+        : `${$i18n.core.icp} – ${neuron.neuronId}`
+    );
+  };
 </script>
 
 <PageHeader testId="nns-neuron-page-header-component">
   <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
-  <span slot="end" class="description header-end">
+  <span
+    slot="end"
+    class="description header-end"
+    data-tid="neuron-id-element"
+    use:onIntersection
+    on:nnsIntersecting={updateLayoutTitle}
+  >
     <IdentifierHash
       identifier={neuron.neuronId.toString()}
       splitLength={MAX_NEURON_ID_DIGITS / 2}
