@@ -16,9 +16,12 @@
 
   let data: AccountsReceiveModalData | undefined;
   $: data = (modal as AccountsModal | undefined)?.data;
+
+  const onNnsAccountsModal = ({ detail }: CustomEvent<AccountsModal>) =>
+    (modal = detail);
 </script>
 
-<svelte:window on:nnsAccountsModal={({ detail }) => (modal = detail)} />
+<svelte:window on:nnsAccountsModal={onNnsAccountsModal} />
 
 {#if type === "nns-receive" && nonNullish(data)}
   <NnsReceiveModal on:nnsClose={close} {data} />

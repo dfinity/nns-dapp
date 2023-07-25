@@ -34,9 +34,13 @@
   let followee: FolloweesNeuron | undefined;
   $: followee = (modal as NnsNeuronModalVotingHistory | undefined)?.data
     ?.followee;
+
+  const onNnsNeuronDetailModal = ({
+    detail,
+  }: CustomEvent<NnsNeuronModal<NnsNeuronModalData>>) => (modal = detail);
 </script>
 
-<svelte:window on:nnsNeuronDetailModal={({ detail }) => (modal = detail)} />
+<svelte:window on:nnsNeuronDetailModal={onNnsNeuronDetailModal} />
 
 <TestIdWrapper testId="nns-neuron-modals-component">
   {#if nonNullish(neuron)}

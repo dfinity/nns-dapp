@@ -69,9 +69,12 @@
 
   let transactionFee: E8s | undefined;
   $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
+
+  const onSnsNeuronDetailModal = ({ detail }: CustomEvent<SnsNeuronModal>) =>
+    (modal = detail);
 </script>
 
-<svelte:window on:snsNeuronDetailModal={({ detail }) => (modal = detail)} />
+<svelte:window on:snsNeuronDetailModal={onSnsNeuronDetailModal} />
 
 {#if nonNullish(neuron)}
   {#if type === "dissolve" && nonNullish(neuronId) && nonNullish(neuronState)}

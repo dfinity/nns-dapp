@@ -8,9 +8,12 @@
 
   let type: WalletModalType | undefined;
   $: type = modal?.type;
+
+  const onNnsWalletModal = ({ detail }: CustomEvent<WalletModal>) =>
+    (modal = detail);
 </script>
 
-<svelte:window on:nnsWalletModal={({ detail }) => (modal = detail)} />
+<svelte:window on:nnsWalletModal={onNnsWalletModal} />
 
 {#if type === "rename"}
   <RenameSubAccountModal on:nnsClose={close} />

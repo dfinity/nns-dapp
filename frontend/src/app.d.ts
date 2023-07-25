@@ -10,18 +10,18 @@ declare namespace App {
 
 /* eslint-disable */
 
-declare namespace svelte.JSX {
+declare namespace svelteHTML {
   // Svelte needs help to support typing of custom events.
   // Source: https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
   // We use `<any>` because we cannot import the types we use in the dapps that needs to be explicitely imported in the components - i.e. we cannot use .d.ts for these types.
   interface HTMLAttributes<T> {
-    onnnsIntersecting?: (event: CustomEvent<any>) => void;
-    onnnsCanisterDetailModal?: (event: CustomEvent<any>) => void;
-    onnnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
-    onsnsNeuronDetailModal?: (event: CustomEvent<any>) => void;
-    onnnsWalletModal?: (event: CustomEvent<any>) => void;
-    onnnsCkBTCAccountsModal?: (event: CustomEvent<any>) => void;
-    onnnsAccountsModal?: (event: CustomEvent<any>) => void;
+    "on:nnsIntersecting"?: CompositionEventHandler<T>;
+    "on:nnsCanisterDetailModal"?: CompositionEventHandler<T>;
+    "on:nnsNeuronDetailModal"?: CompositionEventHandler<T>;
+    "on:snsNeuronDetailModal"?: CompositionEventHandler<T>;
+    "on:nnsWalletModal"?: CompositionEventHandler<T>;
+    "on:nnsCkBTCAccountsModal"?: CompositionEventHandler<T>;
+    "on:nnsAccountsModal"?: CompositionEventHandler<T>;
   }
 }
 

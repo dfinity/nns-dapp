@@ -25,9 +25,13 @@
   let canisterId: Principal | undefined;
   $: canisterId = (modal as CanisterDetailModalDetach | undefined)?.data
     ?.canisterId;
+
+  const onNnsCanisterDetailModal = ({
+    detail,
+  }: CustomEvent<CanisterDetailModal>) => (modal = detail);
 </script>
 
-<svelte:window on:nnsCanisterDetailModal={({ detail }) => (modal = detail)} />
+<svelte:window on:nnsCanisterDetailModal={onNnsCanisterDetailModal} />
 
 {#if type === "add-cycles"}
   <AddCyclesModal on:nnsClose={close} />
