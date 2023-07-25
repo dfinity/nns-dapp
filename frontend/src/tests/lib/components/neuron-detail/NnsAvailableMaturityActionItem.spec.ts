@@ -3,6 +3,12 @@
  */
 
 import NnsAvailableMaturityActionItem from "$lib/components/neuron-detail/NnsAvailableMaturityActionItem.svelte";
+import { authStore } from "$lib/stores/auth.store";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsAvailableMaturityActionItemPo } from "$tests/page-objects/NnsAvailableMaturityActionItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -24,6 +30,12 @@ describe("NnsAvailableMaturityActionItem", () => {
     );
   };
 
+  beforeEach(() => {
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+  });
+
   it("should render available maturity", async () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
@@ -38,9 +50,28 @@ describe("NnsAvailableMaturityActionItem", () => {
   });
 
   it("should render buttons", async () => {
-    const po = renderComponent(mockNeuron);
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockIdentity.getPrincipal().toText(),
+      },
+    });
 
     expect(await po.hasSpawnButton()).toBe(true);
     expect(await po.hasStakeButton()).toBe(true);
+  });
+
+  it("should not render buttons if user is not the controller", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockCanisterId.toText(),
+      },
+    });
+
+    expect(await po.hasSpawnButton()).toBe(false);
+    expect(await po.hasStakeButton()).toBe(false);
   });
 });

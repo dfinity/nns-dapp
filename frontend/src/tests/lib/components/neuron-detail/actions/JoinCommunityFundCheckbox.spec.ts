@@ -19,7 +19,7 @@ describe("JoinCommunityFundCheckbox", () => {
     jest.clearAllMocks();
   });
 
-  it("renders checkbox", () => {
+  it("renders enabled checkbox", () => {
     const neuron = {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: undefined,
@@ -33,6 +33,26 @@ describe("JoinCommunityFundCheckbox", () => {
     });
 
     expect(queryByTestId("checkbox")).toBeInTheDocument();
+    expect(queryByTestId("checkbox").getAttribute("disabled")).toBeNull();
+  });
+
+  it("renders disabled checkbox", () => {
+    const neuron = {
+      ...mockNeuron,
+      joinedCommunityFundTimestampSeconds: undefined,
+    };
+
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: JoinCommunityFundCheckbox,
+        moreProps: {
+          disabled: true,
+        },
+      },
+    });
+
+    expect(queryByTestId("checkbox").getAttribute("disabled")).not.toBeNull();
   });
 
   it("renders checked if neuron is part of the fund", () => {
