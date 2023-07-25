@@ -152,7 +152,9 @@ COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 # TODO: Move this to the apt install at the beginning of this file.
 RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
-RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp_production.wasm.gz --verbose
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp_test.wasm.gz --verbose
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp.wasm.gz --verbose
 
 # Title: Image to build the nns-dapp backend without assets.
 FROM builder AS build_nnsdapp_without_assets
