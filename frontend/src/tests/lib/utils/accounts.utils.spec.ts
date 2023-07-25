@@ -17,6 +17,7 @@ import {
   mainAccount,
   sumAccounts,
   sumNnsAccounts,
+  toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -242,6 +243,24 @@ describe("accounts-utils", () => {
           })
         ).toBeTruthy();
       });
+
+      it("should be a valid Icrc address for ICP universe", () => {
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: undefined,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: TransactionNetwork.ICP,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+      });
     });
 
     describe("invalidIcpAddress", () => {
@@ -413,6 +432,46 @@ describe("accounts-utils", () => {
           accounts,
         })
       ).toEqual(mockSubAccount);
+    });
+
+    it("should return corresponding account if icrc matches", () => {
+      const snsAccounts = [mockSnsMainAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsMainAccount);
+      expect(
+        findAccount({
+          identifier: mockSnsSubAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsSubAccount);
+    });
+
+    it("should return corresponding account for icrc or icp matches", () => {
+      const icpAccount = {
+        ...mockSnsMainAccount,
+        icpIdentifier: "test",
+      };
+
+      const icpAccounts = [icpAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
+
+      expect(
+        findAccount({
+          identifier: icpAccount.icpIdentifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
     });
   });
 
@@ -625,5 +684,21 @@ describe("accounts-utils", () => {
       expect(hasAccounts([mockMainAccount])).toBeTruthy());
 
     it("should not have accounts", () => expect(hasAccounts([])).toBe(false));
+  });
+
+  describe("toIcpAccountIdentifier", () => {
+    it("should returns an icp account identifier for an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockSnsMainAccount.identifier)).toEqual(
+        "97783b7f0f34634c06ced774bd1bd27d2c76e80b0dd88f56ad55b3ecab292f68"
+      );
+    });
+
+    it("should returns the account identifier parameter if not an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockMainAccount.identifier)).toEqual(
+        mockMainAccount.identifier
+      );
+
+      expect(toIcpAccountIdentifier("123456")).toEqual("123456");
+    });
   });
 });

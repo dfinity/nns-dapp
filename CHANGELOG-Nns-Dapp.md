@@ -13,15 +13,51 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Improve visibility of proposal summary headers.
+- bump agent-js `v0.18.1`
+* Clarify Ledger app version error message.
 
 #### Deprecated
 #### Removed
 #### Fixed
 
+* Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
+
 #### Security
 
 #### Not Published
+
+* New NNS and SNS neuron details page layout.
+
+### Operations
+
+#### Added
+
+* Support SNS neuron permission in fake SNS governance API.
+* Support selective pausing and resuming in API fakes.
+
+#### Changed
+
+* Upgraded to Playwright 1.36.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 123718
+
+### Application
+
+#### Added
+
+* Support for ICP transactions with Icrc addresses as the destination.
+
+#### Changed
+
+* Improve visibility of proposal summary headers.
+* Improve copy in button to set or increase dissolve delay of a neuron.
 
 ### Operations
 
@@ -30,19 +66,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Install `ic-wasm` as part of the setup command.
 * Better visibility of upgrade cycle consumption, wasm size and memory usage.
 * Check that release-sop is the newest version when it's run.
+* Compile end-to-end tests to catch type errors.
 
 #### Changed
 
 * Use faster GitHub runners for e2e tests.
 * Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
 * Migrate some e2e tests from wdio to playwright.
-
-#### Deprecated
-#### Removed
-
-#### Fixed
-
-#### Security
 
 ## Proposal 123471
 ### Application

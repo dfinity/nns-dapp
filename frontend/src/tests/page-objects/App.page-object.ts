@@ -1,8 +1,10 @@
+import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
+import { LoginLinksPo } from "$tests/page-objects/LoginLinks.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
@@ -10,10 +12,23 @@ import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object";
 import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
+import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 
 export class AppPo extends BasePageObject {
+  getLoginLinksPo(): LoginLinksPo {
+    return LoginLinksPo.under(this.root);
+  }
+
+  getSignInPo(): SignInPo {
+    return SignInPo.under(this.root);
+  }
+
+  getAccountMenuPo(): AccountMenuPo {
+    return AccountMenuPo.under(this.root);
+  }
+
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
   }

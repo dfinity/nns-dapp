@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -12,10 +12,7 @@ export class NnsNeuronsFooterPo extends BasePageObject {
   }
 
   getStakeNeuronsButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "stake-neuron-button",
-    });
+    return this.getButton("stake-neuron-button");
   }
 
   getNnsStakeNeuronModalPo(): NnsStakeNeuronModalPo {
@@ -39,7 +36,7 @@ export class NnsNeuronsFooterPo extends BasePageObject {
     dissolveDelayDays,
   }: {
     amount: number;
-    dissolveDelayDays: "max" | 0;
+    dissolveDelayDays: "max" | number;
   }): Promise<void> {
     await this.clickStakeNeuronsButton();
     const modal = this.getNnsStakeNeuronModalPo();

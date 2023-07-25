@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
 import { SnsNeuronVotingPowerPo } from "$tests/page-objects/SnsNeuronVotingPower.page-object";
@@ -19,10 +19,7 @@ export class SnsNeuronMetaInfoCardPo extends BasePageObject {
   }
 
   getSplitButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "split-neuron-button",
-    });
+    return this.getButton("split-neuron-button");
   }
 
   hasSplitButton(): Promise<boolean> {

@@ -10,7 +10,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
 </script>
 
-<ul>
+<ul data-tid="login-links-component">
   <li>
     <a
       href={AppPath.Accounts}
