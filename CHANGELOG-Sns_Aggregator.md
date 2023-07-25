@@ -11,6 +11,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 
 - Display commit, branch name and similar data when deploying to a test canister.
+- Format CHANGELOG-Sns_Aggregator.md automatically
 
 ### Changed
 
