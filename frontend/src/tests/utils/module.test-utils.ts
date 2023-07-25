@@ -96,6 +96,17 @@ export const makePausable = (functions: {
   [key: string]: (...args: unknown[]) => Promise<unknown>;
 }): {
   pause: () => void;
+  pauseFor: (
+    filter: ({
+      functionName,
+      args,
+    }: {
+      functionName: string;
+      args: unknown[];
+    }) => boolean
+  ) => void;
+  getPendingCount: () => number;
+  resolvePending: (count: number) => void;
   resume: () => void;
   reset: () => void;
   pausableFunctions: {
@@ -103,6 +114,13 @@ export const makePausable = (functions: {
   };
 } => {
   let isPaused = false;
+  let isPausedFor: ({
+    functionName,
+    args,
+  }: {
+    functionName: string;
+    args: unknown[];
+  }) => boolean = () => false;
   const pendingCalls: (() => void)[] = [];
 
   /**
@@ -110,16 +128,25 @@ export const makePausable = (functions: {
    * the function will be queued and an unresolved promise is returned which
    * will resolve when the fake is resumed and the function called.
    */
-  const wrapMaybePaused = async <T>(fn: () => Promise<T>): Promise<T> => {
-    if (!isPaused) {
-      return fn();
+  const wrapMaybePaused = async <T>({
+    fn,
+    functionName,
+    args,
+  }: {
+    fn: () => Promise<T>;
+    functionName: string;
+    args: unknown[];
+  }): Promise<T> => {
+    const result = fn();
+    if (!isPaused && !isPausedFor({ functionName, args })) {
+      return result;
     }
     let resolve: (value: Promise<T>) => void;
     const responsePromise = new Promise<T>((res) => {
       resolve = res;
     });
     pendingCalls.push(() => {
-      resolve(fn());
+      resolve(result);
     });
     return responsePromise;
   };
@@ -127,7 +154,11 @@ export const makePausable = (functions: {
   const pausableFunctions = {};
   for (const name in functions) {
     pausableFunctions[name] = (...args: unknown[]) => {
-      return wrapMaybePaused(() => functions[name](...args));
+      return wrapMaybePaused({
+        fn: () => functions[name](...args),
+        args,
+        functionName: name,
+      });
     };
   }
 
@@ -138,25 +169,49 @@ export const makePausable = (functions: {
     isPaused = true;
   };
 
+  const pauseFor = (
+    filter: ({
+      functionName,
+      args,
+    }: {
+      functionName: string;
+      args: unknown[];
+    }) => boolean
+  ) => {
+    if (isPaused) {
+      throw new Error("The fake was already paused");
+    }
+    isPausedFor = filter;
+  };
+
+  const getPendingCount = () => pendingCalls.length;
+
+  const resolvePending = (count: number) => {
+    for (let i = 0; i < count; i++) {
+      pendingCalls.shift()();
+    }
+  };
+
   const resume = () => {
     if (!isPaused) {
       throw new Error("The fake wasn't paused.");
     }
-    for (const call of pendingCalls) {
-      call();
-    }
-    pendingCalls.length = 0;
+    resolvePending(pendingCalls.length);
     isPaused = false;
   };
 
   const reset = () => {
     pendingCalls.length = 0;
     isPaused = false;
+    isPausedFor = () => false;
   };
 
   return {
     pausableFunctions,
     pause,
+    pauseFor,
+    getPendingCount,
+    resolvePending,
     resume,
     reset,
   };

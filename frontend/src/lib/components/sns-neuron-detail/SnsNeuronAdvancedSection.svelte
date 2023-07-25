@@ -3,16 +3,22 @@
   import { KeyValuePair, Section } from "@dfinity/gix-components";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import Hash from "../ui/Hash.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, type Token } from "@dfinity/utils";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
+  import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
+  import type { E8s } from "@dfinity/nns";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;
+  export let parameters: SnsNervousSystemParameters;
+  export let transactionFee: E8s;
+  export let token: Token;
 
   let neuronAccount: IcrcAccount | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
@@ -69,6 +75,8 @@
       {/if}
       <SnsNeuronVestingPeriodRemaining {neuron} />
     {/if}
+    <SnsAutoStakeMaturity />
+    <SplitSnsNeuronButton {neuron} {parameters} {transactionFee} {token} />
   </div>
 </Section>
 
@@ -83,5 +91,8 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--padding-2x);
+
+    --checkbox-padding: 0;
+    --checkbox-label-order: 1;
   }
 </style>

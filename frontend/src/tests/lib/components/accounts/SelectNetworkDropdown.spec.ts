@@ -4,13 +4,13 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
-import en from "$tests/mocks/i18n.mock";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import {
   mockBTCAddressMainnet,
   mockBTCAddressTestnet,
   mockCkBTCAddress,
-} from "../../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectNetworkDropdown", () => {
   const props = { universeId: CKBTC_UNIVERSE_CANISTER_ID };

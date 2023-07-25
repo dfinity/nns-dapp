@@ -10,6 +10,7 @@
   import type { Universe } from "$lib/types/universe";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
+  import SnsNeuronDissolveDelayActionItem from "./SnsNeuronDissolveDelayActionItem.svelte";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;
@@ -34,6 +35,7 @@
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
     <SnsNeuronStateItemAction {neuron} snsParameters={parameters} />
+    <SnsNeuronDissolveDelayActionItem {neuron} {parameters} />
   </ul>
 </Section>
 
