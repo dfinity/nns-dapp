@@ -11,6 +11,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Enable merge neurons preview.
+
 #### Changed
 
 * Bump agent-js `v0.18.1`.
