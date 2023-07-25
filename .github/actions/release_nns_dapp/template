@@ -36,7 +36,7 @@ $(
     filename="${canister}${flavor:+_}${flavor}.wasm.gz"
     if test -e "$DFX_ASSET_DIR/$filename"; then
       sha="$(sha256sum "$DFX_ASSET_DIR/$filename" | awk '{print $1}')"
-      printf "| %s | %s |\n" "[$filename](https://github.com/dfinity/$GITHUB_REPOSITORY/download/$DFX_RELEASE_NAME/$filename)" "$sha"
+      printf "| %s | %s |\n" "[$filename](https://github.com/dfinity/$GITHUB_REPOSITORY/releases/download/$DFX_RELEASE_NAME/$filename)" "$sha"
     fi
   }
 
