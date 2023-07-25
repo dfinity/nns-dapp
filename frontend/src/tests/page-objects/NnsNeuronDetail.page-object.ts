@@ -72,6 +72,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   }
 
   // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  //       See https://dfinity.atlassian.net/browse/GIX-1688
   getNeuronIdOldUi(): Promise<string | null> {
     return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
   }
@@ -81,6 +82,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   }
 
   // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
+  //       See https://dfinity.atlassian.net/browse/GIX-1688
   async isNewUi(): Promise<boolean> {
     await Promise.race([
       this.getNnsNeuronMetaInfoCardPageObjectPo().waitFor(),
