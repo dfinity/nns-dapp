@@ -1,3 +1,4 @@
+import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
@@ -22,7 +23,10 @@ export class NnsProposalListPo extends BasePageObject {
   async getFirstProposalCardPoForProposer(
     proposer: string
   ): Promise<ProposalCardPo> {
-    const shortProposer = shortenWithMiddleEllipsis(proposer, 5);
+    const shortProposer = shortenWithMiddleEllipsis(
+      proposer,
+      PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+    );
     const allCards = await this.getProposalCardPos();
 
     for (const card of allCards) {
