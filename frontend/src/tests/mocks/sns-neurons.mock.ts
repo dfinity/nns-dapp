@@ -7,7 +7,7 @@ import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, type NeuronId } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -15,7 +15,7 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { arrayOfNumberToUint8Array, isNullish } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 import { rootCanisterIdMock } from "./sns.api.mock";
@@ -37,6 +37,7 @@ export const createMockSnsNeuron = ({
   stakedMaturity = BigInt(100_000_000),
   maturity = BigInt(100_000_000),
   createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
+  sourceNeuronId,
 }: {
   stake?: bigint;
   id: number[];
@@ -53,11 +54,12 @@ export const createMockSnsNeuron = ({
   stakedMaturity?: bigint;
   maturity?: bigint;
   createdTimestampSeconds?: bigint;
+  sourceNeuronId?: NeuronId;
 }): SnsNeuron => {
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
     permissions,
-    source_nns_neuron_id: [],
+    source_nns_neuron_id: isNullish(sourceNeuronId) ? [] : [sourceNeuronId],
     maturity_e8s_equivalent: maturity,
     cached_neuron_stake_e8s: stake,
     created_timestamp_seconds: createdTimestampSeconds,
@@ -199,3 +201,7 @@ export const buildMockSnsParametersStore =
     );
     return () => undefined;
   };
+
+export const allSnsNeuronPermissions = Int32Array.from(
+  enumValues(SnsNeuronPermissionType)
+);
