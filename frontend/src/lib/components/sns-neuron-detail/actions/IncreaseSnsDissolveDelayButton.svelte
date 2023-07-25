@@ -7,6 +7,7 @@
   import { NeuronState } from "@dfinity/nns";
 
   export let neuron: SnsNeuron;
+  export let variant: "primary" | "secondary" = "primary";
 
   let isUnlocked: boolean;
   $: isUnlocked = getSnsNeuronState(neuron) === NeuronState.Dissolved;
@@ -14,7 +15,7 @@
 
 <VestingTooltipWrapper {neuron}>
   <button
-    class="primary"
+    class={variant}
     disabled={isVesting(neuron)}
     data-tid="sns-increase-dissolve-delay"
     on:click={() => openSnsNeuronModal({ type: "increase-dissolve-delay" })}

@@ -39,4 +39,14 @@ export class SnsNeuronAdvancedSectionPo extends BasePageObject {
   vestingPeriodIsPresent(): Promise<boolean> {
     return this.getVestingPeriodPo().vestingPeriodIsPresent();
   }
+
+  hasStakeMaturityCheckbox(): Promise<boolean> {
+    return this.root
+      .byTestId("auto-stake-maturity-checkbox-component")
+      .isPresent();
+  }
+
+  hasSplitNeuronButton(): Promise<boolean> {
+    return this.getButton("split-neuron-button").isPresent();
+  }
 }

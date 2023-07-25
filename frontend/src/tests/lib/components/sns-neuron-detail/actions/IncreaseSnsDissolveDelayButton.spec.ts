@@ -43,13 +43,14 @@ describe("IncreaseSnsDissolveDelayButton", () => {
     page.mock({ data: { universe: rootCanisterId.toText() } });
   });
 
-  const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(SnsNeuronContextTest, {
+  const renderComponent = (
+    neuron: SnsNeuron,
+    variant: "primary" | "secondary" = "primary"
+  ) => {
+    const { container } = render(IncreaseSnsDissolveDelayButton, {
       props: {
         neuron,
-        passPropNeuron: true,
-        rootCanisterId,
-        testComponent: IncreaseSnsDissolveDelayButton,
+        variant,
       },
     });
 
@@ -74,6 +75,16 @@ describe("IncreaseSnsDissolveDelayButton", () => {
     });
     const po = renderComponent(unlockedNeuron);
     expect(await po.getText()).toEqual("Set Dissolve Delay");
+  });
+
+  it("should set variant", async () => {
+    const unlockedNeuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolved,
+    });
+    const variant = "secondary";
+    const po = renderComponent(unlockedNeuron, variant);
+    expect(await po.getClasses()).toContain(variant);
   });
 
   it("should open increase increase dissolve delay modal", async () => {
