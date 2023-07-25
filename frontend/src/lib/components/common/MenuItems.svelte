@@ -7,7 +7,7 @@
     IconWallet,
     MenuItem,
   } from "@dfinity/gix-components";
-  import type { SvelteComponent, ComponentType } from "svelte";
+  import type { ComponentType } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
@@ -29,7 +29,12 @@
     href: string;
     selected: boolean;
     label: string;
-    icon: typeof SvelteComponent;
+    icon:
+      | typeof IconWallet
+      | typeof IconPassword
+      | typeof IconUsers
+      | typeof IconRocketLaunch
+      | typeof IconExplore;
     statusIcon?: ComponentType;
   }[];
   $: routes = [
