@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Update the prod and aggregator-prod tags to reflect mainnet.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister name" variable=DFX_CANISTER default="all"
+clap.define short=t long=tag desc="The tag name" variable=DFX_TAG
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ "${DFX_CANISTER:-}" == "all" ]]; then
+  "$0" --canister nns-dapp --tag prod
+  "$0" --canister sns_aggregator --tag aggregator-prod
+  exit 0
+fi
+
+mainnet_commit="$(dfx canister metadata "$DFX_CANISTER" --network mainnet git_commit_id)"
+git fetch --tags --force
+local_commit="$(git rev-parse "tags/$DFX_TAG")"
+if [[ "$mainnet_commit" == "$local_commit" ]]; then
+  echo "Kept $DFX_CANISTER tag ($DFX_TAG) unchanged at $mainnet_commit"
+else
+  git tag -f "$DFX_TAG" "$mainnet_commit"
+  git push origin prod -f
+  echo "Updated $DFX_CANISTER from $local_commit to $mainnet_commit"
+fi
