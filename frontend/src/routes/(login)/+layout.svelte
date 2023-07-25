@@ -13,7 +13,7 @@
   onMount(async () => await initAppAuth());
 </script>
 
-<LayoutNavGuard spinner>
+<LayoutNavGuard spinnerWhileNavigating>
   <Layout layout="stretch">
     <Banner />
 

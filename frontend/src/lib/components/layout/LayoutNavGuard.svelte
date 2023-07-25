@@ -4,12 +4,12 @@
   import { Spinner } from "@dfinity/gix-components";
 
   // To be used only when the transition between pages lasts long; otherwise, it can appear as being glitchy.
-  export let spinner = false;
+  export let spinnerWhileNavigating = false;
 </script>
 
 <!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
 {#if isNullish($navigating)}
   <slot />
-{:else if spinner}
+{:else if spinnerWhileNavigating}
   <Spinner />
 {/if}
