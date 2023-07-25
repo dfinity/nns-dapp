@@ -10,4 +10,5 @@ time xargs -P8 -I{} bash -c "{}" <<EOF
 ./scripts/fmt-rs
 ./scripts/fmt-sh
 ./scripts/fmt-yaml
+./scripts/fmt-changelogs
 EOF
