@@ -267,29 +267,21 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 ///       issue in production, they may be misleading at best and may hide real
 ///       errors when developers examine the canister.
 pub fn insert_favicon() {
-    STATE.with(|state| {
-        // Ensure that there is a favicon, or else we get log spam about bad requests.
-        {
-            let favicon_path = "/favicon.ico";
-            if state.stable.borrow().assets.borrow().get(favicon_path).is_none() {
-                let asset = Asset {
-                    headers: Vec::new(),
-                    bytes: include_bytes!("favicon.ico").to_vec(),
-                };
-                insert_asset(favicon_path, asset);
-            }
-        }
-    });
+    // Ensure that there is a favicon, or else we get log spam about bad requests.
+    let favicon_path = "/favicon.ico";
+    let asset = Asset {
+        headers: Vec::new(),
+        bytes: include_bytes!("favicon.ico").to_vec(),
+    };
+    insert_asset(favicon_path, asset);
 }
 
 /// Insert a home page into the certified assets.
 pub fn insert_home_page() {
-    STATE.with(|state| {
-        let path = "/index.html";
-        let asset = Asset {
-            headers: Vec::new(),
-            bytes: include_bytes!("index.html").to_vec(),
-        };
-        insert_asset(path, asset);
-    });
+    let path = "/index.html";
+    let asset = Asset {
+        headers: Vec::new(),
+        bytes: include_bytes!("index.html").to_vec(),
+    };
+    insert_asset(path, asset);
 }
