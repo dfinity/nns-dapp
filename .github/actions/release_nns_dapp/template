@@ -22,8 +22,10 @@ GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-dfinity/nns-dapp}"
 GITHUB_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
 
 cat <<EOF
+This is a release of the `nns-dapp` and `sns_aggregator` canisters.
 
-This is \`nns-dapp\` and \`sns_aggregator\` release [$DFX_RELEASE_NAME](https://github.com/$GITHUB_REPOSITORY/releases/tag/$DFX_RELEASE_NAME) for commit [$GITHUB_SHA](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)
+Release: [$DFX_RELEASE_NAME](https://github.com/$GITHUB_REPOSITORY/releases/tag/$DFX_RELEASE_NAME)
+Commit: [$GITHUB_SHA](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)
 
 | Filename | sha256 |
 |---|---|
