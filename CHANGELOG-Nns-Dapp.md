@@ -52,6 +52,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Deploy.sh script
+
 #### Security
 
 ## Proposal 123718
