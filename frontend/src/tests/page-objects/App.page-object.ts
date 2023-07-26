@@ -136,7 +136,6 @@ export class AppPo extends BasePageObject {
 
   async getSnsTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getSnsTokensButton().waitFor();
     await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(amount);
     await this.closeMenu();
   }
