@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+		Creates the text for GitHub releases.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=t long=tag desc="The git tag of the release" variable=DFX_RELEASE_NAME default="${GITHUB_REF_NAME:-unnamed}"
+clap.define short=d long=dir desc="The asset dir" variable=DFX_ASSET_DIR default="out"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+GITHUB_REPOSITORY="${GITHUB_REPOSITORY:-dfinity/nns-dapp}"
+GITHUB_SHA="${GITHUB_SHA:-$(git rev-parse HEAD)}"
+
+cat <<EOF
+This is a release of the $(nns-dapp) and $(sns_aggregator) canisters.
+
+Release: [$DFX_RELEASE_NAME](https://github.com/$GITHUB_REPOSITORY/releases/tag/$DFX_RELEASE_NAME)
+Commit: [$GITHUB_SHA](https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)
+
+| Filename | sha256 |
+|---|---|
+$(
+  # Prints a row in the table describing a wasm, if it exists.
+  file_row() {
+    local filename sha
+    filename="${canister}${flavor:+_}${flavor}.wasm.gz"
+    if test -e "$DFX_ASSET_DIR/$filename"; then
+      sha="$(sha256sum "$DFX_ASSET_DIR/$filename" | awk '{print $1}')"
+      printf "| %s | %s |\n" "[$filename](https://github.com/$GITHUB_REPOSITORY/releases/download/$DFX_RELEASE_NAME/$filename)" "$sha"
+    fi
+  }
+
+  for canister in nns-dapp sns_aggregator; do
+    for flavor in "" production test dev noassets; do
+      file_row
+    done
+  done
+)
+
+EOF
