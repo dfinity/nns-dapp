@@ -41,7 +41,7 @@ export class NnsProposalListPo extends BasePageObject {
     // return unique values only
     return Array.from(new Set(statuses));
   }
-  
+
   async getFirstProposalCardPoForProposer(
     proposer: string
   ): Promise<ProposalCardPo> {
