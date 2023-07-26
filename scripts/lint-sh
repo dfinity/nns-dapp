@@ -2,6 +2,14 @@
 set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.." || exit
 
+print_help() {
+  cat <<-EOF
+
+	Checks bash scripts for error-prone code.
+	EOF
+  # TODO: Consider moving to clap.  If not, descibe flags here.
+}
+
 # Lists all bash files in the repo.
 list_files() {
   git ls-files | filter
@@ -15,7 +23,12 @@ filter() {
 lint=(shellcheck -e SC1090 -e SC2119 -e SC1091)
 
 case "${1:-}" in
+--help) print_help && exit 0 ;;
 "") list_files | xargs -P4 -I{} "${lint[@]}" "{}" ;;
---modified) git ls-files --modified | filter | xargs -P8 -I{} "${lint[@]}" "{}" ;;
+--modified | -m) git ls-files --modified | filter | xargs -P8 -I{} "${lint[@]}" "{}" ;;
+--)
+  shift 1
+  "${lint[@]}" "${@}"
+  ;;
 *) "${lint[@]}" "${@}" ;;
 esac
