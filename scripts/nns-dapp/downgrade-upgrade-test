@@ -38,19 +38,18 @@ get_upgrade_invariants() {
   dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
 }
 
-# Verifies that the state is at least as large as expected
-#
-# $1: The upgrade invariants
-verify_invariant_state_size() {
-  local actual accounts_count
+# Verifies that the state is at least as large as expected.
+check_state_size() {
+  local invariants accounts_count expected_min_accounts
   expected_min_accounts="$NUM_TOY_ACCOUNTS"
-  actual="$1"
-  accounts_count="$(jq .accounts_count <<<"$actual")"
-  if ((actual < expected_min_accounts)); then
+  invariants="$(get_upgrade_invariants)"
+  accounts_count="$(jq .accounts_count <<<"$invariants")"
+  if ((accounts_count < expected_min_accounts)); then
     {
-      echo "ERROR: The state size is smaller than expected."
-      printf "Expected at least: %10d\n" "$expected_min_accounts"
-      printf "Actual:            %10d\n" "$accounts_count"
+      echo "ERROR: 'accounts_count' is smaller than expected."
+      printf "  Expected at least: %10d\n" "$expected_min_accounts"
+      printf "  Actual:            %10d\n" "$accounts_count"
+      printf "  State:\n%s\n" "$invariants"
       exit 1
     } >&2
   fi
@@ -98,10 +97,13 @@ fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Installing state"
-NUM_TOY_ACCOUNTS=100000
-dfx canister call nns-dapp create_toy_accounts "($NUM_TOY_ACCOUNTS)"
+NUM_TOY_ACCOUNTS=1000000
+TOY_ACCOUNT_CHUNK_SIZE=10000
+for ((i = 0; i < NUM_TOY_ACCOUNTS; i += TOY_ACCOUNT_CHUNK_SIZE)); do
+  dfx canister call nns-dapp create_toy_account "($TOY_ACCOUNT_CHUNK_SIZE)"
+done
 verify_healthy
-verify_invariant_state_size "$(get_upgrade_invariants)"
+check_state_size "$(get_upgrade_invariants)"
 echo "Downloading and installing the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
