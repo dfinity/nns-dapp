@@ -38,6 +38,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* A separate build of nns-dapp for testing.  See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
 * A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
