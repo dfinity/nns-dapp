@@ -6,7 +6,6 @@ use icp_ledger::{BlockIndex, Memo};
 use serde::Deserialize;
 use std::collections::VecDeque;
 
-// TODO: Add a metric with the number of multi-part transactions in the queue.
 #[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct MultiPartTransactionsProcessor {
     queue: VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)>,
