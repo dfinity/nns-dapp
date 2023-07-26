@@ -5,12 +5,13 @@ use crate::accounts_store::{
     TransactionType,
 };
 
+const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
+const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
+const MAX_PENDING_TRANSACTIONS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many pending transactions.
+const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
+
 impl AccountsStore {
     pub fn create_toy_accounts(&mut self, num_accounts: u64) {
-        const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
-        const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
-        const MAX_PENDING_TRANSACTIONS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many pending transactions.
-        const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
 
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
         let num_existing_accounts = self.accounts.len() as u64;
