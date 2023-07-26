@@ -3,10 +3,20 @@
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
+  import {
+    formattedMaturity,
+    hasPermissionToStakeMaturity,
+  } from "$lib/utils/sns-neuron.utils";
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let neuron: SnsNeuron;
+
+  let allowedToStakeMaturity: boolean;
+  $: allowedToStakeMaturity = hasPermissionToStakeMaturity({
+    neuron,
+    identity: $authStore.identity,
+  });
 </script>
 
 <CommonItemAction testId="sns-available-maturity-item-action-component">
@@ -17,5 +27,7 @@
   <svelte:fragment slot="subtitle"
     >{$i18n.neuron_detail.available_description}</svelte:fragment
   >
-  <SnsStakeMaturityButton variant="secondary" />
+  {#if allowedToStakeMaturity}
+    <SnsStakeMaturityButton variant="secondary" />
+  {/if}
 </CommonItemAction>
