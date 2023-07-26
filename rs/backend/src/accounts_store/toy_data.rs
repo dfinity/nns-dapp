@@ -78,7 +78,7 @@ impl AccountsStore {
 
     /// Creates an account sstore with the given number of test accounts.
     #[cfg(test)]
-    fn with_toy_accounts(num_accounts: u64) -> AccountsStore {
+    pub fn with_toy_accounts(num_accounts: u64) -> AccountsStore {
         let mut accounts_store = AccountsStore::default();
         accounts_store.create_toy_accounts(num_accounts);
         accounts_store
