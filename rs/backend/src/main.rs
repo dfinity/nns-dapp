@@ -357,8 +357,9 @@ pub fn create_toy_accounts() {
     })
 }
 
+/// Gets any toy account by toy account index.
 #[cfg(any(test, feature = "toy_data_gen"))]
-#[export_name = "canister_update get_toy_account"]
+#[export_name = "canister_query get_toy_account"]
 pub fn get_toy_account() {
     over(candid_one, |toy_account_index: u128| {
         let caller = ic_cdk::caller();

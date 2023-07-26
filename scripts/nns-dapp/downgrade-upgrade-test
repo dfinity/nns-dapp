@@ -38,10 +38,29 @@ get_upgrade_invariants() {
   dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
 }
 
+# Verifies that the state is at least as large as expected
+#
+# $1: The upgrade invariants
+verify_invariant_state_size() {
+  local actual accounts_count
+  expected_min_accounts="$NUM_TOY_ACCOUNTS"
+  actual="$1"
+  accounts_count="$(jq .accounts_count <<<"$actual")"
+  if ((actual < expected_min_accounts)); then
+    {
+      echo "ERROR: The state size is smaller than expected."
+      printf "Expected at least: %10d\n" "$expected_min_accounts"
+      printf "Actual:            %10d\n" "$accounts_count"
+      exit 1
+    } >&2
+  fi
+}
+
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
   local prestate poststate
   prestate="$(get_upgrade_invariants)"
+  # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
@@ -61,7 +80,7 @@ upgrade_nnsdapp() {
 
 echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="nns-dapp.wasm.gz"
+  CURRENT_WASM="nns-dapp_test.wasm.gz"
   echo "Building $CURRENT_WASM..."
   ./scripts/docker-build --network local
 }
@@ -78,6 +97,11 @@ else
 fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy
+echo "Installing state"
+NUM_TOY_ACCOUNTS=100000
+dfx canister call nns-dapp create_toy_accounts "($NUM_TOY_ACCOUNTS)"
+verify_healthy
+verify_invariant_state_size "$(get_upgrade_invariants)"
 echo "Downloading and installing the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
