@@ -33,7 +33,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // Get some ICP to be able to transfer
-  await appPo.getTokens(20);
+  await appPo.getIcpTokens(20);
 
   step("AU004: The user MUST be able to transfer funds");
   expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
