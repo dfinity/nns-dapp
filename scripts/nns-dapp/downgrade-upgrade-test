@@ -4,7 +4,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 PROD_WASM="nns-dapp-prod_local.wasm.gz"
-NUM_TOY_ACCOUNTS=1000000
+NUM_TOY_ACCOUNTS=8000000
 TOY_ACCOUNT_CHUNK_SIZE=10000
 
 help_text() {
@@ -41,7 +41,8 @@ get_upgrade_invariant_stats() {
 }
 # Gets some sample accounts
 sample_toy_accounts() {
-  seq 1 "$TOY_ACCOUNT_CHUNK_SIZE" "$NUM_TOY_ACCOUNTS" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
+  echo todo
+  #seq 1 "$TOY_ACCOUNT_CHUNK_SIZE" "$NUM_TOY_ACCOUNTS" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
@@ -69,7 +70,7 @@ check_state_size() {
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
   local prestate poststate
-  prestate="$(get_upgrade_invariants)"
+  prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
@@ -105,6 +106,7 @@ else
   dfx canister create nns-dapp
   dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)"
 fi
+scripts/dfx-canister-check-wasm-hash --wasm "$CURRENT_WASM" --canister nns-dapp
 echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Installing state"
