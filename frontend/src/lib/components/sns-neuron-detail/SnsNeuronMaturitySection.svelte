@@ -5,18 +5,8 @@
   import SnsAvailableMaturityActionItem from "./SnsAvailableMaturityActionItem.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
-  import {
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
-    type SelectedSnsNeuronContext,
-  } from "$lib/types/sns-neuron-detail.context";
-  import { getContext } from "svelte";
-  import { nonNullish } from "@dfinity/utils";
 
-  const { store }: SelectedSnsNeuronContext =
-    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
-
-  let neuron: SnsNeuron | undefined | null;
-  $: neuron = $store.neuron;
+  export let neuron: SnsNeuron;
 </script>
 
 <Section testId="sns-neuron-maturity-section-component">
@@ -27,12 +17,10 @@
   <p slot="description">
     {$i18n.neuron_detail.maturity_section_description}
   </p>
-  {#if nonNullish(neuron)}
-    <ul class="content">
-      <SnsStakedMaturityActionItem {neuron} />
-      <SnsAvailableMaturityActionItem {neuron} />
-    </ul>
-  {/if}
+  <ul class="content">
+    <SnsStakedMaturityActionItem {neuron} />
+    <SnsAvailableMaturityActionItem {neuron} />
+  </ul>
 </Section>
 
 <style lang="scss">

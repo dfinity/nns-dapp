@@ -18,4 +18,8 @@ export class NnsNeuronPageHeaderPo extends BasePageObject {
   getUniverse(): Promise<string> {
     return this.getUniversePageSummaryPo().getTitle();
   }
+
+  getNeuronId(): Promise<string> {
+    return this.root.byTestId("identifier").getText();
+  }
 }

@@ -3,16 +3,26 @@
   import { KeyValuePair, Section } from "@dfinity/gix-components";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import Hash from "../ui/Hash.svelte";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import {
+    getSnsNeuronIdAsHexString,
+    hasPermissionToSplit,
+  } from "$lib/utils/sns-neuron.utils";
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, type Token } from "@dfinity/utils";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
+  import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
+  import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
+  import type { E8s } from "@dfinity/nns";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;
+  export let parameters: SnsNervousSystemParameters;
+  export let transactionFee: E8s;
+  export let token: Token;
 
   let neuronAccount: IcrcAccount | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
@@ -21,6 +31,14 @@
         subaccount: neuron?.id[0]?.id,
       }
     : undefined;
+
+  let allowedToSplit: boolean;
+  $: allowedToSplit =
+    nonNullish(neuron) &&
+    hasPermissionToSplit({
+      neuron,
+      identity: $authStore.identity,
+    });
 </script>
 
 <Section testId="sns-neuron-advanced-section-component">
@@ -69,6 +87,11 @@
       {/if}
       <SnsNeuronVestingPeriodRemaining {neuron} />
     {/if}
+    <SnsAutoStakeMaturity />
+
+    {#if allowedToSplit}
+      <SplitSnsNeuronButton {neuron} {parameters} {transactionFee} {token} />
+    {/if}
   </div>
 </Section>
 
@@ -83,5 +106,8 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--padding-2x);
+
+    --checkbox-padding: 0;
+    --checkbox-label-order: 1;
   }
 </style>

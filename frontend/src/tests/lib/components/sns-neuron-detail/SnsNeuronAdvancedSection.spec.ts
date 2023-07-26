@@ -4,21 +4,38 @@
 
 import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { authStore } from "$lib/stores/auth.store";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+  mockPrincipal,
+} from "$tests/mocks/auth.store.mock";
+import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import {
+  allSnsNeuronPermissions,
+  createMockSnsNeuron,
+  snsNervousSystemParametersMock,
+} from "$tests/mocks/sns-neurons.mock";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
-import { render } from "@testing-library/svelte";
+import type { Principal } from "@dfinity/principal";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 
 describe("SnsNeuronAdvancedSection", () => {
   const nowInSeconds = 1689843195;
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(SnsNeuronAdvancedSection, {
+    const { container } = renderSelectedSnsNeuronContext({
+      Component: SnsNeuronAdvancedSection,
+      neuron,
+      reload: () => undefined,
       props: {
         neuron,
         governanceCanisterId: mockPrincipal,
+        parameters: snsNervousSystemParametersMock,
+        token: mockToken,
+        transactionFee: 10_000n,
       },
     });
 
@@ -27,9 +44,23 @@ describe("SnsNeuronAdvancedSection", () => {
     );
   };
 
+  const controllerPermissions = {
+    principal: [mockIdentity.getPrincipal()] as [Principal],
+    permission_type: allSnsNeuronPermissions,
+  };
+  const noSplitPermissions = {
+    principal: [mockIdentity.getPrincipal()] as [Principal],
+    permission_type: allSnsNeuronPermissions.filter(
+      (p) => p !== SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SPLIT
+    ),
+  };
+
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(nowInSeconds * 1000);
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render neuron data", async () => {
@@ -41,7 +72,7 @@ describe("SnsNeuronAdvancedSection", () => {
     const neuron = createMockSnsNeuron({
       id,
       createdTimestampSeconds: created,
-      ageSinceSeconds: created + BigInt(SECONDS_IN_DAY * 10),
+      ageSinceTimestampSeconds: created + BigInt(SECONDS_IN_DAY * 10),
     });
     const po = renderComponent(neuron);
 
@@ -51,5 +82,28 @@ describe("SnsNeuronAdvancedSection", () => {
     );
     expect(await po.neuronAge()).toBe("20 days, 10 hours");
     expect(await po.neuronAccount()).toBe("xlmdg-v...813ee24");
+  });
+
+  it("should render actions", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      stake: 314_000_000n,
+      maturity: 100_000_000n,
+      permissions: [controllerPermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.hasSplitNeuronButton()).toBe(true);
+    expect(await po.hasStakeMaturityCheckbox()).toBe(true);
+  });
+
+  it("should not split neuron button if user has no split permissions", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      permissions: [noSplitPermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.hasSplitNeuronButton()).toBe(false);
   });
 });

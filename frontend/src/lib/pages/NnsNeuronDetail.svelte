@@ -159,14 +159,16 @@
               <NnsNeuronMaturitySection {neuron} />
               <Separator spacing="none" />
               <NnsNeuronAdvancedSection {neuron} />
+              <Separator spacing="none" />
             </div>
-          {/if}
-          <Summary displayUniverse={false} />
+          {:else}
+            <Summary displayUniverse={false} />
 
-          <NnsNeuronMetaInfoCard {neuron} />
-          <NnsNeuronInfoStake {neuron} />
-          <NnsNeuronMaturityCard {neuron} />
-          <NeuronJoinFundCard {neuron} />
+            <NnsNeuronMetaInfoCard {neuron} />
+            <NnsNeuronInfoStake {neuron} />
+            <NnsNeuronMaturityCard {neuron} />
+            <NeuronJoinFundCard {neuron} />
+          {/if}
           <NeuronFollowingCard {neuron} />
 
           {#if IS_TESTNET}
@@ -192,6 +194,6 @@
   .section-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-3x);
+    gap: var(--padding-4x);
   }
 </style>

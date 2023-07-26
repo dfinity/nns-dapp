@@ -34,7 +34,6 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "TEST_FLAG_EDITABLE",
   "ENABLE_CKTESTBTC",
   "ENABLE_ICP_ICRC",
-  "ENABLE_SNS_VOTING",
   "ENABLE_SIMULATE_MERGE_NEURONS",
   "ENABLE_NEURON_SETTINGS",
   "ENABLE_INSTANT_UNLOCK",
@@ -151,7 +150,6 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
 const featureFlagsStore = initFeatureFlagsStore();
 
 export const {
-  ENABLE_SNS_VOTING,
   ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,

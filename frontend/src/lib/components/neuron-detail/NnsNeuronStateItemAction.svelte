@@ -3,6 +3,7 @@
   import {
     ageMultiplier,
     getStateInfo,
+    isNeuronControllable,
     type StateInfo,
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -12,6 +13,8 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -20,6 +23,13 @@
 
   let ageBonus: number;
   $: ageBonus = ageMultiplier(neuron.ageSeconds);
+
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
 </script>
 
 <CommonItemAction testId="nns-neuron-state-item-action-component">
@@ -46,9 +56,11 @@
       </span>
     {/if}
   </svelte:fragment>
-  {#if neuron.state === NeuronState.Dissolved}
-    <DisburseButton />
-  {:else}
-    <DissolveActionButton neuronState={neuron.state} />
+  {#if isControllable}
+    {#if neuron.state === NeuronState.Dissolved}
+      <DisburseButton />
+    {:else}
+      <DissolveActionButton neuronState={neuron.state} />
+    {/if}
   {/if}
 </CommonItemAction>

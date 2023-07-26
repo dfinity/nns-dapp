@@ -21,6 +21,7 @@ describe("SnsNeuronMaturitySection", () => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
+        passPropNeuron: true,
         rootCanisterId: mockCanisterId,
         testComponent: SnsNeuronMaturitySection,
       },

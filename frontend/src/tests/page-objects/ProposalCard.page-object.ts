@@ -29,4 +29,11 @@ export class ProposalCardPo extends BasePageObject {
       testId: "proposal-topic",
     }).getValueText();
   }
+
+  getShortenedProposer(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "shortened-proposer",
+    }).getValueText();
+  }
 }
