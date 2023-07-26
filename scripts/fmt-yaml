@@ -1,14 +1,32 @@
 #!/usr/bin/env bash
 cd "$(dirname "$(realpath "$0")")/.." || exit
 
+print_help() {
+  cat <<-EOF
+
+	Formats YAML files.
+	EOF
+  # TODO: Consider using clap.  If not, describe flags here.
+}
+
 list_files() {
-  git ls-files | grep -E '[.]ya?ml$'
+  git ls-files | filter
+}
+
+# Selects eligible files; filenames are read from stdin, one line per filename.
+filter() {
+  grep -E '[.]ya?ml$'
 }
 
 case "${1:-}" in
---list) list_files ;;
---check) list_files | while read -r line; do diff <(yq . "$line") "$line"; done | if grep .; then exit 1; fi ;;
-*)
-  list_files | while read -r line; do yq --inplace . "$line"; done
+--help) print_help && exit 0 ;;
+--list | -l) list_files ;;
+--check | -c) list_files | while read -r line; do diff <(yq . "$line") "$line"; done | if grep .; then exit 1; fi ;;
+--modified | -m) git ls-files --modified | filter | while read -r line; do yq --inplace . "$line"; done ;;
+"") list_files | while read -r line; do yq --inplace . "$line"; done ;;
+--)
+  shift 1
+  for file in "$@"; do yq --inplace . "$file"; done
   ;;
+*) for file in "$@"; do yq --inplace . "$file"; done ;;
 esac

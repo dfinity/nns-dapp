@@ -10,9 +10,12 @@
   import {
     ageMultiplier,
     getSnsNeuronState,
+    hasPermissionToDisburse,
+    hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import DisburseSnsButton from "./actions/DisburseSnsButton.svelte";
   import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let neuron: SnsNeuron;
   export let snsParameters: SnsNervousSystemParameters;
@@ -25,6 +28,22 @@
 
   let ageBonus: number;
   $: ageBonus = ageMultiplier({ neuron, snsParameters });
+
+  let allowedToDisburse: boolean;
+  $: allowedToDisburse =
+    state === NeuronState.Dissolved &&
+    hasPermissionToDisburse({
+      neuron,
+      identity: $authStore.identity,
+    });
+
+  let allowedToDissolve = false;
+  $: allowedToDissolve =
+    [NeuronState.Dissolving, NeuronState.Locked].includes(state) &&
+    hasPermissionToDissolve({
+      neuron,
+      identity: $authStore.identity,
+    });
 </script>
 
 <CommonItemAction testId="sns-neuron-state-item-action-component">
@@ -51,9 +70,9 @@
       </span>
     {/if}
   </svelte:fragment>
-  {#if state === NeuronState.Dissolved}
+  {#if allowedToDisburse}
     <DisburseSnsButton {neuron} />
-  {:else}
+  {:else if allowedToDissolve}
     <DissolveSnsNeuronButton {neuron} />
   {/if}
 </CommonItemAction>

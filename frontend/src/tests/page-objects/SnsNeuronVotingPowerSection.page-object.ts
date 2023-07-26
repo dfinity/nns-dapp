@@ -40,4 +40,12 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
   hasDissolveDelayItemActionPo(): Promise<boolean> {
     return this.getDisslveDelayItemActionPo().isPresent();
   }
+
+  getStakeAmount(): Promise<string> {
+    return this.getStakeItemActionPo().getStake();
+  }
+
+  clickIncrease(): Promise<void> {
+    return this.getStakeItemActionPo().clickIncrease();
+  }
 }

@@ -4,7 +4,10 @@
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import Hash from "../ui/Hash.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsNeuronIdAsHexString,
+    hasPermissionToSplit,
+  } from "$lib/utils/sns-neuron.utils";
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
   import type { Principal } from "@dfinity/principal";
@@ -13,6 +16,7 @@
   import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
   import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
   import type { E8s } from "@dfinity/nns";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;
@@ -27,6 +31,14 @@
         subaccount: neuron?.id[0]?.id,
       }
     : undefined;
+
+  let allowedToSplit: boolean;
+  $: allowedToSplit =
+    nonNullish(neuron) &&
+    hasPermissionToSplit({
+      neuron,
+      identity: $authStore.identity,
+    });
 </script>
 
 <Section testId="sns-neuron-advanced-section-component">
@@ -76,7 +88,10 @@
       <SnsNeuronVestingPeriodRemaining {neuron} />
     {/if}
     <SnsAutoStakeMaturity />
-    <SplitSnsNeuronButton {neuron} {parameters} {transactionFee} {token} />
+
+    {#if allowedToSplit}
+      <SplitSnsNeuronButton {neuron} {parameters} {transactionFee} {token} />
+    {/if}
   </div>
 </Section>
 
