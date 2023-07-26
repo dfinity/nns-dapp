@@ -30,10 +30,12 @@
   $: ageBonus = ageMultiplier({ neuron, snsParameters });
 
   let allowedToDisburse: boolean;
-  $: allowedToDisburse = hasPermissionToDisburse({
-    neuron,
-    identity: $authStore.identity,
-  });
+  $: allowedToDisburse =
+    state === NeuronState.Dissolved &&
+    hasPermissionToDisburse({
+      neuron,
+      identity: $authStore.identity,
+    });
 
   let allowedToDissolve = false;
   $: allowedToDissolve =
@@ -68,7 +70,7 @@
       </span>
     {/if}
   </svelte:fragment>
-  {#if state === NeuronState.Dissolved && allowedToDisburse}
+  {#if allowedToDisburse}
     <DisburseSnsButton {neuron} />
   {:else if allowedToDissolve}
     <DissolveSnsNeuronButton {neuron} />

@@ -54,6 +54,7 @@ export const createMockSnsNeuron = ({
   stakedMaturity?: bigint;
   maturity?: bigint;
   createdTimestampSeconds?: bigint;
+  // Having a sourceNnsNeuronId makes the neuron a CF neuron.
   sourceNnsNeuronId?: NeuronId;
 }): SnsNeuron => {
   return {
