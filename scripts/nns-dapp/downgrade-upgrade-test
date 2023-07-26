@@ -32,6 +32,8 @@ get_current_wasm() {
 }
 
 get_prod_wasm() {
+  # TODO: Use the test build once available for the prod release.
+  # Note: Using the test build allows us to get arbitrary test accounts from the canister.
   curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
@@ -41,8 +43,8 @@ get_upgrade_invariant_stats() {
 }
 # Gets some sample accounts
 sample_toy_accounts() {
-  echo todo
-  #seq 1 "$TOY_ACCOUNT_CHUNK_SIZE" "$NUM_TOY_ACCOUNTS" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
+  # TODO: Enable once the production commit has a test wasm including get_toy_account().
+  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
