@@ -10,14 +10,18 @@ const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 
 const MAX_PENDING_TRANSACTIONS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many pending transactions.
 const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
 
+/// Principal of a toy account with a given index.
+fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
+    PrincipalId::new_user_test_id(toy_account_index)
+}
+
 impl AccountsStore {
     pub fn create_toy_accounts(&mut self, num_accounts: u64) {
-
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
         let num_existing_accounts = self.accounts.len() as u64;
         // Creates accounts:
         for toy_account_index in num_existing_accounts..(num_existing_accounts + num_accounts) {
-            let account = PrincipalId::new_user_test_id(toy_account_index);
+            let account = toy_account_principal_id(toy_account_index);
             self.add_account(account);
             // Creates linked sub-accounts:
             // Note: Successive accounts have 0, 1, 2 ... MAX_SUB_ACCOUNTS_PER_ACCOUNT-1 sub accounts, restarting at 0.
