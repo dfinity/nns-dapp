@@ -111,7 +111,7 @@ echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Installing state"
 for ((i = 0; i < NUM_TOY_ACCOUNTS; i += TOY_ACCOUNT_CHUNK_SIZE)); do
-  dfx canister call nns-dapp create_toy_account "($TOY_ACCOUNT_CHUNK_SIZE)"
+  dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE)"
 done
 verify_healthy
 check_state_size "$(get_upgrade_invariants)"

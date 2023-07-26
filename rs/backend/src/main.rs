@@ -337,11 +337,10 @@ pub fn add_assets_tar_xz() {
 /// Generates a lot of toy accounts for testing.
 ///
 /// # Returns
-/// The range of toy account indices created by this call.
+/// The first account index created by this call.
 ///
 /// E.g. if there are already 5 accounts and this call creates 10 accounts, then
-/// the returned range is (5, 15).  If the call is repeated, then the returned
-/// range is (15, 25).
+/// 5 is returned.  If the call is repeated, then the returned value will be 15.
 ///
 /// # Panics
 /// - If the requested number of accounts is too large, the call will run out of cycles and be killed.

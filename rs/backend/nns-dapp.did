@@ -270,4 +270,7 @@ service: (opt Config) -> {
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
     add_assets_tar_xz: (asset: blob) -> ();
+
+    // The following methods are only available to the controller of test canisters.
+    create_toy_accounts: (nat) -> (nat64);
 }
