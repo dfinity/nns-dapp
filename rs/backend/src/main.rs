@@ -342,7 +342,7 @@ pub fn add_assets_tar_xz() {
 /// E.g. if there are already 5 accounts and this call creates 10 accounts, then
 /// the returned range is (5, 15).  If the call is repeated, then the returned
 /// range is (15, 25).
-/// 
+///
 /// # Panics
 /// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
 #[cfg(any(test, feature = "toy_data_gen"))]
