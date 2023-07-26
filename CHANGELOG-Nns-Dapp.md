@@ -54,6 +54,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Deploy.sh script
+* Improve sns governance e2e test.
 
 #### Security
 
