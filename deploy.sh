@@ -105,9 +105,8 @@ if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
   # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probably don't.
-  ./build.sh
   DFX_NETWORK="$DFX_NETWORK" ./config.sh
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister for NNS Dapp may have been created already"
-  dfx canister install nns-dapp --argument "$(cat "nns-dapp-arg-${DFX_NETWORK}.did")" --wasm ./nns-dapp.wasm.gz --mode reinstall --network "$DFX_NETWORK"
+  dfx deploy nns-dapp --argument "$(cat "nns-dapp-arg-${DFX_NETWORK}.did")" --upgrade-unchanged --network "$DFX_NETWORK" --no-wallet
   echo "NNS Dapp deployed to: $(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
 fi
