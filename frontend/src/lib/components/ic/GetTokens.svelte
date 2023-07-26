@@ -93,7 +93,7 @@
   {#if $authSignedInStore}
     <button
       role="menuitem"
-      data-tid="get-icp-button"
+      data-tid={`get-${token.symbol}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
     >
