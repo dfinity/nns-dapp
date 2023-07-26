@@ -298,6 +298,7 @@
     "dissolve_delay_label": "Dissolve Delay (in days)",
     "dissolve_delay_placeholder": "Delay in days",
     "dissolve_delay_below_minimum": "Dissolve delay is below minimum voting allowance",
+    "dissolve_delay_below_current": "The new dissolve delay must be greater than the current value",
     "dissolve_delay_above_maximum": "Dissolve delay exceeds the maximum allowed delay",
     "voting_power": "Voting Power",
     "skip": "Skip",
