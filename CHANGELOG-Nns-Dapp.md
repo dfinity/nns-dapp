@@ -27,6 +27,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
 * Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
 * Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
+* Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
 
 #### Security
 
