@@ -16,11 +16,16 @@ fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
 }
 
 impl AccountsStore {
-    pub fn create_toy_accounts(&mut self, num_accounts: u64) {
+    /// Creates the given number of toy accounts, with linked sub-accounts, hardware wallets, pending transactions, and canisters.
+    ///
+    /// # Returns
+    /// - The account index range of the created accounts, as a tuple `(start, end)`.
+    pub fn create_toy_accounts(&mut self, num_accounts: u64) -> (u64, u64) {
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
         let num_existing_accounts = self.accounts.len() as u64;
+        let (index_range_start, index_range_end) = (num_existing_accounts, (num_existing_accounts + num_accounts));
         // Creates accounts:
-        for toy_account_index in num_existing_accounts..(num_existing_accounts + num_accounts) {
+        for toy_account_index in index_range_start..index_range_end {
             let account = toy_account_principal_id(toy_account_index);
             self.add_account(account);
             // Creates linked sub-accounts:
@@ -57,6 +62,7 @@ impl AccountsStore {
                 self.attach_canister(account, attach_canister_request);
             }
         }
+        (index_range_start, index_range_end)
     }
 }
 

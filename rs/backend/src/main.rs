@@ -343,7 +343,7 @@ pub fn generate_toy_accounts() {
         if !ic_cdk::api::is_controller(&caller) {
             dfn_core::api::trap_with("Only the controller may generate toy accounts");
         }
-        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64));
+        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64))
     })
 }
 
