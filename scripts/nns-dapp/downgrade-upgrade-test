@@ -26,7 +26,7 @@ verify_healthy() {
 }
 
 get_current_wasm() {
-  DFX_NETWORK=local ./scripts/docker-build
+  ./scripts/docker-build --network local
 }
 
 get_prod_wasm() {
@@ -63,7 +63,7 @@ echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
   CURRENT_WASM="nns-dapp.wasm.gz"
   echo "Building $CURRENT_WASM..."
-  DFX_NETWORK=local ./scripts/docker-build
+  ./scripts/docker-build --network local
 }
 test -e "$CURRENT_WASM" || {
   echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
