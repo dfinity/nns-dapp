@@ -21,12 +21,10 @@ export const signInWithAnchor = async ({
   page,
   context,
   anchor,
-  skipRecovery = false,
 }: {
   page: Page;
   context: BrowserContext;
   anchor: number;
-  skipRecovery?: boolean;
 }) => {
   step(`Sign in to existing anchor ${anchor}`);
   const iiPagePromise = context.waitForEvent("page");
@@ -39,13 +37,6 @@ export const signInWithAnchor = async ({
   await iiPage.getByRole("button", { name: "Use Existing" }).click();
   await iiPage.getByPlaceholder("Enter anchor").fill(anchor.toString());
   await iiPage.getByRole("button", { name: "Continue" }).click();
-
-  if (skipRecovery) {
-    await iiPage.getByText("Choose a Recovery Method").waitFor();
-    await iiPage.getByRole("button", { name: /Skip/ }).click();
-    await iiPage.getByRole("button", { name: "Add another device" }).waitFor();
-    await iiPage.getByRole("button", { name: /Skip/ }).click();
-  }
 
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);

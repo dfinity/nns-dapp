@@ -9,7 +9,6 @@ test("Test neuron voting", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("NNS Dapp");
 
-  // await signInWithAnchor({ page, context, anchor: 10000, skipRecovery: true });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
