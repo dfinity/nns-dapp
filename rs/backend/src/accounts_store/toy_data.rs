@@ -1,8 +1,8 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, PrincipalId, RegisterHardwareWalletRequest,
-    TransactionType,
+    Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, HashMap, PrincipalId,
+    RegisterHardwareWalletRequest, TransactionType,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
@@ -13,6 +13,26 @@ const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and thi
 /// Principal of a toy account with a given index.
 fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
     PrincipalId::new_user_test_id(toy_account_index)
+}
+
+/// A toy account.
+///
+/// Note: Toy accounts are created using the API, not this function.  The two _should_ yield the same result.
+fn toy_account(toy_account_index: u64) -> Account {
+    let principal = toy_account_principal_id(toy_account_index);
+    let account_identifier = AccountIdentifier::from(principal);
+    let default_account_transactions = Vec::new();
+    let sub_accounts = HashMap::new();
+    let hardware_wallet_accounts = Vec::new();
+    let canisters = Vec::new();
+    Account {
+        principal: Some(principal),
+        account_identifier,
+        default_account_transactions,
+        sub_accounts,
+        hardware_wallet_accounts,
+        canisters,
+    }
 }
 
 impl AccountsStore {
@@ -63,6 +83,17 @@ impl AccountsStore {
             }
         }
         (index_range_start, index_range_end)
+    }
+
+    /// Gets the toy account with the given index.
+    pub fn get_toy_account(&self, toy_account_index: u64) -> Result<Account, String> {
+        let principal = PrincipalId::new_user_test_id(toy_account_index);
+        let account_identifier = AccountIdentifier::from(principal);
+        let account = self
+            .accounts
+            .get(&account_identifier.to_vec())
+            .ok_or_else(|| format!("Account not found: {}", toy_account_index))?;
+        Ok((*account).clone())
     }
 }
 

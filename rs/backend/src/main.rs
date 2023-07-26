@@ -335,8 +335,18 @@ pub fn add_assets_tar_xz() {
 }
 
 /// Generates a lot of toy accounts for testing.
+///
+/// # Returns
+/// The range of toy account indices created by this call.
+///
+/// E.g. if there are already 5 accounts and this call creates 10 accounts, then
+/// the returned range is (5, 15).  If the call is repeated, then the returned
+/// range is (15, 25).
+/// 
+/// # Panics
+/// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
 #[cfg(any(test, feature = "toy_data_gen"))]
-#[export_name = "canister_update generate_toy_accounts"]
+#[export_name = "canister_update create_toy_accounts"]
 pub fn generate_toy_accounts() {
     over(candid_one, |num_accounts: u128| {
         let caller = ic_cdk::caller();
@@ -344,6 +354,18 @@ pub fn generate_toy_accounts() {
             dfn_core::api::trap_with("Only the controller may generate toy accounts");
         }
         STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64))
+    })
+}
+
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[export_name = "canister_update get_toy_account"]
+pub fn get_toy_account() {
+    over(candid_one, |toy_account_index: u128| {
+        let caller = ic_cdk::caller();
+        if !ic_cdk::api::is_controller(&caller) {
+            dfn_core::api::trap_with("Only the controller may access toy accounts");
+        }
+        STATE.with(|s| s.accounts_store.borrow_mut().get_toy_account(toy_account_index as u64))
     })
 }
 
