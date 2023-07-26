@@ -4,6 +4,8 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 PROD_WASM="nns-dapp-prod_local.wasm.gz"
+NUM_TOY_ACCOUNTS=1000000
+TOY_ACCOUNT_CHUNK_SIZE=10000
 
 help_text() {
   cat <<-EOF
@@ -39,7 +41,7 @@ get_upgrade_invariant_stats() {
 }
 # Gets some sample accounts
 sample_toy_accounts() {
-  seq 1 TOY_ACCOUNT_CHUNK_SIZE NUM_TOY_ACCOUNTS | xargs -I{} dfx canister call nns-dapp get_toy_account "({})"
+  seq 1 "$TOY_ACCOUNT_CHUNK_SIZE" "$NUM_TOY_ACCOUNTS" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
@@ -88,7 +90,7 @@ upgrade_nnsdapp() {
 
 echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="nns-dapp_test.wasm.gz"
+  CURRENT_WASM="out/nns-dapp_test.wasm.gz"
   echo "Building $CURRENT_WASM..."
   ./scripts/docker-build --network local
 }
@@ -106,8 +108,6 @@ fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Installing state"
-NUM_TOY_ACCOUNTS=1000000
-TOY_ACCOUNT_CHUNK_SIZE=10000
 for ((i = 0; i < NUM_TOY_ACCOUNTS; i += TOY_ACCOUNT_CHUNK_SIZE)); do
   dfx canister call nns-dapp create_toy_account "($TOY_ACCOUNT_CHUNK_SIZE)"
 done
