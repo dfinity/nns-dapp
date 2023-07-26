@@ -15,7 +15,7 @@ filter() {
 lint=(shellcheck -e SC1090 -e SC2119 -e SC1091)
 
 case "${1:-}" in
-"") list_files | xargs "${lint[@]}" ;;
---modified) git ls-files --modified | filter | xargs "${lint[@]}" ;;
+"") list_files | xargs -P4 -I{} "${lint[@]}" "{}" ;;
+--modified) git ls-files --modified | filter | xargs -P8 -I{} "${lint[@]}" "{}" ;;
 *) "${lint[@]}" "${@}" ;;
 esac

@@ -16,8 +16,8 @@ options=(-i 2)
 
 case "${1:-}" in
 --list | -l) list_files ;;
---check | -c) list_files | xargs -I{} shfmt "${options[@]}" -d "{}" ;;
---modified | -m) git ls-files --modified | filter | xargs -I{} shfmt -l -w "${options[@]}" "{}" ;;
-"") list_files | xargs -I{} shfmt -l -w "${options[@]}" "{}" ;;
+--check | -c) list_files | xargs -P8 -I{} shfmt "${options[@]}" -d "{}" ;;
+--modified | -m) git ls-files --modified | filter | xargs -P8 -I{} shfmt -l -w "${options[@]}" "{}" ;;
+"") list_files | xargs -P8 -I{} shfmt -l -w "${options[@]}" "{}" ;;
 *) for file in "$@"; do shfmt -l -w "${options[@]}" "$file"; done ;;
 esac
