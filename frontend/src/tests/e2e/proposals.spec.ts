@@ -26,13 +26,11 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   step(`Filter proposals by Topic`);
-  const visibleCardTopics = async () =>
-    await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardTopics();
-  const initialVisibleCardTopics = await visibleCardTopics();
+  const getVisibleCardTopics = () =>
+    appPo.getProposalsPo().getNnsProposalListPo().getProposalCardTopics();
+  const initialVisibleCardTopics = await getVisibleCardTopics();
 
-  expect(Array.from(new Set(await visibleCardTopics())).length).toBeGreaterThan(
-    1
-  );
+  expect((await getVisibleCardTopics()).length).toBeGreaterThan(1);
 
   await appPo
     .getProposalsPo()
@@ -40,23 +38,21 @@ test("Test neuron voting", async ({ page, context }) => {
     .setTopicFilter([Topic.ExchangeRate]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
-  expect(Array.from(new Set(await visibleCardTopics()))).toHaveLength(1);
-  expect((await visibleCardTopics())[0]).toEqual("Exchange Rate");
+  expect(await getVisibleCardTopics()).toHaveLength(1);
+  expect((await getVisibleCardTopics())[0]).toEqual("Exchange Rate");
 
   // Reset topic filter
   await appPo.getProposalsPo().getNnsProposalFiltersPo().setTopicFilter([]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-  expect(
-    Array.from(new Set(await visibleCardTopics())).length
-  ).toBeGreaterThanOrEqual(
-    Array.from(new Set(initialVisibleCardTopics)).length
+  expect((await getVisibleCardTopics()).length).toBeGreaterThanOrEqual(
+    initialVisibleCardTopics.length
   );
 
   step("Filter proposals by Status");
-  const visibleCardStatuses = () =>
+  const getVisibleCardStatuses = () =>
     appPo.getProposalsPo().getNnsProposalListPo().getProposalCardStatuses();
   // Open status cards are visible
-  expect(await visibleCardStatuses()).toContain("Open");
+  expect(await getVisibleCardStatuses()).toContain("Open");
 
   await appPo
     .getProposalsPo()
@@ -64,5 +60,5 @@ test("Test neuron voting", async ({ page, context }) => {
     .setStatusFilter([ProposalStatus.Executed]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
-  expect(await visibleCardStatuses()).not.toContain("Open");
+  expect(await getVisibleCardStatuses()).not.toContain("Open");
 });

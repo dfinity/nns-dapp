@@ -19,19 +19,25 @@ export class NnsProposalListPo extends BasePageObject {
   }
 
   async getProposalCardTopics(): Promise<string[]> {
-    return Promise.all(
-      (await this.getProposalCardPos()).map((card) =>
-        card.getProposalTopicText()
-      )
+    const topics = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalTopicText())
     );
+
+    // return unique values only
+    return Array.from(new Set(topics));
   }
 
   async getProposalCardStatuses(): Promise<string[]> {
-    return Promise.all(
-      (await this.getProposalCardPos()).map((card) =>
-        card.getProposalStatusText()
-      )
+    const statuses = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalStatusText())
     );
+
+    // return unique values only
+    return Array.from(new Set(statuses));
   }
 
   async getProposalIds(): Promise<string[]> {
