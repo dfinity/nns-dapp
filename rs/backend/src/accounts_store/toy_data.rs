@@ -55,30 +55,12 @@ impl AccountsStore {
     }
 }
 
-#[allow(dead_code)]
+#[cfg(test)]
+// #[allow(dead_code)]
 fn large_accounts_store(num_accounts: u64) -> AccountsStore {
     let mut accounts_store = AccountsStore::default();
     accounts_store.create_toy_accounts(num_accounts);
     accounts_store
-
-    /*
-    AccountsStore {
-        accounts: HashMap<Vec<u8>, Account>,
-        hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-        // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
-        pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-
-        transactions: VecDeque<Transaction>,
-        neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
-        block_height_synced_up_to: Option<BlockIndex>,
-        multi_part_transactions_processor: MultiPartTransactionsProcessor,
-
-        sub_accounts_count: u64,
-        hardware_wallet_accounts_count: u64,
-        last_ledger_sync_timestamp_nanos: u64,
-        neurons_topped_up_count: u64,
-    }
-    */
 }
 
 #[test]

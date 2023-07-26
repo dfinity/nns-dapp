@@ -26,21 +26,14 @@ type TransactionIndex = u64;
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
-    // TODO: Transition to AccountIdentifiers when we store accounts in stable memory.
-    // To be stored as a stable BTreeMap with 1Kb pages (expandable).
     accounts: HashMap<Vec<u8>, Account>,
-    // To be stored as a stable BTreeMap with 128 byte pages (expandable).  Size should be enough for a hardware wallet with two accounts, no more.
     hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
     // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
     pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
-    // To be stored as a VecDeque implemented on top of a stable BTreeMap with ?200 byte pages.
+
     transactions: VecDeque<Transaction>,
-    // To be stored as a stable BTreeMap with about 128 byte pages.
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
-    // Probably always stored on the heap.  In stable memory?  We could assign 4 bytes, say, of control data.
     block_height_synced_up_to: Option<BlockIndex>,
-    // This will need another vec-deque, based on a BTreeMap.
-    // Size: Need a metric with the size of this thing.
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
 
     sub_accounts_count: u64,
@@ -57,35 +50,23 @@ enum AccountWrapper {
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct Account {
-    // Size: About 30 bytes
     principal: Option<PrincipalId>,
-    // Size: About 30 bytes (assuming this is a principal)
     account_identifier: AccountIdentifier,
-    // Size: 4 bytes * however many we keep.
     default_account_transactions: Vec<TransactionIndex>,
-    // Size: about 128 bytes * num accounts.
     sub_accounts: HashMap<u8, NamedSubAccount>,
-    // Size: about 128 bytes * num accounts.
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
-    // Size: about 128 bytes * num canisters.
     canisters: Vec<NamedCanister>,
 }
 
-// Size: Typically about 120 bytes (guesstimate) 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct NamedSubAccount {
-    // Size: Max length is ACCOUNT_NAME_MAX_LENGTH=24 utf8 characters, each of which is up to 4 bytes, plus the const overhead for a string.
     name: String,
-    // Size: Presumably just a principal, so 29 bytes.
     account_identifier: AccountIdentifier,
-    // Size: Every transaction index is a u64, so 4 bytes, plus the const overhead for an array.
     transactions: Vec<TransactionIndex>,
 }
 
-// Size: Typically 128 bytes (guesstimate).
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct NamedHardwareWalletAccount {
-    // Size: Max length 24.
     name: String,
     principal: PrincipalId,
     transactions: Vec<TransactionIndex>,
@@ -126,20 +107,13 @@ impl PartialOrd for NamedCanister {
     }
 }
 
-// Size: About 132 bytes
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Copy)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 struct Transaction {
-    // Size: 4 bytes.
     transaction_index: TransactionIndex,
-    // Size: Guess 8 bytes
     block_height: BlockIndex,
-    // Size: Guess 8 bytes
     timestamp: TimeStamp,
-    // Size: 8 bytes
     memo: Memo,
-    // Size: About 100 bytes
     transfer: Operation,
-    // Size: Guess 4 bytes
     transaction_type: Option<TransactionType>,
 }
 
@@ -189,16 +163,11 @@ pub enum TransactionType {
     ParticipateSwap(CanisterId),
 }
 
-// Size: About 80 bytes
 #[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct NeuronDetails {
-    // Size: about 32 bytes
     account_identifier: AccountIdentifier,
-    // Size: about 32 bytes
     principal: PrincipalId,
-    // Size: 8 bytes
     memo: Memo,
-    // Size: u64 so 8 bytes
     neuron_id: Option<NeuronId>,
 }
 
