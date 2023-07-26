@@ -21,7 +21,7 @@ source "$(clap.build)"
 GOLDEN_FILE="rs/backend/nns-dapp-exports.txt"
 
 wasm_exports() {
-  ic-wasm <(gunzip <"$1") info | sed -nE '/^Exported methods:/,/^]/{s/^ *"(.*)".*/\1/g;ta;b;:a;s/ *[(].*//g;p}'
+  ic-wasm <(gunzip <"$1") info | sed -nE '/^Exported methods:/,/^]/p' | sed '1d;$d' | sed -E 's/.*"(.*)",/\1/'
 }
 
 if [ "$UPDATE_GOLDEN" = "true" ]; then
