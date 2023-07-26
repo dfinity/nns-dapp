@@ -131,7 +131,7 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async isChecked(): Promise<boolean | null> {
-    return this.element && (this.element as HTMLInputElement).checked;
+    throw new Error("Not implemented");
   }
 
   async click(): Promise<void> {
