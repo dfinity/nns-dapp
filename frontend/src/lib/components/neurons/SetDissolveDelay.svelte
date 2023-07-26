@@ -74,7 +74,6 @@
     keepDelaysInBounds();
   };
   const updateInputError = () => {
-    console.log("updateInputError", delayInDays, maxDelayInDays);
     if (delayInDays > maxDelayInDays) {
       inputError = $i18n.neurons.dissolve_delay_above_maximum;
     } else if (delayInDays < minProjectDelayInDays) {
