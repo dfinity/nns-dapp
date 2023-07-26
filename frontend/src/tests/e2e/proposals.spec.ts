@@ -38,8 +38,7 @@ test("Test neuron voting", async ({ page, context }) => {
     .setTopicFilter([Topic.ExchangeRate]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
-  expect(await getVisibleCardTopics()).toHaveLength(1);
-  expect((await getVisibleCardTopics())[0]).toEqual("Exchange Rate");
+  expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
 
   // Reset topic filter
   await appPo.getProposalsPo().getNnsProposalFiltersPo().setTopicFilter([]);

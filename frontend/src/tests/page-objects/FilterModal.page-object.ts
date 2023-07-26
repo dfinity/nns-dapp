@@ -1,4 +1,3 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,17 +10,11 @@ export class FilterModalPo extends BasePageObject {
   }
 
   clickSelectAllButtonPo(): Promise<void> {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "filter-modal-select-all",
-    }).click();
+    return this.click("filter-modal-select-all");
   }
 
   clickClearSelectionButton(): Promise<void> {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "filter-modal-clear",
-    }).click();
+    return this.click("filter-modal-clear");
   }
 
   getFilterEntryPos(): Promise<CheckboxPo[]> {
@@ -36,13 +29,6 @@ export class FilterModalPo extends BasePageObject {
   }
 
   clickConfirmButton(): Promise<void> {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "apply-filters",
-    }).click();
-  }
-
-  waitForClosed(): Promise<void> {
-    return this.root.waitForAbsent();
+    return this.click("apply-filters");
   }
 }

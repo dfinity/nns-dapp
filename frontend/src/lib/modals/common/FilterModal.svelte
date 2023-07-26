@@ -74,7 +74,7 @@
       <div class="filters">
         {#each filters as { id, name, checked } (id)}
           <Checkbox
-            testId={`${id}`}
+            testId={`checkbox-${id}`}
             inputId={id}
             {checked}
             on:nnsChange={() => onChange(id)}>{name}</Checkbox

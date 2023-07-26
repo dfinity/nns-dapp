@@ -1,4 +1,3 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,25 +10,12 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return new NnsProposalFiltersPo(element.byTestId(NnsProposalFiltersPo.TID));
   }
 
-  getFiltersByTopicsButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "filters-by-topics",
-    });
+  clickFiltersByTopicsButton(): Promise<void> {
+    return this.click("filters-by-topics");
   }
 
-  getFiltersByRewardsdButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "filters-by-rewards",
-    });
-  }
-
-  getFiltersByStatusButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "filters-by-status",
-    });
+  clickFiltersByStatusButton(): Promise<void> {
+    return this.click("filters-by-status");
   }
 
   getFilterModalPo(): FilterModalPo {
@@ -48,20 +34,20 @@ export class NnsProposalFiltersPo extends BasePageObject {
 
     // confirm and close modal
     await this.getFilterModalPo().clickConfirmButton();
-    await this.getFilterModalPo().waitForClosed();
+    await this.getFilterModalPo().waitForAbsent();
   }
 
   async setTopicFilter(topics: Topic[]): Promise<void> {
-    await this.getFiltersByTopicsButtonPo().click();
+    await this.clickFiltersByTopicsButton();
     return this.preselectEntriesInFilterModal(
-      topics.map((value) => `"${value}"`)
+      topics.map((value) => `checkbox-${value}`)
     );
   }
 
   async setStatusFilter(statuses: ProposalStatus[]): Promise<void> {
-    await this.getFiltersByStatusButtonPo().click();
+    await this.clickFiltersByStatusButton();
     return this.preselectEntriesInFilterModal(
-      statuses.map((value) => `"${value}"`)
+      statuses.map((value) => `checkbox-${value}`)
     );
   }
 }
