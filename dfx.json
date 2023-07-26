@@ -630,7 +630,7 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SIMULATE_MERGE_NEURONS": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": true,
           "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_INSTANT_UNLOCK": false
         }

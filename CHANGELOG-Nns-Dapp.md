@@ -11,6 +11,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Enable merge neurons preview.
+
 #### Changed
 
 * Bump agent-js `v0.18.1`.
@@ -36,11 +38,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
 
 #### Changed
 
+* Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
 
 #### Deprecated

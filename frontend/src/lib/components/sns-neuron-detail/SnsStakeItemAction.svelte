@@ -5,13 +5,19 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatToken } from "$lib/utils/token.utils";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsNeuronStake,
+    isCommunityFund,
+  } from "$lib/utils/sns-neuron.utils";
   import SnsIncreaseStakeButton from "./actions/SnsIncreaseStakeButton.svelte";
   import type { Universe } from "$lib/types/universe";
 
   export let neuron: SnsNeuron;
   export let token: Token;
   export let universe: Universe;
+
+  let isIncreaseStakeAllowed = false;
+  $: isIncreaseStakeAllowed = !isCommunityFund(neuron);
 </script>
 
 <ItemAction testId="sns-stake-item-action-component">
@@ -30,7 +36,11 @@
     </h4>
     <p class="description">{$i18n.neurons.ic_stake}</p>
   </div>
-  <SnsIncreaseStakeButton slot="actions" variant="secondary" />
+  <svelte:fragment slot="actions">
+    {#if isIncreaseStakeAllowed}
+      <SnsIncreaseStakeButton variant="secondary" />
+    {/if}
+  </svelte:fragment>
 </ItemAction>
 
 <style lang="scss">
