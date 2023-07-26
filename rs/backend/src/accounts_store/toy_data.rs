@@ -77,8 +77,8 @@ impl AccountsStore {
     }
 }
 
+/// Creates an account sstore with the given number of test accounts.
 #[cfg(test)]
-// #[allow(dead_code)]
 fn large_accounts_store(num_accounts: u64) -> AccountsStore {
     let mut accounts_store = AccountsStore::default();
     accounts_store.create_toy_accounts(num_accounts);

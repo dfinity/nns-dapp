@@ -116,7 +116,7 @@ echo "Checking that the current wasm is healthy..."
 verify_healthy
 echo "Installing state"
 while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
-  dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE)"
+  dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
 done
 verify_healthy
 check_state_size
