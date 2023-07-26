@@ -12,7 +12,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(10);
+  await appPo.getIcpTokens(10);
   // TODO: Remove once we set feature flag to true https://dfinity.atlassian.net/browse/GIX-1687
   await page.evaluate(() =>
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

@@ -134,13 +134,16 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  getTokensButton(token: string): ButtonPo {
-    return this.getMenuItemsPo().getGetTokensPo().getTokensButtonPo(token);
+  async getSnsTokens(amount: number): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().getGetTokensPo().getSnsTokensButton().waitFor();
+    await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(amount);
+    await this.closeMenu();
   }
 
-  async getTokens(amount: number, token = "icp"): Promise<void> {
+  async getIcpTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getTokens(amount, token);
+    await this.getMenuItemsPo().getGetTokensPo().getIcpTokens(amount);
     await this.closeMenu();
   }
 

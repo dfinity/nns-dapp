@@ -9,12 +9,16 @@ export class GetTokensPo extends BasePageObject {
     return new GetTokensPo(element.byTestId(GetTokensPo.TID));
   }
 
-  getTokensButtonPo(token: string): ButtonPo {
-    return this.getButton(`get-${token}-button`);
+  clickGetIcpTokens(): Promise<void> {
+    return this.getButton("get-icp-button").click();
   }
 
-  clickGetTokens(token: string): Promise<void> {
-    return this.getTokensButtonPo(token).click();
+  getSnsTokensButton(): ButtonPo {
+    return this.getButton("get-sns-button");
+  }
+
+  clickGetSnsTokens(): Promise<void> {
+    return this.getSnsTokensButton().click();
   }
 
   enterAmount(amount: number): Promise<void> {
@@ -29,8 +33,17 @@ export class GetTokensPo extends BasePageObject {
     return this.root.byTestId("get-icp-form").waitForAbsent();
   }
 
-  async getTokens(amount: number, token: string): Promise<void> {
-    await this.clickGetTokens(token);
+  async getIcpTokens(amount: number): Promise<void> {
+    await this.clickGetIcpTokens();
+    await this.getTokens(amount);
+  }
+
+  async getSnsTokens(amount: number): Promise<void> {
+    await this.clickGetSnsTokens();
+    await this.getTokens(amount);
+  }
+
+  private async getTokens(amount: number): Promise<void> {
     await this.enterAmount(amount);
     await this.clickSubmit();
     await this.waitForModalClosed();

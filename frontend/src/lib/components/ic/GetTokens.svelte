@@ -27,6 +27,9 @@
   let selectedProjectId = OWN_CANISTER_ID;
   $: selectedProjectId = $selectedUniverseIdStore;
 
+  let isNns: boolean;
+  $: isNns = selectedProjectId.toText() === OWN_CANISTER_ID.toText();
+
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
       toastsError({
@@ -39,10 +42,7 @@
 
     try {
       // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (
-        selectedProjectId.toText() === OWN_CANISTER_ID.toText() ||
-        tokenBalanceE8s === 0n
-      ) {
+      if (isNns || tokenBalanceE8s === 0n) {
         await getICPs(inputValue);
       } else {
         await getTokens({
@@ -93,7 +93,7 @@
   {#if $authSignedInStore}
     <button
       role="menuitem"
-      data-tid={`get-${token.symbol}-button`}
+      data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
     >
