@@ -75,19 +75,19 @@ impl AccountsStore {
             .ok_or_else(|| format!("Account not found: {}", toy_account_index))?;
         Ok((*account).clone())
     }
-}
 
-/// Creates an account sstore with the given number of test accounts.
-#[cfg(test)]
-fn large_accounts_store(num_accounts: u64) -> AccountsStore {
-    let mut accounts_store = AccountsStore::default();
-    accounts_store.create_toy_accounts(num_accounts);
-    accounts_store
+    /// Creates an account sstore with the given number of test accounts.
+    #[cfg(test)]
+    fn with_toy_accounts(num_accounts: u64) -> AccountsStore {
+        let mut accounts_store = AccountsStore::default();
+        accounts_store.create_toy_accounts(num_accounts);
+        accounts_store
+    }
 }
 
 #[test]
 fn should_be_able_to_create_large_accounts_store() {
     let num_accounts = 10_000;
-    let accounts_store = large_accounts_store(num_accounts);
+    let accounts_store = AccountsStore::with_toy_accounts(num_accounts);
     assert_eq!(num_accounts, accounts_store.accounts.len() as u64);
 }
