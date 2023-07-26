@@ -26,24 +26,44 @@ verify_healthy() {
 }
 
 get_current_wasm() {
-  DFX_NETWORK=local ./scripts/docker-build
+  ./scripts/docker-build --network local
 }
 
 get_prod_wasm() {
   curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
+# Gets data that should be invariant across upgrades
+get_upgrade_invariants() {
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+}
+
 # Installs the current build of nns-dapp
 upgrade_nnsdapp() {
+  local prestate poststate
+  prestate="$(get_upgrade_invariants)"
+  # TODO: Check that the prestate is not empty; first we need to populate the state.
+  # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
+  poststate="$(get_upgrade_invariants)"
+  if [[ "$prestate" != "$poststate" ]]; then
+    {
+      echo "ERROR: The upgrade changed the state of the canister."
+      echo "Prestate: $prestate"
+      echo "Poststate: $poststate"
+      echo "Diff:"
+      diff -u <(echo "$prestate") <(echo "$poststate") || true
+      exit 1
+    } >&2
+  fi
 }
 
 echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
   CURRENT_WASM="nns-dapp.wasm.gz"
   echo "Building $CURRENT_WASM..."
-  DFX_NETWORK=local ./scripts/docker-build
+  ./scripts/docker-build --network local
 }
 test -e "$CURRENT_WASM" || {
   echo "ERROR: Wasm file not found at '$CURRENT_WASM'."

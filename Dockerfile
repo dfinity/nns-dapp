@@ -21,7 +21,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq npm xxd
+        git jq npm xxd file
 
 # Gets tool versions.
 #
@@ -149,8 +149,6 @@ WORKDIR /build
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN . scripts/nns-dapp/flavours.bash && for flavour in "${NNS_DAPP_BUILD_FLAVOURS[@]}" ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm "nns-dapp_$flavour.wasm.gz" --verbose ; done
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp.wasm.gz --verbose
@@ -183,8 +181,6 @@ RUN tar -cJf assets.tar.xz -T /dev/null
 RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
 RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
 
@@ -209,8 +205,6 @@ RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
