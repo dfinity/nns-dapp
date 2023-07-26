@@ -27,8 +27,9 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(snsProjectName).toMatch(/[A-Z]{5}/);
 
   await snsUniverseCard.click();
+
   step("Acquire tokens");
-  await appPo.getTokens(20);
+  await appPo.getSnsTokens(20);
 
   expect(
     await appPo

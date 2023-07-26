@@ -14,7 +14,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(41);
+  await appPo.getIcpTokens(41);
 
   // should be created before dummy proposals
   step("Stake neuron (for voting)");
