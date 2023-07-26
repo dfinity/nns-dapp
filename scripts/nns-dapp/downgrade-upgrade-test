@@ -33,16 +33,25 @@ get_prod_wasm() {
   curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
+# Gets stats that should be invariant across upgrades
+get_upgrade_invariant_stats() {
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+}
+# Gets some sample accounts
+sample_toy_accounts() {
+  seq 1 TOY_ACCOUNT_CHUNK_SIZE NUM_TOY_ACCOUNTS | xargs -I{} dfx canister call nns-dapp get_toy_account "({})"
+}
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+  get_upgrade_invariant_stats
+  sample_toy_accounts
 }
 
 # Verifies that the state is at least as large as expected.
 check_state_size() {
   local invariants accounts_count expected_min_accounts
   expected_min_accounts="$NUM_TOY_ACCOUNTS"
-  invariants="$(get_upgrade_invariants)"
+  invariants="$(get_upgrade_invariant_stats)"
   accounts_count="$(jq .accounts_count <<<"$invariants")"
   if ((accounts_count < expected_min_accounts)); then
     {
