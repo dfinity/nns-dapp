@@ -16,19 +16,12 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Get some ICP");
   await appPo.goToAccounts();
-  // We need an account before we can get ICP.
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getMainAccountCardPo()
-    .waitFor();
   await appPo.getTokens(26);
 
   step("Create dummy proposals");
   await createDummyProposal(appPo);
 
   step("Open proposals list");
-
   await appPo.goToProposals();
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
