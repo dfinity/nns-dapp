@@ -61,3 +61,4 @@ anyhow = "1.0.68"
 production=[]
 test=["toy_data_gen"]
 toy_data_gen = []
+# TODO: Define noassets as a feature flag, to keep different build flavours consistent.
