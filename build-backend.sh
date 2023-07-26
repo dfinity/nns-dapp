@@ -10,5 +10,4 @@ echo Compiling rust package
 "$TOPLEVEL/build-rs.sh" nns-dapp
 
 echo Sanity check
-# NOT WORKING IN MACOS
-# scripts/nns-dapp/test-exports
+scripts/nns-dapp/test-exports
