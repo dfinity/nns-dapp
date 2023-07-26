@@ -273,7 +273,7 @@ describe("SnsNeuronDetail", () => {
       await po.increaseStake(amountToStake);
       await runResolvedPromises();
 
-      // `neuronStake` + 10 to string and formatted as expected
+      // `neuronStake` + 20 to string and formatted as expected
       expect(await po.getStake()).toBe("21.00");
       expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
       expect(increaseStakeNeuron).toHaveBeenCalledWith({
