@@ -10,9 +10,9 @@
     type SelectedSnsNeuronStore,
     SELECTED_SNS_NEURON_CONTEXT_KEY,
   } from "$lib/types/sns-neuron-detail.context";
-  import { writable } from "svelte/store";
   import { onMount, setContext } from "svelte";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { queuedStore } from "$lib/stores/queued-store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
@@ -44,10 +44,11 @@
   import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 
   export let neuronId: string | null | undefined;
 
-  const selectedSnsNeuronStore = writable<SelectedSnsNeuronStore>({
+  const selectedSnsNeuronStore = queuedStore<SelectedSnsNeuronStore>({
     selected: undefined,
     neuron: undefined,
   });
@@ -77,20 +78,35 @@
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
 
+  let governanceCanisterId: Principal | undefined;
+  $: governanceCanisterId =
+    $selectedUniverseStore.summary?.governanceCanisterId;
+
   const loadNeuron = async (
     { forceFetch }: { forceFetch: boolean } = { forceFetch: false }
   ) => {
     const { selected } = $selectedSnsNeuronStore;
     if (selected !== undefined && $pageStore.path === AppPath.Neuron) {
+      const mutableSnsNeuronStore =
+        selectedSnsNeuronStore.getSingleMutationStore();
       await getSnsNeuron({
         forceFetch,
         rootCanisterId: selected.rootCanisterId,
         neuronIdHex: selected.neuronIdHex,
-        onLoad: ({ neuron: snsNeuron }: { neuron: SnsNeuron }) => {
-          selectedSnsNeuronStore.update((store) => ({
-            ...store,
-            neuron: snsNeuron,
-          }));
+        onLoad: ({
+          certified,
+          neuron: snsNeuron,
+        }: {
+          certified: boolean;
+          neuron: SnsNeuron;
+        }) => {
+          mutableSnsNeuronStore.update({
+            mutation: (store) => ({
+              ...store,
+              neuron: snsNeuron,
+            }),
+            certified,
+          });
         },
         onError: () => {
           toastsError({
@@ -113,12 +129,15 @@
     try {
       const rootCanisterId = Principal.fromText($pageStore.universe);
       // `loadNeuron` relies on neuronId and rootCanisterId to be set in the store
-      selectedSnsNeuronStore.set({
-        selected: {
-          neuronIdHex: neuronId,
-          rootCanisterId,
+      selectedSnsNeuronStore.getSingleMutationStore().set({
+        data: {
+          selected: {
+            neuronIdHex: neuronId,
+            rootCanisterId,
+          },
+          neuron: null,
         },
-        neuron: null,
+        certified: true,
       });
 
       await Promise.all([
@@ -151,9 +170,9 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron)}
+          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
             <div class="section-wrapper">
-              <SnsNeuronPageHeader />
+              <SnsNeuronPageHeader {token} />
               <SnsNeuronPageHeading {parameters} />
               <Separator spacing="none" />
               <SnsNeuronVotingPowerSection
@@ -162,19 +181,30 @@
                 {token}
               />
               <Separator spacing="none" />
-              <SnsNeuronMaturitySection />
-              <SnsNeuronAdvancedSection />
+              <SnsNeuronMaturitySection
+                neuron={$selectedSnsNeuronStore.neuron}
+              />
+              <Separator spacing="none" />
+              <SnsNeuronAdvancedSection
+                neuron={$selectedSnsNeuronStore.neuron}
+                {governanceCanisterId}
+                {parameters}
+                {token}
+                {transactionFee}
+              />
+              <Separator spacing="none" />
             </div>
-          {/if}
-          <Summary />
-
-          {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
-            <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
           {:else}
-            <SkeletonCard size="large" cardType="info" separator />
+            <Summary />
+
+            {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
+              <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
+            {:else}
+              <SkeletonCard size="large" cardType="info" separator />
+            {/if}
+            <SnsNeuronInfoStake />
+            <SnsNeuronMaturityCard />
           {/if}
-          <SnsNeuronInfoStake />
-          <SnsNeuronMaturityCard />
           <SnsNeuronFollowingCard />
           {#if nonNullish(parameters)}
             <SnsNeuronHotkeysCard {parameters} />
@@ -195,6 +225,6 @@
   .section-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-3x);
+    gap: var(--padding-4x);
   }
 </style>

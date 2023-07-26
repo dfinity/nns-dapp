@@ -42,4 +42,15 @@ describe("SnsStakeItemAction", () => {
 
     expect(await po.hasIncreaseStakeButton()).toBe(true);
   });
+
+  it("should not render increase stake button if neuron belongs to CF", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      // Having a sourceNnsNeuronId makes the neuron a CF neuron.
+      sourceNnsNeuronId: 123455n,
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.hasIncreaseStakeButton()).toBe(false);
+  });
 });

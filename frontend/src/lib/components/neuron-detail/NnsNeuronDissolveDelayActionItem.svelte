@@ -4,6 +4,7 @@
     dissolveDelayMultiplier,
     getDissolvingTimeInSeconds,
     getSpawningTimeInSeconds,
+    isNeuronControllable,
   } from "$lib/utils/neuron.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -14,6 +15,8 @@
   import { keyOf } from "$lib/utils/utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -37,6 +40,13 @@
   let remainingTimeSeconds: bigint;
   $: remainingTimeSeconds =
     dissolvingTime ?? spawningTime ?? neuron.dissolveDelaySeconds;
+
+  let isControllable: boolean;
+  $: isControllable = isNeuronControllable({
+    neuron,
+    identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
 </script>
 
 <CommonItemAction testId="nns-neuron-dissolve-delay-item-action-component">
@@ -64,5 +74,7 @@
       </span>
     {/if}</svelte:fragment
   >
-  <IncreaseDissolveDelayButton variant="secondary" />
+  {#if isControllable}
+    <IncreaseDissolveDelayButton variant="secondary" />
+  {/if}
 </CommonItemAction>

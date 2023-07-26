@@ -151,7 +151,7 @@ describe("SnsNeuronMetaInfoCard", () => {
       id: [1],
       state: NeuronState.Locked,
       votingPowerMultiplier: 100n,
-      ageSinceSeconds: BigInt(nowSeconds) - 200n,
+      ageSinceTimestampSeconds: BigInt(nowSeconds) - 200n,
       dissolveDelaySeconds: maxDissolveDelay - 200n,
     });
     const snsParameters: SnsNervousSystemParameters = {

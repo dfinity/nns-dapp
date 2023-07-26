@@ -8,8 +8,8 @@ import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
+import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import en from "../../../mocks/i18n.mock";
 
 describe("BitcoinEstimatedAmountReceived", () => {
   beforeEach(() => {

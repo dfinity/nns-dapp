@@ -7,7 +7,7 @@ import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
 import type { SnsParameters } from "$lib/stores/sns-parameters.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, type NeuronId } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -15,7 +15,7 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { arrayOfNumberToUint8Array, isNullish } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 import { rootCanisterIdMock } from "./sns.api.mock";
@@ -33,9 +33,11 @@ export const createMockSnsNeuron = ({
   whenDissolvedTimestampSeconds = BigInt(
     Math.floor(Date.now() / 1000 + 3600 * 24 * 365 * 2)
   ),
-  ageSinceSeconds = BigInt(1000),
+  ageSinceTimestampSeconds = BigInt(1000),
   stakedMaturity = BigInt(100_000_000),
   maturity = BigInt(100_000_000),
+  createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
+  sourceNnsNeuronId,
 }: {
   stake?: bigint;
   id: number[];
@@ -48,20 +50,25 @@ export const createMockSnsNeuron = ({
   votingPowerMultiplier?: bigint;
   dissolveDelaySeconds?: bigint;
   whenDissolvedTimestampSeconds?: bigint;
-  ageSinceSeconds?: bigint;
+  ageSinceTimestampSeconds?: bigint;
   stakedMaturity?: bigint;
   maturity?: bigint;
+  createdTimestampSeconds?: bigint;
+  // Having a sourceNnsNeuronId makes the neuron a CF neuron.
+  sourceNnsNeuronId?: NeuronId;
 }): SnsNeuron => {
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
     permissions,
-    source_nns_neuron_id: [],
+    source_nns_neuron_id: isNullish(sourceNnsNeuronId)
+      ? []
+      : [sourceNnsNeuronId],
     maturity_e8s_equivalent: maturity,
     cached_neuron_stake_e8s: stake,
-    created_timestamp_seconds: BigInt(nowInSeconds() - SECONDS_IN_DAY),
+    created_timestamp_seconds: createdTimestampSeconds,
     staked_maturity_e8s_equivalent: [stakedMaturity],
     auto_stake_maturity: [],
-    aging_since_timestamp_seconds: ageSinceSeconds,
+    aging_since_timestamp_seconds: ageSinceTimestampSeconds,
     voting_power_percentage_multiplier: votingPowerMultiplier,
     dissolve_state:
       state === undefined || state === NeuronState.Dissolved
@@ -197,3 +204,7 @@ export const buildMockSnsParametersStore =
     );
     return () => undefined;
   };
+
+export const allSnsNeuronPermissions = Int32Array.from(
+  enumValues(SnsNeuronPermissionType)
+);
