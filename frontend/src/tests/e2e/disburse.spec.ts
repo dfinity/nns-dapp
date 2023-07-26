@@ -1,8 +1,11 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
-import { setFeatureFlag } from "./utils";
 
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
@@ -68,11 +71,4 @@ test("Test disburse neuron", async ({ page, context }) => {
   expect(mainAccountBalanceAfterDisburse).toBe(
     mainAccountBalanceBeforeDisburse + stake
   );
-
-  // TODO: Remove once we set feature flag to true https://dfinity.atlassian.net/browse/GIX-1687
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_NEURON_SETTINGS",
-    value: false,
-  });
 });
