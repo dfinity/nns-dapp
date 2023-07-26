@@ -271,11 +271,13 @@ export const snsQueryStoreIsLoading = derived<SnsQueryStore, boolean>(
  */
 export const snsSummariesStore = derived<SnsQueryStore, SnsSummary[]>(
   snsQueryStore,
-  (data: SnsQueryStoreData) =>
-    mapAndSortSnsQueryToSummaries({
+  (data: SnsQueryStoreData) => {
+    console.log('dskloetx snsSummariesStore data', data);
+    return mapAndSortSnsQueryToSummaries({
       metadata: data?.metadata ?? [],
       swaps: data?.swaps ?? [],
-    })
+    });
+  }
 );
 
 // ************** Sns commitment **************

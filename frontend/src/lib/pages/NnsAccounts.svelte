@@ -24,6 +24,8 @@
   });
 </script>
 
+<div>My local dev server</div>
+
 <div class="card-grid" data-tid="accounts-body">
   {#if nonNullish($icpAccountsStore?.main)}
     <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
