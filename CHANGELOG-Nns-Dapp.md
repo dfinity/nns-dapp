@@ -44,6 +44,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Faster formatting of shell and yaml files, by operating only on named or changed files.
 * Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
 
