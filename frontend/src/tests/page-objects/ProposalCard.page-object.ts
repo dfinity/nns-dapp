@@ -19,6 +19,13 @@ export class ProposalCardPo extends BasePageObject {
     return this.getText("proposal-id");
   }
 
+  getProposalTopicText(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "proposal-topic",
+    }).getValueText();
+  }
+
   getShortenedProposer(): Promise<string> {
     return KeyValuePairPo.under({
       element: this.root,
