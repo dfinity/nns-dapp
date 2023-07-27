@@ -104,7 +104,7 @@ jobs:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/downgrade-upgrade-test -w out/nns-dapp_test.wasm.gz
+        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-rest:
