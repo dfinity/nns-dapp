@@ -1,13 +1,14 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, PrincipalId,
-    RegisterHardwareWalletRequest,
+    Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails, NeuronId,
+    PrincipalId, RegisterHardwareWalletRequest,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
 const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
 const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
+const NEURONS_PER_ACCOUNT: f64 = 0.2;
 
 /// Principal of a toy account with a given index.
 fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
@@ -23,6 +24,8 @@ impl AccountsStore {
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
         let num_existing_accounts = self.accounts.len() as u64;
         let (index_range_start, index_range_end) = (num_existing_accounts, (num_existing_accounts + num_accounts));
+        let mut neurons_needed: f64 = 0.0;
+        let mut neurons_created: f64 = 0.0;
         // Creates accounts:
         for toy_account_index in index_range_start..index_range_end {
             let account = toy_account_principal_id(toy_account_index);
@@ -52,6 +55,22 @@ impl AccountsStore {
                     canister_id,
                 };
                 self.attach_canister(account, attach_canister_request);
+            }
+            // Creates neurons
+            neurons_needed += NEURONS_PER_ACCOUNT;
+            while neurons_created < neurons_needed {
+                // Warning: This is in no way a realistic neuron.
+                neurons_created += 1.0;
+                let neuron = NeuronDetails {
+                    account_identifier: AccountIdentifier::from(PrincipalId::new_user_test_id(9)),
+                    principal: PrincipalId::new_user_test_id(10),
+                    memo: Memo(11),
+                    neuron_id: Some(NeuronId(12)),
+                };
+                self.neuron_accounts.insert(
+                    AccountIdentifier::from(PrincipalId::new_user_test_id(toy_account_index)),
+                    neuron,
+                );
             }
         }
         index_range_start
