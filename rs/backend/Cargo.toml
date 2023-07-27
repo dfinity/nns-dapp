@@ -58,6 +58,10 @@ maplit = "1.0.2"
 anyhow = "1.0.68"
 
 [features]
+# Build flavours; these should not normally be referred to directly in code.
 production = ["assets"]
-test=[]
+test = ["assets"]
+noassets = []
+
+# Individual features
 assets = []
