@@ -47,6 +47,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Increased the size of the persistent state in downgrade-upgrade tests.
+* Moved the downgrade-upgrade test into a dedicated job.
 * Faster formatting of shell and yaml files, by operating only on named or changed files.
 * Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
