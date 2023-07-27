@@ -4,7 +4,6 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 PROD_WASM="nns-dapp-prod.wasm.gz" # TODO: Switch to a test build, when available for the prod tag.
-TOY_ACCOUNT_CHUNK_SIZE=10000      # The number of accounts created at a time.
 
 help_text() {
   cat <<-EOF
@@ -19,6 +18,7 @@ source "$SOURCE_DIR/../clap.bash"
 # Define options
 clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
 clap.define short=a long=accounts desc="The number of toy accounts to create." variable=NUM_TOY_ACCOUNTS default="200000"
+clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -43,8 +43,8 @@ get_upgrade_invariant_stats() {
 }
 # Gets some sample accounts
 sample_toy_accounts() {
-  # TODO: Enable once the production commit has a test wasm including get_toy_account().
-  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
+  echo "Sample accounts will be available once the production commit has a test wasm with get_toy_account()."
+  # seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
