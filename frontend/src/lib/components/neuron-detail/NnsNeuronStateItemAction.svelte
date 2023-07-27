@@ -10,11 +10,10 @@
   import { keyOf } from "$lib/utils/utils";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import AgeBonusText from "./AgeBonusText.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -43,13 +42,7 @@
   </span>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
-      <Tooltip id="neuron-age-bonus" text={ageBonus.toFixed(8)}>
-        <span data-tid="age-bonus-text">
-          {replacePlaceholders($i18n.neuron_detail.age_bonus_label, {
-            $ageBonus: ageBonus.toFixed(2),
-          })}
-        </span>
-      </Tooltip>
+      <AgeBonusText {ageBonus} />
     {:else}
       <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}

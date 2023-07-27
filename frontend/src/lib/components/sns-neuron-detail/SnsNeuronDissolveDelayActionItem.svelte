@@ -3,8 +3,6 @@
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { keyOf } from "$lib/utils/utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
@@ -17,6 +15,7 @@
   import { fromNullable } from "@dfinity/utils";
   import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import DissolveDelayBonusText from "../neuron-detail/DissolveDelayBonusText.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
@@ -63,13 +62,7 @@
   >
   <svelte:fragment slot="subtitle">
     {#if dissolvingTime >= minimumDelayToVoteInSeconds}
-      <Tooltip id="neuron-dissolve-delay-bonus" text={dissolveBonus.toFixed(8)}>
-        <span data-tid="dissolve-bonus-text">
-          {replacePlaceholders($i18n.neuron_detail.dissolve_bonus_label, {
-            $dissolveBonus: dissolveBonus.toFixed(2),
-          })}
-        </span>
-      </Tooltip>
+      <DissolveDelayBonusText {dissolveBonus} />
     {:else}
       <span data-tid="dissolve-bonus-text">
         {$i18n.neuron_detail.no_dissolve_bonus}
