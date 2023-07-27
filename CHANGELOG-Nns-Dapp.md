@@ -19,6 +19,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Clarify Ledger app version error message.
 * Increase the displayed size of the projects logo on the "Launchpad".
 * Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
+* New icon for dissolving neuron state.
 
 #### Deprecated
 #### Removed
