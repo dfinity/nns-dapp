@@ -29,7 +29,7 @@ post_upgrade_instruction_count="$(jq -r '.["post_upgrade stop"].cumulative' ,pos
 mainnet_state_recovery_instruction_count="$(jq -r '.["post_upgrade after state_recovery"].increase' ,postupgrade-mainnet.json)"
 max_instructions=1000000000000
 
-humreadable() { numfmt --to=si --format="%.3f" "${!1}"; }
+humreadable() { numfmt --to=si --format="%.1f" "${!1}"; }
 body_columns() { printf "| %-60s | %20s | %12s |\n" "**$1**" "$(humreadable "$2")" "$(percent "$2")"; }
 percent() { echo "$(((${!1} * 100) / max_instructions))%"; }
 
@@ -54,9 +54,9 @@ export post_upgrade_instruction_count mainnet_state_recovery_instruction_count
   echo "|---------------------------------------|-------------------|-------------|-------------------|"
   for metric in accounts_count sub_accounts_count hardware_wallet_accounts_count neurons_created_count transactions_count; do
     mainnet_metric="$(jq -r ".$metric // 0" ,counts-mainnet.json)"
-    mainnet_metric_str="$(numfmt --to=si --format="%.3f" "$mainnet_metric")"
+    mainnet_metric_str="$(humreadable mainnet_metric)"
     local_metric="$(jq -r ".$metric // 0" ,counts-local.json)"
-    local_metric_str="$(numfmt --to=si --format="%.3f" "$local_metric")"
+    local_metric_str="$(humreadable local_metric)"
     if ((mainnet_metric == 0)); then
       percent_str="-"
     else
