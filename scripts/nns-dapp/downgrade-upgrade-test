@@ -4,7 +4,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 PROD_WASM="nns-dapp-prod.wasm.gz" # TODO: Switch to a test build, when available for the prod tag.
-TOY_ACCOUNT_CHUNK_SIZE=10000 # The number of accounts created at a time.
+TOY_ACCOUNT_CHUNK_SIZE=10000      # The number of accounts created at a time.
 
 help_text() {
   cat <<-EOF
