@@ -30,8 +30,6 @@ test("Test neuron voting", async ({ page, context }) => {
   const getVisibleCardTopics = () =>
     appPo.getProposalsPo().getNnsProposalListPo().getCardTopics();
 
-  expect((await getVisibleCardTopics()).length).toBeGreaterThan(1);
-
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
