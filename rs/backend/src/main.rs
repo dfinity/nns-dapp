@@ -72,7 +72,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        //s.replace(State::post_upgrade());
+        s.replace(State::post_upgrade());
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
