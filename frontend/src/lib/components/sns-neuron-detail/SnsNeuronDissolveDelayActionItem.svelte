@@ -12,9 +12,11 @@
     dissolveDelayMultiplier,
     getSnsDissolveDelaySeconds,
     getSnsNeuronState,
+    hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { fromNullable } from "@dfinity/utils";
   import IncreaseSnsDissolveDelayButton from "./actions/IncreaseSnsDissolveDelayButton.svelte";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
@@ -43,6 +45,12 @@
   $: minimumDelayToVoteInSeconds =
     fromNullable(parameters.neuron_minimum_dissolve_delay_to_vote_seconds) ??
     0n;
+
+  let allowedToDissolve = false;
+  $: allowedToDissolve = hasPermissionToDissolve({
+    neuron,
+    identity: $authStore.identity,
+  });
 </script>
 
 <CommonItemAction testId="sns-neuron-dissolve-delay-item-action-component">
@@ -68,5 +76,7 @@
       </span>
     {/if}</svelte:fragment
   >
-  <IncreaseSnsDissolveDelayButton {neuron} variant="secondary" />
+  {#if allowedToDissolve}
+    <IncreaseSnsDissolveDelayButton {neuron} variant="secondary" />
+  {/if}
 </CommonItemAction>

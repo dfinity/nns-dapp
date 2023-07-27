@@ -630,7 +630,7 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SIMULATE_MERGE_NEURONS": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": true,
           "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_INSTANT_UNLOCK": false
         }
@@ -642,7 +642,7 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2023-07-11",
+        "DIDC_VERSION": "2023-07-25",
         "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
       },
       "packtool": ""

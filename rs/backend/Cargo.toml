@@ -59,4 +59,5 @@ anyhow = "1.0.68"
 
 [features]
 production = ["assets"]
+test=[]
 assets = []

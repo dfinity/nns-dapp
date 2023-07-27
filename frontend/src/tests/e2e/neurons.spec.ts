@@ -2,7 +2,11 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
@@ -14,7 +18,14 @@ test("Test neuron voting", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(41);
+  await appPo.getIcpTokens(41);
+
+  // TODO: Remove once we set feature flag to true https://dfinity.atlassian.net/browse/GIX-1687
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURON_SETTINGS",
+    value: true,
+  });
 
   // should be created before dummy proposals
   step("Stake neuron (for voting)");
@@ -41,11 +52,13 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goToNeuronDetails(neuronId);
 
   step("Get neuron voting power");
-  const neuronAVotingPower = await appPo
-    .getNeuronDetailPo()
-    .getNnsNeuronDetailPo()
-    .getNnsNeuronMetaInfoCardPageObjectPo()
-    .getVotingPower();
+  const neuronAVotingPower = Number(
+    await appPo
+      .getNeuronDetailPo()
+      .getNnsNeuronDetailPo()
+      .getVotingPowerSectionPo()
+      .getVotingPower()
+  );
 
   // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
   expect(neuronAVotingPower).toBe(stake * 2);

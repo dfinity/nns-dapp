@@ -11,10 +11,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Enable merge neurons preview.
+
 #### Changed
 
 * Bump agent-js `v0.18.1`.
 * Clarify Ledger app version error message.
+* Increase the displayed size of the projects logo on the "Launchpad".
 * Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
 
 #### Deprecated
@@ -24,6 +27,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
 * Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
 * Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
+* Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
 
 #### Security
 
@@ -35,17 +39,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* A separate build of nns-dapp for testing.  See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
+* A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
 
 #### Changed
 
+* Faster formatting of shell and yaml files, by operating only on named or changed files.
+* Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
 
 #### Deprecated
 #### Removed
 
 #### Fixed
+
+* Deploy.sh script
+* Improve sns governance e2e test.
 
 #### Security
 
