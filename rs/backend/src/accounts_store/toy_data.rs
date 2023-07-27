@@ -45,14 +45,6 @@ impl AccountsStore {
                     },
                 );
             }
-            // Creates pending transactions; these do not translate into neurons or similar without more steps:
-            for pending_transaction_index in 0..(toy_account_index % (MAX_PENDING_TRANSACTIONS_PER_ACCOUNT + 1)) {
-                let from = AccountIdentifier::from(account); // TODO: Confirm that this is the correct way to get the account identifier for the primary account.
-                let to = AccountIdentifier::from(PrincipalId::new_user_test_id(
-                    toy_account_index + pending_transaction_index + 1,
-                ));
-                self.add_pending_transaction(from, to, TransactionType::Transfer);
-            }
             // Attaches canisters to the account:
             for canister_index in 0..(toy_account_index % (MAX_CANISTERS_PER_ACCOUNT + 1)) {
                 let canister_id = CanisterId::from(toy_account_index * MAX_CANISTERS_PER_ACCOUNT + canister_index); //PrincipalId::new_user_test_id(toy_account_index + canister_index + 1);
