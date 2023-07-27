@@ -4,9 +4,9 @@
 
 <div class="container" data-tid={testId}>
   <slot name="title" />
-  <h3 class="description">
+  <h4 class="description">
     <slot name="subtitle" />
-  </h3>
+  </h4>
 </div>
 
 <style lang="scss">
@@ -19,7 +19,7 @@
 
     width: 100%;
 
-    h3 {
+    h4 {
       margin: 0;
       font-weight: normal;
     }

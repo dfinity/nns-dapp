@@ -25,10 +25,10 @@ import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
+  IconDissolving,
   IconHistoryToggleOff,
   IconLockClosed,
   IconLockOpen,
-  IconPace,
 } from "@dfinity/gix-components";
 import {
   NeuronState,
@@ -85,7 +85,7 @@ export const stateTextMapper: StateMapper = {
   },
   [NeuronState.Dissolving]: {
     textKey: "dissolving",
-    Icon: IconPace,
+    Icon: IconDissolving,
     status: "warn",
   },
   [NeuronState.Spawning]: {

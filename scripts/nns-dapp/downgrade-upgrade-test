@@ -3,7 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-PROD_WASM="nns-dapp-prod_local.wasm.gz"
+PROD_WASM="nns-dapp-prod.wasm.gz" # TODO: Switch to a test build, when available for the prod tag.
 
 help_text() {
   cat <<-EOF
@@ -17,6 +17,8 @@ help_text() {
 source "$SOURCE_DIR/../clap.bash"
 # Define options
 clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
+clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="200000"
+clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -30,18 +32,51 @@ get_current_wasm() {
 }
 
 get_prod_wasm() {
+  # TODO: Use the test build once available for the prod release.
+  # Note: Using the test build allows us to get arbitrary test accounts from the canister.
   curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
+# Gets stats that should be invariant across upgrades
+get_upgrade_invariant_stats() {
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+}
+# Gets some sample accounts
+sample_toy_accounts() {
+  echo "Sample accounts will be available once the production commit has a test wasm with get_toy_account()."
+  # seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
+}
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+  get_upgrade_invariant_stats
+  sample_toy_accounts
+}
+
+# Verifies that the state is at least as large as expected.
+check_state_size() {
+  local invariants accounts_count expected_min_accounts
+  expected_min_accounts="$NUM_TOY_ACCOUNTS"
+  invariants="$(get_upgrade_invariant_stats)"
+  accounts_count="$(jq .accounts_count <<<"$invariants")"
+  if ((accounts_count < expected_min_accounts)); then
+    {
+      echo "ERROR: 'accounts_count' is smaller than expected."
+      printf "  Expected at least: %10d\n" "$expected_min_accounts"
+      printf "  Actual:            %10d\n" "$accounts_count"
+      printf "  State:\n%s\n" "$invariants"
+      exit 1
+    } >&2
+  fi
 }
 
 # Installs the current build of nns-dapp
+# TODO: Record upgrade time
+# TODO: Record upgrade cycles
+# TODO: Record state size
 upgrade_nnsdapp() {
   local prestate poststate
-  prestate="$(get_upgrade_invariants)"
+  prestate="$(get_upgrade_invariants | tee /dev/stderr)"
+  # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
@@ -61,7 +96,7 @@ upgrade_nnsdapp() {
 
 echo "Getting or building the wasm..."
 test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="nns-dapp.wasm.gz"
+  CURRENT_WASM="out/nns-dapp_test.wasm.gz"
   echo "Building $CURRENT_WASM..."
   ./scripts/docker-build --network local
 }
@@ -76,8 +111,15 @@ else
   dfx canister create nns-dapp
   dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)"
 fi
+scripts/dfx-canister-check-wasm-hash --wasm "$CURRENT_WASM" --canister nns-dapp
 echo "Checking that the current wasm is healthy..."
 verify_healthy
+echo "Installing state"
+while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
+  dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
+done
+verify_healthy
+check_state_size
 echo "Downloading and installing the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
