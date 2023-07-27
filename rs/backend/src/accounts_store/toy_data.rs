@@ -2,12 +2,11 @@
 
 use crate::accounts_store::{
     Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, PrincipalId,
-    RegisterHardwareWalletRequest, TransactionType,
+    RegisterHardwareWalletRequest,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
 const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
-const MAX_PENDING_TRANSACTIONS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many pending transactions.
 const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
 
 /// Principal of a toy account with a given index.
