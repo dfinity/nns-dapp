@@ -35,6 +35,12 @@ jobs:
           name: nns-dapp
           path: out/nns-dapp.wasm.gz
           retention-days: 3
+      - name: 'Upload nns-dapp test wasm module'
+        uses: actions/upload-artifact@v3
+        with:
+          name: nns-dapp_test
+          path: out/nns-dapp_test.wasm.gz
+          retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
         uses: actions/upload-artifact@v3
         with:
@@ -77,6 +83,30 @@ jobs:
         with:
           shard_number: 2
           shard_count: 2
+  test-downgrade-upgrade:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_test
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_test
+      - name: Get sns_aggregator_dev
+        uses: actions/download-artifact@v3
+        with:
+          name: sns_aggregator_dev
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+      - name: Downgrade nns-dapp to prod and upgrade back again
+        run: ./scripts/nns-dapp/downgrade-upgrade-test -w out/nns-dapp_test.wasm.gz
+      - name: Count upgrade cycles
+        run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-rest:
     needs: build
     runs-on: ubuntu-20.04
@@ -156,10 +186,6 @@ jobs:
       - name: Check that metadata is present
         run: |
           scripts/dfx-wasm-metadata-add.test --verbose
-      - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp.wasm.gz
-      - name: Count upgrade cycles
-        run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
       - name: Verify that metrics are present
         run: scripts/nns-dapp/e2e-test-metrics-present
       - name: Release
@@ -495,7 +521,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
