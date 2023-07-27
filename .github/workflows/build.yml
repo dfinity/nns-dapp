@@ -94,15 +94,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_test
-      - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v3
-        with:
-          name: sns_aggregator_dev
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-          sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
