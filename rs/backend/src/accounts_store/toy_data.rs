@@ -36,11 +36,12 @@ impl AccountsStore {
             // Creates linked hardware wallets:
             // Note: Successive accounts have 0, 1, 2 ... MAX_HARDWARE_WALLETS_PER_ACCOUNT-1 hardware wallets, restarting at 0.
             for hardware_wallet_index in 0..(toy_account_index % (MAX_HARDWARE_WALLETS_PER_ACCOUNT + 1)) {
+                let principal = PrincipalId::new_user_test_id(toy_account_index + hardware_wallet_index + 999); // Toy hardware wallet principal.
                 self.register_hardware_wallet(
                     account,
                     RegisterHardwareWalletRequest {
                         name: format!("hw_wallet_{toy_account_index}_{hardware_wallet_index}"),
-                        principal: account,
+                        principal,
                     },
                 );
             }
