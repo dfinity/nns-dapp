@@ -17,7 +17,7 @@ help_text() {
 source "$SOURCE_DIR/../clap.bash"
 # Define options
 clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
-clap.define short=a long=accounts desc="The number of toy accounts to create." variable=NUM_TOY_ACCOUNTS default="200000"
+clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="200000"
 clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
