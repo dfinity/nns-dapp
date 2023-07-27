@@ -1,3 +1,4 @@
+import { enumValues } from "$lib/utils/enum.utils";
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
@@ -28,22 +29,26 @@ test("Test neuron voting", async ({ page, context }) => {
   step(`Filter proposals by Topic`);
   const getVisibleCardTopics = () =>
     appPo.getProposalsPo().getNnsProposalListPo().getCardTopics();
-  const initialVisibleCardTopics = await getVisibleCardTopics();
 
   expect((await getVisibleCardTopics()).length).toBeGreaterThan(1);
 
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .setTopicFilter([Topic.ExchangeRate]);
+    .selectTopicFilter([Topic.ExchangeRate]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
 
-  // Reset topic filter
-  await appPo.getProposalsPo().getNnsProposalFiltersPo().setTopicFilter([]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-  expect((await getVisibleCardTopics()).length).toBeGreaterThanOrEqual(
-    initialVisibleCardTopics.length
+  // Invert topic filter
+  const withoutExchangeRate: Topic[] = enumValues(Topic).filter(
+    (topic) => topic !== Topic.ExchangeRate
   );
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectTopicFilter(withoutExchangeRate);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
 });

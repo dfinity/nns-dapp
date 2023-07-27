@@ -31,7 +31,7 @@ export class CheckboxPo extends SimpleBasePageObject {
   }
 
   getCheckboxInput(): PageObjectElement {
-    return this.root.byTestId("checkbox");
+    return this.root.querySelector("input[type=checkbox]");
   }
 
   async isDisabled(): Promise<boolean> {
