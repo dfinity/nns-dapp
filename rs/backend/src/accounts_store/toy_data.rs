@@ -79,10 +79,11 @@ impl AccountsStore {
             transactions_needed += TRANSACTIONS_PER_ACCOUNT;
             while transactions_created < transactions_needed {
                 transactions_created += 1.0;
+                // Warning: This is in no way semantically meaningful or correct.  It is just data to fill up memory and exercise upgrades.
                 self.transactions.push_back(Transaction {
                     transaction_index: 9,
                     block_height: 10,
-                    timestamp: TimeStamp::from_nanos_since_unix_epoch(3418490622000000),
+                    timestamp: TimeStamp::from_nanos_since_unix_epoch(341),
                     memo: Memo(11),
                     transfer: Operation::Transfer {
                         to: AccountIdentifier::from(PrincipalId::new_user_test_id(12)),
