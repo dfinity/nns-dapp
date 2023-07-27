@@ -27,26 +27,44 @@ done
 
 post_upgrade_instruction_count="$(jq -r '.["post_upgrade stop"].cumulative' ,postupgrade-local.json)"
 mainnet_state_recovery_instruction_count="$(jq -r '.["post_upgrade after state_recovery"].increase' ,postupgrade-mainnet.json)"
-# Assuming mainnet state recovery is as now, simply adding the mainnet state upgrade cycle count makes a reasonable estimate of cycles consumed.
-state_recovery_safety_factor=2
-likely_instruction_count="$((post_upgrade_instruction_count + mainnet_state_recovery_instruction_count))"
-maximum_likely_instruction_count="$((post_upgrade_instruction_count + state_recovery_safety_factor * mainnet_state_recovery_instruction_count))"
 max_instructions=1000000000000
 
-humreadable() { numfmt --to=si --format="%.3f" "${!1}"; }
+humreadable() { numfmt --to=si --format="%.1f" "${!1}"; }
 body_columns() { printf "| %-60s | %20s | %12s |\n" "**$1**" "$(humreadable "$2")" "$(percent "$2")"; }
 percent() { echo "$(((${!1} * 100) / max_instructions))%"; }
 
 # Declare the variables as exported to satisfy shellcheck; it is not needed for the code.
-export likely_instruction_count maximum_likely_instruction_count
+export post_upgrade_instruction_count mainnet_state_recovery_instruction_count
 (
+  echo
   echo "## Upgrade cycle counts"
   echo "| Name                                                         | Cycles               | % max cycles | "
   echo "|--------------------------------------------------------------|----------------------|--------------|"
   body_columns "Mainnet state recovery instruction count" mainnet_state_recovery_instruction_count
+  # TODO: Show the downgrade cycle count; this should be similar to production, most of the time.
   body_columns "PR post upgrade instruction count" post_upgrade_instruction_count
-  body_columns "Likely PR count in prod" likely_instruction_count
-  body_columns "Instruction count with ${state_recovery_safety_factor}x increase in user data" maximum_likely_instruction_count
+  echo
+)
+
+(
+  echo
+  echo "## State size"
+  echo "The test state size should be similar to production."
+  echo "| Data type                             | Num in Production | Num in test | % test/production |"
+  echo "|---------------------------------------|-------------------|-------------|-------------------|"
+  for metric in accounts_count sub_accounts_count hardware_wallet_accounts_count neurons_created_count transactions_count; do
+    mainnet_metric="$(jq -r ".$metric // 0" ,counts-mainnet.json)"
+    mainnet_metric_str="$(humreadable mainnet_metric)"
+    local_metric="$(jq -r ".$metric // 0" ,counts-local.json)"
+    local_metric_str="$(humreadable local_metric)"
+    if ((mainnet_metric == 0)); then
+      percent_str="-"
+    else
+      percent_str="$(((local_metric * 100) / mainnet_metric))%"
+    fi
+    printf '| %-37s | %17s | %11s | %17s |\n' "**$metric**" "$mainnet_metric_str" "$local_metric_str" "$percent_str"
+  done
+  echo
 )
 
 {
