@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
@@ -12,12 +16,13 @@ test("Test disburse neuron", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(10);
+  await appPo.getIcpTokens(10);
   // TODO: Remove once we set feature flag to true https://dfinity.atlassian.net/browse/GIX-1687
-  await page.evaluate(() =>
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    (window as any).__featureFlags.ENABLE_NEURON_SETTINGS.overrideWith(true)
-  );
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_NEURON_SETTINGS",
+    value: true,
+  });
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();
