@@ -58,7 +58,11 @@ maplit = "1.0.2"
 anyhow = "1.0.68"
 
 [features]
-production=[]
-test=["toy_data_gen"]
+# Build flavours; these should not normally be referred to directly in code.
+production = ["assets"]
+test = ["assets", "toy_data_gen"]
+noassets = ["toy_data_gen"]
+
+# Individual features
+assets = []
 toy_data_gen = []
-# TODO: Define noassets as a feature flag, to keep different build flavours consistent.

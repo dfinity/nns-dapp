@@ -153,37 +153,6 @@ ARG COMMIT
 RUN . scripts/nns-dapp/flavours.bash && for flavour in "${NNS_DAPP_BUILD_FLAVOURS[@]}" ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm "nns-dapp_$flavour.wasm.gz" --verbose ; done
 RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp.wasm.gz --verbose
 
-# Title: Image to build the nns-dapp backend without assets.
-FROM builder AS build_nnsdapp_without_assets
-SHELL ["bash", "-c"]
-COPY ./rs/backend /build/rs/backend
-COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
-COPY ./scripts/clap.bash /build/scripts/clap.bash
-COPY ./build-backend.sh /build/
-COPY ./scripts/nns-dapp/flavours.bash /build/scripts/nns-dapp/flavours.bash
-COPY ./build-rs.sh /build/
-COPY ./Cargo.toml /build/
-COPY ./Cargo.lock /build/
-COPY ./dfx.json /build/
-WORKDIR /build
-# Create an empty assets tarfile.
-RUN tar -cJf assets.tar.xz -T /dev/null
-# We need to make sure that the rebuild happens if the code has changed.
-# - Docker checks whether the filesystem or command line have changed, so it will
-#   run if there are code changes and skip otherwise.  Perfect.
-# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
-#   rebuilding is necessary due to the potentially recent dependency building step above.
-#   Cargo checks whether the mtime of some code is newer than its last build, like
-#   it's 1974, unlike bazel that uses checksums.
-# So we update the timestamps of the root code files.
-# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
-# We don't wish to update the code from main.rs to lib.rs and then have builds break.
-RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-RUN ./build-backend.sh
-COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-ARG COMMIT
-RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
-
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
 #       The SNS aggregator needs to know the canister ID of the
@@ -217,7 +186,7 @@ COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
 COPY --from=build_nnsdapp /build/nns-dapp_test.wasm.gz /
 COPY --from=build_nnsdapp /build/nns-dapp_production.wasm.gz /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp_test.wasm.gz /nns-dapp_noassets.wasm.gz
+COPY --from=build_nnsdapp /build/nns-dapp_noassets.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
 COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /

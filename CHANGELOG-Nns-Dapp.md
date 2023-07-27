@@ -47,6 +47,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Create the `noassets` build using rust feature flags, for consistency, instead of with a separate build stage.
 * Updated the downgrade-upgrade test summary.
 * Increased the size of the persistent state in downgrade-upgrade tests.
 * Moved the downgrade-upgrade test into a dedicated job.
