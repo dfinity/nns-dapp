@@ -1,1 +1,1 @@
-nns-dapp-exports-production.txt
+nns-dapp-exports-test.txt
