@@ -37,9 +37,16 @@ export class NnsProposalFiltersPo extends BasePageObject {
     await this.getFilterModalPo().waitForAbsent();
   }
 
-  async selectAllTopics(): Promise<void> {
+  async selectAllTopics(exceptions: Topic[]): Promise<void> {
     await this.clickFiltersByTopicsButton();
     await this.getFilterModalPo().clickSelectAllButton();
+
+    for (const testId of exceptions.map(
+      (value) => `filter-modal-option-${value}`
+    )) {
+      const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(testId);
+      await filterEntry.click();
+    }
 
     // confirm and close modal
     await this.getFilterModalPo().clickConfirmButton();
