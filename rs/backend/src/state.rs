@@ -3,6 +3,7 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
+use dfn_core::{api::trap_with, stable};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 #[cfg(test)]
@@ -55,6 +56,43 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
+        })
+    }
+}
+
+// Methods called on pre_upgrade and post_upgrade.
+impl State {
+    /// The schema version, determined by the last version that was saved to stable memory.
+    fn schema_version_from_stable_memory() -> Option<u32> {
+        None // The schema is currently unversioned.
+    }
+    /// Save any unsaved state to stable memory.
+    pub fn pre_upgrade(&self) {
+        match Self::schema_version_from_stable_memory() {
+            None => self.pre_upgrade_unversioned(),
+            Some(version) => trap_with(&format!("Unknown schema version: {version}")),
+        }
+        self.pre_upgrade_unversioned()
+    }
+    /// Create the state from stable memory in the post_upgrade() hook.
+    pub fn post_upgrade() -> Self {
+        Self::post_upgrade_unversioned()
+    }
+}
+
+// The unversionsed schema.
+impl State {
+    /// Save any unsaved state to stable memory.
+    fn pre_upgrade_unversioned(&self) {
+        let bytes = self.encode();
+        stable::set(&bytes);
+    }
+    /// Create the state from stable memory in the post_upgrade() hook.
+    fn post_upgrade_unversioned() -> Self {
+        let bytes = stable::get();
+        State::decode(bytes).unwrap_or_else(|e| {
+            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
+            unreachable!();
         })
     }
 }
