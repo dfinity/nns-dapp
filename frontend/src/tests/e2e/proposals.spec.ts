@@ -17,7 +17,7 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Get some ICP");
   await appPo.goToAccounts();
-  await appPo.getIcpTokens(26);
+  await appPo.getIcpTokens(11);
 
   step("Create dummy proposals");
   await createDummyProposal(appPo);
@@ -42,7 +42,13 @@ test("Test neuron voting", async ({ page, context }) => {
 
   // Invert topic filter
   const withoutExchangeRate: Topic[] = enumValues(Topic).filter(
-    (topic) => topic !== Topic.ExchangeRate
+    (topic) =>
+      ![
+        Topic.ExchangeRate,
+        Topic.Unspecified,
+        // deprecated
+        Topic.SnsDecentralizationSale,
+      ].includes(topic)
   );
   await appPo
     .getProposalsPo()
