@@ -20,6 +20,17 @@ export class NnsProposalListPo extends BasePageObject {
     return ProposalCardPo.allUnder(this.root);
   }
 
+  async getCardTopics(): Promise<string[]> {
+    const topics = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalTopicText())
+    );
+
+    // return unique values only
+    return Array.from(new Set(topics));
+  }
+
   async getFirstProposalCardPoForProposer(
     proposer: string
   ): Promise<ProposalCardPo> {
