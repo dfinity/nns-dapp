@@ -48,8 +48,8 @@ enum AccountWrapper {
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
-struct Account {
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
+pub struct Account {
     principal: Option<PrincipalId>,
     account_identifier: AccountIdentifier,
     default_account_transactions: Vec<TransactionIndex>,
@@ -58,14 +58,14 @@ struct Account {
     canisters: Vec<NamedCanister>,
 }
 
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 struct NamedSubAccount {
     name: String,
     account_identifier: AccountIdentifier,
     transactions: Vec<TransactionIndex>,
 }
 
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
+#[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 struct NamedHardwareWalletAccount {
     name: String,
     principal: PrincipalId,
@@ -1671,3 +1671,5 @@ pub enum TransferResult {
 
 #[cfg(test)]
 pub(crate) mod tests;
+#[cfg(any(test, feature = "toy_data_gen"))]
+pub(crate) mod toy_data;
