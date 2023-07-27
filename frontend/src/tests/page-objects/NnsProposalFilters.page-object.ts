@@ -40,14 +40,14 @@ export class NnsProposalFiltersPo extends BasePageObject {
   async setTopicFilter(topics: Topic[]): Promise<void> {
     await this.clickFiltersByTopicsButton();
     return this.preselectEntriesInFilterModal(
-      topics.map((value) => `checkbox-${value}`)
+      topics.map((value) => `filter-modal-option-${value}`)
     );
   }
 
   async setStatusFilter(statuses: ProposalStatus[]): Promise<void> {
     await this.clickFiltersByStatusButton();
     return this.preselectEntriesInFilterModal(
-      statuses.map((value) => `checkbox-${value}`)
+      statuses.map((value) => `filter-modal-option-${value}`)
     );
   }
 }
