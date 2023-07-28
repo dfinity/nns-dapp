@@ -22,12 +22,31 @@ export class NnsProposalFiltersPo extends BasePageObject {
     return FilterModalPo.under(this.root);
   }
 
-  async selectEntriesInFilterModal(testIds: string[]): Promise<void> {
+  async selectEntriesInFilterModal(ids: string[]): Promise<void> {
     // deselect all
     await this.getFilterModalPo().clickClearSelectionButton();
 
     // select items by testIds
-    for (const testId of testIds) {
+    for (const id of ids) {
+      const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(
+        `filter-modal-option-${id}`
+      );
+      await filterEntry.click();
+    }
+
+    // confirm and close modal
+    await this.getFilterModalPo().clickConfirmButton();
+    await this.getFilterModalPo().waitForAbsent();
+  }
+
+  async selectAllEntriesInFilterModalExcept(
+    exceptionIds: string[] = []
+  ): Promise<void> {
+    await this.getFilterModalPo().clickSelectAllButton();
+
+    for (const testId of exceptionIds.map(
+      (value) => `filter-modal-option-${value}`
+    )) {
       const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(testId);
       await filterEntry.click();
     }
@@ -37,49 +56,29 @@ export class NnsProposalFiltersPo extends BasePageObject {
     await this.getFilterModalPo().waitForAbsent();
   }
 
-  async selectAllTopics(exceptions: Topic[] = []): Promise<void> {
+  async selectAllTopicsExcept(exceptions: Topic[] = []): Promise<void> {
     await this.clickFiltersByTopicsButton();
-    await this.getFilterModalPo().clickSelectAllButton();
-
-    for (const testId of exceptions.map(
-      (value) => `filter-modal-option-${value}`
-    )) {
-      const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(testId);
-      await filterEntry.click();
-    }
-
-    // confirm and close modal
-    await this.getFilterModalPo().clickConfirmButton();
-    await this.getFilterModalPo().waitForAbsent();
+    await this.selectAllEntriesInFilterModalExcept(
+      exceptions.map((topic) => `${topic}`)
+    );
   }
 
-  async selectAllStatuses(exceptions: ProposalStatus[] = []): Promise<void> {
+  async selectAllStatusesExcept(
+    exceptions: ProposalStatus[] = []
+  ): Promise<void> {
     await this.clickFiltersByStatusButton();
-    await this.getFilterModalPo().clickSelectAllButton();
-
-    for (const testId of exceptions.map(
-      (value) => `filter-modal-option-${value}`
-    )) {
-      const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(testId);
-      await filterEntry.click();
-    }
-
-    // confirm and close modal
-    await this.getFilterModalPo().clickConfirmButton();
-    await this.getFilterModalPo().waitForAbsent();
+    await this.selectAllEntriesInFilterModalExcept(
+      exceptions.map((status) => `${status}`)
+    );
   }
 
   async selectTopicFilter(topics: Topic[]): Promise<void> {
     await this.clickFiltersByTopicsButton();
-    return this.selectEntriesInFilterModal(
-      topics.map((value) => `filter-modal-option-${value}`)
-    );
+    return this.selectEntriesInFilterModal(topics.map((value) => `${value}`));
   }
 
   async selectStatusFilter(statuses: ProposalStatus[]): Promise<void> {
     await this.clickFiltersByStatusButton();
-    return this.selectEntriesInFilterModal(
-      statuses.map((value) => `filter-modal-option-${value}`)
-    );
+    return this.selectEntriesInFilterModal(statuses.map((value) => `${value}`));
   }
 }
