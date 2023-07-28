@@ -1,7 +1,7 @@
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@dfinity/nns";
 
 export class NnsProposalFiltersPo extends BasePageObject {
   private static readonly TID = "nns-proposals-filters-component";
@@ -53,10 +53,33 @@ export class NnsProposalFiltersPo extends BasePageObject {
     await this.getFilterModalPo().waitForAbsent();
   }
 
+  async selectAllStatuses(exceptions: ProposalStatus[]): Promise<void> {
+    await this.clickFiltersByStatusButton();
+    await this.getFilterModalPo().clickSelectAllButton();
+
+    for (const testId of exceptions.map(
+      (value) => `filter-modal-option-${value}`
+    )) {
+      const filterEntry = this.getFilterModalPo().getFilterEntryByIdPo(testId);
+      await filterEntry.click();
+    }
+
+    // confirm and close modal
+    await this.getFilterModalPo().clickConfirmButton();
+    await this.getFilterModalPo().waitForAbsent();
+  }
+
   async selectTopicFilter(topics: Topic[]): Promise<void> {
     await this.clickFiltersByTopicsButton();
     return this.selectEntriesInFilterModal(
       topics.map((value) => `filter-modal-option-${value}`)
+    );
+  }
+
+  async selectStatusFilter(statuses: ProposalStatus[]): Promise<void> {
+    await this.clickFiltersByStatusButton();
+    return this.selectEntriesInFilterModal(
+      statuses.map((value) => `filter-modal-option-${value}`)
     );
   }
 }

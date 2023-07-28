@@ -63,7 +63,7 @@
       <p class="description">{title}</p>
     </blockquote>
 
-    <KeyValuePair>
+    <KeyValuePair testId="proposal-status">
       <p slot="key" class={`${color ?? ""} status`}>
         {statusString}
       </p>
