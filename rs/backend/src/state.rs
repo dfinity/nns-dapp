@@ -66,17 +66,26 @@ impl State {
     fn schema_version_from_stable_memory() -> Option<u32> {
         None // The schema is currently unversioned.
     }
-    /// Save any unsaved state to stable memory.
-    pub fn pre_upgrade(&self) {
+    /// Create the state from stable memory in the post_upgrade() hook.
+    ///
+    /// Note: The stable memory may have been created by any of these schemas:
+    /// - The previous schema, when first migrating from th eprevious schema to the current schema.
+    /// - The curent schema, if upgrading without chnaging the schema.
+    /// - The next schema, if a new schema was deployed and we need to roll back.
+    ///
+    /// Note: Changing the schema requires at least two deployments:
+    /// - Deploy a relase with a parser for the new schema.
+    /// - Then, deploy a release that writes the new schema.
+    /// This way it is possible to roll back after deploying the new schema.
+    pub fn post_upgrade() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => self.pre_upgrade_unversioned(),
+            None => self.post_upgrade_unversioned(),
             Some(version) => trap_with(&format!("Unknown schema version: {version}")),
         }
-        self.pre_upgrade_unversioned()
     }
-    /// Create the state from stable memory in the post_upgrade() hook.
-    pub fn post_upgrade() -> Self {
-        Self::post_upgrade_unversioned()
+    /// Save any unsaved state to stable memory.
+    pub fn pre_upgrade(&self) {
+        self.pre_upgrade_unversioned()
     }
 }
 
