@@ -6,6 +6,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import PageHeading from "../common/PageHeading.svelte";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 
@@ -14,13 +15,22 @@
     amount: neuronStake(neuron),
     token: ICPToken,
   });
+
+  // The API might return a non-zero voting power even if the neuron can't vote.
+  let canVote: boolean;
+  $: canVote =
+    neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 </script>
 
 <PageHeading testId="nns-neuron-page-heading-component">
   <AmountDisplay slot="title" {amount} size="huge" singleLine />
-  <svelte:fragment slot="subtitle">
-    {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-      $votingPower: formatVotingPower(neuron.votingPower),
-    })}
-  </svelte:fragment>
+  <span slot="subtitle" data-tid="voting-power">
+    {#if canVote}
+      {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+        $votingPower: formatVotingPower(neuron.votingPower),
+      })}
+    {:else}
+      {$i18n.neuron_detail.voting_power_zero_subtitle}
+    {/if}
+  </span>
 </PageHeading>

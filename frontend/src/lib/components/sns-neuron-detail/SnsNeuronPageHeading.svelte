@@ -1,9 +1,4 @@
 <script lang="ts">
-  import {
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
-    type SelectedSnsNeuronContext,
-  } from "$lib/types/sns-neuron-detail.context";
-  import { getContext } from "svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { TokenAmount, type Token, nonNullish } from "@dfinity/utils";
@@ -18,13 +13,8 @@
   import PageHeading from "../common/PageHeading.svelte";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
 
+  export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
-
-  const { store }: SelectedSnsNeuronContext =
-    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
-
-  let neuron: SnsNeuron | undefined | null;
-  $: neuron = $store.neuron;
 
   let token: Token | undefined;
   $: token = $tokensStore[$selectedUniverseIdStore.toText()].token;
@@ -37,6 +27,9 @@
           token: token,
         })
       : undefined;
+
+  let votingPower: number;
+  $: votingPower = snsNeuronVotingPower({ neuron, snsParameters: parameters });
 </script>
 
 <PageHeading testId="sns-neuron-page-heading-component">
@@ -46,12 +39,12 @@
     {/if}
   </svelte:fragment>
   <span slot="subtitle" data-tid="voting-power">
-    {#if nonNullish(neuron)}
+    {#if votingPower > 0}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-        $votingPower: formatVotingPower(
-          snsNeuronVotingPower({ neuron, snsParameters: parameters })
-        ),
+        $votingPower: formatVotingPower(votingPower),
       })}
+    {:else}
+      {$i18n.neuron_detail.voting_power_zero_subtitle}
     {/if}
   </span>
 </PageHeading>
