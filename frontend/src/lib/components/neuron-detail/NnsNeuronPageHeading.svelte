@@ -16,7 +16,7 @@
     token: ICPToken,
   });
 
-  // NNS neurons come with voting power but that doesn't mean they can vote.
+  // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
   $: canVote =
     neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
