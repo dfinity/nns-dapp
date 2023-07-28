@@ -57,7 +57,7 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   expect(await getVisibleCardStatuses()).toEqual(["Open"]);
-  // Invert topic filter
+  // Invert status filter
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
