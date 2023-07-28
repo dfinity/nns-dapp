@@ -69,8 +69,8 @@ impl State {
     /// Create the state from stable memory in the post_upgrade() hook.
     ///
     /// Note: The stable memory may have been created by any of these schemas:
-    /// - The previous schema, when first migrating from th eprevious schema to the current schema.
-    /// - The curent schema, if upgrading without chnaging the schema.
+    /// - The previous schema, when first migrating from the previous schema to the current schema.
+    /// - The curent schema, if upgrading without changing the schema.
     /// - The next schema, if a new schema was deployed and we need to roll back.
     ///
     /// Note: Changing the schema requires at least two deployments:
