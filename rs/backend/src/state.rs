@@ -79,8 +79,11 @@ impl State {
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => self.post_upgrade_unversioned(),
-            Some(version) => trap_with(&format!("Unknown schema version: {version}")),
+            None => Self::post_upgrade_unversioned(),
+            Some(version) => {
+                trap_with(&format!("Unknown schema version: {version}"));
+                unreachable!();
+            }
         }
     }
     /// Save any unsaved state to stable memory.
