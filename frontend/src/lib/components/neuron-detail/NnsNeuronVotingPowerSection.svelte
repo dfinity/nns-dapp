@@ -8,6 +8,7 @@
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
   import NnsNeuronDissolveDelayActionItem from "./NnsNeuronDissolveDelayActionItem.svelte";
+  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 
   export let neuron: NeuronInfo;
 
@@ -16,12 +17,21 @@
     amount: neuronStake(neuron),
     token: ICPToken,
   });
+
+  // NNS neurons come with voting power but that doesn't mean they can vote.
+  let canVote: boolean;
+  $: canVote =
+    neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 </script>
 
 <Section testId="nns-neuron-voting-power-section-component">
   <h3 slot="title">{$i18n.neurons.voting_power}</h3>
   <p slot="end" class="title-value" data-tid="voting-power">
-    {formatVotingPower(neuron.votingPower)}
+    {#if canVote}
+      {formatVotingPower(neuron.votingPower)}
+    {:else}
+      {$i18n.neuron_detail.voting_power_zero}
+    {/if}
   </p>
   <p slot="description">
     {replacePlaceholders($i18n.neuron_detail.voting_power_section_description, {

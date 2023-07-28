@@ -18,14 +18,21 @@
 
   let universe: Universe;
   $: universe = $selectedUniverseStore;
+
+  let votingPower: number;
+  $: votingPower = snsNeuronVotingPower({ neuron, snsParameters: parameters });
 </script>
 
 <Section testId="sns-neuron-voting-power-section-component">
   <h3 slot="title">{$i18n.neurons.voting_power}</h3>
   <p slot="end" class="title-value" data-tid="voting-power">
-    {formatVotingPower(
-      snsNeuronVotingPower({ neuron, snsParameters: parameters })
-    )}
+    {#if votingPower > 0}
+      {formatVotingPower(
+        snsNeuronVotingPower({ neuron, snsParameters: parameters })
+      )}
+    {:else}
+      {$i18n.neuron_detail.voting_power_zero}
+    {/if}
   </p>
   <p slot="description">
     {replacePlaceholders($i18n.neuron_detail.voting_power_section_description, {
