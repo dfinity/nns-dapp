@@ -37,7 +37,7 @@ export class NnsProposalFiltersPo extends BasePageObject {
     await this.getFilterModalPo().waitForAbsent();
   }
 
-  async selectAllTopics(exceptions: Topic[]): Promise<void> {
+  async selectAllTopics(exceptions: Topic[] = []): Promise<void> {
     await this.clickFiltersByTopicsButton();
     await this.getFilterModalPo().clickSelectAllButton();
 
@@ -53,7 +53,7 @@ export class NnsProposalFiltersPo extends BasePageObject {
     await this.getFilterModalPo().waitForAbsent();
   }
 
-  async selectAllStatuses(exceptions: ProposalStatus[]): Promise<void> {
+  async selectAllStatuses(exceptions: ProposalStatus[] = []): Promise<void> {
     await this.clickFiltersByStatusButton();
     await this.getFilterModalPo().clickSelectAllButton();
 
