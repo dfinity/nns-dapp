@@ -1,13 +1,17 @@
 import { SnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/SnsNeuronDissolveDelayActionItem.page-object";
 import { SnsNeuronStateItemActionPo } from "$tests/page-objects/SnsNeuronStateItemAction.page-object";
 import { SnsStakeItemActionPo } from "$tests/page-objects/SnsStakeItemAction.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ExpandableSectionPo } from "./ExpandableSection.page-object";
 
-export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
+export class SnsNeuronVotingPowerSectionPo extends ExpandableSectionPo {
   private static readonly TID = "sns-neuron-voting-power-section-component";
 
-  static under(element: PageObjectElement): SnsNeuronVotingPowerSectionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): SnsNeuronVotingPowerSectionPo {
     return new SnsNeuronVotingPowerSectionPo(
       element.byTestId(SnsNeuronVotingPowerSectionPo.TID)
     );

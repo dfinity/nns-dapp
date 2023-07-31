@@ -15,6 +15,7 @@
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { formatToken } from "$lib/utils/token.utils";
   import ExpandableSection from "../common/ExpandableSection.svelte";
+  import { Html } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -53,7 +54,10 @@
         }
       )}
     {:else}
-      {$i18n.neuron_detail.voting_power_section_description_expanded_zero_nns}
+      <Html
+        text={$i18n.neuron_detail
+          .voting_power_section_description_expanded_zero_nns}
+      />
     {/if}
   </svelte:fragment>
   <ul class="content">

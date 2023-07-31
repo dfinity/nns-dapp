@@ -22,8 +22,7 @@
     extendedTextContainer?.offsetHeight ??
     0;
   const updateMaxHeight = () => {
-    contentHeight =
-      initialTextheight() + (showExpanded ? extendedTextheight() : 0);
+    contentHeight = showExpanded ? extendedTextheight() : initialTextheight();
   };
   const maxHeightStyle = (height: number | undefined): string =>
     `max-height: ${height}px;`;
@@ -32,7 +31,12 @@
 </script>
 
 <Section {testId}>
-  <h3 slot="title" on:click={toggleContent} on:keypress={toggleContent}>
+  <h3
+    slot="title"
+    data-tid="clickable-title"
+    on:click={toggleContent}
+    on:keypress={toggleContent}
+  >
     <span><slot name="title" /></span>
     <button class="icon" on:click|stopPropagation={toggleContent}
       ><IconInfo /></button
@@ -45,15 +49,17 @@
     class:expanded={showExpanded}
     style={maxHeightStyle(contentHeight)}
   >
-    <span bind:this={initialTextContainer}>
-      <slot name="description" />
-    </span>
-    <span
-      class="expanded-text"
-      class:expanded={showExpanded}
-      bind:this={extendedTextContainer}
-    >
-      <slot name="extended-description" />
+    <span bind:this={extendedTextContainer}>
+      <span bind:this={initialTextContainer} data-tid="initial-description">
+        <slot name="description" />
+      </span>
+      <span
+        class="expanded-text"
+        class:expanded={showExpanded}
+        data-tid="expanded-description"
+      >
+        <slot name="extended-description" />
+      </span>
     </span>
   </p>
   <slot />
