@@ -51,8 +51,11 @@
       )}
     {:else}
       <Html
-        text={$i18n.neuron_detail
-          .voting_power_section_description_expanded_zero_nns}
+        text={replacePlaceholders(
+          $i18n.neuron_detail
+            .voting_power_section_description_expanded_zero_nns,
+          { $neuronId: neuron.neuronId.toString() }
+        )}
       />
     {/if}
   </p>

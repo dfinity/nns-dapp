@@ -6,6 +6,7 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formattedStakedMaturity,
+    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
@@ -73,6 +74,8 @@
                 parameters.neuron_minimum_dissolve_delay_to_vote_seconds
               )
             ),
+            $rootCanisterId: universe.canisterId,
+            $neuronId: getSnsNeuronIdAsHexString(neuron),
           }
         )}
       />
