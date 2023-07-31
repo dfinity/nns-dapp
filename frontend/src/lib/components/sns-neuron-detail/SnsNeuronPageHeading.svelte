@@ -56,7 +56,7 @@
       {$i18n.neuron_detail.voting_power_zero_subtitle}
     {/if}
   </span>
-  <svelte:fragment slot="tag">
+  <svelte:fragment slot="tags">
     {#if isHotkey}
       <HeadingTag testId="hotkey-tag">{$i18n.neurons.hotkey_control}</HeadingTag
       >

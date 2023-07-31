@@ -2,7 +2,7 @@
   export let testId: string | undefined = undefined;
 
   let hasTags: boolean;
-  $: hasTags = !!$$slots.tag;
+  $: hasTags = $$slots.tags !== undefined;
 </script>
 
 <div class="container" data-tid={testId}>
@@ -12,7 +12,7 @@
   </h4>
   {#if hasTags}
     <div class="tags">
-      <slot name="tag" />
+      <slot name="tags" />
     </div>
   {/if}
 </div>
