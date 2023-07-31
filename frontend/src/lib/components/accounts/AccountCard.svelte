@@ -7,19 +7,41 @@
   import AccountBadge from "./AccountBadge.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { TokenAmount, type Token } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
+  import { buildWalletUrl } from "$lib/utils/navigation.utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let account: Account;
   export let hash = false;
-  export let role: "button" | "link" | undefined = undefined;
   export let token: Token | undefined;
+  export let role: "button" | "link" = "link";
 
   let identifier: string;
   let balanceE8s: bigint;
 
   $: ({ identifier, balanceE8s } = account);
+
+  const dispatch = createEventDispatcher();
+
+  const onClick = ({ detail }: CustomEvent<unknown>) => {
+    if (role === "link") {
+      return;
+    }
+
+    dispatch("click", detail);
+  };
+
+  let href: string | undefined;
+  $: href =
+    role === "link"
+      ? buildWalletUrl({
+          universe: $pageStore.universe,
+          account: identifier,
+        })
+      : undefined;
 </script>
 
-<Card on:click {role} testId="account-card">
+<Card on:click={onClick} testId="account-card" {href}>
   <div slot="start" class="title">
     <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />

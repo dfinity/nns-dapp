@@ -23,7 +23,7 @@
   });
 </script>
 
-<Card {testId}>
+<Card {testId} readonly>
   <KeyValuePair testId="neuron-id">
     <span class="label" slot="key">{$i18n.neurons.neuron_id}</span>
     <span class="value" slot="value">{neuron.neuronId}</span>

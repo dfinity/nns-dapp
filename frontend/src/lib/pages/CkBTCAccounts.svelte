@@ -17,8 +17,6 @@
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
 
-  export let goToWallet: (account: Account) => Promise<void>;
-
   let loading = false;
 
   const syncAccounts = async (
@@ -77,8 +75,6 @@
     >
       {#each accounts as account}
         <AccountCard
-          role="link"
-          on:click={() => goToWallet(account)}
           hash
           {account}
           token={token?.token}

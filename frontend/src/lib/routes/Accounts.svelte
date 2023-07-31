@@ -81,14 +81,6 @@
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
     ]))();
-
-  const goToWallet = async ({ identifier }: Account) =>
-    await goto(
-      buildWalletUrl({
-        universe: $pageStore.universe,
-        account: identifier,
-      })
-    );
 </script>
 
 <TestIdWrapper testId="accounts-component">
@@ -96,11 +88,11 @@
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
-      <NnsAccounts {goToWallet} />
+      <NnsAccounts />
     {:else if $isCkBTCUniverseStore}
-      <CkBTCAccounts {goToWallet} />
+      <CkBTCAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}
-      <SnsAccounts {goToWallet} />
+      <SnsAccounts />
     {/if}
   </main>
 
