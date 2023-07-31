@@ -7,6 +7,7 @@
   <h4 class="description">
     <slot name="subtitle" />
   </h4>
+  <slot name="tag" />
 </div>
 
 <style lang="scss">
