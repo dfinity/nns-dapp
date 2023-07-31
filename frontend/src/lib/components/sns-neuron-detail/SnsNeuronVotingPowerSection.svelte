@@ -6,8 +6,8 @@
     ageMultiplier,
     dissolveDelayMultiplier,
     formattedStakedMaturity,
-    getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
+    neuronDashboardUrl,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { type Token, fromDefinedNullable } from "@dfinity/utils";
@@ -20,6 +20,7 @@
   import { formatToken } from "$lib/utils/token.utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { Html, Section } from "@dfinity/gix-components";
+  import { Principal } from "@dfinity/principal";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;
@@ -74,8 +75,10 @@
                 parameters.neuron_minimum_dissolve_delay_to_vote_seconds
               )
             ),
-            $rootCanisterId: universe.canisterId,
-            $neuronId: getSnsNeuronIdAsHexString(neuron),
+            $dashboardLink: neuronDashboardUrl({
+              neuron,
+              rootCanisterId: Principal.fromText(universe.canisterId),
+            }),
           }
         )}
       />

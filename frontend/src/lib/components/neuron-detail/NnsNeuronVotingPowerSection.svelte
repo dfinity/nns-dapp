@@ -5,6 +5,7 @@
     dissolveDelayMultiplier,
     formatVotingPower,
     formattedStakedMaturity,
+    neuronDashboardUrl,
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -54,7 +55,7 @@
         text={replacePlaceholders(
           $i18n.neuron_detail
             .voting_power_section_description_expanded_zero_nns,
-          { $neuronId: neuron.neuronId.toString() }
+          { $dashboardLink: neuronDashboardUrl(neuron) }
         )}
       />
     {/if}
