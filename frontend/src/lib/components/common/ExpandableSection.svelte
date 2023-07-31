@@ -85,13 +85,11 @@
     transition: all var(--animation-time-normal);
 
     .expanded-text {
-      transition: all var(--animation-time-normal);
       visibility: hidden;
       opacity: 0;
       overflow: hidden;
 
       &.expanded {
-        transition: all var(--animation-time-normal);
         visibility: initial;
         opacity: 1;
       }
