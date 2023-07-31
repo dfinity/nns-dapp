@@ -23,8 +23,8 @@
   let state: NeuronState;
   $: state = getSnsNeuronState(neuron);
 
-  let dissolveBonus: number;
-  $: dissolveBonus = dissolveDelayMultiplier({
+  let dissolveMultiplier: number;
+  $: dissolveMultiplier = dissolveDelayMultiplier({
     neuron,
     snsParameters: parameters,
   });
@@ -62,7 +62,7 @@
   >
   <svelte:fragment slot="subtitle">
     {#if dissolvingTime >= minimumDelayToVoteInSeconds}
-      <DissolveDelayBonusText dissolveMultiplier={dissolveBonus} />
+      <DissolveDelayBonusText {dissolveMultiplier} />
     {:else}
       <span data-tid="dissolve-bonus-text">
         {$i18n.neuron_detail.no_dissolve_bonus}

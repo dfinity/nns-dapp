@@ -20,9 +20,6 @@
   let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
 
-  let ageBonus: number;
-  $: ageBonus = ageMultiplier(neuron.ageSeconds);
-
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
     neuron,
@@ -42,7 +39,7 @@
   </span>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
-      <AgeBonusText ageMultiplier={ageBonus} />
+      <AgeBonusText ageMultiplier={ageMultiplier(neuron.ageSeconds)} />
     {:else}
       <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}
