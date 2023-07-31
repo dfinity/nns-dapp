@@ -104,7 +104,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   }
 
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
-    return NnsNeuronVotingPowerSectionPo.under({ element: this.root });
+    return NnsNeuronVotingPowerSectionPo.under(this.root);
   }
 
   getMaturitySectionPo(): NnsNeuronMaturitySectionPo {

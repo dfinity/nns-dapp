@@ -14,8 +14,7 @@
   import NnsNeuronDissolveDelayActionItem from "./NnsNeuronDissolveDelayActionItem.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { formatToken } from "$lib/utils/token.utils";
-  import ExpandableSection from "../common/ExpandableSection.svelte";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, Section } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -25,8 +24,8 @@
     neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 </script>
 
-<ExpandableSection testId="nns-neuron-voting-power-section-component">
-  <svelte:fragment slot="title">{$i18n.neurons.voting_power}</svelte:fragment>
+<Section testId="nns-neuron-voting-power-section-component">
+  <h3 slot="title">{$i18n.neurons.voting_power}</h3>
   <p slot="end" class="title-value" data-tid="voting-power">
     {#if canVote}
       {formatVotingPower(neuron.votingPower)}
@@ -34,10 +33,7 @@
       {$i18n.neuron_detail.voting_power_zero}
     {/if}
   </p>
-  <svelte:fragment slot="description">
-    {$i18n.neuron_detail.voting_power_section_description}
-  </svelte:fragment>
-  <svelte:fragment slot="extended-description">
+  <p class="description" slot="description" data-tid="voting-power-description">
     {#if canVote}
       {replacePlaceholders(
         $i18n.neuron_detail.voting_power_section_description_expanded,
@@ -59,17 +55,18 @@
           .voting_power_section_description_expanded_zero_nns}
       />
     {/if}
-  </svelte:fragment>
+  </p>
   <ul class="content">
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
     <NnsNeuronDissolveDelayActionItem {neuron} />
   </ul>
-</ExpandableSection>
+</Section>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
+  h3,
   p {
     margin: 0;
   }

@@ -20,9 +20,9 @@ describe("NnsStakeItemAction", () => {
       },
     });
 
-    return NnsNeuronVotingPowerSectionPo.under({
-      element: new JestPageObjectElement(container),
-    });
+    return NnsNeuronVotingPowerSectionPo.under(
+      new JestPageObjectElement(container)
+    );
   };
 
   it("should render voting power", async () => {
@@ -47,7 +47,7 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getVotingPower()).toBe("None");
   });
 
-  it("should expand voting power description with no voting power description", async () => {
+  it("should render description with no voting power explanation", async () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
@@ -55,17 +55,12 @@ describe("NnsStakeItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay."
-    );
-
-    await po.clickTitle();
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay.The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the dashboard."
+    expect(await po.getDescription()).toBe(
+      "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
-  it("should expand voting power description with no voting power description", async () => {
+  it("should render description with voting power calculation", async () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       votingPower: 614000000n,
@@ -73,13 +68,8 @@ describe("NnsStakeItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay."
-    );
-
-    await po.clickTitle();
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay.Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = (30.00 + 0) × 1.00 × 1.06 = 6.14."
+    expect(await po.getDescription()).toBe(
+      "Voting power is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = (30.00 + 0) × 1.00 × 1.06 = 6.14."
     );
   });
 

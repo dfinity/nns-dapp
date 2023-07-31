@@ -43,9 +43,9 @@ describe("NnsStakeItemAction", () => {
       },
     });
 
-    return SnsNeuronVotingPowerSectionPo.under({
-      element: new JestPageObjectElement(container),
-    });
+    return SnsNeuronVotingPowerSectionPo.under(
+      new JestPageObjectElement(container)
+    );
   };
 
   beforeEach(() => {
@@ -66,26 +66,16 @@ describe("NnsStakeItemAction", () => {
   it("should render no voting power description if neuron can't vote", async () => {
     const po = renderComponent(neuronCanNotVote);
 
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay."
-    );
-
-    await po.clickTitle();
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay.The dissolve delay must be greater than 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
+    expect(await po.getDescription()).toBe(
+      "The dissolve delay must be greater than 30 days, 10 hours for the neuron to have voting power. Learn more about voting power on the dashboard."
     );
   });
 
   it("should render voting power description if neuron can vote", async () => {
     const po = renderComponent(neuronCanVote);
 
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay."
-    );
-
-    await po.clickTitle();
-    expect(await po.getVisibleDescription()).toBe(
-      "Voting power is determined by the stake, state and dissolve delay.Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = (3.14 + 1.00) × 1.25 × 1.01 = 5.23."
+    expect(await po.getDescription()).toBe(
+      "Voting power is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = (3.14 + 1.00) × 1.25 × 1.01 = 5.23."
     );
   });
 

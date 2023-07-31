@@ -587,7 +587,6 @@ interface I18nNeuron_detail {
   voting_power_zero_subtitle: string;
   voting_power_zero: string;
   voting_power_tooltip_with_stake: string;
-  voting_power_section_description: string;
   voting_power_section_description_expanded: string;
   voting_power_section_description_expanded_zero: string;
   voting_power_section_description_expanded_zero_nns: string;

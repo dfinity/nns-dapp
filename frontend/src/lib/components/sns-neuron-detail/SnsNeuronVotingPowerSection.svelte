@@ -16,10 +16,9 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
   import SnsNeuronDissolveDelayActionItem from "./SnsNeuronDissolveDelayActionItem.svelte";
-  import ExpandableSection from "../common/ExpandableSection.svelte";
   import { formatToken } from "$lib/utils/token.utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, Section } from "@dfinity/gix-components";
 
   export let parameters: SnsNervousSystemParameters;
   export let neuron: SnsNeuron;
@@ -35,7 +34,7 @@
   $: canVote = votingPower > 0;
 </script>
 
-<ExpandableSection testId="sns-neuron-voting-power-section-component">
+<Section testId="sns-neuron-voting-power-section-component">
   <h3 slot="title">{$i18n.neurons.voting_power}</h3>
   <p slot="end" class="title-value" data-tid="voting-power">
     {#if votingPower > 0}
@@ -44,10 +43,7 @@
       {$i18n.neuron_detail.voting_power_zero}
     {/if}
   </p>
-  <svelte:fragment slot="description">
-    {$i18n.neuron_detail.voting_power_section_description}
-  </svelte:fragment>
-  <svelte:fragment slot="extended-description">
+  <p class="description" slot="description" data-tid="voting-power-description">
     {#if canVote}
       {replacePlaceholders(
         $i18n.neuron_detail.voting_power_section_description_expanded,
@@ -81,13 +77,13 @@
         )}
       />
     {/if}
-  </svelte:fragment>
+  </p>
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
     <SnsNeuronStateItemAction {neuron} snsParameters={parameters} />
     <SnsNeuronDissolveDelayActionItem {neuron} {parameters} />
   </ul>
-</ExpandableSection>
+</Section>
 
 <style lang="scss">
   h3,
