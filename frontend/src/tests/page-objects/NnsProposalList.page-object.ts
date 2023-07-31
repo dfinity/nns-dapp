@@ -1,3 +1,5 @@
+import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
+import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -16,6 +18,35 @@ export class NnsProposalListPo extends BasePageObject {
 
   getProposalCardPos(): Promise<ProposalCardPo[]> {
     return ProposalCardPo.allUnder(this.root);
+  }
+
+  async getCardTopics(): Promise<string[]> {
+    const topics = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalTopicText())
+    );
+
+    // return unique values only
+    return Array.from(new Set(topics));
+  }
+
+  async getFirstProposalCardPoForProposer(
+    proposer: string
+  ): Promise<ProposalCardPo> {
+    const shortProposer = shortenWithMiddleEllipsis(
+      proposer,
+      PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+    );
+    const allCards = await this.getProposalCardPos();
+
+    for (const card of allCards) {
+      if ((await card.getShortenedProposer()) === shortProposer) {
+        return card;
+      }
+    }
+
+    throw new Error(`No proposal card found for proposer ${proposer}`);
   }
 
   async getProposalIds(): Promise<string[]> {

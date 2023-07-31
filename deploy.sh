@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+export PATH="$PWD/scripts:$PATH"
+
 cd "$(dirname "$(realpath "$0")")" || exit
 
 help_text() {

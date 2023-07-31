@@ -18,7 +18,7 @@
 
   export let neuron: NeuronInfo;
 
-  let stateInfo: StateInfo | undefined;
+  let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
 
   let ageBonus: number;
@@ -39,7 +39,7 @@
     {/if}
   </svelte:fragment>
   <span slot="title" data-tid="state-text">
-    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[neuron.state] })}
+    {keyOf({ obj: $i18n.neuron_state, key: stateInfo.textKey })}
   </span>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}

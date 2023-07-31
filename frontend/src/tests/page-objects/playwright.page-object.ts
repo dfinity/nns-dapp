@@ -80,6 +80,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
+  isChecked(): Promise<boolean | null> {
+    return this.locator.isChecked();
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }

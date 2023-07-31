@@ -19,8 +19,12 @@ export class NnsNeuronStateItemActionPo extends BasePageObject {
     return this.getText("age-bonus-text");
   }
 
+  getDisburseButtonPo(): ButtonPo {
+    return this.getButton("disburse-button");
+  }
+
   hasDisburseButton(): Promise<boolean> {
-    return this.getButton("disburse-button").isPresent();
+    return this.getDisburseButtonPo().isPresent();
   }
 
   getDissolveButtonPo(): ButtonPo {
@@ -29,5 +33,9 @@ export class NnsNeuronStateItemActionPo extends BasePageObject {
 
   getDissolveButtonText(): Promise<string> {
     return this.getButton("nns-dissolve-action-button").getText();
+  }
+
+  clickDisburse(): Promise<void> {
+    return this.getDisburseButtonPo().click();
   }
 }

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
+  import {
+    type ProposalStatusColor,
+    PROPOSER_ID_DISPLAY_SPLIT_LENGTH,
+  } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
@@ -37,17 +40,20 @@
       {/if}
 
       {#if topic !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="proposal-topic">
           <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
           <span slot="value" class="meta-data-value">{topic ?? ""}</span>
         </KeyValuePair>
       {/if}
 
       {#if proposer !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="shortened-proposer">
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
           <span slot="value" class="meta-data-value"
-            >{shortenWithMiddleEllipsis(proposer, 5)}</span
+            >{shortenWithMiddleEllipsis(
+              proposer,
+              PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+            )}</span
           >
         </KeyValuePair>
       {/if}

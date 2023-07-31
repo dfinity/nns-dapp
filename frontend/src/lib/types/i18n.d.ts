@@ -308,6 +308,7 @@ interface I18nNeurons {
   dissolve_delay_label: string;
   dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
+  dissolve_delay_below_current: string;
   dissolve_delay_above_maximum: string;
   voting_power: string;
   skip: string;
@@ -583,6 +584,8 @@ interface I18nNeuron_detail {
   increase_stake: string;
   split_neuron: string;
   voting_power_subtitle: string;
+  voting_power_zero_subtitle: string;
+  voting_power_zero: string;
   voting_power_tooltip_with_stake: string;
   voting_power_section_description: string;
   maturity_section_description: string;

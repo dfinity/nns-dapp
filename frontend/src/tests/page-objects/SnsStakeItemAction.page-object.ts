@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 
 export class SnsStakeItemActionPo extends BasePageObject {
   private static readonly TID = "sns-stake-item-action-component";
@@ -12,7 +13,15 @@ export class SnsStakeItemActionPo extends BasePageObject {
     return this.getText("stake-value");
   }
 
+  getIncreaseStakeButtonPo(): ButtonPo {
+    return this.getButton("sns-increase-stake");
+  }
+
   hasIncreaseStakeButton(): Promise<boolean> {
-    return this.getButton("sns-increase-stake").isPresent();
+    return this.getIncreaseStakeButtonPo().isPresent();
+  }
+
+  clickIncrease(): Promise<void> {
+    return this.getIncreaseStakeButtonPo().click();
   }
 }

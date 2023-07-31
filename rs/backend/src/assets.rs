@@ -362,8 +362,11 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
 ///
 /// Note: Used both in init and post_upgrade
 pub fn init_assets() {
-    let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
-    insert_tar_xz(compressed);
+    #[cfg(feature = "assets")]
+    {
+        let compressed = include_bytes!("../../../assets.tar.xz").to_vec();
+        insert_tar_xz(compressed);
+    }
 }
 
 /// Adds an xz compressed tarball of assets to the state.

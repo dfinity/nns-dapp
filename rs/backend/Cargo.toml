@@ -23,7 +23,7 @@ hex = "0.4.3"
 # chrono 0.4.19 has vulnerabilities fixed in 0.4.20
 # but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
 # The Replica returned an error: code 5, message: "Wasm module of canister vo5te-2aaaa-aaaaa-aaazq-cai is not valid: Wasm module has an invalid import section. Module imports function '__wbindgen_describe' from '__wbindgen_placeholder__' that is not exported by the runtime."
-# 0.4.19 works and satisfies ic. 
+# 0.4.19 works and satisfies ic.
 chrono = "=0.4.19"
 
 ic-cdk = "0.8.1"
@@ -56,3 +56,13 @@ regex = "1.7.1"
 [dev-dependencies]
 maplit = "1.0.2"
 anyhow = "1.0.68"
+
+[features]
+# Build flavours; these should not normally be referred to directly in code.
+production = ["assets"]
+test = ["assets", "toy_data_gen"]
+noassets = ["toy_data_gen"]
+
+# Individual features
+assets = []
+toy_data_gen = []

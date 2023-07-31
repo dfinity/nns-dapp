@@ -208,9 +208,9 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
+          "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -225,7 +225,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
@@ -240,9 +239,9 @@
       "config": {
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
+          "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -318,7 +317,6 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
@@ -630,13 +628,12 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
           "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SIMULATE_MERGE_NEURONS": false,
-          "ENABLE_NEURON_SETTINGS": false,
+          "ENABLE_SIMULATE_MERGE_NEURONS": true,
+          "ENABLE_NEURON_SETTINGS": true,
           "ENABLE_INSTANT_UNLOCK": false
         }
       }
@@ -647,7 +644,7 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2023-07-11",
+        "DIDC_VERSION": "2023-07-25",
         "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
       },
       "packtool": ""

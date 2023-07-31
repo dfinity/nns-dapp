@@ -135,6 +135,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
+  async isChecked(): Promise<boolean | null> {
+    throw new Error("Not implemented");
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);

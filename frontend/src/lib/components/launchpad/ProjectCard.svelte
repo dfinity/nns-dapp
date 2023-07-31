@@ -48,7 +48,7 @@
   theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
-    <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
+    <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
     <h3 data-tid="project-name">{title}</h3>
   </div>
 
@@ -72,7 +72,7 @@
   .title {
     display: flex;
     gap: var(--padding-1_5x);
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: var(--padding);
 
     h3 {

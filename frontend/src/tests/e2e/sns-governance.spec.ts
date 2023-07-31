@@ -23,8 +23,9 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(snsProjectName).toMatch(/[A-Z]{5}/);
 
   await snsUniverseCard.click();
+
   step("Acquire tokens");
-  await appPo.getTokens(20);
+  await appPo.getSnsTokens(20);
 
   expect(
     await appPo
@@ -60,8 +61,8 @@ test("Test SNS governance", async ({ page, context }) => {
   step("SN002: User can see the details of a neuron");
   await neuronCard.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
-  expect(await neuronDetail.getTitle()).toBe(snsProjectName);
-  expect(await neuronDetail.getStake()).toBe(formattedStake);
+  expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
+  expect(await neuronDetail.getStakeNewUI()).toBe(formattedStake);
   expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 
   step("SN003: User can add a hotkey");

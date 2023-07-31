@@ -1,6 +1,5 @@
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
 import { SECONDS_IN_EIGHT_YEARS } from "$lib/constants/constants";
-import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -10,14 +9,13 @@ import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronPageHeading", () => {
   const renderSnsNeuronCmp = (neuron: SnsNeuron) => {
-    const { container } = renderSelectedSnsNeuronContext({
-      Component: SnsNeuronPageHeading,
-      neuron,
-      reload: vi.fn(),
+    const { container } = render(SnsNeuronPageHeading, {
       props: {
+        neuron,
         parameters: snsNervousSystemParametersMock,
       },
     });
@@ -47,5 +45,20 @@ describe("SnsNeuronPageHeading", () => {
     const po = renderSnsNeuronCmp(neuron);
 
     expect(await po.getVotingPower()).toEqual("Voting Power: 5.59");
+  });
+
+  it("should render no votig power if neuron can't vote", async () => {
+    const stake = 314_000_000n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+      dissolveDelaySeconds:
+        snsNervousSystemParametersMock
+          .neuron_minimum_dissolve_delay_to_vote_seconds[0] - 100n,
+      stake,
+    });
+    const po = renderSnsNeuronCmp(neuron);
+
+    expect(await po.getVotingPower()).toEqual("No Voting Power");
   });
 });

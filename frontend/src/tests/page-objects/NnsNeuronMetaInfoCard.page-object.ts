@@ -1,3 +1,4 @@
+import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,6 +9,14 @@ export class NnsNeuronMetaInfoCardPageObjectPo extends BasePageObject {
     return new NnsNeuronMetaInfoCardPageObjectPo(
       element.byTestId(NnsNeuronMetaInfoCardPageObjectPo.TID)
     );
+  }
+
+  getNnsNeuronCardTitlePo(): NnsNeuronCardTitlePo {
+    return NnsNeuronCardTitlePo.under(this.root);
+  }
+
+  getNeuronId(): Promise<string> {
+    return this.getNnsNeuronCardTitlePo().getNeuronId();
   }
 
   async getVotingPower(): Promise<number> {
