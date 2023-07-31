@@ -50,27 +50,15 @@
     {/if}
   </span>
   <svelte:fragment slot="tag">
-    {#if isCommunityFund || isHotKeyControl}
-      <div class="tags">
-        {#if isCommunityFund}
-          <HeadingTag testId="neurons-fund-tag">
-            {$i18n.neurons.community_fund}
-          </HeadingTag>
-        {/if}
-        {#if isHotKeyControl}
-          <HeadingTag testId="hotkey-tag">
-            {$i18n.neurons.hotkey_control}
-          </HeadingTag>
-        {/if}
-      </div>
+    {#if isCommunityFund}
+      <HeadingTag testId="neurons-fund-tag">
+        {$i18n.neurons.community_fund}
+      </HeadingTag>
+    {/if}
+    {#if isHotKeyControl}
+      <HeadingTag testId="hotkey-tag">
+        {$i18n.neurons.hotkey_control}
+      </HeadingTag>
     {/if}
   </svelte:fragment>
 </PageHeading>
-
-<style lang="scss">
-  .tags {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-  }
-</style>
