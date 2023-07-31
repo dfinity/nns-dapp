@@ -65,9 +65,7 @@ describe("ckbtc-minter-services", () => {
   });
 
   describe("updateBalance", () => {
-    beforeEach(() =>
-      vi.spyOn(console, "error").mockReturnValue()
-    );
+    beforeEach(() => vi.spyOn(console, "error").mockReturnValue());
 
     const params = {
       minterCanisterId: CKBTC_MINTER_CANISTER_ID,

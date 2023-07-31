@@ -1,7 +1,7 @@
 import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";

@@ -54,9 +54,7 @@ describe("SnsNeuronAdvancedSection", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render neuron data", async () => {

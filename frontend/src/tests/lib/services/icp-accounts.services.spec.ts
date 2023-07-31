@@ -217,12 +217,12 @@ describe("icp-accounts.services", () => {
     });
 
     it("should map ICP identifiers only", async () => {
-      vi
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mockMainAccount.balanceE8s);
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mockMainAccount.balanceE8s
+      );
       const certified = true;
       const result = await loadAccounts({
         identity: mockIdentity,
@@ -250,9 +250,9 @@ describe("icp-accounts.services", () => {
         ],
         account_identifier: mockMainAccount.identifier,
       });
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mockHardwareWalletAccount.balanceE8s
+      );
       const certified = true;
 
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
@@ -301,9 +301,9 @@ describe("icp-accounts.services", () => {
           principal,
         }).toHex(),
       });
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mockHardwareWalletAccount.balanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mockHardwareWalletAccount.balanceE8s
+      );
       const certified = true;
 
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);

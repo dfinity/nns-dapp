@@ -1,11 +1,11 @@
 import * as api from "$lib/api/governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

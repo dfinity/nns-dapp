@@ -11,9 +11,7 @@ describe("tvl services", () => {
     tvlCanisterId: TVL_CANISTER_ID.toText(),
   };
 
-  beforeEach(() =>
-    vi.spyOn(console, "error").mockReturnValue()
-  );
+  beforeEach(() => vi.spyOn(console, "error").mockReturnValue());
 
   const result = {
     tvl: 1n,

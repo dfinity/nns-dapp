@@ -1,6 +1,6 @@
 import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

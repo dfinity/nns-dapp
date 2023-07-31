@@ -1,3 +1,5 @@
+<svelte:options accessors />
+
 <script lang="ts">
   import type { Account } from "$lib/types/account";
   import {
@@ -88,8 +90,6 @@
     string
   >;
 </script>
-
-<svelte:options accessors/>
 
 <CkBTCWalletTransactionsObserver
   {indexCanisterId}
