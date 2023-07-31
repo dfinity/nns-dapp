@@ -64,8 +64,6 @@
 </Section>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
-
   h3,
   p {
     margin: 0;

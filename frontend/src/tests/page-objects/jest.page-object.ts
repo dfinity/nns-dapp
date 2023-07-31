@@ -151,13 +151,4 @@ export class JestPageObjectElement implements PageObjectElement {
     // Not tested:
     // userEvent.selectOption(this.element, text);
   }
-
-  async isVisible(): Promise<boolean> {
-    try {
-      expect(this.element).toBeVisible();
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 }

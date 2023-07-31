@@ -32,5 +32,4 @@ export interface PageObjectElement {
   typeText(text: string): Promise<void>;
   selectOption(option: string): Promise<void>;
   getValue(): Promise<string>;
-  isVisible(): Promise<boolean>;
 }
