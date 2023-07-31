@@ -8,15 +8,15 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("AgeBonusText", () => {
-  const renderComponent = (ageBonus: number) => {
-    const { container } = render(AgeBonusText, { props: { ageBonus } });
+  const renderComponent = (ageMultiplier: number) => {
+    const { container } = render(AgeBonusText, { props: { ageMultiplier } });
 
     return AgeBonusTextPo.under(new JestPageObjectElement(container));
   };
 
   it("should render age bonus as percentage", async () => {
     const po = renderComponent(1.25);
-    expect(await po.getText()).toBe("Age bonus: 25%");
+    expect(await po.getText()).toBe("Age bonus: +25%");
   });
 
   it("should render a tooltip with detailed percentage", async () => {

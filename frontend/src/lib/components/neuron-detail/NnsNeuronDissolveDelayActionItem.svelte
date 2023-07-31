@@ -60,7 +60,7 @@
   >
   <svelte:fragment slot="subtitle">
     {#if Number(remainingTimeSeconds) >= NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE}
-      <DissolveDelayBonusText {dissolveBonus} />
+      <DissolveDelayBonusText dissolveMultiplier={dissolveBonus} />
     {:else}
       <span data-tid="dissolve-bonus-text">
         {$i18n.neuron_detail.no_dissolve_bonus}

@@ -42,7 +42,7 @@
   </span>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
-      <AgeBonusText {ageBonus} />
+      <AgeBonusText ageMultiplier={ageBonus} />
     {:else}
       <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}

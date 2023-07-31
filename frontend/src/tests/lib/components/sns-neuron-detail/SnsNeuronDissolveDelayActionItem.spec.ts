@@ -87,7 +87,7 @@ describe("SnsNeuronDissolveDelayActionItem", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveState()).toBe("Dissolve Delay: 4 years");
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: 13%");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +13%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
@@ -103,7 +103,7 @@ describe("SnsNeuronDissolveDelayActionItem", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveState()).toBe("Remaining: 4 years");
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: 13%");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +13%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
