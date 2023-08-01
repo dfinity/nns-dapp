@@ -6,6 +6,9 @@
   } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
+  import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import { get } from "svelte/store";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
@@ -22,12 +25,16 @@
   $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
-  const showProposal = async () => await navigateToProposal(id as ProposalId);
+  const buildProposalHref = (): string =>
+    buildProposalUrl({
+      universe: $pageStore.universe,
+      proposalId: id as ProposalId,
+    });
 </script>
 
 <ProposalCard
   {hidden}
-  on:click={showProposal}
+  href={buildProposalHref()}
   {statusString}
   {id}
   {title}

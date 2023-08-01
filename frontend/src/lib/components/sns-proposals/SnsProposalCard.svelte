@@ -45,18 +45,16 @@
     status,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
-  const showProposal = async () =>
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: `${id?.id}`,
-      })
-    );
+  const buildProposalHref = (): string =>
+    buildProposalUrl({
+      universe: $pageStore.universe,
+      proposalId: `${id?.id}`,
+    });
 </script>
 
 <ProposalCard
   {hidden}
-  on:click={showProposal}
+  href={buildProposalHref()}
   {statusString}
   id={id?.id}
   {title}
