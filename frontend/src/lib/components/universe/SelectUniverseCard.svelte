@@ -17,7 +17,7 @@
   $: theme =
     role === "button" ? "framed" : role === "link" ? "transparent" : undefined;
 
-  let icon: "arrow" | "expand" | "check" | undefined = undefined;
+  let icon: "expand" | "check" | undefined = undefined;
   $: icon =
     role === "button" && selected
       ? "check"
