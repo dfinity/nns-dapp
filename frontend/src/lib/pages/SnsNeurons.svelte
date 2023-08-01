@@ -11,7 +11,6 @@
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
-  import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";

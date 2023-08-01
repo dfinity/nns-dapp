@@ -1,13 +1,9 @@
 <script lang="ts">
   import type { ProposalInfo, NeuronId, ProposalId } from "@dfinity/nns";
-  import {
-    mapProposalInfo,
-    navigateToProposal,
-  } from "$lib/utils/proposals.utils";
+  import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
-  import { get } from "svelte/store";
   import { pageStore } from "$lib/derived/page.derived";
 
   export let proposalInfo: ProposalInfo;

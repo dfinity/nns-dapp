@@ -8,7 +8,6 @@
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import { nonNullish } from "@dfinity/utils";
 
