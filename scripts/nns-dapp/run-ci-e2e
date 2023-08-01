@@ -12,10 +12,11 @@ cat <<-EOF
     3. Click on the job you want to rerun
     4. Copy the view id from the url
 
-    (https://github.com/dfinity/nns-dapp/actions/runs/__VIEW_ID__/jobs/__JOB_ID__)
+    (https://github.com/dfinity/nns-dapp/actions/runs/__VIEW_ID__/jobs/...)
+    JOB_NAME can be found on the actions page in the Jobs list (left)
 
 	Sample:
-	  ./test-e2e-on-ci --view 5458067470 --times 20
+	  ./scripts/nns-dapp/run-ci-e2e --view 5727953111 --job-name "test-playwright-e2e-shard-1-of-2" --times 11
 
 	EOF
 }
