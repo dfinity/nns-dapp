@@ -3,8 +3,10 @@
  */
 
 import AccountCard from "$lib/components/accounts/AccountCard.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import type { Token } from "@dfinity/utils";
@@ -47,21 +49,28 @@ describe("AccountCard", () => {
       props,
     });
 
-    const balance = container.querySelector("article > div span:first-of-type");
+    const balance = container.querySelector(
+      '[data-tid="account-card"] > div span:first-of-type'
+    );
 
     expect(balance?.textContent).toEqual(
       `${formatToken({ value: mockMainAccount.balanceE8s })}`
     );
   });
 
-  it("should add the role passed", () => {
-    const { container } = render(AccountCard, {
+  it("should render a hyperlink if role link", () => {
+    const { getByTestId } = render(AccountCard, {
       props: { ...props, role: "link" },
     });
 
-    const article = container.querySelector("article");
-
-    expect(article?.getAttribute("role")).toEqual("link");
+    const linkElement = getByTestId("account-card");
+    expect(linkElement?.tagName.toLowerCase()).toEqual("a");
+    expect(linkElement?.getAttribute("href")).toEqual(
+      buildWalletUrl({
+        universe: OWN_CANISTER_ID_TEXT,
+        account: mockMainAccount.identifier,
+      })
+    );
   });
 
   it("should render no amount if token is unlikely undefined", () => {
