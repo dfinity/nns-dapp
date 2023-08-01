@@ -29,6 +29,7 @@
   import { ICPToken } from "@dfinity/utils";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { filterCanistersSourceAccounts } from "$lib/utils/canisters.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -110,6 +111,7 @@
           canSelectSource={true}
           rootCanisterId={OWN_CANISTER_ID}
           token={ICPToken}
+          filterAccounts={filterCanistersSourceAccounts}
         />
       </div>
       <SelectCyclesCanister
