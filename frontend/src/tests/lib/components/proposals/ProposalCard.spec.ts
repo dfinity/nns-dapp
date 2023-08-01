@@ -22,6 +22,7 @@ describe("ProposalCard", () => {
     proposer: "1233444",
     type: "Test Type",
     deadlineTimestampSeconds: BigInt(nowSeconds + 3600),
+    href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
   afterAll(jest.useRealTimers);
@@ -115,5 +116,16 @@ describe("ProposalCard", () => {
 
     const arrow = container.querySelector("svg");
     expect(arrow).not.toBeNull();
+  });
+
+  it("should render an url", () => {
+    const { getByTestId } = render(ProposalCard, {
+      props,
+    });
+
+    const card = getByTestId("proposal-card");
+    expect(card).not.toBeNull();
+    expect(card.hasAttribute("href")).toBeTruthy();
+    expect(card.getAttribute("href")).toEqual(props.href);
   });
 });
