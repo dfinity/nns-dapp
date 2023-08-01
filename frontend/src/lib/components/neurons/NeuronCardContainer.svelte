@@ -7,7 +7,7 @@
   export let ariaLabel: string | undefined = undefined;
   export let selected = false;
   export let disabled: boolean | undefined = undefined;
-  export let href: string | undefined;
+  export let href: string | undefined = undefined;
 
   export let cardType: CardType;
 </script>

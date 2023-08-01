@@ -16,7 +16,7 @@
   export let selected = false;
   export let disabled = false;
   export let cardType: CardType = "card";
-  export let href: string | undefined;
+  export let href: string | undefined = undefined;
 </script>
 
 <TestIdWrapper testId="nns-neuron-card-component">

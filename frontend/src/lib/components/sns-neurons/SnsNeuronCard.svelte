@@ -13,7 +13,7 @@
   export let neuron: SnsNeuron;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
-  export let href: string | undefined;
+  export let href: string | undefined = undefined;
 
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
