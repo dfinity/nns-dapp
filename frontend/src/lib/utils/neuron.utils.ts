@@ -888,3 +888,6 @@ export const maturityLastDistribution = ({
       BigInt(SECONDS_IN_DAY)
   );
 };
+
+export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
+  `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;

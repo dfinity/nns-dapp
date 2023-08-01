@@ -1,22 +1,23 @@
 <script lang="ts">
-  import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmount } from "@dfinity/utils";
-  import { formatVotingPower, neuronStake } from "$lib/utils/neuron.utils";
+  import {
+    ageMultiplier,
+    dissolveDelayMultiplier,
+    formatVotingPower,
+    formattedStakedMaturity,
+    neuronDashboardUrl,
+    neuronStake,
+  } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
   import NnsNeuronDissolveDelayActionItem from "./NnsNeuronDissolveDelayActionItem.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { formatToken } from "$lib/utils/token.utils";
+  import { Html, Section } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
-
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
-    amount: neuronStake(neuron),
-    token: ICPToken,
-  });
 
   // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
@@ -33,10 +34,31 @@
       {$i18n.neuron_detail.voting_power_zero}
     {/if}
   </p>
-  <p slot="description">
-    {replacePlaceholders($i18n.neuron_detail.voting_power_section_description, {
-      $token: ICPToken.symbol,
-    })}
+  <p class="description" slot="description" data-tid="voting-power-description">
+    {#if canVote}
+      {replacePlaceholders(
+        $i18n.neuron_detail.voting_power_section_description_expanded,
+        {
+          $stake: formatToken({
+            value: neuronStake(neuron),
+          }),
+          $maturityStaked: formattedStakedMaturity(neuron),
+          $ageBonus: ageMultiplier(neuron.ageSeconds).toFixed(2),
+          $dissolveBonus: dissolveDelayMultiplier(
+            neuron.dissolveDelaySeconds
+          ).toFixed(2),
+          $votingPower: formatVotingPower(neuron.votingPower),
+        }
+      )}
+    {:else}
+      <Html
+        text={replacePlaceholders(
+          $i18n.neuron_detail
+            .voting_power_section_description_expanded_zero_nns,
+          { $dashboardLink: neuronDashboardUrl(neuron) }
+        )}
+      />
+    {/if}
   </p>
   <ul class="content">
     <NnsStakeItemAction {neuron} />
