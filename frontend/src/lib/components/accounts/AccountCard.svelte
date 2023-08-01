@@ -7,7 +7,6 @@
   import AccountBadge from "./AccountBadge.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { TokenAmount, type Token } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
 
@@ -21,16 +20,6 @@
 
   $: ({ identifier, balanceE8s } = account);
 
-  const dispatch = createEventDispatcher();
-
-  const onClick = ({ detail }: CustomEvent<unknown>) => {
-    if (role === "link") {
-      return;
-    }
-
-    dispatch("click", detail);
-  };
-
   let href: string | undefined;
   $: href =
     role === "link"
@@ -41,7 +30,7 @@
       : undefined;
 </script>
 
-<Card on:click={onClick} testId="account-card" {href}>
+<Card on:click testId="account-card" {href}>
   <div slot="start" class="title">
     <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />
