@@ -74,10 +74,7 @@
       universeId={$selectedCkBTCUniverseIdStore}
     >
       {#each accounts as account}
-        <AccountCard
-          hash
-          {account}
-          token={token?.token}
+        <AccountCard hash {account} token={token?.token}
           >{account.name ?? $i18n.accounts.main}</AccountCard
         >
       {/each}

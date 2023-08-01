@@ -37,10 +37,8 @@
   {:else}
     <SnsAccountsBalancesObserver>
       {#each $snsProjectAccountsStore ?? [] as account}
-        <AccountCard
-          hash
-          {account}
-          {token}>{account.name ?? $i18n.accounts.main}</AccountCard
+        <AccountCard hash {account} {token}
+          >{account.name ?? $i18n.accounts.main}</AccountCard
         >
       {/each}
     </SnsAccountsBalancesObserver>

@@ -13,7 +13,15 @@
 </script>
 
 {#if cardType === "card"}
-  <Card {role} {selected} {disabled} on:click {href} {ariaLabel} testId="neuron-card">
+  <Card
+    {role}
+    {selected}
+    {disabled}
+    on:click
+    {href}
+    {ariaLabel}
+    testId="neuron-card"
+  >
     <svelte:fragment><slot /></svelte:fragment>
     <svelte:fragment slot="start"><slot name="start" /></svelte:fragment>
     <svelte:fragment slot="end"><slot name="end" /></svelte:fragment>

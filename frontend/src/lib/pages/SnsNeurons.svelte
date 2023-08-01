@@ -47,7 +47,7 @@
     return buildNeuronUrl({
       universe: $pageStore.universe,
       neuronId,
-    })
+    });
   };
 
   let empty: boolean;
