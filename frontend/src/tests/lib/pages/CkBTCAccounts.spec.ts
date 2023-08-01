@@ -59,10 +59,6 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("CkBTCAccounts", () => {
-  const goToWallet = async () => {
-    // Do nothing
-  };
-
   beforeAll(() => {
     jest
       .spyOn(tokensStore, "subscribe")
@@ -86,13 +82,13 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should not load ckBTC accounts", () => {
-      render(CkBTCAccounts, { props: { goToWallet } });
+      render(CkBTCAccounts);
 
       expect(syncCkBTCAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { getByText } = render(CkBTCAccounts);
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
@@ -100,10 +96,10 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should render balance in card", async () => {
-      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { container } = render(CkBTCAccounts);
 
       const cardTitleRow = container.querySelector(
-        'article > div[data-tid="token-value-label"]'
+        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
@@ -114,9 +110,7 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(CkBTCAccounts, {
-        props: { goToWallet },
-      });
+      const { getAllByTestId } = render(CkBTCAccounts);
 
       await waitFor(() =>
         expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
@@ -130,13 +124,13 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should call load ckBTC accounts", () => {
-      render(CkBTCAccounts, { props: { goToWallet } });
+      render(CkBTCAccounts);
 
       expect(syncCkBTCAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {
-      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { container } = render(CkBTCAccounts);
       expect(
         container.querySelector('[data-tid="skeleton-card"]')
       ).not.toBeNull();
