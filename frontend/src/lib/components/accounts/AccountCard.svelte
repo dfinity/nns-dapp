@@ -28,9 +28,12 @@
           account: identifier,
         })
       : undefined;
+
+  let cardRole: "button" | "checkbox" | undefined = undefined;
+  $: cardRole = role === "button" ? "button" : undefined;
 </script>
 
-<Card on:click testId="account-card" {href}>
+<Card on:click role={cardRole} testId="account-card" {href}>
   <div slot="start" class="title">
     <p data-tid="account-name" class:main={account.type === "main"}><slot /></p>
     <AccountBadge {account} />

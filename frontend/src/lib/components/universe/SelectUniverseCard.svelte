@@ -33,6 +33,7 @@
 </script>
 
 <Card
+  role="button"
   {selected}
   {theme}
   on:click

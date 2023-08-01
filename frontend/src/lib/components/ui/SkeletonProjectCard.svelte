@@ -4,7 +4,7 @@
   import { SkeletonText } from "@dfinity/gix-components";
 </script>
 
-<Card testId="skeleton-card" clickable={false}>
+<Card testId="skeleton-card">
   <div class="title" slot="start">
     <SkeletonLogo />
     <SkeletonText />

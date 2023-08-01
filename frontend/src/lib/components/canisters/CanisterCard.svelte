@@ -6,7 +6,7 @@
   import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 
   export let canister: CanisterDetails;
-  export let role: undefined | "link" | "button" | "checkbox" = undefined;
+  export let role: undefined | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
 </script>
 
