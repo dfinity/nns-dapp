@@ -7,7 +7,7 @@
 <slot />
 
 {#if loading}
-  <div class="spinner" data-tid="next-page-sns-proposals-spinner">
+  <div class="spinner" data-tid="next-page-proposals-spinner">
     <Spinner inline />
   </div>
 {/if}

@@ -41,9 +41,7 @@ describe("SnsProposalsList", () => {
       },
     });
 
-    expect(
-      queryByTestId("next-page-sns-proposals-spinner")
-    ).toBeInTheDocument();
+    expect(queryByTestId("next-page-proposals-spinner")).toBeInTheDocument();
   });
 
   it("should render a card skeletons if proposals are loading", () => {
