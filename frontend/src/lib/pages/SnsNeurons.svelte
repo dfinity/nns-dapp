@@ -42,14 +42,12 @@
 
   $: syncNeuronsForProject($snsOnlyProjectStore);
 
-  const goToNeuronDetails = async (neuron: SnsNeuron) => {
+  const buildNeuronDetailsUrl = (neuron: SnsNeuron): string => {
     const neuronId = getSnsNeuronIdAsHexString(neuron);
-    await goto(
-      buildNeuronUrl({
-        universe: $pageStore.universe,
-        neuronId,
-      })
-    );
+    return buildNeuronUrl({
+      universe: $pageStore.universe,
+      neuronId,
+    })
   };
 
   let empty: boolean;
@@ -70,10 +68,9 @@
       {:else}
         {#each $sortedSnsUserNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
           <SnsNeuronCard
-            role="link"
             {neuron}
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
-            on:click={async () => await goToNeuronDetails(neuron)}
+            href={buildNeuronDetailsUrl(neuron)}
           />
         {/each}
       {/if}
@@ -93,10 +90,9 @@
     <div class="card-grid">
       {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
         <SnsNeuronCard
-          role="link"
           {neuron}
           ariaLabel={$i18n.neurons.aria_label_neuron_card}
-          on:click={async () => await goToNeuronDetails(neuron)}
+          href={buildNeuronDetailsUrl(neuron)}
         />
       {/each}
     </div>

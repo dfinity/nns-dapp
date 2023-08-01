@@ -20,14 +20,6 @@
   onMount(() => {
     listNeurons();
   });
-
-  const goToNeuronDetails = async (id: NeuronId) =>
-    await goto(
-      buildNeuronUrl({
-        universe: $pageStore.universe,
-        neuronId: id,
-      })
-    );
 </script>
 
 <TestIdWrapper testId="nns-neurons-component">
@@ -50,9 +42,11 @@
           </Tooltip>
         {:else}
           <NnsNeuronCard
-            role="link"
             ariaLabel={$i18n.neurons.aria_label_neuron_card}
-            on:click={async () => await goToNeuronDetails(neuron.neuronId)}
+            href={buildNeuronUrl({
+              universe: $pageStore.universe,
+              neuronId: neuron.neuronId,
+            })}
             {neuron}
           />
         {/if}

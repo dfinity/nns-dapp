@@ -16,6 +16,7 @@
   export let selected = false;
   export let disabled = false;
   export let cardType: CardType = "card";
+  export let href: string | undefined;
 </script>
 
 <TestIdWrapper testId="nns-neuron-card-component">
@@ -25,6 +26,7 @@
     {disabled}
     {ariaLabel}
     on:click
+    {href}
     {cardType}
   >
     <NnsNeuronCardTitle {neuron} slot="start" />
