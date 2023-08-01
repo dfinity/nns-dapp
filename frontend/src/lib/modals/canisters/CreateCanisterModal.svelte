@@ -56,13 +56,6 @@
   let name = "";
   let amount: number | undefined;
 
-  const onSelectAccount = ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    account = detail.selectedAccount;
-    modal.next();
-  };
-
   const goNext = () => {
     modal.next();
   };
