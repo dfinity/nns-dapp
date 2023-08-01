@@ -106,10 +106,10 @@
     {#if currentStep?.name === "SelectCycles"}
       <div class="from">
         <TransactionFromAccount
-                bind:selectedAccount={account}
-                canSelectSource={true}
-                rootCanisterId={OWN_CANISTER_ID}
-                token={ICPToken}
+          bind:selectedAccount={account}
+          canSelectSource={true}
+          rootCanisterId={OWN_CANISTER_ID}
+          token={ICPToken}
         />
       </div>
       <SelectCyclesCanister
