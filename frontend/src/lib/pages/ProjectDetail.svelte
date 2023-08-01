@@ -144,7 +144,9 @@
   // Set up watchers and load the data in stores
   /////////////////////////////////
 
-  $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
+  $: layoutTitleStore.set({
+    title: $projectDetailStore?.summary?.metadata.name ?? "",
+  });
 
   let enableOpenProjectWatchers = false;
   $: enableOpenProjectWatchers =
