@@ -49,13 +49,11 @@
     await loadCanisters();
   });
 
-  const goToCanisterDetails = (canisterId: CanisterId) => async () =>
-    await goto(
-      buildCanisterUrl({
-        universe: $pageStore.universe,
-        canister: canisterId.toText(),
-      })
-    );
+  const buildCanisterDetailsHref = (canisterId: CanisterId): string =>
+    buildCanisterUrl({
+      universe: $pageStore.universe,
+      canister: canisterId.toText(),
+    });
 
   let loading: boolean;
   $: loading = $canistersStore.canisters === undefined;
@@ -76,9 +74,8 @@
   <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
       <CanisterCard
-        role="link"
         ariaLabel={$i18n.canisters.aria_label_canister_card}
-        on:click={goToCanisterDetails(canister.canister_id)}
+        href={buildCanisterDetailsHref(canister.canister_id)}
         {canister}
       />
     {/each}
