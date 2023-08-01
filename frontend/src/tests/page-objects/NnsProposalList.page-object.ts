@@ -16,6 +16,10 @@ export class NnsProposalListPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
+  getListLoaderSpinnerPo(): PageObjectElement {
+    return this.root.byTestId("next-page-sns-proposals-spinner");
+  }
+
   getProposalCardPos(): Promise<ProposalCardPo[]> {
     return ProposalCardPo.allUnder(this.root);
   }
@@ -56,12 +60,15 @@ export class NnsProposalListPo extends BasePageObject {
 
   async isContentLoaded(): Promise<boolean> {
     return (
-      (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
+      (await this.isPresent()) &&
+      !(await this.getSkeletonCardPo().isPresent()) &&
+      !(await this.getListLoaderSpinnerPo().isPresent())
     );
   }
 
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
     await this.getSkeletonCardPo().waitForAbsent();
+    await this.getListLoaderSpinnerPo().waitForAbsent();
   }
 }
