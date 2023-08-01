@@ -7,7 +7,7 @@
   export let neuron: NeuronInfo;
 </script>
 
-<Card readonly>
+<Card clickable={false}>
   <h3 slot="start">{$i18n.neuron_detail.voting_history}</h3>
   <Ballots {neuron} />
 </Card>
