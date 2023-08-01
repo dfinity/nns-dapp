@@ -21,16 +21,16 @@
   $: ({ id, title, color, topic, proposer, type, statusString } =
     mapProposalInfo(proposalInfo));
 
-  const buildProposalHref = (): string =>
-    buildProposalUrl({
-      universe: $pageStore.universe,
-      proposalId: id as ProposalId,
-    });
+  let href: string;
+  $: href = buildProposalUrl({
+    universe: $pageStore.universe,
+    proposalId: id as ProposalId,
+  });
 </script>
 
 <ProposalCard
   {hidden}
-  href={buildProposalHref()}
+  {href}
   {statusString}
   {id}
   {title}

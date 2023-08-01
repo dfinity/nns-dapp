@@ -44,16 +44,16 @@
     status,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
-  const buildProposalHref = (): string =>
-    buildProposalUrl({
-      universe: $pageStore.universe,
-      proposalId: `${id?.id}`,
-    });
+  let href: string;
+  $: href = buildProposalUrl({
+    universe: $pageStore.universe,
+    proposalId: `${id?.id}`,
+  });
 </script>
 
 <ProposalCard
   {hidden}
-  href={buildProposalHref()}
+  {href}
   {statusString}
   id={id?.id}
   {title}
