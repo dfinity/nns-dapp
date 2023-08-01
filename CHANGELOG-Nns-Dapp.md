@@ -15,6 +15,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
 * Bump agent-js `v0.18.1`.
 * Clarify Ledger app version error message.
 * Increase the displayed size of the projects logo on the "Launchpad".
