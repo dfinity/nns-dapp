@@ -35,16 +35,13 @@
   $: userHasParticipated =
     nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
 
-  const showProject = async () =>
-    await goto(
-      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
-    );
+  const buildProjectHref = (): string =>
+    `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`;
 </script>
 
 <Card
   testId="project-card-component"
-  role="link"
-  on:click={showProject}
+  href={buildProjectHref()}
   theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
