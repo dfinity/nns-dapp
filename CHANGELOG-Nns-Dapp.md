@@ -169,6 +169,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
+* Fix missing referrer path on subpages.
 
 #### Not Published
 
