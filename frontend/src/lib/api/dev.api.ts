@@ -1,6 +1,5 @@
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
-import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
@@ -84,25 +83,25 @@ export const acquireICPTs = async ({
   const agent = await getTestAccountAgent();
 
   // TODO: reproducibility
-  const validIcrcAddress = !invalidIcrcAddress(accountIdentifier);
+  // const validIcrcAddress = !invalidIcrcAddress(accountIdentifier);
 
   // Icrc
-  if (validIcrcAddress) {
-    // const canister = IcrcLedgerCanister.create({
-    //   agent,
-    //   canisterId: LEDGER_CANISTER_ID,
-    // });
-    //
-    // const { owner, subaccount } = decodeIcrcAccount(accountIdentifier);
-    //
-    // return canister.transfer({
-    //   amount: e8s,
-    //   to: {
-    //     owner,
-    //     subaccount: toNullable(subaccount),
-    //   },
-    // });
-  }
+  // if (validIcrcAddress) {
+  // const canister = IcrcLedgerCanister.create({
+  //   agent,
+  //   canisterId: LEDGER_CANISTER_ID,
+  // });
+  //
+  // const { owner, subaccount } = decodeIcrcAccount(accountIdentifier);
+  //
+  // return canister.transfer({
+  //   amount: e8s,
+  //   to: {
+  //     owner,
+  //     subaccount: toNullable(subaccount),
+  //   },
+  // });
+  // }
 
   // Old school ICP
   const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
