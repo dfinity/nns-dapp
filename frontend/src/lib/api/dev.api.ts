@@ -1,3 +1,4 @@
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
@@ -6,6 +7,7 @@ import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -14,8 +16,6 @@ import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
 import { initSns, wrapper } from "./sns-wrapper.api";
-import {IcrcLedgerCanister} from "@dfinity/ledger";
-import {LEDGER_CANISTER_ID} from "$lib/constants/canister-ids.constants";
 
 export const testAccountPrincipal =
   "jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe";
@@ -90,10 +90,10 @@ export const acquireICPTs = async ({
 
   // Icrc
   if (validIcrcAddress) {
-      const canister = IcrcLedgerCanister.create({
-        agent,
-        canisterId: LEDGER_CANISTER_ID,
-      });
+    const canister = IcrcLedgerCanister.create({
+      agent,
+      canisterId: LEDGER_CANISTER_ID,
+    });
     //
     //   const { owner, subaccount } = decodeIcrcAccount(accountIdentifier);
     //
