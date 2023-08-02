@@ -45,7 +45,7 @@ for ((i=1; i<="$TIMES_TO_RUN"; i++))
 do
   JOB_ID=$(gh run view $VIEW_ID --json jobs --jq ".jobs[] | {name, databaseId} | select(.name == \"$JOB_NAME\") | .databaseId")
 
-  echo "🤞Rerunning e2e on CI (Iteration $i, Job ID: $JOB_ID, View ID: $VIEW_ID)"
+  echo "🤞 Run \"$JOB_NAME\" on CI (Iteration $i, Job ID: $JOB_ID, View ID: $VIEW_ID)"
   gh run rerun -j $JOB_ID
 
   # TODO: check for "job XXX cannot be rerun"
@@ -83,3 +83,5 @@ do
       exit 1
   fi
 done
+
+echo "✅ All $TIMES_TO_RUN runs completed successfully"
