@@ -117,20 +117,6 @@ type CachedSwapInitParamsDto = {
   neuron_minimum_stake_e8s: number;
   confirmation_text?: string | undefined;
   restricted_countries?: CachedCountriesDto | undefined;
-  // nns_proposal_id: number;
-  // min_participant_icp_e8s: number;
-  // neuron_basket_construction_parameters: {
-  //   count: number;
-  //   dissolve_delay_interval_seconds: number;
-  // };
-  // max_icp_e8s: number;
-  // swap_start_timestamp_seconds: number;
-  // swap_due_timestamp_seconds: number;
-  // min_participants: number;
-  // sns_token_e8s: number;
-  // should_auto_finalize: boolean;
-  // max_participant_icp_e8s: number;
-  // min_icp_e8s: number;
 };
 
 type CachedSnsSwapDto = {
