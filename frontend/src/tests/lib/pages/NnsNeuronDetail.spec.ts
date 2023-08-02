@@ -75,9 +75,7 @@ describe("NeuronDetail", () => {
 
       // Old components
       expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
-        false
-      );
+      expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(false);
       expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
       expect(await po.hasJoinFundCard()).toBe(false);
 
@@ -162,9 +160,7 @@ describe("NeuronDetail", () => {
 
       // Old components
       expect(await po.getMaturityCardPo().isPresent()).toBe(true);
-      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
-        true
-      );
+      expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(true);
       expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(true);
       expect(await po.hasJoinFundCard()).toBe(true);
 
