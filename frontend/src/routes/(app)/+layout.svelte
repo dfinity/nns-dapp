@@ -25,6 +25,7 @@
 
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
   afterNavigate((nav: Navigation) =>
+    // TODO: e2e to test this
     referrerPathStore.set(referrerPathForNav(nav))
   );
 </script>
