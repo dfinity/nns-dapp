@@ -57,17 +57,17 @@ test("Test images load on home page", async ({ page, context }) => {
   await expectImagesLoaded({
     page,
     sources: [
-      // Menu
-      "logo-nns.svg",
-      "logo-onchain-light.svg",
-      "menu-bg-light.png",
       // Universe selector in main layout
       "icp-rounded.svg",
       // Hidden title in main layout
       "icp-rounded.svg",
-      // Universes selector
+      // ICP universe card in the universes selector modal
       "icp-rounded.svg",
-      // + all logo.png for all the different SNSes
+      // Menu
+      "logo-nns.svg",
+      "logo-onchain-light.svg",
+      // logo.png are for all the different SNSes and are loaded from the
+      // aggregator:
       "logo.png",
       "logo.png",
       "logo.png",
@@ -79,6 +79,8 @@ test("Test images load on home page", async ({ page, context }) => {
       "logo.png",
       "logo.png",
       "logo.png",
+      // Menu background
+      "menu-bg-light.png",
     ],
   });
 });
