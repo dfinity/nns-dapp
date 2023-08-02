@@ -41,7 +41,7 @@ describe("NnsNeuronPageHeader", () => {
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
-    expect(title).toEqual(text);
+    expect(title).toEqual({ title: "Neuron", header: text });
   };
 
   it("should render a title with neuron ID if title is not intersecting viewport", () =>
