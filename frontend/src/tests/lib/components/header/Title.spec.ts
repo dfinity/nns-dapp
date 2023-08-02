@@ -16,7 +16,7 @@ describe("Title", () => {
 
     render(Title);
 
-    const title = within(document.head).getByText(`NNS Dapp / ${testTitle}`);
+    const title = within(document.head).getByText(`${testTitle} / NNS Dapp`);
 
     expect(title).not.toBeNull();
   });

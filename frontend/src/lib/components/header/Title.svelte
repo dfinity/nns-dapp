@@ -4,9 +4,9 @@
   import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   let pageTitle = "NNS Dapp";
-  $: pageTitle = `NNS Dapp${
-    $layoutTitleStore.title !== "" ? ` / ${$layoutTitleStore.title}` : ""
-  }`;
+  $: pageTitle = `${$layoutTitleStore.title ?? ""}${
+    $layoutTitleStore.title !== "" ? ` / ` : ""
+  }NNS Dapp`;
 </script>
 
 <svelte:head>
