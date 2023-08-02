@@ -214,7 +214,9 @@ describe("NeuronDetail", () => {
       dispatchIntersecting({ element, intersecting });
 
       const title = get(layoutTitleStore);
-      await waitFor(() => expect(title).toEqual(text));
+      await waitFor(() =>
+        expect(title).toEqual({ title: en.neuron_detail.title, header: text })
+      );
     };
 
     it("should render a title with neuron ID if title is not intersecting viewport", async () =>

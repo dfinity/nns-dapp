@@ -12,6 +12,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Enable merge neurons preview.
+* Display page title in browser's tab.
 
 #### Changed
 
