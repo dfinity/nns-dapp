@@ -109,15 +109,6 @@ describe("ProposalCard", () => {
     expect(container.querySelector(".success")).not.toBeNull();
   });
 
-  it("should render a svg arrow icon", () => {
-    const { container } = render(ProposalCard, {
-      props,
-    });
-
-    const arrow = container.querySelector("svg");
-    expect(arrow).not.toBeNull();
-  });
-
   it("should render an url", () => {
     const { getByTestId } = render(ProposalCard, {
       props,
