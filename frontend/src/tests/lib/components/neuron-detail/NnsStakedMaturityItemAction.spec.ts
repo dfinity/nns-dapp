@@ -2,24 +2,24 @@
  * @jest-environment jsdom
  */
 
-import NnsStakedMaturityActionItem from "$lib/components/neuron-detail/NnsStakedMaturityActionItem.svelte";
+import NnsStakedMaturityItemAction from "$lib/components/neuron-detail/NnsStakedMaturityItemAction.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NnsStakedMaturityActionItemPo } from "$tests/page-objects/NnsStakedMaturityActionItem.page-object";
+import { NnsStakedMaturityItemActionPo } from "$tests/page-objects/NnsStakedMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-describe("NnsStakedMaturityActionItem", () => {
+describe("NnsStakedMaturityItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NnsStakedMaturityActionItem,
+        testComponent: NnsStakedMaturityItemAction,
       },
     });
 
-    return NnsStakedMaturityActionItemPo.under(
+    return NnsStakedMaturityItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };

@@ -24,6 +24,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
 * New icon for dissolving neuron state.
 * Keep menu open and visible on large screen (not only on extra large screen).
+* Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
 
 #### Deprecated
 #### Removed
@@ -58,12 +59,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Faster formatting of shell and yaml files, by operating only on named or changed files.
 * Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
+* Update candid interface for NNS governance to improve 1-proposal support.
 
 #### Deprecated
 #### Removed
-
-* Don't run reproducible assets test against Mac OS 13
-
 #### Fixed
 
 * Deploy.sh script
@@ -158,7 +157,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Render SNS neuron voting power in neuron detail page.
-* Users can now add names to canisters to easily identify them within NNS dapp only.
+* Users can now add names to canisters to easily identify them within NNS Dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
 
 #### Changed

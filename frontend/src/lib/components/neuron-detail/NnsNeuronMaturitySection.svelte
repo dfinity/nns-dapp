@@ -3,8 +3,8 @@
   import { formattedTotalMaturity } from "$lib/utils/neuron.utils";
   import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NnsStakedMaturityActionItem from "./NnsStakedMaturityActionItem.svelte";
-  import NnsAvailableMaturityActionItem from "./NnsAvailableMaturityActionItem.svelte";
+  import NnsStakedMaturityItemAction from "./NnsStakedMaturityItemAction.svelte";
+  import NnsAvailableMaturityItemAction from "./NnsAvailableMaturityItemAction.svelte";
 
   export let neuron: NeuronInfo;
 </script>
@@ -18,8 +18,8 @@
     {$i18n.neuron_detail.maturity_section_description}
   </p>
   <ul class="content">
-    <NnsStakedMaturityActionItem {neuron} />
-    <NnsAvailableMaturityActionItem {neuron} />
+    <NnsStakedMaturityItemAction {neuron} />
+    <NnsAvailableMaturityItemAction {neuron} />
   </ul>
 </Section>
 

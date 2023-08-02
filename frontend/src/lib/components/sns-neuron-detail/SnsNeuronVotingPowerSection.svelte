@@ -16,7 +16,7 @@
   import type { Universe } from "$lib/types/universe";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
-  import SnsNeuronDissolveDelayActionItem from "./SnsNeuronDissolveDelayActionItem.svelte";
+  import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
   import { formatToken } from "$lib/utils/token.utils";
   import { secondsToDuration } from "$lib/utils/date.utils";
   import { Html, Section } from "@dfinity/gix-components";
@@ -87,7 +87,7 @@
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
     <SnsNeuronStateItemAction {neuron} snsParameters={parameters} />
-    <SnsNeuronDissolveDelayActionItem {neuron} {parameters} />
+    <SnsNeuronDissolveDelayItemAction {neuron} {parameters} />
   </ul>
 </Section>
 
