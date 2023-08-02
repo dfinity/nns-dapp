@@ -37,9 +37,13 @@ get_prod_wasm() {
   curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
 }
 
+# Gets the number of transactions; this list may be pruned so is not invariant.
+get_transactions_count() {
+  dfx canister call nns-dapp get_stats | idl2json | jq -r '.transactions_count'
+}
 # Gets stats that should be invariant across upgrades
 get_upgrade_invariant_stats() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count, transactions_count}'
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
 }
 # Gets some sample accounts
 sample_toy_accounts() {
@@ -69,6 +73,28 @@ check_state_size() {
   fi
 }
 
+# Verifies that the number of transactions is reasonable.  Some may be pruned, but not a lot.
+check_num_transactions() {
+  # The toy state creates 3 transactions per account; see TRANSACTIONS_PER_ACCOUNT
+  # in: rs/backend/src/accounts_store/toy_data.rs
+  toy_transactions="$((NUM_TOY_ACCOUNTS * 3))"
+  # Note: Transactions MAY be pruned if the state is large enough, however in tests
+  # we should not make the state so large that, say, half the transactions are pruned.
+  # If that many are pruned, either the test is unrealistic or we should increase the
+  # amount of storage available.
+  expected_min_transactions="$((toy_transactions / 2))"
+  transactions_count="$(get_transactions_count)"
+  if ((transactions_count < expected_min_transactions)); then
+    {
+      echo "ERROR: 'transactions_count' is smaller than expected."
+      printf "  Expected at least: %10d\n" "$expected_min_transactions"
+      printf "  Actual:            %10d\n" "$transactions_count"
+      printf "  Note: Transactions MAY be pruned but if a lot are being pruned, there is insufficient memory."
+      exit 1
+    } >&2
+  fi
+}
+
 # Installs the current build of nns-dapp
 # TODO: Record upgrade time
 # TODO: Record upgrade cycles
@@ -92,6 +118,7 @@ upgrade_nnsdapp() {
       exit 1
     } >&2
   fi
+  check_num_transactions
 }
 
 echo "Getting or building the wasm..."
