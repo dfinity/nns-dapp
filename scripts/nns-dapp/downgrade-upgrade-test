@@ -118,7 +118,6 @@ upgrade_nnsdapp() {
       exit 1
     } >&2
   fi
-  check_num_transactions
 }
 
 echo "Getting or building the wasm..."
@@ -147,13 +146,16 @@ while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_cou
 done
 verify_healthy
 check_state_size
+check_num_transactions
 echo "Downloading and installing the prod wasm..."
 get_prod_wasm
 upgrade_nnsdapp "$PROD_WASM"
 echo "Checking that the rollback is healthy..."
 verify_healthy
+check_num_transactions
 echo "Rolling forwards..."
 upgrade_nnsdapp "$CURRENT_WASM"
 echo "Checking that the upgrade is healthy..."
 verify_healthy
+check_num_transactions
 echo SUCCESS
