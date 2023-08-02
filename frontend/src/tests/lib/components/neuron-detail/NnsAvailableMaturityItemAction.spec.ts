@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NnsAvailableMaturityActionItem from "$lib/components/neuron-detail/NnsAvailableMaturityActionItem.svelte";
+import NnsAvailableMaturityItemAction from "$lib/components/neuron-detail/NnsAvailableMaturityItemAction.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
@@ -15,22 +15,22 @@ import {
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NnsAvailableMaturityActionItemPo } from "$tests/page-objects/NnsAvailableMaturityActionItem.page-object";
+import { NnsAvailableMaturityItemActionPo } from "$tests/page-objects/NnsAvailableMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-describe("NnsAvailableMaturityActionItem", () => {
+describe("NnsAvailableMaturityItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NnsAvailableMaturityActionItem,
+        testComponent: NnsAvailableMaturityItemAction,
       },
     });
 
-    return NnsAvailableMaturityActionItemPo.under(
+    return NnsAvailableMaturityItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };

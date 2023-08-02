@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsAvailableMaturityActionItem from "$lib/components/sns-neuron-detail/SnsAvailableMaturityActionItem.svelte";
+import SnsAvailableMaturityItemAction from "$lib/components/sns-neuron-detail/SnsAvailableMaturityItemAction.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
@@ -13,14 +13,14 @@ import {
   allSnsNeuronPermissions,
   createMockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { SnsAvailableMaturityActionItemPo } from "$tests/page-objects/SnsAvailableMaturityActionItem.page-object";
+import { SnsAvailableMaturityItemActionPo } from "$tests/page-objects/SnsAvailableMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
 
-describe("SnsAvailableMaturityActionItem", () => {
+describe("SnsAvailableMaturityItemAction", () => {
   const controllerPermissions = {
     principal: [mockIdentity.getPrincipal()] as [Principal],
     permission_type: allSnsNeuronPermissions,
@@ -36,11 +36,11 @@ describe("SnsAvailableMaturityActionItem", () => {
         neuron,
         passPropNeuron: true,
         rootCanisterId: mockCanisterId,
-        testComponent: SnsAvailableMaturityActionItem,
+        testComponent: SnsAvailableMaturityItemAction,
       },
     });
 
-    return SnsAvailableMaturityActionItemPo.under(
+    return SnsAvailableMaturityItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };

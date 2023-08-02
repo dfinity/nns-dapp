@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import SnsNeuronDissolveDelayActionItem from "$lib/components/sns-neuron-detail/SnsNeuronDissolveDelayActionItem.svelte";
+import SnsNeuronDissolveDelayItemAction from "$lib/components/sns-neuron-detail/SnsNeuronDissolveDelayItemAction.svelte";
 import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -19,7 +19,7 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { SnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/SnsNeuronDissolveDelayActionItem.page-object";
+import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -30,7 +30,7 @@ import {
 } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
-describe("SnsNeuronDissolveDelayActionItem", () => {
+describe("SnsNeuronDissolveDelayItemAction", () => {
   const nowInSeconds = 1689843195;
   const maxDissolveDelay = BigInt(SECONDS_IN_EIGHT_YEARS);
   const dissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
@@ -44,14 +44,14 @@ describe("SnsNeuronDissolveDelayActionItem", () => {
     neuron: SnsNeuron,
     parameters: SnsNervousSystemParameters = snsParameters
   ) => {
-    const { container } = render(SnsNeuronDissolveDelayActionItem, {
+    const { container } = render(SnsNeuronDissolveDelayItemAction, {
       props: {
         neuron,
         parameters,
       },
     });
 
-    return SnsNeuronDissolveDelayActionItemPo.under(
+    return SnsNeuronDissolveDelayItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };
