@@ -7,21 +7,31 @@ import {
   type LedgerHQTransportError,
 } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { decodePublicKey, decodeSignature } from "$lib/utils/ledger.utils";
+import {
+  decodePublicKey,
+  decodeSignature,
+  decodeSignatures,
+  type RequestSignatures,
+} from "$lib/utils/ledger.utils";
 import {
   Cbor,
   SignIdentity,
+  requestIdOf,
   type CallRequest,
   type HttpAgentRequest,
   type PublicKey,
   type ReadRequest,
+  type ReadRequestType,
+  type ReadStateRequest,
   type Signature,
 } from "@dfinity/agent";
+import { nonNullish } from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
   ResponseAddress,
   ResponseSign,
+  ResponseSignUpdateCall,
   ResponseVersion,
 } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
@@ -32,6 +42,9 @@ export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
   private neuronStakeFlag = false;
+  // Used to avoid signing the read state transaction twice.
+  private readStateSignature: Signature | undefined;
+  private readStateBody: ReadStateRequest | undefined;
 
   private constructor(
     private readonly derivePath: string,
@@ -62,6 +75,7 @@ export class LedgerIdentity extends SignIdentity {
     return this.publicKey;
   }
 
+  // We still keep this even though it's not used directly here, because it's required by the interface.
   public override async sign(blob: ArrayBuffer): Promise<Signature> {
     const callback = async (app: LedgerApp): Promise<Signature> => {
       const responseSign: ResponseSign = await app.sign(
@@ -77,6 +91,27 @@ export class LedgerIdentity extends SignIdentity {
     };
 
     return this.executeWithApp<Signature>(callback);
+  }
+
+  private async signWithReadState(
+    callBlob: ArrayBuffer,
+    readStateBlob: ArrayBuffer
+  ): Promise<RequestSignatures> {
+    const callback = async (app: LedgerApp): Promise<RequestSignatures> => {
+      const responseSign: ResponseSignUpdateCall = await app.signUpdateCall(
+        this.derivePath,
+        Buffer.from(callBlob),
+        Buffer.from(readStateBlob),
+        this.neuronStakeFlag ? 1 : 0
+      );
+
+      // Remove the "neuron stake" flag, since we already signed the transaction.
+      this.neuronStakeFlag = false;
+
+      return decodeSignatures(responseSign);
+    };
+
+    return this.executeWithApp<RequestSignatures>(callback);
   }
 
   /**
@@ -116,7 +151,8 @@ export class LedgerIdentity extends SignIdentity {
     return TransportWebHID.create();
   }
 
-  private static async connect(): Promise<{
+  // Public to be able to mock it in tests.
+  public static async connect(): Promise<{
     app: LedgerApp;
     transport: Transport;
   }> {
@@ -164,7 +200,8 @@ export class LedgerIdentity extends SignIdentity {
     }
   }
 
-  private static async fetchPublicKeyFromDevice({
+  // Public to be able to mock it in tests.
+  public static async fetchPublicKeyFromDevice({
     app,
     derivePath,
   }: {
@@ -207,7 +244,32 @@ export class LedgerIdentity extends SignIdentity {
    */
   public override async transformRequest(
     request: HttpAgentRequest
-  ): Promise<unknown> {
+  ): Promise<Record<string, unknown>> {
+    // TODO: Disable signing and caching read_state if stake neuron transaction?
+
+    // There is a possible edge case not covered:
+    // If the identity instance is reused. And a new request is made, before the previous read state finished.
+    // In that case, the first read state would fail because it would use the new read state body and signature.
+    if (
+      // Any other call will reset `readStateSignature` and `readStateBody`.
+      // Can't import Endpoint as value from @dfinity/agent because it's const enum.
+      request.endpoint === "read_state" &&
+      nonNullish(this.readStateSignature) &&
+      nonNullish(this.readStateBody)
+    ) {
+      // Try with this body also
+      const { body: _body, ...fields } = request;
+      return {
+        ...fields,
+        body: {
+          // We need exactly the same body created earlier
+          content: this.readStateBody,
+          sender_pubkey: this.publicKey.toDer(),
+          sender_sig: this.readStateSignature,
+        },
+      };
+    }
+
     /**
      * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
      * @param request - body of the HttpAgentRequest
@@ -215,15 +277,32 @@ export class LedgerIdentity extends SignIdentity {
     const prepareCborForLedger = (
       request: ReadRequest | CallRequest
     ): ArrayBuffer => Cbor.encode({ content: request });
-
     const { body, ...fields } = request;
-    const signature = await this.sign(prepareCborForLedger(body));
+
+    const requestId = await requestIdOf(body);
+    // Store the body of the read state request to be able to reuse it later.
+    this.readStateBody = {
+      // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
+      request_type: "read_state" as ReadRequestType.ReadState,
+      // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
+      paths: [[new TextEncoder().encode("request_status"), requestId]],
+      ingress_expiry: body.ingress_expiry,
+      sender: body.sender,
+    };
+
+    const { callSignature, readStateSignature } = await this.signWithReadState(
+      prepareCborForLedger(body),
+      prepareCborForLedger(this.readStateBody)
+    );
+    // Store the read state signature to be able to reuse it later.
+    this.readStateSignature = readStateSignature;
+
     return {
       ...fields,
       body: {
         content: body,
         sender_pubkey: this.publicKey.toDer(),
-        sender_sig: signature,
+        sender_sig: callSignature,
       },
     };
   }

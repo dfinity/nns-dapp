@@ -8,7 +8,13 @@ import { i18n } from "$lib/stores/i18n";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import type { Signature } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import type { ResponseAddress, ResponseSign } from "@zondax/ledger-icp";
+import { isNullish } from "@dfinity/utils";
+import type {
+  LedgerError,
+  ResponseAddress,
+  ResponseSign,
+  ResponseSignUpdateCall,
+} from "@zondax/ledger-icp";
 import { get } from "svelte/store";
 import { replacePlaceholders } from "./i18n.utils";
 
@@ -48,18 +54,25 @@ export const decodePublicKey = async ({
   return publicKey;
 };
 
-export const decodeSignature = async ({
-  signatureRS,
-  returnCode,
-  errorMessage,
-}: ResponseSign): Promise<Signature> => {
-  const labels = get(i18n);
-
+const checkResponseCode = async (returnCode: LedgerError): Promise<void> => {
   const { LedgerError } = await import("@zondax/ledger-icp");
   if (returnCode === LedgerError.TransactionRejected) {
     throw new LedgerErrorKey("error__ledger.user_rejected_transaction");
   }
-  if (signatureRS === null || signatureRS === undefined) {
+};
+
+const checkSignature = ({
+  signature,
+  returnCode,
+  errorMessage,
+}: {
+  signature?: Buffer;
+  returnCode: LedgerError;
+  errorMessage?: string;
+}) => {
+  const labels = get(i18n);
+
+  if (isNullish(signature)) {
     throw new LedgerErrorMessage(
       replacePlaceholders(labels.error__ledger.signature_unexpected, {
         $code: `${returnCode}`,
@@ -68,7 +81,7 @@ export const decodeSignature = async ({
     );
   }
 
-  const { byteLength, length } = signatureRS;
+  const { byteLength, length } = signature;
 
   if (byteLength !== LEDGER_SIGNATURE_LENGTH) {
     throw new LedgerErrorMessage(
@@ -77,8 +90,42 @@ export const decodeSignature = async ({
       })
     );
   }
+};
+
+export const decodeSignature = async ({
+  signatureRS,
+  returnCode,
+  errorMessage,
+}: ResponseSign): Promise<Signature> => {
+  await checkResponseCode(returnCode);
+  checkSignature({ signature: signatureRS, returnCode, errorMessage });
 
   return bufferToArrayBuffer(signatureRS) as Signature;
+};
+
+export type RequestSignatures = {
+  callSignature: Signature;
+  readStateSignature: Signature;
+};
+
+export const decodeSignatures = async ({
+  RequestSignatureRS,
+  StatusReadSignatureRS,
+  returnCode,
+  errorMessage,
+}: ResponseSignUpdateCall): Promise<RequestSignatures> => {
+  await checkResponseCode(returnCode);
+  checkSignature({ signature: RequestSignatureRS, returnCode, errorMessage });
+  checkSignature({
+    signature: StatusReadSignatureRS,
+    returnCode,
+    errorMessage,
+  });
+
+  return {
+    callSignature: bufferToArrayBuffer(RequestSignatureRS) as Signature,
+    readStateSignature: bufferToArrayBuffer(StatusReadSignatureRS) as Signature,
+  };
 };
 
 const bufferToArrayBuffer = (buffer: Buffer): ArrayBuffer =>
