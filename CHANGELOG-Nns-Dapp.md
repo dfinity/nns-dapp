@@ -12,15 +12,18 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Enable merge neurons preview.
+* Display page title in browser's tab.
 
 #### Changed
 
 * Refactor storage to prepare for schema migration.
+* Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
 * Bump agent-js `v0.18.1`.
 * Clarify Ledger app version error message.
 * Increase the displayed size of the projects logo on the "Launchpad".
 * Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
 * New icon for dissolving neuron state.
+* Keep menu open and visible on large screen (not only on extra large screen).
 
 #### Deprecated
 #### Removed
@@ -58,6 +61,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Don't run reproducible assets test against Mac OS 13
 
 #### Fixed
 

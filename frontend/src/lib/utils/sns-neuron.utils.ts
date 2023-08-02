@@ -15,6 +15,7 @@ import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -623,6 +624,8 @@ export const neuronAge = ({
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
  *
+ * Returns 0 if the neuron is not eligible to vote.
+ *
  * @param {SnsNeuron} neuron
  * @param {SnsNervousSystemParameters} neuron.snsParameters
  * @param {number} neuron.newDissolveDelayInSeconds
@@ -923,3 +926,14 @@ export const vestingInSeconds = ({
  */
 export const isVesting = (neuron: SnsNeuron): boolean =>
   vestingInSeconds(neuron) > 0n;
+
+export const neuronDashboardUrl = ({
+  neuron,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  rootCanisterId: Principal;
+}) =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
+    neuron
+  )}`;

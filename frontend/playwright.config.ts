@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// 1024px === large display === menu revealed.
+// We want to test the application with the tablet/mobile UI, which requires the menu to be hidden and only revealed when needed.
+const viewport = { width: 1023, height: 720 };
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -42,11 +46,11 @@ export default defineConfig({
   projects: [
     {
       name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: { ...devices["Desktop Chrome"], channel: "chrome", viewport },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], channel: "firefox" },
+      use: { ...devices['Desktop Firefox'], channel: "firefox", viewport },
     },
     // {
     //   name: "chromium",

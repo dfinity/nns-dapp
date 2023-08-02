@@ -15,6 +15,7 @@ import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.pag
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { expect } from "@playwright/test";
 
 export class AppPo extends BasePageObject {
   getLoginLinksPo(): LoginLinksPo {
@@ -153,5 +154,14 @@ export class AppPo extends BasePageObject {
 
   waitForNotBusy(): Promise<void> {
     return this.getBusyScreenPo().waitForAbsent();
+  }
+
+  async openUniverses() {
+    await this.getRoleButton("select-universe-card").waitFor();
+    await this.getRoleButton("select-universe-card").click();
+
+    const snsUniverseCards =
+      await this.getSelectUniverseListPo().getSnsUniverseCards();
+    expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
   }
 }

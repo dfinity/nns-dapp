@@ -147,7 +147,7 @@ describe("NnsNeuronStateItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getAgeBonus()).toBe("Age bonus: 1.25");
+    expect(await po.getAgeBonus()).toBe("Age bonus: +25%");
   });
 
   it("should render no age bonus for dissolving neurons", async () => {

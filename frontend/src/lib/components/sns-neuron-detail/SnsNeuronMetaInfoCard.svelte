@@ -60,11 +60,13 @@
       ? getSnsNeuronIdAsHexString(neuron)
       : undefined;
 
-    layoutTitleStore.set(
-      intersecting || isNullish(neuronId)
-        ? $i18n.neuron_detail.title
-        : shortenWithMiddleEllipsis(neuronId)
-    );
+    layoutTitleStore.set({
+      title: $i18n.neuron_detail.title,
+      header:
+        intersecting || isNullish(neuronId)
+          ? $i18n.neuron_detail.title
+          : shortenWithMiddleEllipsis(neuronId),
+    });
   };
 </script>
 
