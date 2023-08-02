@@ -507,7 +507,7 @@ jobs:
           wasm_size="$(wc -c < "out/nns-dapp.wasm.gz")"
           max_size=3145728
           (
-            echo "## NNS dapp WASM stats"
+            echo "## NNS Dapp WASM stats"
             humreadable_size="$(numfmt --to=iec-i --suffix=B --format="%.3f" $wasm_size)"
             humreadable_max="$(numfmt --to=iec-i --suffix=B --format="%.3f" $max_size )"
             humreadable_ratio="$(( (wasm_size * 100) / max_size ))%"

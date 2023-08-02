@@ -22,7 +22,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 - Style (UI design) for the landing page
-- Add a link that points to NNS dapp GitHub repo 
+- Add a link that points to NNS Dapp GitHub repo 
 - Display swaps' lifecycle on the landing page
 ### Changed
 - Updated `ic-cdk` to the latest version and use the, now separate, `ic-cdk-timers`.
