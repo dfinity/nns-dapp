@@ -146,7 +146,7 @@ impl State {
     /// Save any unsaved state to stable memory.
     fn pre_upgrade_s0(&self) {
         MEMORY_MANAGER.with(|m| {
-            let memory = m.borrow().get(HEAP_MEMORY_ID);
+            let heap_memory = m.borrow().get(HEAP_MEMORY_ID);
             let self_bytes = self.encode();
             let self_bytes_len = self_bytes.len() as u64;
             const AB_HEADER_BOOTABLE_OFFSET: u64 = 0;
@@ -157,12 +157,12 @@ impl State {
             const AB_HEADER_PAYLOAD_LEN_LEN: u64 = 8;
             const AB_PAYLOAD_OFFSET: u64 = AB_HEADER_PAYLOAD_LEN_OFFSET + AB_HEADER_PAYLOAD_LEN_LEN;
             // Mark the memory as invalid.
-            memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_FALSE);
+            heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_FALSE);
             // Populate the memory.
-            memory.write(AB_HEADER_PAYLOAD_LEN_OFFSET, &self_bytes_len.to_le_bytes());
-            memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
+            heap_memory.write(AB_HEADER_PAYLOAD_LEN_OFFSET, &self_bytes_len.to_le_bytes());
+            heap_memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
             // Mark the memory as valid.
-            memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
+            heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
         });
         unimplemented!()
     }
