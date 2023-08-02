@@ -20,7 +20,7 @@
 </script>
 
 <li class:hidden>
-  <Card role="link" on:click testId="proposal-card" icon="arrow">
+  <Card role="link" on:click testId="proposal-card">
     <div class="id" data-proposal-id={id}>
       <Value ariaLabel={$i18n.proposal_detail.id_prefix} testId="proposal-id"
         >{id}</Value

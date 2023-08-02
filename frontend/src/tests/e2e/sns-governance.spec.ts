@@ -11,6 +11,9 @@ test("Test SNS governance", async ({ page, context }) => {
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
+  // Open universes selector
+  await appPo.openUniverses();
+
   step("Navigate to SNS universe");
   const snsUniverseCards = await appPo
     .getSelectUniverseListPo()
