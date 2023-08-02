@@ -11,11 +11,16 @@ import type {
 import type {
   SnsFunctionType,
   SnsGetDerivedStateResponse,
+  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
+  SnsGetSaleParametersResponse,
   SnsNervousSystemFunction,
+  SnsParams,
   SnsSwap,
   SnsSwapDerivedState,
+  SnsSwapInit,
 } from "@dfinity/sns";
+import type { GetInitResponse } from "@dfinity/sns/dist/candid/sns_swap";
 import { nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
@@ -63,6 +68,9 @@ export type CachedSns = {
   icrc1_fee?: bigint;
   icrc1_total_supply: bigint;
   derived_state: SnsGetDerivedStateResponse;
+  swap_params: SnsGetSaleParametersResponse;
+  init: GetInitResponse;
+  lifecycle: SnsGetLifecycleResponse;
 };
 
 type CachedSnsMetadataDto = {
@@ -82,36 +90,41 @@ type CachedCountriesDto = {
   iso_codes: string[];
 };
 
+type CachedSwapParamsDto = {
+  min_participants: number;
+  min_icp_e8s: number;
+  max_icp_e8s: number;
+  min_participant_icp_e8s: number;
+  max_participant_icp_e8s: number;
+  swap_due_timestamp_seconds: number;
+  sns_token_e8s: number;
+  neuron_basket_construction_parameters: {
+    count: number;
+    dissolve_delay_interval_seconds: number;
+  };
+  sale_delay_seconds?: number;
+};
+
+// TODO: update when the candid is updated with the new init params
+type CachedSwapInitParamsDto = {
+  nns_governance_canister_id: string;
+  sns_governance_canister_id: string;
+  sns_ledger_canister_id: string;
+  icp_ledger_canister_id: string;
+  sns_root_canister_id: string;
+  fallback_controller_principal_ids: string[];
+  transaction_fee_e8s: number;
+  neuron_minimum_stake_e8s: number;
+  confirmation_text?: string | undefined;
+  restricted_countries?: CachedCountriesDto | undefined;
+};
+
 type CachedSnsSwapDto = {
   lifecycle: number;
   decentralization_sale_open_timestamp_seconds?: number;
   finalize_swap_in_progress?: boolean;
-  init: {
-    nns_governance_canister_id: string;
-    sns_governance_canister_id: string;
-    sns_ledger_canister_id: string;
-    icp_ledger_canister_id: string;
-    sns_root_canister_id: string;
-    fallback_controller_principal_ids: string[];
-    transaction_fee_e8s: number;
-    neuron_minimum_stake_e8s: number;
-    confirmation_text?: string | undefined;
-    restricted_countries?: CachedCountriesDto | undefined;
-  };
-  params: {
-    min_participants: number;
-    min_icp_e8s: number;
-    max_icp_e8s: number;
-    min_participant_icp_e8s: number;
-    max_participant_icp_e8s: number;
-    swap_due_timestamp_seconds: number;
-    sns_token_e8s: number;
-    neuron_basket_construction_parameters: {
-      count: number;
-      dissolve_delay_interval_seconds: number;
-    };
-    sale_delay_seconds?: number;
-  };
+  init: CachedSwapInitParamsDto;
+  params: CachedSwapParamsDto;
   open_sns_token_swap_proposal_id: number;
 };
 
@@ -121,6 +134,19 @@ type CachedSnsSwapDerivedDto = {
   cf_participant_count: number | undefined | null;
   direct_participant_count: number | undefined | null;
   cf_neuron_count: number | undefined | null;
+};
+
+type CachedSwapParamsResponseDto = {
+  params: CachedSwapParamsDto;
+};
+
+type CachedInitResponseDto = {
+  init: CachedSwapInitParamsDto;
+};
+
+type CachedLifecycleResponseDto = {
+  decentralization_sale_open_timestamp_seconds: number | null;
+  lifecycle: number | null;
 };
 
 type CachedSnsTokenMetadataDto = [
@@ -150,10 +176,13 @@ type CachedSnsDto = {
   icrc1_fee: [] | [number];
   icrc1_total_supply: number;
   derived_state: CachedSnsSwapDerivedDto;
+  swap_params: CachedSwapParamsResponseDto;
+  init: CachedInitResponseDto;
+  lifecycle: CachedLifecycleResponseDto;
 };
 
 const convertOptionalNumToBigInt = (
-  num: number | undefined
+  num: number | undefined | null
 ): bigint | undefined => {
   return num === undefined || num === null ? undefined : BigInt(num);
 };
@@ -178,6 +207,59 @@ const convertNervousFuncttion = ({
   name: name,
   description: toNullable(description),
   function_type: toNullable(function_type),
+});
+
+const convertSwapInitParams = (
+  init: CachedSwapInitParamsDto
+): [SnsSwapInit] | [] =>
+  nonNullish(init)
+    ? toNullable({
+        ...init,
+        neuron_minimum_stake_e8s: toNullable(
+          convertOptionalNumToBigInt(init.neuron_minimum_stake_e8s)
+        ),
+        transaction_fee_e8s: toNullable(
+          convertOptionalNumToBigInt(init.transaction_fee_e8s)
+        ),
+        confirmation_text: toNullable(init.confirmation_text),
+        restricted_countries: toNullable(init.restricted_countries),
+      })
+    : [];
+
+const convertSwapParams = (
+  params: CachedSwapParamsDto | null | undefined
+): [SnsParams] | [] =>
+  nonNullish(params)
+    ? toNullable({
+        min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
+        max_icp_e8s: BigInt(params.max_icp_e8s),
+        min_icp_e8s: BigInt(params.min_icp_e8s),
+        sns_token_e8s: BigInt(params.sns_token_e8s),
+        min_participants: params.min_participants,
+        max_participant_icp_e8s: BigInt(params.max_participant_icp_e8s),
+        swap_due_timestamp_seconds: BigInt(params.swap_due_timestamp_seconds),
+        neuron_basket_construction_parameters: toNullable({
+          dissolve_delay_interval_seconds: BigInt(
+            params.neuron_basket_construction_parameters
+              .dissolve_delay_interval_seconds
+          ),
+          count: BigInt(params.neuron_basket_construction_parameters.count),
+        }),
+        sale_delay_seconds: toNullable(
+          convertOptionalNumToBigInt(params.sale_delay_seconds)
+        ),
+      })
+    : [];
+
+const convertLifecycleResponse = (
+  response: CachedLifecycleResponseDto
+): SnsGetLifecycleResponse => ({
+  decentralization_sale_open_timestamp_seconds: toNullable(
+    convertOptionalNumToBigInt(
+      response.decentralization_sale_open_timestamp_seconds
+    )
+  ),
+  lifecycle: toNullable(response.lifecycle),
 });
 
 const convertSwap = ({
@@ -208,40 +290,8 @@ const convertSwap = ({
     open_sns_token_swap_proposal_id !== undefined
       ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
       : [],
-  init: nonNullish(init)
-    ? toNullable({
-        ...init,
-        neuron_minimum_stake_e8s: toNullable(
-          convertOptionalNumToBigInt(init.neuron_minimum_stake_e8s)
-        ),
-        transaction_fee_e8s: toNullable(
-          convertOptionalNumToBigInt(init.transaction_fee_e8s)
-        ),
-        confirmation_text: toNullable(init.confirmation_text),
-        restricted_countries: toNullable(init.restricted_countries),
-      })
-    : [],
-  params: nonNullish(params)
-    ? toNullable({
-        min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
-        max_icp_e8s: BigInt(params.max_icp_e8s),
-        min_icp_e8s: BigInt(params.min_icp_e8s),
-        sns_token_e8s: BigInt(params.sns_token_e8s),
-        min_participants: params.min_participants,
-        max_participant_icp_e8s: BigInt(params.max_participant_icp_e8s),
-        swap_due_timestamp_seconds: BigInt(params.swap_due_timestamp_seconds),
-        neuron_basket_construction_parameters: toNullable({
-          dissolve_delay_interval_seconds: BigInt(
-            params.neuron_basket_construction_parameters
-              .dissolve_delay_interval_seconds
-          ),
-          count: BigInt(params.neuron_basket_construction_parameters.count),
-        }),
-        sale_delay_seconds: toNullable(
-          convertOptionalNumToBigInt(params.sale_delay_seconds)
-        ),
-      })
-    : [],
+  init: convertSwapInitParams(init),
+  params: convertSwapParams(params),
 });
 
 const convertDerived = ({
@@ -311,6 +361,9 @@ const convertSnsData = ({
   icrc1_fee,
   icrc1_total_supply,
   derived_state,
+  swap_params,
+  init,
+  lifecycle,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -328,6 +381,13 @@ const convertSnsData = ({
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
   derived_state: convertDerivedToResponse(derived_state),
+  swap_params: {
+    params: convertSwapParams(swap_params.params),
+  },
+  init: {
+    init: convertSwapInitParams(init.init),
+  },
+  lifecycle: convertLifecycleResponse(lifecycle),
 });
 
 const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
