@@ -4,7 +4,7 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import { nonNullish } from "@dfinity/utils";
-  import { referrerPathStore } from "$lib/stores/referrerPath.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   const back = async () => {
     if (nonNullish($referrerPathStore)) {

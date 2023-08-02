@@ -5,7 +5,7 @@
   import { proposalsPathStore } from "$lib/derived/paths.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
-  import { referrerPathStore } from "$lib/stores/referrerPath.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   const back = (): Promise<void> =>
     goto(

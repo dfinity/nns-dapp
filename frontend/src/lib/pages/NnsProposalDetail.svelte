@@ -18,7 +18,7 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { browser } from "$app/environment";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { referrerPathStore } from "$lib/stores/referrerPath.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 

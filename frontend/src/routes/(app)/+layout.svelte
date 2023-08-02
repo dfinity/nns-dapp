@@ -12,7 +12,7 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { Navigation } from "@sveltejs/kit";
   import { afterNavigate } from "$app/navigation";
-  import { referrerPathStore } from "$lib/stores/referrerPath.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));

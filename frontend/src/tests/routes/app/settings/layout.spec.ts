@@ -5,7 +5,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { referrerPathStore } from "$lib/stores/referrerPath.store";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(nns)/settings/+layout.svelte";
 import { fireEvent } from "@testing-library/dom";

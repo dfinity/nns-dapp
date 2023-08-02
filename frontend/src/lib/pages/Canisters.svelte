@@ -18,7 +18,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
-  import { referrerPathStore } from "$lib/stores/referrerPath.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   const loadCanisters = async () => {
     try {
