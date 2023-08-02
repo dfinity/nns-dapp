@@ -87,6 +87,8 @@ export const acquireICPTs = async ({
 
   const validIcrcAddress = !invalidIcrcAddress(accountIdentifier);
 
+  // TODO: reproducibility
+
   // Icrc
   if (validIcrcAddress) {
     const canister = IcrcLedgerCanister.create({
