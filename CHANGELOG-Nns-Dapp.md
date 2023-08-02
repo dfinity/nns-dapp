@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New icon for dissolving neuron state.
 * Keep menu open and visible on large screen (not only on extra large screen).
 * Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
+* Update SNS Aggregator response type and related converters.
 
 #### Deprecated
 #### Removed
