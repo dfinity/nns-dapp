@@ -31,6 +31,9 @@ else
   exit 1
 fi
 
+echo "$tar --version"
+"$tar" --version
+
 if ! command -v xz >/dev/null; then
   echo "did not find xz, please install"
   echo "  brew install xz"
