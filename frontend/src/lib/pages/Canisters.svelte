@@ -18,8 +18,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
-
-  export let referrerPath: AppPath | undefined = undefined;
+  import { referrerPathStore } from "$lib/stores/referrerPath.store";
 
   const loadCanisters = async () => {
     try {
@@ -37,7 +36,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
-      effectivePreviousPath: referrerPath,
+      effectivePreviousPath: $referrerPathStore,
       currentData: $canistersStore.canisters,
     });
 

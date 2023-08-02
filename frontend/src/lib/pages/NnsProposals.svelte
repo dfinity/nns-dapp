@@ -27,8 +27,8 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { notForceCallStrategy } from "$lib/utils/env.utils";
+  import { referrerPathStore } from "$lib/stores/referrerPath.store";
 
-  export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
 
@@ -88,7 +88,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Proposal,
-      effectivePreviousPath: referrerPath,
+      effectivePreviousPath: $referrerPathStore,
       currentData: $sortedProposals.proposals,
     });
 

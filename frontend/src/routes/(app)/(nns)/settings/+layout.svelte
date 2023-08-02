@@ -1,17 +1,13 @@
 <script lang="ts">
   import Layout from "$lib/components/layout/Layout.svelte";
   import Content from "$lib/components/layout/Content.svelte";
-  import { afterNavigate, goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
-  import type { Navigation } from "@sveltejs/kit";
-  import { referrerPathForNav } from "$lib/utils/page.utils";
   import { nonNullish } from "@dfinity/utils";
-
-  let referrerPath: AppPath | undefined = undefined;
-  afterNavigate((nav: Navigation) => (referrerPath = referrerPathForNav(nav)));
+  import { referrerPathStore } from "$lib/stores/referrerPath.store";
 
   const back = async () => {
-    if (nonNullish(referrerPath)) {
+    if (nonNullish($referrerPathStore)) {
       // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back there
       history.back();
       return;
