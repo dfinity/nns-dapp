@@ -59,6 +59,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Deprecated
 #### Removed
 
+* Don't run reproducible assets test against Mac OS 13
+
 #### Fixed
 
 * Deploy.sh script
