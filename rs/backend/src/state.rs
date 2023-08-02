@@ -4,6 +4,10 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
+use ic_stable_structures::{
+    memory_manager::{MemoryId, MemoryManager, VirtualMemory},
+    DefaultMemoryImpl, StableBTreeMap,
+};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 #[cfg(test)]
@@ -33,8 +37,29 @@ pub trait StableState: Sized {
     fn decode(bytes: Vec<u8>) -> Result<Self, String>;
 }
 
+// Stable memory is split into several virtual memories for different purposes.
+type Memory = VirtualMemory<DefaultMemoryImpl>;
+const CONTROL_MEMORY_ID: MemoryId = MemoryId::new(0);
+const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A: MemoryId = MemoryId::new(2);
+const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_B: MemoryId = MemoryId::new(3);
+
 thread_local! {
     pub static STATE: State = State::default();
+
+    // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
+    // return a memory that can be used by stable structures.
+    static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+
+    // Initialize a `StableBTreeMap` that holds the accounts data.
+    // TODO: Change the key to a struct consisting of pagenum, principal length and a byte vec.
+    // TODO: Change the value to a 1kb page; u16len+data; use -1 if the page is full and there is a follow-on page.
+    static ACCOUNTS_DATA_A: RefCell<StableBTreeMap<[u8;32], [u8;1024], Memory>> = RefCell::new(
+        StableBTreeMap::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+        )
+    );
 }
 
 impl StableState for State {
@@ -106,5 +131,24 @@ impl State {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         })
+    }
+}
+
+// The S0 schema.
+// * S0 stores accounts in a BTreeMap.
+impl State {
+    /// Migrate from unversioned.
+    fn migrate_from_unversioned() {
+        // TODO: Do in multiple steps.
+        unimplemented!()
+        // TODO: when done, flip the version.
+    }
+    /// Save any unsaved state to stable memory.
+    fn pre_upgrade_s0(&self) {
+        unimplemented!()
+    }
+    /// Create the state from stable memory in the post_upgrade() hook.
+    fn post_upgrade_s0() -> Self {
+        unimplemented!()
     }
 }
