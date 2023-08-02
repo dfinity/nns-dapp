@@ -117,6 +117,20 @@ type CachedSwapInitParamsDto = {
   neuron_minimum_stake_e8s: number;
   confirmation_text?: string | undefined;
   restricted_countries?: CachedCountriesDto | undefined;
+  // nns_proposal_id: number;
+  // min_participant_icp_e8s: number;
+  // neuron_basket_construction_parameters: {
+  //   count: number;
+  //   dissolve_delay_interval_seconds: number;
+  // };
+  // max_icp_e8s: number;
+  // swap_start_timestamp_seconds: number;
+  // swap_due_timestamp_seconds: number;
+  // min_participants: number;
+  // sns_token_e8s: number;
+  // should_auto_finalize: boolean;
+  // max_participant_icp_e8s: number;
+  // min_icp_e8s: number;
 };
 
 type CachedSnsSwapDto = {
@@ -214,7 +228,6 @@ const convertSwapInitParams = (
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
-        ...init,
         neuron_minimum_stake_e8s: toNullable(
           convertOptionalNumToBigInt(init.neuron_minimum_stake_e8s)
         ),
@@ -223,6 +236,13 @@ const convertSwapInitParams = (
         ),
         confirmation_text: toNullable(init.confirmation_text),
         restricted_countries: toNullable(init.restricted_countries),
+        sns_governance_canister_id: init.sns_governance_canister_id,
+        sns_ledger_canister_id: init.sns_ledger_canister_id,
+        sns_root_canister_id: init.sns_root_canister_id,
+        fallback_controller_principal_ids:
+          init.fallback_controller_principal_ids,
+        nns_governance_canister_id: init.nns_governance_canister_id,
+        icp_ledger_canister_id: init.icp_ledger_canister_id,
       })
     : [];
 

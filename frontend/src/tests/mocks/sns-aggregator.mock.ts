@@ -2,10 +2,11 @@ import type { CachedSns } from "$lib/api/sns-aggregator.api";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
+// It should match the token below
 export const aggregatorTokenMock: IcrcTokenMetadata = {
-  name: "Community Fund Demo",
-  symbol: "CFD",
-  fee: BigInt(1000),
+  name: "CatalyzeDAO",
+  symbol: "CAT",
+  fee: 100000n,
 };
 
 // It should match the converted response from sns-aggregator.mock.json with the same `index` value
