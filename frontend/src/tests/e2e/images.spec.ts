@@ -57,24 +57,28 @@ test("Test images load on home page", async ({ page, context }) => {
   await expectImagesLoaded({
     page,
     sources: [
-      "icp-rounded.svg",
-      "icp-rounded.svg",
+      // Menu
       "logo-nns.svg",
       "logo-onchain-light.svg",
-      // logo.png are for all the different SNSes and are loaded from the
-      // aggregator:
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
-      "logo.png",
       "menu-bg-light.png",
+      // Universe selector in main layout
+      "icp-rounded.svg",
+      // Hidden title in main layout
+      "icp-rounded.svg",
+      // Universes selector
+      "icp-rounded.svg",
+      // + all logo.png for all the different SNSes
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
+      "logo.png",
     ],
   });
 });
