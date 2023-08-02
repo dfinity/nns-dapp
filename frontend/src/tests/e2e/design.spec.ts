@@ -20,22 +20,46 @@ test.describe("Design", () => {
     await expect(page).toHaveScreenshot();
   });
 
-  test("My Tokens", async ({ page, context }) => {
-    await page.goto("/");
-    await expect(page).toHaveTitle("NNS Dapp");
+  test.describe("Signed-in", () => {
+    // Reuse single page between tests
+    // Source: https://playwright.dev/docs/test-retries#reuse-single-page-between-tests
+    test.describe.configure({ mode: "serial" });
 
-    await waitForSignIn(page);
+    let page: Page;
 
-    await signInWithNewUser({ page, context });
+    test.beforeAll(async ({ browser }) => {
+      page = await browser.newPage();
 
-    const pageElement = PlaywrightPageObjectElement.fromPage(page);
-    const appPo = new AppPo(pageElement);
+      await page.goto("/");
+      await expect(page).toHaveTitle("NNS Dapp");
 
-    await appPo.getAccountsPo().waitFor();
-    await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
+      await waitForSignIn(page);
 
-    await expect(page).toHaveScreenshot({
-      mask: [page.locator('[data-tid="identifier"]')],
+      await signInWithNewUser({ page, context: browser.contexts()[0] });
+    });
+
+    test.afterAll(async () => {
+      await page.close();
+    });
+
+    const testMyTokens = async () => {
+      const pageElement = PlaywrightPageObjectElement.fromPage(page);
+      const appPo = new AppPo(pageElement);
+
+      await appPo.getAccountsPo().waitFor();
+      await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
+
+      await expect(page).toHaveScreenshot({
+        mask: [page.locator('[data-tid="identifier"]')],
+      });
+    };
+
+    test("My Tokens", async () => testMyTokens());
+
+    test("My Tokens (wide screen)", async () => {
+      await page.setViewportSize({ width: 1300, height: 720 });
+
+      await testMyTokens();
     });
   });
 });
