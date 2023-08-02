@@ -68,6 +68,7 @@ describe("proposals-api", () => {
           excludeTopic: [],
           includeRewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards,
           includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeAllManageNeuronProposals: false,
           limit: 100,
         },
       });
@@ -95,6 +96,7 @@ describe("proposals-api", () => {
           excludeTopic: [],
           includeRewardStatus: [],
           includeStatus: [],
+          includeAllManageNeuronProposals: false,
           limit: 1,
         },
       });
