@@ -17,10 +17,11 @@
   export let proposer: string | undefined;
   export let type: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
+  export let href: string;
 </script>
 
 <li class:hidden>
-  <Card role="link" on:click testId="proposal-card">
+  <Card testId="proposal-card" {href}>
     <div class="id" data-proposal-id={id}>
       <Value ariaLabel={$i18n.proposal_detail.id_prefix} testId="proposal-id"
         >{id}</Value

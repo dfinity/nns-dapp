@@ -8,7 +8,6 @@
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import { nonNullish } from "@dfinity/utils";
 
@@ -35,16 +34,13 @@
   $: userHasParticipated =
     nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
 
-  const showProject = async () =>
-    await goto(
-      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
-    );
+  let href: string;
+  $: href = `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`;
 </script>
 
 <Card
   testId="project-card-component"
-  role="link"
-  on:click={showProject}
+  {href}
   theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">

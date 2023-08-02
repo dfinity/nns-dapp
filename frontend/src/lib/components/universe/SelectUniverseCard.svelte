@@ -33,7 +33,7 @@
 </script>
 
 <Card
-  role={role === "link" ? "link" : "button"}
+  role="button"
   {selected}
   {theme}
   on:click
