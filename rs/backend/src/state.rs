@@ -38,10 +38,15 @@ pub trait StableState: Sized {
 }
 
 // Stable memory is split into several virtual memories for different purposes.
+#[allow(dead_code)]
 type DefaultVirtualMemory = VirtualMemory<DefaultMemoryImpl>;
+#[allow(dead_code)]
 const CONTROL_MEMORY_ID: MemoryId = MemoryId::new(0);
+#[allow(dead_code)]
 const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+#[allow(dead_code)]
 const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A: MemoryId = MemoryId::new(2);
+#[allow(dead_code)]
 const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_B: MemoryId = MemoryId::new(3);
 
 thread_local! {
@@ -138,12 +143,14 @@ impl State {
 // * S0 stores accounts in a BTreeMap.
 impl State {
     /// Migrate from unversioned.
+    #[allow(dead_code)]
     fn migrate_from_unversioned() {
         // TODO: Do in multiple steps.
         unimplemented!()
         // TODO: when done, flip the version.
     }
     /// Save any unsaved state to stable memory.
+    #[allow(dead_code)]
     fn pre_upgrade_s0(&self) {
         MEMORY_MANAGER.with(|m| {
             let heap_memory = m.borrow().get(HEAP_MEMORY_ID);
@@ -167,6 +174,7 @@ impl State {
         unimplemented!()
     }
     /// Create the state from stable memory in the post_upgrade() hook.
+    #[allow(dead_code)]
     fn post_upgrade_s0() -> Self {
         unimplemented!()
     }
