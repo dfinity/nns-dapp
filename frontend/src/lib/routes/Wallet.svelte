@@ -16,7 +16,9 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  layoutTitleStore.set($i18n.wallet.title);
+  layoutTitleStore.set({
+    title: $i18n.wallet.title,
+  });
 </script>
 
 <TestIdWrapper testId="wallet-component">

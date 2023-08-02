@@ -2,18 +2,22 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { onMount } from "svelte";
   import { initAppAuth } from "$lib/services/$public/app.services";
-  import { Layout, ContentBackdrop } from "@dfinity/gix-components";
+  import { Layout, ContentBackdrop, Spinner } from "@dfinity/gix-components";
   import LoginMenuItems from "$lib/components/login/LoginMenuItems.svelte";
   import LoginFooter from "$lib/components/login/LoginFooter.svelte";
   import LoginHeader from "$lib/components/login/LoginHeader.svelte";
   import LoginBackground from "$lib/components/login/LoginBackground.svelte";
+  import { navigating } from "$app/stores";
+  import { isNullish } from "@dfinity/utils";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
-  import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
 
   onMount(async () => await initAppAuth());
 </script>
 
-<LayoutNavGuard spinnerWhileNavigating>
+<!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
+<!-- We do not use the <LayoutNavGuard /> here because the Spinner has to find place in this +layout.svelte -->
+<!-- If we would move the spinner to that <LayoutNavGuard /> component, then we would face the issue too -->
+{#if isNullish($navigating)}
   <Layout layout="stretch">
     <Banner />
 
@@ -39,7 +43,9 @@
   </Layout>
 
   <Warnings bringToastsForward />
-</LayoutNavGuard>
+{:else}
+  <Spinner />
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

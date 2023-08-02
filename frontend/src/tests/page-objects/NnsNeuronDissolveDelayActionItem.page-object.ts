@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { DissolveDelayBonusTextPo } from "./DissolveDelayBonusText.page-object";
 
 export class NnsNeuronDissolveDelayActionItemPo extends BasePageObject {
   private static readonly TID =
@@ -15,8 +16,14 @@ export class NnsNeuronDissolveDelayActionItemPo extends BasePageObject {
     return this.getText("dissolve-delay-text");
   }
 
-  getDissolveBonus(): Promise<string> {
-    return this.getText("dissolve-bonus-text");
+  getDissolveDelayBonusTextPo(): DissolveDelayBonusTextPo {
+    return DissolveDelayBonusTextPo.under(this.root);
+  }
+
+  async getDissolveBonus(): Promise<string> {
+    return (await this.getDissolveDelayBonusTextPo().isPresent())
+      ? this.getDissolveDelayBonusTextPo().getText()
+      : this.root.byTestId("dissolve-bonus-text").getText();
   }
 
   hasIncreaseDissolveDelayButton(): Promise<boolean> {

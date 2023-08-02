@@ -60,43 +60,37 @@ import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
-  textKey: string;
   Icon?: typeof SvelteComponent;
-  status: "ok" | "warn" | "spawning";
+  textKey: keyof I18n["neuron_state"];
 };
 
-type StateMapper = {
-  [key: number]: StateInfo;
-};
-export const stateTextMapper: StateMapper = {
+type StateMapper = Record<NeuronState, StateInfo>;
+
+const stateInfoMapper: StateMapper = {
   [NeuronState.Locked]: {
-    textKey: "locked",
     Icon: IconLockClosed,
-    status: "ok",
+    textKey: "Locked",
   },
   [NeuronState.Unspecified]: {
-    textKey: "unspecified",
-    status: "ok",
+    Icon: undefined,
+    textKey: "Unspecified",
   },
   [NeuronState.Dissolved]: {
-    textKey: "dissolved",
     Icon: IconLockOpen,
-    status: "ok",
+    textKey: "Dissolved",
   },
   [NeuronState.Dissolving]: {
-    textKey: "dissolving",
     Icon: IconDissolving,
-    status: "warn",
+    textKey: "Dissolving",
   },
   [NeuronState.Spawning]: {
-    textKey: "spawning",
     Icon: IconHistoryToggleOff,
-    status: "spawning",
+    textKey: "Spawning",
   },
 };
 
-export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
-  stateTextMapper[neuronState];
+export const getStateInfo = (neuronState: NeuronState): StateInfo =>
+  stateInfoMapper[neuronState];
 
 /**
  * Calculation of the voting power of a neuron.
@@ -894,3 +888,6 @@ export const maturityLastDistribution = ({
       BigInt(SECONDS_IN_DAY)
   );
 };
+
+export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
+  `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;

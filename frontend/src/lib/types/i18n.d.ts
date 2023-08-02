@@ -584,8 +584,12 @@ interface I18nNeuron_detail {
   increase_stake: string;
   split_neuron: string;
   voting_power_subtitle: string;
+  voting_power_zero_subtitle: string;
+  voting_power_zero: string;
   voting_power_tooltip_with_stake: string;
-  voting_power_section_description: string;
+  voting_power_section_description_expanded: string;
+  voting_power_section_description_expanded_zero: string;
+  voting_power_section_description_expanded_zero_nns: string;
   maturity_section_description: string;
   staked_description: string;
   age_bonus_label: string;

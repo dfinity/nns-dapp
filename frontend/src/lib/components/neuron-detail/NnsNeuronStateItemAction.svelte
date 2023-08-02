@@ -10,19 +10,15 @@
   import { keyOf } from "$lib/utils/utils";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import AgeBonusText from "./AgeBonusText.svelte";
 
   export let neuron: NeuronInfo;
 
-  let stateInfo: StateInfo | undefined;
+  let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(neuron.state);
-
-  let ageBonus: number;
-  $: ageBonus = ageMultiplier(neuron.ageSeconds);
 
   let isControllable: boolean;
   $: isControllable = isNeuronControllable({
@@ -39,17 +35,11 @@
     {/if}
   </svelte:fragment>
   <span slot="title" data-tid="state-text">
-    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[neuron.state] })}
+    {keyOf({ obj: $i18n.neuron_state, key: stateInfo.textKey })}
   </span>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
-      <Tooltip id="neuron-age-bonus" text={ageBonus.toFixed(8)}>
-        <span data-tid="age-bonus-text">
-          {replacePlaceholders($i18n.neuron_detail.age_bonus_label, {
-            $ageBonus: ageBonus.toFixed(2),
-          })}
-        </span>
-      </Tooltip>
+      <AgeBonusText ageMultiplier={ageMultiplier(neuron.ageSeconds)} />
     {:else}
       <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}

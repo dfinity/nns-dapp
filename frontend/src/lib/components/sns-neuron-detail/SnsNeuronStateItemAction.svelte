@@ -3,8 +3,6 @@
   import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
@@ -16,6 +14,7 @@
   import DisburseSnsButton from "./actions/DisburseSnsButton.svelte";
   import DissolveSnsNeuronButton from "./actions/DissolveSnsNeuronButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import AgeBonusText from "../neuron-detail/AgeBonusText.svelte";
 
   export let neuron: SnsNeuron;
   export let snsParameters: SnsNervousSystemParameters;
@@ -23,7 +22,7 @@
   let state: NeuronState;
   $: state = getSnsNeuronState(neuron);
 
-  let stateInfo: StateInfo | undefined;
+  let stateInfo: StateInfo;
   $: stateInfo = getStateInfo(state);
 
   let ageBonus: number;
@@ -53,17 +52,11 @@
     {/if}
   </svelte:fragment>
   <span slot="title" data-tid="state-text">
-    {keyOf({ obj: $i18n.neuron_state, key: NeuronState[state] })}
+    {keyOf({ obj: $i18n.neuron_state, key: stateInfo.textKey })}
   </span>
   <svelte:fragment slot="subtitle">
     {#if state === NeuronState.Locked}
-      <Tooltip id="neuron-age-bonus" text={ageBonus.toFixed(8)}>
-        <span data-tid="age-bonus-text">
-          {replacePlaceholders($i18n.neuron_detail.age_bonus_label, {
-            $ageBonus: ageBonus.toFixed(2),
-          })}
-        </span>
-      </Tooltip>
+      <AgeBonusText ageMultiplier={ageBonus} />
     {:else}
       <span data-tid="age-bonus-text">
         {$i18n.neuron_detail.no_age_bonus}
