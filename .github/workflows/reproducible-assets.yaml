@@ -8,7 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-12, macos-13]
+        # TODO: reactive macos-13. Temporarily commented out until we resolve the tar issue that leads to generating different hashes.
+        os: [ubuntu-20.04, ubuntu-22.04, macos-12]
         time: [now, future]
     steps:
       - name: Unbork mac
