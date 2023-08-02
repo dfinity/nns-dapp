@@ -46,10 +46,6 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("SnsAccounts", () => {
-  const goToWallet = async () => {
-    // Do nothing
-  };
-
   const isLoading = (container: HTMLElement) => {
     const skeleton = container.querySelector(".skeleton-text");
     return nonNullish(skeleton);
@@ -104,21 +100,21 @@ describe("SnsAccounts", () => {
     });
 
     it("should load accounts and transaction fee", () => {
-      render(SnsAccounts, { goToWallet });
+      render(SnsAccounts);
 
       expect(syncSnsAccounts).toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = await renderAndFinishLoading({ goToWallet });
+      const { getByText } = await renderAndFinishLoading({});
       expect(getByText(en.accounts.main)).toBeInTheDocument();
     });
 
     it("should render balance in card", async () => {
-      const { container } = await renderAndFinishLoading({ goToWallet });
+      const { container } = await renderAndFinishLoading({});
 
       const cardTitleRow = container.querySelector(
-        'article > div[data-tid="token-value-label"]'
+        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
@@ -129,13 +125,13 @@ describe("SnsAccounts", () => {
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = await renderAndFinishLoading({ goToWallet });
+      const { getAllByTestId } = await renderAndFinishLoading({});
 
       expect(getAllByTestId("account-card").length).toBeGreaterThan(0);
     });
 
     it("should load sns accounts of the project", () => {
-      render(SnsAccounts, { goToWallet });
+      render(SnsAccounts);
 
       expect(syncSnsAccounts).toHaveBeenCalledWith({
         rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -143,14 +139,14 @@ describe("SnsAccounts", () => {
     });
 
     it("should render a token amount component", async () => {
-      const { container } = await renderAndFinishLoading({ goToWallet });
+      const { container } = await renderAndFinishLoading({});
       expect(hasAmountRendered(container)).toBe(true);
     });
 
     it("should init worker that sync the balance", async () => {
       const spy = jest.spyOn(workerBalances, "initBalancesWorker");
 
-      render(SnsAccounts, { goToWallet });
+      render(SnsAccounts);
 
       await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
     });
@@ -167,7 +163,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should not render a token amount component nor zero", async () => {
-      const { container } = await renderAndFinishLoading({ goToWallet });
+      const { container } = await renderAndFinishLoading({});
       expect(hasAmountRendered(container)).toBe(false);
     });
   });

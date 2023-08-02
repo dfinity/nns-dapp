@@ -116,13 +116,17 @@
 
   // END: loading and navigation
 
-  $: layoutTitleStore.set(
-    `${$i18n.proposal_detail.title}${
-      $selectedProposalStore.proposalId !== undefined
-        ? ` ${$selectedProposalStore.proposalId}`
-        : ""
-    }`
-  );
+  let title = $i18n.proposal_detail.title;
+  $: title = `${$i18n.proposal_detail.title}${
+    $selectedProposalStore.proposalId !== undefined
+      ? ` ${$selectedProposalStore.proposalId}`
+      : ""
+  }`;
+
+  $: layoutTitleStore.set({
+    title,
+    header: title,
+  });
 </script>
 
 <NnsProposal />

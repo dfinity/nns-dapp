@@ -9,7 +9,11 @@
   let list = false;
   $: list = innerWidth > BREAKPOINT_LARGE;
 
-  $: (() => layoutTitleStore.set(list ? "" : title))();
+  $: (() =>
+    layoutTitleStore.set({
+      title: title,
+      header: list ? "" : title,
+    }))();
 </script>
 
 <svelte:window bind:innerWidth />

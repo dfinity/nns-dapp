@@ -4,7 +4,7 @@
 
 import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/worker-cycles.services", () => ({
   initCyclesWorker: jest.fn(() =>
@@ -20,50 +20,49 @@ jest.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("CanisterCard", () => {
+  const href = "https://test.com";
+
   it("renders a Card", () => {
     const { queryByTestId } = render(CanisterCard, {
-      props: { canister: mockCanister },
+      props: { canister: mockCanister, href },
     });
 
     const element = queryByTestId("canister-card");
     expect(element).toBeInTheDocument();
   });
 
-  it("is clickable", async () => {
-    const spyClick = jest.fn();
-    const { container, component } = render(CanisterCard, {
-      props: { canister: mockCanister },
-    });
-    component.$on("click", spyClick);
-
-    const articleElement = container.querySelector("article");
-
-    articleElement && (await fireEvent.click(articleElement));
-
-    expect(spyClick).toBeCalled();
-  });
-
-  it("renders role and aria-label passed", async () => {
-    const role = "link";
+  it("renders aria-label passed", () => {
     const ariaLabel = "test label";
-    const { container } = render(CanisterCard, {
+    const { getByTestId } = render(CanisterCard, {
       props: {
         canister: mockCanister,
-        role,
         ariaLabel,
+        href,
       },
     });
 
-    const articleElement = container.querySelector("article");
-
-    expect(articleElement?.getAttribute("role")).toBe(role);
+    const articleElement = getByTestId("canister-card");
     expect(articleElement?.getAttribute("aria-label")).toBe(ariaLabel);
+  });
+
+  it("should render a hyperlink", () => {
+    const { getByTestId } = render(CanisterCard, {
+      props: {
+        canister: mockCanister,
+        href,
+      },
+    });
+
+    const linkElement = getByTestId("canister-card");
+    expect(linkElement?.tagName.toLowerCase()).toEqual("a");
+    expect(linkElement?.getAttribute("href")).toEqual(href);
   });
 
   it("renders the canister id", async () => {
     const { queryAllByText } = render(CanisterCard, {
       props: {
         canister: mockCanister,
+        href,
       },
     });
     expect(
@@ -75,6 +74,7 @@ describe("CanisterCard", () => {
     const { queryByRole } = render(CanisterCard, {
       props: {
         canister: { ...mockCanister },
+        href,
       },
     });
 
@@ -89,6 +89,7 @@ describe("CanisterCard", () => {
     const { queryByRole } = render(CanisterCard, {
       props: {
         canister: { ...mockCanister, name: "test" },
+        href,
       },
     });
 
