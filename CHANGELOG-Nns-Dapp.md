@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Refactor storage to prepare for schema migration.
 * Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
 * Bump agent-js `v0.18.1`.
 * Clarify Ledger app version error message.
@@ -155,7 +156,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Render SNS neuron voting power in neuron detail page.
-* Users can now add names to canisters to easily identify them within NNS dapp only.
+* Users can now add names to canisters to easily identify them within NNS Dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
 
 #### Changed
