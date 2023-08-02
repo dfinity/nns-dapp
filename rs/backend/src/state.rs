@@ -6,7 +6,7 @@ use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
-    DefaultMemoryImpl, StableBTreeMap,
+    DefaultMemoryImpl, Memory, StableBTreeMap,
 };
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -38,7 +38,7 @@ pub trait StableState: Sized {
 }
 
 // Stable memory is split into several virtual memories for different purposes.
-type Memory = VirtualMemory<DefaultMemoryImpl>;
+type DefaultVirtualMemory = VirtualMemory<DefaultMemoryImpl>;
 const CONTROL_MEMORY_ID: MemoryId = MemoryId::new(0);
 const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
 const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A: MemoryId = MemoryId::new(2);
@@ -55,9 +55,9 @@ thread_local! {
     // Initialize a `StableBTreeMap` that holds the accounts data.
     // TODO: Change the key to a struct consisting of pagenum, principal length and a byte vec.
     // TODO: Change the value to a 1kb page; u16len+data; use -1 if the page is full and there is a follow-on page.
-    static ACCOUNTS_DATA_A: RefCell<StableBTreeMap<[u8;32], [u8;1024], Memory>> = RefCell::new(
+    static ACCOUNTS_MEMORY_A: RefCell<StableBTreeMap<[u8;32], [u8;1024], DefaultVirtualMemory>> = RefCell::new(
         StableBTreeMap::init(
-            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+            MEMORY_MANAGER.with(|m| m.borrow().get(ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A)),
         )
     );
 }
@@ -145,6 +145,25 @@ impl State {
     }
     /// Save any unsaved state to stable memory.
     fn pre_upgrade_s0(&self) {
+        MEMORY_MANAGER.with(|m| {
+            let memory = m.borrow().get(HEAP_MEMORY_ID);
+            let self_bytes = self.encode();
+            let self_bytes_len = self_bytes.len() as u64;
+            const AB_HEADER_BOOTABLE_OFFSET: u64 = 0;
+            const AB_HEADER_BOOTABLE_LEN: u64 = 1;
+            const AB_HEADER_BOOTABLE_TRUE: [u8; 1] = [0x5a];
+            const AB_HEADER_BOOTABLE_FALSE: [u8; 1] = [0x00];
+            const AB_HEADER_PAYLOAD_LEN_OFFSET: u64 = AB_HEADER_BOOTABLE_OFFSET + AB_HEADER_BOOTABLE_LEN;
+            const AB_HEADER_PAYLOAD_LEN_LEN: u64 = 8;
+            const AB_PAYLOAD_OFFSET: u64 = AB_HEADER_PAYLOAD_LEN_OFFSET + AB_HEADER_PAYLOAD_LEN_LEN;
+            // Mark the memory as invalid.
+            memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_FALSE);
+            // Populate the memory.
+            memory.write(AB_HEADER_PAYLOAD_LEN_OFFSET, &self_bytes_len.to_le_bytes());
+            memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
+            // Mark the memory as valid.
+            memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
+        });
         unimplemented!()
     }
     /// Create the state from stable memory in the post_upgrade() hook.
