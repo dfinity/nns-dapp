@@ -22,7 +22,7 @@ import type {
   SnsSwapInit,
 } from "@dfinity/sns";
 import type { GetInitResponse } from "@dfinity/sns/dist/candid/sns_swap";
-import { nonNullish, toNullable } from "@dfinity/utils";
+import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
@@ -80,14 +80,14 @@ type CachedSnsMetadataDto = {
   description: string;
 };
 
-export interface GenericNervousSystemFunctionDto {
+interface GenericNervousSystemFunctionDto {
   validator_canister_id: string | null;
   target_canister_id: string | null;
   validator_method_name: string | null;
   target_method_name: string | null;
 }
 
-export type CachedFunctionTypeDto =
+type CachedFunctionTypeDto =
   | { NativeNervousSystemFunction: Record<never, never> }
   | { GenericNervousSystemFunction: GenericNervousSystemFunctionDto };
 
@@ -161,6 +161,7 @@ type CachedLifecycleResponseDto = {
   lifecycle: number | null;
 };
 
+// Export for testing purposes
 export type CachedSnsTokenMetadataDto = [
   string | IcrcMetadataResponseEntries,
   (
@@ -171,6 +172,7 @@ export type CachedSnsTokenMetadataDto = [
   )
 ][];
 
+// Export for testing purposes
 export type CachedSnsDto = {
   index: number;
   canister_ids: CanisterIds;
@@ -203,9 +205,7 @@ const convertOptionalNumToBigInt = (
 const convertOptionalStringToOptionalPrincipal = (
   principalText: string | null | undefined
 ): [] | [Principal] => {
-  return principalText === undefined || principalText === null
-    ? []
-    : [Principal.fromText(principalText)];
+  return isNullish(principalText) ? [] : [Principal.fromText(principalText)];
 };
 
 const convertMeta = (
@@ -442,6 +442,7 @@ const convertSnsData = ({
   lifecycle: convertLifecycleResponse(lifecycle),
 });
 
+// Export for testing purposes.
 export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
   data.map(convertSnsData);
 
