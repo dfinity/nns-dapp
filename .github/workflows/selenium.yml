@@ -1,0 +1,9 @@
+# TODO: Remove once the workflow is renamed on GitHub
+name: ZZZ old workflow selenium.yml
+on:
+  workflow_dispatch:
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo Hello world!

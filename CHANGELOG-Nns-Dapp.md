@@ -60,6 +60,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
 * Update candid interface for NNS governance to improve 1-proposal support.
+* Rename deleted workflows to start with "ZZZ".
 
 #### Deprecated
 #### Removed
