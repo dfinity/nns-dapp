@@ -168,6 +168,7 @@ type CachedSnsDto = {
     functions: CachedNervousFunctionDto[];
     reserved_ids: bigint[];
   };
+  // @deprecated
   swap_state: {
     swap: CachedSnsSwapDto;
     derived: CachedSnsSwapDerivedDto;
