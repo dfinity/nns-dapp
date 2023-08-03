@@ -1,1 +1,3 @@
 name: ZZZ old workflow aggregator.yaml
+on:
+  workflow_dispatch:
