@@ -1,6 +1,6 @@
 # NNS Dapp Frontend
 
-All the pages in the [NNS dapp](https://nns.internetcomputer.org/) come from this project.
+All the pages in the [NNS Dapp](https://nns.internetcomputer.org/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [SvelteKit](https://kit.svelte.dev/) and [Jest](https://jestjs.io/).
 
