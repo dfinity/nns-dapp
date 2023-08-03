@@ -50,13 +50,13 @@
 
 <CommonItemAction testId="nns-neuron-dissolve-delay-item-action-component">
   <IconClockNoFill slot="icon" />
-  <span slot="title" data-tid="dissolve-delay-text"
+  <svelte:fragment slot="title"
     >{`${keyOf({
       obj: $i18n.neuron_detail,
       key: stateTextMapper[neuron.state],
     })} ${
       remainingTimeSeconds > 0n ? secondsToDuration(remainingTimeSeconds) : "0"
-    }`}</span
+    }`}</svelte:fragment
   >
   <svelte:fragment slot="subtitle">
     {#if Number(remainingTimeSeconds) >= NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE}

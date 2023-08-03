@@ -1,19 +1,19 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { CommonItemActionPo } from "./CommonItemAction.page-object";
 import { DissolveDelayBonusTextPo } from "./DissolveDelayBonusText.page-object";
 
-export class SnsNeuronDissolveDelayItemActionPo extends BasePageObject {
+export class SnsNeuronDissolveDelayItemActionPo extends CommonItemActionPo {
   private static readonly TID =
     "sns-neuron-dissolve-delay-item-action-component";
 
-  static under(element: PageObjectElement): SnsNeuronDissolveDelayItemActionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): SnsNeuronDissolveDelayItemActionPo {
     return new SnsNeuronDissolveDelayItemActionPo(
       element.byTestId(SnsNeuronDissolveDelayItemActionPo.TID)
     );
-  }
-
-  getDissolveState(): Promise<string> {
-    return this.getText("dissolve-delay-text");
   }
 
   getDissolveDelayBonusTextPo(): DissolveDelayBonusTextPo {

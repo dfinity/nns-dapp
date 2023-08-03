@@ -30,9 +30,9 @@ describe("NnsNeuronStateItemAction", () => {
       },
     });
 
-    return NnsNeuronStateItemActionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return NnsNeuronStateItemActionPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   const controlledNeuron = {
@@ -64,7 +64,7 @@ describe("NnsNeuronStateItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getState()).toBe("Locked");
+    expect(await po.getTitle()).toBe("Locked");
     expect(await po.getDissolveButtonText()).toBe("Start Dissolving");
   });
 
@@ -85,7 +85,7 @@ describe("NnsNeuronStateItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getState()).toBe("Dissolving");
+    expect(await po.getTitle()).toBe("Dissolving");
     expect(await po.getDissolveButtonText()).toBe("Stop Dissolving");
   });
 
@@ -125,7 +125,7 @@ describe("NnsNeuronStateItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getState()).toBe("Unlocked");
+    expect(await po.getTitle()).toBe("Unlocked");
     expect(await po.hasDisburseButton()).toBe(true);
   });
 

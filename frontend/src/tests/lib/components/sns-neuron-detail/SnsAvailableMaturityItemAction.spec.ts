@@ -40,9 +40,9 @@ describe("SnsAvailableMaturityItemAction", () => {
       },
     });
 
-    return SnsAvailableMaturityItemActionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return SnsAvailableMaturityItemActionPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   const noStakeMaturityPermissions = {
@@ -61,7 +61,7 @@ describe("SnsAvailableMaturityItemAction", () => {
   it("should render available maturity", async () => {
     const po = renderComponent(controlledNeuron);
 
-    expect(await po.getMaturity()).toBe("3.14");
+    expect(await po.getTitle()).toBe("3.14");
   });
 
   it("should render stake maturity button", async () => {

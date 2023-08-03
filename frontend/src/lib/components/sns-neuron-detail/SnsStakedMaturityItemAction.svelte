@@ -10,8 +10,8 @@
 
 <CommonItemAction testId="sns-staked-maturity-item-action-component">
   <IconStakedMaturity slot="icon" />
-  <span slot="title" data-tid="staked-maturity"
-    >{formattedStakedMaturity(neuron)}</span
+  <svelte:fragment slot="title"
+    >{formattedStakedMaturity(neuron)}</svelte:fragment
   >
   <svelte:fragment slot="subtitle"
     >{$i18n.neuron_detail.staked_description}</svelte:fragment

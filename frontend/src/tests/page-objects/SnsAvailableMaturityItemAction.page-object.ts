@@ -1,17 +1,17 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { CommonItemActionPo } from "./CommonItemAction.page-object";
 
-export class SnsAvailableMaturityItemActionPo extends BasePageObject {
+export class SnsAvailableMaturityItemActionPo extends CommonItemActionPo {
   private static readonly TID = "sns-available-maturity-item-action-component";
 
-  static under(element: PageObjectElement): SnsAvailableMaturityItemActionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): SnsAvailableMaturityItemActionPo {
     return new SnsAvailableMaturityItemActionPo(
       element.byTestId(SnsAvailableMaturityItemActionPo.TID)
     );
-  }
-
-  getMaturity(): Promise<string> {
-    return this.getText("available-maturity");
   }
 
   hasStakeButton(): Promise<boolean> {

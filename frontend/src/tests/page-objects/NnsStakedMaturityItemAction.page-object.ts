@@ -1,16 +1,16 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { CommonItemActionPo } from "./CommonItemAction.page-object";
 
-export class NnsStakedMaturityItemActionPo extends BasePageObject {
+export class NnsStakedMaturityItemActionPo extends CommonItemActionPo {
   private static readonly TID = "nns-staked-maturity-item-action-component";
 
-  static under(element: PageObjectElement): NnsStakedMaturityItemActionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): NnsStakedMaturityItemActionPo {
     return new NnsStakedMaturityItemActionPo(
       element.byTestId(NnsStakedMaturityItemActionPo.TID)
     );
-  }
-
-  getStakedMaturity(): Promise<string> {
-    return this.getText("staked-maturity");
   }
 }

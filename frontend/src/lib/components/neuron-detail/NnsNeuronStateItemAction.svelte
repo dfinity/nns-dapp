@@ -34,9 +34,9 @@
       <svelte:component this={stateInfo.Icon} />
     {/if}
   </svelte:fragment>
-  <span slot="title" data-tid="state-text">
+  <svelte:fragment slot="title">
     {keyOf({ obj: $i18n.neuron_state, key: stateInfo.textKey })}
-  </span>
+  </svelte:fragment>
   <svelte:fragment slot="subtitle">
     {#if neuron.state === NeuronState.Locked}
       <AgeBonusText ageMultiplier={ageMultiplier(neuron.ageSeconds)} />

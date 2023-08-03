@@ -30,7 +30,7 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
   }
 
   getStateItemActionPo(): SnsNeuronStateItemActionPo {
-    return SnsNeuronStateItemActionPo.under(this.root);
+    return SnsNeuronStateItemActionPo.under({ element: this.root });
   }
 
   hasStateItemAction(): Promise<boolean> {
@@ -38,7 +38,7 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
   }
 
   getDisslveDelayItemActionPo(): SnsNeuronDissolveDelayItemActionPo {
-    return SnsNeuronDissolveDelayItemActionPo.under(this.root);
+    return SnsNeuronDissolveDelayItemActionPo.under({ element: this.root });
   }
 
   hasDissolveDelayItemActionPo(): Promise<boolean> {

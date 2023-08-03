@@ -22,9 +22,9 @@ describe("SnsStakedMaturityItemAction", () => {
       },
     });
 
-    return SnsStakedMaturityItemActionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return SnsStakedMaturityItemActionPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   it("should render staked maturity", async () => {
@@ -34,6 +34,6 @@ describe("SnsStakedMaturityItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getStakedMaturity()).toBe("3.14");
+    expect(await po.getTitle()).toBe("3.14");
   });
 });

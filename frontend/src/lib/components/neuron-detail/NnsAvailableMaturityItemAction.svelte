@@ -24,9 +24,7 @@
 
 <CommonItemAction testId="nns-available-maturity-item-action-component">
   <IconExpandCircleDown slot="icon" />
-  <span slot="title" data-tid="available-maturity"
-    >{formattedMaturity(neuron)}</span
-  >
+  <svelte:fragment slot="title">{formattedMaturity(neuron)}</svelte:fragment>
   <svelte:fragment slot="subtitle"
     >{$i18n.neuron_detail.available_description}</svelte:fragment
   >

@@ -30,9 +30,9 @@ describe("NnsAvailableMaturityItemAction", () => {
       },
     });
 
-    return NnsAvailableMaturityItemActionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return NnsAvailableMaturityItemActionPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   beforeEach(() => {
@@ -52,7 +52,7 @@ describe("NnsAvailableMaturityItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getMaturity()).toBe("3.14");
+    expect(await po.getTitle()).toBe("3.14");
   });
 
   it("should render buttons", async () => {

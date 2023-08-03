@@ -1,12 +1,16 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AgeBonusTextPo } from "./AgeBonusText.page-object";
 import type { ButtonPo } from "./Button.page-object";
+import { CommonItemActionPo } from "./CommonItemAction.page-object";
 
-export class NnsNeuronStateItemActionPo extends BasePageObject {
+export class NnsNeuronStateItemActionPo extends CommonItemActionPo {
   private static readonly TID = "nns-neuron-state-item-action-component";
 
-  static under(element: PageObjectElement): NnsNeuronStateItemActionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): NnsNeuronStateItemActionPo {
     return new NnsNeuronStateItemActionPo(
       element.byTestId(NnsNeuronStateItemActionPo.TID)
     );

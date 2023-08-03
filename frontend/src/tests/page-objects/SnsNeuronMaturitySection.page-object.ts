@@ -17,7 +17,7 @@ export class SnsNeuronMaturitySectionPo extends BasePageObject {
   }
 
   getStakedMaturityItemActionPo(): SnsStakedMaturityItemActionPo {
-    return SnsStakedMaturityItemActionPo.under(this.root);
+    return SnsStakedMaturityItemActionPo.under({ element: this.root });
   }
 
   hasStakedMaturityItemAction(): Promise<boolean> {
@@ -25,7 +25,7 @@ export class SnsNeuronMaturitySectionPo extends BasePageObject {
   }
 
   getAvailableMaturityItemActionPo(): SnsAvailableMaturityItemActionPo {
-    return SnsAvailableMaturityItemActionPo.under(this.root);
+    return SnsAvailableMaturityItemActionPo.under({ element: this.root });
   }
 
   hasAvailableMaturityItemAction(): Promise<boolean> {

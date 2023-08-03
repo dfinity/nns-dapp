@@ -9,8 +9,8 @@
     <slot name="icon" />
   </div>
   <div class="content">
-    <h4 data-tid="staked-maturity"><slot name="title" /></h4>
-    <p class="description"><slot name="subtitle" /></p>
+    <h4 data-tid="title"><slot name="title" /></h4>
+    <p data-tid="subtitle" class="description"><slot name="subtitle" /></p>
   </div>
   <div slot="actions" class="actions">
     <slot />

@@ -1,19 +1,19 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AgeBonusTextPo } from "./AgeBonusText.page-object";
 import type { ButtonPo } from "./Button.page-object";
+import { CommonItemActionPo } from "./CommonItemAction.page-object";
 
-export class SnsNeuronStateItemActionPo extends BasePageObject {
+export class SnsNeuronStateItemActionPo extends CommonItemActionPo {
   private static readonly TID = "sns-neuron-state-item-action-component";
 
-  static under(element: PageObjectElement): SnsNeuronStateItemActionPo {
+  static under({
+    element,
+  }: {
+    element: PageObjectElement;
+  }): SnsNeuronStateItemActionPo {
     return new SnsNeuronStateItemActionPo(
       element.byTestId(SnsNeuronStateItemActionPo.TID)
     );
-  }
-
-  getState(): Promise<string> {
-    return this.getText("state-text");
   }
 
   getAgeBonusTextPo(): AgeBonusTextPo {

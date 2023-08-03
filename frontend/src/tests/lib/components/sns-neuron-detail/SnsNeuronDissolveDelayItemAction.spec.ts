@@ -51,9 +51,9 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
       },
     });
 
-    return SnsNeuronDissolveDelayItemActionPo.under(
-      new JestPageObjectElement(container)
-    );
+    return SnsNeuronDissolveDelayItemActionPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   const controllerPermissions = {
@@ -86,7 +86,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getDissolveState()).toBe("Dissolve Delay: 4 years");
+    expect(await po.getTitle()).toBe("Dissolve Delay: 4 years");
     expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +13%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -102,7 +102,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getDissolveState()).toBe("Remaining: 4 years");
+    expect(await po.getTitle()).toBe("Remaining: 4 years");
     expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +13%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
@@ -131,7 +131,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getDissolveState()).toBe("Dissolve Delay: 0");
+    expect(await po.getTitle()).toBe("Dissolve Delay: 0");
     expect(await po.getDissolveBonus()).toBe("No dissolve delay bonus");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
