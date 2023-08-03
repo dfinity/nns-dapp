@@ -29,6 +29,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Remove fallback to load SNSes directly from SNS canisters.
+
 #### Fixed
 
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.

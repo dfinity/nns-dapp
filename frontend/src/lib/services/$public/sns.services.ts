@@ -1,7 +1,6 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
-import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
@@ -130,46 +129,13 @@ export const loadSnsProjects = async (): Promise<void> => {
     );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
-    // If aggregator canister fails, fallback to the old way
-    // TODO: Agree on whether we want to fallback or not.
-    // If the error is due to overload of the system, we might not want the fallback.
-    // This is useful if the error comes from the aggregator canister only.
-    await loadSnsSummaries();
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.list_summaries",
+      })
+    );
   }
-};
-
-export const loadSnsSummaries = (): Promise<void> => {
-  snsQueryStore.reset();
-
-  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
-    identityType: "anonymous",
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      Promise.all([
-        queryAllSnsMetadata({ certified, identity }),
-        querySnsSwapStates({ certified, identity }),
-      ]),
-    onLoad: ({ response }) => snsQueryStore.setData(response),
-    onError: ({ error: err, certified, identity }) => {
-      console.error(err);
-
-      if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
-      ) {
-        snsQueryStore.reset();
-
-        toastsError(
-          toToastError({
-            err,
-            fallbackErrorLabelKey: "error__sns.list_summaries",
-          })
-        );
-      }
-    },
-    logMessage: "Syncing Sns summaries",
-  });
 };
 
 export const loadProposalsSnsCF = async (): Promise<void> => {
