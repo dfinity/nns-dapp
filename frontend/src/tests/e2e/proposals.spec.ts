@@ -19,7 +19,39 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getIcpTokens(11);
 
   step("Create dummy proposals");
-  await createDummyProposal(appPo);
+  const proposerNeuronId = await createDummyProposal(appPo);
+
+  step("Open proposals list");
+  await appPo.goToProposals();
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  step("Open proposal details");
+  const governanceProposalCard = await appPo
+    .getProposalsPo()
+    .getNnsProposalListPo()
+    .getFirstProposalCardPoForTopic("Governance");
+  expect(await governanceProposalCard.getProposalTopicText()).toBe(
+    "Governance"
+  );
+
+  await governanceProposalCard.click();
+
+  step("Check proposal details");
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+  const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
+  const systemInfoSectionPo =
+    nnsProposalPo.getProposalProposalSystemInfoSectionPo();
+
+  expect(await systemInfoSectionPo.getProposalTypeText()).toBe("Motion");
+  expect(await systemInfoSectionPo.getProposalTopicText()).toBe("Governance");
+  expect(await systemInfoSectionPo.getProposalStatusText()).toBe("Open");
+  expect(await systemInfoSectionPo.getProposalRewardText()).toBe(
+    "Accepting Votes"
+  );
+  expect(await systemInfoSectionPo.getProposalProposerNeuronIdText()).toBe(
+    proposerNeuronId
+  );
+  await appPo.goBack();
 
   step("Open proposals list");
   await appPo.goToProposals();
