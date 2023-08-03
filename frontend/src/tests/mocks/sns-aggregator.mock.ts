@@ -309,11 +309,11 @@ export const aggregatorSnsMockWith = ({
     root_canister_id: rootCanisterId,
   },
   swap_state: {
+    ...aggregatorSnsMock.swap_state,
     swap: {
       ...aggregatorSnsMock.swap_state.swap,
       lifecycle,
     },
-    derived: aggregatorSnsMock.swap_state.derived,
   },
   lifecycle: {
     ...aggregatorSnsMock.lifecycle,
