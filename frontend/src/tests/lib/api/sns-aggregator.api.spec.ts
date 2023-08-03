@@ -55,7 +55,7 @@ describe("sns-aggregator api", () => {
       mockFetch.mockReturnValue(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([tenAggregatedSnses[0]]),
+          json: () => Promise.resolve([tenAggregatedSnses[7]]),
         })
       );
       global.fetch = mockFetch;
