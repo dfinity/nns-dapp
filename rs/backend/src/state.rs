@@ -6,7 +6,7 @@ use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
-    DefaultMemoryImpl, Memory, StableBTreeMap,
+    DefaultMemoryImpl, Memory, RestrictedMemory, StableBTreeMap,
 };
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -48,23 +48,33 @@ const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
 const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A: MemoryId = MemoryId::new(2);
 #[allow(dead_code)]
 const ACCOUNTS_DATA_MEMORY_ID_SCHEMA_B: MemoryId = MemoryId::new(3);
+// NOTE: we allocate the first 1 page (64KiB) of the
+// canister memory for the memory layout version information.
+#[allow(dead_code)]
+const METADATA_PAGES: u64 = 1;
+
+#[allow(dead_code)]
+type RM = RestrictedMemory<DefaultMemoryImpl>;
+#[allow(dead_code)]
+type VM = VirtualMemory<RM>;
 
 thread_local! {
     pub static STATE: State = State::default();
 
-    // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
-    // return a memory that can be used by stable structures.
-    static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
-        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+    static METADATA_MEMORY: RefCell<RM> = RefCell::new(RM::new(DefaultMemoryImpl::default(), 0..METADATA_PAGES));
+
+    /// The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
+    /// return a memory that can be used by stable structures.
+    ///
+    /// Note: The memory manager exists only in versioned canisters.
+    /// TODO: Remove the Option when the canister is versioned.
+    static MEMORY_MANAGER: RefCell<Option<MemoryManager<RM>>> = RefCell::new(None);
 
     // Initialize a `StableBTreeMap` that holds the accounts data.
     // TODO: Change the key to a struct consisting of pagenum, principal length and a byte vec.
     // TODO: Change the value to a 1kb page; u16len+data; use -1 if the page is full and there is a follow-on page.
-    static ACCOUNTS_MEMORY_A: RefCell<StableBTreeMap<[u8;32], [u8;1024], DefaultVirtualMemory>> = RefCell::new(
-        StableBTreeMap::init(
-            MEMORY_MANAGER.with(|m| m.borrow().get(ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A)),
-        )
-    );
+    #[allow(clippy::type_complexity)] // TODO: Remove once the Option is removed.
+    static ACCOUNTS_MEMORY_A: RefCell<Option<StableBTreeMap<[u8;32], [u8;1024], DefaultVirtualMemory>>> = RefCell::new(None);
 }
 
 impl StableState for State {
@@ -122,7 +132,7 @@ impl State {
     }
 }
 
-// The unversionsed schema.
+// The unversioned schema.
 impl State {
     /// Save any unsaved state to stable memory.
     fn pre_upgrade_unversioned(&self) {
@@ -149,33 +159,40 @@ impl State {
         unimplemented!()
         // TODO: when done, flip the version.
     }
-    /// Save any unsaved state to stable memory.
-    #[allow(dead_code)]
-    fn pre_upgrade_s0(&self) {
-        MEMORY_MANAGER.with(|m| {
-            let heap_memory = m.borrow().get(HEAP_MEMORY_ID);
-            let self_bytes = self.encode();
-            let self_bytes_len = self_bytes.len() as u64;
-            const AB_HEADER_BOOTABLE_OFFSET: u64 = 0;
-            const AB_HEADER_BOOTABLE_LEN: u64 = 1;
-            const AB_HEADER_BOOTABLE_TRUE: [u8; 1] = [0x5a];
-            const AB_HEADER_BOOTABLE_FALSE: [u8; 1] = [0x00];
-            const AB_HEADER_PAYLOAD_LEN_OFFSET: u64 = AB_HEADER_BOOTABLE_OFFSET + AB_HEADER_BOOTABLE_LEN;
-            const AB_HEADER_PAYLOAD_LEN_LEN: u64 = 8;
-            const AB_PAYLOAD_OFFSET: u64 = AB_HEADER_PAYLOAD_LEN_OFFSET + AB_HEADER_PAYLOAD_LEN_LEN;
-            // Mark the memory as invalid.
-            heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_FALSE);
-            // Populate the memory.
-            heap_memory.write(AB_HEADER_PAYLOAD_LEN_OFFSET, &self_bytes_len.to_le_bytes());
-            heap_memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
-            // Mark the memory as valid.
-            heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
-        });
-        unimplemented!()
-    }
     /// Create the state from stable memory in the post_upgrade() hook.
     #[allow(dead_code)]
-    fn post_upgrade_s0() -> Self {
-        unimplemented!()
+    fn post_upgrade_s0_early() -> Self {
+        // TODO: Determine the format of the stable memory.
+        // Assuming it is unversioned:
+        Self::post_upgrade_unversioned()
+    }
+    /// Save any unsaved state to stable memory in the V0 format, if
+    /// the migration to S0 has succeeded, else as unversioned.
+    #[allow(dead_code)]
+    fn pre_upgrade_s0_early() {
+        // TODO: Determine whether the migration has suceeded.
+    }
+    /// Save any unsaved state to stable memory in the V0 format.
+    ///
+    /// Precondition: The memory manager exists.
+    #[allow(dead_code)]
+    fn pre_upgrade_s0(&self, memory_manager: &mut MemoryManager<RM>) {
+        let heap_memory = memory_manager.get(HEAP_MEMORY_ID);
+        let self_bytes = self.encode();
+        let self_bytes_len = self_bytes.len() as u64;
+        const AB_HEADER_BOOTABLE_OFFSET: u64 = 0;
+        const AB_HEADER_BOOTABLE_LEN: u64 = 1;
+        const AB_HEADER_BOOTABLE_TRUE: [u8; 1] = [0x5a];
+        const AB_HEADER_BOOTABLE_FALSE: [u8; 1] = [0x00];
+        const AB_HEADER_PAYLOAD_LEN_OFFSET: u64 = AB_HEADER_BOOTABLE_OFFSET + AB_HEADER_BOOTABLE_LEN;
+        const AB_HEADER_PAYLOAD_LEN_LEN: u64 = 8;
+        const AB_PAYLOAD_OFFSET: u64 = AB_HEADER_PAYLOAD_LEN_OFFSET + AB_HEADER_PAYLOAD_LEN_LEN;
+        // Mark the memory as invalid.
+        heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_FALSE);
+        // Populate the memory.
+        heap_memory.write(AB_HEADER_PAYLOAD_LEN_OFFSET, &self_bytes_len.to_le_bytes());
+        heap_memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
+        // Mark the memory as valid.
+        heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
     }
 }
