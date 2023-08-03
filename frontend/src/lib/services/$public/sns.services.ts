@@ -132,7 +132,7 @@ export const loadSnsProjects = async (): Promise<void> => {
     toastsError(
       toToastError({
         err,
-        fallbackErrorLabelKey: "error.proposal_not_found",
+        fallbackErrorLabelKey: "error__sns.list_summaries",
       })
     );
   }
