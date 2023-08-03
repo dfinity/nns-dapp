@@ -4,18 +4,9 @@ import { signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
-  const waitForSignIn = async (page: Page) => {
-    const pageElement = PlaywrightPageObjectElement.fromPage(page);
-    const appPo = new AppPo(pageElement);
-
-    await appPo.getSignInPo().waitFor();
-  };
-
   test("Login", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveTitle("NNS Dapp");
-
-    await waitForSignIn(page);
 
     // TODO: uncomment when screenshots are available in CI
     // await expect(page).toHaveScreenshot();
@@ -33,8 +24,6 @@ test.describe("Design", () => {
 
       await page.goto("/");
       await expect(page).toHaveTitle("NNS Dapp");
-
-      await waitForSignIn(page);
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
