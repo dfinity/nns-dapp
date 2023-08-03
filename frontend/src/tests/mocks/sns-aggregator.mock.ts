@@ -1,5 +1,10 @@
-import type { CachedSns } from "$lib/api/sns-aggregator.api";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type {
+  CachedSns,
+  CachedSnsDto,
+  CachedSnsTokenMetadataDto,
+} from "$lib/types/sns-aggregator";
+import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
 // It should match the token below
@@ -7,6 +12,15 @@ export const aggregatorTokenMock: IcrcTokenMetadata = {
   name: "CatalyzeDAO",
   symbol: "CAT",
   fee: 100000n,
+};
+
+export const aggregatorSnsMockDto: CachedSnsDto = {
+  ...tenAggregatedSnses[7],
+  // We need this to tell TS that it's an array of tuples, not an array of arrays.
+  icrc1_metadata: tenAggregatedSnses[7]
+    .icrc1_metadata as CachedSnsTokenMetadataDto,
+  // We need this to tell TS that not an array of numbers, but an array of one number.
+  icrc1_fee: tenAggregatedSnses[7].icrc1_fee as [number],
 };
 
 // It should match the converted response from sns-aggregator.mock.json with the same `index` value
@@ -295,10 +309,14 @@ export const aggregatorSnsMockWith = ({
     root_canister_id: rootCanisterId,
   },
   swap_state: {
-    ...aggregatorSnsMock.swap_state,
     swap: {
       ...aggregatorSnsMock.swap_state.swap,
       lifecycle,
     },
+    derived: aggregatorSnsMock.swap_state.derived,
+  },
+  lifecycle: {
+    ...aggregatorSnsMock.lifecycle,
+    lifecycle: [lifecycle],
   },
 });
