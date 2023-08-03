@@ -1,3 +1,4 @@
+import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { ProposalSummarySectionPo } from "$tests/page-objects/ProposalSummarySection.page-object";
 import { ProposalSystemInfoSectionPo } from "$tests/page-objects/ProposalSystemInfoSection.page-object";
 import { SkeletonDetailsPo } from "$tests/page-objects/SkeletonDetails.page-object";
@@ -31,6 +32,10 @@ export class NnsProposalPo extends BasePageObject {
 
   getVotingCardPo(): VotingCardPo {
     return VotingCardPo.under(this.root);
+  }
+
+  getProposalProposerActionsEntryPo(): ProposalProposerActionsEntryPo {
+    return ProposalProposerActionsEntryPo.under(this.root);
   }
 
   async isContentLoaded(): Promise<boolean> {
