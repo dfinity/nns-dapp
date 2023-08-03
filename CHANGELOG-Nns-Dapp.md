@@ -190,6 +190,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
+- Don't display proposal navigation on launch-pad page.
 
 #### Fixed
 
