@@ -49,6 +49,20 @@ export class NnsProposalListPo extends BasePageObject {
     throw new Error(`No proposal card found for proposer ${proposer}`);
   }
 
+  async getFirstProposalCardPoForTopic(
+    topicText: string
+  ): Promise<ProposalCardPo> {
+    const allCards = await this.getProposalCardPos();
+
+    for (const card of allCards) {
+      if ((await card.getProposalTopicText()) === topicText) {
+        return card;
+      }
+    }
+
+    throw new Error(`No proposal card found for topic "${topicText}"`);
+  }
+
   async getProposalIds(): Promise<string[]> {
     const cards = await this.getProposalCardPos();
     return Promise.all(cards.map((card) => card.getProposalId()));
