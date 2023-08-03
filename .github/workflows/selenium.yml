@@ -1,5 +1,5 @@
 # TODO: Remove once the workflow is renamed on GitHub
-name: ZZZ old workflow aggregator.yaml
+name: ZZZ old workflow selenium.yml
 on:
   workflow_dispatch:
 jobs:
