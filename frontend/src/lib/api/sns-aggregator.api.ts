@@ -8,6 +8,7 @@ import type {
   IcrcMetadataResponseEntries,
   IcrcTokenMetadataResponse,
 } from "@dfinity/ledger";
+import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
   SnsGetDerivedStateResponse,
@@ -21,7 +22,7 @@ import type {
   SnsSwapInit,
 } from "@dfinity/sns";
 import type { GetInitResponse } from "@dfinity/sns/dist/candid/sns_swap";
-import { nonNullish, toNullable } from "@dfinity/utils";
+import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
@@ -42,7 +43,7 @@ type ListSnsCanisterIds = {
   ledger: string;
   swap: string;
   dapps: string[];
-  archives: [];
+  archives: string[];
   index: string;
 };
 
@@ -79,11 +80,22 @@ type CachedSnsMetadataDto = {
   description: string;
 };
 
+interface GenericNervousSystemFunctionDto {
+  validator_canister_id: string | null;
+  target_canister_id: string | null;
+  validator_method_name: string | null;
+  target_method_name: string | null;
+}
+
+type CachedFunctionTypeDto =
+  | { NativeNervousSystemFunction: Record<never, never> }
+  | { GenericNervousSystemFunction: GenericNervousSystemFunctionDto };
+
 type CachedNervousFunctionDto = {
   id: number;
   name: string;
   description: string;
-  function_type: SnsFunctionType;
+  function_type: CachedFunctionTypeDto;
 };
 
 type CachedCountriesDto = {
@@ -131,9 +143,9 @@ type CachedSnsSwapDto = {
 type CachedSnsSwapDerivedDto = {
   buyer_total_icp_e8s: number;
   sns_tokens_per_icp: number;
-  cf_participant_count: number | undefined | null;
-  direct_participant_count: number | undefined | null;
-  cf_neuron_count: number | undefined | null;
+  cf_participant_count?: number | undefined | null;
+  direct_participant_count?: number | undefined | null;
+  cf_neuron_count?: number | undefined | null;
 };
 
 type CachedSwapParamsResponseDto = {
@@ -149,7 +161,8 @@ type CachedLifecycleResponseDto = {
   lifecycle: number | null;
 };
 
-type CachedSnsTokenMetadataDto = [
+// Export for testing purposes
+export type CachedSnsTokenMetadataDto = [
   string | IcrcMetadataResponseEntries,
   (
     | { Int: [number] }
@@ -159,14 +172,15 @@ type CachedSnsTokenMetadataDto = [
   )
 ][];
 
-type CachedSnsDto = {
+// Export for testing purposes
+export type CachedSnsDto = {
   index: number;
   canister_ids: CanisterIds;
   list_sns_canisters: ListSnsCanisterIds;
   meta: CachedSnsMetadataDto;
   parameters: {
     functions: CachedNervousFunctionDto[];
-    reserved_ids: bigint[];
+    reserved_ids: number[];
   };
   // @deprecated
   swap_state: {
@@ -188,6 +202,12 @@ const convertOptionalNumToBigInt = (
   return num === undefined || num === null ? undefined : BigInt(num);
 };
 
+const convertOptionalStringToOptionalPrincipal = (
+  principalText: string | null | undefined
+): [] | [Principal] => {
+  return isNullish(principalText) ? [] : [Principal.fromText(principalText)];
+};
+
 const convertMeta = (
   { url, name, description }: CachedSnsMetadataDto,
   rootCanisterId: string
@@ -198,6 +218,31 @@ const convertMeta = (
   logo: toNullable(aggregatorCanisterLogoPath(rootCanisterId)),
 });
 
+const convertFunctionType = (
+  functionType: CachedFunctionTypeDto
+): SnsFunctionType => {
+  if ("NativeNervousSystemFunction" in functionType) {
+    return { NativeNervousSystemFunction: {} };
+  }
+  const { GenericNervousSystemFunction } = functionType;
+  return {
+    GenericNervousSystemFunction: {
+      validator_canister_id: convertOptionalStringToOptionalPrincipal(
+        GenericNervousSystemFunction.validator_canister_id
+      ),
+      target_canister_id: convertOptionalStringToOptionalPrincipal(
+        GenericNervousSystemFunction.target_canister_id
+      ),
+      validator_method_name: toNullable(
+        GenericNervousSystemFunction.validator_method_name
+      ),
+      target_method_name: toNullable(
+        GenericNervousSystemFunction.target_method_name
+      ),
+    },
+  };
+};
+
 const convertNervousFuncttion = ({
   id,
   name,
@@ -207,7 +252,7 @@ const convertNervousFuncttion = ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
-  function_type: toNullable(function_type),
+  function_type: toNullable(convertFunctionType(function_type)),
 });
 
 const convertSwapInitParams = (
@@ -397,7 +442,8 @@ const convertSnsData = ({
   lifecycle: convertLifecycleResponse(lifecycle),
 });
 
-const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
+// Export for testing purposes.
+export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
   data.map(convertSnsData);
 
 const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
