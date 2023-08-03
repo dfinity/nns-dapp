@@ -39,7 +39,7 @@ export class SnsNeuronInfoStakePo extends BasePageObject {
   }
 
   getIncreaseStakeButtonPo(): ButtonPo {
-    return this.getButton("sns-increase-stake");
+    return this.getButton("increase-stake-button-component");
   }
 
   hasIncreaseStakeButton(): Promise<boolean> {

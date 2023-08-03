@@ -1,51 +1,31 @@
 <script lang="ts">
-  import { ItemAction } from "@dfinity/gix-components";
-  import UniverseLogo from "../universe/UniverseLogo.svelte";
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
-  import NnsIncreaseStakeButton from "./actions/NnsIncreaseStakeButton.svelte";
+  import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
+  import {
+    NNS_NEURON_CONTEXT_KEY,
+    type NnsNeuronContext,
+  } from "$lib/types/nns-neuron-detail.context";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
-  import { i18n } from "$lib/stores/i18n";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;
+
+  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
+    NNS_NEURON_CONTEXT_KEY
+  );
 </script>
 
-<ItemAction testId="nns-stake-item-action-component">
-  <UniverseLogo
-    slot="icon"
-    size="big"
-    universe={NNS_UNIVERSE}
-    framed
-    horizontalPadding={false}
-  />
-  <div class="content">
-    <h4 class="icp-value">
-      <span data-tid="stake-value"
-        >{formatToken({ value: neuronStake(neuron) })}</span
-      ><span>{ICPToken.symbol}</span>
-    </h4>
-    <p class="description">{$i18n.neurons.ic_stake}</p>
-  </div>
-  <NnsIncreaseStakeButton slot="actions" variant="secondary" />
-</ItemAction>
-
-<style lang="scss">
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    p,
-    h4 {
-      margin: 0;
-    }
-  }
-
-  .icp-value {
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
-  }
-</style>
+<StakeItemAction
+  universe={NNS_UNIVERSE}
+  token={ICPToken}
+  neuronStake={neuronStake(neuron)}
+  isIncreaseStakeAllowed={true}
+  on:increaseStake={() =>
+    openNnsNeuronModal({
+      type: "increase-stake",
+      data: { neuron: $store.neuron },
+    })}
+/>

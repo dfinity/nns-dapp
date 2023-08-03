@@ -1,6 +1,6 @@
 import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { SnsNeuronStateItemActionPo } from "$tests/page-objects/SnsNeuronStateItemAction.page-object";
-import { SnsStakeItemActionPo } from "$tests/page-objects/SnsStakeItemAction.page-object";
+import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
@@ -21,8 +21,8 @@ export class SnsNeuronVotingPowerSectionPo extends BasePageObject {
     return this.getText("voting-power-description");
   }
 
-  getStakeItemActionPo(): SnsStakeItemActionPo {
-    return SnsStakeItemActionPo.under(this.root);
+  getStakeItemActionPo(): StakeItemActionPo {
+    return StakeItemActionPo.under(this.root);
   }
 
   hasStakeItemAction(): Promise<boolean> {
