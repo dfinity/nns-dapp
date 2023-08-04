@@ -31,6 +31,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove fallback to load SNSes directly from SNS canisters.
+* Remove ENABLE_SNS_AGGREGATOR flag.
 
 #### Fixed
 
