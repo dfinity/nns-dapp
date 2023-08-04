@@ -16,6 +16,5 @@
   {token}
   {neuronStake}
   {isIncreaseStakeAllowed}
-
   on:increaseStake={increaseStakeCallback}
 />

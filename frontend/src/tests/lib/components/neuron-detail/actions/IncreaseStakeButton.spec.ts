@@ -1,13 +1,11 @@
-
 /**
  * @jest-environment jsdom
  */
 
-import IncreaseStakeButtonTest from "./IncreaseStakeButtonTest.svelte";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { IncreaseStakeButtonPo } from "$tests/page-objects/IncreaseStakeButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
+import IncreaseStakeButtonTest from "./IncreaseStakeButtonTest.svelte";
 
 describe("IncreaseStakeButton", () => {
   const renderComponent = async (props) => {

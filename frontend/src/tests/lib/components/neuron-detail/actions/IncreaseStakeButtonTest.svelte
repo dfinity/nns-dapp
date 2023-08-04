@@ -5,7 +5,4 @@
   export let increaseStakeCallback: () => void | undefined = undefined;
 </script>
 
-<IncreaseStakeButton
-  {variant}
-  on:increaseStake={increaseStakeCallback}
-/>
+<IncreaseStakeButton {variant} on:increaseStake={increaseStakeCallback} />

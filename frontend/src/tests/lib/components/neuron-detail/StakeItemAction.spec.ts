@@ -21,7 +21,7 @@ describe("StakeItemAction", () => {
 
   it("should render stake of the neuron", async () => {
     const neuronStake = 314000000n;
-    const po = renderComponent({neuronStake});
+    const po = renderComponent({ neuronStake });
 
     expect(await po.getStake()).toBe("3.14");
   });
