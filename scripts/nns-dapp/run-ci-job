@@ -4,7 +4,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 print_help() {
-cat <<-EOF
+  cat <<-EOF
 
 	Runs a github CI job on the current branch.
 	Needs [gh](https://cli.github.com/manual) to be installed and logged in.
