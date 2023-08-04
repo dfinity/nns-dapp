@@ -56,7 +56,8 @@ test("Test neuron voting", async ({ page, context }) => {
   expect(await systemInfoSectionPo.getProposalProposerNeuronIdText()).toBe(
     proposerNeuronId
   );
-  // voting block
+
+  // Votes result
   expect(
     await nnsProposalPo.getVotesResultPo().getAdoptVotingPower()
   ).toBeLessThanOrEqual(20);
