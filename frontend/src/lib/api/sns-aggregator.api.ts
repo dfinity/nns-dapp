@@ -17,6 +17,10 @@ const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
       )}`
     );
     if (!response.ok) {
+      // If the error is after the first page, is because there are no more pages it fails
+      if (page > 0) {
+        return [];
+      }
       throw new Error("Error loading SNS projects from aggregator canister");
     }
     const data: CachedSnsDto[] = await response.json();
