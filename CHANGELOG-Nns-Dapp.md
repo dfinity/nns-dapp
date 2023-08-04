@@ -31,6 +31,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove fallback to load SNSes directly from SNS canisters.
+* Remove ENABLE_SNS_AGGREGATOR flag.
 
 #### Fixed
 
@@ -40,6 +41,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
 * Fix some type discrepancies with SNS aggregator data.
 * Do not show unnecessary scrollbar in notifications.
+* Fix error when getting an SNS Aggregator page fails.
 
 #### Security
 
@@ -55,6 +57,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
+* Automatically populate the change log section in the release proposal.
 
 #### Changed
 

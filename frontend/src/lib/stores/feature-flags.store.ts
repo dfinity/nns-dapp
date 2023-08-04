@@ -30,7 +30,6 @@ const assertEditableFeatureFlag = (flag: FeatureKey) => {
 };
 
 export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
-  "ENABLE_SNS_AGGREGATOR",
   "TEST_FLAG_EDITABLE",
   "ENABLE_CKTESTBTC",
   "ENABLE_ICP_ICRC",
@@ -150,7 +149,6 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
 const featureFlagsStore = initFeatureFlagsStore();
 
 export const {
-  ENABLE_SNS_AGGREGATOR,
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
   ENABLE_ICP_ICRC,
