@@ -4,22 +4,22 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 print_help() {
-  cat <<-EOF
+	cat <<-EOF
 
-	Runs a github CI job on the current branch.
-	Needs [gh](https://cli.github.com/manual) to be installed and logged in.
+		Runs a github CI job on the current branch.
+		Needs [gh](https://cli.github.com/manual) to be installed and logged in.
 
-	How to find view id:
-    1. Go to the github actions page for the current branch
-    2. Click on the latest run
-    3. Click on the job you want to rerun
-    4. Copy the view id from the url
+		How to find view id:
+		    1. Go to the github actions page for the current branch
+		    2. Click on the latest run
+		    3. Click on the job you want to rerun
+		    4. Copy the view id from the url
 
-    (https://github.com/dfinity/nns-dapp/actions/runs/__VIEW_ID__/jobs/...)
-    JOB_NAME can be found on the actions page in the Jobs list (left)
+		    (https://github.com/dfinity/nns-dapp/actions/runs/__VIEW_ID__/jobs/...)
+		    JOB_NAME can be found on the actions page in the Jobs list (left)
 
-	Sample:
-	  ./scripts/nns-dapp/run-ci-e2e --view 5727953111 --job-name "test-playwright-e2e-shard-1-of-2" --times 11
+		Sample:
+		  ./scripts/nns-dapp/run-ci-e2e --view 5727953111 --job-name "test-playwright-e2e-shard-1-of-2" --times 11
 
 	EOF
 }
@@ -36,55 +36,54 @@ clap.define long=times desc="How many times to run" variable=TIMES_TO_RUN
 source "$(clap.build)"
 
 if [ "$VIEW_ID" == "" ]; then
-  echo "Please provide the view id '--view 00000000'" >&2
-  exit 1
+	echo "Please provide the view id '--view 00000000'" >&2
+	exit 1
 fi
 
 if [ "$TIMES_TO_RUN" == "" ]; then
-  echo "Please provide how many times to rerun '--times 100' " >&2
-  exit 1
+	echo "Please provide how many times to rerun '--times 100' " >&2
+	exit 1
 fi
-for ((i=1; i<="$TIMES_TO_RUN"; i++))
-do
-  JOB_ID=$(gh run view "$VIEW_ID" --json jobs --jq ".jobs[] | {name, databaseId} | select(.name == \"$JOB_NAME\") | .databaseId")
+for ((i = 1; i <= "$TIMES_TO_RUN"; i++)); do
+	JOB_ID=$(gh run view "$VIEW_ID" --json jobs --jq ".jobs[] | {name, databaseId} | select(.name == \"$JOB_NAME\") | .databaseId")
 
-  echo "🤞 Run \"$JOB_NAME\" on CI (Iteration $i, Job ID: $JOB_ID, View ID: $VIEW_ID)"
-  gh run rerun -j "$JOB_ID"
+	echo "🤞 Run \"$JOB_NAME\" on CI (Iteration $i, Job ID: $JOB_ID, View ID: $VIEW_ID)"
+	gh run rerun -j "$JOB_ID"
 
-  # TODO: check for "job XXX cannot be rerun"
+	# TODO: check for "job XXX cannot be rerun"
 
-  counter=0
-  while true; do
-    sleep 10
+	counter=0
+	while true; do
+		sleep 10
 
-    JOB_STATUS=$(gh run view "$VIEW_ID" --job "$JOB_ID" --json status)
-    printf "\r⏳ Waiting job to complete: %s" "$JOB_STATUS"
+		JOB_STATUS=$(gh run view "$VIEW_ID" --job "$JOB_ID" --json status)
+		printf "\r⏳ Waiting job to complete: %s" "$JOB_STATUS"
 
-    # Check if the job is done
-    if [[ "$JOB_STATUS" == *"completed"* ]]; then
-      break
-    fi
+		# Check if the job is done
+		if [[ "$JOB_STATUS" == *"completed"* ]]; then
+			break
+		fi
 
-    # Increment counter
-    ((counter++))
-    # Waiting limit >=20 minutes (20m / 10s = 120s)
-    if ((counter > 120)); then
-      echo "⌛️ Waited too long for job to done, exiting"
-      exit 1
-    fi
-  done
+		# Increment counter
+		((counter++))
+		# Waiting limit >=20 minutes (20m / 10s = 120s)
+		if ((counter > 120)); then
+			echo "⌛️ Waited too long for job to done, exiting"
+			exit 1
+		fi
+	done
 
-  # gh run view $VIEW_ID --job $JOB_ID --json status
+	# gh run view $VIEW_ID --job $JOB_ID --json status
 
-  runConclusion=$(gh run view "$VIEW_ID" --job "$JOB_ID" --json conclusion)
+	runConclusion=$(gh run view "$VIEW_ID" --job "$JOB_ID" --json conclusion)
 
-  printf "\n%s" "$runConclusion"
+	printf "\n%s" "$runConclusion"
 
-  # stop on failure
-  if [[ $(echo "$runConclusion" | jq -r ".conclusion") != "success" ]]; then
-      echo "❌ Job failed, check CI logs for more details"
-      exit 1
-  fi
+	# stop on failure
+	if [[ $(echo "$runConclusion" | jq -r ".conclusion") != "success" ]]; then
+		echo "❌ Job failed, check CI logs for more details"
+		exit 1
+	fi
 done
 
 echo "✅ All $TIMES_TO_RUN runs completed successfully"
