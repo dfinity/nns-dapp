@@ -1,18 +1,8 @@
-import { convertDtoData, querySnsProjects } from "$lib/api/sns-aggregator.api";
-import {
-  aggregatorSnsMock,
-  aggregatorSnsMockDto,
-} from "$tests/mocks/sns-aggregator.mock";
+import { querySnsProjects } from "$lib/api/sns-aggregator.api";
+import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
-  describe("convertDtoData", () => {
-    it("should convert data", () => {
-      const convertedData = convertDtoData([aggregatorSnsMockDto]);
-      expect(convertedData).toEqual([aggregatorSnsMock]);
-    });
-  });
-
   describe("querySnsProjects", () => {
     afterEach(() => {
       jest.resetAllMocks();
