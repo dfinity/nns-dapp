@@ -134,37 +134,11 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         snsQueryStore.setData(response);
       });
 
-      it("should start watching swap metrics and stop on unmounting", async () => {
-        const { unmount } = render(ProjectDetail, props);
+      it("should fetch swap metrics on load", async () => {
+        render(ProjectDetail, props);
 
         await runResolvedPromises();
-        let expectedCalls = 1;
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-        const callsBeforeStopPolling = 4;
-
-        while (expectedCalls < callsBeforeStopPolling) {
-          await advanceTime(retryDelay);
-          expectedCalls += 1;
-          expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-            expectedCalls
-          );
-        }
-        unmount();
-
-        await runResolvedPromises();
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
       });
     });
 

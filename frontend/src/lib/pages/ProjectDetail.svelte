@@ -79,11 +79,6 @@
         },
         forceFetch: true,
       }),
-      loadSnsSwapMetrics({
-        forceFetch: true,
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId,
-      }),
     ]);
   };
 
@@ -189,21 +184,13 @@
     nonNullish(derivedStateHasBuyersCount) &&
     !areWatchersSet
   ) {
-    // TODO: Remove once all SNS support the buyers count in derived state
     if (!derivedStateHasBuyersCount) {
-      // We load the metrics to have them initially available before setInterval starts
+      // TODO: Remove once Dragginz, OC and SONIC support new fields in in SnsGetDerivedStateResponse
       loadSnsSwapMetrics({
         rootCanisterId: Principal.fromText(rootCanisterId),
         swapCanisterId,
         forceFetch: false,
       });
-      if (enableOpenProjectWatchers) {
-        unsubscribeWatchMetrics?.();
-        unsubscribeWatchMetrics = watchSnsMetrics({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          swapCanisterId: swapCanisterId,
-        });
-      }
     }
 
     if (enableOpenProjectWatchers) {
