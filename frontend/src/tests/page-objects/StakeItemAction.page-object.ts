@@ -1,4 +1,4 @@
-import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { IncreaseStakeButtonPo } from "$tests/page-objects/IncreaseStakeButton.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,8 +13,12 @@ export class StakeItemActionPo extends BasePageObject {
     return this.getText("stake-value");
   }
 
-  getIncreaseStakeButtonPo(): ButtonPo {
-    return this.getButton("increase-stake-button-component");
+  getIncreaseStakeButtonPo(): IncreaseStakeButtonPo {
+    return IncreaseStakeButtonPo.under(this.root);
+  }
+
+  getTokenSymbol(): Promise<string> {
+    return this.getText("token-symbol");
   }
 
   hasIncreaseStakeButton(): Promise<boolean> {

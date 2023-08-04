@@ -22,7 +22,6 @@
   universe={NNS_UNIVERSE}
   token={ICPToken}
   neuronStake={neuronStake(neuron)}
-  isIncreaseStakeAllowed={true}
   on:increaseStake={() =>
     openNnsNeuronModal({
       type: "increase-stake",

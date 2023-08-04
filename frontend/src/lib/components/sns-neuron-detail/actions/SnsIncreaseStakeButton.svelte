@@ -1,5 +1,4 @@
 <script lang="ts">
-  // TODO: Delete this file
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 

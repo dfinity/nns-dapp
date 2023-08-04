@@ -1,5 +1,4 @@
 <script lang="ts">
-  // TODO: Delete this file
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
