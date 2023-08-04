@@ -4,6 +4,7 @@ import type {
 } from "@dfinity/ledger";
 import type {
   SnsGetDerivedStateResponse,
+  SnsGetInitResponse,
   SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
   SnsGetSaleParametersResponse,
@@ -11,7 +12,6 @@ import type {
   SnsSwap,
   SnsSwapDerivedState,
 } from "@dfinity/sns";
-import type { GetInitResponse } from "@dfinity/sns/dist/candid/sns_swap";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -54,7 +54,7 @@ export type CachedSns = {
   icrc1_total_supply: bigint;
   derived_state: SnsGetDerivedStateResponse;
   swap_params: SnsGetSaleParametersResponse;
-  init: GetInitResponse;
+  init: SnsGetInitResponse;
   lifecycle: SnsGetLifecycleResponse;
 };
 
