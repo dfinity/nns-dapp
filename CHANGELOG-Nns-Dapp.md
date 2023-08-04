@@ -57,6 +57,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
 * Proposal details e2e test.
+* Automatically populate the change log section in the release proposal.
 
 #### Changed
 
