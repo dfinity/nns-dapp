@@ -10,12 +10,28 @@ import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
 const aggergatorPageUrl = (page: number) => `/sns/list/page/${page}/slow.json`;
 
 const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
-  const response = await fetch(
-    `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${aggergatorPageUrl(
-      page
-    )}`
-  );
+  let response: Response;
+  try {
+    response = await fetch(
+      `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${aggergatorPageUrl(
+        page
+      )}`
+    );
+  } catch (e) {
+    // If the error is after the first page, is because there are no more pages it fails
+    if (page > 0) {
+      console.error(
+        `Error loading SNS project page ${page} from aggregator canister`
+      );
+      return [];
+    }
+    throw e;
+  }
   if (!response.ok) {
+    // If the error is after the first page, is because there are no more pages it fails
+    if (page > 0) {
+      return [];
+    }
     throw new Error("Error loading SNS projects from aggregator canister");
   }
   const data: CachedSnsDto[] = await response.json();
