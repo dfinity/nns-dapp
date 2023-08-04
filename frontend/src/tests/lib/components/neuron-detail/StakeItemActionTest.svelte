@@ -5,7 +5,7 @@
 
   export let universe: Universe;
   export let token: Token;
-  export let neuronStake: bigint = 100000000n;
+  export let neuronStake: 100000000n;
   export let isIncreaseStakeAllowed: boolean | undefined = undefined;
 
   export let increaseStakeCallback: () => void | undefined = undefined;
