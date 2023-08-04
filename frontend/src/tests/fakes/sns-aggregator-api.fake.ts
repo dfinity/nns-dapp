@@ -1,4 +1,4 @@
-import type { CachedSns } from "$lib/types/sns-aggregator";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
 import type { SnsSwapLifecycle } from "@dfinity/sns";
@@ -12,13 +12,13 @@ const implementedFunctions = {
 // State and helpers for fake implementations:
 //////////////////////////////////////////////
 
-const projects: CachedSns[] = [];
+const projects: CachedSnsDto[] = [];
 
 ////////////////////////
 // Fake implementations:
 ////////////////////////
 
-async function querySnsProjects(): Promise<CachedSns[]> {
+async function querySnsProjects(): Promise<CachedSnsDto[]> {
   return projects;
 }
 
@@ -36,7 +36,7 @@ export const addProjectWith = ({
 }: {
   rootCanisterId: string;
   lifecycle: SnsSwapLifecycle;
-}): CachedSns => {
+}): CachedSnsDto => {
   const project = aggregatorSnsMockWith({ rootCanisterId, lifecycle });
   projects.push(project);
   return project;

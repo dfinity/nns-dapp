@@ -302,16 +302,16 @@ export const aggregatorSnsMockWith = ({
 }: {
   rootCanisterId: string;
   lifecycle: SnsSwapLifecycle;
-}): CachedSns => ({
-  ...aggregatorSnsMock,
+}): CachedSnsDto => ({
+  ...aggregatorSnsMockDto,
   canister_ids: {
-    ...aggregatorSnsMock.canister_ids,
+    ...aggregatorSnsMockDto.canister_ids,
     root_canister_id: rootCanisterId,
   },
   swap_state: {
-    ...aggregatorSnsMock.swap_state,
+    ...aggregatorSnsMockDto.swap_state,
     swap: {
-      ...aggregatorSnsMock.swap_state.swap,
+      ...aggregatorSnsMockDto.swap_state.swap,
       lifecycle,
     },
   },

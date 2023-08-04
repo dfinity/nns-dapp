@@ -16,6 +16,7 @@ import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
 import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -25,7 +26,9 @@ import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
-    const cachedSnses = await querySnsProjects();
+    const aggregatorData = await querySnsProjects();
+    // TODO: Store this in a svelte store.
+    const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.

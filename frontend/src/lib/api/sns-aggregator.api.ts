@@ -3,9 +3,8 @@ import {
   AGGREGATOR_CANISTER_VERSION,
   AGGREGATOR_PAGE_SIZE,
 } from "$lib/constants/sns.constants";
-import type { CachedSns, CachedSnsDto } from "$lib/types/sns-aggregator";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
 
 const aggergatorPageUrl = (page: number) => `/sns/list/page/${page}/slow.json`;
 
@@ -42,13 +41,12 @@ const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
   return data;
 };
 
-export const querySnsProjects = async (): Promise<CachedSns[]> => {
+export const querySnsProjects = async (): Promise<CachedSnsDto[]> => {
   logWithTimestamp("Loading SNS projects from aggregator canister...");
   try {
     const data: CachedSnsDto[] = await querySnsAggregator();
-    const convertedData = convertDtoData(data);
     logWithTimestamp("Loading SNS projects from aggregator canister completed");
-    return convertedData;
+    return data;
   } catch (err) {
     console.error("Error converting data", err);
     throw new Error("Error converting data from aggregator canister");
