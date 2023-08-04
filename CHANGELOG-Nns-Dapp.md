@@ -40,6 +40,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
 * Fix some type discrepancies with SNS aggregator data.
 * Do not show unnecessary scrollbar in notifications.
+* Fix error when getting an SNS Aggregator page fails.
 
 #### Security
 
