@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New icon for dissolving neuron state.
 * Keep menu open and visible on large screen (not only on extra large screen).
 * Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
+* Don't display proposal navigation on launch-pad page.
 * Update SNS Aggregator response type and related converters.
 
 #### Deprecated
@@ -40,6 +41,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
 * Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
 * Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
+* Fix missing referrer path on subpages.
 * Fix some type discrepancies with SNS aggregator data.
 * Do not show unnecessary scrollbar in notifications.
 * Fix error when getting an SNS Aggregator page fails.
@@ -180,7 +182,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
-* Fix missing referrer path on subpages.
 
 #### Not Published
 
@@ -201,7 +202,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
-- Don't display proposal navigation on launch-pad page.
 
 #### Fixed
 
