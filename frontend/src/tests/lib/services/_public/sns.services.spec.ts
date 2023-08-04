@@ -4,7 +4,6 @@
 
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
-import * as snsApi from "$lib/api/sns.api";
 import {
   loadSnsNervousSystemFunctions,
   loadSnsProjects,
@@ -108,8 +107,6 @@ describe("SNS public services", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
-      jest.spyOn(snsApi, "queryAllSnsMetadata").mockResolvedValue([]);
-      jest.spyOn(snsApi, "querySnsSwapStates").mockResolvedValue([]);
     });
 
     it("loads sns stores with data", async () => {
