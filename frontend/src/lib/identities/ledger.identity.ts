@@ -75,7 +75,6 @@ export class LedgerIdentity extends SignIdentity {
     return this.publicKey;
   }
 
-  // We still keep this even though it's not used directly here, because it's required by the interface.
   public override async sign(blob: ArrayBuffer): Promise<Signature> {
     const callback = async (app: LedgerApp): Promise<Signature> => {
       const responseSign: ResponseSign = await app.sign(
