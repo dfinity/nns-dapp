@@ -24,26 +24,26 @@ describe("NnsNeurons", () => {
   });
 
   describe("with enough neurons", () => {
+    const mockNeuron2 = {
+      ...mockNeuron,
+      neuronId: BigInt(223),
+    };
+    const spawningNeuron = {
+      ...mockNeuron,
+      state: NeuronState.Spawning,
+      neuronId: BigInt(224),
+      fullNeuron: {
+        ...mockFullNeuron,
+        spawnAtTimesSeconds: BigInt(12312313),
+      },
+    };
+    const neurons = [mockNeuron, spawningNeuron, mockNeuron2];
+
     beforeEach(() => {
-      const mockNeuron2 = {
-        ...mockNeuron,
-        neuronId: BigInt(223),
-      };
-      const spawningNeuron = {
-        ...mockNeuron,
-        state: NeuronState.Spawning,
-        neuronId: BigInt(224),
-        fullNeuron: {
-          ...mockFullNeuron,
-          spawnAtTimesSeconds: BigInt(12312313),
-        },
-      };
       jest
         .spyOn(authServices, "getAuthenticatedIdentity")
         .mockResolvedValue(mockIdentity);
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockResolvedValue([mockNeuron, spawningNeuron, mockNeuron2]);
+      jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
     });
 
     it("should render spawning neurons as disabled", async () => {
@@ -52,7 +52,7 @@ describe("NnsNeurons", () => {
       // Wait for the neurons to be loaded and rendered
       await waitFor(() => {
         const neuronCards = queryAllByTestId("neuron-card");
-        return expect(neuronCards.length).toBe(3);
+        return expect(neuronCards.length).toBe(neurons.length);
       });
       const neuronCards = queryAllByTestId("neuron-card");
       const disabledCards = neuronCards.filter(
@@ -61,11 +61,11 @@ describe("NnsNeurons", () => {
       expect(disabledCards.length).toBe(1);
     });
 
-    it("should render a NeuronCard", async () => {
-      const { container } = render(NnsNeurons);
+    it("should render the NeuronCards", async () => {
+      const { getAllByTestId } = render(NnsNeurons);
 
       await waitFor(() =>
-        expect(container.querySelector('article[role="link"]')).not.toBeNull()
+        expect(getAllByTestId("neuron-card").length).toEqual(neurons.length)
       );
     });
   });

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
-  import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
@@ -45,18 +44,16 @@
     status,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
-  const showProposal = async () =>
-    await goto(
-      buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: `${id?.id}`,
-      })
-    );
+  let href: string;
+  $: href = buildProposalUrl({
+    universe: $pageStore.universe,
+    proposalId: `${id?.id}`,
+  });
 </script>
 
 <ProposalCard
   {hidden}
-  on:click={showProposal}
+  {href}
   {statusString}
   id={id?.id}
   {title}

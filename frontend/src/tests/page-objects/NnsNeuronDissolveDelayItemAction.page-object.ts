@@ -2,13 +2,13 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { DissolveDelayBonusTextPo } from "./DissolveDelayBonusText.page-object";
 
-export class SnsNeuronDissolveDelayActionItemPo extends BasePageObject {
+export class NnsNeuronDissolveDelayItemActionPo extends BasePageObject {
   private static readonly TID =
-    "sns-neuron-dissolve-delay-item-action-component";
+    "nns-neuron-dissolve-delay-item-action-component";
 
-  static under(element: PageObjectElement): SnsNeuronDissolveDelayActionItemPo {
-    return new SnsNeuronDissolveDelayActionItemPo(
-      element.byTestId(SnsNeuronDissolveDelayActionItemPo.TID)
+  static under(element: PageObjectElement): NnsNeuronDissolveDelayItemActionPo {
+    return new NnsNeuronDissolveDelayItemActionPo(
+      element.byTestId(NnsNeuronDissolveDelayItemActionPo.TID)
     );
   }
 
@@ -27,6 +27,8 @@ export class SnsNeuronDissolveDelayActionItemPo extends BasePageObject {
   }
 
   hasIncreaseDissolveDelayButton(): Promise<boolean> {
-    return this.getButton("sns-increase-dissolve-delay").isPresent();
+    return this.getButton(
+      "increase-dissolve-delay-button-component"
+    ).isPresent();
   }
 }

@@ -15,12 +15,10 @@
     reloadRouteData,
   } from "$lib/utils/navigation.utils";
   import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
-  import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
   import Summary from "$lib/components/summary/Summary.svelte";
   import PrincipalText from "$lib/components/summary/PrincipalText.svelte";
-
-  export let referrerPath: AppPath | undefined = undefined;
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   const loadCanisters = async () => {
     try {
@@ -38,7 +36,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
-      effectivePreviousPath: referrerPath,
+      effectivePreviousPath: $referrerPathStore,
       currentData: $canistersStore.canisters,
     });
 
@@ -49,13 +47,11 @@
     await loadCanisters();
   });
 
-  const goToCanisterDetails = (canisterId: CanisterId) => async () =>
-    await goto(
-      buildCanisterUrl({
-        universe: $pageStore.universe,
-        canister: canisterId.toText(),
-      })
-    );
+  const buildCanisterDetailsHref = (canisterId: CanisterId): string =>
+    buildCanisterUrl({
+      universe: $pageStore.universe,
+      canister: canisterId.toText(),
+    });
 
   let loading: boolean;
   $: loading = $canistersStore.canisters === undefined;
@@ -76,9 +72,8 @@
   <div class="card-grid">
     {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
       <CanisterCard
-        role="link"
         ariaLabel={$i18n.canisters.aria_label_canister_card}
-        on:click={goToCanisterDetails(canister.canister_id)}
+        href={buildCanisterDetailsHref(canister.canister_id)}
         {canister}
       />
     {/each}

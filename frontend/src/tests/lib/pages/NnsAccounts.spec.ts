@@ -25,10 +25,6 @@ jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
-  const goToWallet = async () => {
-    // Do nothing
-  };
-
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {
@@ -43,16 +39,16 @@ describe("NnsAccounts", () => {
     });
 
     it("should render a main card", () => {
-      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryByTestId } = render(NnsAccounts);
 
       expect(queryByTestId("account-card")).not.toBeNull();
     });
 
     it("should render account icp in card too", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { container } = render(NnsAccounts);
 
       const cardTitleRow = container.querySelector(
-        'article > div[data-tid="token-value-label"]'
+        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
@@ -61,7 +57,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should render account identifier", () => {
-      const { getByText } = render(NnsAccounts, { props: { goToWallet } });
+      const { getByText } = render(NnsAccounts);
       getByText(mockMainAccount.identifier);
     });
 
@@ -72,9 +68,7 @@ describe("NnsAccounts", () => {
         hardwareWallets: [],
         certified: true,
       });
-      const { queryAllByTestId } = render(NnsAccounts, {
-        props: { goToWallet },
-      });
+      const { queryAllByTestId } = render(NnsAccounts);
 
       const cards = queryAllByTestId("account-card");
 
@@ -89,9 +83,7 @@ describe("NnsAccounts", () => {
         hardwareWallets: [mockHardwareWalletAccount],
         certified: true,
       });
-      const { queryAllByTestId } = render(NnsAccounts, {
-        props: { goToWallet },
-      });
+      const { queryAllByTestId } = render(NnsAccounts);
 
       const cards = queryAllByTestId("account-card");
 
@@ -112,7 +104,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should contain a tooltip", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { container } = render(NnsAccounts);
 
       expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
     });
@@ -130,7 +122,7 @@ describe("NnsAccounts", () => {
         .mockResolvedValue(mockAccountDetails);
     });
     it("should not render a token amount component nor zero", () => {
-      const { container } = render(NnsAccounts, { props: { goToWallet } });
+      const { container } = render(NnsAccounts);
 
       // The tooltip wraps the total amount
       expect(
@@ -139,7 +131,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should load accounts", async () => {
-      const { queryByTestId } = render(NnsAccounts, { props: { goToWallet } });
+      const { queryByTestId } = render(NnsAccounts);
 
       expect(queryByTestId("account-card")).toBeNull();
 
@@ -167,7 +159,7 @@ describe("NnsAccounts", () => {
     });
 
     it("should stop polling", async () => {
-      const { unmount } = render(NnsAccounts, { props: { goToWallet } });
+      const { unmount } = render(NnsAccounts);
 
       await runResolvedPromises();
       let expectedCalls = 1;
