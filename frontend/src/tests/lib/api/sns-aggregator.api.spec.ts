@@ -1,5 +1,5 @@
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
-import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
@@ -100,19 +100,17 @@ describe("sns-aggregator api", () => {
       expect(projects).toHaveLength(10);
     });
 
-    it("should convert response", async () => {
+    it("should not convert response", async () => {
       const mockFetch = jest.fn();
       mockFetch.mockReturnValue(
         Promise.resolve({
           ok: true,
-          json: () => Promise.resolve([tenAggregatedSnses[7]]),
+          json: () => Promise.resolve([aggregatorSnsMockDto]),
         })
       );
       global.fetch = mockFetch;
       const snses = await querySnsProjects();
-      const sns = snses.find(({ index }) => index === aggregatorSnsMock.index);
-      // TODO: Make clear that aggregatorSnsMock is the first in the list of aggregated SNSes
-      expect(sns).toEqual(aggregatorSnsMock);
+      expect(snses).toEqual([aggregatorSnsMockDto]);
     });
   });
 });

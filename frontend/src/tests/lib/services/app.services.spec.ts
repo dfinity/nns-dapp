@@ -5,7 +5,7 @@ import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
-import { aggregatorSnsMock } from "$tests/mocks/sns-aggregator.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
@@ -32,7 +32,7 @@ describe("app-services", () => {
 
     jest
       .spyOn(aggregatorApi, "querySnsProjects")
-      .mockResolvedValue([aggregatorSnsMock, aggregatorSnsMock]);
+      .mockResolvedValue([aggregatorSnsMockDto, aggregatorSnsMockDto]);
   });
 
   it("should init Nns", async () => {
