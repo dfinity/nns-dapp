@@ -24,15 +24,44 @@ else
   echo "Please populate ${WASM} and run this again."
   exit 0
 fi
+
+get_unreleased_changelog() {
+  # The command below does:
+  # 1. Take the CHANGELOG-Nns-Dapp.md file from (including) the first occurrence
+  #    of "### Application" until the end.
+  # 2. Of that, take the lines until (excluding) the first occurrence of
+  #    "### Operations"
+  # 3. Remove the first line (containing "### Application").
+  # 4. Remove blank lines.
+  # 5. Add a line with "####" at the end. (To correctly recognize an empty
+  #    section at the end.)
+  # 6. Remove empty sections. (Only output lines that don't start with # or that
+  #    are followed by a line that doesn't start with #.)
+  # 7. Add a blank line before and after each section heading.
+  # 8. Remove 2 leading blank lines which were added by the previous 2 steps.
+  # 8. Replace "###" with "##" to make the heading depth correct for the context
+  #    of the proposal text..
+  sed -nE '/^### Application/,//p' CHANGELOG-Nns-Dapp.md |
+    sed -nE '/^### Operations/q;p' |
+    sed '1d' |
+    grep -v "^$" |
+    (
+      cat -
+      echo '####'
+    ) |
+    awk '{if ($0 !~ /^#/ || prev !~ /^#/) print prev} {prev=$0}' |
+    awk '{ if ($0 ~ /^#/) print "\n"$0"\n"; else print $0 }' |
+    sed '1,2d' |
+    sed -E 's/###/##/'
+}
+
 cat <<EOF >release/PROPOSAL.md
 # Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
 Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
 
 ## Change Log:
 
-* Write about...
-* ... what has changed
-* ... in simple bullet points
+$(get_unreleased_changelog)
 
 ## Commit Log:
 
@@ -91,3 +120,8 @@ EOF
 
 ./config.sh
 cp "nns-dapp-arg-${DFX_NETWORK}.did" "./release/nns-dapp-arg-${DFX_NETWORK}.did"
+
+echo
+echo "Output files:"
+echo "  release/PROPOSAL.md"
+echo "  release/ROLLBACK.md"
