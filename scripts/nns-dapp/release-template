@@ -40,7 +40,7 @@ get_unreleased_changelog() {
   # 7. Add a blank line before and after each section heading.
   # 8. Remove 2 leading blank lines which were added by the previous 2 steps.
   # 8. Replace "###" with "##" to make the heading depth correct for the context
-  #    of the proposal text..
+  #    of the proposal text.
   sed -nE '/^### Application/,//p' CHANGELOG-Nns-Dapp.md |
     sed -nE '/^### Operations/q;p' |
     sed '1d' |
