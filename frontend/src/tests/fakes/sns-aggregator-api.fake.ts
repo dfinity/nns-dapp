@@ -1,4 +1,4 @@
-import type { CachedSns } from "$lib/api/sns-aggregator.api";
+import type { CachedSns } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
 import type { SnsSwapLifecycle } from "@dfinity/sns";

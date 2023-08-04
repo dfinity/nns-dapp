@@ -1,9 +1,9 @@
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
   CachedSns,
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
-} from "$lib/api/sns-aggregator.api";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
+} from "$lib/types/sns-aggregator";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
