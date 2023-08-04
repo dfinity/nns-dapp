@@ -77,6 +77,14 @@ describe("LedgerIdentity", () => {
       StatusReadHash: Buffer.from(""),
       StatusReadSignatureRS: readStateSignature,
     });
+
+    mockLedgerApp.sign.mockResolvedValue({
+      errorMessage: undefined,
+      returnCode: LedgerError.NoErrors,
+      signatureRS: callSignature,
+      preSignHash: Buffer.from(""),
+      signatureDER: Buffer.from(""),
+    });
   });
 
   it("should not call to sign read state request after signing call request", async () => {
@@ -89,19 +97,23 @@ describe("LedgerIdentity", () => {
     const readRequest = await identity.transformRequest(mockReadStateRequest);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
     expect(readRequest.endpoint).toBe("read_state");
+    identity.clearInstanceVariablesForTesting();
   });
 
   it("should call to sign read state request after signing call request if neuron flag is set", async () => {
     const identity = await LedgerIdentity.create();
-    identity.flagUpcomingStakeNeuron();
 
+    identity.flagUpcomingStakeNeuron();
     const request = await identity.transformRequest(mockHttpRequest);
-    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(1);
     expect(request.endpoint).toBe("call");
 
     const readRequest = await identity.transformRequest(mockReadStateRequest);
-    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(2);
     expect(readRequest.endpoint).toBe("read_state");
+    identity.clearInstanceVariablesForTesting();
   });
 
   it("should sign new call requests", async () => {
@@ -114,5 +126,6 @@ describe("LedgerIdentity", () => {
     const request2 = await identity.transformRequest(mockHttpRequest);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
     expect(request2.endpoint).toBe("call");
+    identity.clearInstanceVariablesForTesting();
   });
 });

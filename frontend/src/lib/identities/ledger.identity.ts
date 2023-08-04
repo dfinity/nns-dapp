@@ -212,6 +212,12 @@ export class LedgerIdentity extends SignIdentity {
     return decodePublicKey(response);
   }
 
+  public clearInstanceVariablesForTesting(): void {
+    this.neuronStakeFlag = false;
+    this.readStateSignature = undefined;
+    this.readStateBody = undefined;
+  }
+
   private async executeWithApp<T>(
     callback: (app: LedgerApp) => Promise<T>
   ): Promise<T> {
@@ -277,22 +283,22 @@ export class LedgerIdentity extends SignIdentity {
     const { body, ...fields } = request;
 
     const requestId = await requestIdOf(body);
-    // Store the body of the read state request to be able to reuse it later.
-    this.readStateBody = {
-      // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
-      request_type: "read_state" as ReadRequestType.ReadState,
-      // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
-      paths: [[new TextEncoder().encode("request_status"), requestId]],
-      ingress_expiry: body.ingress_expiry,
-      sender: body.sender,
-    };
 
     let callSignature: Signature;
-    // There is an issue with the Ledger App when the flag is set to true and `signWithReadState`.
+    // There is an issue with the Ledger App when the neuron flag is set to true and `signWithReadState`.
     // TODO: Check app version and use `signWithReadState` only if the app version has the issue fixed.
-    if (this.neuronStakeFlag) {
+    if (this.neuronStakeFlag || request.endpoint === "read_state") {
       callSignature = await this.sign(prepareCborForLedger(body));
     } else {
+      // Store the body of the read state request to be able to reuse it later.
+      this.readStateBody = {
+        // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
+        request_type: "read_state" as ReadRequestType.ReadState,
+        // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
+        paths: [[new TextEncoder().encode("request_status"), requestId]],
+        ingress_expiry: body.ingress_expiry,
+        sender: body.sender,
+      };
       const signatures = await this.signWithReadState(
         prepareCborForLedger(body),
         prepareCborForLedger(this.readStateBody)
