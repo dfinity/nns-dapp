@@ -17,32 +17,27 @@ export class ProposalSystemInfoSectionPo extends BasePageObject {
     return NnsProposalPo.under(this.root);
   }
 
-  async getProposalTypeText(): Promise<string> {
+  async getKeyValuePairValueText(testId: string): Promise<string> {
     return KeyValuePairPo.under({
       element: this.root,
-      testId: "proposal-system-info-type",
+      testId,
     }).getValueText();
+  }
+
+  async getProposalTypeText(): Promise<string> {
+    return this.getKeyValuePairValueText("proposal-system-info-type");
   }
 
   async getProposalTopicText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-topic",
-    }).getValueText();
+    return this.getKeyValuePairValueText("proposal-system-info-topic");
   }
 
   async getProposalStatusText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-status",
-    }).getValueText();
+    return this.getKeyValuePairValueText("proposal-system-info-status");
   }
 
   async getProposalRewardText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-reward",
-    }).getValueText();
+    return this.getKeyValuePairValueText("proposal-system-info-reward");
   }
 
   async getProposalProposerNeuronIdText(): Promise<string> {
