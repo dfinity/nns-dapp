@@ -25,10 +25,7 @@
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    loadSnsSwapMetrics,
-    watchSnsMetrics,
-  } from "$lib/services/sns-swap-metrics.services";
+  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
