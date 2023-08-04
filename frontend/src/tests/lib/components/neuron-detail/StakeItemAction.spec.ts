@@ -13,6 +13,7 @@ describe("StakeItemAction", () => {
     const { container } = render(StakeItemActionTest, {
       universe: mockUniverse,
       token: mockToken,
+      neuronStake: 123456789n,
       ...props,
     });
 
