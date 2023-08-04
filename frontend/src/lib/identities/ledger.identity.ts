@@ -245,8 +245,6 @@ export class LedgerIdentity extends SignIdentity {
   public override async transformRequest(
     request: HttpAgentRequest
   ): Promise<Record<string, unknown>> {
-    // TODO: Disable signing and caching read_state if stake neuron transaction?
-
     // There is a possible edge case not covered:
     // If the identity instance is reused. And a new request is made, before the previous read state finished.
     // In that case, the first read state would fail because it would use the new read state body and signature.
@@ -290,12 +288,20 @@ export class LedgerIdentity extends SignIdentity {
       sender: body.sender,
     };
 
-    const { callSignature, readStateSignature } = await this.signWithReadState(
-      prepareCborForLedger(body),
-      prepareCborForLedger(this.readStateBody)
-    );
-    // Store the read state signature to be able to reuse it later.
-    this.readStateSignature = readStateSignature;
+    let callSignature: Signature;
+    // There is an issue with the Ledger App when the flag is set to true and `signWithReadState`.
+    // TODO: Check app version and use `signWithReadState` only if the app version has the issue fixed.
+    if (this.neuronStakeFlag) {
+      callSignature = await this.sign(prepareCborForLedger(body));
+    } else {
+      const signatures = await this.signWithReadState(
+        prepareCborForLedger(body),
+        prepareCborForLedger(this.readStateBody)
+      );
+      callSignature = signatures.callSignature;
+      // Store the read state signature to be able to reuse it later.
+      this.readStateSignature = signatures.readStateSignature;
+    }
 
     return {
       ...fields,
