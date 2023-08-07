@@ -10,11 +10,8 @@ jobs:
         run: |
           echo "This workflow should not be triggered with workflow_dispatch on main"
           exit 1
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./frontend
+      - name: Set up Playwright e2e test
+        uses: ./.github/actions/test-e2e
       - name: Run Playwright tests
         run: npm run test-e2e:snapshots
         working-directory: ./frontend
