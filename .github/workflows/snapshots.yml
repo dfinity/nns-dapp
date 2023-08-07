@@ -10,6 +10,8 @@ jobs:
         run: |
           echo "This workflow should not be triggered with workflow_dispatch on main"
           exit 1
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
       - name: Run Playwright tests
         uses: ./.github/actions/test-e2e
         with:
