@@ -575,6 +575,8 @@
     "no_dissolve_bonus": "No dissolve delay bonus",
     "available_description": "Available",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the neurons' fund?",
+    "join_community_fund_hw_alert_1": "Beware that the NNS Dapp doesn't support hardware wallets for SNS yet.",
+    "join_community_fund_hw_alert_2": "If this neuron is controlled by a hardware wallet, you will not be able to manage it from the NNS Dapp.",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the neurons' fund?",
     "participate_community_fund": "Participate in neurons' fund.",
     "auto_stake_maturity": "Automatically stake new maturity.",

@@ -357,6 +357,24 @@ export const isHotKeyControllable = ({
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
 /**
+ * An identityt can manage the neurons' fund participation when one of the below is true:
+ * - User is the controller.
+ * - User is a hotkey, but a hardware wallet account is NOT the controller.
+ */
+export const canUserManageNeuronFundParticipation = ({
+  neuron,
+  identity,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  identity: Identity | null | undefined;
+  accounts: IcpAccountsStoreData;
+}): boolean =>
+  isNeuronControllableByUser({ neuron, mainAccount: accounts.main }) ||
+  (isHotKeyControllable({ neuron, identity }) &&
+    !isNeuronControlledByHardwareWallet({ neuron, accounts }));
+
+/**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
  * @returns 0n if stake not available
  */

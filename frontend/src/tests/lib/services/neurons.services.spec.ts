@@ -453,33 +453,6 @@ describe("neurons-services", () => {
       });
       expect(spyLeaveCommunityFund).toBeCalledTimes(1);
     });
-
-    it("should not update neuron if no identity", async () => {
-      const neuron = {
-        ...controlledNeuron,
-        joinedCommunityFundTimestampSeconds: BigInt(2000),
-      };
-      setNoIdentity();
-
-      await toggleCommunityFund(neuron);
-
-      expectToastError(en.error.missing_identity);
-      expect(spyJoinCommunityFund).not.toBeCalled();
-      expect(spyLeaveCommunityFund).not.toBeCalled();
-    });
-
-    it("should not update neuron if not controlled by user", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
-      });
-
-      await toggleCommunityFund(notControlledNeuron);
-
-      expectToastError(en.error.not_authorized_neuron_action);
-      expect(spyJoinCommunityFund).not.toBeCalled();
-      expect(spyLeaveCommunityFund).not.toBeCalled();
-    });
   });
 
   describe("toggleAutoStakeMaturity", () => {

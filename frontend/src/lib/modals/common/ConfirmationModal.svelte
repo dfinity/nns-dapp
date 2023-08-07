@@ -6,8 +6,8 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<Modal role="alert" on:nnsClose>
-  <article>
+<Modal role="alert" on:nnsClose testId="confirmation-modal-component">
+  <article data-tid="confirmation-modal-content">
     <slot />
   </article>
 
