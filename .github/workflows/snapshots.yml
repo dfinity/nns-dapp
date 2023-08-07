@@ -11,7 +11,7 @@ jobs:
           echo "This workflow should not be triggered with workflow_dispatch on main"
           exit 1
       - name: Set up Playwright e2e test
-        uses: ./.github/actions/test-e2e
+        uses: ./.github/actions/set-up-e2e
       - name: Run Playwright tests
         run: npm run test-e2e:snapshots
         working-directory: ./frontend

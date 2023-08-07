@@ -14,7 +14,7 @@ runs:
   using: "composite"
   steps:
     - name: Set up Playwright e2e test
-      uses: ./.github/actions/test-e2e
+      uses: ./.github/actions/set-up-e2e
     - name: Run Playwright end-to-end tests
       shell: bash
       working-directory: frontend
