@@ -39,7 +39,11 @@ test.describe("Design", () => {
       await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
 
       await expect(page).toHaveScreenshot({
-        mask: [page.locator('[data-tid="identifier"]')],
+        mask: [
+          page.locator('[data-tid="identifier"]'),
+          page.locator('[data-tid="select-universe-card"] .name'),
+          page.locator('[data-tid="select-universe-card"] .amount .label'),
+        ],
       });
     };
 
