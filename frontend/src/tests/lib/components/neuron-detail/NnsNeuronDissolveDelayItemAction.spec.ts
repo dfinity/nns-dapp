@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import NnsNeuronDissolveDelayActionItem from "$lib/components/neuron-detail/NnsNeuronDissolveDelayActionItem.svelte";
+import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
 import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -15,22 +15,22 @@ import {
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/NnsNeuronDissolveDelayActionItem.page-object";
+import { NnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-describe("NnsNeuronDissolveDelayActionItem", () => {
+describe("NnsNeuronDissolveDelayItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
-        testComponent: NnsNeuronDissolveDelayActionItem,
+        testComponent: NnsNeuronDissolveDelayItemAction,
       },
     });
 
-    return NnsNeuronDissolveDelayActionItemPo.under(
+    return NnsNeuronDissolveDelayItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };
@@ -61,7 +61,7 @@ describe("NnsNeuronDissolveDelayActionItem", () => {
     expect(await po.getDissolveState()).toBe(
       "Dissolve Delay: 2 years, 12 hours"
     );
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: 1.25");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +25%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 
@@ -80,7 +80,7 @@ describe("NnsNeuronDissolveDelayActionItem", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getDissolveState()).toBe("Remaining: 2 years, 12 hours");
-    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: 1.25");
+    expect(await po.getDissolveBonus()).toBe("Dissolve delay bonus: +25%");
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
 

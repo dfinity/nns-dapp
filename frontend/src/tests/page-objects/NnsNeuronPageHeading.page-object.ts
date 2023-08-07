@@ -22,4 +22,12 @@ export class NnsNeuronPageHeadingPo extends BasePageObject {
   getVotingPower(): Promise<string> {
     return this.getText("voting-power");
   }
+
+  hasNeuronsFundTag(): Promise<boolean> {
+    return this.root.byTestId("neurons-fund-tag").isPresent();
+  }
+
+  hasHotkeyTag(): Promise<boolean> {
+    return this.root.byTestId("hotkey-tag").isPresent();
+  }
 }

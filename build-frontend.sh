@@ -68,7 +68,7 @@ find . -type f | xargs -I{} gzip -fn "{}"
   --owner=0 \
   --group=0 \
   --numeric-owner \
-  --format=ustar \
+  --format=gnu \
   --exclude .last_build_id \
   -f "$TOPLEVEL/assets.tar.xz" \
   .

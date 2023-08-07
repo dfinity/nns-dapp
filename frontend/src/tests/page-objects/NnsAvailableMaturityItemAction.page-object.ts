@@ -1,12 +1,12 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NnsAvailableMaturityActionItemPo extends BasePageObject {
+export class NnsAvailableMaturityItemActionPo extends BasePageObject {
   private static readonly TID = "nns-available-maturity-item-action-component";
 
-  static under(element: PageObjectElement): NnsAvailableMaturityActionItemPo {
-    return new NnsAvailableMaturityActionItemPo(
-      element.byTestId(NnsAvailableMaturityActionItemPo.TID)
+  static under(element: PageObjectElement): NnsAvailableMaturityItemActionPo {
+    return new NnsAvailableMaturityItemActionPo(
+      element.byTestId(NnsAvailableMaturityItemActionPo.TID)
     );
   }
 

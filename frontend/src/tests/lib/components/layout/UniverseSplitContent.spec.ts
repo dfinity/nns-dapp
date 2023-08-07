@@ -17,7 +17,11 @@ describe("UniverseSplitContent", () => {
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
-  beforeAll(() => layoutTitleStore.set("the header"));
+  beforeAll(() =>
+    layoutTitleStore.set({
+      title: "the header",
+    })
+  );
 
   it("should render the universe nav", () => {
     const { getByTestId } = render(UniverseSplitContent);

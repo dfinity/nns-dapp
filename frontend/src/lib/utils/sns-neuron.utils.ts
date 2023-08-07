@@ -15,6 +15,7 @@ import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -925,3 +926,14 @@ export const vestingInSeconds = ({
  */
 export const isVesting = (neuron: SnsNeuron): boolean =>
   vestingInSeconds(neuron) > 0n;
+
+export const neuronDashboardUrl = ({
+  neuron,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  rootCanisterId: Principal;
+}) =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
+    neuron
+  )}`;

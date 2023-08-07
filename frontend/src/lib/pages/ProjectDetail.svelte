@@ -25,10 +25,7 @@
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    loadSnsSwapMetrics,
-    watchSnsMetrics,
-  } from "$lib/services/sns-swap-metrics.services";
+  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
@@ -78,11 +75,6 @@
           $projectDetailStore.swapCommitment = undefined;
         },
         forceFetch: true,
-      }),
-      loadSnsSwapMetrics({
-        forceFetch: true,
-        rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId,
       }),
     ]);
   };
@@ -144,7 +136,9 @@
   // Set up watchers and load the data in stores
   /////////////////////////////////
 
-  $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
+  $: layoutTitleStore.set({
+    title: $projectDetailStore?.summary?.metadata.name ?? "",
+  });
 
   let enableOpenProjectWatchers = false;
   $: enableOpenProjectWatchers =
@@ -187,21 +181,13 @@
     nonNullish(derivedStateHasBuyersCount) &&
     !areWatchersSet
   ) {
-    // TODO: Remove once all SNS support the buyers count in derived state
     if (!derivedStateHasBuyersCount) {
-      // We load the metrics to have them initially available before setInterval starts
+      // TODO: Remove once Dragginz, OC and SONIC support new fields in in SnsGetDerivedStateResponse
       loadSnsSwapMetrics({
         rootCanisterId: Principal.fromText(rootCanisterId),
         swapCanisterId,
         forceFetch: false,
       });
-      if (enableOpenProjectWatchers) {
-        unsubscribeWatchMetrics?.();
-        unsubscribeWatchMetrics = watchSnsMetrics({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          swapCanisterId: swapCanisterId,
-        });
-      }
     }
 
     if (enableOpenProjectWatchers) {

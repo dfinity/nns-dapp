@@ -19,10 +19,6 @@
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import type { Account } from "$lib/types/account";
-  import { goto } from "$app/navigation";
-  import { buildWalletUrl } from "$lib/utils/navigation.utils";
-  import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import type { Universe } from "$lib/types/universe";
@@ -81,14 +77,6 @@
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
     ]))();
-
-  const goToWallet = async ({ identifier }: Account) =>
-    await goto(
-      buildWalletUrl({
-        universe: $pageStore.universe,
-        account: identifier,
-      })
-    );
 </script>
 
 <TestIdWrapper testId="accounts-component">
@@ -96,11 +84,11 @@
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
-      <NnsAccounts {goToWallet} />
+      <NnsAccounts />
     {:else if $isCkBTCUniverseStore}
-      <CkBTCAccounts {goToWallet} />
+      <CkBTCAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}
-      <SnsAccounts {goToWallet} />
+      <SnsAccounts />
     {/if}
   </main>
 

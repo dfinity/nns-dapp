@@ -4,7 +4,6 @@
 
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
-import * as snsApi from "$lib/api/sns.api";
 import {
   loadSnsNervousSystemFunctions,
   loadSnsProjects,
@@ -21,7 +20,7 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import {
-  aggregatorSnsMock,
+  aggregatorSnsMockDto,
   aggregatorSnsMockWith,
   aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
@@ -108,20 +107,18 @@ describe("SNS public services", () => {
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
-      jest.spyOn(snsApi, "queryAllSnsMetadata").mockResolvedValue([]);
-      jest.spyOn(snsApi, "querySnsSwapStates").mockResolvedValue([]);
     });
 
     it("loads sns stores with data", async () => {
       const spyQuerySnsProjects = jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
+          Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
         );
 
       await loadSnsProjects();
 
-      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
+      const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
       expect(spyQuerySnsProjects).toBeCalled();
 
       const queryStore = get(snsQueryStore);
@@ -137,12 +134,12 @@ describe("SNS public services", () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMock, aggregatorSnsMock])
+          Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
         );
 
       await loadSnsProjects();
 
-      const rootCanisterId = aggregatorSnsMock.canister_ids.root_canister_id;
+      const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
 
       const tokens = get(tokensStore);
       const token = tokens[rootCanisterId];
@@ -153,7 +150,7 @@ describe("SNS public services", () => {
 
     it("should load and map total token supply", async () => {
       const rootCanisterId = principal(0);
-      const totalSupply = BigInt(2_000_000_000);
+      const totalSupply = 2_000_000_000;
       const response = [
         {
           ...aggregatorSnsMockWith({
@@ -162,7 +159,7 @@ describe("SNS public services", () => {
           }),
           icrc1_total_supply: totalSupply,
         },
-        aggregatorSnsMock,
+        aggregatorSnsMockDto,
       ];
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
@@ -174,33 +171,33 @@ describe("SNS public services", () => {
       const data = supplies[rootCanisterId.toText()];
       expect(data).not.toBeUndefined();
       expect(data?.certified).toBeTruthy();
-      expect(data?.totalSupply).toEqual(totalSupply);
+      expect(data?.totalSupply).toEqual(BigInt(totalSupply));
     });
 
     it("loads derived state from property derived state", async () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMock]));
+        .mockImplementation(() => Promise.resolve([aggregatorSnsMockDto]));
 
       await loadSnsProjects();
 
       const queryStore = get(snsQueryStore);
       const derivedState = queryStore.swaps[0]?.derived[0];
-      const expectedDerivedState = aggregatorSnsMock.derived_state;
+      const expectedDerivedState = aggregatorSnsMockDto.derived_state;
       expect(derivedState.buyer_total_icp_e8s).toBe(
-        expectedDerivedState.buyer_total_icp_e8s[0]
+        BigInt(expectedDerivedState.buyer_total_icp_e8s)
       );
       expect(derivedState.sns_tokens_per_icp).toBe(
-        expectedDerivedState.sns_tokens_per_icp[0]
+        expectedDerivedState.sns_tokens_per_icp
       );
       expect(derivedState.cf_neuron_count[0]).toBe(
-        expectedDerivedState.cf_neuron_count[0]
+        BigInt(expectedDerivedState.cf_neuron_count)
       );
       expect(derivedState.cf_participant_count[0]).toBe(
-        expectedDerivedState.cf_participant_count[0]
+        BigInt(expectedDerivedState.cf_participant_count)
       );
       expect(derivedState.direct_participant_count[0]).toBe(
-        expectedDerivedState.direct_participant_count[0]
+        BigInt(expectedDerivedState.direct_participant_count)
       );
     });
   });
