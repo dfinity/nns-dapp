@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -xeuo pipefail
+
+SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT="$SOURCE_DIR/past-changelog-test"
+CHANGELOG="CHANGELOG-Nns-Dapp.md"
+
+if ! "$SCRIPT"; then
+  echo "Should have passed without additional changes." >&2
+  exit 1
+fi
+
+awk '/## Proposal/ {if (!done) {print "* change above"; done=1}} 1' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+if ! "$SCRIPT"; then
+  echo "Should have passed with change above most recent release." >&2
+  exit 1
+fi
+git checkout CHANGELOG-Nns-Dapp.md
+
+awk '/## Proposal/ {if (!done) {print; print "* change below"; done=1; next}} 1' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+if "$SCRIPT"; then
+  echo "Should have failed with change below most recent release." >&2
+  exit 1
+fi
+git checkout CHANGELOG-Nns-Dapp.md
+
+sed '199i\
+* changed on line 199
+' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+if "$SCRIPT"; then
+  echo "Should have failed with change on line 199." >&2
+  exit 1
+fi
+git checkout CHANGELOG-Nns-Dapp.md
