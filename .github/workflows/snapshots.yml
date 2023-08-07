@@ -15,8 +15,8 @@ jobs:
       - name: Run Playwright tests
         uses: ./.github/actions/test-e2e
         with:
-          update-screenshots: true
-          test-filter: design.spec.ts 
+          update_screenshots: true
+          test_filter: design.spec.ts 
       - name: Commit Playwright updated snapshots
         uses: EndBug/add-and-commit@v9
         if: ${{ github.ref != 'refs/heads/main' }}
