@@ -3,13 +3,13 @@
  */
 
 import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import {
   WALLET_CONTEXT_KEY,
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -113,10 +113,10 @@ describe("WalletSummary", () => {
 
   const testTitle = async ({
     intersecting,
-    text,
+    header,
   }: {
     intersecting: boolean;
-    text: string;
+    header: string;
   }) => {
     const { getByTestId } = renderWalletSummary(props);
 
@@ -124,19 +124,21 @@ describe("WalletSummary", () => {
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
-    await waitFor(() => expect(title).toEqual(text));
+    await waitFor(() =>
+      expect(title).toEqual({ title: en.wallet.title, header })
+    );
   };
 
   it("should render account name and balance if title not intersecting viewport", async () =>
     await testTitle({
       intersecting: false,
-      text: `${en.accounts.main} – ${formatToken({
+      header: `${en.accounts.main} – ${formatToken({
         value: mockMainAccount.balanceE8s,
       })} ${ICPToken.symbol}`,
     }));
 
   it("should render a static title if title is intersecting viewport", async () =>
-    await testTitle({ intersecting: true, text: en.wallet.title }));
+    await testTitle({ intersecting: true, header: en.wallet.title }));
 
   it("should not render a balance if token is unlikely undefined", () => {
     const { container } = renderWalletSummary({

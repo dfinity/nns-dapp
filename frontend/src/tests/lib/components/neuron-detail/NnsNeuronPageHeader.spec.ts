@@ -3,8 +3,8 @@
  */
 
 import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -41,7 +41,7 @@ describe("NnsNeuronPageHeader", () => {
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
-    expect(title).toEqual(text);
+    expect(title).toEqual({ title: "Neuron", header: text });
   };
 
   it("should render a title with neuron ID if title is not intersecting viewport", () =>

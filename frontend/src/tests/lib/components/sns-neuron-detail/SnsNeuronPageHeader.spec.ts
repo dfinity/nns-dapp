@@ -3,12 +3,13 @@
  */
 
 import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { snsResponseFor } from "$tests/mocks/sns-response.mock";
@@ -68,7 +69,7 @@ describe("SnsNeuronPageHeader", () => {
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
-    expect(title).toEqual(text);
+    expect(title).toEqual({ title: en.neuron_detail.title, header: text });
   };
 
   it("should render a title with neuron ID if title is not intersecting viewport", () =>

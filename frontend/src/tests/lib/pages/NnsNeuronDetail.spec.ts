@@ -4,12 +4,12 @@
 
 import * as api from "$lib/api/governance.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -75,9 +75,7 @@ describe("NeuronDetail", () => {
 
       // Old components
       expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
-        false
-      );
+      expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(false);
       expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
       expect(await po.hasJoinFundCard()).toBe(false);
 
@@ -162,9 +160,7 @@ describe("NeuronDetail", () => {
 
       // Old components
       expect(await po.getMaturityCardPo().isPresent()).toBe(true);
-      expect(await po.getNnsNeuronMetaInfoCardPageObjectPo().isPresent()).toBe(
-        true
-      );
+      expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(true);
       expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(true);
       expect(await po.hasJoinFundCard()).toBe(true);
 
@@ -214,7 +210,9 @@ describe("NeuronDetail", () => {
       dispatchIntersecting({ element, intersecting });
 
       const title = get(layoutTitleStore);
-      await waitFor(() => expect(title).toEqual(text));
+      await waitFor(() =>
+        expect(title).toEqual({ title: en.neuron_detail.title, header: text })
+      );
     };
 
     it("should render a title with neuron ID if title is not intersecting viewport", async () =>
