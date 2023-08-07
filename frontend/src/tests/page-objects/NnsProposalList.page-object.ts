@@ -31,6 +31,17 @@ export class NnsProposalListPo extends BasePageObject {
     return Array.from(new Set(topics));
   }
 
+  async getCardStatuses(): Promise<string[]> {
+    const statuses = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalStatusText())
+    );
+
+    // return unique values only
+    return Array.from(new Set(statuses));
+  }
+
   async getFirstProposalCardPoForProposer(
     proposer: string
   ): Promise<ProposalCardPo> {
@@ -47,6 +58,20 @@ export class NnsProposalListPo extends BasePageObject {
     }
 
     throw new Error(`No proposal card found for proposer ${proposer}`);
+  }
+
+  async getFirstProposalCardPoForTopic(
+    topicText: string
+  ): Promise<ProposalCardPo> {
+    const allCards = await this.getProposalCardPos();
+
+    for (const card of allCards) {
+      if ((await card.getProposalTopicText()) === topicText) {
+        return card;
+      }
+    }
+
+    throw new Error(`No proposal card found for topic "${topicText}"`);
   }
 
   async getProposalIds(): Promise<string[]> {
