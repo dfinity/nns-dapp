@@ -2,7 +2,7 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { createDummyProposal } from "$tests/utils/e2e.nns-proposals.test-utils";
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
-import { Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@dfinity/nns";
 import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
@@ -41,8 +41,29 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectAllTopics([Topic.ExchangeRate]);
+    .selectAllTopicsExcept([Topic.ExchangeRate]);
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
+
+  step("Filter proposals by Status");
+  const getVisibleCardStatuses = () =>
+    appPo.getProposalsPo().getNnsProposalListPo().getCardStatuses();
+
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectStatusFilter([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect(await getVisibleCardStatuses()).toEqual(["Open"]);
+
+  // Invert status filter
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectAllStatusesExcept([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect(await getVisibleCardStatuses()).not.toContain("Open");
 });
