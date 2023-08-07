@@ -467,6 +467,19 @@ describe("neurons-services", () => {
       expect(spyJoinCommunityFund).not.toBeCalled();
       expect(spyLeaveCommunityFund).not.toBeCalled();
     });
+
+    it("should not update neuron if not controlled by user", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+
+      await toggleCommunityFund(notControlledNeuron);
+
+      expectToastError(en.error.not_authorized_neuron_action);
+      expect(spyJoinCommunityFund).not.toBeCalled();
+      expect(spyLeaveCommunityFund).not.toBeCalled();
+    });
   });
 
   describe("toggleAutoStakeMaturity", () => {
