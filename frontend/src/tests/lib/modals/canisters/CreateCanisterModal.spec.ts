@@ -62,7 +62,7 @@ describe("CreateCanisterModal", () => {
   const selectAccountGoToNameForm = async ({
     container,
     queryByTestId,
-    selectAccount = mockMainAccount,
+    selectedAccount = mockMainAccount,
   }) => {
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
@@ -80,7 +80,7 @@ describe("CreateCanisterModal", () => {
 
     selectElement &&
       fireEvent.change(selectElement, {
-        target: { value: selectAccount.identifier },
+        target: { value: selectedAccount.identifier },
       });
 
     // Enter Name Screen
@@ -91,7 +91,7 @@ describe("CreateCanisterModal", () => {
 
   const testCreateCanister = async ({
     canisterName,
-    selectAccount = undefined,
+    selectedAccount = undefined,
   }) => {
     const { queryByTestId, container, component, queryByText } =
       await renderModal({
@@ -100,7 +100,7 @@ describe("CreateCanisterModal", () => {
     await selectAccountGoToNameForm({
       container,
       queryByTestId,
-      selectAccount,
+      selectedAccount,
     });
 
     // Enter Name Screen
@@ -159,7 +159,7 @@ describe("CreateCanisterModal", () => {
     expect(createCanister).toBeCalledWith({
       name: canisterName,
       amount: icpAmount,
-      account: selectAccount ?? mockMainAccount,
+      account: selectedAccount ?? mockMainAccount,
     });
     expect(toastsShow).toBeCalled();
   };
@@ -171,7 +171,7 @@ describe("CreateCanisterModal", () => {
   it("should create a canister with subAccount and close modal", async () => {
     await testCreateCanister({
       canisterName: "best dapp ever",
-      selectAccount: mockSubAccount,
+      selectedAccount: mockSubAccount,
     });
   });
 
