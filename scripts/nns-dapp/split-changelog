@@ -92,13 +92,13 @@ echo "## Proposal $PROPOSAL_NUMBER" >>"$CHANGELOG"
 #    are followed by a line that doesn't start with ##.)
 # 5. Add a blank line before and after each section heading.
 sed -n "$START_OF_UNRELEASED_SECTION,$END_OF_UNRELEASED_SECTION p" "$OLD_CHANGELOG" |
-    grep -v "^$" |
-    (
-      cat -
-      echo '####'
-    ) |
-    awk '{if ($0 !~ /^##/ || prev !~ /^####/) print prev} {prev=$0}' |
-    awk '{ if ($0 ~ /^###/) print "\n"$0"\n"; else print $0 }' >>"$CHANGELOG"
+  grep -v "^$" |
+  (
+    cat -
+    echo '####'
+  ) |
+  awk '{if ($0 !~ /^##/ || prev !~ /^####/) print prev} {prev=$0}' |
+  awk '{ if ($0 ~ /^###/) print "\n"$0"\n"; else print $0 }' >>"$CHANGELOG"
 
 sed -n "$END_OF_UNRELEASED_SECTION,$ p" "$OLD_CHANGELOG" >>"$CHANGELOG"
 
