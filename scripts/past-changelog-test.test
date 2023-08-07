@@ -19,16 +19,25 @@ sponge() {
   mv "$tmp_file" "$1"
 }
 
-awk '/## Proposal/ {if (!done) {print "* change above"; done=1}} 1' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+LAST_RELEASE_HEADING="$(git show origin/main:CHANGELOG-Nns-Dapp.md | grep -m 1 '^## Proposal [0-9]\+$')"
+
+awk "/$LAST_RELEASE_HEADING/ {if (!done) {print \"* change above\"; done=1}} 1" CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
 if ! "$SCRIPT"; then
   echo "Should have passed with change above most recent release." >&2
   exit 1
 fi
 git checkout CHANGELOG-Nns-Dapp.md
 
-awk '/## Proposal/ {if (!done) {print; print "* change below"; done=1; next}} 1' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+awk "/$LAST_RELEASE_HEADING/ {if (!done) {print; print \"* change below\"; done=1; next}} 1" CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
 if "$SCRIPT"; then
   echo "Should have failed with change below most recent release." >&2
+  exit 1
+fi
+git checkout CHANGELOG-Nns-Dapp.md
+
+awk "/$LAST_RELEASE_HEADING/ {if (!done) {print \"## Proposal 999999\"; print \"* change in new release\"; done=1}} 1" CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+if ! "$SCRIPT"; then
+  echo "Should have passed with change adding a new release." >&2
   exit 1
 fi
 git checkout CHANGELOG-Nns-Dapp.md
