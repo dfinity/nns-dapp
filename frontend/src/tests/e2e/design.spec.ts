@@ -8,8 +8,7 @@ test.describe("Design", () => {
     await page.goto("/");
     await expect(page).toHaveTitle("NNS Dapp");
 
-    // TODO: uncomment when screenshots are available in CI
-    // await expect(page).toHaveScreenshot();
+    await expect(page).toHaveScreenshot();
   });
 
   test.describe("Signed-in", () => {
@@ -39,10 +38,9 @@ test.describe("Design", () => {
       await appPo.getAccountsPo().waitFor();
       await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
 
-      // TODO: uncomment when screenshots are available in CI
-      // await expect(page).toHaveScreenshot({
-      //  mask: [page.locator('[data-tid="identifier"]')],
-      // });
+      await expect(page).toHaveScreenshot({
+        mask: [page.locator('[data-tid="identifier"]')],
+      });
     };
 
     test("My Tokens", async () => testMyTokens());
