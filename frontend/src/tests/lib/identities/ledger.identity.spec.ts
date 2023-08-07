@@ -1,5 +1,6 @@
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { getRequestId } from "$lib/utils/ledger.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
@@ -12,6 +13,7 @@ import {
   requestIdOf,
   type Endpoint,
   type HttpAgentRequest,
+  type ReadRequest,
   type ReadRequestType,
 } from "@dfinity/agent";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
@@ -55,6 +57,7 @@ describe("LedgerIdentity", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "warn").mockImplementation(() => undefined);
     mockLedgerApp.getAddressAndPubKey.mockResolvedValue({
       errorMessage: undefined,
       returnCode: LedgerError.NoErrors,
@@ -100,7 +103,6 @@ describe("LedgerIdentity", () => {
     const readRequest = await identity.transformRequest(mockReadStateRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
     expect(readRequest.endpoint).toBe("read_state");
-    identity.clearInstanceVariablesForTesting();
   });
 
   it("should call to sign read state request after signing call request if neuron flag is set", async () => {
@@ -116,7 +118,6 @@ describe("LedgerIdentity", () => {
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
     expect(mockLedgerApp.sign).toHaveBeenCalledTimes(2);
     expect(readRequest.endpoint).toBe("read_state");
-    identity.clearInstanceVariablesForTesting();
   });
 
   it("should sign new call requests", async () => {
@@ -129,7 +130,6 @@ describe("LedgerIdentity", () => {
     const request2 = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
     expect(request2.endpoint).toBe("call");
-    identity.clearInstanceVariablesForTesting();
   });
 
   it("should use sign new call requests", async () => {
@@ -142,7 +142,6 @@ describe("LedgerIdentity", () => {
     const request2 = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
     expect(request2.endpoint).toBe("call");
-    identity.clearInstanceVariablesForTesting();
   });
 
   it("order of requests doesn't matter for read state caching", async () => {
@@ -172,20 +171,32 @@ describe("LedgerIdentity", () => {
     await identity.transformRequest(mockHttpRequest2);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
 
-    // Read state for first call
-    const readRequest1 = await identity.transformRequest(mockReadStateRequest1);
-    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
-    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
-    if (typeof readRequest1.body === "object" && "paths" in readRequest1.body) {
-      expect(readRequest1.body.paths[0][1]).toEqual(requestId1);
-    }
-
     // Read state for second call
     const readRequest2 = await identity.transformRequest(mockReadStateRequest2);
     expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
-    if (typeof readRequest2.body === "object" && "paths" in readRequest2.body) {
-      expect(readRequest2.body.paths[0][1]).toEqual(requestId2);
+    if (
+      typeof readRequest2.body === "object" &&
+      "content" in readRequest2.body
+    ) {
+      const body = readRequest2.body.content as ReadRequest;
+      expect(getRequestId(body)).toEqual(requestId2);
+    } else {
+      fail("To read request id from transformed request 2");
+    }
+
+    // Read state for first call
+    const readRequest1 = await identity.transformRequest(mockReadStateRequest1);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+    if (
+      typeof readRequest1.body === "object" &&
+      "content" in readRequest1.body
+    ) {
+      const body = readRequest1.body.content as ReadRequest;
+      expect(getRequestId(body)).toEqual(requestId1);
+    } else {
+      fail("To read request id from transformed request 1");
     }
   });
 });

@@ -115,7 +115,6 @@ export const resetIdentitiesCachedForTesting = () => (identities = {});
 export const getLedgerIdentity = async (
   identifier: string
 ): Promise<LedgerIdentity> => {
-  // TODO: remove caching of the identities to avoid issues with the LedgerIdentity instance being reused.
   if (identities[identifier]) {
     return identities[identifier];
   }

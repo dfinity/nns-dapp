@@ -6,7 +6,7 @@ import {
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { i18n } from "$lib/stores/i18n";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
-import type { Signature } from "@dfinity/agent";
+import type { ReadRequest, RequestId, Signature } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
 import type {
@@ -108,7 +108,7 @@ export type RequestSignatures = {
   readStateSignature: Signature;
 };
 
-export const decodeSignatures = async ({
+export const decodeUpdateSignatures = async ({
   RequestSignatureRS,
   StatusReadSignatureRS,
   returnCode,
@@ -130,3 +130,7 @@ export const decodeSignatures = async ({
 
 const bufferToArrayBuffer = (buffer: Buffer): ArrayBuffer =>
   buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+
+// Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
+// Quote: "Moreover, all paths with prefix /request_status/<request_id> must refer to the same request ID <request_id>."
+export const getRequestId = (body: ReadRequest): RequestId => body.paths[0][1];

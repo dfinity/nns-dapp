@@ -10,7 +10,8 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   decodePublicKey,
   decodeSignature,
-  decodeSignatures,
+  decodeUpdateSignatures,
+  getRequestId,
   type RequestSignatures,
 } from "$lib/utils/ledger.utils";
 import {
@@ -18,13 +19,16 @@ import {
   SignIdentity,
   requestIdOf,
   type CallRequest,
+  type HttpAgentReadStateRequest,
   type HttpAgentRequest,
   type PublicKey,
   type ReadRequest,
   type ReadRequestType,
   type ReadStateRequest,
+  type RequestId,
   type Signature,
 } from "@dfinity/agent";
+import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
@@ -43,11 +47,28 @@ type ReadStateData = {
   body: ReadStateRequest;
 };
 
+const sendersMatch = (
+  sender1: Uint8Array | Principal,
+  sender2: Uint8Array | Principal
+): boolean => {
+  if (sender1 instanceof Uint8Array && sender2 instanceof Uint8Array) {
+    return (
+      Buffer.from(sender1).toString("hex") ===
+      Buffer.from(sender2).toString("hex")
+    );
+  }
+  if (sender1 instanceof Principal && sender2 instanceof Principal) {
+    return sender1.toText() === sender2.toText();
+  }
+  return false;
+};
+
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
   private neuronStakeFlag = false;
   // Used to avoid signing the read state transaction twice.
+  // The key is the request id of the first request, not the read state request.
   // Map<requestIdHex, ReadStateData>
   private readStateMap: Map<string, ReadStateData> = new Map();
 
@@ -112,7 +133,7 @@ export class LedgerIdentity extends SignIdentity {
       // Remove the "neuron stake" flag, since we already signed the transaction.
       this.neuronStakeFlag = false;
 
-      return decodeSignatures(responseSign);
+      return decodeUpdateSignatures(responseSign);
     };
 
     return this.executeWithApp<RequestSignatures>(callback);
@@ -217,11 +238,6 @@ export class LedgerIdentity extends SignIdentity {
     return decodePublicKey(response);
   }
 
-  public clearInstanceVariablesForTesting(): void {
-    this.neuronStakeFlag = false;
-    this.readStateMap = new Map();
-  }
-
   private async executeWithApp<T>(
     callback: (app: LedgerApp) => Promise<T>
   ): Promise<T> {
@@ -246,6 +262,77 @@ export class LedgerIdentity extends SignIdentity {
     }
   }
 
+  private async getRequestFromCache(
+    request: HttpAgentReadStateRequest
+  ): Promise<Record<string, unknown> | undefined> {
+    const { body, ...fields } = request;
+    const requestId = getRequestId(body);
+    const requestIdHex = Buffer.from(requestId).toString("hex");
+    const requestData = this.readStateMap.get(requestIdHex);
+    if (nonNullish(requestData)) {
+      const { signature, body: cachedBody } = requestData;
+      // If cached data doesn't match, ignore and move on to sign the request.
+      // `ingress_expiry` doesn't need to match. TODO: Ask why.
+      if (sendersMatch(cachedBody.sender, body.sender)) {
+        return {
+          ...fields,
+          body: {
+            content: cachedBody,
+            sender_pubkey: this.publicKey.toDer(),
+            sender_sig: signature,
+          },
+        };
+      }
+    }
+    console.warn(
+      `No cached data for read state request with id ${requestIdHex}.`
+    );
+  }
+
+  private async createReadStateRequest(
+    body: CallRequest
+  ): Promise<{ readStateBody: ReadStateRequest; requestId: RequestId }> {
+    const requestId = await requestIdOf(body);
+    const readStateBody = {
+      // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
+      request_type: "read_state" as ReadRequestType.ReadState,
+      // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
+      // Quote: "Moreover, all paths with prefix /request_status/<request_id> must refer to the same request ID <request_id>."
+      paths: [[new TextEncoder().encode("request_status"), requestId]],
+      ingress_expiry: body.ingress_expiry,
+      sender: body.sender,
+    };
+    return {
+      readStateBody,
+      requestId,
+    };
+  }
+
+  private storeData({
+    requestId,
+    signature,
+    body,
+  }: {
+    requestId: RequestId;
+    signature: Signature;
+    body: ReadStateRequest;
+  }) {
+    // Store the read state signature to be able to reuse it later.
+    const requestIdHex = Buffer.from(requestId).toString("hex");
+    this.readStateMap.set(requestIdHex, {
+      signature: signature,
+      body,
+    });
+  }
+
+  /**
+   * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
+   * @param request - body of the HttpAgentRequest
+   */
+  private prepareCborForLedger = (
+    request: ReadRequest | CallRequest
+  ): ArrayBuffer => Cbor.encode({ content: request });
+
   /**
    * Required implementation for agent-js transformRequest.
    *
@@ -255,64 +342,39 @@ export class LedgerIdentity extends SignIdentity {
     request: HttpAgentRequest
   ): Promise<Record<string, unknown>> {
     if (
-      // Any other call will reset `readStateSignature` and `readStateBody`.
-      // Can't import Endpoint as value from @dfinity/agent because it's const enum.
+      // "read_state" is a value from Endpoint enum from @dfinity/agent but it's const enum and can't be imported as value with `isolatedModules` flag.
+      // More info: https://github.com/microsoft/TypeScript/issues/40344#issuecomment-956368612
       request.endpoint === "read_state"
     ) {
-      const { body: _body, ...fields } = request;
-      const [_, requestId] = _body.paths[0];
-      const requestIdHex = Buffer.from(requestId).toString("hex");
-      const requestData = this.readStateMap.get(requestIdHex);
-      if (nonNullish(requestData)) {
-        const { signature, body } = requestData;
-        return {
-          ...fields,
-          body: {
-            content: body,
-            sender_pubkey: this.publicKey.toDer(),
-            sender_sig: signature,
-          },
-        };
+      const cachedRequest = await this.getRequestFromCache(request);
+      if (nonNullish(cachedRequest)) {
+        return cachedRequest;
       }
     }
-
-    /**
-     * Convert the HttpAgentRequest body into cbor which can be signed by the Ledger Hardware Wallet.
-     * @param request - body of the HttpAgentRequest
-     */
-    const prepareCborForLedger = (
-      request: ReadRequest | CallRequest
-    ): ArrayBuffer => Cbor.encode({ content: request });
     const { body, ...fields } = request;
-
-    const requestId = await requestIdOf(body);
 
     let callSignature: Signature;
     // There is an issue with the Ledger App when the neuron flag is set to true and `signWithReadState`.
     // TODO: Check app version and use `signWithReadState` only if the app version has the issue fixed.
-    if (this.neuronStakeFlag || request.endpoint === "read_state") {
-      callSignature = await this.sign(prepareCborForLedger(body));
-    } else {
-      // Store the body of the read state request to be able to reuse it later.
-      const readStateBody = {
-        // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
-        request_type: "read_state" as ReadRequestType.ReadState,
-        // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
-        paths: [[new TextEncoder().encode("request_status"), requestId]],
-        ingress_expiry: body.ingress_expiry,
-        sender: body.sender,
-      };
+    if (request.endpoint === "call" && !this.neuronStakeFlag) {
+      // If the request endpoint is a "call", then the body is a CallRequest.
+      // Reference: https://github.com/dfinity/agent-js/blob/ce772199189748f9b77c8eb3ceeb3fdd11c70b5b/packages/agent/src/agent/http/types.ts#L28
+      const callBody = body as CallRequest;
+      const { requestId, readStateBody } = await this.createReadStateRequest(
+        callBody
+      );
       const signatures = await this.signWithReadState(
-        prepareCborForLedger(body),
-        prepareCborForLedger(readStateBody)
+        this.prepareCborForLedger(body),
+        this.prepareCborForLedger(readStateBody)
       );
       callSignature = signatures.callSignature;
-      // Store the read state signature to be able to reuse it later.
-      const requestIdHex = Buffer.from(requestId).toString("hex");
-      this.readStateMap.set(requestIdHex, {
+      this.storeData({
+        requestId,
         signature: signatures.readStateSignature,
         body: readStateBody,
       });
+    } else {
+      callSignature = await this.sign(this.prepareCborForLedger(body));
     }
 
     return {
