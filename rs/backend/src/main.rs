@@ -12,7 +12,7 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{over, over_async};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
@@ -55,8 +55,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
-        let bytes = s.encode();
-        stable::set(&bytes);
+        s.pre_upgrade();
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -73,13 +72,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        let bytes = stable::get();
-        let new_state = State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
-        });
-
-        s.replace(new_state);
+        s.replace(State::post_upgrade());
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");

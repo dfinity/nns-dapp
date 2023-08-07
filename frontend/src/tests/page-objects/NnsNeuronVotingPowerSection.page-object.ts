@@ -1,8 +1,8 @@
-import { NnsNeuronDissolveDelayActionItemPo } from "$tests/page-objects/NnsNeuronDissolveDelayActionItem.page-object";
+import { NnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
 import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateItemAction.page-object";
-import { NnsStakeItemActionPo } from "$tests/page-objects/NnsStakeItemAction.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { BasePageObject } from "./base.page-object";
 
 export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
   private static readonly TID = "nns-neuron-voting-power-section-component";
@@ -17,8 +17,12 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
     return this.getText("voting-power");
   }
 
-  getStakeItemActionPo(): NnsStakeItemActionPo {
-    return NnsStakeItemActionPo.under(this.root);
+  getDescription(): Promise<string> {
+    return this.getText("voting-power-description");
+  }
+
+  getStakeItemActionPo(): StakeItemActionPo {
+    return StakeItemActionPo.under(this.root);
   }
 
   hasStakeItemAction(): Promise<boolean> {
@@ -33,8 +37,8 @@ export class NnsNeuronVotingPowerSectionPo extends BasePageObject {
     return this.getNeuronStateItemActionPo().isPresent();
   }
 
-  getNeuronDissolveDelayItemActionPo(): NnsNeuronDissolveDelayActionItemPo {
-    return NnsNeuronDissolveDelayActionItemPo.under(this.root);
+  getNeuronDissolveDelayItemActionPo(): NnsNeuronDissolveDelayItemActionPo {
+    return NnsNeuronDissolveDelayItemActionPo.under(this.root);
   }
 
   hasNeuronDissolveDelayItemAction(): Promise<boolean> {

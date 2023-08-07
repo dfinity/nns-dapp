@@ -2,7 +2,7 @@ import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvance
 import { NnsNeuronInfoStakePo } from "$tests/page-objects/NnsNeuronInfoStake.page-object";
 import { NnsNeuronMaturityCardPo } from "$tests/page-objects/NnsNeuronMaturityCard.page-object";
 import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
-import { NnsNeuronMetaInfoCardPageObjectPo } from "$tests/page-objects/NnsNeuronMetaInfoCard.page-object";
+import { NnsNeuronMetaInfoCardPo } from "$tests/page-objects/NnsNeuronMetaInfoCard.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
@@ -25,8 +25,8 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
-  getNnsNeuronMetaInfoCardPageObjectPo(): NnsNeuronMetaInfoCardPageObjectPo {
-    return NnsNeuronMetaInfoCardPageObjectPo.under(this.root);
+  getNnsNeuronMetaInfoCardPo(): NnsNeuronMetaInfoCardPo {
+    return NnsNeuronMetaInfoCardPo.under(this.root);
   }
 
   async createDummyProposals(): Promise<void> {
@@ -74,7 +74,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   // TODO: Remove when ENABLE_NEURON_SETTINGS is cleaned up.
   //       See https://dfinity.atlassian.net/browse/GIX-1688
   getNeuronIdOldUi(): Promise<string | null> {
-    return this.getNnsNeuronMetaInfoCardPageObjectPo().getNeuronId();
+    return this.getNnsNeuronMetaInfoCardPo().getNeuronId();
   }
 
   getNeuronIdNewUi(): Promise<string | null> {
@@ -85,7 +85,7 @@ export class NnsNeuronDetailPo extends BasePageObject {
   //       See https://dfinity.atlassian.net/browse/GIX-1688
   async isNewUi(): Promise<boolean> {
     await Promise.race([
-      this.getNnsNeuronMetaInfoCardPageObjectPo().waitFor(),
+      this.getNnsNeuronMetaInfoCardPo().waitFor(),
       this.getPageHeaderPo().waitFor(),
     ]);
 

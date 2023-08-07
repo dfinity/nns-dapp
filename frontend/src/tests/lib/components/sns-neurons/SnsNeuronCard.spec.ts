@@ -47,7 +47,6 @@ describe("SnsNeuronCard", () => {
   });
 
   const defaultProps = {
-    role: "link",
     ariaLabel: "test label",
   };
   const data = snsResponsesForLifecycle({
@@ -61,18 +60,18 @@ describe("SnsNeuronCard", () => {
     snsQueryStore.reset();
   });
   it("renders a Card", () => {
-    const { container } = render(SnsNeuronCard, {
+    const { getByTestId } = render(SnsNeuronCard, {
       props: { neuron: mockSnsNeuron, ...defaultProps },
     });
 
-    const articleElement = container.querySelector("article");
+    const articleElement = getByTestId("neuron-card");
 
     expect(articleElement).not.toBeNull();
   });
 
   it("is clickable", async () => {
     const spyClick = jest.fn();
-    const { container, component } = render(SnsNeuronCard, {
+    const { getByTestId, component } = render(SnsNeuronCard, {
       props: {
         neuron: mockSnsNeuron,
         ...defaultProps,
@@ -80,28 +79,39 @@ describe("SnsNeuronCard", () => {
     });
     component.$on("click", spyClick);
 
-    const articleElement = container.querySelector("article");
+    const articleElement = getByTestId("neuron-card");
 
     articleElement && (await fireEvent.click(articleElement));
 
     expect(spyClick).toBeCalled();
   });
 
-  it("renders role and aria-label passed", async () => {
-    const role = "link";
+  it("renders aria-label passed", () => {
     const ariaLabel = "test label";
-    const { container } = render(SnsNeuronCard, {
+    const { getByTestId } = render(SnsNeuronCard, {
       props: {
         neuron: mockSnsNeuron,
-        role,
         ariaLabel,
       },
     });
 
-    const articleElement = container.querySelector("article");
-
-    expect(articleElement?.getAttribute("role")).toBe(role);
+    const articleElement = getByTestId("neuron-card");
     expect(articleElement?.getAttribute("aria-label")).toBe(ariaLabel);
+  });
+
+  it("should render a hyperlink", () => {
+    const href = "https://test.com";
+
+    const { getByTestId } = render(SnsNeuronCard, {
+      props: {
+        neuron: mockSnsNeuron,
+        href,
+      },
+    });
+
+    const linkElement = getByTestId("neuron-card");
+    expect(linkElement?.tagName.toLowerCase()).toEqual("a");
+    expect(linkElement?.getAttribute("href")).toEqual(href);
   });
 
   it("renders the neuron stake and identifier", async () => {
