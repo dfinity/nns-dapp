@@ -24,15 +24,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
 * New icon for dissolving neuron state.
 * Keep menu open and visible on large screen (not only on extra large screen).
+* Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
+* Don't display proposal navigation on launch-pad page.
+* Update SNS Aggregator response type and related converters.
 
 #### Deprecated
 #### Removed
+
+* Remove fallback to load SNSes directly from SNS canisters.
+* Remove ENABLE_SNS_AGGREGATOR flag.
+* Remove relying on the swap raw metrics to get the number of buyers of a Swap.
+
 #### Fixed
 
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
 * Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
 * Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
 * Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
+* Fix missing referrer path on subpages.
+* Fix some type discrepancies with SNS aggregator data.
+* Do not show unnecessary scrollbar in notifications.
+* Fix error when getting an SNS Aggregator page fails.
 
 #### Security
 
@@ -48,6 +60,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
+* Automatically populate the change log section in the release proposal.
 
 #### Changed
 
@@ -58,12 +71,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Faster formatting of shell and yaml files, by operating only on named or changed files.
 * Updated the calls to `docker-build` to use the `--network` flag.
 * Upgraded to Playwright 1.36.
+* Update candid interface for NNS governance to improve 1-proposal support.
+* Rename deleted workflows to start with "ZZZ".
 
 #### Deprecated
 #### Removed
-
-* Don't run reproducible assets test against Mac OS 13
-
 #### Fixed
 
 * Deploy.sh script

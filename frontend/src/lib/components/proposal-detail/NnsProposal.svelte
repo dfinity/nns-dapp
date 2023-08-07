@@ -14,6 +14,8 @@
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { referrerPathStore } from "$lib/stores/routes.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -25,11 +27,13 @@
 
 <TestIdWrapper testId="nns-proposal-component">
   {#if $store?.proposal?.id !== undefined}
-    <ProposalNavigation
-      currentProposalId={$store.proposal.id}
-      {proposalIds}
-      selectProposal={navigateToProposal}
-    />
+    {#if $referrerPathStore !== AppPath.Launchpad}
+      <ProposalNavigation
+        currentProposalId={$store.proposal.id}
+        {proposalIds}
+        selectProposal={navigateToProposal}
+      />
+    {/if}
 
     <div class="content-grid" data-tid="proposal-details-grid">
       <div class="content-a content-cell-island">

@@ -2,27 +2,27 @@
  * @jest-environment jsdom
  */
 
-import SnsStakedMaturityActionItem from "$lib/components/sns-neuron-detail/SnsStakedMaturityActionItem.svelte";
+import SnsStakedMaturityItemAction from "$lib/components/sns-neuron-detail/SnsStakedMaturityItemAction.svelte";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { SnsStakedMaturityActionItemPo } from "$tests/page-objects/SnsStakedMaturityActionItem.page-object";
+import { SnsStakedMaturityItemActionPo } from "$tests/page-objects/SnsStakedMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
 
-describe("SnsStakedMaturityActionItem", () => {
+describe("SnsStakedMaturityItemAction", () => {
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
         neuron,
         rootCanisterId: mockCanisterId,
         passPropNeuron: true,
-        testComponent: SnsStakedMaturityActionItem,
+        testComponent: SnsStakedMaturityItemAction,
       },
     });
 
-    return SnsStakedMaturityActionItemPo.under(
+    return SnsStakedMaturityItemActionPo.under(
       new JestPageObjectElement(container)
     );
   };

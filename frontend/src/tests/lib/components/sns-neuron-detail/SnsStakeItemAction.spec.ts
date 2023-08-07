@@ -8,7 +8,7 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
-import { SnsStakeItemActionPo } from "$tests/page-objects/SnsStakeItemAction.page-object";
+import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -23,7 +23,7 @@ describe("SnsStakeItemAction", () => {
       },
     });
 
-    return SnsStakeItemActionPo.under(new JestPageObjectElement(container));
+    return StakeItemActionPo.under(new JestPageObjectElement(container));
   };
 
   it("should render Stake of the neuron", async () => {

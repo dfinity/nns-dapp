@@ -5,18 +5,12 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(nns)/settings/+layout.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-
-let referrer = undefined;
-
-jest.mock("$lib/utils/page.utils", () => ({
-  ...jest.requireActual("$lib/utils/page.utils"),
-  referrerPathForNav: () => referrer,
-}));
 
 describe("Layout", () => {
   beforeAll(() => jest.resetAllMocks());
@@ -40,7 +34,7 @@ describe("Layout", () => {
   };
 
   it("should go back to the accounts page as fallback", async () => {
-    expect(referrer).toBeUndefined();
+    referrerPathStore.set(undefined);
 
     renderSettingsAndBack();
 
@@ -51,7 +45,7 @@ describe("Layout", () => {
   });
 
   it("should go back to referrer", async () => {
-    referrer = AppPath.Wallet;
+    referrerPathStore.set(AppPath.Wallet);
 
     const spy = jest.spyOn(history, "back");
 
