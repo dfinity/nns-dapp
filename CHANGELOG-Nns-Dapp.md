@@ -80,6 +80,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Deploy.sh script
 * Improve sns governance e2e test.
+* past-changelog-test compares lines numbers correctly.
 
 #### Security
 
