@@ -230,7 +230,13 @@ describe("neurons-services", () => {
     });
 
     it("should stake neuron from hardware wallet", async () => {
+      const mockHardkwareWalletIdentity = {
+        getPrincipal: () => mockHardwareWalletAccount.principal,
+      } as unknown as Identity;
+      setAccountIdentity(mockHardkwareWalletIdentity);
+
       expect(spyStakeNeuron).not.toBeCalled();
+
       const newNeuronId = await stakeNeuron({
         amount: 10,
         account: mockHardwareWalletAccount,
@@ -240,7 +246,7 @@ describe("neurons-services", () => {
         controller: mockHardwareWalletAccount.principal,
         identity: new AnonymousIdentity(),
         fromSubAccount: undefined,
-        ledgerCanisterIdentity: mockIdentity,
+        ledgerCanisterIdentity: mockHardkwareWalletIdentity,
         stake: BigInt(10 * E8S_PER_ICP),
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
@@ -458,19 +464,6 @@ describe("neurons-services", () => {
       await toggleCommunityFund(neuron);
 
       expectToastError(en.error.missing_identity);
-      expect(spyJoinCommunityFund).not.toBeCalled();
-      expect(spyLeaveCommunityFund).not.toBeCalled();
-    });
-
-    it("should not update neuron if not controlled by user", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
-      });
-
-      await toggleCommunityFund(notControlledNeuron);
-
-      expectToastError(en.error.not_authorized_neuron_action);
       expect(spyJoinCommunityFund).not.toBeCalled();
       expect(spyLeaveCommunityFund).not.toBeCalled();
     });
