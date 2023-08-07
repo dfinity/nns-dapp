@@ -30,6 +30,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix some type discrepancies with SNS aggregator data.
 * Do not show unnecessary scrollbar in notifications.
 * Fix error when getting an SNS Aggregator page fails.
+* Maintain text color in hyperlinks card when hovered.
+* Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
 
 #### Security
 
