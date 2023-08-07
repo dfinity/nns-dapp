@@ -18,9 +18,9 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { browser } from "$app/environment";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
   export let proposalIdText: string | undefined | null = undefined;
-  export let referrerPath: AppPath | undefined = undefined;
 
   $: if ($authSignedInStore) {
     // We want to force the strategy, otherwise uses `FORCE_CALL_STRATEGY` which is `query` for now.
@@ -60,7 +60,9 @@
     }
 
     return goto(
-      referrerPath === AppPath.Launchpad ? AppPath.Launchpad : AppPath.Proposals
+      $referrerPathStore === AppPath.Launchpad
+        ? AppPath.Launchpad
+        : AppPath.Proposals
     );
   };
 
