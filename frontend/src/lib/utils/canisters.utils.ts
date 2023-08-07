@@ -6,9 +6,7 @@ import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
-import type { Account } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
-import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -91,6 +89,3 @@ export const errorCanisterNameMessage = (name: string | undefined) => {
   }
   return undefined;
 };
-
-export const filterCanistersSourceAccounts = (account: Account): boolean =>
-  !isAccountHardwareWallet(account);

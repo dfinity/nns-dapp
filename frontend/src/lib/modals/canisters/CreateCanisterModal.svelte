@@ -26,12 +26,10 @@
   } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
   import { ICPToken, nonNullish } from "@dfinity/utils";
-  import {
-    errorCanisterNameMessage,
-    filterCanistersSourceAccounts,
-  } from "$lib/utils/canisters.utils";
+  import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -119,7 +117,7 @@
           canSelectSource={true}
           rootCanisterId={OWN_CANISTER_ID}
           token={ICPToken}
-          filterAccounts={filterCanistersSourceAccounts}
+          filterAccounts={filterHardwareWalletAccounts}
         />
       </div>
 
