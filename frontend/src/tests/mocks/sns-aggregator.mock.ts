@@ -1,11 +1,11 @@
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import type {
-  CachedSns,
-  CachedSnsDto,
-  CachedSnsTokenMetadataDto,
-} from "$lib/types/sns-aggregator";
+import type { CachedSns, CachedSnsDto } from "$lib/types/sns-aggregator";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+
+// TS is not smart enough to infer the type from the JSON file.
+export const aggregatorMockSnsesDataDto: CachedSnsDto[] =
+  tenAggregatedSnses.map((sns: unknown) => sns as CachedSnsDto);
 
 // It should match the token below
 export const aggregatorTokenMock: IcrcTokenMetadata = {
@@ -15,12 +15,7 @@ export const aggregatorTokenMock: IcrcTokenMetadata = {
 };
 
 export const aggregatorSnsMockDto: CachedSnsDto = {
-  ...tenAggregatedSnses[7],
-  // We need this to tell TS that it's an array of tuples, not an array of arrays.
-  icrc1_metadata: tenAggregatedSnses[7]
-    .icrc1_metadata as CachedSnsTokenMetadataDto,
-  // We need this to tell TS that not an array of numbers, but an array of one number.
-  icrc1_fee: tenAggregatedSnses[7].icrc1_fee as [number],
+  ...aggregatorMockSnsesDataDto[7],
 };
 
 // It should match the converted response from sns-aggregator.mock.json with the same `index` value
