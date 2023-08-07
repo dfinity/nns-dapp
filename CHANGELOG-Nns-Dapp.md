@@ -60,6 +60,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * A test that state is preserved in downgrade-upgrade tests.
 * Support SNS neuron permission in fake SNS governance API.
 * Support selective pausing and resuming in API fakes.
+* Proposal details e2e test.
 * Automatically populate the change log section in the release proposal.
 
 #### Changed
@@ -80,6 +81,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Deploy.sh script
 * Improve sns governance e2e test.
+* past-changelog-test compares lines numbers correctly.
 
 #### Security
 
