@@ -38,13 +38,18 @@ import { get } from "svelte/store";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq
 
+type ReadStateData = {
+  signature: Signature;
+  body: ReadStateRequest;
+};
+
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
   private neuronStakeFlag = false;
   // Used to avoid signing the read state transaction twice.
-  private readStateSignature: Signature | undefined;
-  private readStateBody: ReadStateRequest | undefined;
+  // Map<requestIdHex, ReadStateData>
+  private readStateMap: Map<string, ReadStateData> = new Map();
 
   private constructor(
     private readonly derivePath: string,
@@ -214,8 +219,7 @@ export class LedgerIdentity extends SignIdentity {
 
   public clearInstanceVariablesForTesting(): void {
     this.neuronStakeFlag = false;
-    this.readStateSignature = undefined;
-    this.readStateBody = undefined;
+    this.readStateMap = new Map();
   }
 
   private async executeWithApp<T>(
@@ -250,27 +254,26 @@ export class LedgerIdentity extends SignIdentity {
   public override async transformRequest(
     request: HttpAgentRequest
   ): Promise<Record<string, unknown>> {
-    // There is a possible edge case not covered:
-    // If the identity instance is reused. And a new request is made, before the previous read state finished.
-    // In that case, the first read state would fail because it would use the new read state body and signature.
     if (
       // Any other call will reset `readStateSignature` and `readStateBody`.
       // Can't import Endpoint as value from @dfinity/agent because it's const enum.
-      request.endpoint === "read_state" &&
-      nonNullish(this.readStateSignature) &&
-      nonNullish(this.readStateBody)
+      request.endpoint === "read_state"
     ) {
-      // Try with this body also
       const { body: _body, ...fields } = request;
-      return {
-        ...fields,
-        body: {
-          // We need exactly the same body created earlier
-          content: this.readStateBody,
-          sender_pubkey: this.publicKey.toDer(),
-          sender_sig: this.readStateSignature,
-        },
-      };
+      const [_, requestId] = _body.paths[0];
+      const requestIdHex = Buffer.from(requestId).toString("hex");
+      const requestData = this.readStateMap.get(requestIdHex);
+      if (nonNullish(requestData)) {
+        const { signature, body } = requestData;
+        return {
+          ...fields,
+          body: {
+            content: body,
+            sender_pubkey: this.publicKey.toDer(),
+            sender_sig: signature,
+          },
+        };
+      }
     }
 
     /**
@@ -291,7 +294,7 @@ export class LedgerIdentity extends SignIdentity {
       callSignature = await this.sign(prepareCborForLedger(body));
     } else {
       // Store the body of the read state request to be able to reuse it later.
-      this.readStateBody = {
+      const readStateBody = {
         // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
         request_type: "read_state" as ReadRequestType.ReadState,
         // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
@@ -301,11 +304,15 @@ export class LedgerIdentity extends SignIdentity {
       };
       const signatures = await this.signWithReadState(
         prepareCborForLedger(body),
-        prepareCborForLedger(this.readStateBody)
+        prepareCborForLedger(readStateBody)
       );
       callSignature = signatures.callSignature;
       // Store the read state signature to be able to reuse it later.
-      this.readStateSignature = signatures.readStateSignature;
+      const requestIdHex = Buffer.from(requestId).toString("hex");
+      this.readStateMap.set(requestIdHex, {
+        signature: signatures.readStateSignature,
+        body: readStateBody,
+      });
     }
 
     return {

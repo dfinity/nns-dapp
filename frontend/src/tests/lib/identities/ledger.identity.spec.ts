@@ -9,6 +9,7 @@ import {
 import {
   Expiry,
   SubmitRequestType,
+  requestIdOf,
   type Endpoint,
   type HttpAgentRequest,
   type ReadRequestType,
@@ -23,30 +24,33 @@ describe("LedgerIdentity", () => {
   const mockTransport = mock<TransportWebHID>();
 
   const publicKey = Secp256k1PublicKey.fromRaw(fromHexString(rawPublicKeyHex));
-  const mockHttpRequest: HttpAgentRequest = {
+  const callBody1 = {
+    request_type: "call" as SubmitRequestType.Call,
+    paths: [],
+    canister_id: mockCanisterId,
+    method_name: "get_balance",
+    arg: new TextEncoder().encode(""),
+    sender: mockPrincipal,
+    ingress_expiry: new Expiry(100000),
+  };
+  const mockHttpRequest1: HttpAgentRequest = {
     endpoint: "call" as Endpoint.Call,
     request: {},
-    body: {
-      request_type: "call" as SubmitRequestType.Call,
-      paths: [],
-      canister_id: mockCanisterId,
-      method_name: "get_balance",
-      arg: new TextEncoder().encode(""),
-      sender: mockPrincipal,
-      ingress_expiry: new Expiry(100000),
-    },
+    body: callBody1,
   };
-  const mockReadStateRequest: HttpAgentRequest = {
+  const requestId1 = requestIdOf(callBody1);
+  const readStateBody1 = {
+    request_type: "read_state" as ReadRequestType.ReadState,
+    paths: [[new TextEncoder().encode("request_status"), requestId1]],
+    method_name: "get_balance",
+    arg: new TextEncoder().encode(""),
+    sender: mockPrincipal,
+    ingress_expiry: new Expiry(100000),
+  };
+  const mockReadStateRequest1: HttpAgentRequest = {
     endpoint: "read_state" as Endpoint.ReadState,
     request: {},
-    body: {
-      request_type: "read_state" as ReadRequestType.ReadState,
-      paths: [],
-      method_name: "get_balance",
-      arg: new TextEncoder().encode(""),
-      sender: mockPrincipal,
-      ingress_expiry: new Expiry(100000),
-    },
+    body: readStateBody1,
   };
 
   beforeEach(() => {
@@ -68,7 +72,6 @@ describe("LedgerIdentity", () => {
       .mockResolvedValue(publicKey);
     const callSignature = Buffer.alloc(64);
     const readStateSignature = Buffer.alloc(64);
-
     mockLedgerApp.signUpdateCall.mockResolvedValue({
       errorMessage: undefined,
       returnCode: LedgerError.NoErrors,
@@ -90,11 +93,11 @@ describe("LedgerIdentity", () => {
   it("should not call to sign read state request after signing call request", async () => {
     const identity = await LedgerIdentity.create();
 
-    const request = await identity.transformRequest(mockHttpRequest);
+    const request = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
     expect(request.endpoint).toBe("call");
 
-    const readRequest = await identity.transformRequest(mockReadStateRequest);
+    const readRequest = await identity.transformRequest(mockReadStateRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
     expect(readRequest.endpoint).toBe("read_state");
     identity.clearInstanceVariablesForTesting();
@@ -104,12 +107,12 @@ describe("LedgerIdentity", () => {
     const identity = await LedgerIdentity.create();
 
     identity.flagUpcomingStakeNeuron();
-    const request = await identity.transformRequest(mockHttpRequest);
+    const request = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
     expect(mockLedgerApp.sign).toHaveBeenCalledTimes(1);
     expect(request.endpoint).toBe("call");
 
-    const readRequest = await identity.transformRequest(mockReadStateRequest);
+    const readRequest = await identity.transformRequest(mockReadStateRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
     expect(mockLedgerApp.sign).toHaveBeenCalledTimes(2);
     expect(readRequest.endpoint).toBe("read_state");
@@ -119,13 +122,70 @@ describe("LedgerIdentity", () => {
   it("should sign new call requests", async () => {
     const identity = await LedgerIdentity.create();
 
-    const request = await identity.transformRequest(mockHttpRequest);
+    const request = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
     expect(request.endpoint).toBe("call");
 
-    const request2 = await identity.transformRequest(mockHttpRequest);
+    const request2 = await identity.transformRequest(mockHttpRequest1);
     expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
     expect(request2.endpoint).toBe("call");
     identity.clearInstanceVariablesForTesting();
+  });
+
+  it("should use sign new call requests", async () => {
+    const identity = await LedgerIdentity.create();
+
+    const request = await identity.transformRequest(mockHttpRequest1);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
+    expect(request.endpoint).toBe("call");
+
+    const request2 = await identity.transformRequest(mockHttpRequest1);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+    expect(request2.endpoint).toBe("call");
+    identity.clearInstanceVariablesForTesting();
+  });
+
+  it("order of requests doesn't matter for read state caching", async () => {
+    const callBody2 = {
+      ...callBody1,
+      method_name: "get_balance2",
+    };
+    const mockHttpRequest2: HttpAgentRequest = {
+      endpoint: "call" as Endpoint.Call,
+      request: {},
+      body: callBody2,
+    };
+    const requestId2 = requestIdOf(callBody1);
+    const mockReadStateRequest2: HttpAgentRequest = {
+      endpoint: "read_state" as Endpoint.ReadState,
+      request: {},
+      body: {
+        ...readStateBody1,
+        paths: [[new TextEncoder().encode("request_status"), requestId2]],
+        method_name: "get_balance2",
+      },
+    };
+    const identity = await LedgerIdentity.create();
+
+    // Two call requests before any read state
+    await identity.transformRequest(mockHttpRequest1);
+    await identity.transformRequest(mockHttpRequest2);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+
+    // Read state for first call
+    const readRequest1 = await identity.transformRequest(mockReadStateRequest1);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+    if (typeof readRequest1.body === "object" && "paths" in readRequest1.body) {
+      expect(readRequest1.body.paths[0][1]).toEqual(requestId1);
+    }
+
+    // Read state for second call
+    const readRequest2 = await identity.transformRequest(mockReadStateRequest2);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(2);
+    if (typeof readRequest2.body === "object" && "paths" in readRequest2.body) {
+      expect(readRequest2.body.paths[0][1]).toEqual(requestId2);
+    }
   });
 });
