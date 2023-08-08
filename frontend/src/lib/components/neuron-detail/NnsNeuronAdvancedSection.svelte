@@ -12,8 +12,8 @@
   import { nonNullish } from "@dfinity/utils";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import {
+    canUserManageNeuronFundParticipation,
     isNeuronControllable,
-    isNeuronControllableByUser,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
   import Hash from "../ui/Hash.svelte";
@@ -32,10 +32,11 @@
     accounts: $icpAccountsStore,
   });
 
-  let isControlledByUser: boolean;
-  $: isControlledByUser = isNeuronControllableByUser({
+  let canManageNFParticipation: boolean;
+  $: canManageNFParticipation = canUserManageNeuronFundParticipation({
     neuron,
-    mainAccount: $icpAccountsStore.main,
+    accounts: $icpAccountsStore,
+    identity: $authStore.identity,
   });
 </script>
 
@@ -98,7 +99,7 @@
       </div>
     {/if}
     <NnsAutoStakeMaturity {neuron} />
-    {#if isControlledByUser}
+    {#if canManageNFParticipation}
       <JoinCommunityFundCheckbox {neuron} />
     {/if}
     {#if isControllable}
