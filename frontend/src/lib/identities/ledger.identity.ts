@@ -273,7 +273,8 @@ export class LedgerIdentity extends SignIdentity {
     if (nonNullish(requestData)) {
       const { signature, body: cachedBody } = requestData;
       // If cached data doesn't match, ignore and move on to sign the request.
-      // `ingress_expiry` doesn't need to match. TODO: Ask why.
+      // The `ingress_expiry` is different in the cached in the new request because the new one is created after the first call.
+      // But the signature was done with the cached body. That's why we use the cached body.
       if (sendersMatch(cachedBody.sender, body.sender)) {
         return {
           ...fields,
