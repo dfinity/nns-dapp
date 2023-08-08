@@ -41,13 +41,15 @@ test.describe("Design", () => {
       await expect(page).toHaveScreenshot({
         mask: [
           page.locator('[data-tid="identifier"]'),
-          page.locator('[data-tid="select-universe-card"] .name'),
-          page.locator('[data-tid="select-universe-card"] .amount .label'),
+          page.locator('[data-tid="select-universe-card"]:not(:first-of-type) .name'),
+          page.locator('[data-tid="select-universe-card"]:not(:first-of-type) .amount .label'),
         ],
       });
     };
 
-    test("My Tokens", async () => testMyTokens());
+    test("My Tokens", async () => {
+      await testMyTokens();
+    });
 
     test("My Tokens (wide screen)", async () => {
       await page.setViewportSize({ width: 1300, height: 720 });

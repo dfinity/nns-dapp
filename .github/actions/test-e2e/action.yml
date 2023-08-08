@@ -2,14 +2,6 @@ name: 'Run Playwright e2e test shard'
 description: |
   Set up a test environment and run (a subset of) the Playwright end-to-end tests.
 inputs:
-  test_filter:
-    description: "Pattern used to determine which tests to run."
-    required: false
-    default: src/tests/e2e/*.spec.ts
-  update_screenshots:
-    description: "Set to 'true' to update screenshot golden files."
-    reuired: false
-    default: false
   shard_count:
     description: "The total number shards to split the tests into"
     required: false
@@ -52,13 +44,10 @@ runs:
       shell: bash
       working-directory: frontend
       run: |
-        if [ "${{ inputs.update_screenshots}}" = "true" ]; then
-          PLAYWRIGHT_ARGS="--update-snapshots"
-        fi
         PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
         PLAYWRIGHT_FILES="$(ls ${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
         export PLAYWRIGHT_ARGS PLAYWRIGHT_BASE_URL PLAYWRIGHT_FILES
-        npm run test-e2e -- ${PLAYWRIGHT_ARGS:-} ${PLAYWRIGHT_FILES:-}
+        npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}
@@ -68,6 +57,18 @@ runs:
           frontend/playwright-report/*
           frontend/playwright-results/*
         retention-days: 3
+    - name: Check for screenshot changes
+      id: check-screenshots
+      run: |
+        if ! git diff --quiet frontend/src/tests/e2e/snapshots; then
+          echo "Screenshots have changed! To update your local repo run:"
+          echo "  scripts/update-e2e-screenshots --job ${{ github.run_id }}"
+        fi
+    - name: Upload screenshots
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v3
+      name: updated-screenshots
+      path: $(git diff --name-only frontend/src/tests/e2e/snapshots)
     - name: Stop replica
       shell: bash
       run: dfx stop

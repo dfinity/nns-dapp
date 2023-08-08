@@ -18,7 +18,6 @@ This document list a couple of useful information to develop the NNS-dapp fronte
   - [Ledger, Index and Minter](#ledger-index-and-minter)
   - [Feature flag](#feature-flag)
 - [Mint bitcoin](#mint-bitcoin)
-- [Visual comparisons](#visual-comparisons)
 
 ## dapp development
 
@@ -89,7 +88,7 @@ e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
 
 If you wish to run the e2e tests against your local server, please note:
 
-- The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
+* The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
 
 ## Requirements
 
@@ -123,7 +122,7 @@ cd frontend
 ```
 
 3. Check for Newer Dependencies:
-
+   
 Identify the available newer versions of the dependencies. Run the following command in your terminal:
 
 ```bash
@@ -153,7 +152,7 @@ This command will install the newer versions of the dependencies and update the 
 After the installation is complete, it's crucial to thoroughly test the frontend dapp. Ensure that all the functionalities are working as expected and there are no compatibility issues with the updated dependencies.
 
 7. Create a Pull Request (PR):
-
+   
 If everything looks good and the frontend dapp is functioning correctly with the updated dependencies, it's time to create a pull request. Include the modified `package.json` and `package-lock.json` files in a new PR to let others review and merge the changes.
 
 ## ckBTC deployment
@@ -257,30 +256,3 @@ e.g.
 ./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf getnewaddress
 ./bin/bitcoin-cli -conf=$(pwd)/bitcoin.conf generatetoaddress 100 "bcrt1qtq30nuztv40nkncckn70n09tlype96snkxzhmt"
 ```
-
-## Visual comparisons
-
-From Playwright [documentation](https://playwright.dev/docs/test-snapshots):
-
-> Playwright Test includes the ability to produce and visually compare screenshots using `await expect(page).toHaveScreenshot()`. On first execution, Playwright test will generate reference screenshots. Subsequent runs will compare against the reference.
-
-To implement a new test that relies on comparing screenshots, follow these steps:
-
-1. Add an e2e test in the `./frontend/src/tests/e2e` directory.
-2. Implement a test which performs a visual comparison with `await expect(page).toHaveScreenshot()`.
-3. Run the e2e test locally using `npm run test-e2e:snapshots` to generate the screenshots.
-4. Run the e2e test locally again using `npm run test-e2e` to validate the test.
-5. Add the generated screenshots to Git.
-6. Create a PR for your changes.
-7. Open the GitHub Actions page and navigate to [Update snapshots](https://github.com/dfinity/nns-dapp/actions/workflows/snapshots.yml).
-8. Manually trigger the generation of screenshots for the CI by running the workflow using your PR or branch.
-
-This last step will generate the screenshots for the CI and add them to your PR. You can trigger this job again at any time you make changes, regardless of whether the test itself changes or not.
-
-### Notes
-
-The snapshots used for visual comparisons are saved in `./frontend/snapshots`.
-
-Since the CI runs on Linux machines, the screenshots used for testing purposes are suffixed with `*-linux.png`.
-
-However, most of us are developing locally on MacOS, and the corresponding screenshots are suffixed with `*-darwin.png`. Although we don't necessarily need to commit these screenshots to the repo since they are not used by the continuous integration, we do so for convenience reasons.
