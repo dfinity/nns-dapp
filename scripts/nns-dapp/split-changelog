@@ -32,8 +32,9 @@ source "$(clap.build)"
 # 4. Remove the extra '+' from the new entries.
 # 5. Append the title "Proposal XXX" at the end of the file. The XXX is taken
 #    from the commit tag.
-# 6. Append the old changelog file below "Proposal XXX" starting at the
-#    Unreleased section.
+# 6. Append the Unreleased section of the old changelog file below
+#    "Proposal # XXX", but with headings of empty sections removed.
+# 7. Append the remainder of the old changelog file below that, unchanged.
 
 # Writes stdin to the given file, but only after reading all of stdin.
 # Polyfill because `sponge` is not available everywhere.
@@ -72,16 +73,36 @@ head -n "$END_OF_UNRELEASED_SECTION" "$OLD_CHANGELOG" >"$CHANGELOG"
 # Apply the new entries with an extra '+'.
 sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$CHANGELOG"
 
-# Remove the entries that don't have the extra '+'.
-grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @' | sponge "$CHANGELOG"
+{
+  # Remove the entries that don't have the extra '+'.
+  grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @'
 
-# Get proposal number from tags applied to same commit as prod tag
-PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-[0-9]\+' | cut -d- -f2)"}"
-PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-XXXXXX}"
+  # Get proposal number from tags applied to same commit as prod tag
+  PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-[0-9]\+' | cut -d- -f2)"}"
+  PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-XXXXXX}"
 
-# Append the tail of the old changelog with entries before the release was cut.
-echo "## Proposal $PROPOSAL_NUMBER" >>"$CHANGELOG"
-tail -n "+$START_OF_UNRELEASED_SECTION" "$OLD_CHANGELOG" >>"$CHANGELOG"
+  # Append the tail of the old changelog with entries before the release was cut.
+  echo "## Proposal $PROPOSAL_NUMBER"
+
+  # The command below does:
+  # 1. Take the unreleased section of the old change log file.
+  # 2. Remove blank lines.
+  # 3. Add a line with "####" at the end. (To correctly recognize an empty
+  #    section at the end.)
+  # 4. Remove empty sections. (Only output lines that don't start with #### or
+  #    that are followed by a line that doesn't start with ##.)
+  # 5. Add a blank line before and after each section heading.
+  sed -n "$START_OF_UNRELEASED_SECTION,$END_OF_UNRELEASED_SECTION p" "$OLD_CHANGELOG" |
+    grep -v "^$" |
+    (
+      cat -
+      echo '####'
+    ) |
+    awk '{if ($0 !~ /^##/ || prev !~ /^####/) print prev} {prev=$0}' |
+    awk '{ if ($0 ~ /^###/) print "\n"$0"\n"; else print $0 }'
+
+  sed -n "$END_OF_UNRELEASED_SECTION,$ p" "$OLD_CHANGELOG"
+} | sponge "$CHANGELOG"
 
 # Remove duplicate blank lines.
 cat -s "$CHANGELOG" | sponge "$CHANGELOG"

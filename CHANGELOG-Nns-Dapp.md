@@ -46,6 +46,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Proposal details e2e test.
 * Automatically populate the change log section in the release proposal.
+* Remove empty section headings in scripts/nns-dapp/split-changelog.
 
 #### Changed
 
@@ -57,6 +58,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * past-changelog-test compares lines numbers correctly.
+* Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
 
 #### Security
 
