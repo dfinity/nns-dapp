@@ -105,6 +105,7 @@ describe("SNS public services", () => {
       snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
+      snsAggregatorStore.reset();
       jest.clearAllMocks();
       jest
         .spyOn(authStore, "subscribe")
@@ -136,6 +137,8 @@ describe("SNS public services", () => {
       jest
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() => Promise.resolve(aggregatorMockSnsesDataDto));
+
+      expect(get(snsAggregatorStore).data).toBeUndefined();
 
       await loadSnsProjects();
 
