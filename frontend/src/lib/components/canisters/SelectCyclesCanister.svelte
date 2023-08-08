@@ -6,7 +6,6 @@
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
   import Input from "$lib/components/ui/Input.svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
   import { areEnoughCyclesSelected } from "$lib/utils/canisters.utils";
 
   export let amount: number | undefined = undefined;
