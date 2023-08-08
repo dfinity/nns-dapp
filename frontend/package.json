@@ -2,6 +2,7 @@
   "name": "@dfinity/nns-dapp",
   "version": "2.0.44",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build:csp": "node scripts/build.csp.mjs",
     "build:preload": "node scripts/build.preload.mjs",
