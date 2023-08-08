@@ -6,6 +6,7 @@
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
   import Input from "$lib/components/ui/Input.svelte";
+  import { areEnoughCyclesSelected } from "$lib/utils/canisters.utils";
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
@@ -60,8 +61,7 @@
   };
 
   let enoughCycles: boolean;
-  $: enoughCycles =
-    minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
+  $: enoughCycles = areEnoughCyclesSelected({ amountCycles, minimumCycles });
 </script>
 
 <form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">

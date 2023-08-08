@@ -25,6 +25,14 @@ describe("SelectCyclesCanister", () => {
     ).toBeInTheDocument();
   });
 
+  it("should have a submit button disabled per default", () => {
+    const { getByTestId } = render(SelectCyclesCanisterTest, { props });
+
+    expect(
+      getByTestId("select-cycles-button").getAttribute("disabled")
+    ).not.toBeNull();
+  });
+
   it("renders two inputs", () => {
     const { container } = render(SelectCyclesCanister, { props });
 
