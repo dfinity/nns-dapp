@@ -68,7 +68,7 @@ describe("ConfirmationModal", () => {
     };
     const po = renderComponent(neuron);
     expect(await po.getContentText()).toBe(
-      "Confirm Are you sure you want this neuron to join the neurons' fund? Beware that the NNS Dapp doesn't support hardware wallets for SNS yet. If this neuron is controlled by a hardware wallet, you will not be able to manage it from the NNS Dapp."
+      "Confirm Are you sure you want this neuron to join the neurons' fund? Note that only the controllers of Neurons' Fund neurons get added as hotkeys to SNS neurons resulting from Neurons' Fund swap participation. Since you are not the controller of this neuron, you will not be able to manage the resulting SNS neurons, even if you control this neuron with a hardware wallet."
     );
   });
 });

@@ -374,9 +374,10 @@ export const canUserManageNeuronFundParticipation = ({
   identity: Identity | null | undefined;
   accounts: IcpAccountsStoreData;
 }): boolean =>
-  isNeuronControllableByUser({ neuron, mainAccount: accounts.main }) ||
-  (isHotKeyControllable({ neuron, identity }) &&
-    !isNeuronControlledByHardwareWallet({ neuron, accounts }));
+  nonNullish(identity) &&
+  (isNeuronControllableByUser({ neuron, mainAccount: accounts.main }) ||
+    (isHotKeyControllable({ neuron, identity }) &&
+      !isNeuronControlledByHardwareWallet({ neuron, accounts })));
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)

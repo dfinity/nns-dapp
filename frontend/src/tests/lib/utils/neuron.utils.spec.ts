@@ -2104,9 +2104,39 @@ describe("neuron-utils", () => {
         canUserManageNeuronFundParticipation({
           neuron,
           accounts,
-          identity: undefined,
+          identity: mockIdentity,
         })
       ).toBe(true);
+    });
+
+    it("should return false if no identity", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: identityMainAccount.principal?.toText(),
+          hotKeys: [],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: undefined,
+        })
+      ).toBe(false);
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: null,
+        })
+      ).toBe(false);
     });
 
     it("should return true if user is hotkey and no hardware wallet is attached", () => {
