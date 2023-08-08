@@ -18,6 +18,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Update SNS Aggregator response type and related converters.
 * Implement the standard accounts dropdown selector in canisters' features.
 * Review and optimize the number of steps and the UI of the canisters' related modals.
+* Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
 
 #### Deprecated
 #### Removed
