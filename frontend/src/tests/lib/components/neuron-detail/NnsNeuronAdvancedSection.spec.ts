@@ -162,7 +162,7 @@ describe("NnsNeuronAdvancedSection", () => {
     ).toBeNull();
   });
 
-  it("should render disabled join neurons' fund if user is a hotkey but controller is the attached hardware wallet", async () => {
+  it("should render not render join neurons' fund if user is a hotkey but controller is the attached hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -177,12 +177,10 @@ describe("NnsNeuronAdvancedSection", () => {
       },
     });
 
-    expect(
-      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).not.toBeNull();
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
   });
 
-  it("should render disabled join neurons' fund if user is not the controller nor a hotkey", async () => {
+  it("should render not render join neurons' fund if user is not the controller nor a hotkey", async () => {
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
