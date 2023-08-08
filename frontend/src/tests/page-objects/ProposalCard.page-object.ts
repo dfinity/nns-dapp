@@ -26,6 +26,15 @@ export class ProposalCardPo extends BasePageObject {
     }).getValueText();
   }
 
+  async getProposalStatusText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-status",
+      }).getKeyText()
+    ).trim();
+  }
+
   getShortenedProposer(): Promise<string> {
     return KeyValuePairPo.under({
       element: this.root,

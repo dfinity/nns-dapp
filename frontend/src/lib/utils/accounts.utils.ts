@@ -280,3 +280,7 @@ const maybeIcrcToIcpAccountIdentifier = (
     }),
   }).toHex();
 };
+
+export const filterHardwareWalletAccounts: (account: Account) => boolean = (
+  account: Account
+): boolean => !isAccountHardwareWallet(account);

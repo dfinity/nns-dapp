@@ -5,6 +5,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
@@ -27,6 +28,7 @@ import { getCurrentIdentity } from "../auth.services";
 export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
+    snsAggregatorStore.setData(aggregatorData);
     // TODO: Store this in a svelte store.
     const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();

@@ -575,6 +575,8 @@
     "no_dissolve_bonus": "No dissolve delay bonus",
     "available_description": "Available",
     "join_community_fund_description": "Are you sure you want this neuron to <strong>join</strong> the neurons' fund?",
+    "join_community_fund_hw_alert_1": "Note that only the controllers of Neurons' Fund neurons get added as hotkeys to SNS neurons resulting from Neurons' Fund swap participation.",
+    "join_community_fund_hw_alert_2": "Since you are not the controller of this neuron, you will not be able to manage the resulting SNS neurons, even if you control this neuron with a hardware wallet.",
     "leave_community_fund_description": "Are you sure you want this neuron to <strong>leave</strong> the neurons' fund?",
     "participate_community_fund": "Participate in neurons' fund.",
     "auto_stake_maturity": "Automatically stake new maturity.",

@@ -27,6 +27,10 @@ import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronAdvancedSection", () => {
+  const identityMainAccount = {
+    ...mockMainAccount,
+    principal: mockIdentity.getPrincipal(),
+  };
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
@@ -88,7 +92,12 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.lastRewardsDistribution()).toBe("May 19, 1992");
   });
 
-  it("should render actions", async () => {
+  it("should render actions if user is the controller", async () => {
+    icpAccountsStore.setForTesting({
+      main: identityMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+    });
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
@@ -133,21 +142,58 @@ describe("NnsNeuronAdvancedSection", () => {
     ).toBeNull();
   });
 
-  it("should render disabled join neurons' fund if user is not the controller", async () => {
+  it("should render enabled join neurons' fund if user is hotkey", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+    });
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
-        controller: mockCanisterId.toText(),
+        controller: "not-user",
+        hotKeys: [mockIdentity.getPrincipal().toText()],
       },
     });
 
     expect(
       await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).not.toBeNull();
+    ).toBeNull();
   });
 
-  it("should render split button and disabled join neurons' fund if user is controlled by hardware wallet", async () => {
+  it("should render not render join neurons' fund if user is a hotkey but controller is the attached hardware wallet", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: mockHardwareWalletAccount.principal.toText(),
+        hotKeys: [mockIdentity.getPrincipal().toText()],
+      },
+    });
+
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
+  });
+
+  it("should render not render join neurons' fund if user is not the controller nor a hotkey", async () => {
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: "not-user",
+        hotKeys: [],
+      },
+    });
+
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
+  });
+
+  it("should render split button but not join neurons' fund if neuron is controlled by hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -161,9 +207,7 @@ describe("NnsNeuronAdvancedSection", () => {
       },
     });
 
-    expect(
-      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).not.toBeNull();
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
     expect(await po.hasSplitNeuronButton()).toBe(true);
   });
 });
