@@ -98,7 +98,9 @@
       </div>
     {/if}
     <NnsAutoStakeMaturity {neuron} />
-    <JoinCommunityFundCheckbox {neuron} disabled={!isControlledByUser} />
+    {#if isControlledByUser}
+      <JoinCommunityFundCheckbox {neuron} />
+    {/if}
     {#if isControllable}
       <SplitNnsNeuronButton {neuron} variant="secondary" />
     {/if}

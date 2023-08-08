@@ -133,7 +133,7 @@ describe("NnsNeuronAdvancedSection", () => {
     ).toBeNull();
   });
 
-  it("should render disabled join neurons' fund if user is not the controller", async () => {
+  it("should not render join neurons' fund if user is not the controller", async () => {
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
@@ -142,9 +142,7 @@ describe("NnsNeuronAdvancedSection", () => {
       },
     });
 
-    expect(
-      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).not.toBeNull();
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
   });
 
   it("should render split button and disabled join neurons' fund if user is controlled by hardware wallet", async () => {
