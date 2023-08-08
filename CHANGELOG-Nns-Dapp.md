@@ -16,6 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Don't display proposal navigation on launch-pad page.
 * Update SNS Aggregator response type and related converters.
+* Implement the standard accounts dropdown selector in canisters' features.
+* Review and optimize the number of steps and the UI of the canisters' related modals.
 
 #### Deprecated
 #### Removed

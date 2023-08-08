@@ -4,6 +4,7 @@ import {
   accountName,
   assertEnoughAccountFunds,
   emptyAddress,
+  filterHardwareWalletAccounts,
   findAccount,
   getAccountByPrincipal,
   getAccountByRootCanister,
@@ -699,6 +700,17 @@ describe("accounts-utils", () => {
       );
 
       expect(toIcpAccountIdentifier("123456")).toEqual("123456");
+    });
+  });
+
+  describe("filterHardwareWalletAccounts", () => {
+    it("should filter hw wallet account", () => {
+      const accounts = [mockMainAccount, mockSubAccount];
+      expect(
+        [...accounts, mockHardwareWalletAccount].filter(
+          filterHardwareWalletAccounts
+        )
+      ).toEqual(accounts);
     });
   });
 });

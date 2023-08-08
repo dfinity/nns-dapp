@@ -12,6 +12,7 @@
   export let canSelectSource: boolean;
   export let selectedAccount: Account | undefined = undefined;
   export let token: Token;
+  export let filterAccounts: (account: Account) => boolean = () => true;
 </script>
 
 <div class="select-account" data-tid="transaction-from-account">
@@ -43,7 +44,11 @@
   </KeyValuePair>
 
   {#if canSelectSource}
-    <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
+    <SelectAccountDropdown
+      {rootCanisterId}
+      bind:selectedAccount
+      {filterAccounts}
+    />
   {:else}
     <p class="account-identifier">
       {selectedAccount?.identifier}
