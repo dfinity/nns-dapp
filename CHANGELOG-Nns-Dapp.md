@@ -85,11 +85,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Keep menu open and visible on large screen (not only on extra large screen).
 * Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
 
-#### Deprecated
-#### Removed
-
-* Remove fallback to load SNSes directly from SNS canisters.
-
 #### Fixed
 
 * Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
