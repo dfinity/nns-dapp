@@ -357,7 +357,7 @@ export const isHotKeyControllable = ({
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
 /**
- * An identityt can manage the neurons' fund participation when one of the below is true:
+ * An identity can manage the neurons' fund participation when one of the below is true:
  * - User is the controller.
  * - User is a hotkey, but a hardware wallet account is NOT the controller.
  *
