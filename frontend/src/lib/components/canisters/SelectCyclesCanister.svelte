@@ -6,7 +6,7 @@
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
   import Input from "$lib/components/ui/Input.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
@@ -61,10 +61,9 @@
   };
 
   let enoughCycles: boolean;
-  $: enoughCycles =
-    minimumCycles === undefined
-      ? nonNullish(amountCycles)
-      : (amountCycles ?? 0) >= minimumCycles;
+  $: enoughCycles = isNullish(minimumCycles)
+    ? nonNullish(amountCycles)
+    : (amountCycles ?? 0) >= minimumCycles;
 </script>
 
 <form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">
