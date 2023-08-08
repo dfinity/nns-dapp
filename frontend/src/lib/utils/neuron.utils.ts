@@ -360,6 +360,10 @@ export const isHotKeyControllable = ({
  * An identityt can manage the neurons' fund participation when one of the below is true:
  * - User is the controller.
  * - User is a hotkey, but a hardware wallet account is NOT the controller.
+ *
+ * Technically, HW can manage SNS neurons, but we don't support it yet in the NNS Dapp.
+ * That's why we want to avoid HW controlled neurons from participating in a swap.
+ * Both joining the Neurons' Fund and participating in a swap is disabled for hardware wallets.
  */
 export const canUserManageNeuronFundParticipation = ({
   neuron,

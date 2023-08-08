@@ -35,7 +35,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import { LedgerCanister, Topic } from "@dfinity/nns";
+import { LedgerCanister, Topic, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
@@ -426,6 +426,27 @@ describe("neurons-services", () => {
       const neuron = {
         ...controlledNeuron,
         joinedCommunityFundTimestampSeconds: undefined,
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      expect(spyJoinCommunityFund).not.toBeCalled();
+      await toggleCommunityFund(neuron);
+
+      expect(spyJoinCommunityFund).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: neuron.neuronId,
+      });
+      expect(spyJoinCommunityFund).toBeCalledTimes(1);
+    });
+
+    it("should call joinCommunity if user is a hotkey", async () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
       };
       neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
       expect(spyJoinCommunityFund).not.toBeCalled();

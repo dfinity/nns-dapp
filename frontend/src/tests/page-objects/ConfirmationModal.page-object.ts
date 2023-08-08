@@ -9,8 +9,6 @@ export class ConfirmationModalPo extends BasePageObject {
   }
 
   async getContentText(): Promise<string> {
-    return (
-      await this.root.byTestId("confirmation-modal-content").getText()
-    ).trim();
+    return (await this.getText("confirmation-modal-content")).trim();
   }
 }
