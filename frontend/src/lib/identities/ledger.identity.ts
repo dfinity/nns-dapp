@@ -15,6 +15,7 @@ import {
   getRequestId,
   type RequestSignatures,
 } from "$lib/utils/ledger.utils";
+import { sameBufferData } from "$lib/utils/utils";
 import {
   Cbor,
   SignIdentity,
@@ -29,8 +30,7 @@ import {
   type RequestId,
   type Signature,
 } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -48,28 +48,13 @@ type ReadStateData = {
   body: ReadStateRequest;
 };
 
-const sendersMatch = (
-  sender1: Uint8Array | Principal,
-  sender2: Uint8Array | Principal
-): boolean => {
-  if (sender1 instanceof Uint8Array && sender2 instanceof Uint8Array) {
-    return (
-      Buffer.from(sender1).toString("hex") ===
-      Buffer.from(sender2).toString("hex")
-    );
-  }
-  if (sender1 instanceof Principal && sender2 instanceof Principal) {
-    return sender1.toText() === sender2.toText();
-  }
-  return false;
-};
-
 export class LedgerIdentity extends SignIdentity {
   // TODO(L2-433): is there a better way to solve this requirements than a class variable that is set and unset?
   // A flag to signal that the next transaction to be signed will be a "stake neuron" transaction.
   private neuronStakeFlag = false;
   // Used to avoid signing the read state transaction twice.
   // The key is the request id of the first request, not the read state request.
+  // Entries from the map are never removed. Because each one required manual action from the user with a HW wallet, it shouldn't get very large.
   // Map<requestIdHex, ReadStateData>
   private readStateMap: Map<string, ReadStateData> = new Map();
 
@@ -270,32 +255,38 @@ export class LedgerIdentity extends SignIdentity {
     const requestId = getRequestId(body);
     const requestIdHex = Buffer.from(requestId).toString("hex");
     const requestData = this.readStateMap.get(requestIdHex);
-    if (nonNullish(requestData)) {
-      const { signature, body: cachedBody } = requestData;
-      // If cached data doesn't match, ignore and move on to sign the request.
-      // The `ingress_expiry` is different in the cached in the new request because the new one is created after the first call.
-      // But the signature was done with the cached body. That's why we use the cached body.
-      if (sendersMatch(cachedBody.sender, body.sender)) {
-        return {
-          ...fields,
-          body: {
-            content: cachedBody,
-            sender_pubkey: this.publicKey.toDer(),
-            sender_sig: signature,
-          },
-        };
-      }
+    if (isNullish(requestData)) {
+      console.warn(
+        `No cached data for read state request with id ${requestIdHex}.`
+      );
+      return;
     }
-    console.warn(
-      `No cached data for read state request with id ${requestIdHex}.`
-    );
+    const { signature, body: cachedBody } = requestData;
+    // If cached data doesn't match, ignore and move on to sign the request.
+    // The `ingress_expiry` is different in the cached in the new request because the new one is created after the first call.
+    // But the signature was done with the cached body. That's why we use the cached body.
+    const newRequest = {
+      ...body,
+      ingress_expiry: cachedBody.ingress_expiry,
+    };
+    if (this.requestsMatch(cachedBody, newRequest)) {
+      return {
+        ...fields,
+        body: {
+          content: cachedBody,
+          sender_pubkey: this.publicKey.toDer(),
+          sender_sig: signature,
+        },
+      };
+    }
+    console.warn("Cached request doesn't match read state request.");
   }
 
   private async createReadStateRequest(
     body: CallRequest
   ): Promise<{ readStateBody: ReadStateRequest; requestId: RequestId }> {
     const requestId = await requestIdOf(body);
-    const readStateBody = {
+    const readStateBody: ReadRequest = {
       // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
       paths: createReadStatePaths(requestId),
@@ -332,6 +323,16 @@ export class LedgerIdentity extends SignIdentity {
   private prepareCborForLedger = (
     request: ReadRequest | CallRequest
   ): ArrayBuffer => Cbor.encode({ content: request });
+
+  private requestsMatch = (
+    request1: ReadRequest,
+    request2: ReadRequest
+  ): boolean => {
+    return sameBufferData(
+      this.prepareCborForLedger(request1),
+      this.prepareCborForLedger(request2)
+    );
+  };
 
   private async createSignAndStoreCallRequests(request: HttpAgentRequest) {
     const { body, ...fields } = request;

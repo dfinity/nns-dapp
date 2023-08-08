@@ -44,8 +44,6 @@ describe("LedgerIdentity", () => {
   const readStateBody1 = {
     request_type: "read_state" as ReadRequestType.ReadState,
     paths: [[new TextEncoder().encode("request_status"), requestId1]],
-    method_name: "get_balance",
-    arg: new TextEncoder().encode(""),
     sender: mockPrincipal,
     ingress_expiry: new Expiry(100000),
   };
@@ -161,7 +159,6 @@ describe("LedgerIdentity", () => {
       body: {
         ...readStateBody1,
         paths: [[new TextEncoder().encode("request_status"), requestId2]],
-        method_name: "get_balance2",
       },
     };
     const identity = await LedgerIdentity.create();
