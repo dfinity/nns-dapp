@@ -72,7 +72,7 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: changed-files
-        path: ${{ steps.check-screenshots.screenshots }}
+        path: ${{ steps.check-screenshots.outputs.screenshots }}
         retention-days: 3
     - name: Stop replica
       shell: bash
