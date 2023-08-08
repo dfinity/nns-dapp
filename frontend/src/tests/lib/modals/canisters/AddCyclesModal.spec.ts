@@ -50,6 +50,22 @@ describe("AddCyclesModal", () => {
     expect(container.querySelector("div.modal")).not.toBeNull();
   });
 
+  const selectAccount = ({ container, selectedAccount = mockMainAccount }) => {
+    const accountCards = container.querySelectorAll(
+      '[data-tid="select-account-dropdown"] option'
+    );
+    expect(accountCards.length).toBe(2);
+
+    const selectElement = container.querySelector("select");
+    selectElement &&
+      expect(selectElement.value).toBe(mockMainAccount.identifier);
+
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: selectedAccount.identifier },
+      });
+  };
+
   it("should be able to go back", async () => {
     const { queryByTestId, container } = await renderModal({
       component: AddCyclesModalTest,
@@ -92,22 +108,6 @@ describe("AddCyclesModal", () => {
       expect(queryByTestId("select-cycles-screen")).toBeInTheDocument()
     );
   });
-
-  const selectAccount = ({ container, selectedAccount = mockMainAccount }) => {
-    const accountCards = container.querySelectorAll(
-      '[data-tid="select-account-dropdown"] option'
-    );
-    expect(accountCards.length).toBe(2);
-
-    const selectElement = container.querySelector("select");
-    selectElement &&
-      expect(selectElement.value).toBe(mockMainAccount.identifier);
-
-    selectElement &&
-      fireEvent.change(selectElement, {
-        target: { value: selectedAccount.identifier },
-      });
-  };
 
   const testTopUp = async (selectedAccount = mockMainAccount) => {
     const { queryByTestId, container, component } = await renderModal({
