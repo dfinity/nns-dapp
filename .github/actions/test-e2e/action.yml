@@ -58,17 +58,20 @@ runs:
           frontend/playwright-results/*
         retention-days: 3
     - name: Check for screenshot changes
+      shell: bash
       id: check-screenshots
       run: |
         if ! git diff --quiet frontend/src/tests/e2e/snapshots; then
           echo "Screenshots have changed! To update your local repo run:"
           echo "  scripts/update-e2e-screenshots --job ${{ github.run_id }}"
+          exit 1
         fi
     - name: Upload screenshots
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
-      name: updated-screenshots
-      path: $(git diff --name-only frontend/src/tests/e2e/snapshots)
+      with:
+        name: changed-files
+        path: $(git diff --name-only frontend/src/tests/e2e/snapshots)
     - name: Stop replica
       shell: bash
       run: dfx stop

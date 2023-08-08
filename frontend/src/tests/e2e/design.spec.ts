@@ -41,8 +41,12 @@ test.describe("Design", () => {
       await expect(page).toHaveScreenshot({
         mask: [
           page.locator('[data-tid="identifier"]'),
-          page.locator('[data-tid="select-universe-card"]:not(:first-of-type) .name'),
-          page.locator('[data-tid="select-universe-card"]:not(:first-of-type) .amount .label'),
+          page.locator(
+            '[data-tid="select-universe-card"]:not(:first-of-type) .name'
+          ),
+          page.locator(
+            '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label'
+          ),
         ],
       });
     };
