@@ -115,6 +115,7 @@ export const decodeUpdateSignatures = async ({
   errorMessage,
 }: ResponseSignUpdateCall): Promise<RequestSignatures> => {
   await checkResponseCode(returnCode);
+  // TODO: Could we get different returnCode per signature?
   checkSignature({ signature: RequestSignatureRS, returnCode, errorMessage });
   checkSignature({
     signature: StatusReadSignatureRS,
@@ -134,3 +135,6 @@ const bufferToArrayBuffer = (buffer: Buffer): ArrayBuffer =>
 // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
 // Quote: "Moreover, all paths with prefix /request_status/<request_id> must refer to the same request ID <request_id>."
 export const getRequestId = (body: ReadRequest): RequestId => body.paths[0][1];
+export const createReadStatePaths = (requestId: RequestId) => [
+  [new TextEncoder().encode("request_status"), requestId],
+];

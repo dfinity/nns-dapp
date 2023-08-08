@@ -8,6 +8,7 @@ import {
 } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
+  createReadStatePaths,
   decodePublicKey,
   decodeSignature,
   decodeUpdateSignatures,
@@ -296,9 +297,7 @@ export class LedgerIdentity extends SignIdentity {
     const readStateBody = {
       // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
-      // Check docs for more detais: https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
-      // Quote: "Moreover, all paths with prefix /request_status/<request_id> must refer to the same request ID <request_id>."
-      paths: [[new TextEncoder().encode("request_status"), requestId]],
+      paths: createReadStatePaths(requestId),
       ingress_expiry: body.ingress_expiry,
       sender: body.sender,
     };
@@ -308,7 +307,7 @@ export class LedgerIdentity extends SignIdentity {
     };
   }
 
-  private storeData({
+  private storeRequestInCache({
     requestId,
     signature,
     body,
@@ -333,6 +332,34 @@ export class LedgerIdentity extends SignIdentity {
     request: ReadRequest | CallRequest
   ): ArrayBuffer => Cbor.encode({ content: request });
 
+  private async createSignAndStoreCallRequests(request: HttpAgentRequest) {
+    const { body, ...fields } = request;
+    // If the request endpoint is a "call", then the body is a CallRequest.
+    // Reference: https://github.com/dfinity/agent-js/blob/ce772199189748f9b77c8eb3ceeb3fdd11c70b5b/packages/agent/src/agent/http/types.ts#L28
+    const callBody = body as CallRequest;
+    const { requestId, readStateBody } = await this.createReadStateRequest(
+      callBody
+    );
+    const signatures = await this.signWithReadState(
+      this.prepareCborForLedger(body),
+      this.prepareCborForLedger(readStateBody)
+    );
+    this.storeRequestInCache({
+      requestId,
+      signature: signatures.readStateSignature,
+      body: readStateBody,
+    });
+
+    return {
+      ...fields,
+      body: {
+        content: body,
+        sender_pubkey: this.publicKey.toDer(),
+        sender_sig: signatures.callSignature,
+      },
+    };
+  }
+
   /**
    * Required implementation for agent-js transformRequest.
    *
@@ -351,38 +378,20 @@ export class LedgerIdentity extends SignIdentity {
         return cachedRequest;
       }
     }
-    const { body, ...fields } = request;
 
-    let callSignature: Signature;
     // There is an issue with the Ledger App when the neuron flag is set to true and `signWithReadState`.
     // TODO: Check app version and use `signWithReadState` only if the app version has the issue fixed.
     if (request.endpoint === "call" && !this.neuronStakeFlag) {
-      // If the request endpoint is a "call", then the body is a CallRequest.
-      // Reference: https://github.com/dfinity/agent-js/blob/ce772199189748f9b77c8eb3ceeb3fdd11c70b5b/packages/agent/src/agent/http/types.ts#L28
-      const callBody = body as CallRequest;
-      const { requestId, readStateBody } = await this.createReadStateRequest(
-        callBody
-      );
-      const signatures = await this.signWithReadState(
-        this.prepareCborForLedger(body),
-        this.prepareCborForLedger(readStateBody)
-      );
-      callSignature = signatures.callSignature;
-      this.storeData({
-        requestId,
-        signature: signatures.readStateSignature,
-        body: readStateBody,
-      });
-    } else {
-      callSignature = await this.sign(this.prepareCborForLedger(body));
+      return this.createSignAndStoreCallRequests(request);
     }
 
+    const { body, ...fields } = request;
     return {
       ...fields,
       body: {
         content: body,
         sender_pubkey: this.publicKey.toDer(),
-        sender_sig: callSignature,
+        sender_sig: await this.sign(this.prepareCborForLedger(body)),
       },
     };
   }
