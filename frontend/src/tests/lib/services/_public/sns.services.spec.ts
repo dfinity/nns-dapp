@@ -9,6 +9,7 @@ import {
   loadSnsProjects,
 } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -20,6 +21,7 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import {
+  aggregatorMockSnsesDataDto,
   aggregatorSnsMockDto,
   aggregatorSnsMockWith,
   aggregatorTokenMock,
@@ -103,6 +105,7 @@ describe("SNS public services", () => {
       snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
+      snsAggregatorStore.reset();
       jest.clearAllMocks();
       jest
         .spyOn(authStore, "subscribe")
@@ -128,6 +131,18 @@ describe("SNS public services", () => {
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
       const feesStore = get(transactionsFeesStore);
       expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
+    });
+
+    it("should load sns aggregator store", async () => {
+      jest
+        .spyOn(aggregatorApi, "querySnsProjects")
+        .mockImplementation(() => Promise.resolve(aggregatorMockSnsesDataDto));
+
+      expect(get(snsAggregatorStore).data).toBeUndefined();
+
+      await loadSnsProjects();
+
+      expect(get(snsAggregatorStore).data).toEqual(aggregatorMockSnsesDataDto);
     });
 
     it("should load and map tokens", async () => {

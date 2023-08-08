@@ -10,6 +10,7 @@
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
   export let minimumCycles: number | undefined = undefined;
+  export let backAction = true;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
@@ -93,13 +94,15 @@
   <slot />
 
   <div class="toolbar">
-    <button
-      type="button"
-      class="secondary"
-      data-tid="select-cycles-button-back"
-      on:click={() => dispatcher("nnsBack")}
-      >{$i18n.canisters.change_source}</button
-    >
+    {#if backAction}
+      <button
+        type="button"
+        class="secondary"
+        data-tid="select-cycles-button-back"
+        on:click={() => dispatcher("nnsBack")}
+        >{$i18n.canisters.change_source}</button
+      >
+    {/if}
     <button
       type="submit"
       class="primary"

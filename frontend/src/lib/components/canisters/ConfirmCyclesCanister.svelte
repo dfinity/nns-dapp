@@ -52,9 +52,10 @@
       >
     {/if}
   </p>
-  <div>
+  <div class="source">
     <TransactionSource {account} token={ICPToken} />
   </div>
+
   <slot />
 
   <div class="toolbar">
@@ -90,5 +91,20 @@
     align-items: baseline;
     flex-wrap: wrap;
     gap: var(--padding-0_5x);
+
+    &:after {
+      content: "";
+      border-bottom: 1px solid var(--line);
+      padding: var(--padding) 0 0;
+      width: 100%;
+    }
+  }
+
+  .source {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
+
+    padding: 0 0 var(--padding);
   }
 </style>
