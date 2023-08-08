@@ -5,7 +5,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 
 // TS is not smart enough to infer the type from the JSON file.
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] =
-  tenAggregatedSnses.map((sns: unknown) => sns as CachedSnsDto);
+  tenAggregatedSnses as unknown as CachedSnsDto[];
 
 // It should match the token below
 export const aggregatorTokenMock: IcrcTokenMetadata = {
