@@ -45,7 +45,7 @@ runs:
       working-directory: frontend
       run: |
         PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
-        PLAYWRIGHT_FILES="$(ls ${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
+        PLAYWRIGHT_FILES="$(ls src/tests/e2e/*.spec.ts | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
         export PLAYWRIGHT_ARGS PLAYWRIGHT_BASE_URL PLAYWRIGHT_FILES
         npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: Upload Playwright results
@@ -64,6 +64,7 @@ runs:
         if ! git diff --quiet frontend/src/tests/e2e/snapshots; then
           echo "Screenshots have changed! To update your local repo run:"
           echo "  scripts/update-e2e-screenshots --job ${{ github.run_id }}"
+          echo "screenshots=$(git diff --name-only frontend/src/tests/e2e/snapshots)" >> "$GITHUB_OUTPUT"
           exit 1
         fi
     - name: Upload screenshots
@@ -71,7 +72,8 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: changed-files
-        path: $(git diff --name-only frontend/src/tests/e2e/snapshots)
+        path: ${{ steps.check-screenshots.screenshots }}
+        retention-days: 3
     - name: Stop replica
       shell: bash
       run: dfx stop
