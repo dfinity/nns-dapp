@@ -27,6 +27,10 @@ import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronAdvancedSection", () => {
+  const identityMainAccount = {
+    ...mockMainAccount,
+    principal: mockIdentity.getPrincipal(),
+  };
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NeuronContextActionsTest, {
       props: {
@@ -88,7 +92,12 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.lastRewardsDistribution()).toBe("May 19, 1992");
   });
 
-  it("should render actions", async () => {
+  it("should render actions if user is the controller", async () => {
+    icpAccountsStore.setForTesting({
+      main: identityMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+    });
     const po = renderComponent({
       ...mockNeuron,
       fullNeuron: {
@@ -114,25 +123,6 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.hasSplitNeuronButton()).toBe(false);
   });
 
-  it("should render enabled join neurons' fund if user is the controller", async () => {
-    icpAccountsStore.setForTesting({
-      main: mockMainAccount,
-      subAccounts: [],
-      hardwareWallets: [],
-    });
-    const po = renderComponent({
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockNeuron.fullNeuron,
-        controller: mockMainAccount.principal.toText(),
-      },
-    });
-
-    expect(
-      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).toBeNull();
-  });
-
   it("should not render join neurons' fund if user is not the controller", async () => {
     const po = renderComponent({
       ...mockNeuron,
@@ -145,7 +135,7 @@ describe("NnsNeuronAdvancedSection", () => {
     expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
   });
 
-  it("should render split button and disabled join neurons' fund if user is controlled by hardware wallet", async () => {
+  it("should render split button but not join neurons' fund if user is controlled by hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [],
@@ -159,9 +149,7 @@ describe("NnsNeuronAdvancedSection", () => {
       },
     });
 
-    expect(
-      await po.getJoinNeuronsFundCheckbox().getAttribute("disabled")
-    ).not.toBeNull();
+    expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
     expect(await po.hasSplitNeuronButton()).toBe(true);
   });
 });
