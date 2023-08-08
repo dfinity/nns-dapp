@@ -61,9 +61,8 @@
   };
 
   let enoughCycles: boolean;
-  $: enoughCycles = isNullish(minimumCycles)
-    ? nonNullish(amountCycles)
-    : (amountCycles ?? 0) >= minimumCycles;
+  $: enoughCycles =
+    (amountCycles ?? 0) >= (minimumCycles ?? 0) && amountCycles > 0;
 </script>
 
 <form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">
