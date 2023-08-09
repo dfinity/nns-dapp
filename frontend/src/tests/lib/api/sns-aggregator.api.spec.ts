@@ -40,7 +40,7 @@ describe("sns-aggregator api", () => {
           })
         );
       global.fetch = mockFetch;
-      await querySnsProjects();
+      const projects = await querySnsProjects();
       expect(mockFetch).toHaveBeenCalledWith(
         `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page/0/slow.json`
       );
@@ -48,6 +48,7 @@ describe("sns-aggregator api", () => {
         `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page/1/slow.json`
       );
       expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(projects).toHaveLength(11);
     });
 
     it("should not fail if second page response is not ok", async () => {
