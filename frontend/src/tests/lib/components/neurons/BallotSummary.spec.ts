@@ -8,6 +8,9 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { BallotInfo, Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
@@ -83,4 +86,26 @@ describe("BallotSummary", () => {
 
   it("should render ballot vote unspecified", async () =>
     await testVote(Vote.Unspecified));
+
+  it("should show ballot summary on info click", async () => {
+    const { container } = render(BallotSummary, {
+      props: { ballot: mockBallot },
+    });
+
+    const po = BallotSummaryPo.under(new JestPageObjectElement(container));
+
+    await runResolvedPromises();
+
+    expect(await po.isBallotSummaryVisible()).toBe(false);
+
+    po.clickInfoIcon();
+
+    // We need to wait, without waiting the test will fail
+    await waitFor(async () =>
+      expect(await po.isBallotSummaryVisible()).toBe(true)
+    );
+    expect(await po.getBallotSummary()).toBe(
+      "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553"
+    );
+  });
 });
