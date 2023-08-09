@@ -25,6 +25,7 @@ import {
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {
     ...swap,
+    already_tried_to_auto_finalize: swap.already_tried_to_auto_finalize,
     decentralization_sale_open_timestamp_seconds: toNullable(
       swap.decentralization_sale_open_timestamp_seconds
     ),

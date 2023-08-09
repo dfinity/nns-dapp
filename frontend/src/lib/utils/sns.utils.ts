@@ -107,6 +107,11 @@ const mapOptionalSwap = (
     ? undefined
     : {
         ...swapData,
+        next_ticket_id: fromNullable(swapData.next_ticket_id),
+        purge_old_tickets_last_completion_timestamp_nanoseconds: fromNullable(
+          swapData.purge_old_tickets_last_completion_timestamp_nanoseconds
+        ),
+
         decentralization_sale_open_timestamp_seconds: fromNullable(
           swapData.decentralization_sale_open_timestamp_seconds
         ),
