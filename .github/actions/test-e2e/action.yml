@@ -49,7 +49,7 @@ runs:
       working-directory: frontend
       run: |
         export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
-        PLAYWRIGHT_FILES="$(ls ${{ intpus.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
+        PLAYWRIGHT_FILES="$(ls ${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
         npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
