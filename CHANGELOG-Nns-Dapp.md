@@ -20,6 +20,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review and optimize the number of steps and the UI of the canisters' related modals.
 * Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
 * Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
+* New NNS and SNS neuron details page layout.
 
 #### Deprecated
 #### Removed
