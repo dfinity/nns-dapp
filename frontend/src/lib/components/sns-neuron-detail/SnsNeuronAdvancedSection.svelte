@@ -43,9 +43,6 @@
 
 <Section testId="sns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
-  <p slot="description">
-    {$i18n.neuron_detail.advanced_settings_description}
-  </p>
   <div class="content">
     {#if nonNullish(neuron)}
       <KeyValuePair>

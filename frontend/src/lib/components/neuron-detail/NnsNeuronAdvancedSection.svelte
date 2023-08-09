@@ -42,9 +42,6 @@
 
 <Section testId="nns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
-  <p slot="description">
-    {$i18n.neuron_detail.advanced_settings_description}
-  </p>
   <div class="content">
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
@@ -109,8 +106,7 @@
 </Section>
 
 <style lang="scss">
-  h3,
-  p {
+  h3 {
     margin: 0;
   }
 
