@@ -84,6 +84,7 @@ runs:
         retention-days: 3
     - name: Fail if screenshots changed
       if: ${{ steps.check-screenshots.outputs.screenshots }}
+      shell: bash
       # Fail to force updating the screenshots explicitly.
       run: exit 1
     - name: Stop replica
