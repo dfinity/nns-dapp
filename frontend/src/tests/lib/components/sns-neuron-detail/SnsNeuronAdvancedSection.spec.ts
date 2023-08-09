@@ -123,6 +123,17 @@ describe("SnsNeuronAdvancedSection", () => {
 
     const po = renderComponent(neuron);
 
-    expect(await po.dissolveDate()).toBe("Jul 20, 2027 8:53 AM");
+    expect(await po.dissolveDate()).toBe("Jul 20, 2027 8:53 AM");
+  });
+
+  it("should not render dissolve date if neuron is not dissolving", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+    });
+
+    const po = renderComponent(neuron);
+
+    expect(await po.dissolveDate()).toBeNull();
   });
 });

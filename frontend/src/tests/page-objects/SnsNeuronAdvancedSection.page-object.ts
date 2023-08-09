@@ -20,7 +20,7 @@ export class SnsNeuronAdvancedSectionPo extends BasePageObject {
     return this.getText("neuron-created");
   }
 
-  dissolveDate(): Promise<string> {
+  dissolveDate(): Promise<string | null> {
     return this.getText("neuron-dissolve-date");
   }
 
