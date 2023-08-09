@@ -143,7 +143,7 @@ export const mockSwap: SnsSummarySwap = {
   neuron_recipes: [],
   cf_participants: [],
   init: [],
-  decentralization_sale_open_timestamp_seconds: [],
+  decentralization_sale_open_timestamp_seconds: undefined,
   finalize_swap_in_progress: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
