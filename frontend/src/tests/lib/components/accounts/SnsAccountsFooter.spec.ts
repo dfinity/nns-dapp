@@ -5,18 +5,16 @@
 import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 import * as accountsServices from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
 } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
-import { Principal } from "@dfinity/principal";
+import { resetSnsProjects, setSnsProject } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -28,19 +26,17 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsAccountsFooter", () => {
-  const responses = snsResponseFor({
-    principal: mockPrincipal,
-    lifecycle: SnsSwapLifecycle.Committed,
-  });
-
-  const rootCanisterIdText = responses[0][0].rootCanisterId;
-  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+  const rootCanisterId = rootCanisterIdMock;
+  const rootCanisterIdText = rootCanisterId.toText();
 
   beforeEach(() => {
-    snsQueryStore.reset();
+    resetSnsProjects();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
-    snsQueryStore.setData(responses);
+    setSnsProject({
+      rootCanisterId,
+      lifecycle: SnsSwapLifecycle.Committed,
+    });
     transactionsFeesStore.setFee({
       rootCanisterId,
       fee: BigInt(10_000),
