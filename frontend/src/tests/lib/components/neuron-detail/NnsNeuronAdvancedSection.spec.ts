@@ -3,7 +3,10 @@
  */
 
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
-import { SECONDS_IN_MONTH } from "$lib/constants/constants";
+import {
+  SECONDS_IN_FOUR_YEARS,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
@@ -22,11 +25,12 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronAdvancedSection", () => {
+  const nowInSeconds = 1689843195;
   const identityMainAccount = {
     ...mockMainAccount,
     principal: mockIdentity.getPrincipal(),
@@ -46,6 +50,8 @@ describe("NnsNeuronAdvancedSection", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
+    jest.useFakeTimers();
+    jest.setSystemTime(nowInSeconds * 1000);
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -209,5 +215,24 @@ describe("NnsNeuronAdvancedSection", () => {
 
     expect(await po.getJoinNeuronsFundCheckbox().isPresent()).toBe(false);
     expect(await po.hasSplitNeuronButton()).toBe(true);
+  });
+
+  it("should render dissolve date if neuron is dissolving", async () => {
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      state: NeuronState.Dissolving,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        dissolveState: {
+          WhenDissolvedTimestampSeconds: BigInt(
+            nowInSeconds + SECONDS_IN_FOUR_YEARS
+          ),
+        },
+      },
+    };
+
+    const po = renderComponent(neuron);
+
+    expect(await po.dissolveDate()).toBe("Jul 20, 2027 8:53 AM");
   });
 });
