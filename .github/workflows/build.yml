@@ -25,6 +25,8 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
       - name: Set skip build for testing
         # Set to true and set a recent run_id below to reuse an existing build
         # instead of building.
@@ -35,9 +37,6 @@ jobs:
           mkdir out
           run_id=5801187848
           gh run download $run_id --dir ./out -n out
-      - name: Checkout nns-dapp
-        if: steps.skip_build.outputs.skip_build != 'true'
-        uses: actions/checkout@v3
       - name: Build nns-dapp repo
         if: steps.skip_build.outputs.skip_build != 'true'
         uses: ./.github/actions/build_nns_dapp
