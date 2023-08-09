@@ -64,9 +64,9 @@ runs:
       shell: bash
       id: check-screenshots
       run: |
-        if ! git diff --quiet frontend/src/tests/e2e/snapshots; then
+        if ! git diff --quiet -- frontend/src/tests/e2e/snapshots; then
           echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
-          git diff --name-only frontend/src/tests/e2e/snapshots >> "$GITHUB_OUTPUT"
+          git diff --name-only -- frontend/src/tests/e2e/snapshots >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
         fi
     - name: Upload screenshots
@@ -83,7 +83,7 @@ runs:
       # Fail in order to force updating the screenshots explicitly.
       run: |
         echo "Screenshots have changed:"
-        git diff --name-only frontend/src/tests/e2e/snapshots
+        git diff --name-only -- frontend/src/tests/e2e/snapshots
         echo
         echo "To update your local repo run:"
         echo "  scripts/update-e2e-screenshots --run_id ${{ github.run_id }}"
