@@ -65,11 +65,6 @@ runs:
       id: check-screenshots
       run: |
         if ! git diff --quiet frontend/src/tests/e2e/snapshots; then
-          echo "Screenshots have changed:"
-          git diff --name-only frontend/src/tests/e2e/snapshots
-          echo
-          echo "To update your local repo run:"
-          echo "  scripts/update-e2e-screenshots --run_id ${{ github.run_id }}"
           echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
           git diff --name-only frontend/src/tests/e2e/snapshots >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
@@ -85,8 +80,14 @@ runs:
     - name: Fail if screenshots changed
       if: ${{ steps.check-screenshots.outputs.screenshots }}
       shell: bash
-      # Fail to force updating the screenshots explicitly.
-      run: exit 1
+      # Fail in order to force updating the screenshots explicitly.
+      run: |
+        echo "Screenshots have changed:"
+        git diff --name-only frontend/src/tests/e2e/snapshots
+        echo
+        echo "To update your local repo run:"
+        echo "  scripts/update-e2e-screenshots --run_id ${{ github.run_id }}"
+        exit 1
     - name: Stop replica
       shell: bash
       run: dfx stop
