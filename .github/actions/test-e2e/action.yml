@@ -2,6 +2,10 @@ name: 'Run Playwright e2e test shard'
 description: |
   Set up a test environment and run (a subset of) the Playwright end-to-end tests.
 inputs:
+  test_filter:
+    descripts: "Pattern to select which tests to run"
+    required: false
+    default: "*.spec.ts"
   shard_count:
     description: "The total number shards to split the tests into"
     required: false
@@ -43,7 +47,10 @@ runs:
     - name: Run Playwright end-to-end tests
       shell: bash
       working-directory: frontend
-      run: PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)" npm run test-e2e -- $(ls src/tests/e2e/*.spec.ts | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})
+      run: |
+        export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
+        PLAYWRIGHT_FILES="$(ls src/tests/e2e/${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
+        npm run test-e2e -- ${PLAYWRIGHT_FILES}
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}
