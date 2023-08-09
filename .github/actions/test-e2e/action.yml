@@ -77,11 +77,12 @@ runs:
           exit 1
         fi
     - name: Upload screenshots
-      if: ${{ steps.check-screenshot.outputs.screenshots != '' }}
+      if: ${{ steps.check-screenshots.outputs.screenshots }}
       uses: actions/upload-artifact@v3
       with:
         name: updated-screenshots
-        path: ${{ steps.check-screenshots.outputs.screenshots }}
+        path: |
+          ${{ steps.check-screenshots.outputs.screenshots }}
         retention-days: 3
     - name: Stop replica
       shell: bash
