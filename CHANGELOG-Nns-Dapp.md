@@ -22,7 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
 * New NNS and SNS neuron details page layout.
 * Update SNS Swap types to match the latest canister interface. 
-* Hide proposal summary in ballots by default.
+* Hide by default the proposal summary in ballots.
 
 #### Deprecated
 #### Removed
