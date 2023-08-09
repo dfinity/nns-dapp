@@ -13,6 +13,7 @@
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import {
     canUserManageNeuronFundParticipation,
+    getDissolvingTimestampSeconds,
     isNeuronControllable,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
@@ -38,6 +39,9 @@
     accounts: $icpAccountsStore,
     identity: $authStore.identity,
   });
+
+  let dissolvingTimestamp: bigint | undefined;
+  $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
@@ -59,6 +63,15 @@
       >
     </KeyValuePair>
     <NnsNeuronAge {neuron} />
+    {#if nonNullish(dissolvingTimestamp)}
+      <KeyValuePair>
+        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
+        >
+        <span slot="value" class="value" data-tid="neuron-dissolve-date"
+          >{secondsToDateTime(dissolvingTimestamp)}</span
+        >
+      </KeyValuePair>
+    {/if}
     {#if nonNullish(neuron.fullNeuron)}
       <KeyValuePair>
         <span slot="key" class="label"

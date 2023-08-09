@@ -19,6 +19,10 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
     return this.getText("neuron-created");
   }
 
+  dissolveDate(): Promise<string | null> {
+    return this.getText("neuron-dissolve-date");
+  }
+
   getNnsNeuronAgePo(): NnsNeuronAgePo {
     return NnsNeuronAgePo.under(this.root);
   }

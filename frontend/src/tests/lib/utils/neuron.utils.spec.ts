@@ -36,6 +36,7 @@ import {
   formattedStakedMaturity,
   formattedTotalMaturity,
   getDissolvingTimeInSeconds,
+  getDissolvingTimestampSeconds,
   getNeuronById,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToStake,
@@ -352,6 +353,48 @@ describe("neuron-utils", () => {
         joinedCommunityFundTimestampSeconds: undefined,
       };
       expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("getDissolvingTimestampSeconds", () => {
+    it("returns undefined if neuron not dissolving", () => {
+      const dissolveNeuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolved,
+      };
+      expect(getDissolvingTimestampSeconds(dissolveNeuron)).toBeUndefined();
+      const lockedNeuron = {
+        ...mockNeuron,
+        state: NeuronState.Locked,
+      };
+      expect(getDissolvingTimestampSeconds(lockedNeuron)).toBeUndefined();
+    });
+
+    it("returns undefined if dissolve state has no timestamp", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolving,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: undefined,
+        },
+      };
+      expect(getDissolvingTimestampSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns dissolve date", () => {
+      const dissolveDate = BigInt(nowInSeconds() + SECONDS_IN_FOUR_YEARS);
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolving,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: {
+            WhenDissolvedTimestampSeconds: dissolveDate,
+          },
+        },
+      };
+      expect(getDissolvingTimestampSeconds(neuron)).toBe(dissolveDate);
     });
   });
 
