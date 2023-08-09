@@ -5,7 +5,7 @@ inputs:
   test_filter:
     descripts: "Pattern to select which tests to run"
     required: false
-    default: *.spec.ts
+    default: "*.spec.ts"
   shard_count:
     description: "The total number shards to split the tests into"
     required: false
