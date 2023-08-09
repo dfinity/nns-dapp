@@ -2,7 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
-  snsProjectsCommittedStore,
+  snsProjectsStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import type { Universe } from "$lib/types/universe";
@@ -17,7 +17,7 @@ const universesStore = derived<
   [Readable<SnsFullProject[]>, Readable<Universe[]>],
   Universe[]
 >(
-  [snsProjectsCommittedStore, ckBTCUniversesStore],
+  [snsProjectsStore, ckBTCUniversesStore],
   ([projects, ckBTCUniverses]: [SnsFullProject[], Universe[]]) => [
     NNS_UNIVERSE,
     ...ckBTCUniverses,

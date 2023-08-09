@@ -32,8 +32,9 @@ export const snsProjectsStore = derived<
   SnsFullProject[]
 >(
   [snsSummariesStore, snsSwapCommitmentsStore],
-  ([summaries, $snsSwapStatesStore]): SnsFullProject[] =>
-    summaries.map((summary) => {
+  ([summaries, $snsSwapStatesStore]): SnsFullProject[] => {
+    console.log('dskloetx summaries', summaries.map(s => s.token.name));
+    return summaries.map((summary) => {
       const { rootCanisterId } = summary;
       const summaryPrincipalAsText = rootCanisterId.toText();
       const swapCommitmentStoreEntry = $snsSwapStatesStore?.find(
@@ -46,7 +47,8 @@ export const snsProjectsStore = derived<
         summary,
         swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
       };
-    })
+    });
+  }
 );
 
 export const snsProjectsActivePadStore = derived<

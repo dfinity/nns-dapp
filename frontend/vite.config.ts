@@ -1,3 +1,4 @@
+import mkcert from 'vite-plugin-mkcert'
 import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
@@ -10,7 +11,8 @@ const json = readFileSync(file, "utf8");
 const { version } = JSON.parse(json);
 
 const config: UserConfig = {
-  plugins: [sveltekit()],
+  plugins: [sveltekit(), mkcert()],
+  server: { https: true },
   build: {
     target: "es2020",
     sourcemap: "hidden",

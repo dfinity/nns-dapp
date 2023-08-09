@@ -161,8 +161,11 @@ export const mapAndSortSnsQueryToSummaries = ({
   );
 
   // Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
+  console.log('dskloetx allSummaries', allSummaries.map(s => [s.token.symbol,
+  s]));
   const validSwapSummaries: ValidSummary[] = allSummaries.filter(
     (entry: OptionalSummary): entry is ValidSummary =>
+      entry.token.symbol === 'CAT' ||
       entry.swap !== undefined &&
       entry.swap.params !== undefined &&
       entry.swapCanisterId !== undefined &&
@@ -173,13 +176,20 @@ export const mapAndSortSnsQueryToSummaries = ({
       entry.metadata !== undefined &&
       entry.token !== undefined
   );
+  console.log('dskloetx validSwapSummaries', validSwapSummaries);
 
+  return validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
+    rootCanisterId: Principal.fromText(rootCanisterId),
+    ...rest,
+  }));
+/*
   return sortSnsSummaries(
     validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
       rootCanisterId: Principal.fromText(rootCanisterId),
       ...rest,
     }))
   );
+  */
 };
 
 export const getSwapCanisterAccount = ({
