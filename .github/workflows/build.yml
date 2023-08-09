@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest-m
     timeout-minutes: 45
     steps:
+      env:
+        GH_TOKEN: ${{ github.token }}
       - name: Set skip build for testing
         # Set to true and set a recent run_id below to reuse an existing build
         # instead of building.
