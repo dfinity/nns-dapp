@@ -667,8 +667,8 @@ interface I18nNeuron_detail {
   remaining_title: string;
   unspecified: string;
   advanced_settings_title: string;
-  advanced_settings_description: string;
   neuron_account: string;
+  dissolve_date: string;
   created: string;
 }
 
