@@ -135,13 +135,15 @@ export const mockInit: SnsSwapInit = {
 };
 
 export const mockSwap: SnsSummarySwap = {
+  next_ticket_id: [],
   auto_finalize_swap_response: [],
+  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
   purge_old_tickets_next_principal: [],
   already_tried_to_auto_finalize: [false],
   neuron_recipes: [],
   cf_participants: [],
   init: [],
-  decentralization_sale_open_timestamp_seconds: undefined,
+  decentralization_sale_open_timestamp_seconds: [],
   finalize_swap_in_progress: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
