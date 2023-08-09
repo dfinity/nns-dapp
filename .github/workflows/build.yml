@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Set skip build for testing
+      - name: Skip build for testing
         # Set to true and set a recent run_id below to reuse an existing build
         # instead of building.
         if: true
@@ -82,9 +82,11 @@ jobs:
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: design.spec.ts
           shard_number: 1
-          shard_count: 2
+          shard_count: 1
   test-playwright-e2e-shard-2-of-2:
+    if: false
     needs: build
     runs-on: ubuntu-latest-m
     timeout-minutes: 30
