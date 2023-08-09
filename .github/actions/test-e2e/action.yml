@@ -5,7 +5,7 @@ inputs:
   test_filter:
     descripts: "Pattern to select which tests to run"
     required: false
-    default: src/tests/e2e/*.spec.ts
+    default: *.spec.ts
   shard_count:
     description: "The total number shards to split the tests into"
     required: false
@@ -49,7 +49,7 @@ runs:
       working-directory: frontend
       run: |
         export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
-        PLAYWRIGHT_FILES="$(ls ${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
+        PLAYWRIGHT_FILES="$(ls src/tests/e2e/${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
         npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
