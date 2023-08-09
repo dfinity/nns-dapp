@@ -34,12 +34,10 @@
     : undefined;
 
   let allowedToSplit: boolean;
-  $: allowedToSplit =
-    nonNullish(neuron) &&
-    hasPermissionToSplit({
-      neuron,
-      identity: $authStore.identity,
-    });
+  $: allowedToSplit = hasPermissionToSplit({
+    neuron,
+    identity: $authStore.identity,
+  });
 
   let dissolvingTimestamp: bigint | undefined;
   $: dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
@@ -48,56 +46,53 @@
 <Section testId="sns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
   <div class="content">
-    {#if nonNullish(neuron)}
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
+      <Hash
+        slot="value"
+        className="value"
+        tagName="span"
+        testId="neuron-id"
+        text={getSnsNeuronIdAsHexString(neuron)}
+        showCopy
+        flowLessCopy
+        id="neuron-id"
+      />
+    </KeyValuePair>
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
+      <span slot="value" class="value" data-tid="neuron-created"
+        >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
+      >
+    </KeyValuePair>
+    <SnsNeuronAge {neuron} />
+    {#if nonNullish(dissolvingTimestamp)}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
+        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
+        >
+        <span slot="value" class="value" data-tid="neuron-dissolve-date"
+          >{secondsToDateTime(dissolvingTimestamp)}</span
+        >
+      </KeyValuePair>
+    {/if}
+    {#if nonNullish(neuronAccount)}
+      <KeyValuePair>
+        <span slot="key" class="label"
+          >{$i18n.neuron_detail.neuron_account}</span
+        >
         <Hash
           slot="value"
           className="value"
           tagName="span"
-          testId="neuron-id"
-          text={getSnsNeuronIdAsHexString(neuron)}
+          testId="neuron-account"
+          text={encodeIcrcAccount(neuronAccount)}
+          id="neuron-account"
           showCopy
           flowLessCopy
-          id="neuron-id"
         />
       </KeyValuePair>
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
-        <span slot="value" class="value" data-tid="neuron-created"
-          >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
-        >
-      </KeyValuePair>
-      <SnsNeuronAge {neuron} />
-      {#if nonNullish(dissolvingTimestamp)}
-        <KeyValuePair>
-          <span slot="key" class="label"
-            >{$i18n.neuron_detail.dissolve_date}</span
-          >
-          <span slot="value" class="value" data-tid="neuron-dissolve-date"
-            >{secondsToDateTime(dissolvingTimestamp)}</span
-          >
-        </KeyValuePair>
-      {/if}
-      {#if nonNullish(neuronAccount)}
-        <KeyValuePair>
-          <span slot="key" class="label"
-            >{$i18n.neuron_detail.neuron_account}</span
-          >
-          <Hash
-            slot="value"
-            className="value"
-            tagName="span"
-            testId="neuron-account"
-            text={encodeIcrcAccount(neuronAccount)}
-            id="neuron-account"
-            showCopy
-            flowLessCopy
-          />
-        </KeyValuePair>
-      {/if}
-      <SnsNeuronVestingPeriodRemaining {neuron} />
     {/if}
+    <SnsNeuronVestingPeriodRemaining {neuron} />
     <SnsAutoStakeMaturity />
 
     {#if allowedToSplit}
