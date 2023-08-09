@@ -5,6 +5,7 @@
   import Hash from "../ui/Hash.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
+    getSnsDissolvingTimestampSeconds,
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
@@ -39,6 +40,9 @@
       neuron,
       identity: $authStore.identity,
     });
+
+  let dissolvingTimestamp: bigint | undefined;
+  $: dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
 </script>
 
 <Section testId="sns-neuron-advanced-section-component">
@@ -68,6 +72,16 @@
         >
       </KeyValuePair>
       <SnsNeuronAge {neuron} />
+      {#if nonNullish(dissolvingTimestamp)}
+        <KeyValuePair>
+          <span slot="key" class="label"
+            >{$i18n.neuron_detail.dissolve_date}</span
+          >
+          <span slot="value" class="value" data-tid="neuron-dissolve-date"
+            >{secondsToDateTime(dissolvingTimestamp)}</span
+          >
+        </KeyValuePair>
+      {/if}
       {#if nonNullish(neuronAccount)}
         <KeyValuePair>
           <span slot="key" class="label"

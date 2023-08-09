@@ -646,6 +646,7 @@
     "advanced_settings_title": "Advanced details & settings",
     "advanced_settings_description": "Advanced preferences for managing your neuron",
     "neuron_account": "Neuron Account",
+    "dissolve_date": "Dissolve Date",
     "created": "Date created"
   },
   "sns_launchpad": {

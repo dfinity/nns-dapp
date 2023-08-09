@@ -223,15 +223,23 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
-export const getDissolvingTimeInSeconds = (
+export const getDissolvingTimestampSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
   neuron.state === NeuronState.Dissolving &&
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-      BigInt(nowInSeconds())
+    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
     : undefined;
+
+export const getDissolvingTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined => {
+  const dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
+};
 
 export const getSpawningTimeInSeconds = (
   neuron: NeuronInfo
