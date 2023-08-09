@@ -14,7 +14,7 @@
   <p slot="end" class="title-value" data-tid="total-maturity">
     {formattedTotalMaturity(neuron)}
   </p>
-  <p slot="description">
+  <p slot="description" class="description">
     {$i18n.neuron_detail.maturity_section_description}
   </p>
   <ul class="content">
