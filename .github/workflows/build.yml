@@ -19,16 +19,6 @@ defaults:
   run:
     shell: bash -euxlo pipefail {0}
 jobs:
-  skip-build:
-    if: true
-    steps:
-      - name: Download previous build result
-        run: |
-          mkdir out
-          gh run download 5801187848 --dir ./out -n out
-      - name: Upload previous build result
-      - name: Skip build
-        run: echo "skip_build=true" >> "$GITHUB_OUTPUT"
   build:
     runs-on: ubuntu-latest-m
     timeout-minutes: 45
@@ -40,12 +30,9 @@ jobs:
         id: skip_build
         run: |
           echo "skip_build=true" >> "$GITHUB_OUTPUT"
-          echo "run_id=5801187848" >> "$GITHUB_OUTPUT"
-      - name: Download previous build artifacts instead of building
-        if: steps.skip_build.outputs.skip_build == 'true'
-        run: |
           mkdir out
-          gh run download ${{ steps.skip_build_outputs.run_id }} --dir ./out -n out
+          run_id=5801187848
+          gh run download $run_id --dir ./out -n out
       - name: Checkout nns-dapp
         if: steps.skip_build.outputs.skip_build != 'true'
         uses: actions/checkout@v3
