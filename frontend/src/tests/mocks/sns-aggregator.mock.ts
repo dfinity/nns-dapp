@@ -153,6 +153,7 @@ export const aggregatorSnsMock: CachedSns = {
   },
   swap_state: {
     swap: {
+      auto_finalize_swap_response: [],
       neuron_recipes: [],
       next_ticket_id: [],
       finalize_swap_in_progress: [],
@@ -163,18 +164,18 @@ export const aggregatorSnsMock: CachedSns = {
       lifecycle: 2,
       init: [
         {
-          // TODO: Not supported by converter yet
-          // nns_proposal_id: null,
-          // min_participant_icp_e8s: null,
-          // neuron_basket_construction_parameters: null,
-          // max_icp_e8s: null,
-          // swap_start_timestamp_seconds: null,
-          // swap_due_timestamp_seconds: null,
-          // min_participants: null,
-          // sns_token_e8s: null,
-          // should_auto_finalize: null,
-          // max_participant_icp_e8s: null,
-          // min_icp_e8s: null,
+          nns_proposal_id: [],
+          min_participant_icp_e8s: [],
+          neuron_basket_construction_parameters: [],
+          max_icp_e8s: [],
+          swap_start_timestamp_seconds: [],
+          swap_due_timestamp_seconds: [],
+          min_participants: [],
+          sns_token_e8s: [],
+          should_auto_finalize: [],
+          neurons_fund_participants: [],
+          max_participant_icp_e8s: [],
+          min_icp_e8s: [],
           sns_root_canister_id: "5psbn-niaaa-aaaaq-aaa4q-cai",
           fallback_controller_principal_ids: [
             "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",
@@ -190,6 +191,7 @@ export const aggregatorSnsMock: CachedSns = {
           restricted_countries: [{ iso_codes: ["US"] }],
         },
       ],
+      already_tried_to_auto_finalize: [],
       params: [
         {
           min_participant_icp_e8s: 100000000n,
@@ -250,18 +252,18 @@ export const aggregatorSnsMock: CachedSns = {
   init: {
     init: [
       {
-        // TODO: Not supported by converter yet
-        // nns_proposal_id: null,
-        // min_participant_icp_e8s: null,
-        // neuron_basket_construction_parameters: null,
-        // max_icp_e8s: null,
-        // swap_start_timestamp_seconds: null,
-        // swap_due_timestamp_seconds: null,
-        // min_participants: null,
-        // sns_token_e8s: null,
-        // should_auto_finalize: null,
-        // max_participant_icp_e8s: null,
-        // min_icp_e8s: null,
+        nns_proposal_id: [],
+        min_participant_icp_e8s: [],
+        neuron_basket_construction_parameters: [],
+        max_icp_e8s: [],
+        swap_start_timestamp_seconds: [],
+        swap_due_timestamp_seconds: [],
+        min_participants: [],
+        sns_token_e8s: [],
+        should_auto_finalize: [],
+        neurons_fund_participants: [],
+        max_participant_icp_e8s: [],
+        min_icp_e8s: [],
         sns_root_canister_id: "5psbn-niaaa-aaaaq-aaa4q-cai",
         fallback_controller_principal_ids: [
           "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",

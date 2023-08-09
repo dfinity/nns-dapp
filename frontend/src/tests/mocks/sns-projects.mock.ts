@@ -105,11 +105,19 @@ export const mockSnsParams: SnsParams = {
 };
 
 export const mockInit: SnsSwapInit = {
+  nns_proposal_id: [123n],
   sns_root_canister_id:
     "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe",
+  min_participant_icp_e8s: [150_000_000n],
+  neuron_basket_construction_parameters: [],
   fallback_controller_principal_ids: [],
+  max_icp_e8s: [3_000_000_000n],
   neuron_minimum_stake_e8s: [100_000_000n],
   confirmation_text: [],
+  swap_start_timestamp_seconds: [0n],
+  swap_due_timestamp_seconds: [1n],
+  min_participants: [1],
+  sns_token_e8s: [150_000_000n],
   nns_governance_canister_id:
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   transaction_fee_e8s: [10_000n],
@@ -117,12 +125,21 @@ export const mockInit: SnsSwapInit = {
     "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe",
   sns_ledger_canister_id:
     "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae",
+  neurons_fund_participants: [],
+  should_auto_finalize: [true],
+  max_participant_icp_e8s: [5_000_000_000n],
   sns_governance_canister_id:
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   restricted_countries: [],
+  min_icp_e8s: [1_500_000_000n],
 };
 
 export const mockSwap: SnsSummarySwap = {
+  next_ticket_id: [],
+  auto_finalize_swap_response: [],
+  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+  purge_old_tickets_next_principal: [],
+  already_tried_to_auto_finalize: [false],
   neuron_recipes: [],
   cf_participants: [],
   init: [],
@@ -135,11 +152,13 @@ export const mockSwap: SnsSummarySwap = {
 };
 
 export const mockQuerySwap: SnsSwap = {
+  auto_finalize_swap_response: [],
   neuron_recipes: [],
   cf_participants: [],
   decentralization_sale_open_timestamp_seconds: [],
   finalize_swap_in_progress: [],
   init: [],
+  already_tried_to_auto_finalize: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],

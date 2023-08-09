@@ -95,6 +95,59 @@ const convertSwapInitParams = (
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
+        nns_proposal_id: toNullable(
+          convertOptionalNumToBigInt(init.nns_proposal_id)
+        ),
+        min_participant_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.min_participant_icp_e8s)
+        ),
+        neuron_basket_construction_parameters: isNullish(
+          init.neuron_basket_construction_parameters
+        )
+          ? []
+          : toNullable({
+              dissolve_delay_interval_seconds: BigInt(
+                init.neuron_basket_construction_parameters
+                  .dissolve_delay_interval_seconds
+              ),
+              count: BigInt(init.neuron_basket_construction_parameters.count),
+            }),
+        swap_start_timestamp_seconds: toNullable(
+          convertOptionalNumToBigInt(init.swap_start_timestamp_seconds)
+        ),
+        swap_due_timestamp_seconds: toNullable(
+          convertOptionalNumToBigInt(init.swap_due_timestamp_seconds)
+        ),
+        min_participants: toNullable(init.min_participants),
+        sns_token_e8s: toNullable(
+          convertOptionalNumToBigInt(init.sns_token_e8s)
+        ),
+        // neurons_fund_participants: [],
+        neurons_fund_participants: isNullish(init.neurons_fund_participants)
+          ? []
+          : toNullable({
+              cf_participants:
+                init.neurons_fund_participants.cf_participants.map(
+                  ({ hotkey_principal, cf_neurons }) => ({
+                    // CfParticipant
+                    hotkey_principal,
+                    cf_neurons: cf_neurons.map(
+                      ({ nns_neuron_id, amount_icp_e8s }) => ({
+                        // CfNeuron
+                        nns_neuron_id: BigInt(nns_neuron_id),
+                        amount_icp_e8s: BigInt(amount_icp_e8s),
+                      })
+                    ),
+                  })
+                ),
+            }),
+        should_auto_finalize: toNullable(init.should_auto_finalize),
+        max_participant_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.max_participant_icp_e8s)
+        ),
+        max_icp_e8s: toNullable(convertOptionalNumToBigInt(init.max_icp_e8s)),
+        min_icp_e8s: toNullable(convertOptionalNumToBigInt(init.min_icp_e8s)),
+        //
         neuron_minimum_stake_e8s: toNullable(
           convertOptionalNumToBigInt(init.neuron_minimum_stake_e8s)
         ),
@@ -157,6 +210,8 @@ const convertSwap = ({
   decentralization_sale_open_timestamp_seconds,
   finalize_swap_in_progress,
 }: CachedSnsSwapDto): SnsSwap => ({
+  auto_finalize_swap_response: [],
+  already_tried_to_auto_finalize: [],
   lifecycle,
   // TODO: Ask to Max, why isn't it there?
   neuron_recipes: [],
