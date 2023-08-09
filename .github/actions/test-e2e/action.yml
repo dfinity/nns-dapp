@@ -73,8 +73,6 @@ runs:
           echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
           git diff --name-only frontend/src/tests/e2e/snapshots >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
-          # Fail to force updating the screenshots manually.
-          exit 1
         fi
     - name: Upload screenshots
       if: ${{ steps.check-screenshots.outputs.screenshots }}
@@ -84,6 +82,10 @@ runs:
         path: |
           ${{ steps.check-screenshots.outputs.screenshots }}
         retention-days: 3
+    - name: Fail if screenshots changed
+      if: ${{ steps.check-screenshots.outputs.screenshots }}
+      # Fail to force updating the screenshots explicitly.
+      run: exit 1
     - name: Stop replica
       shell: bash
       run: dfx stop
