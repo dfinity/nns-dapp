@@ -30,7 +30,7 @@ import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsNeuronAdvancedSection", () => {
-  const nowInSeconds = 1689843195;
+  const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;
   const identityMainAccount = {
     ...mockMainAccount,
     principal: mockIdentity.getPrincipal(),
@@ -233,7 +233,9 @@ describe("NnsNeuronAdvancedSection", () => {
 
     const po = renderComponent(neuron);
 
-    expect(await po.dissolveDate()).toBe("Jul 20, 2027 8:53 AM");
+    expect(normalizeWhitespace(await po.dissolveDate())).toBe(
+      "Jul 20, 2027 8:53 AM"
+    );
   });
 
   it("should not render dissolve date if neuron is not dissolving", async () => {
