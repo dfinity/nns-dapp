@@ -30,7 +30,7 @@ jobs:
       - name: Skip build for testing
         # Set to true and set a recent run_id below to reuse an existing build
         # instead of building.
-        if: true
+        if: false
         id: skip_build
         run: |
           echo "skip_build=true" >> "$GITHUB_OUTPUT"
