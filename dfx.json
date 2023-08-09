@@ -209,7 +209,6 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_NEURON_SETTINGS": true,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -238,7 +237,6 @@
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
-          "ENABLE_NEURON_SETTINGS": true,
           "ENABLE_CKTESTBTC": false
         }
       },
