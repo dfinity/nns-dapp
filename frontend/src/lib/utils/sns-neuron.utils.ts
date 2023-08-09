@@ -70,7 +70,7 @@ export const getSnsNeuronState = ({
   return NeuronState.Unspecified;
 };
 
-export const getSnsDissolvingTimeInSeconds = (
+export const getSnsDissolvingTimestampSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
@@ -80,8 +80,17 @@ export const getSnsDissolvingTimeInSeconds = (
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
-    return dissolveState.WhenDissolvedTimestampSeconds - BigInt(nowInSeconds());
+    return dissolveState.WhenDissolvedTimestampSeconds;
   }
+};
+
+export const getSnsDissolvingTimeInSeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
 };
 
 export const getSnsLockedTimeInSeconds = (

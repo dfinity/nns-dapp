@@ -20,6 +20,7 @@ import {
   formattedStakedMaturity,
   formattedTotalMaturity,
   getSnsDissolvingTimeInSeconds,
+  getSnsDissolvingTimestampSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
   getSnsNeuronHotkeys,
@@ -241,6 +242,31 @@ describe("sns-neuron utils", () => {
         },
       ];
       expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
+    });
+  });
+
+  describe("getSnsDissolvingTimestampSeconds", () => {
+    it("returns undefined if not dissolving", () => {
+      const lockedNeuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: NeuronState.Locked,
+      });
+      expect(getSnsDissolvingTimestampSeconds(lockedNeuron)).toBeUndefined();
+      const dissolvedNeuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: NeuronState.Dissolved,
+      });
+      expect(getSnsDissolvingTimestampSeconds(dissolvedNeuron)).toBeUndefined();
+    });
+
+    it("returns dissolve date", () => {
+      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const dissolveDate = todayInSeconds + BigInt(SECONDS_IN_YEAR);
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        dissolve_state: [{ WhenDissolvedTimestampSeconds: dissolveDate }],
+      };
+      expect(getSnsDissolvingTimestampSeconds(neuron)).toBe(dissolveDate);
     });
   });
 
