@@ -564,7 +564,7 @@
     "voting_power_zero_subtitle": "No Voting Power",
     "voting_power_zero": "None",
     "voting_power_tooltip_with_stake": "Calculated as: <br/>($token staked + maturity staked) x Dissolve Delay Bonus x Age Bonus<br/>($stake + $st4kedMaturity) x $delayMultiplier x $ageMultiplier",
-    "voting_power_section_description_expanded": "Voting power is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = ($stake + $maturityStaked) × $ageBonus × $dissolveBonus = $votingPower.",
+    "voting_power_section_description_expanded": "It is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = ($stake + $maturityStaked) × $ageBonus × $dissolveBonus = $votingPower.",
     "voting_power_section_description_expanded_zero": "The dissolve delay must be greater than $minDuration for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
     "voting_power_section_description_expanded_zero_nns": "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
     "maturity_section_description": "Earn rewards by voting on proposals and/or following active neurons.",
@@ -644,7 +644,6 @@
     "remaining_title": "Remaining:",
     "unspecified": "Unspecified Neuron State",
     "advanced_settings_title": "Advanced details & settings",
-    "advanced_settings_description": "Advanced preferences for managing your neuron",
     "neuron_account": "Neuron Account",
     "dissolve_date": "Dissolve Date",
     "created": "Date created"

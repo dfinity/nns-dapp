@@ -52,6 +52,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Remove empty section headings in scripts/nns-dapp/split-changelog.
 * Make it easy to skip the CI build step for quick testing.
 * Screenshot e2e tests.
+* Allow specifying a test_filter to the e2e CI action.
+* Make it easy to skip the CI build step for quick testing
 
 #### Changed
 
