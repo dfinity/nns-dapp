@@ -50,7 +50,7 @@ runs:
       run: |
         export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
         PLAYWRIGHT_FILES="$(ls src/tests/e2e/${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
-        npm run test-e2e -- ${PLAYWRIGHT_FILES}
+        npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}
@@ -60,6 +60,34 @@ runs:
           frontend/playwright-report/*
           frontend/playwright-results/*
         retention-days: 3
+    - name: Check for screenshot changes
+      shell: bash
+      id: check-screenshots
+      run: |
+        if ! git diff --quiet -- frontend/src/tests/e2e/screenshots; then
+          echo "screenshots<<EOF" >> "$GITHUB_OUTPUT"
+          git diff --name-only -- frontend/src/tests/e2e/screenshots >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Upload screenshots
+      if: ${{ steps.check-screenshots.outputs.screenshots }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: updated-screenshots
+        path: |
+          ${{ steps.check-screenshots.outputs.screenshots }}
+        retention-days: 3
+    - name: Fail if screenshots changed
+      if: ${{ steps.check-screenshots.outputs.screenshots }}
+      shell: bash
+      # Fail in order to force updating the screenshots explicitly.
+      run: |
+        echo "Screenshots have changed:"
+        git diff --name-only -- frontend/src/tests/e2e/screenshots
+        echo
+        echo "To update your local repo run:"
+        echo "  scripts/update-e2e-screenshots --run_id ${{ github.run_id }}"
+        exit 1
     - name: Stop replica
       shell: bash
       run: dfx stop
