@@ -3,7 +3,11 @@
  */
 
 import SnsNeuronAdvancedSection from "$lib/components/sns-neuron-detail/SnsNeuronAdvancedSection.svelte";
-import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
+import {
+  SECONDS_IN_DAY,
+  SECONDS_IN_FOUR_YEARS,
+  SECONDS_IN_MONTH,
+} from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import {
   mockAuthStoreSubscribe,
@@ -20,11 +24,12 @@ import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
+import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 
 describe("SnsNeuronAdvancedSection", () => {
-  const nowInSeconds = 1689843195;
+  const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronAdvancedSection,
@@ -105,5 +110,32 @@ describe("SnsNeuronAdvancedSection", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasSplitNeuronButton()).toBe(false);
+  });
+
+  it("should render dissolve date if neuron is dissolving", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      whenDissolvedTimestampSeconds: BigInt(
+        nowInSeconds + SECONDS_IN_FOUR_YEARS
+      ),
+    });
+
+    const po = renderComponent(neuron);
+
+    expect(normalizeWhitespace(await po.dissolveDate())).toBe(
+      "Jul 20, 2027 8:53 AM"
+    );
+  });
+
+  it("should not render dissolve date if neuron is not dissolving", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+    });
+
+    const po = renderComponent(neuron);
+
+    expect(await po.dissolveDate()).toBeNull();
   });
 });
