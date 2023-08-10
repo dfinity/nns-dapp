@@ -3,44 +3,51 @@
  */
 
 import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
-import en from "$tests/mocks/i18n.mock";
-import { render, waitFor } from "@testing-library/svelte";
+import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "@testing-library/svelte";
 
 describe("DisburseMaturityButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders disburse maturity cta", () => {
-    const { getByText } = render(DisburseMaturityButton, {
+  it("renders disburse maturity cta", async () => {
+    const { container } = render(DisburseMaturityButton, {
       props: {
         enoughMaturity: true,
       },
     });
+    const buttonPo = DisburseMaturityButtonPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    expect(getByText(en.neuron_detail.disburse_maturity)).toBeInTheDocument();
+    expect(await buttonPo.isPresent()).toBe(true);
   });
 
   it("should be enabled", async () => {
-    const { getByTestId } = render(DisburseMaturityButton, {
+    const { container } = render(DisburseMaturityButton, {
       props: {
         enoughMaturity: true,
       },
     });
+    const buttonPo = DisburseMaturityButtonPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    const button = getByTestId("disburse-maturity-button");
-    await waitFor(() => expect(button.hasAttribute("disabled")).toBe(false));
+    expect(await buttonPo.isDisabled()).toBe(false);
   });
 
   it("should be disabled", async () => {
-    const { getByTestId } = render(DisburseMaturityButton, {
+    const { container } = render(DisburseMaturityButton, {
       props: {
         enoughMaturity: false,
       },
     });
+    const buttonPo = DisburseMaturityButtonPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    const btn = getByTestId("disburse-maturity-button") as HTMLButtonElement;
-
-    expect(btn.hasAttribute("disabled")).toBeTruthy();
+    expect(await buttonPo.isDisabled()).toBe(true);
   });
 });
