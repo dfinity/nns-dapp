@@ -2,6 +2,7 @@ import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { getOrCreateSnsParametersProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
@@ -185,9 +186,10 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
 ) => {
-  const store = get(snsFunctionsStore);
-  // Avoid loading the same data multiple times if the data loaded is certified
-  if (store[rootCanisterId.toText()]?.certified) {
+  const store = getOrCreateSnsParametersProjectStore(rootCanisterId);
+  const storeData = get(store);
+  // Avoid loading the same data multiple times if the data is loaded
+  if (nonNullish(storeData)) {
     return;
   }
 
