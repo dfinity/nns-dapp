@@ -94,7 +94,7 @@ export const snsResponseFor = ({
   ],
 ];
 
-const mergeSnsResponses = (
+export const mergeSnsResponses = (
   responses: [QuerySnsMetadata[], QuerySnsSwapState[]][]
 ): [QuerySnsMetadata[], QuerySnsSwapState[]] => {
   const metadata = responses.flatMap(([meta, _]) => meta);

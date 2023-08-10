@@ -14,7 +14,7 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProject } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -33,10 +33,12 @@ describe("SnsAccountsFooter", () => {
     resetSnsProjects();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
-    setSnsProject({
-      rootCanisterId,
-      lifecycle: SnsSwapLifecycle.Committed,
-    });
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     transactionsFeesStore.setFee({
       rootCanisterId,
       fee: BigInt(10_000),
