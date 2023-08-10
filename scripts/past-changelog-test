@@ -16,19 +16,13 @@ ignoreSigPipe() {
   fi
 }
 
-foo() {
-  echo pid $$
-  (echo pid $$ && sleep 1) | cat
+echo test 1
+seq 10000 | head -1 || ignoreSigPipe
 
-  echo test 4
-  X="$( (echo hoi && sleep 1 && echo hoi2) | head -1 || ignoreSigPipe)"
-  echo test 3
-  X="$( (echo hoi && sleep 1 && echo hoi2 || ignoreSigPipe) | head -1)"
-  echo test 2
-  XX=$( (ls && sleep 1; echo "? $?") | head -n 1)
-  echo test 1
-  (ls && sleep 1; echo "? $?") | head -n 1
-}
+echo test 2
+seq 10000 | (head -1 && cat /dev/null) || ignoreSigPipe
+
+echo test 3
 
 if ! LAST_ADDED_ENTRY_CONTENT="$(git diff "$MAIN_ANCESTOR" "$CHANGELOG" | grep '^+[*-]' | tail -1 | sed -e 's/^+//')"; then
   echo "PASSED: No new entries were added to $CHANGELOG"
@@ -39,7 +33,7 @@ LAST_ADDED_ENTRY_LINE_NUMBER="$(grep --fixed-string -n -m 1 -- "$LAST_ADDED_ENTR
 # Sometimes `git show` exits with SIGPIPE (141). This is probably because the
 # `grep` exits early, and `git show` is trying to write to a pipe that's no
 # longer there. We ignore this error.
-LAST_RELEASE_HEADING="$( (git show origin/main:CHANGELOG-Nns-Dapp.md && sleep 1 && echo bla) | grep -m 1 '^## Proposal [0-9]\+$' || ignoreSigPipe)"
+LAST_RELEASE_HEADING="$(git show origin/main:CHANGELOG-Nns-Dapp.md | (grep -m 1 '^## Proposal [0-9]\+$'; cat > /dev/null) )"
 LAST_RELEASE_LINE_NUMBER="$(grep -n -m 1 "$LAST_RELEASE_HEADING" "$CHANGELOG" | cut -d: -f1)"
 
 if (("$LAST_ADDED_ENTRY_LINE_NUMBER" > "$LAST_RELEASE_LINE_NUMBER")); then
