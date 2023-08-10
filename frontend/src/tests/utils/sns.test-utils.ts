@@ -1,6 +1,9 @@
 import { snsQueryStore } from "$lib/stores/sns.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { createQueryMetadataResponse } from "$tests/mocks/sns-projects.mock";
+import {
+  createQueryMetadataResponse,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import {
   mergeSnsResponses,
   snsResponseFor,
@@ -10,13 +13,13 @@ import type { SnsSwapLifecycle } from "@dfinity/sns";
 
 export const setSnsProjects = (
   params: {
-    rootCanisterId: Principal;
+    rootCanisterId?: Principal;
     lifecycle: SnsSwapLifecycle;
     certified?: boolean;
     restrictedCountries?: string[];
     directParticipantCount?: [] | [bigint];
     projectName?: string;
-    tokenMetadata?: Partial<Pick<IcrcTokenMetadata, "name" | "symbol">>;
+    tokenMetadata?: Partial<IcrcTokenMetadata>;
   }[]
 ) => {
   const responses = params.map(
@@ -30,7 +33,7 @@ export const setSnsProjects = (
       tokenMetadata,
     }) =>
       snsResponseFor({
-        principal: rootCanisterId,
+        principal: rootCanisterId ?? principal(0),
         lifecycle,
         certified,
         restrictedCountries,
