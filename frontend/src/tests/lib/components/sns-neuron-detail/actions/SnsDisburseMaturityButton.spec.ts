@@ -5,16 +5,18 @@
 import SnsDisburseMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsDisburseMaturityButton.svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { SnsDisburseMaturityButtonPo } from "$tests/page-objects/SnsDisburseMaturityButton.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsDisburseMaturityButton", () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("should be enabled if enough maturity is available", async () => {
-    const { getByTestId } = render(SnsNeuronContextTest, {
+    const { container } = render(SnsNeuronContextTest, {
       props: {
         neuron: {
           ...mockSnsNeuron,
@@ -25,14 +27,17 @@ describe("SnsDisburseMaturityButton", () => {
         testComponent: SnsDisburseMaturityButton,
       },
     });
+    const buttonPo = SnsDisburseMaturityButtonPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    const btn = getByTestId("disburse-maturity-button") as HTMLButtonElement;
-
-    expect(btn.hasAttribute("disabled")).toBe(false);
+    expect(await buttonPo.getDisburseMaturityButtonPo().isDisabled()).toBe(
+      false
+    );
   });
 
   it("should be disabled if no maturity to disburse", async () => {
-    const { getByTestId } = render(SnsNeuronContextTest, {
+    const { container } = render(SnsNeuronContextTest, {
       props: {
         neuron: {
           ...mockSnsNeuron,
@@ -43,10 +48,13 @@ describe("SnsDisburseMaturityButton", () => {
         testComponent: SnsDisburseMaturityButton,
       },
     });
+    const buttonPo = SnsDisburseMaturityButtonPo.under(
+      new JestPageObjectElement(container)
+    );
 
-    const btn = getByTestId("disburse-maturity-button") as HTMLButtonElement;
-
-    expect(btn.hasAttribute("disabled")).toBeTruthy();
+    expect(await buttonPo.getDisburseMaturityButtonPo().isDisabled()).toBe(
+      true
+    );
   });
 
   it("should open disburse maturity modal", async () => {
