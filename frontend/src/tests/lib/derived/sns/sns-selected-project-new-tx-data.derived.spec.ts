@@ -7,7 +7,6 @@ import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import {
-  createQueryMetadataResponse,
   mockSnsSwapCommitment,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
@@ -36,18 +35,15 @@ describe("selected-project-new-transaction-data derived store", () => {
         name: "name",
         symbol: "symbol",
       };
-      const tokenData = createQueryMetadataResponse(token);
-
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
       setSnsProjects([
         {
           rootCanisterId,
           lifecycle: SnsSwapLifecycle.Committed,
-          tokenMetadata: tokenData,
+          tokenMetadata: token,
         },
       ]);
 
