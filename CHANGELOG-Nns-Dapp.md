@@ -39,6 +39,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Maintain text color in hyperlinks card when hovered.
 * Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
 * Prevent the submission of cycles for top-up review unless an amount has been entered first.
+* Fix user story where message in HW screen was saying "Send ICP" when it should be "Stake Neuron".
 
 #### Security
 
