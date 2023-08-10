@@ -14,4 +14,8 @@ export class SnsDisburseMaturityButtonPo extends BasePageObject {
   getDisburseMaturityButtonPo(): DisburseMaturityButtonPo {
     return DisburseMaturityButtonPo.under(this.root);
   }
+
+  isDisabled(): Promise<boolean> {
+    return this.getDisburseMaturityButtonPo().isDisabled();
+  }
 }

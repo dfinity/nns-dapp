@@ -31,9 +31,7 @@ describe("SnsDisburseMaturityButton", () => {
       new JestPageObjectElement(container)
     );
 
-    expect(await buttonPo.getDisburseMaturityButtonPo().isDisabled()).toBe(
-      false
-    );
+    expect(await buttonPo.isDisabled()).toBe(false);
   });
 
   it("should be disabled if no maturity to disburse", async () => {
@@ -52,9 +50,7 @@ describe("SnsDisburseMaturityButton", () => {
       new JestPageObjectElement(container)
     );
 
-    expect(await buttonPo.getDisburseMaturityButtonPo().isDisabled()).toBe(
-      true
-    );
+    expect(await buttonPo.isDisabled()).toBe(true);
   });
 
   it("should open disburse maturity modal", async () => {
