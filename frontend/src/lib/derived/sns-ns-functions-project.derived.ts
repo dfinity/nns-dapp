@@ -17,9 +17,7 @@ export type SnsNervousSystemFunctionsProjectStore = Readable<
   SnsNervousSystemFunction[] | undefined
 >;
 
-const stores: Record<string, SnsNervousSystemFunctionsProjectStore> = {};
-
-const initSnsParametersProjectStore = (
+export const createSnsParametersProjectStore = (
   rootCanisterId: Principal
 ): SnsNervousSystemFunctionsProjectStore =>
   derived<
@@ -45,13 +43,3 @@ const initSnsParametersProjectStore = (
       return undefined;
     }
   );
-
-export const getOrCreateSnsParametersProjectStore = (
-  rootCanisterId: Principal
-): SnsNervousSystemFunctionsProjectStore => {
-  const key = rootCanisterId.toText();
-  if (!stores[key]) {
-    stores[key] = initSnsParametersProjectStore(rootCanisterId);
-  }
-  return stores[key];
-};

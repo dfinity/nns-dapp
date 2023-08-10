@@ -22,7 +22,7 @@
   import SnsFollowee from "./SnsFollowee.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
   import {
-    getOrCreateSnsParametersProjectStore,
+    createSnsParametersProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
 
@@ -52,7 +52,7 @@
 
   let nsFunctions: SnsNervousSystemFunctionsProjectStore | undefined;
   $: nsFunctions = nonNullish(rootCanisterId)
-    ? getOrCreateSnsParametersProjectStore(rootCanisterId)
+    ? createSnsParametersProjectStore(rootCanisterId)
     : undefined;
 
   let followees: SnsFolloweesByNeuron[] = [];
