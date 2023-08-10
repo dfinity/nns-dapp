@@ -877,6 +877,7 @@ interface I18nError__sns {
   sns_load_functions: string;
   sns_add_hotkey: string;
   sns_stake_maturity: string;
+  sns_disburse_maturity: string;
   sns_amount_not_enough_stake_neuron: string;
   sns_reload_no_universe: string;
 }

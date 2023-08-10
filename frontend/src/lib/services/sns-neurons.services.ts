@@ -3,6 +3,7 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
+  disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
@@ -764,6 +765,36 @@ export const stakeMaturity = async ({
   } catch (err: unknown) {
     toastsError({
       labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  percentageToDisburse,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  percentageToDisburse: number;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getSnsNeuronIdentity();
+
+    await disburseMaturityApi({
+      neuronId,
+      rootCanisterId,
+      percentageToDisburse,
+      identity,
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_disburse_maturity",
       err,
     });
 
