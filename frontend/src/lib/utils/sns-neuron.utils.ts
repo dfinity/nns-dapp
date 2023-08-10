@@ -278,6 +278,21 @@ export const hasPermissionToStakeMaturity = ({
     ],
   });
 
+export const hasPermissionToDisburseMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+    ],
+  });
+
 export const hasPermissionToSplit = ({
   neuron,
   identity,

@@ -998,6 +998,7 @@ describe("sns-neuron utils", () => {
     });
   });
 
+  describe("hasPermissionToDisburseMaturity", () => {
   describe("hasPermissions", () => {
     it("returns true when user has one selected permission", () => {
       const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
