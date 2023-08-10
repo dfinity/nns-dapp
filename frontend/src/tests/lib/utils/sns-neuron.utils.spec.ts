@@ -31,6 +31,7 @@ import {
   hasEnoughMaturityToStakeOrDisburse,
   hasEnoughStakeToSplit,
   hasPermissionToDisburse,
+  hasPermissionToDisburseMaturity,
   hasPermissionToDissolve,
   hasPermissionToSplit,
   hasPermissionToStakeMaturity,
@@ -999,6 +1000,44 @@ describe("sns-neuron utils", () => {
   });
 
   describe("hasPermissionToDisburseMaturity", () => {
+    it("returns true when user has disburse maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburseMaturity({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no disburse maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburseMaturity({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
   describe("hasPermissions", () => {
     it("returns true when user has one selected permission", () => {
       const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
