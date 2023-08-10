@@ -59,7 +59,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_NEURON_SETTINGS": true, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_DISBURSE_MATURITY": false, "ENABLE_ICP_ICRC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_NEURON_SETTINGS": true, "ENABLE_INSTANT_UNLOCK": false}'
 );
 
 export const IS_TESTNET: boolean =
