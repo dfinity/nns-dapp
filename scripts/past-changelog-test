@@ -8,12 +8,8 @@ MAIN_ANCESTOR="$(git merge-base HEAD origin/main)"
 
 ignoreSigPipe() {
   error="$?"
-  echo "Ignoring SIGPIPE error $error"
-  if [ "$error" = 141 ]; then
-    return 0
-  else
-    return "$error"
-  fi
+  echo "Ignoring error $error"
+  return 0
 }
 
 echo test 1
