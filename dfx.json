@@ -627,7 +627,8 @@
           "ENABLE_ICP_ICRC": false,
           "ENABLE_SIMULATE_MERGE_NEURONS": true,
           "ENABLE_NEURON_SETTINGS": true,
-          "ENABLE_INSTANT_UNLOCK": false
+          "ENABLE_INSTANT_UNLOCK": false,
+          "ENABLE_DISBURSE_MATURITY": false
         }
       }
     },
