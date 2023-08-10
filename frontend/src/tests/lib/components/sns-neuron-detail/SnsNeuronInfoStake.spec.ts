@@ -19,7 +19,7 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import {
   SnsNeuronPermissionType,
@@ -35,7 +35,6 @@ describe("SnsNeuronInfoStake", () => {
       data: { universe: rootCanisterId.toText() },
     });
 
-    resetSnsProjects();
     setSnsProjects([{ rootCanisterId, lifecycle: SnsSwapLifecycle.Committed }]);
 
     jest

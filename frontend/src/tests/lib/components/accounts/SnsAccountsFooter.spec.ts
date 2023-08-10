@@ -14,7 +14,7 @@ import {
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { page } from "../../../../../__mocks__/$app/stores";
@@ -30,7 +30,6 @@ describe("SnsAccountsFooter", () => {
   const rootCanisterIdText = rootCanisterId.toText();
 
   beforeEach(() => {
-    resetSnsProjects();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
     setSnsProjects([

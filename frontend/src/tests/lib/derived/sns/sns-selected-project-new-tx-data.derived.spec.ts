@@ -12,7 +12,7 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -22,7 +22,6 @@ describe("selected-project-new-transaction-data derived store", () => {
 
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-      resetSnsProjects();
       snsSwapCommitmentsStore.reset();
       transactionsFeesStore.reset();
     });
