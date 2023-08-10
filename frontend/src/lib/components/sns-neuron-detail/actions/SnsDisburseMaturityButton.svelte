@@ -9,8 +9,6 @@
   import { getContext } from "svelte";
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
 
-  export let variant: "primary" | "secondary" = "primary";
-
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
   const { store }: SelectedSnsNeuronContext = context;
@@ -24,4 +22,4 @@
   const showModal = () => openSnsNeuronModal({ type: "disburse-maturity" });
 </script>
 
-<DisburseMaturityButton {enoughMaturity} {variant} on:click={showModal} />
+<DisburseMaturityButton {enoughMaturity} on:click={showModal} />
