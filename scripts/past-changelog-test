@@ -15,7 +15,10 @@ LAST_ADDED_ENTRY_LINE_NUMBER="$(grep --fixed-string -n -m 1 -- "$LAST_ADDED_ENTR
 # Sometimes `git show` exits with SIGPIPE (141). This is probably because the
 # `grep` exits early, and `git show` is trying to write to a pipe that's no
 # longer there. So we send the remaining output to /dev/null to avoid this.
-LAST_RELEASE_HEADING="$(git show origin/main:CHANGELOG-Nns-Dapp.md | (grep -m 1 '^## Proposal [0-9]\+$'; cat > /dev/null) )"
+LAST_RELEASE_HEADING="$(git show origin/main:CHANGELOG-Nns-Dapp.md | (
+  grep -m 1 '^## Proposal [0-9]\+$'
+  cat >/dev/null
+))"
 LAST_RELEASE_LINE_NUMBER="$(grep -n -m 1 "$LAST_RELEASE_HEADING" "$CHANGELOG" | cut -d: -f1)"
 
 if (("$LAST_ADDED_ENTRY_LINE_NUMBER" > "$LAST_RELEASE_LINE_NUMBER")); then
