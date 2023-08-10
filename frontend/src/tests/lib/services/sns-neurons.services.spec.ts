@@ -11,6 +11,7 @@ import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as services from "$lib/services/sns-neurons.services";
 import {
   disburse,
+  disburseMaturity,
   increaseStakeNeuron,
   stakeMaturity,
   startDissolving,
@@ -750,6 +751,34 @@ describe("sns-neurons-services", () => {
         neuronId,
         rootCanisterId,
         percentageToStake,
+        identity,
+      });
+    });
+  });
+
+  describe("disburseMaturity", () => {
+    it("should call api.disburseMaturity", async () => {
+      const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
+      const identity = mockIdentity;
+      const rootCanisterId = mockPrincipal;
+      const percentageToDisburse = 75;
+
+      const spyOnDisburseMaturity = jest
+        .spyOn(governanceApi, "disburseMaturity")
+        .mockImplementation(() => Promise.resolve());
+
+      const { success } = await disburseMaturity({
+        neuronId,
+        rootCanisterId,
+        percentageToDisburse,
+      });
+
+      expect(success).toBeTruthy();
+
+      expect(spyOnDisburseMaturity).toBeCalledWith({
+        neuronId,
+        rootCanisterId,
+        percentageToDisburse,
         identity,
       });
     });
