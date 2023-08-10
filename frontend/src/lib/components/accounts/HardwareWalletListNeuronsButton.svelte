@@ -10,6 +10,8 @@
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { openWalletModal } from "$lib/utils/modals.utils";
+  import { isNullish } from "@dfinity/utils";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   // Get the store for the neurons of the hardware wallet from the dedicated context
   const context: WalletContext = getContext<WalletContext>(WALLET_CONTEXT_KEY);
@@ -21,7 +23,18 @@
       labelKey: "busy_screen.pending_approval_hw",
     });
 
-    const { neurons, err } = await listNeuronsHardwareWalletProxy();
+    const account = $store.account;
+
+    // Edge case, if this button is displayed, the account should be defined
+    if (isNullish(account)) {
+      stopBusy("accounts");
+      toastsError({ labelKey: "error__account.not_found" });
+      return;
+    }
+
+    const { neurons, err } = await listNeuronsHardwareWalletProxy(
+      account.identifier
+    );
 
     store.update((data) => ({
       ...data,

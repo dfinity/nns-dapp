@@ -37,12 +37,14 @@ export const showAddressAndPubKeyOnHardwareWalletProxy = async () => {
   return showAddressAndPubKeyOnHardwareWallet();
 };
 
-export const listNeuronsHardwareWalletProxy = async (): Promise<{
+export const listNeuronsHardwareWalletProxy = async (
+  accountIdentifier: string
+): Promise<{
   neurons: NeuronInfo[];
   err?: string;
 }> => {
   const { listNeuronsHardwareWallet } = await importLedgerServices();
-  return listNeuronsHardwareWallet();
+  return listNeuronsHardwareWallet(accountIdentifier);
 };
 
 export const isLedgerIdentityProxy = async (

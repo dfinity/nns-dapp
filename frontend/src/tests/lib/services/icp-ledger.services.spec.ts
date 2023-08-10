@@ -314,7 +314,7 @@ describe("icp-ledger.services", () => {
   describe("query neurons", () => {
     const mockNeurons = [mockNeuron];
 
-    beforeAll(() => {
+    beforeEach(() => {
       jest
         .spyOn(api, "queryNeurons")
         .mockImplementation(() => Promise.resolve(mockNeurons));
@@ -330,9 +330,31 @@ describe("icp-ledger.services", () => {
       );
 
       it("should list neurons on hardware wallet", async () => {
-        const { neurons } = await listNeuronsHardwareWallet();
+        const { neurons } = await listNeuronsHardwareWallet(
+          mockLedgerIdentifier
+        );
 
         expect(neurons).toEqual(mockNeurons);
+      });
+
+      it("should create and cache the identity", async () => {
+        await listNeuronsHardwareWallet(mockLedgerIdentifier);
+
+        expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+        await getLedgerIdentity(mockLedgerIdentifier);
+
+        expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not create a new identity if cached ", async () => {
+        await getLedgerIdentity(mockLedgerIdentifier);
+
+        expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
+
+        await listNeuronsHardwareWallet(mockLedgerIdentifier);
+
+        expect(LedgerIdentity.create).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -348,7 +370,7 @@ describe("icp-ledger.services", () => {
       it("should not list neurons if ledger throw an error", async () => {
         const spyToastError = jest.spyOn(toastsStore, "toastsError");
 
-        const { err } = await listNeuronsHardwareWallet();
+        const { err } = await listNeuronsHardwareWallet(mockLedgerIdentifier);
 
         expect(spyToastError).toBeCalled();
         expect(spyToastError).toBeCalledWith({

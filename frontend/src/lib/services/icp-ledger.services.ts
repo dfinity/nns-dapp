@@ -34,7 +34,7 @@ export const connectToHardwareWallet = async (
   try {
     callback({ connectionState: LedgerConnectionState.CONNECTING });
 
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    const ledgerIdentity: LedgerIdentity = await LedgerIdentity.create();
 
     callback({
       connectionState: LedgerConnectionState.CONNECTED,
@@ -95,9 +95,6 @@ export const registerHardwareWallet = async ({
   }
 };
 
-const createLedgerIdentity = (): Promise<LedgerIdentity> =>
-  LedgerIdentity.create();
-
 // Used to cache the identities.
 // The identity is an instance of the class LedgerIdentity.
 // This identity is used in other layers and then cached. If this returns a new one it's not necessarily used.
@@ -118,7 +115,7 @@ export const getLedgerIdentity = async (
   if (identities[identifier]) {
     return identities[identifier];
   }
-  const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+  const ledgerIdentity: LedgerIdentity = await LedgerIdentity.create();
 
   identities[identifier] = ledgerIdentity;
 
@@ -142,7 +139,7 @@ export const getLedgerIdentity = async (
 
 export const showAddressAndPubKeyOnHardwareWallet = async () => {
   try {
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    const ledgerIdentity: LedgerIdentity = await LedgerIdentity.create();
     await ledgerIdentity.showAddressAndPubKeyOnDevice();
   } catch (err: unknown) {
     toastUnexpectedError({
@@ -166,12 +163,16 @@ const toastUnexpectedError = ({
     })
   );
 
-export const listNeuronsHardwareWallet = async (): Promise<{
+export const listNeuronsHardwareWallet = async (
+  accountIdentifier: string
+): Promise<{
   neurons: NeuronInfo[];
   err?: string;
 }> => {
   try {
-    const ledgerIdentity: LedgerIdentity = await createLedgerIdentity();
+    const ledgerIdentity: LedgerIdentity = await getLedgerIdentity(
+      accountIdentifier
+    );
     const neurons: NeuronInfo[] = await queryNeurons({
       identity: ledgerIdentity,
       certified: true,
