@@ -1,6 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, replaceContent } from "$tests/utils/e2e.test-utils";
+import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -45,7 +45,7 @@ test.describe("Design", () => {
           '[data-tid="select-universe-card"]:not(:first-of-type) .name',
           '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label',
         ],
-        innerHtml: 'XXXXX',
+        innerHtml: "XXXXX",
       });
       await expect(page).toHaveScreenshot();
     };

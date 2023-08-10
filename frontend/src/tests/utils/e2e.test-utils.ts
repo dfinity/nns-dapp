@@ -108,10 +108,9 @@ export const replaceContent = ({
 }) => {
   page.evaluate(
     ({ selectors, innerHtml }) =>
-      document.querySelectorAll(selectors.join(', ')).forEach((el) => {
+      document.querySelectorAll(selectors.join(", ")).forEach((el) => {
         el.innerHTML = innerHtml;
       }),
-    { selectors, innerHtml },
+    { selectors, innerHtml }
   );
 };
-  
