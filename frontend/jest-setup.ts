@@ -38,6 +38,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_SIMULATE_MERGE_NEURONS: true,
       ENABLE_NEURON_SETTINGS: true,
       ENABLE_INSTANT_UNLOCK: true,
+      ENABLE_DISBURSE_MATURITY: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
