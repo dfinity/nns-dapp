@@ -6,7 +6,7 @@
     record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="mqygn-kiaaa-aaaar-qaadq-cai" };
     record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
     record{ 0="DFX_NETWORK"; 1="mainnet" };
-    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_ICP_ICRC\":false,\"ENABLE_INSTANT_UNLOCK\":false,\"ENABLE_NEURON_SETTINGS\":true}" };
+    record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_DISBURSE_MATURITY\":false,\"ENABLE_ICP_ICRC\":false,\"ENABLE_INSTANT_UNLOCK\":false,\"ENABLE_NEURON_SETTINGS\":true,\"ENABLE_SIMULATE_MERGE_NEURONS\":true}" };
     record{ 0="FETCH_ROOT_KEY"; 1="false" };
     record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
     record{ 0="HOST"; 1="https://icp-api.io" };

@@ -43,6 +43,7 @@ export interface FeatureFlags<T> {
   ENABLE_ICP_ICRC: T;
   ENABLE_NEURON_SETTINGS: T;
   ENABLE_INSTANT_UNLOCK: T;
+  ENABLE_DISBURSE_MATURITY: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -57,7 +58,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_NEURON_SETTINGS": true, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_DISBURSE_MATURITY": false, "ENABLE_ICP_ICRC": false, "ENABLE_NEURON_SETTINGS": true, "ENABLE_INSTANT_UNLOCK": false}'
 );
 
 export const IS_TESTNET: boolean =
