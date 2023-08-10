@@ -36,7 +36,8 @@ export const setSnsProjects = (
         restrictedCountries,
         directParticipantCount,
         projectName,
-        tokenMetadata: createQueryMetadataResponse(tokenMetadata),
+        tokenMetadata:
+          tokenMetadata && createQueryMetadataResponse(tokenMetadata),
       })
   );
   snsQueryStore.setData(mergeSnsResponses(responses));
