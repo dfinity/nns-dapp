@@ -56,6 +56,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Screenshot e2e tests.
 * Allow specifying a test_filter to the e2e CI action.
 * Make it easy to skip the CI build step for quick testing
+* New test util to set SNS projects for testing.
 
 #### Changed
 
@@ -67,7 +68,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * past-changelog-test compares lines numbers correctly.
-* Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
+* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
 
 #### Security
 

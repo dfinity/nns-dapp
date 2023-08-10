@@ -466,6 +466,33 @@ export const stakeMaturity = async ({
   logWithTimestamp(`Stake maturity: complete`);
 };
 
+export const disburseMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  percentageToDisburse,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  percentageToDisburse: number;
+}): Promise<void> => {
+  logWithTimestamp(`Disburse maturity: call...`);
+
+  const { disburseMaturity: percentageToDisburseApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await percentageToDisburseApi({
+    neuronId,
+    percentageToDisburse,
+  });
+
+  logWithTimestamp(`Disburse maturity: complete`);
+};
+
 export const registerVote = async ({
   neuronId,
   rootCanisterId,

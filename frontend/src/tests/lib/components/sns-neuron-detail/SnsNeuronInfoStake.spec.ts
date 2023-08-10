@@ -4,7 +4,6 @@
 
 import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -17,9 +16,10 @@ import {
   mockSnsNeuron,
   mockSnsNeuronWithPermissions,
 } from "$tests/mocks/sns-neurons.mock";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import {
   SnsNeuronPermissionType,
@@ -29,16 +29,13 @@ import {
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 
 describe("SnsNeuronInfoStake", () => {
-  const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Committed],
-  });
   beforeEach(() => {
-    const universe = data[0][0].rootCanisterId;
+    const rootCanisterId = rootCanisterIdMock;
     page.mock({
-      data: { universe },
+      data: { universe: rootCanisterId.toText() },
     });
 
-    snsQueryStore.setData(data);
+    setSnsProjects([{ rootCanisterId, lifecycle: SnsSwapLifecycle.Committed }]);
 
     jest
       .spyOn(authStore, "subscribe")

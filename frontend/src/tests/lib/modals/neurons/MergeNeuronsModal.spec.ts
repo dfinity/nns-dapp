@@ -3,6 +3,7 @@
  */
 
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons, simulateMergeNeurons } from "$lib/api/governance.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
@@ -23,7 +24,9 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/governance.api");
 
@@ -31,6 +34,14 @@ const testIdentity = createMockIdentity(37373);
 
 const getStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron.cachedNeuronStake;
+
+const expectToastError = (contained: string) =>
+  expect(get(toastsStore)).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
 
 describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
@@ -43,6 +54,7 @@ describe("MergeNeuronsModal", () => {
     icpAccountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
+    toastsStore.reset();
   });
 
   const selectAndTestTwoNeurons = async ({ po, neurons }) => {
@@ -344,6 +356,36 @@ describe("MergeNeuronsModal", () => {
         await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
       ).toBe(false);
       expect(await mergedNeuronCard.isPresent()).toBe(true);
+    });
+
+    it("should hide result section if simulating the merging fails", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
+
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      // Start dissolving will cause the merge simulation to fail.
+      await governanceApi.startDissolving({
+        neuronId: mergeableNeuron1.neuronId,
+        identity: testIdentity,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        false
+      );
+      expectToastError(
+        "Sorry, there was an unexpected error. Please try again later. Only locked neurons can be merged"
+      );
     });
   });
 
