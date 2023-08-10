@@ -4,6 +4,7 @@
 
 import SnsAvailableMaturityItemAction from "$lib/components/sns-neuron-detail/SnsAvailableMaturityItemAction.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -51,6 +52,13 @@ describe("SnsAvailableMaturityItemAction", () => {
       (p) => p !== SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY
     ),
   };
+  const noDisburseMaturityPermissions = {
+    principal: [mockIdentity.getPrincipal()] as [Principal],
+    permission_type: allSnsNeuronPermissions.filter(
+      (p) =>
+        p !== SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY
+    ),
+  };
 
   beforeEach(() => {
     jest
@@ -78,5 +86,28 @@ describe("SnsAvailableMaturityItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasStakeButton()).toBe(false);
+  });
+
+  it("should render disburse maturity button when user has disburse maturity permission", async () => {
+    const po = renderComponent(controlledNeuron);
+
+    expect(await po.hasDisburseMaturityButton()).toBe(true);
+  });
+
+  it("should not render stake maturity button if user has no disburse maturity permission", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      permissions: [noDisburseMaturityPermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.hasDisburseMaturityButton()).toBe(false);
+  });
+
+  it("should not render stake maturity button when ENABLE_DISBURSE_MATURITY flag is not set", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", false);
+    const po = renderComponent(controlledNeuron);
+
+    expect(await po.hasDisburseMaturityButton()).toBe(false);
   });
 });

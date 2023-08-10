@@ -1,3 +1,4 @@
+import { SnsDisburseMaturityButtonPo } from "$tests/page-objects/SnsDisburseMaturityButton.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -16,5 +17,13 @@ export class SnsAvailableMaturityItemActionPo extends BasePageObject {
 
   hasStakeButton(): Promise<boolean> {
     return this.getButton("stake-maturity-button").isPresent();
+  }
+
+  getSnsDisburseMaturityButtonPo(): SnsDisburseMaturityButtonPo {
+    return SnsDisburseMaturityButtonPo.under(this.root);
+  }
+
+  hasDisburseMaturityButton(): Promise<boolean> {
+    return this.getSnsDisburseMaturityButtonPo().isPresent();
   }
 }

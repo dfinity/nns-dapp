@@ -40,6 +40,6 @@
   {/if}
 
   {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}
-    <SnsDisburseMaturityButton variant="secondary" />
+    <SnsDisburseMaturityButton />
   {/if}
 </CommonItemAction>
