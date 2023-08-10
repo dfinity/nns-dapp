@@ -10,6 +10,7 @@ import {
 } from "$tests/mocks/sns-response.mock";
 import type { Principal } from "@dfinity/principal";
 import type { SnsSwapLifecycle } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
 
 export const setSnsProjects = (
   params: {
@@ -22,18 +23,26 @@ export const setSnsProjects = (
     tokenMetadata?: Partial<IcrcTokenMetadata>;
   }[]
 ) => {
+  if (
+    params.filter(({ rootCanisterId }) => isNullish(rootCanisterId)).length > 5
+  ) {
+    throw new Error("Too many projects without canister id.");
+  }
   const responses = params.map(
-    ({
-      rootCanisterId,
-      lifecycle,
-      certified,
-      restrictedCountries,
-      directParticipantCount,
-      projectName,
-      tokenMetadata,
-    }) =>
+    (
+      {
+        rootCanisterId,
+        lifecycle,
+        certified,
+        restrictedCountries,
+        directParticipantCount,
+        projectName,
+        tokenMetadata,
+      },
+      index
+    ) =>
       snsResponseFor({
-        principal: rootCanisterId ?? principal(0),
+        principal: rootCanisterId ?? principal(index),
         lifecycle,
         certified,
         restrictedCountries,
