@@ -10,7 +10,6 @@
     simulateMergeNeurons,
   } from "$lib/services/neurons.services";
   import { stopBusy } from "$lib/stores/busy.store";
-  import { ENABLE_SIMULATE_MERGE_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -38,19 +37,17 @@
   let simulationFailed = false;
   let simulatedMergedNeuron: NeuronInfo | undefined;
   $: {
-    if ($ENABLE_SIMULATE_MERGE_NEURONS) {
-      simulateMergeNeurons({
-        targetNeuronId: targetNeuron.neuronId,
-        sourceNeuronId: sourceNeuron.neuronId,
-      }).then((result) => {
-        simulatedMergedNeuron = result;
-        simulationFailed = isNullish(result);
-      });
-    }
+    simulateMergeNeurons({
+      targetNeuronId: targetNeuron.neuronId,
+      sourceNeuronId: sourceNeuron.neuronId,
+    }).then((result) => {
+      simulatedMergedNeuron = result;
+      simulationFailed = isNullish(result);
+    });
   }
 
   let showMergeResult = false;
-  $: showMergeResult = $ENABLE_SIMULATE_MERGE_NEURONS && !simulationFailed;
+  $: showMergeResult = !simulationFailed;
 
   const merge = async () => {
     startBusyNeuron({
@@ -78,19 +75,11 @@
 <div class="wrapper" data-tid="confirm-neurons-merge-component">
   <h3>{$i18n.neurons.merge_neurons_modal_title_2}</h3>
 
-  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
-    <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
-  {:else}
-    <NnsNeuronInfo neuron={sourceNeuron} testId="source-neuron-info" />
-  {/if}
+  <NnsNeuronDetailCard neuron={sourceNeuron} testId="source-neuron-card" />
 
   <h3>{$i18n.neurons.merge_neurons_modal_into}</h3>
 
-  {#if $ENABLE_SIMULATE_MERGE_NEURONS}
-    <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
-  {:else}
-    <NnsNeuronInfo neuron={targetNeuron} testId="target-neuron-info" />
-  {/if}
+  <NnsNeuronDetailCard neuron={targetNeuron} testId="target-neuron-card" />
 
   {#if showMergeResult}
     <div data-tid="merge-result-section">
