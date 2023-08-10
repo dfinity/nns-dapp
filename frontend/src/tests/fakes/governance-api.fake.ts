@@ -1,4 +1,5 @@
 import type {
+  ApiManageNeuronParams,
   ApiMergeNeuronsParams,
   ApiQueryParams,
 } from "$lib/api/governance.api";
@@ -11,6 +12,7 @@ import {
 } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
@@ -18,6 +20,7 @@ const fakeFunctions = {
   queryNeurons,
   queryKnownNeurons,
   queryLastestRewardEvent,
+  startDissolving,
   mergeNeurons,
   simulateMergeNeurons,
 };
@@ -79,6 +82,14 @@ async function queryLastestRewardEvent({
   return latestRewardEvent;
 }
 
+async function startDissolving({
+  neuronId,
+  identity,
+}: ApiManageNeuronParams): Promise<void> {
+  const neuron = getNeuron({ identity, neuronId });
+  neuron.state = NeuronState.Dissolving;
+}
+
 async function mergeNeurons({
   sourceNeuronId,
   targetNeuronId,
@@ -86,6 +97,12 @@ async function mergeNeurons({
 }: ApiMergeNeuronsParams): Promise<void> {
   const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
   const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  if (
+    sourceNeuron.state !== NeuronState.Locked ||
+    targetNeuron.state !== NeuronState.Locked
+  ) {
+    throw new Error("Only locked neurons can be merged");
+  }
   // This is extremely simplified, just good enough for the test to see that the
   // merge happened.
   targetNeuron.fullNeuron.cachedNeuronStake +=
@@ -100,6 +117,12 @@ async function simulateMergeNeurons({
 }: ApiMergeNeuronsParams): Promise<NeuronInfo> {
   const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
   const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  if (
+    sourceNeuron.state !== NeuronState.Locked ||
+    targetNeuron.state !== NeuronState.Locked
+  ) {
+    throw new Error("Only locked neurons can be merged");
+  }
   // This is extremely simplified, just good enough for the test to see that the
   // correct merge was simulated.
   const mergedStake =
