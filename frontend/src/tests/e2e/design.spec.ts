@@ -1,6 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -38,17 +38,16 @@ test.describe("Design", () => {
       await appPo.getAccountsPo().waitFor();
       await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
 
-      await expect(page).toHaveScreenshot({
-        mask: [
-          page.locator('[data-tid="identifier"]'),
-          page.locator(
-            '[data-tid="select-universe-card"]:not(:first-of-type) .name'
-          ),
-          page.locator(
-            '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label'
-          ),
+      replaceContent({
+        page,
+        selectors: [
+          '[data-tid="identifier"]',
+          '[data-tid="select-universe-card"]:not(:first-of-type) .name',
+          '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label',
         ],
+        innerHtml: "XXXXX",
       });
+      await expect(page).toHaveScreenshot();
     };
 
     test("My Tokens", async () => {
