@@ -7,7 +7,6 @@ import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { authStore } from "$lib/stores/auth.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { formatToken } from "$lib/utils/token.utils";
@@ -18,7 +17,8 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -49,16 +49,17 @@ describe("SnsNeuronCard", () => {
   const defaultProps = {
     ariaLabel: "test label",
   };
-  const data = snsResponsesForLifecycle({
-    lifecycles: [SnsSwapLifecycle.Open],
-    certified: true,
-  });
+
   beforeEach(() => {
-    snsQueryStore.setData(data);
+    setSnsProjects([
+      {
+        rootCanisterId: rootCanisterIdMock,
+        lifecycle: SnsSwapLifecycle.Open,
+        certified: true,
+      },
+    ]);
   });
-  afterEach(() => {
-    snsQueryStore.reset();
-  });
+
   it("renders a Card", () => {
     const { getByTestId } = render(SnsNeuronCard, {
       props: { neuron: mockSnsNeuron, ...defaultProps },
