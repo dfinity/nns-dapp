@@ -349,6 +349,22 @@ export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
 ];
 
+export const createQueryMetadataResponse = ({
+  name,
+  symbol,
+}: Partial<
+  Pick<IcrcTokenMetadata, "name" | "symbol">
+>): IcrcTokenMetadataResponse =>
+  mockQueryTokenResponse.map(([key, value]) => {
+    if (key === IcrcMetadataResponseEntries.NAME) {
+      return [key, { Text: name }];
+    }
+    if (key === IcrcMetadataResponseEntries.SYMBOL) {
+      return [key, { Text: symbol }];
+    }
+    return [key, value];
+  });
+
 export const mockQueryMetadata: QuerySnsMetadata = {
   rootCanisterId: principal(0).toText(),
   certified: true,

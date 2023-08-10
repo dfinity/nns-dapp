@@ -3,6 +3,7 @@ import {
   mergeSnsResponses,
   snsResponseFor,
 } from "$tests/mocks/sns-response.mock";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import type { SnsSwapLifecycle } from "@dfinity/sns";
 
@@ -14,6 +15,7 @@ export const setSnsProjects = (
     restrictedCountries?: string[];
     directParticipantCount?: [] | [bigint];
     projectName?: string;
+    tokenMetadata?: IcrcTokenMetadataResponse;
   }[]
 ) => {
   const responses = params.map(
@@ -24,6 +26,7 @@ export const setSnsProjects = (
       restrictedCountries,
       directParticipantCount,
       projectName,
+      tokenMetadata,
     }) =>
       snsResponseFor({
         principal: rootCanisterId,
@@ -32,6 +35,7 @@ export const setSnsProjects = (
         restrictedCountries,
         directParticipantCount,
         projectName,
+        tokenMetadata,
       })
   );
   snsQueryStore.setData(mergeSnsResponses(responses));
