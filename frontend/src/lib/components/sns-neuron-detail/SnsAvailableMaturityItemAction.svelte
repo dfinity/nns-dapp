@@ -9,6 +9,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: SnsNeuron;
 
@@ -29,5 +30,9 @@
   >
   {#if allowedToStakeMaturity}
     <SnsStakeMaturityButton variant="secondary" />
+  {/if}
+
+  {#if $ENABLE_DISBURSE_MATURITY}
+    <div>TODO: SnsMaturityButton</div>
   {/if}
 </CommonItemAction>
