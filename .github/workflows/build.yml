@@ -88,7 +88,7 @@ jobs:
           shard_number: 1
           shard_count: 1
   test-playwright-e2e-shard-2-of-2:
-    skip: true
+    if: false
     needs: build
     runs-on: ubuntu-latest-m
     timeout-minutes: 30
