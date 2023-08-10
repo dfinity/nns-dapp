@@ -5,15 +5,23 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     formattedMaturity,
+    hasPermissionToDisburseMaturity,
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
+  import SnsDisburseMaturityButton from "./actions/SnsDisburseMaturityButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: SnsNeuron;
 
   let allowedToStakeMaturity: boolean;
   $: allowedToStakeMaturity = hasPermissionToStakeMaturity({
+    neuron,
+    identity: $authStore.identity,
+  });
+  let allowedToDisburseMaturity: boolean;
+  $: allowedToDisburseMaturity = hasPermissionToDisburseMaturity({
     neuron,
     identity: $authStore.identity,
   });
@@ -29,5 +37,9 @@
   >
   {#if allowedToStakeMaturity}
     <SnsStakeMaturityButton variant="secondary" />
+  {/if}
+
+  {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}
+    <SnsDisburseMaturityButton variant="secondary" />
   {/if}
 </CommonItemAction>
