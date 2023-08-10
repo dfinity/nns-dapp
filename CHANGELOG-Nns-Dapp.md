@@ -29,6 +29,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Remove fallback to load SNSes directly from SNS canisters.
 * Remove ENABLE_SNS_AGGREGATOR flag.
+* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
 * Remove relying on the swap raw metrics to get the number of buyers of a Swap.
 
 #### Fixed
