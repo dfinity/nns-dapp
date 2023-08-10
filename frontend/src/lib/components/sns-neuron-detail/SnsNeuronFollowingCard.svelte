@@ -14,14 +14,17 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@dfinity/sns";
   import { getContext } from "svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import SnsFollowee from "./SnsFollowee.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
+  import {
+    getOrCreateSnsParametersProjectStore,
+    type SnsNervousSystemFunctionsProjectStore,
+  } from "$lib/derived/sns-ns-functions-project.derived";
 
   $: {
     if (rootCanisterId !== undefined) {
@@ -47,25 +50,23 @@
         identity: $authStore.identity,
       });
 
-  let nsFunctions: SnsNervousSystemFunction[];
+  let nsFunctions: SnsNervousSystemFunctionsProjectStore | undefined;
   $: nsFunctions = nonNullish(rootCanisterId)
-    ? $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions ?? []
-    : [];
+    ? getOrCreateSnsParametersProjectStore(rootCanisterId)
+    : undefined;
 
   let followees: SnsFolloweesByNeuron[] = [];
   $: followees =
-    isNullish(neuron) || nsFunctions.length === 0
+    isNullish(neuron) || isNullish(nsFunctions)
       ? []
       : followeesByNeuronId({
           neuron,
-          nsFunctions,
+          nsFunctions: $nsFunctions ?? [],
         });
 
   let showLoading: boolean;
   $: showLoading =
-    nonNullish(neuron) &&
-    neuron.followees.length > 0 &&
-    nsFunctions.length === 0;
+    nonNullish(neuron) && neuron.followees.length > 0 && isNullish(nsFunctions);
 </script>
 
 <CardInfo testId="sns-neuron-following-card-component">

@@ -78,7 +78,7 @@ const convertFunctionType = (
   };
 };
 
-const convertNervousFuncttion = ({
+export const convertNervousFuncttion = ({
   id,
   name,
   description,
