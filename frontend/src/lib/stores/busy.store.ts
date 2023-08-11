@@ -28,6 +28,7 @@ export type BusyStateInitiatorType =
   | "merge-maturity"
   | "spawn-neuron"
   | "stake-maturity"
+  | "disburse-maturity"
   | "claim_seed_neurons"
   | "project-participate"
   | "add-sns-hotkey-neuron"
