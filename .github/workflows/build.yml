@@ -211,28 +211,6 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate .env configuration for e2e-tests
-        run: |
-          DFX_NETWORK=local ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh
-      - name: Prepare for e2e tests
-        working-directory: e2e-tests
-        run: |
-          npm ci
-          # wipe the screenshots, they will be re-committed
-          rm -rf screenshots
-      - name: Run chrome e2e tests
-        working-directory: e2e-tests
-        run: |
-          set -o pipefail
-          export WDIO_BROWSER=chrome
-          SCREENSHOT=1 npm run test |& tee -a chrome-wdio.log
-      - name: Run firefox e2e tests
-        working-directory: e2e-tests
-        # Allow Firefox to fail until the source of flakiness is found and fixed.
-        continue-on-error: true
-        run: |
-          export WDIO_BROWSER=firefox
-          SCREENSHOT=1 npm run test |& tee -a firefox-wdio.log
       - name: Get the postinstall instruction count
         run: |
           dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
@@ -241,36 +219,6 @@ jobs:
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
       - name: Stop replica
         run: dfx stop
-      - name: Archive wdio logs
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: wdio-logs
-          path: e2e-tests/*-wdio.log
-          # Disable screenshot saving until screenshots are stable.
-          #      - name: Commit screenshots
-          #        if: ${{ github.ref != 'refs/heads/main' }}
-          #        uses: EndBug/add-and-commit@v9.1.1
-          #        with:
-          #          add: e2e-tests/screenshots
-          #          author_name: Screenshot Committer
-          #          author_email: "<nobody@example.com>"
-          #          message: "Update screenshots"
-          #          # do not pull: if this branch is behind, then we might as well let
-          #          # the pushing fail
-          #          pull: "NO-PULL"
-          #
-      - name: Archive screenshots
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: e2e-screenshots
-          path: e2e-tests/screenshots/**/*.png
-          retention-days: 7
-      - name: Remove screenshots until they are stable
-        working-directory: e2e-tests
-        run: |
-          rm -rf screenshots
   network_independent_wasm:
     name: "Same wasms for mainnet and local"
     # Note: The dockerfile structure SHOULD guarantee that the network is not used in any wasm build commands.

@@ -76,13 +76,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Update chromedriver
-        run: |
-          node --version
-          npm --version
-          npm update chromedriver
-          git diff package-lock.json
-        working-directory: e2e-tests
       - name: Commit updated chromedriver
         uses: EndBug/add-and-commit@v9.1.1
         with:

@@ -97,31 +97,6 @@ jobs:
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
-  e2e-lint:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-    env:
-      DFX_NETWORK: mainnet
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Provide a config
-        run: ./config.sh
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Run e2e linter
-        run: npm run lint
-        working-directory: ./e2e-tests
   shell-checks:
     name: ShellCheck
     runs-on: ubuntu-20.04
@@ -287,7 +262,7 @@ jobs:
       - run: scripts/past-changelog-test
       - run: scripts/past-changelog-test.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
