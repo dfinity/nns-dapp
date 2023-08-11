@@ -15,14 +15,14 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockTokensSubscribe } from "$tests/mocks/tokens.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -73,19 +73,19 @@ describe("SnsWallet", () => {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
 
-  const responses = snsResponseFor({
-    principal: mockPrincipal,
-    lifecycle: SnsSwapLifecycle.Committed,
-  });
-
-  const rootCanisterIdText = responses[0][0].rootCanisterId;
-  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+  const rootCanisterId = rootCanisterIdMock;
+  const rootCanisterIdText = rootCanisterId.toText();
 
   beforeEach(() => {
     snsQueryStore.reset();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
-    snsQueryStore.setData(responses);
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     transactionsFeesStore.setFee({
       rootCanisterId,
       fee: BigInt(10_000),
