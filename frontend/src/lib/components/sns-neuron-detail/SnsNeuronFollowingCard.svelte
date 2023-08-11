@@ -22,7 +22,7 @@
   import SnsFollowee from "./SnsFollowee.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
   import {
-    createSnsParametersProjectStore,
+    createSnsNsFunctionsProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
 
@@ -52,7 +52,7 @@
 
   let nsFunctions: SnsNervousSystemFunctionsProjectStore | undefined;
   $: nsFunctions = nonNullish(rootCanisterId)
-    ? createSnsParametersProjectStore(rootCanisterId)
+    ? createSnsNsFunctionsProjectStore(rootCanisterId)
     : undefined;
 
   let followees: SnsFolloweesByNeuron[] = [];
@@ -66,7 +66,9 @@
 
   let showLoading: boolean;
   $: showLoading =
-    nonNullish(neuron) && neuron.followees.length > 0 && isNullish(nsFunctions);
+    nonNullish(neuron) &&
+    neuron.followees.length > 0 &&
+    isNullish($nsFunctions);
 </script>
 
 <CardInfo testId="sns-neuron-following-card-component">

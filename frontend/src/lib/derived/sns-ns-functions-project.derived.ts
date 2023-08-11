@@ -17,7 +17,7 @@ export type SnsNervousSystemFunctionsProjectStore = Readable<
   SnsNervousSystemFunction[] | undefined
 >;
 
-export const createSnsParametersProjectStore = (
+export const createSnsNsFunctionsProjectStore = (
   rootCanisterId: Principal
 ): SnsNervousSystemFunctionsProjectStore =>
   derived<
