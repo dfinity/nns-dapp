@@ -28,6 +28,7 @@ import {
 } from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -74,7 +75,7 @@ describe("SNS public services", () => {
       expect(spyGetFunctions).toBeCalled();
     });
 
-    it("should not call api if nervous functions are in the store and certified", async () => {
+    it("should not call api if nervous functions are in the snsFunctionsStore store and certified", async () => {
       snsFunctionsStore.setProjectFunctions({
         rootCanisterId: mockPrincipal,
         nsFunctions: [nervousSystemFunctionMock],
@@ -85,6 +86,22 @@ describe("SNS public services", () => {
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
       await loadSnsNervousSystemFunctions(mockPrincipal);
+
+      expect(spyGetFunctions).not.toBeCalled();
+    });
+
+    it("should not call api if nervous functions are in the snsAggregator store", async () => {
+      const rootCanisterId = rootCanisterIdMock;
+      const aggregatorProject = aggregatorSnsMockWith({
+        rootCanisterId: rootCanisterId.toText(),
+      });
+      snsAggregatorStore.setData([aggregatorProject]);
+      const spyGetFunctions = jest.spyOn(
+        governanceApi,
+        "getNervousSystemFunctions"
+      );
+
+      await loadSnsNervousSystemFunctions(rootCanisterId);
 
       expect(spyGetFunctions).not.toBeCalled();
     });

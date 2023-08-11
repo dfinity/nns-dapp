@@ -9,6 +9,7 @@ import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposa
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
@@ -56,6 +57,7 @@ describe("SnsProposalDetail", () => {
       jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
       authStore.setForTesting(undefined);
+      snsFunctionsStore.reset();
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 

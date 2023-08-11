@@ -297,8 +297,8 @@ export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
   lifecycle = SnsSwapLifecycle.Committed,
 }: {
-  rootCanisterId: string;
-  lifecycle: SnsSwapLifecycle;
+  rootCanisterId?: string;
+  lifecycle?: SnsSwapLifecycle;
 }): CachedSnsDto => ({
   ...aggregatorSnsMockDto,
   canister_ids: {
