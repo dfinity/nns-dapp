@@ -36,6 +36,7 @@ describe("nsFunctionsProjectStore", () => {
 
   it("returns the functions from snsFunctionsStore when snsAggregatorStore has data", () => {
     snsAggregatorStore.setData([aggregatorProject]);
+    const functions = aggregatorSnsMockDto.parameters.functions;
     snsFunctionsStore.setProjectFunctions({
       rootCanisterId,
       nsFunctions: [nervousSystemFunctionMock],
@@ -44,6 +45,7 @@ describe("nsFunctionsProjectStore", () => {
 
     const store = createSnsNsFunctionsProjectStore(rootCanisterId);
     expect(get(store)).toEqual([nervousSystemFunctionMock]);
+    expect(get(store)).not.toEqual(functions.map(convertNervousFuncttion));
   });
 
   it("returns the functions from snsAggregator if no functions in snsFunctionsStore", () => {
