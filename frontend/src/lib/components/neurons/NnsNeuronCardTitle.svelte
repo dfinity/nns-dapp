@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     hasJoinedCommunityFund,
-    isHotkeyFlag,
+    isHotkeyTag,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
@@ -16,7 +16,7 @@
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
   let hotkeyFlag: boolean;
-  $: hotkeyFlag = isHotkeyFlag({
+  $: hotkeyFlag = isHotkeyTag({
     neuron,
     identity: $authStore.identity,
     accounts: $icpAccountsStore,

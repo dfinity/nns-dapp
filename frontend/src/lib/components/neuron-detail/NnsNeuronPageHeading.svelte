@@ -5,7 +5,7 @@
   import {
     formatVotingPower,
     hasJoinedCommunityFund,
-    isHotkeyFlag,
+    isHotkeyTag,
     isNeuronControlledByHardwareWallet,
     neuronStake,
   } from "$lib/utils/neuron.utils";
@@ -33,8 +33,8 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let hotkeyFlag: boolean;
-  $: hotkeyFlag = isHotkeyFlag({
+  let hotkeyTag: boolean;
+  $: hotkeyTag = isHotkeyTag({
     neuron,
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
@@ -64,7 +64,7 @@
         {$i18n.neurons.community_fund}
       </HeadingTag>
     {/if}
-    {#if hotkeyFlag}
+    {#if hotkeyTag}
       <HeadingTag testId="hotkey-tag">
         {$i18n.neurons.hotkey_control}
       </HeadingTag>

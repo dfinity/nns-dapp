@@ -45,7 +45,7 @@ import {
   isEnoughMaturityToSpawn,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
-  isHotkeyFlag,
+  isHotkeyTag,
   isIdentityController,
   isNeuronControllable,
   isNeuronControllableByUser,
@@ -1118,7 +1118,7 @@ describe("neuron-utils", () => {
       ).toBe(false));
   });
 
-  describe("isHotkeyFlag", () => {
+  describe("isHotkeyTag", () => {
     const accountsWithHW = {
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
@@ -1138,7 +1138,7 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isHotkeyFlag({
+        isHotkeyTag({
           neuron: neuron,
           identity: mockIdentity,
           accounts: accountsWithHW,
@@ -1156,7 +1156,7 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isHotkeyFlag({
+        isHotkeyTag({
           neuron: neuron,
           identity: mockIdentity,
           accounts: accountsWithoutHw,
@@ -1174,7 +1174,7 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isHotkeyFlag({
+        isHotkeyTag({
           neuron: neuron,
           identity: mockIdentity,
           accounts: accountsWithHW,
@@ -1192,7 +1192,7 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isHotkeyFlag({
+        isHotkeyTag({
           neuron: neuron,
           identity: mockIdentity,
           accounts: accountsWithHW,
@@ -1210,7 +1210,7 @@ describe("neuron-utils", () => {
         },
       };
       expect(
-        isHotkeyFlag({
+        isHotkeyTag({
           neuron: neuron,
           identity: null,
           accounts: accountsWithHW,

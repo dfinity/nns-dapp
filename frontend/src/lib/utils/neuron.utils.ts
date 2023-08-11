@@ -365,7 +365,7 @@ export const isHotKeyControllable = ({
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
 // All HW controlled are hotkeys, but we don't want to show two tags to the user.
-export const isHotkeyFlag = ({
+export const isHotkeyTag = ({
   neuron,
   identity,
   accounts,
