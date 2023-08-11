@@ -8,13 +8,17 @@
 
 <TestIdWrapper testId="disburse-maturity-button-component">
   {#if enoughMaturity}
-    <button on:click>{$i18n.neuron_detail.disburse_maturity}</button>
+    <button class="secondary" on:click
+      >{$i18n.neuron_detail.disburse_maturity}</button
+    >
   {:else}
     <Tooltip
       id="stake-maturity-tooltip"
       text={$i18n.neuron_detail.disburse_maturity_disabled_tooltip}
     >
-      <button disabled>{$i18n.neuron_detail.disburse_maturity}</button>
+      <button class="secondary" disabled
+        >{$i18n.neuron_detail.disburse_maturity}</button
+      >
     </Tooltip>
   {/if}
 </TestIdWrapper>
