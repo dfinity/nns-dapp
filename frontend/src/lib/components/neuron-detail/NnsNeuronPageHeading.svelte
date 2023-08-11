@@ -5,7 +5,8 @@
   import {
     formatVotingPower,
     hasJoinedCommunityFund,
-    isHotKeyControllable,
+    isHotkeyTag,
+    isNeuronControlledByHardwareWallet,
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -14,6 +15,7 @@
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
   import HeadingTag from "../common/HeadingTag.svelte";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -31,10 +33,17 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = isHotKeyControllable({
+  let hotkeyTag: boolean;
+  $: hotkeyTag = isHotkeyTag({
     neuron,
     identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
+
+  let isHWControlled: boolean;
+  $: isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $icpAccountsStore,
   });
 </script>
 
@@ -55,9 +64,14 @@
         {$i18n.neurons.community_fund}
       </HeadingTag>
     {/if}
-    {#if isHotKeyControl}
+    {#if hotkeyTag}
       <HeadingTag testId="hotkey-tag">
         {$i18n.neurons.hotkey_control}
+      </HeadingTag>
+    {/if}
+    {#if isHWControlled}
+      <HeadingTag testId="hardware-wallet-tag">
+        {$i18n.neurons.hardware_wallet_control}
       </HeadingTag>
     {/if}
   </svelte:fragment>

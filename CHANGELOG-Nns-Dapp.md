@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* New tag for NNS neurons: "Hardware Wallet".
+
 #### Changed
 
 * Don't display proposal navigation on launch-pad page.

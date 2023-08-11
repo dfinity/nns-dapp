@@ -45,6 +45,7 @@ import {
   isEnoughMaturityToSpawn,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
+  isHotkeyTag,
   isIdentityController,
   isNeuronControllable,
   isNeuronControllableByUser,
@@ -1115,6 +1116,107 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false));
+  });
+
+  describe("isHotkeyTag", () => {
+    const accountsWithHW = {
+      main: mockMainAccount,
+      hardwareWallets: [mockHardwareWalletAccount],
+    };
+
+    const accountsWithoutHw = {
+      main: mockMainAccount,
+      hardwareWallets: [],
+    };
+    it("returns true if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-hardware-wallet",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotkeyTag({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+        })
+      ).toBe(true);
+    });
+
+    it("returns true if neuron is controllable by hotkey and no hardware wallet is attached", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotkeyTag({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithoutHw,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotkeyTag({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+        })
+      ).toBe(false);
+    });
+
+    it("returns false if neuron is the controller and a hotkey", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotkeyTag({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+        })
+      ).toBe(false);
+    });
+
+    it("returns false if no identity", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        isHotkeyTag({
+          neuron: neuron,
+          identity: null,
+          accounts: accountsWithHW,
+        })
+      ).toBe(false);
+    });
   });
 
   describe("isIdentityController", () => {

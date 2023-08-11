@@ -280,6 +280,7 @@
     "create": "Create",
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
+    "hardware_wallet_control": "Hardware Wallet",
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "ICP Stake",
