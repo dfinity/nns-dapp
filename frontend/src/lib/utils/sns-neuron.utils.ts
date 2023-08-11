@@ -278,6 +278,21 @@ export const hasPermissionToStakeMaturity = ({
     ],
   });
 
+export const hasPermissionToDisburseMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+    ],
+  });
+
 export const hasPermissionToSplit = ({
   neuron,
   identity,
@@ -486,7 +501,7 @@ export const formattedTotalMaturity = (
  * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
-export const hasEnoughMaturityToStake = (
+export const hasEnoughMaturityToStakeOrDisburse = (
   neuron: SnsNeuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
 

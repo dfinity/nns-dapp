@@ -122,6 +122,10 @@
         />
       {/if}
 
+      {#if type === "disburse-maturity"}
+        <!-- Todo: disburse maturity modal -->
+      {/if}
+
       {#if type === "auto-stake-maturity"}
         <SnsAutoStakeMaturityModal
           {reloadNeuron}

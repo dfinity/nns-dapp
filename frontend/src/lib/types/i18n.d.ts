@@ -612,10 +612,12 @@ interface I18nNeuron_detail {
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;
+  disburse_maturity: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
   stake_maturity_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip: string;
   stake_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
@@ -642,6 +644,7 @@ interface I18nNeuron_detail {
   disburse_success: string;
   edit_percentage: string;
   stake_maturity_modal_title: string;
+  disburse_maturity_modal_title: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
   stake_maturity_confirmation: string;

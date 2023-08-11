@@ -7,9 +7,7 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
-  import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
-
-  export let variant: "primary" | "secondary" = "primary";
+  import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -21,7 +19,7 @@
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToStakeOrDisburse(neuron);
 
-  const showModal = () => openSnsNeuronModal({ type: "stake-maturity" });
+  const showModal = () => openSnsNeuronModal({ type: "disburse-maturity" });
 </script>
 
-<StakeMaturityButton {enoughMaturity} {variant} on:click={showModal} />
+<DisburseMaturityButton {enoughMaturity} on:click={showModal} />
