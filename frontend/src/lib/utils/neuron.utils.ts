@@ -364,6 +364,19 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
+// All HW controlled are hotkeys, but we don't want to show two tags to the user.
+export const isHotkeyFlag = ({
+  neuron,
+  identity,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+}): boolean =>
+  isHotKeyControllable({ neuron, identity }) &&
+  !isNeuronControlledByHardwareWallet({ neuron, accounts });
+
 /**
  * An identity can manage the neurons' fund participation when one of the below is true:
  * - User is the controller.

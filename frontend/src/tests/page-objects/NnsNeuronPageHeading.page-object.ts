@@ -30,4 +30,8 @@ export class NnsNeuronPageHeadingPo extends BasePageObject {
   hasHotkeyTag(): Promise<boolean> {
     return this.root.byTestId("hotkey-tag").isPresent();
   }
+
+  hasHardwareWalletTag(): Promise<boolean> {
+    return this.root.byTestId("hardware-wallet-tag").isPresent();
+  }
 }

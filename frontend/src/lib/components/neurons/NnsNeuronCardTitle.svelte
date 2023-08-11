@@ -3,9 +3,11 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     hasJoinedCommunityFund,
-    isHotKeyControllable,
+    isHotkeyFlag,
+    isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -13,10 +15,17 @@
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
 
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = isHotKeyControllable({
+  let hotkeyFlag: boolean;
+  $: hotkeyFlag = isHotkeyFlag({
     neuron,
     identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+  });
+
+  let isHWControlled: boolean;
+  $: isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts: $icpAccountsStore,
   });
 </script>
 
@@ -28,8 +37,15 @@
   {#if isCommunityFund}
     <small class="label">{$i18n.neurons.community_fund}</small>
   {/if}
-  {#if isHotKeyControl}
-    <small class="label">{$i18n.neurons.hotkey_control}</small>
+  {#if hotkeyFlag}
+    <small class="label" data-tid="hotkey-tag"
+      >{$i18n.neurons.hotkey_control}</small
+    >
+  {/if}
+  {#if isHWControlled}
+    <small class="label" data-tid="hardware-wallet-tag"
+      >{$i18n.neurons.hardware_wallet_control}</small
+    >
   {/if}
 </div>
 

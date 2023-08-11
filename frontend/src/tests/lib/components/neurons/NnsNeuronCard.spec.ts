@@ -5,22 +5,31 @@
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+
+    icpAccountsStore.resetForTesting();
   });
 
   it("renders a Card", () => {
@@ -129,6 +138,31 @@ describe("NnsNeuronCard", () => {
     });
 
     expect(getByText(en.neurons.hotkey_control)).toBeInTheDocument();
+  });
+
+  it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            hotKeys: [mockIdentity.getPrincipal().toText()],
+            controller: mockHardwareWalletAccount.principal.toText(),
+          },
+        },
+      },
+    });
+
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.hasHardwareWalletTag()).toBe(true);
+    expect(await po.hasHotkeyTag()).toBe(false);
   });
 
   it("renders proper text when status is LOCKED", async () => {
