@@ -8,7 +8,6 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { getContext } from "svelte";
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   const context: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -23,6 +22,4 @@
   const showModal = () => openSnsNeuronModal({ type: "disburse-maturity" });
 </script>
 
-<TestIdWrapper testId="sns-disburse-maturity-button-component">
-  <DisburseMaturityButton {enoughMaturity} on:click={showModal} />
-</TestIdWrapper>
+<DisburseMaturityButton {enoughMaturity} on:click={showModal} />
