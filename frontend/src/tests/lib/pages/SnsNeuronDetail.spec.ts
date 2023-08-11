@@ -17,7 +17,6 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
@@ -37,10 +36,10 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
@@ -58,21 +57,12 @@ describe("SnsNeuronDetail", () => {
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
-  const responses = snsResponseFor({
-    principal: rootCanisterId,
-    lifecycle: SnsSwapLifecycle.Committed,
-  });
   const projectName = "Test SNS";
 
   const nonExistingNeuron = createMockSnsNeuron({
     id: [1, 1, 1, 1, 1],
   });
   const nonExistingNeuronId = getSnsNeuronIdAsHexString(nonExistingNeuron);
-
-  // Clone the summary to avoid mutating the mock
-  const summary = { ...responses[0][0] };
-  summary.metadata.name = [projectName];
-  responses[0][0] = summary;
 
   const mainAccount = {
     owner: mockIdentity.getPrincipal(),
@@ -87,8 +77,13 @@ describe("SnsNeuronDetail", () => {
     snsParametersStore.reset();
     snsNeuronsStore.reset();
     snsAccountsStore.reset();
-    snsQueryStore.reset();
-    snsQueryStore.setData(responses);
+    setSnsProjects([
+      {
+        projectName,
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     fakeSnsLedgerApi.addAccountWith({
       rootCanisterId,

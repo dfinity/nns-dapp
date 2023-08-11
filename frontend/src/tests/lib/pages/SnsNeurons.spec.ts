@@ -12,7 +12,6 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -24,8 +23,8 @@ import {
   createMockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -58,12 +57,12 @@ describe("SnsNeurons", () => {
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
 
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: rootCanisterIdMock,
+    setSnsProjects([
+      {
+        rootCanisterId: rootCanisterIdMock,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
   });
 
   afterEach(() => jest.clearAllMocks());
