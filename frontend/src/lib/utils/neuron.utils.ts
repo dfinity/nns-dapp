@@ -364,18 +364,37 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
-// All HW controlled are hotkeys, but we don't want to show two tags to the user.
-export const isHotkeyTag = ({
+export type NeuronTag = {
+  text: string;
+};
+
+export const getNeuronTags = ({
   neuron,
   identity,
   accounts,
+  i18n,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
-}): boolean =>
-  isHotKeyControllable({ neuron, identity }) &&
-  !isNeuronControlledByHardwareWallet({ neuron, accounts });
+  i18n: I18n;
+}): NeuronTag[] => {
+  const tags: NeuronTag[] = [];
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  }
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
+  if (isHWControlled) {
+    tags.push({ text: i18n.neurons.hardware_wallet_control });
+    // All HW controlled are hotkeys, but we don't want to show two tags to the user.
+  } else if (isHotKeyControllable({ neuron, identity })) {
+    tags.push({ text: i18n.neurons.hotkey_control });
+  }
+  return tags;
+};
 
 /**
  * An identity can manage the neurons' fund participation when one of the below is true:

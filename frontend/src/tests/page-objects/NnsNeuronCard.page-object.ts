@@ -46,11 +46,7 @@ export class NnsNeuronCardPo extends BasePageObject {
     return Number(await this.getText("token-value"));
   }
 
-  hasHotkeyTag(): Promise<boolean> {
-    return this.root.byTestId("hotkey-tag").isPresent();
-  }
-
-  hasHardwareWalletTag(): Promise<boolean> {
-    return this.root.byTestId("hardware-wallet-tag").isPresent();
+  getNeuronTags(): Promise<string[]> {
+    return this.getCardTitlePo().getNeuronTags();
   }
 }

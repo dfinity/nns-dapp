@@ -76,7 +76,7 @@ describe("NnsNeuronPageHeading", () => {
       joinedCommunityFundTimestampSeconds: BigInt(12333444),
     });
 
-    expect(await po.hasNeuronsFundTag()).toBe(true);
+    expect(await po.getNeuronTags()).toEqual(["Neurons' fund"]);
   });
 
   it("should render hotkey tag if user is a hotkey and not controlled by a hardware wallet", async () => {
@@ -94,7 +94,7 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.hasHotkeyTag()).toBe(true);
+    expect(await po.getNeuronTags()).toEqual(["Hotkey control"]);
   });
 
   it("should render hardware wallet tag and not hotkey if neuron is controlled by a hardware wallet", async () => {
@@ -112,7 +112,6 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.hasHotkeyTag()).toBe(false);
-    expect(await po.hasHardwareWalletTag()).toBe(true);
+    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
   });
 });

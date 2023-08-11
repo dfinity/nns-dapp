@@ -161,8 +161,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.hasHardwareWalletTag()).toBe(true);
-    expect(await po.hasHotkeyTag()).toBe(false);
+    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
   });
 
   it("renders proper text when status is LOCKED", async () => {
