@@ -7,7 +7,7 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
@@ -143,7 +143,7 @@ export const icrcLedgerCanister = async ({
   canisterId: Principal;
 }): Promise<{
   canister: IcrcLedgerCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,

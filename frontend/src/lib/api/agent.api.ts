@@ -1,9 +1,9 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import { createAgent as createAgentUtil, nonNullish } from "@dfinity/utils";
 
 type PrincipalAsText = string;
-let agents: Record<PrincipalAsText, HttpAgent> | undefined | null = undefined;
+let agents: Record<PrincipalAsText, Agent> | undefined | null = undefined;
 
 export const createAgent = async ({
   identity,
@@ -11,7 +11,7 @@ export const createAgent = async ({
 }: {
   identity: Identity;
   host?: string;
-}): Promise<HttpAgent> => {
+}): Promise<Agent> => {
   const principalAsText: string = identity.getPrincipal().toText();
 
   // e.g. a particular agent for anonymous call and another for signed-in identity

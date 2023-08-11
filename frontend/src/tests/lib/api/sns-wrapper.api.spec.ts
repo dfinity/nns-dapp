@@ -13,7 +13,7 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { Agent } from "@dfinity/agent";
 import mock from "jest-mock-extended/lib/Mock";
 
 const listSnsesSpy = jest.fn().mockResolvedValue(deployedSnsMock);
@@ -63,7 +63,7 @@ describe("sns-wrapper api", () => {
 
   describe("initSns", () => {
     it("inits sns wrapper", async () => {
-      const mockAgent = mock<HttpAgent>();
+      const mockAgent = mock<Agent>();
       await initSns({
         agent: mockAgent,
         rootCanisterId: rootCanisterIdMock,
