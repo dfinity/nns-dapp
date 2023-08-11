@@ -5,7 +5,6 @@
   import {
     formatVotingPower,
     hasJoinedCommunityFund,
-    isHotKeyControllable,
     isHotkeyFlag,
     isNeuronControlledByHardwareWallet,
     neuronStake,
