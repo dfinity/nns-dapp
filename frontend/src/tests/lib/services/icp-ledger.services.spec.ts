@@ -37,7 +37,7 @@ import {
 } from "$tests/mocks/ledger.identity.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { Agent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
@@ -137,7 +137,7 @@ describe("icp-ledger.services", () => {
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
 
-      const mockCreateAgent = () => Promise.resolve(mock<HttpAgent>());
+      const mockCreateAgent = () => Promise.resolve(mock<Agent>());
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
       jest

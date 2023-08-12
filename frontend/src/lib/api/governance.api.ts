@@ -6,7 +6,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import type {
   E8s,
   KnownNeuron,
@@ -524,7 +524,7 @@ export const governanceCanister = async ({
   identity: Identity;
 }): Promise<{
   canister: GovernanceCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,
