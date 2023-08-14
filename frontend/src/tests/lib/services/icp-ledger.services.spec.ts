@@ -189,7 +189,6 @@ describe("icp-ledger.services", () => {
 
       it("should not register and sync accounts if no identity", async () => {
         setNoIdentity();
-        await new Promise((resolve) => setTimeout(resolve, 100));
 
         const call = async () =>
           await registerHardwareWallet({
