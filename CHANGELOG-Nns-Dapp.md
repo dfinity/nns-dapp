@@ -49,7 +49,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Security
 
-* [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `0.71.0` to `0.71.1`.
+* [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
 
 ## Proposal 124014
 
