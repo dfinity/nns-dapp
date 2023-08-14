@@ -10,6 +10,10 @@ import {
 } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import {
+  getOrCreateDerivedStateStore,
+  resetDerivedStateStoresForTesting,
+} from "$lib/stores/sns-derived-state.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsQueryStore } from "$lib/stores/sns.store";
@@ -30,6 +34,7 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -55,6 +60,7 @@ describe("SNS public services", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
       jest.clearAllMocks();
+      resetDerivedStateStoresForTesting();
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
@@ -148,6 +154,10 @@ describe("SNS public services", () => {
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
       const feesStore = get(transactionsFeesStore);
       expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
+      const derivedStateStore = getOrCreateDerivedStateStore(
+        Principal.fromText(rootCanisterId)
+      );
+      expect(get(derivedStateStore)?.derivedState).not.toBeUndefined();
     });
 
     it("should load sns aggregator store", async () => {
