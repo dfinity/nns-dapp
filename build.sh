@@ -53,6 +53,6 @@ set -x
 "$TOPLEVEL/build-frontend.sh"
 
 ###############
-# backend # (output: nns-dapp.wasm)
+# backend # (output: nns-dapp.wasm.gz)
 ###############
 "$TOPLEVEL/build-backend.sh"
