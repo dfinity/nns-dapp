@@ -101,9 +101,9 @@ test("Test neuron voting", async ({ page, context }) => {
   );
 
   await governanceProposalCard.click();
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
 
   step("Check proposal details");
-  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
   const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
 
   // System info
