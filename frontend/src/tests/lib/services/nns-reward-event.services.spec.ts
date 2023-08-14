@@ -15,15 +15,15 @@ describe("nns-reward-event-services", () => {
   let spyQueryLatestRewardEvent: jest.SpyInstance;
 
   beforeEach(() => {
-    resetIdentity();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockImplementation(mockGetIdentity);
     nnsLatestRewardEventStore.reset();
     jest.clearAllMocks();
     spyQueryLatestRewardEvent = jest
       .spyOn(api, "queryLastestRewardEvent")
       .mockResolvedValue(mockRewardEvent);
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   it("should load nns reward event store", async () => {

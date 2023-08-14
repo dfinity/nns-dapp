@@ -5,6 +5,7 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
+import * as authServices from "$lib/services/auth.services";
 import {
   getAccountIdentityByPrincipal,
   loadBalance,
@@ -19,6 +20,7 @@ import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import {
+  mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
@@ -160,7 +162,6 @@ describe("neurons-services", () => {
     jest.clearAllMocks();
     neuronsStore.reset();
     icpAccountsStore.resetForTesting();
-    resetIdentity();
     resetAccountIdentity();
     toastsStore.reset();
     resetNeuronsApiService();
@@ -190,6 +191,10 @@ describe("neurons-services", () => {
     spyStopDissolving.mockResolvedValue();
     spySetFollowees.mockResolvedValue();
     spyClaimOrRefresh.mockResolvedValue(undefined);
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   describe("stake new neuron", () => {

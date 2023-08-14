@@ -6,7 +6,6 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
-import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
   mockIdentity,
@@ -43,15 +42,12 @@ const {
 
 describe("sns-services", () => {
   beforeEach(() => {
+    resetIdentity();
     jest.useFakeTimers();
     jest.clearAllTimers();
     jest.clearAllMocks();
     snsSwapCommitmentsStore.reset();
     snsQueryStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    resetIdentity();
   });
 
   describe("getSwapAccount", () => {
@@ -258,6 +254,7 @@ describe("sns-services", () => {
         rootCanisterId: commitment1.rootCanisterId.toText(),
         forceFetch: false,
       });
+      await runResolvedPromises();
       expect(queryCommitmentSpy).toBeCalledTimes(2);
 
       await waitFor(() =>
@@ -293,6 +290,7 @@ describe("sns-services", () => {
         rootCanisterId: commitment1.rootCanisterId.toText(),
         forceFetch: true,
       });
+      await runResolvedPromises();
 
       expect(queryCommitmentSpy).toBeCalledTimes(1);
     });
@@ -302,6 +300,7 @@ describe("sns-services", () => {
         rootCanisterId: commitment1.rootCanisterId.toText(),
         forceFetch: true,
       });
+      await runResolvedPromises();
       expect(queryCommitmentSpy).toBeCalledTimes(1);
       expect(queryCommitmentSpy).toBeCalledWith({
         rootCanisterId: commitment1.rootCanisterId.toText(),

@@ -19,10 +19,12 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("sns-neurons-check-balances-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
   describe("checkSnsNeuronBalances", () => {
     beforeEach(() => {
       jest.clearAllMocks();
-      resetIdentity();
       snsNeuronsStore.reset();
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });

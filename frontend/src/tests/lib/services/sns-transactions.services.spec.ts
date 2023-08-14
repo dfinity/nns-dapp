@@ -14,9 +14,11 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("sns-transactions-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
   describe("loadSnsAccountTransactions", () => {
     beforeEach(() => {
-      resetIdentity();
       icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());

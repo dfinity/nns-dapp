@@ -15,7 +15,7 @@ import * as busyStore from "$lib/stores/busy.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -33,6 +33,10 @@ import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-minter-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   afterEach(() => jest.clearAllMocks());
 
   describe("loadBtcAddress", () => {

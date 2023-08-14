@@ -29,7 +29,11 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  mockPrincipal,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   buildMockSnsNeuronsStoreSubscribe,
@@ -77,6 +81,10 @@ jest.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("sns-neurons-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   describe("syncSnsNeurons", () => {
     beforeEach(() => {
       jest.clearAllMocks();

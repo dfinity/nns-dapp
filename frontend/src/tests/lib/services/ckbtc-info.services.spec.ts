@@ -22,12 +22,12 @@ import { get } from "svelte/store";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    ckBTCInfoStore.reset();
     resetIdentity();
     jest
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockImplementation(mockGetIdentity);
-    jest.clearAllMocks();
-    ckBTCInfoStore.reset();
   });
 
   describe("loadCkBTCInfo", () => {

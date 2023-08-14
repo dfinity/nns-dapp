@@ -5,6 +5,7 @@
 import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 import { processRegisterVoteErrors } from "$lib/services/vote-registration.services";
@@ -14,7 +15,11 @@ import * as toastsStore from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { waitForMilliseconds } from "$lib/utils/utils";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockGetIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -77,6 +82,10 @@ describe("vote-registration-services", () => {
       proposals: [proposal],
       certified: true,
     });
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   describe("success voting", () => {
