@@ -9,9 +9,9 @@ import * as services from "$lib/services/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
-  mockAuthStoreSubscribe,
   mockIdentity,
   mockPrincipal,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsSwapCommitment,
@@ -51,6 +51,7 @@ describe("sns-services", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    resetIdentity();
   });
 
   describe("getSwapAccount", () => {

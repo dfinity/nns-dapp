@@ -8,7 +8,7 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -71,6 +71,7 @@ describe("sns-vote-registration-services", () => {
     });
 
   beforeEach(() => {
+    resetIdentity();
     jest.clearAllMocks();
 
     snsFunctionsStore.setProjectFunctions({

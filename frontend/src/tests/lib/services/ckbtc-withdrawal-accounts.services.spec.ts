@@ -3,6 +3,7 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import * as minterServices from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
@@ -15,6 +16,10 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-withdrawal-accounts.services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   describe("loadCkBTCWithdrawalAccount", () => {
     beforeEach(() => {
       resetMockedConstants();

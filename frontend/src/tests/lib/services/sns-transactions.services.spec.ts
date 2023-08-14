@@ -6,7 +6,7 @@ import * as indexApi from "$lib/api/sns-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { Principal } from "@dfinity/principal";
@@ -16,6 +16,7 @@ import { get } from "svelte/store";
 describe("sns-transactions-services", () => {
   describe("loadSnsAccountTransactions", () => {
     beforeEach(() => {
+      resetIdentity();
       icrcTransactionsStore.reset();
     });
     afterEach(() => jest.clearAllMocks());

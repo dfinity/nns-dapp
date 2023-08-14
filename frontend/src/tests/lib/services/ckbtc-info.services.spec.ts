@@ -8,15 +8,24 @@ import {
   CKBTC_MINTER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import * as authServices from "$lib/services/auth.services";
 import * as services from "$lib/services/ckbtc-info.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockGetIdentity,
+  mockIdentity,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
     jest.clearAllMocks();
     ckBTCInfoStore.reset();
   });

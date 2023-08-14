@@ -9,7 +9,7 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
@@ -21,6 +21,10 @@ jest.mock("$lib/services/sns-transactions.services", () => ({
 }));
 
 describe("sns-accounts-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   describe("loadSnsAccounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
