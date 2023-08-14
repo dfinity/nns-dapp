@@ -16,6 +16,45 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update SNS Swap types to match the latest canister interface. 
+* Hide by default the proposal summary in ballots.
+
+#### Deprecated
+#### Removed
+
+* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
+
+#### Fixed
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Make it easy to skip the CI build step for quick testing.
+* Screenshot e2e tests.
+* Allow specifying a test_filter to the e2e CI action.
+* New test util to set SNS projects for testing.
+
+#### Changed
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
+
+#### Security
+
+## Proposal 124014
+
+### Application
+
+#### Changed
+
 * Don't display proposal navigation on launch-pad page.
 * Update SNS Aggregator response type and related converters.
 * Implement the standard accounts dropdown selector in canisters' features.
@@ -23,15 +62,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
 * Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
 * New NNS and SNS neuron details page layout.
-* Update SNS Swap types to match the latest canister interface. 
-* Hide by default the proposal summary in ballots.
 
-#### Deprecated
 #### Removed
 
 * Remove fallback to load SNSes directly from SNS canisters.
 * Remove ENABLE_SNS_AGGREGATOR flag.
-* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
 * Remove relying on the swap raw metrics to get the number of buyers of a Swap.
 
 #### Fixed
@@ -44,10 +79,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
 * Prevent the submission of cycles for top-up review unless an amount has been entered first.
 
-#### Security
-
-#### Not Published
-
 ### Operations
 
 #### Added
@@ -55,25 +86,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Proposal details e2e test.
 * Automatically populate the change log section in the release proposal.
 * Remove empty section headings in scripts/nns-dapp/split-changelog.
-* Make it easy to skip the CI build step for quick testing.
-* Screenshot e2e tests.
-* Allow specifying a test_filter to the e2e CI action.
 * Make it easy to skip the CI build step for quick testing
-* New test util to set SNS projects for testing.
 
 #### Changed
 
 * Update candid interface for NNS governance to improve 1-proposal support.
 * Rename deleted workflows to start with "ZZZ".
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * past-changelog-test compares lines numbers correctly.
-* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
-
-#### Security
+* Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
 
 ## Proposal 123921
 
