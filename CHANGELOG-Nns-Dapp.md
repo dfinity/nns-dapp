@@ -49,6 +49,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Security
 
+* Fixed some tests that depended on execution order.
 * [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
 
 ## Proposal 124014
@@ -80,7 +81,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Maintain text color in hyperlinks card when hovered.
 * Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
 * Prevent the submission of cycles for top-up review unless an amount has been entered first.
-* Fixed some tests that depended on execution order.
 
 ### Operations
 
