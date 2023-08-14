@@ -36,12 +36,10 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
-  afterAll(() => {
+  beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllTimers();
-  });
 
-  beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
     jest.useFakeTimers().setSystemTime(now);
@@ -75,21 +73,24 @@ describe("canisters-api", () => {
     afterEach(() => jest.clearAllMocks());
 
     it("should call the nns dapp canister to attach the canister id", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
         name: "test name",
       });
 
-      expect(mockNNSDappCanister.attachCanister).toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
     });
 
     it("should call the nns dapp canister to attach the canister id with empty string as name when not present", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
       });
 
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         canisterId: mockCanisterDetails.id,
         name: "",
@@ -98,6 +99,7 @@ describe("canisters-api", () => {
 
     it("should fail to attach if name is longer than max", async () => {
       const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       const call = () =>
         attachCanister({
           identity: mockIdentity,
