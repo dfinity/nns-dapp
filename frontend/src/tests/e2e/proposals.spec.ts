@@ -26,6 +26,55 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   /*
+   * Test proposal filters
+   */
+  step("Open proposals list");
+  await appPo.goToProposals();
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  step(`Filter proposals by Topic`);
+  const getVisibleCardTopics = () =>
+    appPo.getProposalsPo().getNnsProposalListPo().getCardTopics();
+
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectTopicFilter([Topic.ExchangeRate]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
+
+  // Invert topic filter
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectAllTopicsExcept([Topic.ExchangeRate]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
+
+  step("Filter proposals by Status");
+  const getVisibleCardStatuses = () =>
+    appPo.getProposalsPo().getNnsProposalListPo().getCardStatuses();
+
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectStatusFilter([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect(await getVisibleCardStatuses()).toEqual(["Open"]);
+
+  // Invert status filter
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectAllStatusesExcept([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  expect(await getVisibleCardStatuses()).not.toContain("Open");
+
+  /*
    * Validate proposal details
    */
   step("Open proposal details");
@@ -80,53 +129,4 @@ test("Test neuron voting", async ({ page, context }) => {
   ).toHaveLength(1);
 
   await appPo.goBack();
-
-  /*
-   * Test proposal filters
-   */
-  step("Open proposals list");
-  await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
-  step(`Filter proposals by Topic`);
-  const getVisibleCardTopics = () =>
-    appPo.getProposalsPo().getNnsProposalListPo().getCardTopics();
-
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .selectTopicFilter([Topic.ExchangeRate]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
-  expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
-
-  // Invert topic filter
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .selectAllTopicsExcept([Topic.ExchangeRate]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
-  expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
-
-  step("Filter proposals by Status");
-  const getVisibleCardStatuses = () =>
-    appPo.getProposalsPo().getNnsProposalListPo().getCardStatuses();
-
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .selectStatusFilter([ProposalStatus.Open]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
-  expect(await getVisibleCardStatuses()).toEqual(["Open"]);
-
-  // Invert status filter
-  await appPo
-    .getProposalsPo()
-    .getNnsProposalFiltersPo()
-    .selectAllStatusesExcept([ProposalStatus.Open]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
-
-  expect(await getVisibleCardStatuses()).not.toContain("Open");
 });
