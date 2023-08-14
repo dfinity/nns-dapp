@@ -23,15 +23,8 @@ export class NnsNeuronPageHeadingPo extends BasePageObject {
     return this.getText("voting-power");
   }
 
-  hasNeuronsFundTag(): Promise<boolean> {
-    return this.root.byTestId("neurons-fund-tag").isPresent();
-  }
-
-  hasHotkeyTag(): Promise<boolean> {
-    return this.root.byTestId("hotkey-tag").isPresent();
-  }
-
-  hasHardwareWalletTag(): Promise<boolean> {
-    return this.root.byTestId("hardware-wallet-tag").isPresent();
+  async getNeuronTags(): Promise<string[]> {
+    const elements = await this.root.allByTestId("neuron-tag");
+    return Promise.all(elements.map((tag) => tag.getText()));
   }
 }

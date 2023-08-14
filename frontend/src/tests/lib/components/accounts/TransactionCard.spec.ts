@@ -51,7 +51,10 @@ describe("TransactionCard", () => {
         ...mockTransactionReceiveDataFromMain,
         type: AccountTransactionType.Burn,
       },
-      descriptions: en.ckbtc_transaction_names,
+      descriptions: en.ckbtc_transaction_names as unknown as Record<
+        string,
+        string
+      >,
     });
 
     const expectedText = replacePlaceholders(en.transaction_names.burn, {
