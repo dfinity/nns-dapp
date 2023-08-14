@@ -43,13 +43,17 @@ const {
 
 describe("sns-services", () => {
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.clearAllTimers();
+    jest.clearAllMocks();
+    snsSwapCommitmentsStore.reset();
+    snsQueryStore.reset();
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
   });
 
   describe("getSwapAccount", () => {
-    afterEach(() => jest.clearAllMocks());
     it("should return the swap canister account identifier", async () => {
       const account = await getSwapAccount(mockPrincipal);
       expect(account).toBeInstanceOf(AccountIdentifier);
@@ -57,11 +61,6 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsSwapCommitments", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      snsSwapCommitmentsStore.reset();
-      snsQueryStore.reset();
-    });
     it("should call api to get commitments and load them in store", async () => {
       const commitment1 = mockSnsSwapCommitment(principal(0));
       const commitment2 = mockSnsSwapCommitment(principal(1));
@@ -106,12 +105,6 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsTotalCommitment", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      snsSwapCommitmentsStore.reset();
-      snsQueryStore.reset();
-    });
-
     it("should call api to get total commitments and load them in store", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
@@ -186,16 +179,6 @@ describe("sns-services", () => {
   });
 
   describe("watchSnsTotalCommitment", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      snsSwapCommitmentsStore.reset();
-      snsQueryStore.reset();
-      jest.clearAllTimers();
-      jest.clearAllMocks();
-      const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
-    });
-
     it("should call api to get total commitments and load them in store and keep polling", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
@@ -262,8 +245,6 @@ describe("sns-services", () => {
     let queryCommitmentSpy: jest.SpyInstance;
     const commitment1 = mockSnsSwapCommitment(principal(0));
     beforeEach(() => {
-      jest.clearAllMocks();
-      snsSwapCommitmentsStore.reset();
       queryCommitmentSpy = jest
         .spyOn(api, "querySnsSwapCommitment")
         .mockImplementation(() => Promise.resolve(commitment1));
@@ -271,6 +252,7 @@ describe("sns-services", () => {
 
     it("should call api to get commitments and load them in store", async () => {
       expect(get(snsSwapCommitmentsStore)).toBeUndefined();
+      expect(queryCommitmentSpy).toBeCalledTimes(0);
       await loadSnsSwapCommitment({
         rootCanisterId: commitment1.rootCanisterId.toText(),
         forceFetch: false,
@@ -329,12 +311,6 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsLifecycle", () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-      snsSwapCommitmentsStore.reset();
-      snsQueryStore.reset();
-    });
-
     it("should call api to get lifecycle and load them in store", async () => {
       const newLifeCycle = SnsSwapLifecycle.Committed;
       const lifeCycleResponse: SnsGetLifecycleResponse = {
