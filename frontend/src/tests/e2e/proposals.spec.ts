@@ -81,7 +81,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const governanceProposalCard = await appPo
     .getProposalsPo()
     .getNnsProposalListPo()
-    .getFirstProposalCardPoForTopic("Governance");
+    .getFirstProposalCardPoForProposer(proposerNeuronId);
   expect(await governanceProposalCard.getProposalTopicText()).toBe(
     "Governance"
   );
