@@ -4,12 +4,11 @@
 
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
-import { authStore } from "$lib/stores/auth.store";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { layoutWarningToastId } from "$lib/stores/layout.store";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
@@ -133,11 +132,9 @@ describe("Warnings", () => {
     });
 
     describe("signed in", () => {
-      beforeEach(() =>
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe)
-      );
+      beforeEach(() => {
+        resetIdentity();
+      });
 
       it("should render ckBTC to BTC warning", async () => {
         bitcoinConvertBlockIndexes.addBlockIndex(1n);
@@ -184,6 +181,10 @@ describe("Warnings", () => {
     });
 
     describe("not signed in", () => {
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
       it("should render no ckBTC warning", async () => {
         bitcoinConvertBlockIndexes.addBlockIndex(1n);
 
@@ -202,6 +203,10 @@ describe("Warnings", () => {
 
   describe("TestEnvironmentWarning", () => {
     describe("not signed in", () => {
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
       it("should not render test environment warning", async () => {
         const { getByTestId } = render(Warnings, {
           props: {
@@ -214,11 +219,9 @@ describe("Warnings", () => {
     });
 
     describe("signed in", () => {
-      beforeAll(() =>
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe)
-      );
+      beforeEach(() => {
+        resetIdentity();
+      });
 
       it("should render test environment warning", async () => {
         const { getByTestId } = render(Warnings, {

@@ -3,8 +3,7 @@
  */
 
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-import { authStore } from "$lib/stores/auth.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
@@ -19,17 +18,16 @@ describe("AccountMenu", () => {
   });
 
   it("should display a sign-in button if not signed in", () => {
+    setNoIdentity();
     const { getByTestId } = render(AccountMenu);
 
     expect(getByTestId("toolbar-login")).not.toBeNull();
   });
 
   describe("signed in", () => {
-    beforeAll(() =>
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe)
-    );
+    beforeEach(() => {
+      resetIdentity();
+    });
 
     it("should be open", async () => {
       const renderResult = render(AccountMenu);
