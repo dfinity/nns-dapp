@@ -5,6 +5,12 @@ set -xeuo pipefail
 
 CHANGELOG="CHANGELOG-Nns-Dapp.md"
 MAIN_ANCESTOR="$(git merge-base HEAD origin/main)"
+HEAD="$(git rev-parse HEAD)"
+
+if [[ "$HEAD" == "$MAIN_ANCESTOR" ]]; then
+  echo "We are on the main branch so compare to the previous commit."
+  MAIN_ANCESTOR="$(git rev-parse origin/main~1)"
+fi
 
 if ! LAST_ADDED_ENTRY_CONTENT="$(git diff "$MAIN_ANCESTOR" "$CHANGELOG" | grep '^+[*-]' | tail -1 | sed -e 's/^+//')"; then
   echo "PASSED: No new entries were added to $CHANGELOG"
