@@ -35,13 +35,17 @@ describe("IncreaseNeuronStakeModal", () => {
       },
     });
 
-  beforeAll(() =>
+  beforeEach(() =>
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe)
   );
 
   describe("when accounts store is empty", () => {
+    beforeEach(() => {
+      icpAccountsStore.resetForTesting();
+    });
+
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
       jest
