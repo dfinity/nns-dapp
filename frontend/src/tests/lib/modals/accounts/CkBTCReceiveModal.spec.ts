@@ -16,7 +16,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
@@ -41,6 +41,7 @@ describe("BtcCkBTCReceiveModal", () => {
   const reloadSpy = jest.fn();
 
   beforeEach(() => {
+    resetIdentity();
     jest.clearAllMocks();
   });
 

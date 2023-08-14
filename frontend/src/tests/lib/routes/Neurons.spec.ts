@@ -13,8 +13,9 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
@@ -39,6 +40,7 @@ describe("Neurons", () => {
   let testCommittedSnsNeuron;
 
   beforeEach(async () => {
+    resetIdentity();
     snsQueryStore.reset();
 
     fakeGovernanceApi.addNeuronWith({ neuronId: testNnsNeuronId });
