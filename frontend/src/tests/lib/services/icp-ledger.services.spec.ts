@@ -17,12 +17,10 @@ import {
   resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
-import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
-  mockAuthStoreSubscribe,
   mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
@@ -53,6 +51,10 @@ describe("icp-ledger.services", () => {
   beforeEach(() => {
     resetIdentitiesCachedForTesting();
     jest.clearAllMocks();
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   describe("connect hardware wallet", () => {
@@ -132,10 +134,6 @@ describe("icp-ledger.services", () => {
       spySyncAccounts = jest
         .spyOn(accountsServices, "syncAccounts")
         .mockImplementation(jest.fn());
-
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
 
       const mockCreateAgent = () => Promise.resolve(mock<Agent>());
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);

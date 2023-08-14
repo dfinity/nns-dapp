@@ -7,12 +7,16 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-tokens-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   describe("loadCkBTCTokens", () => {
     beforeEach(() => {
       tokensStore.reset();

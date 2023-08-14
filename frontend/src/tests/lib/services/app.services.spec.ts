@@ -4,6 +4,7 @@
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { toastsStore } from "@dfinity/gix-components";
@@ -18,6 +19,7 @@ describe("app-services", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
 
   beforeEach(() => {
+    resetIdentity();
     toastsStore.reset();
     jest.clearAllMocks();
     jest

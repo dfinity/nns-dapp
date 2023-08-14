@@ -7,12 +7,12 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import {
-  mockAuthStoreSubscribe,
   mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -119,6 +119,10 @@ describe("SnsIncreaseStakeNeuronModal", () => {
     });
 
     describe("user has not signed-in", () => {
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
       it("should not be able to execute transaction", async () => {
         const renderResult: RenderResult<SvelteComponent> =
           await renderSnsIncreaseStakeNeuronModal();
@@ -133,10 +137,8 @@ describe("SnsIncreaseStakeNeuronModal", () => {
     });
 
     describe("user has signed-in", () => {
-      beforeAll(() => {
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
+      beforeEach(() => {
+        resetIdentity();
       });
 
       it("should call increaseStakeNeuron service on confirm click", async () => {

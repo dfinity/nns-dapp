@@ -13,6 +13,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -29,6 +30,10 @@ jest.mock("$lib/services/ckbtc-transactions.services", () => {
 });
 
 describe("ckbtc-accounts-services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   describe("loadCkBTCAccounts", () => {
     beforeEach(() => {
       jest.clearAllMocks();
