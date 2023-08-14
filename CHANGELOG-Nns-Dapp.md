@@ -38,6 +38,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Screenshot e2e tests.
 * Allow specifying a test_filter to the e2e CI action.
 * New test util to set SNS projects for testing.
+* Make scripts/past-changelog-test check again the previous commit when run on main.
 
 #### Changed
 
