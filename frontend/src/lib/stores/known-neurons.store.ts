@@ -17,6 +17,11 @@ const initKnownNeuronsStore = () => {
     setNeurons(neurons: KnownNeuron[]) {
       set([...neurons]);
     },
+
+    // Used for testing
+    reset() {
+      set([]);
+    },
   };
 };
 
