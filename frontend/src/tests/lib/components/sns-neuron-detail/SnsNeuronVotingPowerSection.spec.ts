@@ -75,7 +75,7 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuronCanVote);
 
     expect(await po.getDescription()).toBe(
-      "It is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolvde_delay_bonus = (3.14 + 1.00) × 1.25 × 1.01 = 5.23."
+      "It is determined by the stake, state and dissolve delay. Calculated as: (neuron_stake + staked_maturity) × age_bonus × dissolved_delay_bonus = (3.14 + 1.00) × 1.25 × 1.01 = 5.23."
     );
   });
 
