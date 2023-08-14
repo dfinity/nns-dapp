@@ -7,7 +7,6 @@ import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { getOrCreateDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
@@ -130,13 +129,6 @@ export const loadSnsProjects = async (): Promise<void> => {
       ({ canister_ids: { root_canister_id }, derived_state }) => {
         snsQueryStore.updateDerivedState({
           rootCanisterId: root_canister_id,
-          derivedState: derived_state,
-        });
-        const store = getOrCreateDerivedStateStore(
-          Principal.fromText(root_canister_id)
-        );
-        store.setDerivedState({
-          certified: true,
           derivedState: derived_state,
         });
       }
