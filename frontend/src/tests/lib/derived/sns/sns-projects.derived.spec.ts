@@ -13,12 +13,11 @@ import { get } from "svelte/store";
 
 describe("projects.derived", () => {
   const principalRootCanisterId = rootCanisterIdMock;
+  beforeEach(() => {
+    resetSnsProjects();
+  });
 
   describe("projectsDerived", () => {
-    beforeAll(() => {
-      resetSnsProjects();
-    });
-
     snsSwapCommitmentsStore.setSwapCommitment({
       swapCommitment: mockSnsSwapCommitment(principalRootCanisterId),
       certified: true,
@@ -34,10 +33,6 @@ describe("projects.derived", () => {
     });
   });
   describe("filter projects derived", () => {
-    beforeEach(() => {
-      resetSnsProjects();
-    });
-
     snsSwapCommitmentsStore.setSwapCommitment({
       swapCommitment: mockSnsSwapCommitment(principalRootCanisterId),
       certified: true,
