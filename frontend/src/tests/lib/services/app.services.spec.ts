@@ -35,11 +35,12 @@ describe("app-services", () => {
     jest
       .spyOn(aggregatorApi, "querySnsProjects")
       .mockResolvedValue([aggregatorSnsMockDto, aggregatorSnsMockDto]);
+
+    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
   });
 
   it("should init Nns", async () => {
-    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     await initAppPrivateData();
 
     // query + update calls
@@ -54,7 +55,7 @@ describe("app-services", () => {
     );
   });
 
-  it("shuold init SNS", async () => {
+  it("should init SNS", async () => {
     await initAppPrivateData();
 
     await expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
@@ -62,7 +63,6 @@ describe("app-services", () => {
 
   it("should not show errors if loading accounts fails", async () => {
     mockNNSDappCanister.getAccount.mockRejectedValue(new Error("test"));
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     await initAppPrivateData();
 
     // query + update calls
