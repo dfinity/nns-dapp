@@ -77,6 +77,20 @@ test("Test neuron voting", async ({ page, context }) => {
   /*
    * Validate proposal details
    */
+  step("Filter Open Governance proposals");
+  // Filter by topic and status to get less proposals
+  // in case of a multiple dummy proposals created before calling this test
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectTopicFilter([Topic.Governance]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectStatusFilter([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
   step("Open proposal details");
   const governanceProposalCard = await appPo
     .getProposalsPo()
