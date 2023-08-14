@@ -46,11 +46,12 @@ describe("NnsNeuronHotkeysCard", () => {
     },
   };
 
-  beforeAll(() =>
+  beforeEach(() => {
     jest
       .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+      .mockImplementation(mockAuthStoreSubscribe);
+    jest.clearAllMocks();
+  });
 
   it("renders hotkeys title", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
@@ -143,7 +144,6 @@ describe("NnsNeuronHotkeysCard", () => {
     const firstButton = removeButtons[0];
 
     await fireEvent.click(firstButton);
-    expect(removeHotkey).toBeCalled();
 
     await waitFor(() =>
       expect(
@@ -152,6 +152,7 @@ describe("NnsNeuronHotkeysCard", () => {
     );
     const confirmButton = queryByTestId("confirm-yes");
     confirmButton && fireEvent.click(confirmButton);
+    expect(removeHotkey).toBeCalled();
 
     await waitFor(() => expect(get(pageStore).path).toEqual(AppPath.Neurons));
   });
