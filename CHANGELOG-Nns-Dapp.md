@@ -44,6 +44,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+
 #### Fixed
 
 * Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
