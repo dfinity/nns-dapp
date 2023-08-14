@@ -1,7 +1,7 @@
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { PostMessageDataResponseTransaction } from "$lib/types/post-message.transactions";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import { jsonReviver } from "$lib/utils/json.utils";
+import { jsonReviver } from "@dfinity/utils";
 
 export const addObservedIcrcTransactionsToStore = ({
   universeId,
