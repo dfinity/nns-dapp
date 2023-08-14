@@ -97,6 +97,28 @@ describe("NnsNeuronPageHeading", () => {
     expect(await po.getNeuronTags()).toEqual(["Hotkey control"]);
   });
 
+  it("should render hotkey and Neurons' Fund tag", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      joinedCommunityFundTimestampSeconds: BigInt(12333444),
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        controller: "not-current-principal",
+        hotKeys: [mockIdentity.getPrincipal().toText()],
+      },
+    });
+
+    expect(await po.getNeuronTags()).toEqual([
+      "Neurons' fund",
+      "Hotkey control",
+    ]);
+  });
+
   it("should render hardware wallet tag and not hotkey if neuron is controlled by a hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,

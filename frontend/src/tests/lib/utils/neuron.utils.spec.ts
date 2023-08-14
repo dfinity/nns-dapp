@@ -1283,7 +1283,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
         })
-      ).toEqual([nfTag, { text: "Hardware Wallet" }]);
+      ).toEqual([nfTag, hwTag]);
     });
   });
 

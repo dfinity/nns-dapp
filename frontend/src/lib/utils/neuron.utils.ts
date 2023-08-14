@@ -389,7 +389,7 @@ export const getNeuronTags = ({
   });
   if (isHWControlled) {
     tags.push({ text: i18n.neurons.hardware_wallet_control });
-    // All HW controlled are hotkeys, but we don't want to show two tags to the user.
+    // All HW controlled are hotkeys, but we don't want to show both tags to the user.
   } else if (isHotKeyControllable({ neuron, identity })) {
     tags.push({ text: i18n.neurons.hotkey_control });
   }
