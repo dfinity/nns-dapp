@@ -151,6 +151,7 @@ describe("NnsNeuronHotkeysCard", () => {
       ).toBeInTheDocument()
     );
     const confirmButton = queryByTestId("confirm-yes");
+    expect(removeHotkey).not.toBeCalled();
     confirmButton && fireEvent.click(confirmButton);
     expect(removeHotkey).toBeCalled();
 
