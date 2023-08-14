@@ -1,12 +1,12 @@
 import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import {
   mockIcrcTransactionMint,
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { jsonReplacer } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("observer.services", () => {
