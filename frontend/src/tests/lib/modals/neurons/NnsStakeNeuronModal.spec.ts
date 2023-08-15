@@ -13,15 +13,10 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-  resetIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
@@ -101,9 +96,6 @@ describe("NnsStakeNeuronModal", () => {
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
       jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
@@ -415,9 +407,6 @@ describe("NnsStakeNeuronModal", () => {
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     const createNeuron = async ({
