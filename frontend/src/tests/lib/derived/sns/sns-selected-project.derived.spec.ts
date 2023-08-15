@@ -9,15 +9,17 @@ import {
 } from "$lib/derived/sns/sns-selected-project.derived";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
-import { mockSnsSwapCommitment } from "$tests/mocks/sns-projects.mock";
-import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
+import {
+  mockSnsSwapCommitment,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("selected sns project derived stores", () => {
-  const rootCanisterId = mockSnsCanisterId;
+  const rootCanisterId = principal(0);
   const rootCanisterIdText = rootCanisterId.toText();
   beforeEach(() => {
     resetSnsProjects();

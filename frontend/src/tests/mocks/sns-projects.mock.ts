@@ -88,10 +88,6 @@ export const mockSnsSwapCommitment = (
       rootCanisterId: principal(3),
       myCommitment: undefined,
     },
-    [rootCanisterId.toText()]: {
-      rootCanisterId,
-      myCommitment: createBuyersState(BigInt(5 * 100000000)),
-    },
   }[rootCanisterId.toText()]);
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
