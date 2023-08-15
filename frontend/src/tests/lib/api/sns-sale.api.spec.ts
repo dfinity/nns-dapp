@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import {
   getOpenTicket,
   newSaleTicket,
@@ -22,6 +23,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { SnsSwapCanister } from "@dfinity/sns";
 import { mock } from "jest-mock-extended";
@@ -67,6 +69,7 @@ describe("sns-sale.api", () => {
         notifyParticipation: notifyParticipationSpy,
       })
     );
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should query open ticket", async () => {

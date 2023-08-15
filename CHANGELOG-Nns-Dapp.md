@@ -51,6 +51,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+* Remove `frontend/jest-spy.ts`.
 
 #### Fixed
 

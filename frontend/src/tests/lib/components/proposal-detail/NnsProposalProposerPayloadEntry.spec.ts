@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
@@ -11,6 +12,7 @@ import {
 } from "$tests/mocks/proposal.mock";
 import { simplifyJson } from "$tests/utils/json.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
@@ -32,6 +34,7 @@ describe("NnsProposalProposerPayloadEntry", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     proposalPayloadsStore.reset();
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should trigger getProposalPayload", async () => {

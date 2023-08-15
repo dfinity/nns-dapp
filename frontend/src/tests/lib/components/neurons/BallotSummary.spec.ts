@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -12,9 +13,11 @@ import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo, Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 describe("BallotSummary", () => {
   const mockBallot: BallotInfo = {
@@ -39,6 +42,7 @@ describe("BallotSummary", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render proposal id", async () => {

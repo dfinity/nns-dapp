@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   estimateFee,
   getBTCAddress,
@@ -13,6 +14,7 @@ import {
   mockCkBTCMinterInfo,
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import mock from "jest-mock-extended/lib/Mock";
 
@@ -26,6 +28,10 @@ describe("ckbtc-minter api", () => {
   });
 
   afterAll(() => jest.clearAllMocks());
+
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
   const params = {
     identity: mockIdentity,
