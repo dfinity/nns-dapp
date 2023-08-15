@@ -24,11 +24,11 @@ EXIT=0
 (
   printf "\n\n\n=========================================\n"
   printf "%s\n" "Test that:" \
-    " * Successive pages can be downloaded until we get a page that is not full."
-  " * These pages provide the same number of SNS suggested by the 'latest' API."
+    " * Successive pages can be downloaded until we get a page that is not full." \
+    " * These pages provide the same number of SNS suggested by the 'latest' API."
   PAGE_SIZE=10
   AGGREGATOR_CANISTER_URL="$(dfx-canister-url sns_aggregator)"
-  NUM_SNS="$(curl "${AGGREGATOR_CANISTER_URL}/v1/sns/list/latest/slow.json" | jq '(.[0].index // -1) +1')"
+  NUM_SNS="$(curl --retry 10 "${AGGREGATOR_CANISTER_URL}/v1/sns/list/latest/slow.json" | jq '(.[0].index // -1) +1')"
   PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
   for ((page = 0, sns_count = 0; ; page++)); do
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
@@ -44,5 +44,4 @@ EXIT=0
     # A caller should be able to get pages until they get an incomplete page:
     ((actual == PAGE_SIZE)) || break
   done
-
 )
