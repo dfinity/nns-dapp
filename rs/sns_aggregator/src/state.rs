@@ -163,8 +163,8 @@ impl State {
         // Updates the max index, if needed
         {
             STATE.with(|state| {
-                if state.stable.borrow().sns_cache.borrow().max_index < index {
-                    state.stable.borrow().sns_cache.borrow_mut().max_index = index;
+                if state.stable.borrow().sns_cache.borrow().num_sns <= index {
+                    state.stable.borrow().sns_cache.borrow_mut().num_sns = index + 1;
                 }
             });
         }
@@ -191,7 +191,7 @@ impl State {
 
         // If this is in the last N, update latest.
         if upstream_data.index + State::PAGE_SIZE
-            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index)
+            >= STATE.with(|state| state.stable.borrow().sns_cache.borrow().num_sns)
         {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {

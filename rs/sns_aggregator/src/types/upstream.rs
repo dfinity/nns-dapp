@@ -24,8 +24,10 @@ pub struct SnsCache {
     pub last_partial_update: u64,
     /// Time of last complete cycle
     pub last_update: u64,
-    /// The maximum index provided in a paginated response.
-    pub max_index: u64,
+    /// The number of SNSs known to exist.
+    /// Note: There is a delay between a new SNS being created and the aggregator being aware of it.
+    /// Note: If an aggregator starts with an empty cache, it will take a while before information about all SNS is available.
+    pub num_sns: u64,
 }
 
 /// The index of an SNS in the list provided by the nns-sns-wasm canister.
