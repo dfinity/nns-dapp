@@ -20,6 +20,7 @@ import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -86,6 +87,7 @@ jest.mock("$lib/stores/toasts.store", () => {
 
 describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
+    resetIdentity();
     cancelPollAccounts();
     jest.clearAllMocks();
   });
@@ -111,10 +113,6 @@ describe("NnsStakeNeuronModal", () => {
       queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-    });
-
-    afterEach(() => {
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
@@ -412,7 +410,6 @@ describe("NnsStakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
       icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
@@ -559,7 +556,6 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
-      jest.clearAllMocks();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
