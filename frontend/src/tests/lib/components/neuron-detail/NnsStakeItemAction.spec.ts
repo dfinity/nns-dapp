@@ -38,6 +38,12 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getStake()).toBe("3.14");
   });
 
+  it("should render ICP in description", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getDescription()).toBe("ICP staked");
+  });
+
   it("should render increase stake button", async () => {
     const po = renderComponent(mockNeuron);
 

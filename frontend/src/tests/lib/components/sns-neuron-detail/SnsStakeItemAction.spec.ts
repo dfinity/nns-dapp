@@ -3,6 +3,7 @@
  */
 
 import SnsStakeItemAction from "$lib/components/sns-neuron-detail/SnsStakeItemAction.svelte";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -14,12 +15,15 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsStakeItemAction", () => {
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (
+    neuron: SnsNeuron,
+    token: IcrcTokenMetadata = mockToken
+  ) => {
     const { container } = render(SnsStakeItemAction, {
       props: {
         neuron,
         universe: mockUniverse,
-        token: mockToken,
+        token,
       },
     });
 
@@ -35,6 +39,15 @@ describe("SnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getStake()).toBe("3.14");
+  });
+
+  it("should render token symbol in description", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+    });
+    const po = renderComponent(neuron, { ...mockToken, symbol: "TST" });
+
+    expect(await po.getDescription()).toBe("TST staked");
   });
 
   it("should render increase stake button", async () => {

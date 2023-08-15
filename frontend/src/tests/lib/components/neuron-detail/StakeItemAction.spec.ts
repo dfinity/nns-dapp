@@ -43,6 +43,17 @@ describe("StakeItemAction", () => {
     expect(await po.getTokenSymbol()).toBe("FLURB");
   });
 
+  it("should render token symbol in description", async () => {
+    const po = renderComponent({
+      token: {
+        ...mockToken,
+        symbol: "FLURB",
+      },
+    });
+
+    expect(await po.getDescription()).toBe("FLURB staked");
+  });
+
   it("should render increase stake button secondary variant", async () => {
     const po = renderComponent({});
 

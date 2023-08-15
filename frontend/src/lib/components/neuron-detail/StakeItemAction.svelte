@@ -6,6 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import { formatToken } from "$lib/utils/token.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let universe: Universe;
   export let token: Token;
@@ -26,7 +27,9 @@
       <span data-tid="stake-value">{formatToken({ value: neuronStake })}</span
       ><span data-tid="token-symbol">{token.symbol}</span>
     </h4>
-    <p class="description">{$i18n.neurons.ic_stake}</p>
+    <p class="description" data-tid="staked-description">
+      {replacePlaceholders($i18n.neurons.ic_stake, { $token: token.symbol })}
+    </p>
   </div>
   <svelte:fragment slot="actions">
     {#if isIncreaseStakeAllowed}

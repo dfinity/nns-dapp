@@ -283,7 +283,7 @@
     "hardware_wallet_control": "Hardware Wallet",
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
-    "ic_stake": "ICP Stake",
+    "ic_stake": "$token staked",
     "staked": "Of which staked",
     "inline_remaining": "$duration remaining",
     "remaining": "Remaining",
