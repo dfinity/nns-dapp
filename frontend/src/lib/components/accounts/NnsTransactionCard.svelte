@@ -8,7 +8,6 @@
   import type { Transaction } from "$lib/types/transaction";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import type { Principal } from "@dfinity/principal";
-  import type { AccountIdentifier } from "@dfinity/nns";
   import type { Readable } from "svelte/store";
   import { authStore } from "$lib/stores/auth.store";
 
@@ -22,7 +21,7 @@
     account.principal ?? $authStore.identity?.getPrincipal();
 
   // Used to identify transactions related to a Swap.
-  let swapCanisterAccountsStore: Readable<AccountIdentifier[]>;
+  let swapCanisterAccountsStore: Readable<Set<string>>;
   $: swapCanisterAccountsStore =
     createSwapCanisterAccountsStore(accountPrincipal);
 
