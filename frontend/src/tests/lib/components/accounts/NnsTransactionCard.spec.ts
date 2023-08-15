@@ -2,8 +2,11 @@
  * @jest-environment jsdom
  */
 
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -11,6 +14,8 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
@@ -41,6 +46,38 @@ describe("NnsTransactionCard", () => {
       $tokenSymbol: ICPToken.symbol,
     });
     expect(getByText(expectedText)).toBeInTheDocument();
+  });
+
+  it("renders participate in swap transaction type", () => {
+    const swapCanisterId = principal(0);
+    const aggregatorData = {
+      ...aggregatorSnsMockDto,
+      canister_ids: {
+        ...aggregatorSnsMockDto.canister_ids,
+        swap_canister_id: swapCanisterId.toText(),
+      },
+    };
+    snsAggregatorStore.setData([aggregatorData]);
+    const swapCanisterAccount = getSwapCanisterAccount({
+      controller: mockMainAccount.principal,
+      swapCanisterId,
+    });
+    const swapTransaction: Transaction = {
+      ...mockReceivedFromMainAccountTransaction,
+      transfer: {
+        Send: {
+          fee: { e8s: BigInt(10000) },
+          amount: { e8s: BigInt(110000000) },
+          to: swapCanisterAccount.toHex(),
+        },
+      },
+    };
+    const { queryByTestId } = renderTransactionCard(
+      mockMainAccount,
+      swapTransaction
+    );
+
+    expect(queryByTestId("headline").textContent).toBe("Decentralization Swap");
   });
 
   it("renders sent headline", () => {

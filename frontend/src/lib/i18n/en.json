@@ -465,7 +465,7 @@
     "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
-    "participateSwap": "Decentralized Swap"
+    "participateSwap": "Decentralization Swap"
   },
   "ckbtc_transaction_names": {
     "burn": "To: <span class=\"value\">BTC Network</span>",

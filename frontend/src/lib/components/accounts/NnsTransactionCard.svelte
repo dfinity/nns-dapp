@@ -6,10 +6,24 @@
   import TransactionCard from "./TransactionCard.svelte";
   import { ICPToken } from "@dfinity/utils";
   import type { Transaction } from "$lib/types/transaction";
+  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
+  import type { Principal } from "@dfinity/principal";
+  import type { Readable } from "svelte/store";
+  import { authStore } from "$lib/stores/auth.store";
 
   export let account: Account;
   export let transaction: NnsTransaction;
   export let toSelfTransaction = false;
+
+  // Subaccounts have no principal, but they belong to the II user.
+  let accountPrincipal: Principal | undefined;
+  $: accountPrincipal =
+    account.principal ?? $authStore.identity?.getPrincipal();
+
+  // Used to identify transactions related to a Swap.
+  let swapCanisterAccountsStore: Readable<Set<string>>;
+  $: swapCanisterAccountsStore =
+    createSwapCanisterAccountsStore(accountPrincipal);
 
   let transactionData: Transaction | undefined;
 
@@ -21,6 +35,7 @@
           transaction,
           toSelfTransaction,
           account,
+          swapCanisterAccounts: $swapCanisterAccountsStore,
         });
       } catch (err: unknown) {
         transactionData = undefined;
