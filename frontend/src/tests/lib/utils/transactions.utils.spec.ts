@@ -5,6 +5,7 @@ import {
 } from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import {
   isTransactionNetworkBtc,
   mapNnsTransaction,
@@ -20,6 +21,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
@@ -78,84 +80,132 @@ describe("transactions-utils", () => {
     it("determines type by transaction_type value", () => {
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ Transfer: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ Transfer: null }],
+          },
         })
       ).toBe(AccountTransactionType.Send);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ Burn: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ Burn: null }],
+          },
         })
       ).toBe(AccountTransactionType.Burn);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ Mint: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ Mint: null }],
+          },
         })
       ).toBe(AccountTransactionType.Mint);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ StakeNeuronNotification: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ StakeNeuronNotification: null }],
+          },
         })
       ).toBe(AccountTransactionType.StakeNeuronNotification);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ TopUpCanister: mockPrincipal }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ TopUpCanister: mockPrincipal }],
+          },
         })
       ).toBe(AccountTransactionType.TopUpCanister);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ CreateCanister: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ CreateCanister: null }],
+          },
         })
       ).toBe(AccountTransactionType.CreateCanister);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ TopUpNeuron: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ TopUpNeuron: null }],
+          },
         })
       ).toBe(AccountTransactionType.TopUpNeuron);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [{ StakeNeuron: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [{ StakeNeuron: null }],
+          },
         })
       ).toBe(AccountTransactionType.StakeNeuron);
+    });
+
+    it("determines type by swapCanisterAccounts and Sent transaction", () => {
+      const swapCanisterId = principal(0);
+      const swapCanisterAccount = getSwapCanisterAccount({
+        controller: mockMainAccount.principal,
+        swapCanisterId,
+      });
+      const swapTransaction: Transaction = {
+        ...mockReceivedFromMainAccountTransaction,
+        transfer: {
+          Send: {
+            fee: { e8s: BigInt(10000) },
+            amount: { e8s: BigInt(110000000) },
+            to: swapCanisterAccount.toHex(),
+          },
+        },
+      };
+      expect(
+        transactionType({
+          transaction: swapTransaction,
+          swapCanisterAccounts: [swapCanisterAccount],
+        })
+      ).toBe(AccountTransactionType.ParticipateSwap);
     });
 
     it("determines type withoug transaction_type value", () => {
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          transaction_type: [],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            transaction_type: [],
+          },
         })
       ).toBe(AccountTransactionType.Send);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          Burn: null,
-          transaction_type: [],
-        } as unknown as Transaction)
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            Burn: null,
+            transaction_type: [],
+          } as unknown as Transaction,
+        })
       ).toBe(AccountTransactionType.Burn);
       expect(
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          Mint: null,
-          transaction_type: [],
-        } as unknown as Transaction)
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            Mint: null,
+            transaction_type: [],
+          } as unknown as Transaction,
+        })
       ).toBe(AccountTransactionType.Mint);
     });
 
     it("throws if unknown type", () => {
       expect(() =>
         transactionType({
-          ...mockSentToSubAccountTransaction,
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore-line: test
-          transaction_type: [{ Unknown: null }],
+          transaction: {
+            ...mockSentToSubAccountTransaction,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore-line: test
+            transaction_type: [{ Unknown: null }],
+          },
         })
       ).toThrow();
     });
@@ -212,7 +262,11 @@ describe("transactions-utils", () => {
       const fee = (mockSentToSubAccountTransaction.transfer as any)?.Send?.fee
         .e8s as bigint;
 
-      expect(type).toBe(transactionType(mockSentToSubAccountTransaction));
+      expect(type).toBe(
+        transactionType({
+          transaction: mockSentToSubAccountTransaction,
+        })
+      );
       expect(isReceive).toBe(false);
       expect(isSend).toBeTruthy();
       expect(from).toBe(mockMainAccount.identifier);
@@ -246,7 +300,7 @@ describe("transactions-utils", () => {
         ?.Receive?.fee.e8s as bigint;
 
       expect(type).toBe(
-        transactionType(mockReceivedFromMainAccountTransaction)
+        transactionType({ transaction: mockReceivedFromMainAccountTransaction })
       );
       expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
@@ -289,6 +343,31 @@ describe("transactions-utils", () => {
       );
       expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
+    });
+
+    it("supports participate in swap transaction type", () => {
+      const swapCanisterId = principal(0);
+      const swapCanisterAccount = getSwapCanisterAccount({
+        controller: mockMainAccount.principal,
+        swapCanisterId,
+      });
+      const swapTransaction: Transaction = {
+        ...mockReceivedFromMainAccountTransaction,
+        transfer: {
+          Send: {
+            fee: { e8s: BigInt(10000) },
+            amount: { e8s: BigInt(110000000) },
+            to: swapCanisterAccount.toHex(),
+          },
+        },
+      };
+      const { type } = mapNnsTransaction({
+        transaction: swapTransaction,
+        account: mockMainAccount,
+        toSelfTransaction: false,
+        swapCanisterAccounts: [swapCanisterAccount],
+      });
+      expect(type).toBe(AccountTransactionType.ParticipateSwap);
     });
   });
 
