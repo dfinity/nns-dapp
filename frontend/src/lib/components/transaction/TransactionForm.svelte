@@ -51,7 +51,10 @@
 
   let filterSourceAccounts: (account: Account) => boolean;
   $: filterSourceAccounts = (account: Account) => {
-    return !skipHardwareWallets || !isAccountHardwareWallet(account);
+    if (skipHardwareWallets) {
+      return !isAccountHardwareWallet(account);
+    }
+    return true;
   };
 
   let filterDestinationAccounts: (account: Account) => boolean;
