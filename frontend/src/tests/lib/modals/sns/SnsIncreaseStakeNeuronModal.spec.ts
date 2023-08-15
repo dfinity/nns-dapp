@@ -77,12 +77,12 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     page.mock({
       routeId: AppPath.Neuron,
       data: { universe: rootCanisterId.toText() },
     });
     setSnsProjects([snsProjectParams]);
-    jest.clearAllMocks();
   });
 
   describe("accounts and params are not loaded", () => {
