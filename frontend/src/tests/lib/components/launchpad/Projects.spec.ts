@@ -3,11 +3,6 @@
  */
 
 import Projects from "$lib/components/launchpad/Projects.svelte";
-import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import {
-  mockSnsSummaryList,
-  mockSnsSwapCommitment,
-} from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -15,14 +10,10 @@ import { render, waitFor } from "@testing-library/svelte";
 describe("Projects", () => {
   beforeEach(() => {
     resetSnsProjects();
-    snsSwapCommitmentsStore.reset();
+    jest.clearAllMocks();
   });
 
-  afterEach(jest.clearAllMocks);
-
   it("should render 'Open' projects", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     const lifecycles = [
       SnsSwapLifecycle.Open,
       SnsSwapLifecycle.Open,
@@ -31,10 +22,6 @@ describe("Projects", () => {
     ];
 
     setSnsProjects(lifecycles.map((lifecycle) => ({ lifecycle })));
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { getAllByTestId } = render(Projects, {
       props: {
@@ -49,8 +36,6 @@ describe("Projects", () => {
   });
 
   it("should render 'Adopted' projects", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     const lifecycles = [
       SnsSwapLifecycle.Open,
       SnsSwapLifecycle.Adopted,
@@ -59,10 +44,6 @@ describe("Projects", () => {
     ];
 
     setSnsProjects(lifecycles.map((lifecycle) => ({ lifecycle })));
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { getAllByTestId } = render(Projects, {
       props: {
@@ -77,8 +58,6 @@ describe("Projects", () => {
   });
 
   it("should render 'Committed' projects", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     const lifecycles = [
       SnsSwapLifecycle.Open,
       SnsSwapLifecycle.Open,
@@ -87,10 +66,6 @@ describe("Projects", () => {
     ];
 
     setSnsProjects(lifecycles.map((lifecycle) => ({ lifecycle })));
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { getAllByTestId } = render(Projects, {
       props: {
@@ -105,17 +80,11 @@ describe("Projects", () => {
   });
 
   it("should render a message when no open projects available", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     setSnsProjects([
       {
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { queryByTestId } = render(Projects, {
       props: {
@@ -128,17 +97,11 @@ describe("Projects", () => {
   });
 
   it("should render a message when no adopted projects available", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     setSnsProjects([
       {
         lifecycle: SnsSwapLifecycle.Open,
       },
     ]);
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { queryByTestId } = render(Projects, {
       props: {
@@ -151,17 +114,11 @@ describe("Projects", () => {
   });
 
   it("should render a message when no committed projects available", () => {
-    const principal = mockSnsSummaryList[0].rootCanisterId;
-
     setSnsProjects([
       {
         lifecycle: SnsSwapLifecycle.Open,
       },
     ]);
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principal),
-      certified: false,
-    });
 
     const { queryByTestId } = render(Projects, {
       props: {
