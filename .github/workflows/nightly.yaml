@@ -65,29 +65,8 @@ jobs:
           # do not pull: if this branch is behind, then we might as well let
           # the pushing fail
           pull_strategy: "NO-PULL"
-  update-chromedriver:
-    needs: update-ii # Forces git updates to run sequentially so that they don't conflict.
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Commit updated chromedriver
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          add: .
-          author_name: Nightly GitHub Action
-          author_email: "<nobody@dfinity.org>"
-          message: "Update chromedriver"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
   nightly-passes:
-    needs: ["tag-main", "update-ii", "update-chromedriver"]
+    needs: ["tag-main", "update-ii"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
