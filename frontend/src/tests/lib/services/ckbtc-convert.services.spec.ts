@@ -14,6 +14,7 @@ import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -339,7 +340,11 @@ describe("ckbtc-convert-services", () => {
       block_index: 1n,
     };
 
-    const retrieveBtcSpy = minterCanisterMock.retrieveBtc.mockResolvedValue(ok);
+    const retrieveBtcSpy = minterCanisterMock.retrieveBtc;
+
+    beforeEach(() => {
+      retrieveBtcSpy.mockResolvedValue(ok);
+    });
 
     it("should retrieve btc", async () => {
       const updateProgressSpy = jest.fn();
@@ -358,8 +363,12 @@ describe("ckbtc-convert-services", () => {
       expect(loadCkBTCAccountTransactions).not.toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
 
-      // SEND_BTC + RELOAD + DONE
-      expect(updateProgressSpy).toBeCalledTimes(3);
+      // INITIALIZATION + SEND_BTC + RELOAD + DONE
+      expect(updateProgressSpy).toBeCalledTimes(4);
+      expect(updateProgressSpy).nthCalledWith(1, ConvertBtcStep.INITIALIZATION);
+      expect(updateProgressSpy).nthCalledWith(2, ConvertBtcStep.SEND_BTC);
+      expect(updateProgressSpy).nthCalledWith(3, ConvertBtcStep.RELOAD);
+      expect(updateProgressSpy).nthCalledWith(4, ConvertBtcStep.DONE);
     });
 
     it("should display an error if retrieve btc fails", async () => {
