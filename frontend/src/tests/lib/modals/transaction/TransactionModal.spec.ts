@@ -17,11 +17,14 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
+  mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
@@ -47,6 +50,7 @@ describe("TransactionModal", () => {
     validateAmount,
     mustSelectNetwork = false,
     showLedgerFee,
+    skipHardwareWallets,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -55,6 +59,7 @@ describe("TransactionModal", () => {
     validateAmount?: ValidateAmountFn;
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
+    skipHardwareWallets?: boolean;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -62,6 +67,7 @@ describe("TransactionModal", () => {
         transactionFee,
         rootCanisterId,
         validateAmount,
+        skipHardwareWallets,
         transactionInit: {
           sourceAccount,
           destinationAddress,
@@ -556,6 +562,30 @@ describe("TransactionModal", () => {
       await waitFor(() =>
         expect(getByTestId("transaction-step-1")).toBeTruthy()
       );
+    });
+  });
+
+  describe("when skipHardwareWallet is true", () => {
+    beforeEach(() => {
+      icpAccountsStore.setForTesting({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
+    });
+
+    it("should not show the hardware wallet account", async () => {
+      const { container } = await renderTransactionModal({
+        skipHardwareWallets: true,
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+      expect(await form.getSourceAccounts()).toEqual([
+        "Main",
+        "test subaccount",
+      ]);
     });
   });
 });

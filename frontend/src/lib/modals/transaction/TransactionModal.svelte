@@ -18,7 +18,7 @@
   import { decodePayment } from "@dfinity/ledger";
   import { toastsError } from "$lib/stores/toasts.store";
 
-  export let testId: string | undefined = undefined;
+  export let testId = "transaction-modal-component";
   export let transactionInit: TransactionInit = {};
 
   // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.

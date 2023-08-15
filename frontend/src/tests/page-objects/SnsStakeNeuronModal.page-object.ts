@@ -1,7 +1,7 @@
-import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
+import { TransactionModalBasePo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsStakeNeuronModalPo extends TransactionModalPo {
+export class SnsStakeNeuronModalPo extends TransactionModalBasePo {
   private static readonly TID = "sns-stake-neuron-modal-component";
 
   static under(element: PageObjectElement): SnsStakeNeuronModalPo | null {
