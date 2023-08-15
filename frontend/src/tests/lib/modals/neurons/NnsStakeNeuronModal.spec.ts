@@ -13,14 +13,10 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
@@ -86,6 +82,7 @@ jest.mock("$lib/stores/toasts.store", () => {
 
 describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
+    resetIdentity();
     cancelPollAccounts();
     jest.clearAllMocks();
   });
@@ -100,9 +97,6 @@ describe("NnsStakeNeuronModal", () => {
         subAccounts: [mockSubAccount],
       });
       jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-      jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
       jest
@@ -111,10 +105,6 @@ describe("NnsStakeNeuronModal", () => {
       queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-    });
-
-    afterEach(() => {
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
@@ -412,15 +402,11 @@ describe("NnsStakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
       icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     const createNeuron = async ({
@@ -559,7 +545,6 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
-      jest.clearAllMocks();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
