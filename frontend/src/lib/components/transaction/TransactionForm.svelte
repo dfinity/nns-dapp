@@ -49,12 +49,14 @@
 
   export let validateAmount: ValidateAmountFn = () => undefined;
 
+  let filterSourceAccounts: (account: Account) => boolean;
+  $: filterSourceAccounts = (account: Account) => {
+    return !skipHardwareWallets || !isAccountHardwareWallet(account);
+  };
+
   let filterDestinationAccounts: (account: Account) => boolean;
   $: filterDestinationAccounts = (account: Account) => {
-    return (
-      account.identifier !== selectedAccount?.identifier ||
-      (skipHardwareWallets && isAccountHardwareWallet(account))
-    );
+    return account.identifier !== selectedAccount?.identifier;
   };
 
   let max = 0;
@@ -126,6 +128,7 @@
     {canSelectSource}
     {rootCanisterId}
     {token}
+    filterAccounts={filterSourceAccounts}
   />
 
   {#if canSelectDestination}

@@ -16,6 +16,10 @@ export class TransactionFormPo extends BasePageObject {
     return TransactionFromAccountPo.under(this.root);
   }
 
+  getSourceAccounts(): Promise<string[]> {
+    return this.getTransactionFromAccountPo().getAccounts();
+  }
+
   getSelectDestinationAddressPo(): SelectDestinationAddressPo {
     return SelectDestinationAddressPo.under(this.root);
   }

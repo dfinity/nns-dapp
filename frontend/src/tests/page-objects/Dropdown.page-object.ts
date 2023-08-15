@@ -11,4 +11,9 @@ export class DropdownPo extends BasePageObject {
   select(option: string): Promise<void> {
     return this.root.querySelector("select").selectOption(option);
   }
+
+  async getOptions(): Promise<string[]> {
+    const options = await this.root.querySelectorAll("option");
+    return Promise.all(options.map((option) => option.getValue()));
+  }
 }
