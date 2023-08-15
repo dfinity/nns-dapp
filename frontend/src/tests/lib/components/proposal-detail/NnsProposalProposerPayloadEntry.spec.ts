@@ -9,10 +9,10 @@ import {
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
+import { simplifyJson } from "$tests/utils/json.test-utils";
 import type { Proposal } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { simplifyJson } from "../common/Json.spec";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
