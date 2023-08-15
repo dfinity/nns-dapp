@@ -30,7 +30,6 @@ export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
     snsAggregatorStore.setData(aggregatorData);
-    // TODO: Store this in a svelte store.
     const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
