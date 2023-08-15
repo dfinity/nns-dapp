@@ -16,16 +16,18 @@ export const createSwapCanisterAccountsStore = (controller?: Principal) =>
   derived<SnsAggregatorStore, Set<string>>(
     snsAggregatorStore,
     ($snsAggregatorStore) =>
-      isNullish(controller) || isNullish($snsAggregatorStore.data)
-        ? (new Set() as Set<string>)
-        : new Set(
-            $snsAggregatorStore.data.map(({ canister_ids }) =>
-              getSwapCanisterAccount({
-                controller,
-                swapCanisterId: Principal.fromText(
-                  canister_ids.swap_canister_id
-                ),
-              }).toHex()
+      new Set(
+        isNullish(controller) || isNullish($snsAggregatorStore.data)
+          ? undefined
+          : new Set(
+              $snsAggregatorStore.data.map(({ canister_ids }) =>
+                getSwapCanisterAccount({
+                  controller,
+                  swapCanisterId: Principal.fromText(
+                    canister_ids.swap_canister_id
+                  ),
+                }).toHex()
+              )
             )
-          )
+      )
   );
