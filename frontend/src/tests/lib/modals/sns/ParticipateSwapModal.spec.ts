@@ -26,6 +26,7 @@ import {
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
+  mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
@@ -137,7 +138,7 @@ describe("ParticipateSwapModal", () => {
     beforeEach(() => {
       icpAccountsStore.setForTesting({
         main: mockMainAccount,
-        subAccounts: [],
+        subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
         certified: true,
       });
@@ -147,7 +148,8 @@ describe("ParticipateSwapModal", () => {
       const po = await renderSwapModalPo();
       const form = po.getTransactionFormPo();
       expect(await form.getSourceAccounts()).toEqual([
-        mockMainAccount.identifier,
+        "Main",
+        "test subaccount",
       ]);
     });
   });
