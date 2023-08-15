@@ -2,28 +2,28 @@
  * @jest-environment jsdom
  */
 
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { page } from "$mocks/$app/stores";
 import {
   mockPrincipal,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
 import {
   fireEvent,
@@ -54,10 +54,15 @@ jest.mock("$lib/stores/busy.store", () => {
 
 describe("SnsIncreaseStakeNeuronModal", () => {
   const reloadNeuron = jest.fn();
+  const rootCanisterId = mockPrincipal;
+  const snsProjectParams = {
+    lifecycle: SnsSwapLifecycle.Committed,
+    rootCanisterId,
+  };
 
   const props = {
-    neuronId: mockSnsNeuron.id,
-    rootCanisterId: mockPrincipal,
+    neuronId: mockSnsNeuron.id[0],
+    rootCanisterId,
     token: ICPToken,
     reloadNeuron,
   };
@@ -71,7 +76,21 @@ describe("SnsIncreaseStakeNeuronModal", () => {
     });
   };
 
+  beforeEach(() => {
+    page.mock({
+      routeId: AppPath.Neuron,
+      data: { universe: rootCanisterId.toText() },
+    });
+    setSnsProjects([snsProjectParams]);
+    jest.clearAllMocks();
+  });
+
   describe("accounts and params are not loaded", () => {
+    beforeEach(() => {
+      snsAccountsStore.reset();
+      transactionsFeesStore.reset();
+    });
+
     it("should not display modal", async () => {
       const { container } = await render(SnsIncreaseStakeNeuronModal, {
         props,
@@ -98,18 +117,17 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   });
 
   describe("accounts and params are loaded", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(snsAccountsStore, "subscribe")
-        .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
-
-      jest
-        .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-        .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+    beforeEach(() => {
+      snsAccountsStore.setAccounts({
+        rootCanisterId,
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      });
+      transactionsFeesStore.setFee({
+        rootCanisterId,
+        fee: 10_000n,
+        certified: true,
+      });
     });
 
     it("should display modal", async () => {
