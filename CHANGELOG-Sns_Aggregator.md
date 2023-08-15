@@ -11,6 +11,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 - Display commit, branch name and similar data when deploying to a test canister.
 ### Changed
+- Change the field that tracks the number of SNSs from `max_index` to `num_sns`.  Please note that `num_sns == max_index+1`.
 ### Fixed
 * Update the index.html when it has changed.
 ### Security
