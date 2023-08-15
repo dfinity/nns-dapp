@@ -1133,9 +1133,10 @@ describe("sns-neurons-services", () => {
       const spySplitNeuron = jest
         .spyOn(governanceApi, "splitNeuron")
         .mockImplementation(() => Promise.resolve());
-      const spyLoadNeurons = jest
-        .spyOn(services, "loadNeurons")
-        .mockResolvedValue(undefined);
+      const spyQuery = jest
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([mockSnsNeuron]));
+
       const amount = 10;
 
       const neuronMinimumStake = 1000n;
@@ -1146,7 +1147,7 @@ describe("sns-neurons-services", () => {
         neuronMinimumStake,
       });
       expect(success).toBeTruthy();
-      expect(spyLoadNeurons).toBeCalled();
+      expect(spyQuery).toBeCalled();
       expect(spySplitNeuron).toBeCalledWith({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
