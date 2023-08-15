@@ -27,6 +27,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Fix wrong "ICP Staked" message in SNS neurons.
+
 #### Security
 
 #### Not Published

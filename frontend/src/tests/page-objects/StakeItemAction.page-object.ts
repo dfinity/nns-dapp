@@ -21,6 +21,10 @@ export class StakeItemActionPo extends BasePageObject {
     return this.getText("token-symbol");
   }
 
+  getDescription(): Promise<string> {
+    return this.getText("staked-description");
+  }
+
   hasIncreaseStakeButton(): Promise<boolean> {
     return this.getIncreaseStakeButtonPo().isPresent();
   }
