@@ -99,7 +99,6 @@ describe("NnsTransactionCard", () => {
     const { displayAmount } = mapNnsTransaction({
       account,
       transaction,
-      swapCanisterAccounts: [],
     });
 
     expect(getByTestId("token-value")?.textContent).toBe(
@@ -114,7 +113,6 @@ describe("NnsTransactionCard", () => {
     const { displayAmount } = mapNnsTransaction({
       account,
       transaction,
-      swapCanisterAccounts: [],
     });
 
     expect(getByTestId("token-value")?.textContent).toBe(
