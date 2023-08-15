@@ -43,7 +43,7 @@ fn serializing_and_deserializing_returns_original() {
                     },
                     last_partial_update: 1243,
                     last_update: 123,
-                    num_sns: 999,
+                    num_sns: 1000,
                 }),
                 assets: RefCell::new(Assets::default()),
             },
