@@ -197,6 +197,9 @@ fn setup(config: Option<Config>) {
     insert_favicon();
     insert_home_page();
 
+    // Call init and post_upgrade functions for the state.
+    state::State::setup();
+
     // Schedules data collection from the SNSs.
     //
     // Note: In future we are likely to want to make the duration dynamic and
