@@ -12,6 +12,59 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* New tag for NNS neurons: "Hardware Wallet".
+* New derived state store for SNS projects.
+* Identify swap participation ICP transactions.
+
+#### Changed
+
+* Update SNS Swap types to match the latest canister interface. 
+* Hide by default the proposal summary in ballots.
+
+#### Deprecated
+#### Removed
+
+* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
+
+#### Fixed
+
+* Fix wrong "ICP Staked" message in SNS neurons.
+* Disable HW from participating in swaps.
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Make it easy to skip the CI build step for quick testing.
+* Screenshot e2e tests.
+* Allow specifying a test_filter to the e2e CI action.
+* New test util to set SNS projects for testing.
+* Make scripts/past-changelog-test check again the previous commit when run on main.
+
+#### Changed
+
+#### Deprecated
+#### Removed
+
+* Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+
+#### Fixed
+
+* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
+
+#### Security
+
+* Fixed some tests that depended on execution order.
+* [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+
+## Proposal 124014
+
+### Application
+
 #### Changed
 
 * Don't display proposal navigation on launch-pad page.
