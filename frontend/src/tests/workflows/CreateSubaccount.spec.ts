@@ -3,6 +3,7 @@
  */
 
 import { createSubAccount } from "$lib/api/accounts.api";
+import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -16,8 +17,10 @@ import {
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/api/accounts.api", () => {
   return {
@@ -43,6 +46,7 @@ describe("Accounts", () => {
     queryAccountSpy = jest
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should create a subaccount in NNS", async () => {

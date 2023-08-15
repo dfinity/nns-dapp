@@ -3,6 +3,7 @@
  */
 
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
 import ProposalDetail from "$lib/pages/NnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -22,8 +23,10 @@ import {
   mockProposals,
 } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/api/governance.api");
 
@@ -60,6 +63,7 @@ describe("ProposalDetail", () => {
     jest
       .spyOn(neuronsStore, "subscribe")
       .mockImplementation(buildMockNeuronsStoreSubscribe([], false));
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   const props = {

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
@@ -27,13 +28,14 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import {
   IcrcLedgerCanister,
   decodeIcrcAccount,
   encodeIcrcAccount,
 } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
@@ -72,6 +74,7 @@ describe("ckbtc-convert-services", () => {
     jest
       .spyOn(CkBTCMinterCanister, "create")
       .mockImplementation(() => minterCanisterMock);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     jest.spyOn(console, "error").mockImplementation(() => undefined);
 

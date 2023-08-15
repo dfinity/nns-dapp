@@ -1,12 +1,14 @@
 /**
  * @jest-environment jsdom
  */
+import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
@@ -38,6 +40,7 @@ describe("app-services", () => {
 
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should init Nns", async () => {
