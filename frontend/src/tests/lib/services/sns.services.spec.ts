@@ -6,6 +6,10 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
+import {
+  getOrCreateDerivedStateStore,
+  resetDerivedStateStoresForTesting,
+} from "$lib/stores/sns-derived-state.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
   mockIdentity,
@@ -46,6 +50,7 @@ describe("sns-services", () => {
     jest.useFakeTimers();
     jest.clearAllTimers();
     jest.clearAllMocks();
+    resetDerivedStateStoresForTesting();
     snsSwapCommitmentsStore.reset();
     snsQueryStore.reset();
   });
@@ -102,7 +107,7 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsTotalCommitment", () => {
-    it("should call api to get total commitments and load them in store", async () => {
+    it("should call api to get total commitments and load them in stores", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [BigInt(1_000_000_000)],
@@ -147,6 +152,11 @@ describe("sns-services", () => {
       expect(updatedState?.sns_tokens_per_icp).toEqual(
         fromNullable(derivedState.sns_tokens_per_icp)
       );
+
+      const derivedStateStore = getOrCreateDerivedStateStore(
+        Principal.fromText(canisterId)
+      );
+      expect(get(derivedStateStore)?.derivedState).toEqual(derivedState);
     });
 
     it("should call api with the strategy passed", async () => {

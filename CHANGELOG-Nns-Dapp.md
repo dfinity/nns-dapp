@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * New tag for NNS neurons: "Hardware Wallet".
+* New derived state store for SNS projects.
 
 #### Changed
 
