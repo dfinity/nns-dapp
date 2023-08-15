@@ -26,16 +26,16 @@ describe("sns swap canisters accounts store", () => {
     const controller = mockPrincipal;
     const store = createSwapCanisterAccountsStore(controller);
 
-    expect(get(store)).toEqual([
-      getSwapCanisterAccount({ controller, swapCanisterId }),
-    ]);
+    expect(get(store)).toEqual(
+      new Set([getSwapCanisterAccount({ controller, swapCanisterId }).toHex()])
+    );
   });
 
   it("should return empty array if no aggregator data", () => {
     const controller = mockPrincipal;
     const store = createSwapCanisterAccountsStore(controller);
 
-    expect(get(store)).toHaveLength(0);
+    expect(get(store)).toEqual(new Set());
   });
 
   it("should empty array if no controller", () => {
@@ -43,7 +43,7 @@ describe("sns swap canisters accounts store", () => {
 
     const store = createSwapCanisterAccountsStore(undefined);
 
-    expect(get(store)).toHaveLength(0);
+    expect(get(store)).toEqual(new Set());
   });
 
   it("should convert multiple swap canister ids to accounts", () => {
@@ -60,9 +60,14 @@ describe("sns swap canisters accounts store", () => {
     const controller = mockPrincipal;
     const store = createSwapCanisterAccountsStore(controller);
 
-    expect(get(store)).toEqual([
-      getSwapCanisterAccount({ controller, swapCanisterId }),
-      getSwapCanisterAccount({ controller, swapCanisterId: swapCanisterId2 }),
-    ]);
+    expect(get(store)).toEqual(
+      new Set([
+        getSwapCanisterAccount({ controller, swapCanisterId }).toHex(),
+        getSwapCanisterAccount({
+          controller,
+          swapCanisterId: swapCanisterId2,
+        }).toHex(),
+      ])
+    );
   });
 });

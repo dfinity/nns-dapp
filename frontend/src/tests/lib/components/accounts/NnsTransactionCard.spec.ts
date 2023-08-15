@@ -77,7 +77,7 @@ describe("NnsTransactionCard", () => {
       swapTransaction
     );
 
-    expect(queryByTestId("headline").textContent).toBe("Decentralized Swap");
+    expect(queryByTestId("headline").textContent).toBe("Decentralization Swap");
   });
 
   it("renders sent headline", () => {
@@ -96,10 +96,7 @@ describe("NnsTransactionCard", () => {
     const account = mockMainAccount;
     const transaction = mockSentToSubAccountTransaction;
     const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapNnsTransaction({
-      account,
-      transaction,
-    });
+    const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `-${formatToken({ value: displayAmount, detailed: true })}`
@@ -110,10 +107,7 @@ describe("NnsTransactionCard", () => {
     const account = mockSubAccount;
     const transaction = mockReceivedFromMainAccountTransaction;
     const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapNnsTransaction({
-      account,
-      transaction,
-    });
+    const { displayAmount } = mapNnsTransaction({ account, transaction });
 
     expect(getByTestId("token-value")?.textContent).toBe(
       `+${formatToken({ value: displayAmount, detailed: true })}`

@@ -163,7 +163,7 @@ describe("transactions-utils", () => {
       expect(
         transactionType({
           transaction: swapTransaction,
-          swapCanisterAccounts: [swapCanisterAccount],
+          swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
         })
       ).toBe(AccountTransactionType.ParticipateSwap);
     });
@@ -365,7 +365,7 @@ describe("transactions-utils", () => {
         transaction: swapTransaction,
         account: mockMainAccount,
         toSelfTransaction: false,
-        swapCanisterAccounts: [swapCanisterAccount],
+        swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
       });
       expect(type).toBe(AccountTransactionType.ParticipateSwap);
     });

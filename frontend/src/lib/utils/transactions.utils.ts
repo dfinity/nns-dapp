@@ -8,17 +8,16 @@ import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import type { AccountIdentifier } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
   transaction,
-  swapCanisterAccounts = [],
+  swapCanisterAccounts = new Set(),
 }: {
   transaction: NnsTransaction;
-  swapCanisterAccounts?: AccountIdentifier[];
+  swapCanisterAccounts?: Set<string>;
 }): AccountTransactionType => {
   const { transaction_type, transfer } = transaction;
   if (transaction_type.length === 0) {
@@ -33,11 +32,8 @@ export const transactionType = ({
   }
 
   if ("Send" in transfer) {
-    const swapCanisterAccountStrings = swapCanisterAccounts.map((account) =>
-      account.toHex()
-    );
     const { to } = transfer.Send;
-    if (swapCanisterAccountStrings.includes(to)) {
+    if (swapCanisterAccounts.has(to)) {
       return AccountTransactionType.ParticipateSwap;
     }
   }
@@ -113,7 +109,7 @@ export const mapNnsTransaction = ({
   transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
-  swapCanisterAccounts?: AccountIdentifier[];
+  swapCanisterAccounts?: Set<string>;
 }): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
