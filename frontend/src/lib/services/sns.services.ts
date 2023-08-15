@@ -6,6 +6,7 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { getOrCreateDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -20,7 +21,7 @@ import {
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
@@ -160,9 +161,16 @@ export const loadSnsTotalCommitment = async ({
         identity,
         certified,
       }),
-    onLoad: ({ response: derivedState }) => {
+    onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
         snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
+        const store = getOrCreateDerivedStateStore(
+          Principal.fromText(rootCanisterId)
+        );
+        store.setDerivedState({
+          certified,
+          derivedState,
+        });
       }
     },
     onError: ({ error: err, certified }) => {

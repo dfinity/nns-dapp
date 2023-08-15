@@ -13,6 +13,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * New tag for NNS neurons: "Hardware Wallet".
+* New derived state store for SNS projects.
+* Identify swap participation ICP transactions.
 
 #### Changed
 
@@ -25,6 +27,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
 
 #### Fixed
+
+* Fix wrong "ICP Staked" message in SNS neurons.
+* Disable HW from participating in swaps.
 
 #### Security
 
@@ -44,6 +49,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+* Remove `frontend/jest-spy.ts`.
+
 #### Fixed
 
 * Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.

@@ -15,6 +15,7 @@ import {
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
+  type SnsGetDerivedStateResponse,
   type SnsGetMetadataResponse,
   type SnsParams,
   type SnsSwap,
@@ -171,6 +172,14 @@ export const mockQuerySwap: SnsSwap = {
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
   sns_tokens_per_icp: 1,
+  cf_participant_count: [BigInt(100)],
+  direct_participant_count: [BigInt(300)],
+  cf_neuron_count: [BigInt(200)],
+};
+
+export const mockDerivedResponse: SnsGetDerivedStateResponse = {
+  buyer_total_icp_e8s: [BigInt(100 * 100000000)],
+  sns_tokens_per_icp: [1],
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],

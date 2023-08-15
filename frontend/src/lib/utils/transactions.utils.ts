@@ -12,10 +12,14 @@ import { isNullish } from "@dfinity/utils";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
-export const transactionType = (
-  transaction: NnsTransaction
-): AccountTransactionType => {
-  const { transaction_type } = transaction;
+export const transactionType = ({
+  transaction,
+  swapCanisterAccounts = new Set(),
+}: {
+  transaction: NnsTransaction;
+  swapCanisterAccounts?: Set<string>;
+}): AccountTransactionType => {
+  const { transaction_type, transfer } = transaction;
   if (transaction_type.length === 0) {
     // This should never be hit since people running the latest front end code should have had their principal stored in
     // the NNS UI canister and therefore will have all of their transaction types set.
@@ -25,6 +29,13 @@ export const transactionType = (
       return AccountTransactionType.Mint;
     }
     return AccountTransactionType.Send;
+  }
+
+  if ("Send" in transfer) {
+    const { to } = transfer.Send;
+    if (swapCanisterAccounts.has(to)) {
+      return AccountTransactionType.ParticipateSwap;
+    }
   }
 
   if ("Transfer" in transaction_type[0]) {
@@ -93,10 +104,12 @@ export const mapNnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
+  swapCanisterAccounts,
 }: {
   transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
+  swapCanisterAccounts?: Set<string>;
 }): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
@@ -122,7 +135,10 @@ export const mapNnsTransaction = ({
     throw new Error("Unsupported transfer type");
   }
 
-  const type = transactionType(transaction);
+  const type = transactionType({
+    transaction,
+    swapCanisterAccounts,
+  });
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
   const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;

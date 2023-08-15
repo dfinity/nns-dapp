@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
@@ -14,6 +15,7 @@ import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -26,13 +28,14 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
 import {
   IcrcLedgerCanister,
   decodeIcrcAccount,
   encodeIcrcAccount,
 } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
@@ -71,6 +74,7 @@ describe("ckbtc-convert-services", () => {
     jest
       .spyOn(CkBTCMinterCanister, "create")
       .mockImplementation(() => minterCanisterMock);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     jest.spyOn(console, "error").mockImplementation(() => undefined);
 
@@ -339,7 +343,11 @@ describe("ckbtc-convert-services", () => {
       block_index: 1n,
     };
 
-    const retrieveBtcSpy = minterCanisterMock.retrieveBtc.mockResolvedValue(ok);
+    const retrieveBtcSpy = minterCanisterMock.retrieveBtc;
+
+    beforeEach(() => {
+      retrieveBtcSpy.mockResolvedValue(ok);
+    });
 
     it("should retrieve btc", async () => {
       const updateProgressSpy = jest.fn();
@@ -358,8 +366,12 @@ describe("ckbtc-convert-services", () => {
       expect(loadCkBTCAccountTransactions).not.toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
 
-      // SEND_BTC + RELOAD + DONE
-      expect(updateProgressSpy).toBeCalledTimes(3);
+      // INITIALIZATION + SEND_BTC + RELOAD + DONE
+      expect(updateProgressSpy).toBeCalledTimes(4);
+      expect(updateProgressSpy).nthCalledWith(1, ConvertBtcStep.INITIALIZATION);
+      expect(updateProgressSpy).nthCalledWith(2, ConvertBtcStep.SEND_BTC);
+      expect(updateProgressSpy).nthCalledWith(3, ConvertBtcStep.RELOAD);
+      expect(updateProgressSpy).nthCalledWith(4, ConvertBtcStep.DONE);
     });
 
     it("should display an error if retrieve btc fails", async () => {

@@ -10,6 +10,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
@@ -30,7 +31,10 @@ describe("CkBTCWalletActions", () => {
     });
   });
 
-  beforeEach(() => jest.useFakeTimers().setSystemTime(now));
+  beforeEach(() => {
+    resetIdentity();
+    jest.useFakeTimers().setSystemTime(now);
+  });
   afterEach(jest.clearAllTimers);
 
   const props = {

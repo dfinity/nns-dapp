@@ -7,6 +7,7 @@ import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-id
 import { AppPath } from "$lib/constants/routes.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -27,7 +28,8 @@ jest.mock("$lib/api/ckbtc-minter.api", () => {
 });
 
 describe("CkBTCWalletFooter", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    resetIdentity();
     jest
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));

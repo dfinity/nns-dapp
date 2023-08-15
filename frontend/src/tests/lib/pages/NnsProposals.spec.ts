@@ -3,6 +3,7 @@
  */
 
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
@@ -29,12 +30,14 @@ import {
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "$tests/mocks/proposals.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import {
   GovernanceCanister,
   type Proposal,
   type ProposalInfo,
 } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import type { Subscriber } from "svelte/store";
 
 jest.mock("$lib/api/governance.api");
@@ -51,6 +54,7 @@ describe("NnsProposals", () => {
     jest.clearAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("logged in user", () => {

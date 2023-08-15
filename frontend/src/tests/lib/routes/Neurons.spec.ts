@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
@@ -13,12 +14,15 @@ import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/api/governance.api");
 jest.mock("$lib/api/sns-aggregator.api");
@@ -39,6 +43,7 @@ describe("Neurons", () => {
   let testCommittedSnsNeuron;
 
   beforeEach(async () => {
+    resetIdentity();
     snsQueryStore.reset();
 
     fakeGovernanceApi.addNeuronWith({ neuronId: testNnsNeuronId });
@@ -60,6 +65,7 @@ describe("Neurons", () => {
       rootCanisterId: testOpenSnsCanisterId.toText(),
       lifecycle: SnsSwapLifecycle.Open,
     });
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     await loadSnsProjects();
   });

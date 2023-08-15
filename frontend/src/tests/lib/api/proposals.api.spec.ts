@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   queryProposal,
   queryProposalPayload,
@@ -8,6 +9,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
 
@@ -23,6 +25,7 @@ describe("proposals-api", () => {
       .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
 
     spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterEach(() => spyListProposals.mockClear());
