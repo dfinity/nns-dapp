@@ -170,8 +170,8 @@ impl State {
         // Updates the max index, if needed
         {
             STATE.with(|state| {
-                if state.stable.borrow().sns_cache.borrow().num_sns <= index {
-                    state.stable.borrow().sns_cache.borrow_mut().num_sns = index + 1;
+                if state.stable.borrow().sns_cache.borrow().max_index < index {
+                    state.stable.borrow().sns_cache.borrow_mut().max_index = index;
                     Self::ensure_last_page_is_not_full_v1(state);
                 }
             });
@@ -199,7 +199,7 @@ impl State {
 
         // If this is in the last N, update latest.
         if upstream_data.index + State::PAGE_SIZE
-            >= STATE.with(|state| state.stable.borrow().sns_cache.borrow().num_sns)
+            > STATE.with(|state| state.stable.borrow().sns_cache.borrow().max_index)
         {
             let path = format!("{prefix}/sns/list/latest/slow.json");
             let json_data = STATE.with(|s| {
@@ -259,7 +259,7 @@ impl State {
     /// If the last page is full, create an empty next page.
     fn ensure_last_page_is_not_full_v1(state: &State) {
         let (last_page, entries) = {
-            let num_entries = state.stable.borrow().sns_cache.borrow().num_sns;
+            let num_entries = state.stable.borrow().sns_cache.borrow().max_index + 1;
             (num_entries / State::PAGE_SIZE, num_entries % State::PAGE_SIZE)
         };
         if entries == 0 {
@@ -275,12 +275,10 @@ impl State {
         // Establish the invariant that the last page is not full.
         LAST_PAGE_NOT_FULL.with(|not_full| {
             if !*not_full.borrow() {
-                crate::state::log("Setting invariant".to_string());
                 STATE.with(Self::ensure_last_page_is_not_full_v1);
                 *not_full.borrow_mut() = true;
             }
         });
-        crate::state::log("State setup complete.".to_string());
     }
 }
 

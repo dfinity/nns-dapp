@@ -198,7 +198,6 @@ fn setup(config: Option<Config>) {
     insert_home_page();
 
     // Call init and post_upgrade functions for the state.
-    crate::state::log("Calling satte setup".to_string());
     state::State::setup();
 
     // Schedules data collection from the SNSs.
