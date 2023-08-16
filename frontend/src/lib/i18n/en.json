@@ -45,6 +45,7 @@
     "sns_accounts_balance_load": "An error occurred while loading the balance of the accounts.",
     "icrc_token_load": "An error occurred while loading the token balance or metadata.",
     "list_proposals": "There was an unexpected issue while searching for the proposals.",
+    "list_proposals_payload_too_large": "The current proposals response is too large. Please adjust proposal filters to get less results.",
     "get_proposal": "There was an unexpected issue while fetching proposal $proposalId.",
     "wrong_proposal_id": "The id \"$proposalId\" is not a valid proposal id.",
     "list_canisters": "There was an unexpected issue while searching for the canisters.",

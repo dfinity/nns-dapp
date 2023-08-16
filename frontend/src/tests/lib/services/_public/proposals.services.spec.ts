@@ -27,6 +27,7 @@ import {
   resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -109,6 +110,52 @@ describe("proposals-services", () => {
           loadFinished: spy,
         });
         expect(spy).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("list proposal fails", () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+        toastsStore.reset();
+        jest.spyOn(console, "error").mockImplementation(() => undefined);
+      });
+
+      it("show add toast error size too large", async () => {
+        const message = `Call failed:
+        Canister: rrkah-fqaaa-aaaaa-aaaaq-cai
+        Method: list_proposals (query)
+        "Status": "rejected"
+        "Code": "CanisterError"
+        "Message": "IC0504: Canister rrkah-fqaaa-aaaaa-aaaaq-cai violated contract: ic0.msg_reply_data_append: application payload size (3824349) cannot be larger than 3145728"`;
+        jest.spyOn(api, "queryProposals").mockRejectedValue(new Error(message));
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
+
+        expect(get(toastsStore)[0]).toMatchObject({
+          level: "error",
+          text: "The current proposals response is too large. Please adjust proposal filters to get less results.",
+        });
+      });
+
+      it("show error message from api", async () => {
+        const errorMessage = "Error message from api.";
+        jest
+          .spyOn(api, "queryProposals")
+          .mockRejectedValue(new Error(errorMessage));
+        await listProposals({
+          loadFinished: () => {
+            // do nothing here
+          },
+        });
+
+        expect(get(toastsStore)[0].text).toMatch(errorMessage);
+        expect(get(toastsStore)[0]).toMatchObject({
+          level: "error",
+          text: "There was an unexpected issue while searching for the proposals. Error message from api.",
+        });
       });
     });
 
