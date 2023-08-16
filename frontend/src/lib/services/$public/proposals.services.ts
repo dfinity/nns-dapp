@@ -18,7 +18,7 @@ import {
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
-import { errorToString } from "$lib/utils/error.utils";
+import { errorToString, isPayloadSizeError } from "$lib/utils/error.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
@@ -51,9 +51,13 @@ const handleFindProposalsError = ({
   ) {
     proposalsStore.setProposals({ proposals: [], certified });
 
+    const resultsTooLarge = isPayloadSizeError(err);
+
     toastsError({
-      labelKey: "error.list_proposals",
-      err,
+      labelKey: resultsTooLarge
+        ? "error.list_proposals_payload_too_large"
+        : "error.list_proposals",
+      err: resultsTooLarge ? undefined : err,
     });
   }
 };
