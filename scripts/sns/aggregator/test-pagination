@@ -49,7 +49,7 @@ sns_from_wasm_canister() {
     # Get the page
     PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
     curl -Lf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE"
-    # Verify that the expected number of SNSs is prseent.
+    # Verify that the expected number of SNSs is present.
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
     actual="$(jq length "$PAGE_FILE")"
     sns_count=$((sns_count + actual))
