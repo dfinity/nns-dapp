@@ -12,7 +12,7 @@ print_help() {
 	 * The aggregator has been installed.
 	 * The aggregator has had time to populate its cache, so all data should be present and correct.
 	 * No new SNSs are being added, as this could cause a race condition when checking
-	  the number of SNSs against the "latest" endpoint.
+	   the number of SNSs against the "latest" endpoint.
 	EOF
 }
 # Source the clap.bash file ---------------------------------------------------
@@ -42,8 +42,8 @@ sns_from_wasm_canister() {
 (
   printf "\n\n\n=========================================\n"
   printf "%s\n" "Test that:" \
-    " * Successive pages can be downloaded until we get a page that is not full." \
-    " * These pages provide the same number of SNS suggested by the 'latest' API."
+    " * These pages provide the expected number of SNSs" \
+    " * The SNS indices on each page are as expected."
   PAGE_SIZE=10
   for ((page = 0, sns_count = 0; ; page++)); do
     # Get the page
@@ -69,7 +69,7 @@ sns_from_wasm_canister() {
     # Clean up
     rm "$PAGE_FILE"
     # A caller should be able to get pages until we have all SNSs
-    # Note: This will change, so that we can get pages until we geta non-empty page.
+    # Note: This will change, so that we can get pages until we get a non-empty page.
     ((sns_count < NUM_SNS)) || break
   done
 )
