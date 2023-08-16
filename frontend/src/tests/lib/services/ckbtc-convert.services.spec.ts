@@ -85,7 +85,7 @@ describe("ckbtc-convert-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
     jest.clearAllTimers();
 
     ckBTCWithdrawalAccountsStore.reset();
