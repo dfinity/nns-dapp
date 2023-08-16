@@ -42,7 +42,7 @@ sns_from_wasm_canister() {
 (
   printf "\n\n\n=========================================\n"
   printf "%s\n" "Test that:" \
-    " * These pages provide the expected number of SNSs" \
+    " * The caller can pull successive pages until a page is partially filled or empty." \
     " * The SNS indices on each page are as expected."
   PAGE_SIZE=10
   for ((page = 0, sns_count = 0; ; page++)); do
@@ -68,8 +68,8 @@ sns_from_wasm_canister() {
     } >&2
     # Clean up
     rm "$PAGE_FILE"
-    # A caller should be able to get pages until we have all SNSs
-    # Note: This will change, so that we can get pages until we get a non-empty page.
-    ((sns_count < NUM_SNS)) || break
+    # A caller should be able to get pages until at least one page is only partially filled.
+    # Note: The checks above ensure that by this time, the pages include all SNS.
+    ((page_num <= (NUM_SNS / PAGE_SIZE) + 1)) || break
   done
 )
