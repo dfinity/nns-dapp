@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# shellcheck disable=SC2317
+print_help() {
+  cat <<-EOF
+
+	Tests that SNSs can be obtained without error from the aggregator.
+
+	Prerequisites:
+	 * The aggregator has been installed.
+	 * The aggregator has had time to populate its cache, so all data should be present and correct.
+	 * No new SNSs are being added, as this could cause a race condition when checking
+	   the number of SNSs against the "latest" endpoint.
+	EOF
+}
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../../clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=s long=num desc="The number of SNSs; should match dfx canister call nns-sns-wasm list_deployed_snses --network XXX '(record {})' | idl2json | jq '.instances | length'" variable=NUM_SNS default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Get and check the canister URL.
+AGGREGATOR_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" sns_aggregator)"
+curl --fail -sSL "$AGGREGATOR_CANISTER_URL" >/dev/null || {
+  echo "ERROR: SNS aggregator not found at $AGGREGATOR_CANISTER_URL"
+  exit 1
+} >&2
+
+# Get the number of SNSs
+sns_from_latest() {
+  curl --fail -sSL "${AGGREGATOR_CANISTER_URL}/v1/sns/list/latest/slow.json" | jq '.[0].index +1' 2>/dev/null || echo 0
+}
+sns_from_wasm_canister() {
+  dfx canister call nns-sns-wasm list_deployed_snses --network "$DFX_NETWORK" '(record {})' | idl2json | jq '.instances | length'
+}
+[[ "" != "${NUM_SNS:-}" ]] || NUM_SNS="$(sns_from_wasm_canister || sns_from_latest)"
+
+(
+  printf "\n\n\n=========================================\n"
+  printf "%s\n" "Test that:" \
+    " * These pages provide the expected number of SNSs" \
+    " * The SNS indices on each page are as expected."
+  PAGE_SIZE=10
+  for ((page = 0, sns_count = 0; ; page++)); do
+    # Get the page
+    PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
+    curl -Lf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE"
+    # Verify that the expected number of SNSs is prseent.
+    expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
+    actual="$(jq length "$PAGE_FILE")"
+    sns_count=$((sns_count + actual))
+    ((expect == actual)) || {
+      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "Data is in: $PAGE_FILE"
+      exit 1
+    } >&2
+    # Verify that the SNS indices in each page are as expected
+    expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
+    actual="$(jq '.[]|.index' "$PAGE_FILE")"
+    [[ "$expect" == "$actual" ]] || {
+      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "Data is in: $PAGE_FILE"
+      exit 1
+    } >&2
+    # Clean up
+    rm "$PAGE_FILE"
+    # A caller should be able to get pages until we have all SNSs
+    # Note: This will change, so that we can get pages until we get a non-empty page.
+    ((sns_count < NUM_SNS)) || break
+  done
+)
