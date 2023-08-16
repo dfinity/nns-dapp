@@ -16,6 +16,7 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
+  type SnsGetLifecycleResponse,
   type SnsGetMetadataResponse,
   type SnsParams,
   type SnsSwap,
@@ -389,4 +390,9 @@ export const mockTokenStore = (run: Subscriber<Token>) => {
 export const mockUniverse: Universe = {
   canisterId: principal(0).toText(),
   summary: mockSnsFullProject.summary,
+};
+
+export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+  lifecycle: [SnsSwapLifecycle.Open],
+  decentralization_sale_open_timestamp_seconds: [],
 };
