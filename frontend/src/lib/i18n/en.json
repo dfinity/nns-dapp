@@ -465,6 +465,7 @@
     "topUpNeuron": "Top-up Neuron",
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
+    "refundSwap": "Swap Refund",
     "participateSwap": "Decentralization Swap"
   },
   "ckbtc_transaction_names": {

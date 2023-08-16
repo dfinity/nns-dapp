@@ -38,6 +38,13 @@ export const transactionType = ({
     }
   }
 
+  if ("Receive" in transfer) {
+    const { from } = transfer.Receive;
+    if (swapCanisterAccounts.has(from)) {
+      return AccountTransactionType.RefundSwap;
+    }
+  }
+
   if ("Transfer" in transaction_type[0]) {
     return AccountTransactionType.Send;
   } else if ("StakeNeuron" in transaction_type[0]) {
