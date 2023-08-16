@@ -14,11 +14,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * New tag for NNS neurons: "Hardware Wallet".
 * New derived state store for SNS projects.
+* Identify swap participation ICP transactions.
+* Improve error messaging on payload size limit in proposals list page.
 
 #### Changed
 
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
+* Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
+* Launchpad proposal requests only Open proposals of the SNS topic.
 
 #### Deprecated
 #### Removed
@@ -28,6 +32,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix wrong "ICP Staked" message in SNS neurons.
+* Disable HW from participating in swaps.
 
 #### Security
 
@@ -49,6 +54,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+* Remove `frontend/jest-spy.ts`.
 
 #### Fixed
 

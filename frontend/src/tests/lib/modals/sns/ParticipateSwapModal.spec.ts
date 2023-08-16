@@ -24,7 +24,9 @@ import {
 import {
   mockAccountDetails,
   mockAccountsStoreData,
+  mockHardwareWalletAccount,
   mockMainAccount,
+  mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
@@ -131,6 +133,26 @@ describe("ParticipateSwapModal", () => {
     await reviewPo.clickSend();
     expect(initiateSnsSaleParticipation).toBeCalledTimes(1);
   };
+
+  describe("when hardware wallet account is available", () => {
+    beforeEach(() => {
+      icpAccountsStore.setForTesting({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
+    });
+
+    it("should not show hardware wallet account as selectable", async () => {
+      const po = await renderSwapModalPo();
+      const form = po.getTransactionFormPo();
+      expect(await form.getSourceAccounts()).toEqual([
+        "Main",
+        "test subaccount",
+      ]);
+    });
+  });
 
   describe("when accounts are available", () => {
     beforeEach(() => {

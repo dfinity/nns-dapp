@@ -9,10 +9,12 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ## Unreleased
 
 ### Added
-- Display commit, branch name and similar data when deploying to a test canister.
+* More tests that the SNS aggregator contains the expected number of SNSs.
+* Display commit, branch name and similar data when deploying to a test canister.
 ### Changed
 - Ensure that the last paginated entry is incomplete.
 ### Fixed
+* Update the path to the `nns-sns-wasm` .did file.
 * Update the index.html when it has changed.
 ### Security
 ### Not Published

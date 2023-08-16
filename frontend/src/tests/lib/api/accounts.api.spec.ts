@@ -3,15 +3,21 @@ import {
   getTransactions,
   renameSubAccount,
 } from "$lib/api/accounts.api";
+import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import type { GetTransactionsResponse } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { mock } from "jest-mock-extended";
 
 describe("accounts-api", () => {
   afterAll(() => jest.clearAllMocks());
+
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
   it("should call nnsDappCanister to create subaccount", async () => {
     const nnsDappMock = mock<NNSDappCanister>();

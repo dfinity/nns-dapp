@@ -1,8 +1,10 @@
+import * as agent from "$lib/api/agent.api";
 import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "jest-mock-extended";
 
 describe("ckbtc-index api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
@@ -14,6 +16,10 @@ describe("ckbtc-index api", () => {
   });
 
   afterAll(() => jest.clearAllMocks());
+
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
   const params = {
     identity: mockIdentity,

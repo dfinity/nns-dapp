@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   queryAccountBalance,
   sendICP,
@@ -5,11 +6,16 @@ import {
 } from "$lib/api/icp-ledger.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 
 describe("icp-ledger.api", () => {
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
+
   describe("sendICP", () => {
     let spyTransfer;
 

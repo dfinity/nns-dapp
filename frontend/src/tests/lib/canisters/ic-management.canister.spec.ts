@@ -1,14 +1,12 @@
-import { createAgent } from "$lib/api/agent.api";
 import { toCanisterDetails } from "$lib/canisters/ic-management/converters";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterId,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
-import type { ActorSubclass } from "@dfinity/agent";
+import type { ActorSubclass, HttpAgent } from "@dfinity/agent";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import type { _SERVICE as IcManagementService } from "@dfinity/ic-management/dist/candid/ic-management";
 import { Principal } from "@dfinity/principal";
@@ -16,10 +14,8 @@ import { mock } from "jest-mock-extended";
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: IcManagementService) => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
-
     return ICManagementCanister.create({
-      agent: defaultAgent,
+      agent: mock<HttpAgent>(),
       serviceOverride: service as ActorSubclass<IcManagementService>,
     });
   };
