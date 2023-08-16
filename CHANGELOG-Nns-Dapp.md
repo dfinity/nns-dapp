@@ -20,6 +20,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
+* Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 
 #### Deprecated
 #### Removed
