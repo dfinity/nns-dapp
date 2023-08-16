@@ -19,17 +19,25 @@ print_help() {
 source "$SOURCE_DIR/../../clap.bash"
 # Define options
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
-clap.define short=s long=num desc="The number of SNSs" variable=NUM_SNS default=""
+clap.define short=s long=num desc="The number of SNSs; should match dfx canister call nns-sns-wasm list_deployed_snses --network XXX '(record {})' | idl2json | jq '.instances | length'" variable=NUM_SNS default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-EXIT=0
 
+# Get and check the canister URL.
 AGGREGATOR_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" sns_aggregator)"
 curl --fail -sSL "$AGGREGATOR_CANISTER_URL" >/dev/null || {
   echo "ERROR: SNS aggregator not found at $AGGREGATOR_CANISTER_URL"
   exit 1
 } >&2
-[[ "" != "${NUM_SNS:-}" ]] || NUM_SNS="$(curl --fail -sSL "${AGGREGATOR_CANISTER_URL}/v1/sns/list/latest/slow.json" | jq '.[0].index +1' 2>/dev/null || echo 0)"
+
+# Get the number of SNSs
+sns_from_latest() {
+  curl --fail -sSL "${AGGREGATOR_CANISTER_URL}/v1/sns/list/latest/slow.json" | jq '.[0].index +1' 2>/dev/null || echo 0
+}
+sns_from_wasm_canister() {
+  dfx canister call nns-sns-wasm list_deployed_snses --network "$DFX_NETWORK" '(record {})' | idl2json | jq '.instances | length'
+}
+[[ "" != "${NUM_SNS:-}" ]] || NUM_SNS="$(sns_from_wasm_canister || sns_from_latest)"
 
 (
   printf "\n\n\n=========================================\n"
@@ -37,27 +45,29 @@ curl --fail -sSL "$AGGREGATOR_CANISTER_URL" >/dev/null || {
     " * Successive pages can be downloaded until we get a page that is not full." \
     " * These pages provide the same number of SNS suggested by the 'latest' API."
   PAGE_SIZE=10
-  PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
   for ((page = 0, sns_count = 0; ; page++)); do
     # Get the page
+    PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
     curl -Lf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE"
     # Verify that the expected number of SNSs is prseent.
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
     actual="$(jq length "$PAGE_FILE")"
     sns_count=$((sns_count + actual))
     ((expect == actual)) || {
-      echo ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual.
-      echo Data is in: $PAGE_FILE
+      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "Data is in: $PAGE_FILE"
       exit 1
     } >&2
     # Verify that the SNS indices in each page are as expected
     expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
     actual="$(jq '.[]|.index' "$PAGE_FILE")"
     [[ "$expect" == "$actual" ]] || {
-      echo ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual.
-      echo Data is in: $PAGE_FILE
+      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "Data is in: $PAGE_FILE"
       exit 1
     } >&2
+    # Clean up
+    rm "$PAGE_FILE"
     # A caller should be able to get pages until we have all SNSs
     # Note: This will change, so that we can get pages until we geta non-empty page.
     ((sns_count < NUM_SNS)) || break
