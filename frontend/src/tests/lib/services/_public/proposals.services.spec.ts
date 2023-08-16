@@ -136,7 +136,7 @@ describe("proposals-services", () => {
 
         expect(get(toastsStore)[0]).toMatchObject({
           level: "error",
-          text: "The current results are too large. Please try another filter with less results.",
+          text: "The current proposals response is too large. Please adjust proposal filters to get less results.",
         });
       });
 
