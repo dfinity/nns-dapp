@@ -142,7 +142,7 @@ describe("SnsAccounts", () => {
 
   describe("when no accounts", () => {
     it("should not render a token amount component nor zero", async () => {
-      const { container } = await render(SnsAccounts);
+      const { container } = await renderAndFinishLoading({});
       expect(hasAmountRendered(container)).toBe(false);
     });
   });
