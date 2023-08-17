@@ -51,10 +51,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+
 #### Deprecated
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+* Removed e2e-tests/scripts/update-chromedriver
 * Remove `frontend/jest-spy.ts`.
 
 #### Fixed

@@ -5,7 +5,7 @@
       "type": "custom",
       "candid": "target/ic/governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
