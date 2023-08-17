@@ -14,10 +14,10 @@ export interface SnsLifecycleStore
   reset: () => void;
 }
 
-let stores: Map<string, SnsLifecycleStore> = new Map();
+const stores: Map<string, SnsLifecycleStore> = new Map();
 
 export const resetLiefcycleStoresForTesting = () => {
-  stores = new Map();
+  stores.clear();
 };
 
 /**
