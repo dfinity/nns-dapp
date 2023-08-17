@@ -45,10 +45,15 @@ sns_from_wasm_canister() {
     " * The caller can pull successive pages until a page is partially filled or empty." \
     " * The SNS indices on each page are as expected."
   PAGE_SIZE=10
+  NUM_PAGES="$(((NUM_SNS / PAGE_SIZE) + 1))"
   for ((page = 0, sns_count = 0; ; page++)); do
+    echo "Testing page #${page}/${NUM_PAGES}..."
     # Get the page
     PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
-    curl -Lf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE"
+    curl -sSLf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE" || {
+      echo "ERROR: Failed to get page #$page"
+      exit 1
+    } >&2
     # Verify that the expected number of SNSs is present.
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
     actual="$(jq length "$PAGE_FILE")"
@@ -70,6 +75,6 @@ sns_from_wasm_canister() {
     rm "$PAGE_FILE"
     # A caller should be able to get pages until at least one page is only partially filled.
     # Note: The checks above ensure that by this time, the pages include all SNS.
-    ((page <= (NUM_SNS / PAGE_SIZE) + 1)) || break
+    ((page <= NUM_PAGES)) || break
   done
 )
