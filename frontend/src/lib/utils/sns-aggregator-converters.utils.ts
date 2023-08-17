@@ -380,10 +380,6 @@ const convertDtoToSnsSummarySwap = (
   params: convertSwapParams(swap.params),
 });
 
-const convertDtoToSnsSwapDerivedState = (
-  data: CachedSnsSwapDerivedDto
-): SnsSwapDerivedState => convertDerived(data);
-
 type PartialSummary = Omit<SnsSummary, "metadata" | "token"> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
@@ -414,7 +410,7 @@ export const convertDtoToSnsSummary = ({
     metadata: convertDtoToSnsSummaryMetadata(meta, root_canister_id),
     token: convertDtoToTokenMetadata(icrc1_metadata),
     swap: convertDtoToSnsSummarySwap(swap_state.swap),
-    derived: convertDtoToSnsSwapDerivedState(derived_state),
+    derived: convertDerived(derived_state),
   };
 
   return isValidSummary(partialSummary) ? partialSummary : undefined;
