@@ -39,6 +39,7 @@ describe("Canisters", () => {
   let authStoreMock: jest.SpyInstance;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
