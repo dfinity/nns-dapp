@@ -10,6 +10,7 @@ import {
   getOrCreateDerivedStateStore,
   resetDerivedStateStoresForTesting,
 } from "$lib/stores/sns-derived-state.store";
+import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
   mockIdentity,
@@ -369,6 +370,9 @@ describe("sns-services", () => {
         (swap) => swap.rootCanisterId === rootCanisterId1.toText()
       )?.swap[0].lifecycle;
       expect(updatedLifecycle).toEqual(newLifeCycle);
+
+      const lifecycleStore = getOrCreateLifecycleStore(rootCanisterId1);
+      expect(get(lifecycleStore).data).toEqual(lifeCycleResponse);
     });
   });
 });
