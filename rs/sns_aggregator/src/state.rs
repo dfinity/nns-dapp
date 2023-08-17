@@ -138,8 +138,10 @@ impl State {
     ///
     /// Also, the list of most recent SNSs is limited to the page size.
     pub const PAGE_SIZE: u64 = 10;
+    /// The prefix for all "v1" assets.
+    pub const PREFIX_V1: &'static str = "/v1";
 
-    /// Adds an SNS into the state accessible via certfied query calls.
+    /// Adds an SNS into the state accessible via certified query calls.
     pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
     }
@@ -147,7 +149,7 @@ impl State {
     ///
     /// - /sns/index/{index}.json <- All aggregate data about the SNS, in JSON format.
     pub fn insert_sns_v1(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
-        let prefix = "/v1";
+        let prefix = Self::PREFIX_V1;
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
         let root_canister_str = root_canister_id.to_string();
         // Add this to the list of values from upstream
@@ -165,6 +167,7 @@ impl State {
             STATE.with(|state| {
                 if state.stable.borrow().sns_cache.borrow().max_index < index {
                     state.stable.borrow().sns_cache.borrow_mut().max_index = index;
+                    Self::ensure_last_page_is_not_full_v1(state);
                 }
             });
         }
@@ -218,7 +221,7 @@ impl State {
         {
             let pagenum = upstream_data.index / State::PAGE_SIZE;
             let path = format!("{prefix}/sns/list/page/{pagenum}/slow.json");
-            let json_data = STATE.with(|s| {
+            let asset = STATE.with(|s| {
                 let slow_data: Vec<_> = s
                     .stable
                     .borrow()
@@ -230,15 +233,42 @@ impl State {
                     .take(State::PAGE_SIZE as usize)
                     .map(SlowSnsData::from)
                     .collect();
-                serde_json::to_string(&slow_data).unwrap_or_default()
+                Self::slow_data_asset_v1(&slow_data)
             });
-            let asset = Asset {
-                headers: Vec::new(),
-                bytes: json_data.into_bytes(),
-            };
             insert_asset(path, asset);
         }
+        // FIN
         Ok(())
+    }
+
+    /// Creates a page of "slow data".
+    ///
+    /// This shall be used for the the "latest" and paginated responses, so that the response is consistent.
+    fn slow_data_asset_v1(slow_data: &[SlowSnsData]) -> Asset {
+        let json_data = serde_json::to_string(&slow_data).unwrap_or_default();
+        Asset {
+            headers: Vec::new(),
+            bytes: json_data.into_bytes(),
+        }
+    }
+    /// If the last page is full, create an empty next page.
+    fn ensure_last_page_is_not_full_v1(state: &State) {
+        let (last_page, last_page_entries) = {
+            let num_entries = state.stable.borrow().sns_cache.borrow().max_index + 1;
+            (num_entries / State::PAGE_SIZE, num_entries % State::PAGE_SIZE)
+        };
+        if last_page_entries == 0 {
+            let prefix = Self::PREFIX_V1;
+            let path = format!("{prefix}/sns/list/page/{last_page}/slow.json");
+            let asset = Self::slow_data_asset_v1(&[]);
+            insert_asset(path, asset);
+        }
+    }
+
+    /// Commands to call on init or post_upgrade.
+    pub fn setup() {
+        // Establish the invariant that the last page is not full.
+        STATE.with(Self::ensure_last_page_is_not_full_v1);
     }
 }
 

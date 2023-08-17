@@ -42,13 +42,18 @@ sns_from_wasm_canister() {
 (
   printf "\n\n\n=========================================\n"
   printf "%s\n" "Test that:" \
-    " * These pages provide the expected number of SNSs" \
+    " * The caller can pull successive pages until a page is partially filled or empty." \
     " * The SNS indices on each page are as expected."
   PAGE_SIZE=10
+  NUM_PAGES="$(((NUM_SNS / PAGE_SIZE) + 1))"
   for ((page = 0, sns_count = 0; ; page++)); do
+    echo "Testing page #${page}/${NUM_PAGES}..."
     # Get the page
     PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
-    curl -Lf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE"
+    curl -sSLf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE" || {
+      echo "ERROR: Failed to get page #$page/${NUM_PAGES}"
+      exit 1
+    } >&2
     # Verify that the expected number of SNSs is present.
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
     actual="$(jq length "$PAGE_FILE")"
@@ -58,6 +63,7 @@ sns_from_wasm_canister() {
       echo "Data is in: $PAGE_FILE"
       exit 1
     } >&2
+    page_size="$actual"
     # Verify that the SNS indices in each page are as expected
     expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
     actual="$(jq '.[]|.index' "$PAGE_FILE")"
@@ -68,8 +74,12 @@ sns_from_wasm_canister() {
     } >&2
     # Clean up
     rm "$PAGE_FILE"
-    # A caller should be able to get pages until we have all SNSs
-    # Note: This will change, so that we can get pages until we get a non-empty page.
-    ((sns_count < NUM_SNS)) || break
+    # A caller should be able to get pages until at least one page is only partially filled.
+    ((page_size == PAGE_SIZE)) || break
   done
+  ((sns_count == NUM_SNS)) || {
+    echo "ERROR: Failed to collect all SNS in paginated responses."
+    echo "Note: This suggests an error in the test, as the page-size checks should have failed."
+    exit 1
+  } >&2
 )
