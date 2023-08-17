@@ -253,11 +253,11 @@ impl State {
     }
     /// If the last page is full, create an empty next page.
     fn ensure_last_page_is_not_full_v1(state: &State) {
-        let (last_page, entries) = {
+        let (last_page, last_page_entries) = {
             let num_entries = state.stable.borrow().sns_cache.borrow().max_index + 1;
             (num_entries / State::PAGE_SIZE, num_entries % State::PAGE_SIZE)
         };
-        if entries == 0 {
+        if last_page_entries == 0 {
             let prefix = Self::PREFIX_V1;
             let path = format!("{prefix}/sns/list/page/{last_page}/slow.json");
             let asset = Self::slow_data_asset_v1(&[]);
