@@ -116,11 +116,6 @@ impl StableState {
 thread_local! {
     /// Single global container for state
     pub static STATE: State = State::default();
-
-    /// The invariant that the last page is not full has been established.
-    ///
-    /// Note: Once the invariant is established, it must be maintained by checking whenever the max index is updated.
-    pub static LAST_PAGE_NOT_FULL: RefCell<bool> = RefCell::new(false);
 }
 
 /// Log to console and store for retrieval by query calls.
@@ -273,12 +268,7 @@ impl State {
     /// Commands to call on init or post_upgrade.
     pub fn setup() {
         // Establish the invariant that the last page is not full.
-        LAST_PAGE_NOT_FULL.with(|not_full| {
-            if !*not_full.borrow() {
-                STATE.with(Self::ensure_last_page_is_not_full_v1);
-                *not_full.borrow_mut() = true;
-            }
-        });
+        STATE.with(Self::ensure_last_page_is_not_full_v1);
     }
 }
 
