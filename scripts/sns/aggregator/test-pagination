@@ -63,6 +63,7 @@ sns_from_wasm_canister() {
       echo "Data is in: $PAGE_FILE"
       exit 1
     } >&2
+    page_size=actual
     # Verify that the SNS indices in each page are as expected
     expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
     actual="$(jq '.[]|.index' "$PAGE_FILE")"
@@ -74,7 +75,11 @@ sns_from_wasm_canister() {
     # Clean up
     rm "$PAGE_FILE"
     # A caller should be able to get pages until at least one page is only partially filled.
-    # Note: The checks above ensure that by this time, the pages include all SNS.
-    ((page < NUM_PAGES)) || break
+    ((page_size == PAGE_SIZE)) || break
   done
+  ((sns_count == NUM_SNS)) || {
+    echo "ERROR: Failed to collect all SNS in paginated responses."
+    echo "Note: This suggests an error in the test, as the page-size checks should have failed."
+    exit 1
+  } >&2
 )
