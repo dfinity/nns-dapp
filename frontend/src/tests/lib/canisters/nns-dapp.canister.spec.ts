@@ -1,4 +1,3 @@
-import { createAgent } from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
   AccountNotFoundError,
@@ -20,23 +19,23 @@ import type {
   CreateSubAccountResponse,
   GetAccountResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
     const canisterId = Principal.fromText("aaaaa-aa");
 
     return NNSDappCanister.create({
-      agent: defaultAgent,
+      agent: mock<HttpAgent>(),
       certifiedServiceOverride: service,
       canisterId,
     });

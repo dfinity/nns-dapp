@@ -72,7 +72,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_wasm.did",
+      "candid": "declarations/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
       "remote": {

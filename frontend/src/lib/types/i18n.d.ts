@@ -49,6 +49,7 @@ interface I18nError {
   sns_accounts_balance_load: string;
   icrc_token_load: string;
   list_proposals: string;
+  list_proposals_payload_too_large: string;
   get_proposal: string;
   wrong_proposal_id: string;
   list_canisters: string;
@@ -481,6 +482,7 @@ interface I18nTransaction_names {
   topUpNeuron: string;
   createCanister: string;
   topUpCanister: string;
+  refundSwap: string;
   participateSwap: string;
 }
 

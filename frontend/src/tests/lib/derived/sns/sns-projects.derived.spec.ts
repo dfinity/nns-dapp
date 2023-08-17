@@ -4,25 +4,16 @@ import {
   snsProjectsCommittedStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
-import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
-import { mockSnsSwapCommitment } from "$tests/mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("projects.derived", () => {
-  const principalRootCanisterId = rootCanisterIdMock;
   beforeEach(() => {
     resetSnsProjects();
   });
 
   describe("projectsDerived", () => {
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principalRootCanisterId),
-      certified: true,
-    });
-
     it("should set projects of all statuses", () => {
       setSnsProjects([
         { lifecycle: SnsSwapLifecycle.Open },
@@ -33,11 +24,6 @@ describe("projects.derived", () => {
     });
   });
   describe("filter projects derived", () => {
-    snsSwapCommitmentsStore.setSwapCommitment({
-      swapCommitment: mockSnsSwapCommitment(principalRootCanisterId),
-      certified: true,
-    });
-
     it("should filter projects that are active", () => {
       setSnsProjects([{ lifecycle: SnsSwapLifecycle.Open }]);
       const open = get(snsProjectsActivePadStore);

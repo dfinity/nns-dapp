@@ -13,7 +13,7 @@ module.exports = {
     "\\.(svg|png)$": "<rootDir>/jest-transform.cjs",
   },
   moduleFileExtensions: ["js", "ts", "svelte"],
-  setupFilesAfterEnv: ["<rootDir>/jest-setup.ts", "<rootDir>/jest-spy.ts"],
+  setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
   testEnvironmentOptions: {
     url: "https://nns.internetcomputer.org/",

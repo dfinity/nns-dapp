@@ -7,6 +7,7 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { getOrCreateDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -214,10 +215,19 @@ export const loadSnsLifecycle = async ({
         identity,
         certified,
       }),
-    onLoad: ({ response: lifecycleResponse }) => {
+    onLoad: ({ response: lifecycleResponse, certified }) => {
       const lifecycle = fromNullable(lifecycleResponse?.lifecycle ?? []);
       if (nonNullish(lifecycle)) {
         snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
+      }
+      if (nonNullish(lifecycleResponse)) {
+        const lifecycleStore = getOrCreateLifecycleStore(
+          Principal.from(rootCanisterId)
+        );
+        lifecycleStore.setData({
+          data: lifecycleResponse,
+          certified,
+        });
       }
     },
     onError: ({ error: err, certified }) => {
