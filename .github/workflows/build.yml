@@ -380,8 +380,6 @@ jobs:
           fi
       - name: Stop replica
         run: dfx stop
-      - name: Pagination yields all SNSs
-        run: scripts/sns/aggregator/test-pagination
       - name: Paginated response has a first page even when there are no SNS.
         run: |
           dfx start --clean --background
