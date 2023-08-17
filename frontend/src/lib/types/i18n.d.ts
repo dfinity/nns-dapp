@@ -482,6 +482,7 @@ interface I18nTransaction_names {
   topUpNeuron: string;
   createCanister: string;
   topUpCanister: string;
+  refundSwap: string;
   participateSwap: string;
 }
 

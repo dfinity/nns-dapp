@@ -63,6 +63,7 @@ export enum AccountTransactionType {
   CreateCanister = "createCanister",
   TopUpCanister = "topUpCanister",
   ParticipateSwap = "participateSwap",
+  RefundSwap = "refundSwap",
 }
 
 export interface Transaction {

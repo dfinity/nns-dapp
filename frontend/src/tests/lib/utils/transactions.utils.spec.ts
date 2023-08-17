@@ -168,6 +168,30 @@ describe("transactions-utils", () => {
       ).toBe(AccountTransactionType.ParticipateSwap);
     });
 
+    it("determines type by swapCanisterAccounts and Receive transaction", () => {
+      const swapCanisterId = principal(0);
+      const swapCanisterAccount = getSwapCanisterAccount({
+        controller: mockMainAccount.principal,
+        swapCanisterId,
+      });
+      const swapTransaction: Transaction = {
+        ...mockReceivedFromMainAccountTransaction,
+        transfer: {
+          Receive: {
+            fee: { e8s: BigInt(10000) },
+            amount: { e8s: BigInt(110000000) },
+            from: swapCanisterAccount.toHex(),
+          },
+        },
+      };
+      expect(
+        transactionType({
+          transaction: swapTransaction,
+          swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
+        })
+      ).toBe(AccountTransactionType.RefundSwap);
+    });
+
     it("determines type withoug transaction_type value", () => {
       expect(
         transactionType({
@@ -368,6 +392,31 @@ describe("transactions-utils", () => {
         swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
       });
       expect(type).toBe(AccountTransactionType.ParticipateSwap);
+    });
+
+    it("supports swap refund transaction type", () => {
+      const swapCanisterId = principal(0);
+      const swapCanisterAccount = getSwapCanisterAccount({
+        controller: mockMainAccount.principal,
+        swapCanisterId,
+      });
+      const swapTransaction: Transaction = {
+        ...mockReceivedFromMainAccountTransaction,
+        transfer: {
+          Receive: {
+            fee: { e8s: BigInt(10000) },
+            amount: { e8s: BigInt(110000000) },
+            from: swapCanisterAccount.toHex(),
+          },
+        },
+      };
+      const { type } = mapNnsTransaction({
+        transaction: swapTransaction,
+        account: mockMainAccount,
+        toSelfTransaction: false,
+        swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
+      });
+      expect(type).toBe(AccountTransactionType.RefundSwap);
     });
   });
 
