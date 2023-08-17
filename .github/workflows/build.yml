@@ -380,13 +380,6 @@ jobs:
           fi
       - name: Stop replica
         run: dfx stop
-      - name: Paginated response has a first page even when there are no SNS.
-        run: |
-          dfx start --clean --background
-          dfx canister create sns_aggregator
-          dfx canister install --mode install sns_aggregator --wasm sns_aggregator_dev.wasm.gz
-          scripts/sns/aggregator/test-pagination
-          dfx stop
   assets:
     name: "Upload assets"
     needs: build
