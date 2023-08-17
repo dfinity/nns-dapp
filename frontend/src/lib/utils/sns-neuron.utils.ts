@@ -70,7 +70,7 @@ export const getSnsNeuronState = ({
   return NeuronState.Unspecified;
 };
 
-export const getSnsDissolvingTimeInSeconds = (
+export const getSnsDissolvingTimestampSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
@@ -80,8 +80,17 @@ export const getSnsDissolvingTimeInSeconds = (
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
-    return dissolveState.WhenDissolvedTimestampSeconds - BigInt(nowInSeconds());
+    return dissolveState.WhenDissolvedTimestampSeconds;
   }
+};
+
+export const getSnsDissolvingTimeInSeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
 };
 
 export const getSnsLockedTimeInSeconds = (
@@ -266,6 +275,21 @@ export const hasPermissionToStakeMaturity = ({
     identity,
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+    ],
+  });
+
+export const hasPermissionToDisburseMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
     ],
   });
 
@@ -477,7 +501,7 @@ export const formattedTotalMaturity = (
  * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
-export const hasEnoughMaturityToStake = (
+export const hasEnoughMaturityToStakeOrDisburse = (
   neuron: SnsNeuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
 

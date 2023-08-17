@@ -12,8 +12,9 @@
   import { nonNullish } from "@dfinity/utils";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import {
+    canUserManageNeuronFundParticipation,
+    getDissolvingTimestampSeconds,
     isNeuronControllable,
-    isNeuronControllableByUser,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
   import Hash from "../ui/Hash.svelte";
@@ -32,18 +33,19 @@
     accounts: $icpAccountsStore,
   });
 
-  let isControlledByUser: boolean;
-  $: isControlledByUser = isNeuronControllableByUser({
+  let canManageNFParticipation: boolean;
+  $: canManageNFParticipation = canUserManageNeuronFundParticipation({
     neuron,
-    mainAccount: $icpAccountsStore.main,
+    accounts: $icpAccountsStore,
+    identity: $authStore.identity,
   });
+
+  let dissolvingTimestamp: bigint | undefined;
+  $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
   <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
-  <p slot="description">
-    {$i18n.neuron_detail.advanced_settings_description}
-  </p>
   <div class="content">
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
@@ -58,6 +60,15 @@
       >
     </KeyValuePair>
     <NnsNeuronAge {neuron} />
+    {#if nonNullish(dissolvingTimestamp)}
+      <KeyValuePair>
+        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
+        >
+        <span slot="value" class="value" data-tid="neuron-dissolve-date"
+          >{secondsToDateTime(dissolvingTimestamp)}</span
+        >
+      </KeyValuePair>
+    {/if}
     {#if nonNullish(neuron.fullNeuron)}
       <KeyValuePair>
         <span slot="key" class="label"
@@ -98,7 +109,9 @@
       </div>
     {/if}
     <NnsAutoStakeMaturity {neuron} />
-    <JoinCommunityFundCheckbox {neuron} disabled={!isControlledByUser} />
+    {#if canManageNFParticipation}
+      <JoinCommunityFundCheckbox {neuron} />
+    {/if}
     {#if isControllable}
       <SplitNnsNeuronButton {neuron} variant="secondary" />
     {/if}
@@ -106,8 +119,7 @@
 </Section>
 
 <style lang="scss">
-  h3,
-  p {
+  h3 {
     margin: 0;
   }
 

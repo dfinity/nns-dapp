@@ -5,7 +5,10 @@
 import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
@@ -36,7 +39,7 @@ describe("NeuronJoinFundCard", () => {
       );
   });
 
-  it("renders join community fund checkbox", () => {
+  it("renders join community fund checkbox if user is controller", () => {
     // Checkbox is tested separately
     const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
@@ -48,7 +51,45 @@ describe("NeuronJoinFundCard", () => {
     expect(queryByTestId("checkbox")).toBeInTheDocument();
   });
 
-  it("renders no checkbox if user is not controller", () => {
+  it("renders join community fund checkbox if user is hotkey and controller not the hardware wallet", () => {
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: "not-user-nor-hw",
+        hotKeys: [mockIdentity.getPrincipal().toText() as string],
+      },
+    };
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NeuronJoinFundCard,
+      },
+    });
+
+    expect(queryByTestId("checkbox")).toBeInTheDocument();
+  });
+
+  it("renders no checkbox if user is hotkey and controller is the hardware wallet", () => {
+    const neuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        controller: mockHardwareWalletAccount.principal.toText(),
+        hotKeys: [mockIdentity.getPrincipal().toText() as string],
+      },
+    };
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: NeuronJoinFundCard,
+      },
+    });
+
+    expect(queryByTestId("checkbox")).not.toBeInTheDocument();
+  });
+
+  it("renders no checkbox if user is not controller nor hotkey", () => {
     const { queryByTestId } = render(NeuronContextActionsTest, {
       props: {
         neuron: {
@@ -56,6 +97,7 @@ describe("NeuronJoinFundCard", () => {
           fullNeuron: {
             ...mockFullNeuron,
             controller: "not-controller",
+            hotKeys: [],
           },
         },
         testComponent: NeuronJoinFundCard,

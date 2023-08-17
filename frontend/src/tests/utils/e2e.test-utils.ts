@@ -96,3 +96,21 @@ export const setFeatureFlag = ({
       (window as any).__featureFlags[featureFlag]["overrideWith"](value),
     { featureFlag, value }
   );
+
+export const replaceContent = ({
+  page,
+  selectors,
+  innerHtml,
+}: {
+  page: Page;
+  selectors: string[];
+  innerHtml: string;
+}) => {
+  page.evaluate(
+    ({ selectors, innerHtml }) =>
+      document.querySelectorAll(selectors.join(", ")).forEach((el) => {
+        el.innerHTML = innerHtml;
+      }),
+    { selectors, innerHtml }
+  );
+};

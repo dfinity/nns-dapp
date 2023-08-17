@@ -4,7 +4,7 @@
 
 import NnsStakeItemAction from "$lib/components/neuron-detail/NnsStakeItemAction.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NnsStakeItemActionPo } from "$tests/page-objects/NnsStakeItemAction.page-object";
+import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -19,7 +19,7 @@ describe("NnsStakeItemAction", () => {
       },
     });
 
-    return NnsStakeItemActionPo.under(new JestPageObjectElement(container));
+    return StakeItemActionPo.under(new JestPageObjectElement(container));
   };
 
   it("should render ICP Stake of the neuron", async () => {
@@ -36,6 +36,12 @@ describe("NnsStakeItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getStake()).toBe("3.14");
+  });
+
+  it("should render ICP in description", async () => {
+    const po = renderComponent(mockNeuron);
+
+    expect(await po.getDescription()).toBe("ICP staked");
   });
 
   it("should render increase stake button", async () => {

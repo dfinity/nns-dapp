@@ -3,13 +3,13 @@
  */
 
 import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
-import { dispatchIntersecting } from "$lib/directives/intersection.directives";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import {
   WALLET_CONTEXT_KEY,
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";

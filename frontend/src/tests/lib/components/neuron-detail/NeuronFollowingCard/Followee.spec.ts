@@ -6,7 +6,7 @@ import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import en from "$tests/mocks/i18n.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
@@ -15,7 +15,10 @@ describe("Followee", () => {
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 
-  beforeEach(() => jest.spyOn(console, "error").mockImplementation(jest.fn));
+  beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    knownNeuronsStore.reset();
+  });
 
   it("should render neuronId", () => {
     const { getByText } = render(FolloweeTest, {
@@ -64,12 +67,6 @@ describe("Followee", () => {
   });
 
   it("should render known neurons name", async () => {
-    const { getByText } = render(FolloweeTest, {
-      props: {
-        followee,
-      },
-    });
-
     knownNeuronsStore.setNeurons([
       {
         id: followee.neuronId,
@@ -77,6 +74,13 @@ describe("Followee", () => {
         description: "test-description",
       },
     ]);
-    await waitFor(() => expect(getByText("test-name")).toBeInTheDocument());
+
+    const { getByText } = render(FolloweeTest, {
+      props: {
+        followee,
+      },
+    });
+
+    expect(getByText("test-name")).toBeInTheDocument();
   });
 });

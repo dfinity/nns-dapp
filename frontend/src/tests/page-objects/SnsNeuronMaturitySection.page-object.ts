@@ -1,7 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { SnsAvailableMaturityActionItemPo } from "./SnsAvailableMaturityActionItem.page-object";
-import { SnsStakedMaturityActionItemPo } from "./SnsStakedMaturityActionItem.page-object";
+import { SnsAvailableMaturityItemActionPo } from "./SnsAvailableMaturityItemAction.page-object";
+import { SnsStakedMaturityItemActionPo } from "./SnsStakedMaturityItemAction.page-object";
 
 export class SnsNeuronMaturitySectionPo extends BasePageObject {
   private static readonly TID = "sns-neuron-maturity-section-component";
@@ -16,16 +16,16 @@ export class SnsNeuronMaturitySectionPo extends BasePageObject {
     return this.getText("total-maturity");
   }
 
-  getStakedMaturityItemActionPo(): SnsStakedMaturityActionItemPo {
-    return SnsStakedMaturityActionItemPo.under(this.root);
+  getStakedMaturityItemActionPo(): SnsStakedMaturityItemActionPo {
+    return SnsStakedMaturityItemActionPo.under(this.root);
   }
 
   hasStakedMaturityItemAction(): Promise<boolean> {
     return this.getStakedMaturityItemActionPo().isPresent();
   }
 
-  getAvailableMaturityItemActionPo(): SnsAvailableMaturityActionItemPo {
-    return SnsAvailableMaturityActionItemPo.under(this.root);
+  getAvailableMaturityItemActionPo(): SnsAvailableMaturityItemActionPo {
+    return SnsAvailableMaturityItemActionPo.under(this.root);
   }
 
   hasAvailableMaturityItemAction(): Promise<boolean> {

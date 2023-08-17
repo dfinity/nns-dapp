@@ -16,6 +16,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -24,6 +25,7 @@ import {
   ballotsWithDefinedProposal,
   bonusMultiplier,
   canBeMerged,
+  canUserManageNeuronFundParticipation,
   checkInvalidState,
   dissolveDelayMultiplier,
   filterIneligibleNnsNeurons,
@@ -34,7 +36,9 @@ import {
   formattedStakedMaturity,
   formattedTotalMaturity,
   getDissolvingTimeInSeconds,
+  getDissolvingTimestampSeconds,
   getNeuronById,
+  getNeuronTags,
   getSpawningTimeInSeconds,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
@@ -65,6 +69,7 @@ import {
   type InvalidState,
 } from "$lib/utils/neuron.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -350,6 +355,48 @@ describe("neuron-utils", () => {
         joinedCommunityFundTimestampSeconds: undefined,
       };
       expect(hasJoinedCommunityFund(joinedNeuron)).toBe(false);
+    });
+  });
+
+  describe("getDissolvingTimestampSeconds", () => {
+    it("returns undefined if neuron not dissolving", () => {
+      const dissolveNeuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolved,
+      };
+      expect(getDissolvingTimestampSeconds(dissolveNeuron)).toBeUndefined();
+      const lockedNeuron = {
+        ...mockNeuron,
+        state: NeuronState.Locked,
+      };
+      expect(getDissolvingTimestampSeconds(lockedNeuron)).toBeUndefined();
+    });
+
+    it("returns undefined if dissolve state has no timestamp", () => {
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolving,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: undefined,
+        },
+      };
+      expect(getDissolvingTimestampSeconds(neuron)).toBeUndefined();
+    });
+
+    it("returns dissolve date", () => {
+      const dissolveDate = BigInt(nowInSeconds() + SECONDS_IN_FOUR_YEARS);
+      const neuron = {
+        ...mockNeuron,
+        state: NeuronState.Dissolving,
+        fullNeuron: {
+          ...mockFullNeuron,
+          dissolveState: {
+            WhenDissolvedTimestampSeconds: dissolveDate,
+          },
+        },
+      };
+      expect(getDissolvingTimestampSeconds(neuron)).toBe(dissolveDate);
     });
   });
 
@@ -1070,6 +1117,174 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false));
+  });
+
+  describe("getNeuronHotkeys", () => {
+    const accountsWithHW = {
+      main: mockMainAccount,
+      hardwareWallets: [mockHardwareWalletAccount],
+    };
+
+    const accountsWithoutHw = {
+      main: mockMainAccount,
+      hardwareWallets: [],
+    };
+
+    const hotkeyTag = { text: "Hotkey control" };
+    const hwTag = { text: "Hardware Wallet" };
+    const nfTag = { text: "Neurons' fund" };
+    it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-hardware-wallet",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([hotkeyTag]);
+    });
+
+    it("returns 'hotkey' if neuron is controllable by hotkey and no hardware wallet is attached", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithoutHw,
+          i18n: en,
+        })
+      ).toEqual([hotkeyTag]);
+    });
+
+    it("returns 'Hardware Wallet' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([hwTag]);
+    });
+
+    it("returns empty array if neuron is the controller and a hotkey", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([]);
+    });
+
+    it("returns empty array if no identity", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: null,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([]);
+    });
+
+    it("returns 'Neurons' Fund' if neuron is part of Neurons' Fund", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: 123445n,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([nfTag]);
+    });
+
+    it("returns 'Neurons' Fund' and 'Hotkey Control'", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: 123445n,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+          controller: "not-user-nor-hw",
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([nfTag, hotkeyTag]);
+    });
+
+    it("returns 'Neurons' Fund' and 'Hardware Wallet'", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: 123445n,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+          controller: mockHardwareWalletAccount.principal?.toText(),
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([nfTag, hwTag]);
+    });
   });
 
   describe("isIdentityController", () => {
@@ -2075,6 +2290,135 @@ describe("neuron-utils", () => {
       expect(maturityLastDistribution(testRewardEvent)).toEqual(
         12234455555n - threeDays
       );
+    });
+  });
+
+  describe("canUserManageNeuronFundParticipation", () => {
+    const identityMainAccount = {
+      ...mockMainAccount,
+      principal: mockIdentity.getPrincipal(),
+    };
+
+    it("should return true if user is controller", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: identityMainAccount.principal?.toText(),
+          hotKeys: [],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if no identity", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: identityMainAccount.principal?.toText(),
+          hotKeys: [],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: undefined,
+        })
+      ).toBe(false);
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: null,
+        })
+      ).toBe(false);
+    });
+
+    it("should return true if user is hotkey and no hardware wallet is attached", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if user is hotkey and attached hardware wallet is controller", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [mockHardwareWalletAccount],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockHardwareWalletAccount.principal?.toText(),
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+
+    it("should return false if user is not a hotkey nor controller", () => {
+      const accounts: IcpAccountsStoreData = {
+        main: identityMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+      };
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [],
+        },
+      };
+      expect(
+        canUserManageNeuronFundParticipation({
+          neuron,
+          accounts,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
     });
   });
 });

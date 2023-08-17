@@ -155,7 +155,7 @@ describe("neurons api-service", () => {
   const neuronId = BigInt(12);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     resetNeuronsApiService();
   });
 

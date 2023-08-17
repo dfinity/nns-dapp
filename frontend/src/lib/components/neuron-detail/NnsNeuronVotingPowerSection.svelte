@@ -12,7 +12,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsStakeItemAction from "./NnsStakeItemAction.svelte";
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
-  import NnsNeuronDissolveDelayActionItem from "./NnsNeuronDissolveDelayActionItem.svelte";
+  import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { formatToken } from "$lib/utils/token.utils";
   import { Html, Section } from "@dfinity/gix-components";
@@ -63,7 +63,7 @@
   <ul class="content">
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
-    <NnsNeuronDissolveDelayActionItem {neuron} />
+    <NnsNeuronDissolveDelayItemAction {neuron} />
   </ul>
 </Section>
 

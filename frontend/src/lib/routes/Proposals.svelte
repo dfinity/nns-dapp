@@ -3,18 +3,15 @@
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsProposals from "$lib/pages/SnsProposals.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import type { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { nonNullish } from "@dfinity/utils";
-
-  export let referrerPath: AppPath | undefined = undefined;
 </script>
 
 <main data-tid="proposals-component">
   <SummaryUniverse />
 
   {#if $isNnsUniverseStore}
-    <Proposals {referrerPath} />
+    <Proposals />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsProposals />
   {/if}

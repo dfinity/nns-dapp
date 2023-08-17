@@ -11,11 +11,7 @@ import {
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import * as routeUtils from "$lib/utils/route.utils";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
@@ -24,6 +20,11 @@ import { mock } from "jest-mock-extended";
 
 describe("auth-services", () => {
   const { reload, href, search } = window.location;
+
+  beforeEach(async () => {
+    jest.restoreAllMocks();
+    await authStore.signOut();
+  });
 
   beforeAll(() => {
     Object.defineProperty(window, "location", {
@@ -186,16 +187,8 @@ describe("auth-services", () => {
   });
 
   describe("getCurrentIdentity", () => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
-
-    afterAll(() => jest.clearAllMocks());
-
     it("should returns anonymous identity", () => {
-      authStoreMock.next({
-        identity: undefined,
-      });
+      authStore.setForTesting(undefined);
 
       expect(getCurrentIdentity().getPrincipal().toText()).toEqual(
         new AnonymousIdentity().getPrincipal().toText()
@@ -203,9 +196,7 @@ describe("auth-services", () => {
     });
 
     it("should returns signed-in identity", () => {
-      authStoreMock.next({
-        identity: mockIdentity,
-      });
+      authStore.setForTesting(mockIdentity);
 
       expect(getCurrentIdentity().getPrincipal().toText()).toEqual(
         mockIdentity.getPrincipal().toText()

@@ -5,7 +5,7 @@
       "type": "custom",
       "candid": "target/ic/governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -72,7 +72,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_wasm.did",
+      "candid": "declarations/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
       "remote": {
@@ -208,9 +208,7 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
-          "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -225,7 +223,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
@@ -239,9 +236,7 @@
       "config": {
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
-          "ENABLE_NEURON_SETTINGS": false,
           "ENABLE_CKTESTBTC": false
         }
       },
@@ -317,7 +312,6 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -628,13 +622,12 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SIMULATE_MERGE_NEURONS": true,
           "ENABLE_NEURON_SETTINGS": true,
-          "ENABLE_INSTANT_UNLOCK": false
+          "ENABLE_INSTANT_UNLOCK": false,
+          "ENABLE_DISBURSE_MATURITY": false
         }
       }
     },

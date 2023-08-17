@@ -2,19 +2,14 @@
  * @jest-environment jsdom
  */
 
+import * as api from "$lib/api/proposals.api";
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
-import { loadProposalsSnsCF } from "$lib/services/$public/sns.services";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
+import { AnonymousIdentity } from "@dfinity/agent";
+import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-
-jest.mock("$lib/services/$public/sns.services", () => {
-  return {
-    loadProposalsSnsCF: jest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
 
 describe("Proposals", () => {
   const mockProposals = (proposals: ProposalInfo[] | null) =>
@@ -22,17 +17,33 @@ describe("Proposals", () => {
       ? snsProposalsStore.reset()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
-  beforeEach(snsProposalsStore.reset);
+  const queryProposalsSpy = jest
+    .spyOn(api, "queryProposals")
+    .mockResolvedValue([mockProposalInfo]);
 
-  afterAll(jest.clearAllMocks);
-
-  it("should trigger loadProposalsSnsCF", () => {
-    render(Proposals);
-
-    expect(loadProposalsSnsCF).toBeCalled();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    snsProposalsStore.reset();
   });
 
-  it("should not trigger loadProposalsSnsCF if already loaded", () => {
+  it("should trigger call to query proposals", () => {
+    render(Proposals);
+
+    expect(queryProposalsSpy).toBeCalledWith({
+      beforeProposal: undefined,
+      certified: false,
+      identity: new AnonymousIdentity(),
+      filters: {
+        topics: [Topic.SnsAndCommunityFund],
+        rewards: [],
+        status: [ProposalStatus.Open],
+        excludeVotedProposals: false,
+        lastAppliedFilter: undefined,
+      },
+    });
+  });
+
+  it("should not trigger call to query proposals if already loaded", () => {
     snsProposalsStore.setProposals({
       proposals: [],
       certified: true,
@@ -40,7 +51,7 @@ describe("Proposals", () => {
 
     render(Proposals);
 
-    expect(loadProposalsSnsCF).toBeCalled();
+    expect(queryProposalsSpy).not.toBeCalled();
   });
 
   it("should display skeletons", async () => {

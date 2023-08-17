@@ -127,10 +127,10 @@ while (($# > 0)); do
 done
 
 if test -n "${IC_TESTNET:-}"; then
-  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --testnet "$IC_TESTNET")"
+  NNS_URL="$(./scripts/e2e-tests/nns-dashboard --testnet "$IC_TESTNET")"
 else
   DFX_NETWORK="${DFX_NETWORK:-local}"
-  NNS_URL="$(./e2e-tests/scripts/nns-dashboard --dfx-network "${DFX_NETWORK}")"
+  NNS_URL="$(./scripts/e2e-tests/nns-dashboard --dfx-network "${DFX_NETWORK}")"
 fi
 export NNS_URL
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { hasEnoughMaturityToStake } from "$lib/utils/sns-neuron.utils";
+  import { hasEnoughMaturityToStakeOrDisburse } from "$lib/utils/sns-neuron.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
@@ -19,7 +19,7 @@
   $: ({ neuron } = $store);
 
   let enoughMaturity: boolean;
-  $: enoughMaturity = hasEnoughMaturityToStake(neuron);
+  $: enoughMaturity = hasEnoughMaturityToStakeOrDisburse(neuron);
 
   const showModal = () => openSnsNeuronModal({ type: "stake-maturity" });
 </script>

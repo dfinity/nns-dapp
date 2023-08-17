@@ -4,9 +4,9 @@
   import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
     formatVotingPower,
-    hasJoinedCommunityFund,
-    isHotKeyControllable,
+    getNeuronTags,
     neuronStake,
+    type NeuronTag,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -14,6 +14,7 @@
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
   import HeadingTag from "../common/HeadingTag.svelte";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -28,13 +29,12 @@
   $: canVote =
     neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 
-  let isCommunityFund: boolean;
-  $: isCommunityFund = hasJoinedCommunityFund(neuron);
-
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = isHotKeyControllable({
+  let neuronTags: NeuronTag[];
+  $: neuronTags = getNeuronTags({
     neuron,
     identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+    i18n: $i18n,
   });
 </script>
 
@@ -50,15 +50,8 @@
     {/if}
   </span>
   <svelte:fragment slot="tags">
-    {#if isCommunityFund}
-      <HeadingTag testId="neurons-fund-tag">
-        {$i18n.neurons.community_fund}
-      </HeadingTag>
-    {/if}
-    {#if isHotKeyControl}
-      <HeadingTag testId="hotkey-tag">
-        {$i18n.neurons.hotkey_control}
-      </HeadingTag>
-    {/if}
+    {#each neuronTags as tag}
+      <HeadingTag testId="neuron-tag">{tag.text}</HeadingTag>
+    {/each}
   </svelte:fragment>
 </PageHeading>

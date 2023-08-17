@@ -390,3 +390,20 @@ export const expandObject = (
     }
     return acc;
   }, {} as Record<string, unknown>);
+
+export const sameBufferData = (
+  buffer1: ArrayBuffer,
+  buffer2: ArrayBuffer
+): boolean => {
+  if (buffer1.byteLength !== buffer2.byteLength) {
+    return false;
+  }
+  const dv1 = new Int8Array(buffer1);
+  const dv2 = new Int8Array(buffer2);
+  for (let i = 0; i < buffer1.byteLength; i++) {
+    if (dv1[i] !== dv2[i]) {
+      return false;
+    }
+  }
+  return true;
+};

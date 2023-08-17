@@ -12,7 +12,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -38,6 +38,7 @@ describe("BitcoinAddress", () => {
   };
 
   beforeEach(() => {
+    resetIdentity();
     jest.clearAllMocks();
     bitcoinAddressStore.reset();
     ckBTCInfoStore.reset();

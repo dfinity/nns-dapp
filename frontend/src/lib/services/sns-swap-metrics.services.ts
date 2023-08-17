@@ -1,5 +1,4 @@
 import { querySnsSwapMetrics } from "$lib/api/sns-swap-metrics.api";
-import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
@@ -47,20 +46,4 @@ export const loadSnsSwapMetrics = async ({
     rootCanisterId,
     metrics: { saleBuyerCount },
   });
-};
-
-export const watchSnsMetrics = ({
-  rootCanisterId,
-  swapCanisterId,
-}: {
-  rootCanisterId: Principal;
-  swapCanisterId: Principal;
-}): (() => void) => {
-  const interval = setInterval(() => {
-    loadSnsSwapMetrics({ rootCanisterId, swapCanisterId, forceFetch: true });
-  }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
-
-  return () => {
-    clearInterval(interval);
-  };
 };

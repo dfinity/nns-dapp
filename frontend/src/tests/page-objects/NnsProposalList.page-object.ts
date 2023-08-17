@@ -31,6 +31,17 @@ export class NnsProposalListPo extends BasePageObject {
     return Array.from(new Set(topics));
   }
 
+  async getCardStatuses(): Promise<string[]> {
+    const statuses = await Promise.all(
+      (
+        await this.getProposalCardPos()
+      ).map((card) => card.getProposalStatusText())
+    );
+
+    // return unique values only
+    return Array.from(new Set(statuses));
+  }
+
   async getFirstProposalCardPoForProposer(
     proposer: string
   ): Promise<ProposalCardPo> {

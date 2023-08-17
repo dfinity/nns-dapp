@@ -3,7 +3,6 @@
  */
 
 import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -12,9 +11,9 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -25,15 +24,15 @@ jest.mock("$lib/services/sns-parameters.services");
 
 describe("IncreaseSnsDissolveDelayButton", () => {
   const rootCanisterId = mockPrincipal;
-  const response = snsResponseFor({
-    principal: rootCanisterId,
-    lifecycle: SnsSwapLifecycle.Committed,
-    certified: true,
-  });
   beforeEach(() => {
     jest.clearAllMocks();
-    snsQueryStore.reset();
-    snsQueryStore.setData(response);
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        certified: true,
+      },
+    ]);
     tokensStore.reset();
     tokensStore.setToken({
       canisterId: rootCanisterId,

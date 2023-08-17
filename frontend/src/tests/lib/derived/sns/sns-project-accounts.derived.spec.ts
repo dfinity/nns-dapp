@@ -7,26 +7,24 @@ import {
   snsProjectMainAccountStore,
 } from "$lib/derived/sns/sns-project-accounts.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-project-accounts store", () => {
   beforeEach(() => {
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockPrincipal,
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 

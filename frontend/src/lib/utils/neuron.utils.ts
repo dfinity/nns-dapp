@@ -223,15 +223,23 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
-export const getDissolvingTimeInSeconds = (
+export const getDissolvingTimestampSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
   neuron.state === NeuronState.Dissolving &&
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-      BigInt(nowInSeconds())
+    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
     : undefined;
+
+export const getDissolvingTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined => {
+  const dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
+};
 
 export const getSpawningTimeInSeconds = (
   neuron: NeuronInfo
@@ -355,6 +363,61 @@ export const isHotKeyControllable = ({
     (hotkey) => hotkey === identity?.getPrincipal().toText()
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
+
+export type NeuronTag = {
+  text: string;
+};
+
+export const getNeuronTags = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): NeuronTag[] => {
+  const tags: NeuronTag[] = [];
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  }
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
+  if (isHWControlled) {
+    tags.push({ text: i18n.neurons.hardware_wallet_control });
+    // All HW controlled are hotkeys, but we don't want to show both tags to the user.
+  } else if (isHotKeyControllable({ neuron, identity })) {
+    tags.push({ text: i18n.neurons.hotkey_control });
+  }
+  return tags;
+};
+
+/**
+ * An identity can manage the neurons' fund participation when one of the below is true:
+ * - User is the controller.
+ * - User is a hotkey, but a hardware wallet account is NOT the controller.
+ *
+ * Technically, HW can manage SNS neurons, but we don't support it yet in the NNS Dapp.
+ * That's why we want to avoid HW controlled neurons from participating in a swap.
+ * Both joining the Neurons' Fund and participating in a swap is disabled for hardware wallets.
+ */
+export const canUserManageNeuronFundParticipation = ({
+  neuron,
+  identity,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  identity: Identity | null | undefined;
+  accounts: IcpAccountsStoreData;
+}): boolean =>
+  nonNullish(identity) &&
+  (isNeuronControllableByUser({ neuron, mainAccount: accounts.main }) ||
+    (isHotKeyControllable({ neuron, identity }) &&
+      !isNeuronControlledByHardwareWallet({ neuron, accounts })));
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)

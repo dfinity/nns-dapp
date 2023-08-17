@@ -39,6 +39,7 @@ describe("Canisters", () => {
   let authStoreMock: jest.SpyInstance;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     authStoreMock = jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -54,10 +55,17 @@ describe("Canisters", () => {
     expect(getByText(en.core.ic)).toBeInTheDocument();
   });
 
-  it("should subscribe to store", () =>
-    expect(authStoreMock).toHaveBeenCalled());
+  it("should subscribe to store", () => {
+    expect(authStoreMock).not.toHaveBeenCalled();
+    render(Canisters);
+    expect(authStoreMock).toHaveBeenCalled();
+  });
 
-  it("should load canisters", () => expect(listCanisters).toHaveBeenCalled());
+  it("should load canisters", () => {
+    expect(listCanisters).not.toHaveBeenCalled();
+    render(Canisters);
+    expect(listCanisters).toHaveBeenCalled();
+  });
 
   it("should render a principal as text", () => {
     const { getByText } = render(Canisters);

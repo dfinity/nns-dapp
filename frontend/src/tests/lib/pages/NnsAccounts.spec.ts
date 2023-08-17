@@ -9,6 +9,7 @@ import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
@@ -25,6 +26,10 @@ jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   afterEach(() => jest.clearAllMocks());
 
   describe("when there are accounts", () => {

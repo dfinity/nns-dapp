@@ -6,7 +6,6 @@ import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
@@ -16,7 +15,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -44,13 +43,12 @@ describe("SnsProposals", () => {
     jest.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: rootCanisterId,
+    setSnsProjects([
+      {
+        rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
   });

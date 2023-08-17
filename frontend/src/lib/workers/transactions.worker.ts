@@ -5,7 +5,6 @@ import type {
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { getIcrcAccountsTransactions } from "$lib/worker-services/icrc-transactions.worker-services";
 import { DictionaryWorkerStore } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
@@ -13,6 +12,7 @@ import {
   TimerWorkerUtils,
   type TimerWorkerUtilsJobData,
 } from "$lib/worker-utils/timer.worker-utils";
+import { jsonReplacer } from "@dfinity/utils";
 
 // Worker context to start and stop job
 const worker = new TimerWorkerUtils();

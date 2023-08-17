@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Section } from "@dfinity/gix-components";
-  import SnsStakedMaturityActionItem from "./SnsStakedMaturityActionItem.svelte";
-  import SnsAvailableMaturityActionItem from "./SnsAvailableMaturityActionItem.svelte";
+  import SnsStakedMaturityItemAction from "./SnsStakedMaturityItemAction.svelte";
+  import SnsAvailableMaturityItemAction from "./SnsAvailableMaturityItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
 
@@ -14,12 +14,12 @@
   <p slot="end" class="title-value" data-tid="total-maturity">
     {formattedTotalMaturity(neuron)}
   </p>
-  <p slot="description">
+  <p slot="description" class="description">
     {$i18n.neuron_detail.maturity_section_description}
   </p>
   <ul class="content">
-    <SnsStakedMaturityActionItem {neuron} />
-    <SnsAvailableMaturityActionItem {neuron} />
+    <SnsStakedMaturityItemAction {neuron} />
+    <SnsAvailableMaturityItemAction {neuron} />
   </ul>
 </Section>
 

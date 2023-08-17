@@ -8,7 +8,6 @@ import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -19,11 +18,11 @@ import {
   mockSnsFullProject,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -72,13 +71,12 @@ describe("SnsAccounts", () => {
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockSnsFullProject.rootCanisterId,
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
   });
 
   describe("when there are accounts in the store", () => {

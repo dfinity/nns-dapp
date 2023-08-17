@@ -6,10 +6,12 @@
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
   import Input from "$lib/components/ui/Input.svelte";
+  import { areEnoughCyclesSelected } from "$lib/utils/canisters.utils";
 
   export let amount: number | undefined = undefined;
   export let icpToCyclesExchangeRate: bigint | undefined = undefined;
   export let minimumCycles: number | undefined = undefined;
+  export let backAction = true;
 
   let isChanging: "icp" | "tCycles" | undefined = undefined;
   let amountCycles: number | undefined;
@@ -59,8 +61,7 @@
   };
 
   let enoughCycles: boolean;
-  $: enoughCycles =
-    minimumCycles === undefined ? true : (amountCycles ?? 0) >= minimumCycles;
+  $: enoughCycles = areEnoughCyclesSelected({ amountCycles, minimumCycles });
 </script>
 
 <form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">
@@ -93,13 +94,15 @@
   <slot />
 
   <div class="toolbar">
-    <button
-      type="button"
-      class="secondary"
-      data-tid="select-cycles-button-back"
-      on:click={() => dispatcher("nnsBack")}
-      >{$i18n.canisters.change_source}</button
-    >
+    {#if backAction}
+      <button
+        type="button"
+        class="secondary"
+        data-tid="select-cycles-button-back"
+        on:click={() => dispatcher("nnsBack")}
+        >{$i18n.canisters.change_source}</button
+      >
+    {/if}
     <button
       type="submit"
       class="primary"
