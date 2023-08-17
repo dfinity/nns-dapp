@@ -70,6 +70,6 @@ sns_from_wasm_canister() {
     rm "$PAGE_FILE"
     # A caller should be able to get pages until at least one page is only partially filled.
     # Note: The checks above ensure that by this time, the pages include all SNS.
-    ((page_num <= (NUM_SNS / PAGE_SIZE) + 1)) || break
+    ((page <= (NUM_SNS / PAGE_SIZE) + 1)) || break
   done
 )
