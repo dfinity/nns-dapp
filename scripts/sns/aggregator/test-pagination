@@ -51,7 +51,7 @@ sns_from_wasm_canister() {
     # Get the page
     PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
     curl -sSLf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE" || {
-      echo "ERROR: Failed to get page #$page"
+      echo "ERROR: Failed to get page #$page/${NUM_PAGES}"
       exit 1
     } >&2
     # Verify that the expected number of SNSs is present.
@@ -75,6 +75,6 @@ sns_from_wasm_canister() {
     rm "$PAGE_FILE"
     # A caller should be able to get pages until at least one page is only partially filled.
     # Note: The checks above ensure that by this time, the pages include all SNS.
-    ((page <= NUM_PAGES)) || break
+    ((page < NUM_PAGES)) || break
   done
 )
