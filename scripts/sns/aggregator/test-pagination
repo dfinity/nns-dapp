@@ -63,7 +63,7 @@ sns_from_wasm_canister() {
       echo "Data is in: $PAGE_FILE"
       exit 1
     } >&2
-    page_size=actual
+    page_size="$actual"
     # Verify that the SNS indices in each page are as expected
     expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
     actual="$(jq '.[]|.index' "$PAGE_FILE")"
