@@ -25,6 +25,10 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("LinkCanisterModal", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should display modal", () => {
     const { container } = render(LinkCanisterModal);
 
@@ -65,6 +69,7 @@ describe("LinkCanisterModal", () => {
     const onClose = jest.fn();
     component.$on("nnsClose", onClose);
 
+    expect(attachCanister).not.toBeCalled();
     await clickByTestId(queryByTestId, "link-canister-button");
     expect(attachCanister).toBeCalled();
 
@@ -78,10 +83,11 @@ describe("LinkCanisterModal", () => {
 
     await fillForm({
       container,
-      name: "test",
-      principalText: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+      name: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+      principalText: "aaaaa-aa",
     });
 
+    expect(attachCanister).not.toBeCalled();
     await clickByTestId(queryByTestId, "link-canister-button");
     expect(attachCanister).toBeCalled();
   });
