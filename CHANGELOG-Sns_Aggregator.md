@@ -8,13 +8,8 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ## Unreleased
 
-### Added
-### Changed
-### Fixed
-### Security
-### Not Published
-### Removed
-### Deprecated
+### Wasm changes
+### Operations
 
 ## Release Candidate
 
