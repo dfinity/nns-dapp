@@ -372,7 +372,7 @@ const convertDtoToTokenMetadata = (
 
 const convertDtoToSnsSummarySwap = (
   swap: CachedSnsSwapDto
-): SnsSummarySwap | undefined => ({
+): SnsSummarySwap => ({
   ...convertSwap(swap),
   decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
     swap.decentralization_sale_open_timestamp_seconds
@@ -384,16 +384,13 @@ const convertDtoToSnsSwapDerivedState = (
   data: CachedSnsSwapDerivedDto
 ): SnsSwapDerivedState => convertDerived(data);
 
-const isValidSummary = (entry: Partial<SnsSummary>): entry is SnsSummary =>
-  entry.swap !== undefined &&
-  entry.swap.params !== undefined &&
-  entry.swapCanisterId !== undefined &&
-  entry.governanceCanisterId !== undefined &&
-  entry.ledgerCanisterId !== undefined &&
-  entry.indexCanisterId !== undefined &&
-  entry.derived !== undefined &&
-  entry.metadata !== undefined &&
-  entry.token !== undefined;
+type PartialSummary = Omit<SnsSummary, "metadata" | "token"> & {
+  metadata?: SnsSummaryMetadata;
+  token?: IcrcTokenMetadata;
+};
+
+const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
+  entry.metadata !== undefined && entry.token !== undefined;
 
 export const convertDtoToSnsSummary = ({
   canister_ids: {
@@ -408,7 +405,7 @@ export const convertDtoToSnsSummary = ({
   swap_state,
   derived_state,
 }: CachedSnsDto): SnsSummary | undefined => {
-  const partialSummary: Partial<SnsSummary> = {
+  const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
     swapCanisterId: Principal.from(swap_canister_id),
     governanceCanisterId: Principal.from(governance_canister_id),

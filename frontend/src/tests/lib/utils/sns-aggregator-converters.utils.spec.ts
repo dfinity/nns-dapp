@@ -119,5 +119,26 @@ describe("sns aggregator converters utils", () => {
         },
       });
     });
+
+    it("returns undefined if a metadata required field is missing", () => {
+      const aggregatorMissingMetadata = {
+        ...aggregatorSnsMockDto,
+        meta: {
+          ...aggregatorSnsMockDto.meta,
+          name: null,
+        },
+      };
+      expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
+    });
+
+    it("returns undefined if a token metadata required field is missing", () => {
+      const aggregatorMissingMetadata = {
+        ...aggregatorSnsMockDto,
+        icrc1_metadata: aggregatorSnsMockDto.icrc1_metadata.filter(
+          ([key]) => key !== "icrc1:symbol"
+        ),
+      };
+      expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
+    });
   });
 });
