@@ -54,10 +54,15 @@ describe("Canisters", () => {
     expect(getByText(en.core.ic)).toBeInTheDocument();
   });
 
-  it("should subscribe to store", () =>
-    expect(authStoreMock).toHaveBeenCalled());
+  it("should subscribe to store", () => {
+    render(Canisters);
+    expect(authStoreMock).toHaveBeenCalled();
+  });
 
-  it("should load canisters", () => expect(listCanisters).toHaveBeenCalled());
+  it("should load canisters", () => {
+    render(Canisters);
+    expect(listCanisters).toHaveBeenCalled();
+  });
 
   it("should render a principal as text", () => {
     const { getByText } = render(Canisters);
