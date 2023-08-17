@@ -56,11 +56,13 @@ describe("Canisters", () => {
   });
 
   it("should subscribe to store", () => {
+    expect(authStoreMock).not.toHaveBeenCalled();
     render(Canisters);
     expect(authStoreMock).toHaveBeenCalled();
   });
 
   it("should load canisters", () => {
+    expect(listCanisters).not.toHaveBeenCalled();
     render(Canisters);
     expect(listCanisters).toHaveBeenCalled();
   });
