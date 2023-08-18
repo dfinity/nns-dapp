@@ -163,7 +163,9 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
 
-      expect(get(snsDerivedStateStore)?.derivedState).toEqual(derivedState);
+      expect(
+        get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+      ).toEqual(derivedState);
     });
 
     it("should call api with the strategy passed", async () => {
