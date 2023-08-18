@@ -146,7 +146,7 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
-export const loadSnsTotalCommitment = async ({
+export const loadSnsDerivedState = async ({
   rootCanisterId,
   strategy,
 }: {
@@ -193,7 +193,7 @@ export const watchSnsTotalCommitment = ({
   rootCanisterId: string;
 }) => {
   const id = setInterval(() => {
-    loadSnsTotalCommitment({ rootCanisterId, strategy: "query" });
+    loadSnsDerivedState({ rootCanisterId, strategy: "query" });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {

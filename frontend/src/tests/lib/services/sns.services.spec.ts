@@ -37,7 +37,7 @@ const {
   getSwapAccount,
   loadSnsSwapCommitments,
   loadSnsSwapCommitment,
-  loadSnsTotalCommitment,
+  loadSnsDerivedState,
   watchSnsTotalCommitment,
 } = services;
 
@@ -108,7 +108,7 @@ describe("sns-services", () => {
     });
   });
 
-  describe("loadSnsTotalCommitment", () => {
+  describe("loadSnsDerivedState", () => {
     it("should call api to get total commitments and load them in stores", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
@@ -143,7 +143,7 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
 
-      await loadSnsTotalCommitment({
+      await loadSnsDerivedState({
         rootCanisterId: rootCanisterId1.toText(),
       });
       expect(spy).toBeCalled();
@@ -176,7 +176,7 @@ describe("sns-services", () => {
         .spyOn(api, "querySnsDerivedState")
         .mockImplementation(() => Promise.resolve(derivedState));
 
-      await loadSnsTotalCommitment({
+      await loadSnsDerivedState({
         rootCanisterId: mockPrincipal.toText(),
         strategy: "update",
       });
