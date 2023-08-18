@@ -43,7 +43,7 @@ export interface FeatureFlags<T> {
   ENABLE_ICP_ICRC: T;
   ENABLE_NEURON_SETTINGS: T;
   ENABLE_INSTANT_UNLOCK: T;
-  ENABLE_SNS_AGGREGATOR_STORE: T,
+  ENABLE_SNS_AGGREGATOR_STORE: T;
   ENABLE_DISBURSE_MATURITY: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
