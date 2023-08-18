@@ -28,7 +28,7 @@ After installing the project, you can run the test suite:
 npm run test
 ```
 
-There is also a project to run e2e tests [here](../e2e-tests/README.md).
+There is also a project to run e2e tests [here](src/tests/e2e/README.md).
 
 ## Style
 

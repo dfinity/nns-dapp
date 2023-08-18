@@ -17,6 +17,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Identify swap participation ICP transactions.
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
+* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 
 #### Changed
 
