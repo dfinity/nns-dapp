@@ -26,7 +26,7 @@ ARG_PATH="./release/sns_aggregator_arg.bin"
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
 
 PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
-if grep -v FORUM_LINK "$PROPOSAL_TEXT" ; then
+if grep -v FORUM_LINK "$PROPOSAL_TEXT"; then
   {
     echo "ERROR: Please make a forum post and put the link in the proposal text,"
     echo "       replacing the placeholder 'FORUM_LINK'."
