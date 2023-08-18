@@ -1,5 +1,6 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import { mapAndSortSnsQueryToSummaries } from "$lib/utils/sns.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
@@ -9,6 +10,11 @@ import type {
 } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
+import { ENABLE_SNS_AGGREGATOR_STORE } from "./feature-flags.store";
+import {
+  snsAggregatorStore,
+  type SnsAggregatorStore,
+} from "./sns-aggregator.store";
 
 // ************** Proposals for Launchpad **************
 
@@ -269,13 +275,26 @@ export const snsQueryStoreIsLoading = derived<SnsQueryStore, boolean>(
 /**
  * The response of the Snses about metadata and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
  */
-export const snsSummariesStore = derived<SnsQueryStore, SnsSummary[]>(
-  snsQueryStore,
-  (data: SnsQueryStoreData) =>
-    mapAndSortSnsQueryToSummaries({
-      metadata: data?.metadata ?? [],
-      swaps: data?.swaps ?? [],
-    })
+export const snsSummariesStore = derived<
+  [SnsQueryStore, SnsAggregatorStore, Readable<boolean>],
+  SnsSummary[]
+>(
+  [snsQueryStore, snsAggregatorStore, ENABLE_SNS_AGGREGATOR_STORE],
+  ([data, aggregatorData, enableSnsAggregatorStore]) => {
+    if (!enableSnsAggregatorStore) {
+      return mapAndSortSnsQueryToSummaries({
+        metadata: data?.metadata ?? [],
+        swaps: data?.swaps ?? [],
+      });
+    }
+    return (
+      aggregatorData.data
+        ?.map((data) => convertDtoToSnsSummary(data))
+        .filter((optionalSummary): optionalSummary is SnsSummary =>
+          nonNullish(optionalSummary)
+        ) ?? []
+    );
+  }
 );
 
 // ************** Sns commitment **************
