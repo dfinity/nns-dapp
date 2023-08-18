@@ -26,7 +26,7 @@ import {
   type SnsTransferableAmount,
 } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
-import { nonNullish, toNullable } from "@dfinity/utils";
+import { hexStringToUint8Array, nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =
@@ -38,23 +38,7 @@ export const mockProjectSubscribe =
   };
 
 export const principal = (index: number): Principal =>
-  [
-    Principal.fromText(
-      "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe"
-    ),
-    Principal.fromText(
-      "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae"
-    ),
-    Principal.fromText(
-      "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe"
-    ),
-    Principal.fromText(
-      "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe"
-    ),
-    Principal.fromText(
-      "4etav-nasrq-uvswa-iqsll-6spts-ryhsl-e4yf6-xtycj-4sxvp-ciay5-yae"
-    ),
-  ][index];
+  Principal.fromUint8Array(hexStringToUint8Array(index.toString(16) + "0x01"));
 
 export const createTransferableAmount = (
   amount: bigint
