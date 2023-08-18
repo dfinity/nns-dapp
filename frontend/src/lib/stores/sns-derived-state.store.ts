@@ -29,9 +29,9 @@ export const resetDerivedStateStoresForTesting = () => {
 };
 
 /**
- * A store that contains the derived state of a specific sns project.
+ * A store that contains the derived state of all sns projects.
  *
- * - setDerivedState: replace the current derived state with a new one.
+ * - setDerivedState: replace the derived state of an sns project with a new one.
  */
 const initSnsDerivedStateStore = (): SnsDerivedStateStore => {
   const { subscribe, set, update } = writable<SnsDerivedStateData>({});
