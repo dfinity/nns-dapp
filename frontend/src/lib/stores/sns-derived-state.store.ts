@@ -3,14 +3,22 @@ import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
 
-interface SnsDerivedStateData {
+interface SnsDerivedStateProjectData {
   derivedState: SnsGetDerivedStateResponse;
   certified: boolean;
 }
 
+interface SnsDerivedStateData {
+  [rootCanisterId: string]: SnsDerivedStateProjectData;
+}
+
 export interface SnsDerivedStateStore
   extends Readable<SnsDerivedStateData | undefined> {
-  setDerivedState: (data: SnsDerivedStateData) => void;
+  setDerivedState: (params: {
+    data: SnsGetDerivedStateResponse;
+    certified: boolean;
+    rootCanisterId: Principal;
+  }) => void;
   reset: () => void;
 }
 
@@ -25,23 +33,37 @@ export const resetDerivedStateStoresForTesting = () => {
  *
  * - setDerivedState: replace the current derived state with a new one.
  */
-const createSnsDerivedStateStore = (): SnsDerivedStateStore => {
-  const { subscribe, set } = writable<SnsDerivedStateData | undefined>(
-    undefined
-  );
+const initSnsDerivedStateStore = (): SnsDerivedStateStore => {
+  const { subscribe, set, update } = writable<SnsDerivedStateData>({});
 
   return {
     subscribe,
 
-    setDerivedState(data: SnsDerivedStateData) {
-      set(data);
+    setDerivedState({
+      data,
+      certified,
+      rootCanisterId,
+    }: {
+      data: SnsGetDerivedStateResponse;
+      certified: boolean;
+      rootCanisterId: Principal;
+    }) {
+      update((currentState: SnsDerivedStateData) => ({
+        ...currentState,
+        [rootCanisterId.toText()]: {
+          derivedState: data,
+          certified,
+        },
+      }));
     },
 
     reset() {
-      set(undefined);
+      set({});
     },
   };
 };
+
+export const snsDerivedStateStore = initSnsDerivedStateStore();
 
 export const getOrCreateDerivedStateStore = (
   rootCanisterId: Principal
@@ -52,7 +74,7 @@ export const getOrCreateDerivedStateStore = (
     return existingStore;
   }
 
-  const newStore = createSnsDerivedStateStore();
+  const newStore = initSnsDerivedStateStore();
   stores.set(key, newStore);
   return newStore;
 };

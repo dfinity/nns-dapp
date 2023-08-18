@@ -6,7 +6,7 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
-import { getOrCreateDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
   snsQueryStore,
@@ -165,12 +165,10 @@ export const loadSnsTotalCommitment = async ({
     onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
         snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
-        const store = getOrCreateDerivedStateStore(
-          Principal.fromText(rootCanisterId)
-        );
-        store.setDerivedState({
+        snsDerivedStateStore.setDerivedState({
+          rootCanisterId: Principal.fromText(rootCanisterId),
           certified,
-          derivedState,
+          data: derivedState,
         });
       }
     },
