@@ -26,11 +26,24 @@ ARG_PATH="./release/sns_aggregator_arg.bin"
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
 
 PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
-if grep -v FORUM_LINK "$PROPOSAL_TEXT"; then
+
+# Verifies that the forum link placeholder has been replaced.
+FORUM_PLACEHOLDER="FORUM_LINK"
+# ... Verifies that the template contains the placeholder:
+grep -w "$FORUM_PLACEHOLDER" scripts/sns/aggregator/release-template >/dev/null || {
+  echo "ERROR: The proposal template should have a space for a forum link but"
+  echo "       could not find $FORUM_PLACEHOLDER in: scripts/sns/aggregator/release-template"
+  exit 1
+} >&2
+# ... Verifies that the proposal text does not contain the placeholder:
+if grep -w "$FORUM_PLACEHOLDER" "$PROPOSAL_TEXT"; then
   {
     echo "ERROR: Please make a forum post and put the link in the proposal text,"
-    echo "       replacing the placeholder 'FORUM_LINK'."
-    echo "SUGGESTION:"
+    echo "       replacing the placeholder '$FORUM_PLACEHOLDER'."
+    echo "       If you have a strong reason for not making a forum post, please"
+    echo "       delete the section for the forum post."
+    echo
+    echo "SUGGESTED FORUM TEMPLATE:"
     cat scripts/sns/aggregator/release-forum-template.md
     exit 1
   } >&2
