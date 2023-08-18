@@ -139,6 +139,11 @@ export class JestPageObjectElement implements PageObjectElement {
     await fireEvent.click(this.element);
   }
 
+  async input(value: string): Promise<void> {
+    await this.waitFor();
+    await fireEvent.input(this.element, { target: { value } });
+  }
+
   async typeText(text: string): Promise<void> {
     await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
