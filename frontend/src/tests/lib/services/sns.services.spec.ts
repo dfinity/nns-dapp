@@ -7,7 +7,7 @@ import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
-import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
   mockIdentity,
@@ -369,8 +369,9 @@ describe("sns-services", () => {
       )?.swap[0].lifecycle;
       expect(updatedLifecycle).toEqual(newLifeCycle);
 
-      const lifecycleStore = getOrCreateLifecycleStore(rootCanisterId1);
-      expect(get(lifecycleStore).data).toEqual(lifeCycleResponse);
+      expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
+        lifeCycleResponse
+      );
     });
   });
 });
