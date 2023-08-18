@@ -37,6 +37,7 @@ export const mockProjectSubscribe =
     return () => undefined;
   };
 
+// Opaque ids end with 0x01: https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal
 export const principal = (index: number): Principal =>
   Principal.fromUint8Array(hexStringToUint8Array(index.toString(16) + "0x01"));
 
