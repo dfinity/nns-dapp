@@ -39,7 +39,13 @@
   const goToConfirm = () => modal.next();
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose bind:this={modal}>
+<WizardModal
+  testId="disburse-maturity-modal-component"
+  {steps}
+  bind:currentStep
+  on:nnsClose
+  bind:this={modal}
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
