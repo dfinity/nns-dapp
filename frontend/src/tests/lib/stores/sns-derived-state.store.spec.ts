@@ -1,39 +1,87 @@
-import {
-  getOrCreateDerivedStateStore,
-  resetDerivedStateStoresForTesting,
-} from "$lib/stores/sns-derived-state.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { mockDerivedResponse, principal } from "$tests/mocks/sns-projects.mock";
+import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns derived state store", () => {
   beforeEach(() => {
-    resetDerivedStateStoresForTesting();
+    snsDerivedStateStore.reset();
   });
 
-  it("should create a store for a given root canister id and store derived state", () => {
+  it("should store derived state", () => {
     const rootCanisterId = principal(0);
-    const store = getOrCreateDerivedStateStore(rootCanisterId);
 
-    store.setDerivedState({
+    snsDerivedStateStore.setDerivedState({
       certified: true,
-      derivedState: mockDerivedResponse,
+      rootCanisterId,
+      data: mockDerivedResponse,
     });
 
-    expect(get(store).derivedState).toEqual(mockDerivedResponse);
+    expect(
+      get(snsDerivedStateStore)[rootCanisterId.toText()].derivedState
+    ).toEqual(mockDerivedResponse);
   });
 
-  it("should cache stores per root canister id", () => {
+  it("should store multiple derived states", () => {
     const rootCanisterId = principal(0);
-    const store = getOrCreateDerivedStateStore(rootCanisterId);
+    const rootCanisterId2 = principal(1);
 
-    const store2 = getOrCreateDerivedStateStore(rootCanisterId);
-    expect(store).toBe(store2);
+    const anotherDerivedResponse: SnsGetDerivedStateResponse = {
+      ...mockDerivedResponse,
+      sns_tokens_per_icp: [4],
+    };
+
+    snsDerivedStateStore.setDerivedState({
+      certified: true,
+      rootCanisterId,
+      data: mockDerivedResponse,
+    });
+
+    expect(
+      get(snsDerivedStateStore)[rootCanisterId.toText()].derivedState
+    ).toEqual(mockDerivedResponse);
+
+    snsDerivedStateStore.setDerivedState({
+      certified: true,
+      rootCanisterId: rootCanisterId2,
+      data: anotherDerivedResponse,
+    });
+
+    const storeData = get(snsDerivedStateStore);
+    expect(storeData[rootCanisterId.toText()].derivedState).toEqual(
+      mockDerivedResponse
+    );
+    expect(storeData[rootCanisterId2.toText()].derivedState).toEqual(
+      anotherDerivedResponse
+    );
   });
 
-  it("should not cache stores for different root canister id", () => {
-    const store = getOrCreateDerivedStateStore(principal(0));
+  it("should override derived states", () => {
+    const rootCanisterId = principal(0);
 
-    const store2 = getOrCreateDerivedStateStore(principal(1));
-    expect(store).not.toBe(store2);
+    const anotherDerivedResponse: SnsGetDerivedStateResponse = {
+      ...mockDerivedResponse,
+      sns_tokens_per_icp: [4],
+    };
+
+    snsDerivedStateStore.setDerivedState({
+      certified: true,
+      rootCanisterId,
+      data: mockDerivedResponse,
+    });
+
+    expect(
+      get(snsDerivedStateStore)[rootCanisterId.toText()].derivedState
+    ).toEqual(mockDerivedResponse);
+
+    snsDerivedStateStore.setDerivedState({
+      certified: true,
+      rootCanisterId,
+      data: anotherDerivedResponse,
+    });
+
+    expect(
+      get(snsDerivedStateStore)[rootCanisterId.toText()].derivedState
+    ).toEqual(anotherDerivedResponse);
   });
 });

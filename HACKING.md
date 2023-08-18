@@ -9,8 +9,6 @@ This document list a couple of useful information to develop the NNS-dapp fronte
 - [Testnet](#testnet)
 - [Preview](#preview)
   - [Configure](#configure)
-- [e2e](#e2e)
-  - [Running against local server](#running-against-local-server)
 - [Requirements](#requirements)
 - [Dependencies](#dependencies)
 - [ckBTC deployment](#ckbtc-deployment)
@@ -77,18 +75,6 @@ To develop and run locally the dapp against a testnet, proceed as following:
 - Start `npm run dev` in the `./frontend/` folder to serve the application
 
 e.g. replace `<testnet_name>` with `small11`
-
-## e2e
-
-e2e tests also need a `.env` configuration. Such file can also be generated with the help of the `./config.sh` script by providing a specific output parameter.
-
-e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
-
-### Running against local server
-
-If you wish to run the e2e tests against your local server, please note:
-
-* The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
 
 ## Requirements
 

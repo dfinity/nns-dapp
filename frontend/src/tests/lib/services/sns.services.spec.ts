@@ -6,10 +6,7 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
-import {
-  getOrCreateDerivedStateStore,
-  resetDerivedStateStoresForTesting,
-} from "$lib/stores/sns-derived-state.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
@@ -53,9 +50,9 @@ describe("sns-services", () => {
     jest.useFakeTimers();
     jest.clearAllTimers();
     jest.clearAllMocks();
-    resetDerivedStateStoresForTesting();
     snsSwapCommitmentsStore.reset();
     snsQueryStore.reset();
+    snsDerivedStateStore.reset();
   });
 
   describe("getSwapAccount", () => {
@@ -162,8 +159,9 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
 
-      const derivedStateStore = getOrCreateDerivedStateStore(rootCanisterId1);
-      expect(get(derivedStateStore)?.derivedState).toEqual(derivedState);
+      expect(
+        get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+      ).toEqual(derivedState);
     });
 
     it("should call api with the strategy passed", async () => {

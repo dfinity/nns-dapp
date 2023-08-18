@@ -53,6 +53,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+* Change some unit tests to set a system time and not rely on actual time.
 
 #### Deprecated
 #### Removed
