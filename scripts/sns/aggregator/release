@@ -25,7 +25,18 @@ ARG_DID="./release/sns_aggregator_arg.did"
 ARG_PATH="./release/sns_aggregator_arg.bin"
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
 
-set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file ./release/AGGREGATOR_PROPOSAL.md --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
+if grep -v FORUM_LINK "$PROPOSAL_TEXT" ; then
+  {
+    echo "ERROR: Please make a forum post and put the link in the proposal text,"
+    echo "       replacing the placeholder 'FORUM_LINK'."
+    echo "SUGGESTION:"
+    cat scripts/sns/aggregator/release-forum-template.md
+    exit 1
+  } >&2
+fi
+
+set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$PROPOSAL_TEXT" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
 
 echo
 echo PLEASE REVIEW THIS COMMAND:

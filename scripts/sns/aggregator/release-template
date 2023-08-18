@@ -32,6 +32,9 @@ Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
 $(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/")
 \`\`\`
 
+## Forum
+Please see the forum post here: FORUM_LINK
+
 ## Wasm Verification
 
 To build the wasm module yourself and verify its hash, run the following commands from the root of the [nns-dapp repo](https://github.com/dfinity/nns-dapp):
