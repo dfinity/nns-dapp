@@ -52,6 +52,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/.
 * Change some unit tests to set a system time and not rely on actual time.
 
@@ -59,8 +60,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
-* Removed e2e-tests/scripts/update-chromedriver
 * Remove `frontend/jest-spy.ts`.
+* Remove e2e-tests/
 
 #### Fixed
 
