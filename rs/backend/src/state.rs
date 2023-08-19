@@ -1,3 +1,4 @@
+use crate::accounts_store::Account;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
@@ -166,13 +167,13 @@ impl State {
         // Assuming it is unversioned:
         Self::post_upgrade_unversioned()
     }
-    /// Save any unsaved state to stable memory in the V0 format, if
+    /// Save any unsaved state to stable memory in the S0 format, if
     /// the migration to S0 has succeeded, else as unversioned.
     #[allow(dead_code)]
     fn pre_upgrade_s0_early() {
         // TODO: Determine whether the migration has suceeded.
     }
-    /// Save any unsaved state to stable memory in the V0 format.
+    /// Save any unsaved state to stable memory in the S0 format.
     ///
     /// Precondition: The memory manager exists.
     #[allow(dead_code)]
@@ -194,5 +195,15 @@ impl State {
         heap_memory.write(AB_PAYLOAD_OFFSET, &self_bytes);
         // Mark the memory as valid.
         heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
+    }
+    /// Save an account to stable memory in the S0 format.
+    #[allow(dead_code)]
+    fn save_account_v0(_account_id: &[u8], _account: &Account) {
+        let _account_serialized = Candid((_account,)).into_bytes().unwrap();
+        unimplemented!()
+    }
+    #[allow(dead_code)]
+    fn get_account_v0(_account_id: &[u8]) -> Account {
+        unimplemented!()
     }
 }
