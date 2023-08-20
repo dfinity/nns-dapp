@@ -9,20 +9,14 @@ use crate::accounts_store::Account;
 use on_wire::{FromWire, IntoWire};
 
 pub trait AccountStorageTrait {
+    /// Every account  is serialized and stored in betwen 0 and 256 pages.
+    const MAX_PAGES_PER_ACCOUNT: usize = (u8::MAX as usize)+1;
+
     // Low level methods to get and set pages.
     fn get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
-    fn insert_account_page(&mut self, account_storage_key: AccountStorageKey, account: AccountStoragePage);
+    fn insert_account_page(&mut self, account_storage_key: AccountStorageKey, account: AccountStoragePage) -> Option<AccountStoragePage>;
     fn contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
-    fn remove_account_page(&mut self, account_storage_key: &AccountStorageKey);
-    fn get_account_pages(&self, account_storage_key: &AccountStorageKey) -> Vec<AccountStoragePage> {
-        let mut ans = Vec::new();
-        let mut account_storage_key = *account_storage_key;
-        while self.contains_account_page(&account_storage_key) {
-            ans.push(self.get_account_page(&account_storage_key).unwrap());
-            account_storage_key = account_storage_key.next();
-        }
-        ans
-    }
+    fn remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
     // High level methods to get and set accounts.
     fn contains_account(&self, account_key: &[u8]) -> bool {
@@ -32,8 +26,8 @@ pub trait AccountStorageTrait {
     fn get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
         let mut have_account = false;
-        for page_num in 0.. {
-            let account_storage_key = AccountStorageKey::new(page_num, account_key);
+        for page_num in 0..Self::MAX_PAGES_PER_ACCOUNT {
+            let account_storage_key = AccountStorageKey::new(page_num as u8, account_key);
             if let Some(page) = self.get_account_page(&account_storage_key) {
                 have_account = true;                
                 let len = page.len();
@@ -51,6 +45,28 @@ pub trait AccountStorageTrait {
             Some(account)
         } else {
             None
+        }
+    }
+    fn insert_account(&mut self, account_key: &[u8], account: Account) {
+        // Serilaize teh account into one or more pages.
+        let pages_to_insert = AccountStoragePage::pages_from_account(&account);
+        // Temporary store for pages that are replaced by new data.
+        let mut last_removed_page = None;
+        // Insert the new pages, and make sure that all old pages are removed.
+        for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
+            let account_storage_key = AccountStorageKey::new(index as u8, account_key);
+            if let Some(page_to_insert) = pages_to_insert.get(index) {
+                last_removed_page = self.insert_account_page(account_storage_key, page_to_insert.clone());
+            } else {
+                // If the number of pages has reduced, we need to remove some pages.
+                // ... If the last removed or replaced page was not full, we are done.
+                if let Some(page) = last_removed_page {
+                    if page.len() < AccountStoragePage::MAX_PAYLOAD_LEN {
+                        break;
+                    }
+                }
+                last_removed_page = self.remove_account_page(&account_storage_key);
+            }
         }
     }
 }
@@ -105,6 +121,7 @@ impl AccountStorageKey {
 }
 
 /// A page of account data; a single account is stored on one or more pages.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct AccountStoragePage {
     /// TODO: See whether this can be variable length.  Stable structures would have to support this.
     bytes: [u8;AccountStoragePage::SIZE as usize],
