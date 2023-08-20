@@ -197,16 +197,16 @@ impl State {
         heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
     }
     /// Save an account to stable memory in the S0 format.
-    /// 
+    ///
     /// Key: pagenum byte + account_identifier_len + Account identifier.  See: https://github.com/dfinity/ic/blob/master/rs/rosetta-api/icp_ledger/src/account_identifier.rs#L58
     /// * account_indentifier.to_vec() is 32 bytes; 28 bytes of a SHA224 plus four bytes from a CRC32.
     /// * AccountIdentifier::from_slice() accepts either 28 bytes, for a bare SHA224, or 32 bytes for a sha+checksum.
     /// Expectation: In the nns-dapp, all keys are 32 bytes.
     /// TODO: Check the length of account identifier keys to make sure that there are no other key types.
-    /// 
+    ///
     /// Value: Variable length, split over 1K pages.  Layout: len(4 bytes) + up to 1024-4 == 1020 bytes.  If there is a follow on page, use len = 0xffffffff.
     /// * Read: read pagenum0
-        #[allow(dead_code)]
+    #[allow(dead_code)]
     fn save_account_v0(_account_id: &[u8], _account: &Account) {
         let _account_serialized = Candid((_account,)).into_bytes().unwrap();
         unimplemented!()
