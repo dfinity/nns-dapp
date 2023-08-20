@@ -111,7 +111,7 @@ pub trait AccountStorageTrait {
 mod tests;
 
 /// Key for account data in a stable BTreeMap.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct AccountStorageKey {
     // TODO: Consider changing this to Cow<'a, [u8]>.
     bytes: [u8; AccountStorageKey::MAX_SIZE as usize],
