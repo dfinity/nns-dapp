@@ -18,6 +18,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
+  import { layoutMenuCollapsed, layoutMenuOpen } from "@dfinity/gix-components";
 
   let visible = false;
   let transferring = false;
@@ -96,6 +97,7 @@
       data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
+      class:collapsed={!$layoutMenuOpen && $layoutMenuCollapsed}
     >
       <IconAccountBalance />
       <span>{`Get ${token.symbol}`}</span>
@@ -162,6 +164,22 @@
     }
 
     z-index: var(--z-index);
+
+    :global(svg) {
+      width: var(--padding-3x);
+      min-width: var(--padding-3x);
+      height: var(--padding-3x);
+    }
+
+    span {
+      white-space: nowrap;
+    }
+
+    &.collapsed {
+      span {
+        display: none;
+      }
+    }
   }
 
   form {
