@@ -4,6 +4,7 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
+use std::borrow::Cow;
 use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{
     memory_manager::{MemoryId, MemoryManager, VirtualMemory},
@@ -11,6 +12,7 @@ use ic_stable_structures::{
 };
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
+use ic_stable_structures::storable::{Storable, BoundedStorable};
 #[cfg(test)]
 pub mod tests;
 
@@ -197,7 +199,16 @@ impl State {
         heap_memory.write(AB_HEADER_BOOTABLE_OFFSET, &AB_HEADER_BOOTABLE_TRUE);
     }
     /// Save an account to stable memory in the S0 format.
-    #[allow(dead_code)]
+    /// 
+    /// Key: pagenum byte + account_identifier_len + Account identifier.  See: https://github.com/dfinity/ic/blob/master/rs/rosetta-api/icp_ledger/src/account_identifier.rs#L58
+    /// * account_indentifier.to_vec() is 32 bytes; 28 bytes of a SHA224 plus four bytes from a CRC32.
+    /// * AccountIdentifier::from_slice() accepts either 28 bytes, for a bare SHA224, or 32 bytes for a sha+checksum.
+    /// Expectation: In the nns-dapp, all keys are 32 bytes.
+    /// TODO: Check the length of account identifier keys to make sure that there are no other key types.
+    /// 
+    /// Value: Variable length, split over 1K pages.  Layout: len(4 bytes) + up to 1024-4 == 1020 bytes.  If there is a follow on page, use len = 0xffffffff.
+    /// * Read: read pagenum0
+        #[allow(dead_code)]
     fn save_account_v0(_account_id: &[u8], _account: &Account) {
         let _account_serialized = Candid((_account,)).into_bytes().unwrap();
         unimplemented!()
@@ -206,4 +217,46 @@ impl State {
     fn get_account_v0(_account_id: &[u8]) -> Account {
         unimplemented!()
     }
+}
+
+// TODO: Add schema S0 or move into S0 module.
+pub struct AccountStorageKey {
+    bytes: [u8; 34],
+}
+impl Storable for AccountStorageKey {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        self.bytes[..].into()
+    }
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        unimplemented!()
+    }
+}
+impl BoundedStorable for AccountStorageKey {
+    const MAX_SIZE: u32 = 34;
+    const IS_FIXED_SIZE: bool = true;
+}
+impl AccountStorageKey {
+    /// Location of the page number in the key bytes.
+    const PAGE_NUM_OFFSET: usize = 0;
+    /// Location of the account identifier length in the key bytes.
+    const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = 1;
+    /// Location of the account identifier in the key bytes.
+    const ACCOUNT_IDENTIFIER_OFFSET: usize = 2;
+
+    /// Accounts are currently keyed by Vec[u8]; we continue this tradition, although it is tempting to use AccountIdentifier instead.
+    fn from_bytes(page_num: u8, account_identifier: &[u8]) -> Self {
+        let account_identifier_len = account_identifier.len() as u8;
+        let mut ans = [0u8;Self::MAX_SIZE as usize];
+        ans[Self::PAGE_NUM_OFFSET] = page_num;
+        ans[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] = account_identifier_len;
+        ans[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET+account_identifier.len()].copy_from_slice(&account_identifier);
+        Self { bytes: ans }
+    }
+
+}
+
+#[test]
+fn account_identifier_has_32_bytes() {
+    let account_identifier = icp_ledger::AccountIdentifier::from(ic_base_types::PrincipalId::new_user_test_id(99));
+    assert_eq!(account_identifier.to_vec().len(), 32);
 }
