@@ -23,6 +23,7 @@ impl AccountStorageTrait for MockS0DataStorage {
     }
 }
 
+/// Creates atoy account.  The contents do not need to be meaningful; do need to have size.
 fn toy_account() -> Account {
     let principal = PrincipalId::new_user_test_id(1);
     let account_identifier = AccountIdentifier::from(principal);
