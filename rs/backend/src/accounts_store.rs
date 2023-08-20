@@ -21,6 +21,8 @@ use std::collections::{HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
+pub mod schema;
+
 type TransactionIndex = u64;
 
 #[derive(Default, Debug, Eq, PartialEq)]
