@@ -221,14 +221,17 @@ impl State {
 
 // TODO: Add schema S0 or move into S0 module.
 pub struct AccountStorageKey {
-    bytes: [u8; 34],
+    // TODO: Consider changing this to Cow<'a, [u8]>.
+    bytes: [u8;AccountStorageKey::MAX_SIZE as usize],
 }
 impl Storable for AccountStorageKey {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         self.bytes[..].into()
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        unimplemented!()
+        Self{
+            bytes: bytes.into_owned().try_into().map_err(|err| format!("Attempt to create AccountStorageKey from bytes of wrong length: {err:?}")).unwrap(),
+        }
     }
 }
 impl BoundedStorable for AccountStorageKey {
