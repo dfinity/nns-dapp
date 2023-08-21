@@ -5,7 +5,7 @@ cd "$(dirname "$(realpath "$0")")/.." || exit
 print_help() {
   cat <<-EOF
 
-	Formats YAML files.
+	Formats markdown files.
 	EOF
   # TODO: Consider using clap.  If not, describe flags here.
 }
