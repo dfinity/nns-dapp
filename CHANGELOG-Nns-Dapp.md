@@ -19,6 +19,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - New lifecycle store for SNS projects.
 - New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 - Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+* New tag for NNS neurons: "Hardware Wallet".
+* New derived state store for SNS projects.
+* Identify swap participation ICP transactions.
+* Improve error messaging on payload size limit in proposals list page.
+* New lifecycle store for SNS projects.
+* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 
 #### Changed
 
@@ -45,6 +51,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 - Fix wrong "ICP Staked" message in SNS neurons.
 - Disable HW from participating in swaps.
+* Fix wrong "ICP Staked" message in SNS neurons.
 
 #### Security
 
@@ -82,6 +89,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 - Fixed some tests that depended on execution order.
 - [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+
+## Proposal 124252 (cherry-pick)
+
+### Application
+
+#### Fixed
+
+* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+* Disable HW from participating in swaps.
 
 ## Proposal 124014
 
