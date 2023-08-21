@@ -18,19 +18,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Improve error messaging on payload size limit in proposals list page.
 - New lifecycle store for SNS projects.
 - New feature flag ENABLE_SNS_AGGREGATOR_STORE.
-- Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
-
-* New tag for NNS neurons: "Hardware Wallet".
-* New derived state store for SNS projects.
-* Identify swap participation ICP transactions.
-* Improve error messaging on payload size limit in proposals list page.
-* New lifecycle store for SNS projects.
-* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 
 #### Changed
 
-- bump agent-js `v0.18.1`
-- Clarify Ledger app version error message.
 - Update SNS Swap types to match the latest canister interface.
 - Hide by default the proposal summary in ballots.
 - Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
@@ -40,20 +30,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Removed
 
-#### Fixed
-
-- Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
-
-#### Security
-
 - Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
 
 #### Fixed
 
 - Fix wrong "ICP Staked" message in SNS neurons.
-- Disable HW from participating in swaps.
-
-* Fix wrong "ICP Staked" message in SNS neurons.
 
 #### Security
 
@@ -186,18 +167,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-- Support SNS neuron permission in fake SNS governance API.
-- Support selective pausing and resuming in API fakes.
-- Format CHANGELOG-Nns-Dapp.md automatically
-
-#### Changed
-
-- Upgraded to Playwright 1.36.
-
-#### Deprecated
-
-#### Removed
-
 - A separate build of nns-dapp for testing. See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
 - A test that state is preserved in downgrade-upgrade tests.
 - Support SNS neuron permission in fake SNS governance API.
@@ -312,9 +281,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 - Render SNS neuron voting power in neuron detail page.
-- Users can now add names to canisters to easily identify them within NNS dapp only.
-- Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
-- Render SNS neuron voting power in neuron detail page.
 - Users can now add names to canisters to easily identify them within NNS Dapp only.
 - Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
 
@@ -386,7 +352,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Added a command line tool to get the arguments of a canister upgrade proposal, for verification purposes.
 - Publish the arguments used in every release.
 - A script to download the WASM from GitHub CI build.
-- A script to get the WASM hash from the GitHub CI build log.
+
+* A script to get the WASM hash from the GitHub CI build log.
+
 - Instructions to verify canister args in proposal.
 - Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 - More test for the release-sop script.

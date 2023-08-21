@@ -10,17 +10,8 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 
+- More tests that the SNS aggregator contains the expected number of SNSs.
 - Display commit, branch name and similar data when deploying to a test canister.
-- Format CHANGELOG-Sns_Aggregator.md automatically
-
-### Changed
-
-### Fixed
-
-- Update the index.html when it has changed.
-
-* More tests that the SNS aggregator contains the expected number of SNSs.
-* Display commit, branch name and similar data when deploying to a test canister.
 
 ### Changed
 
@@ -44,7 +35,6 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 
 - Style (UI design) for the landing page
-- Add a link that points to NNS dapp GitHub repo
 - Add a link that points to NNS Dapp GitHub repo
 - Display swaps' lifecycle on the landing page
 
