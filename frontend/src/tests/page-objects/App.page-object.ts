@@ -111,6 +111,7 @@ export class AppPo extends BasePageObject {
     await this.getMenuItemsPo().clickNeuronStaking();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
+    await this.getNeuronsPo().waitForContentLoaded();
   }
 
   async goToNeuronDetails(neuronId: string): Promise<void> {
