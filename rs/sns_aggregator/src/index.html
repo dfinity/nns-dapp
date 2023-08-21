@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -20,6 +20,7 @@
         --lavender-indigo: #9b5de5;
         --hot-pink: #f15bb5;
         --blue-bolt: #00bbf9;
+        --verdigris: #56a3a6;
         --sea-green: #00f5d4;
 
         --padding-3x: calc(var(--padding) * 3);
@@ -51,11 +52,8 @@
       }
 
       a {
-        transition:
-          color 0.15s ease-out,
-          background 0.15s ease-out,
-          transform 0.15s ease-out,
-          box-shadow 0.25s ease-out;
+        transition: color 0.15s ease-out, background 0.15s ease-out,
+          transform 0.15s ease-out, box-shadow 0.25s ease-out;
       }
 
       main {
@@ -183,6 +181,7 @@
         align-items: center;
 
         column-gap: var(--padding);
+        row-gap: var(--padding-0_5x);
 
         margin: 0 0 var(--padding-2x);
       }
@@ -200,6 +199,8 @@
         width: fit-content;
 
         color: black;
+
+        align-self: flex-end;
       }
 
       article a:hover,
@@ -216,6 +217,13 @@
       article img:has(+ a:hover) {
         animation: shake 0.5s;
         animation-iteration-count: infinite;
+      }
+
+      article a span {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
       }
 
       @keyframes shake {
@@ -272,6 +280,8 @@
         border-radius: var(--border-radius-0_5x);
         border: calc(var(--border-size) / 2) solid
           var(--mark-border-color, black);
+
+        align-self: baseline;
       }
 
       mark.aborted {
@@ -287,9 +297,16 @@
 
       mark.pending,
       mark.open {
-        background: var(--lavender-indigo);
         color: white;
         --mark-border-color: white;
+      }
+
+      mark.pending {
+        background: var(--lavender-indigo);
+      }
+
+      mark.open {
+        background: var(--verdigris);
       }
     </style>
   </head>
@@ -347,7 +364,8 @@
     <script>
       // Mainnet: https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns
       // Use the above for local development of this HTML page
-      const aggregatorUrl = "/v1/sns";
+      const aggregatorUrl =
+        "https://3r4gx-wqaaa-aaaaq-aaaia-cai.raw.icp0.io/v1/sns";
 
       const lifecycleText = (lifeCycle) => {
         switch (lifeCycle) {
@@ -392,13 +410,15 @@
         const a = document.createElement("a");
         a.href = `${aggregatorUrl}/root/${root_canister_id}/slow.json`;
         a.alt = `Open SNS Json data`;
-        a.text = name;
+
+        const span = document.createElement("span");
+        span.textContent = name;
+
+        a.appendChild(span);
 
         const mark = renderLifecycle(lifecycle);
 
-        article.appendChild(img);
-        article.appendChild(a);
-        article.appendChild(mark);
+        article.append(img, a, mark);
 
         return article;
       };
