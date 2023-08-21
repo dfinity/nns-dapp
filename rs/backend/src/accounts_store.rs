@@ -335,19 +335,18 @@ impl AccountsStore {
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(mut account) = self.db_get_account(&account_identifier.to_vec()) {
-                // TODO: Figure out if this is an early account.
-                if account.principal.is_none() {
-                                    account.principal = Some(caller);
-                                    self.fix_transactions_for_early_user(&account, caller);
-                                    self.db_insert_account(&account_identifier.to_vec(), account.clone());
-                }
-                false
+            // TODO: Figure out if this is an early account.
+            if account.principal.is_none() {
+                account.principal = Some(caller);
+                self.fix_transactions_for_early_user(&account, caller);
+                self.db_insert_account(&account_identifier.to_vec(), account.clone());
             }
-            else {
-                let new_account = Account::new(caller, account_identifier);
-                self.accounts.insert(account_identifier.to_vec(), new_account);
-                true
-            }
+            false
+        } else {
+            let new_account = Account::new(caller, account_identifier);
+            self.accounts.insert(account_identifier.to_vec(), new_account);
+            true
+        }
     }
 
     // TODO: Spin this out as a separate PR and add tests.
