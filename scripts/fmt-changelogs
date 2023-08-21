@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euxo pipefail
-cd "$(dirname "$(realpath "$0")")/.."
-
-npx prettier CHANGELOG-Nns-Dapp.md CHANGELOG-Sns_Aggregator.md --write
