@@ -328,7 +328,9 @@ const convertSnsData = ({
   icrc1_total_supply: BigInt(icrc1_total_supply),
   derived_state: convertDerivedToResponse(derived_state),
   swap_params: {
-    params: [convertSwapParams(swap_params.params)],
+    params: isNullish(swap_params.params)
+      ? []
+      : [convertSwapParams(swap_params.params)],
   },
   init: {
     init: convertSwapInitParams(init.init),
