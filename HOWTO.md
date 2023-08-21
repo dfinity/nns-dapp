@@ -66,7 +66,6 @@ Ideally, you should update to the upcoming commit that the NNS team is planning 
 
 Otherwise, you need to find the commit that added the new Action. Check the blame of the file in the IC repo or ask the NNS Team.
 
-
 ## New Proposal Topic
 
 The [topic](https://github.com/dfinity/ic-js/blob/d94f2b3ae699de17653a174d4b38bf1b44fea2ea/packages/nns/candid/governance.did#L383) is a property of the `ProposalInfo` and it's of type integer.
@@ -144,7 +143,6 @@ Note down its name and number. For example `BitcoinSetConfig = 39`.
 **Note**: If the above link is broken because the file
 has moved, [here](https://github.com/dfinity/ic/blob/509b1e62ba94014246c019fb26bba404f25adabd/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#L3102) is an old version to track down what happened.
 
-
 ### 2. Understand the impact
 
 A new `nnsFunction` does not break backwards compatibility. Therefore, there
@@ -152,7 +150,6 @@ is no need to synchronize releases.
 
 Yet, a proposal with that `nnsFunction` won't be rendered properly until the
 changes are made and released.
-
 
 ### 3. Install a new governance canister
 
@@ -167,8 +164,8 @@ commit which provides built artifacts. The latter you can get by running
 1. `git clone git@github.com:dfinity/ic.git`
 2. `cd ic`
 3. `git pull  # If you didn't clone it just now`
-3. `IC_COMMIT="$(./gitlab-ci/src/artifacts/newest_sha_with_disk_image.sh origin/master)"`
-4. `echo $IC_COMMIT`
+4. `IC_COMMIT="$(./gitlab-ci/src/artifacts/newest_sha_with_disk_image.sh origin/master)"`
+5. `echo $IC_COMMIT`
 
 The governance canister is installed by `dfx` when you run `dfx nns install`.
 However, if there is a version of the canister in the dfx cache, that version
@@ -190,7 +187,6 @@ again, as long as it isn't the governance canister itself.
 8. `dfx start --clean  # This will continue running so continue from another terminal`
 9. `echo $IC_COMMIT`
 10. `DFX_IC_COMMIT=$IC_COMMIT dfx nns install`
-
 
 ### 4. Create a proposal with a payload for the new NNS function
 
@@ -216,7 +212,6 @@ result of
 NNS_URL="http://localhost:$(dfx info replica-port)"
 echo $NNS_URL
 ```
-
 
 ### 5. Verify that it doesn't render correctly yet
 
@@ -246,7 +241,6 @@ Then deploy `nns-dapp`:
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.
 
-
 ### 6. Make the code changes
 
 #### Changes in ic-js
@@ -265,7 +259,7 @@ You'll need to change the following files:
 
 1. [rs/backend/Cargo.toml](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/Cargo.toml)
 2. [frontend/src/lib/i18n/en.governance.json](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json)
-3.  [rs/backend/src/proposals.rs](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs)
+3. [rs/backend/src/proposals.rs](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs)
 
 ##### Cargo.toml
 
@@ -278,24 +272,25 @@ may have to update/add those dependencies as well. To find out what exactly to
 add do the following:
 
 1. Find the file that has the type you need to depend on. For example for
-`SetConfigRequest` from the bitcoin canister, this is
-[https://github.com/dfinity/bitcoin-canister/blob/master/interface/src/lib.rs](
-https://github.com/dfinity/bitcoin-canister/blob/master/interface/src/lib.rs#:~:text=pub%20struct%20SetConfigRequest%20%7B)
+   `SetConfigRequest` from the bitcoin canister, this is
+   [https://github.com/dfinity/bitcoin-canister/blob/master/interface/src/lib.rs](https://github.com/dfinity/bitcoin-canister/blob/master/interface/src/lib.rs#:~:text=pub%20struct%20SetConfigRequest%20%7B)
 2. Then look for the `Cargo.toml` in the parent directory of the `/src/`
-directory.
+   directory.
 3. In the `Cargo.toml` file you should find the package name. For example for
-[this Cargo.toml
-file](https://github.com/dfinity/bitcoin-canister/blob/master/interface/Cargo.toml),
-it's `ic-btc-interface`.
+   [this Cargo.toml
+   file](https://github.com/dfinity/bitcoin-canister/blob/master/interface/Cargo.toml),
+   it's `ic-btc-interface`.
 4. Use that name to add a line in `rs/backend/Cargo.toml` like this:
+
 ```
 ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="2c91aaae834dace5f1826ef41a910500d133d35e" }
 ```
+
 5. But replace `ic-btc-interface` with the package name you found in step 3,
-replace the `git =` value with the correct repo link, and replace the `rev =`
-value with a revision that contains the changes that you need.
+   replace the `git =` value with the correct repo link, and replace the `rev =`
+   value with a revision that contains the changes that you need.
 6. Once the changes to `Cargo.toml` have been made, run `cargo update` to
-generate the required changes in `Cargo.lock`.
+   generate the required changes in `Cargo.lock`.
 
 **Note**: The updated dependencies might have breaking changes which need to
 be fixed when building nns-dapp later.
@@ -317,7 +312,6 @@ as a comment on the [enum value definition](https://github.com/dfinity/ic/blame/
 If not, you'll just have to ask someone for a good description. This
 description will be displayed when someone clicks on the (i) icon on the
 proposal detail page.
-
 
 ##### proposals.rs
 
@@ -341,17 +335,20 @@ transformation to the type is required to render it in a human readable way.
 If no transformation is required:
 
 1. Add a new entry to [match
-nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
-  Use the number you noted down above in the section "Verify that the intended
-  change is for a new NNS function". And use the (non-fully qualified) name of
-  the new proposal type. For example:
+   nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+   Use the number you noted down above in the section "Verify that the intended
+   change is for a new NNS function". And use the (non-fully qualified) name of
+   the new proposal type. For example:
+
 ```
 38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
 ```
+
 2. Add an entry at the bottom of the [mod def
-section](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=mod%20def%20%7B)
+   section](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=mod%20def%20%7B)
    to define the type, pointing to the fully qualified type you looked up
    above. For example:
+
 ```
 // NNS function 38 - UpdateElectedReplicaVersions
 /// The payload of a proposal to update elected replica versions.
@@ -363,24 +360,29 @@ pub type UpdateElectedReplicaVersionsPayload =
 If a transformation is required:
 
 1. Add a new entry to [match
-nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
-  Use the number you noted down above in the section "Verify that the intended
-  change is for a new NNS function". And use the (non-fully qualified) name of
-  the new proposal type, and then repeat it with the `HumanReadable` suffix.
-  For example:
+   nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+   Use the number you noted down above in the section "Verify that the intended
+   change is for a new NNS function". And use the (non-fully qualified) name of
+   the new proposal type, and then repeat it with the `HumanReadable` suffix.
+   For example:
+
 ```
 39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
 ```
+
 2. Add an entry at the bottom of the [mod def
-section](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=mod%20def%20%7B)
+   section](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=mod%20def%20%7B)
    to define the type, pointing to the fully qualified type you looked up
    above. For example:
+
 ```
 // NNS function 39 - BitcoinSetConfig
 // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
 pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
 ```
+
 3. Define the corresponding `HumanReadable` type. For example:
+
 ```
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct BitcoinSetConfigProposalHumanReadable {
@@ -388,8 +390,10 @@ pub struct BitcoinSetConfigProposalHumanReadable {
     pub set_config_request: ic_btc_interface::SetConfigRequest,
 }
 ```
+
 4. Implmement `From<ProposalType>` for `ProposalTypeHumanReadable`. For
    example:
+
 ```
 impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
     fn from(proposal: BitcoinSetConfigProposal) -> Self {
@@ -401,7 +405,6 @@ impl From<BitcoinSetConfigProposal> for BitcoinSetConfigProposalHumanReadable {
     }
 }
 ```
-
 
 ### 7. Verify that it does render correctly
 
