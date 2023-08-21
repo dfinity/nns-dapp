@@ -238,8 +238,6 @@ export const aggregatorSnsMock: CachedSns = {
   },
 };
 
-// It should match the converted response from sns-aggregator.mock.json with the same `index` value
-
 export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
   lifecycle = SnsSwapLifecycle.Committed,
