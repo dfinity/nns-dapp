@@ -18,6 +18,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+* Introduce an option to collapse or expand the application's menu on large screen.
 
 #### Changed
 
