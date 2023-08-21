@@ -18,7 +18,6 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
-  import { layoutMenuOpen } from "@dfinity/gix-components";
 
   let visible = false;
   let transferring = false;
@@ -97,6 +96,7 @@
       data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
+      title={`Get ${token.symbol}`}
     >
       <IconAccountBalance />
       <span>{`Get ${token.symbol}`}</span>
