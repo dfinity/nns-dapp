@@ -11,6 +11,7 @@ pub trait AccountsDbTrait {
     fn db_insert_account(&mut self, account_key: &[u8], account: Account);
     fn db_contains_account(&self, account_key: &[u8]) -> bool;
     fn db_remove_account(&mut self, account_key: &[u8]);
+    fn db_accounts_len(&self) -> u64;
 }
 
 // Implement schema S0 for the AccountsStore.
@@ -40,6 +41,18 @@ impl s0::AccountsDbS0Trait for AccountsStore {
         crate::state::ACCOUNTS_MEMORY_A
             .with(|accounts_memory_a| accounts_memory_a.borrow_mut().remove(account_storage_key))
     }
+
+    fn s0_accounts_len(&self) -> u64 {
+        crate::state::ACCOUNTS_MEMORY_A.with(|accounts_memory_a| {
+            // TODO: Require the data store to provide an iterator.
+            // TODO: Benchmark how long this takes.  It is a scan over the entire data store; which is bad, on the other hand we do this only for analysis and if affordable, we can pull out rich data.
+            accounts_memory_a
+                .borrow()
+                .iter()
+                .filter(|(key, _)| key.page_num() == 0)
+                .count() as u64
+        })
+    }
 }
 
 // Implement the AccountsDbTrait for the AccountsStore.
@@ -55,5 +68,8 @@ impl AccountsDbTrait for AccountsStore {
     }
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.s0_remove_account(account_key);
+    }
+    fn db_accounts_len(&self) -> u64 {
+        self.s0_accounts_len()
     }
 }

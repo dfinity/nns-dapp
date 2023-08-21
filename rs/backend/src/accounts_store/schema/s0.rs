@@ -111,6 +111,7 @@ pub trait AccountsDbS0Trait {
             }
         }
     }
+    fn s0_accounts_len(&self) -> u64;
 }
 
 /// Key for account data in a stable BTreeMap.
@@ -165,6 +166,12 @@ impl AccountStorageKey {
         let mut ans = self.bytes;
         ans[Self::PAGE_NUM_OFFSET] += 1;
         Self { bytes: ans }
+    }
+
+    /// Gets the page number.
+    #[allow(dead_code)]
+    pub fn page_num(&self) -> u8 {
+        self.bytes[Self::PAGE_NUM_OFFSET]
     }
 }
 

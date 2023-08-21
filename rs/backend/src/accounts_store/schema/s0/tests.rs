@@ -26,6 +26,12 @@ impl AccountsDbS0Trait for MockS0DataStorage {
     fn s0_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.remove(account_storage_key)
     }
+    fn s0_accounts_len(&self) -> u64 {
+        self.accounts_storage
+            .iter()
+            .filter(|(key, _)| key.page_num() == 0)
+            .count() as u64
+    }
 }
 
 /// Creates atoy account.  The contents do not need to be meaningful; do need to have size.
