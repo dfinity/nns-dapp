@@ -502,7 +502,7 @@ impl AccountsStore {
         } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
 
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+            let mut account = self.db_get_account(&account_identifier.to_vec()).unwrap();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -523,6 +523,7 @@ impl AccountsStore {
 
                 self.hardware_wallet_accounts_count += 1;
                 self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
+                self.db_insert_account(&account_identifier.to_vec(), account);
                 RegisterHardwareWalletResponse::Ok
             }
         } else {
