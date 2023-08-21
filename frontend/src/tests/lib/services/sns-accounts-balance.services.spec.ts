@@ -4,6 +4,7 @@ import * as services from "$lib/services/sns-accounts-balance.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockSnsSummaryList,
@@ -19,6 +20,10 @@ jest.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("sns-accounts-balance.services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
 

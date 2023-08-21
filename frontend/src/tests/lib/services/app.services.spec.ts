@@ -1,11 +1,14 @@
 /**
  * @jest-environment jsdom
  */
+import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { initAppPrivateData } from "$lib/services/app.services";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/nns";
 import { mock } from "jest-mock-extended";
@@ -18,6 +21,7 @@ describe("app-services", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
 
   beforeEach(() => {
+    resetIdentity();
     toastsStore.reset();
     jest.clearAllMocks();
     jest
@@ -33,11 +37,13 @@ describe("app-services", () => {
     jest
       .spyOn(aggregatorApi, "querySnsProjects")
       .mockResolvedValue([aggregatorSnsMockDto, aggregatorSnsMockDto]);
+
+    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
+    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should init Nns", async () => {
-    mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     await initAppPrivateData();
 
     // query + update calls
@@ -52,7 +58,7 @@ describe("app-services", () => {
     );
   });
 
-  it("shuold init SNS", async () => {
+  it("should init SNS", async () => {
     await initAppPrivateData();
 
     await expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
@@ -60,7 +66,6 @@ describe("app-services", () => {
 
   it("should not show errors if loading accounts fails", async () => {
     mockNNSDappCanister.getAccount.mockRejectedValue(new Error("test"));
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
     await initAppPrivateData();
 
     // query + update calls

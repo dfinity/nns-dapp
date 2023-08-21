@@ -100,8 +100,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  input(value: string): Promise<void> {
+  input(_value: string): Promise<void> {
     throw new Error("Not implement");
   }
 

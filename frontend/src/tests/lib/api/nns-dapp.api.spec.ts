@@ -1,10 +1,16 @@
+import * as agent from "$lib/api/agent.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { mock } from "jest-mock-extended";
 
 describe("nns-dapp api", () => {
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
+
   describe("addAccount", () => {
     const nnsDappCanister = mock<NNSDappCanister>();
     nnsDappCanister.getAccount.mockResolvedValue(mockAccountDetails);

@@ -12,7 +12,6 @@ import type {
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { page } from "$mocks/$app/stores";
 import SnsWalletTransactionsObserverTest from "$tests/lib/components/accounts/SnsWalletTransactionsObserverTest.svelte";
 import {
@@ -26,6 +25,7 @@ import {
   mockSnsFullProject,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

@@ -1,8 +1,9 @@
+import { queryProposals } from "$lib/api/proposals.api";
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
+import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
@@ -18,7 +19,7 @@ import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
-import { Topic, type ProposalInfo } from "@dfinity/nns";
+import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
@@ -29,7 +30,6 @@ export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
     snsAggregatorStore.setData(aggregatorData);
-    // TODO: Store this in a svelte store.
     const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
@@ -149,10 +149,18 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
     strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified }) =>
-      loadProposalsByTopic({
+    request: ({ certified, identity }) =>
+      queryProposals({
+        beforeProposal: undefined,
+        identity,
+        filters: {
+          topics: [Topic.SnsAndCommunityFund],
+          rewards: [],
+          status: [ProposalStatus.Open],
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+        },
         certified,
-        topic: Topic.SnsAndCommunityFund,
       }),
     onLoad: ({ response: proposals, certified }) =>
       snsProposalsStore.setProposals({
@@ -185,9 +193,10 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
 ) => {
-  const store = get(snsFunctionsStore);
-  // Avoid loading the same data multiple times if the data loaded is certified
-  if (store[rootCanisterId.toText()]?.certified) {
+  const store = createSnsNsFunctionsProjectStore(rootCanisterId);
+  const storeData = get(store);
+  // Avoid loading the same data multiple times if the data is loaded
+  if (nonNullish(storeData)) {
     return;
   }
 

@@ -26,62 +26,6 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   /*
-   * Validate proposal details
-   */
-  step("Open proposal details");
-  const governanceProposalCard = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getFirstProposalCardPoForTopic("Governance");
-  expect(await governanceProposalCard.getProposalTopicText()).toBe(
-    "Governance"
-  );
-
-  await governanceProposalCard.click();
-
-  step("Check proposal details");
-  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
-  const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
-
-  // System info
-  const systemInfoSectionPo =
-    nnsProposalPo.getProposalProposalSystemInfoSectionPo();
-
-  expect(await systemInfoSectionPo.getProposalTypeText()).toBe("Motion");
-  expect(await systemInfoSectionPo.getProposalTopicText()).toBe("Governance");
-  expect(await systemInfoSectionPo.getProposalStatusText()).toBe("Open");
-  expect(await systemInfoSectionPo.getProposalRewardText()).toBe(
-    "Accepting Votes"
-  );
-  expect(await systemInfoSectionPo.getProposalProposerNeuronIdText()).toBe(
-    proposerNeuronId
-  );
-
-  // Votes result
-  expect(
-    await nnsProposalPo.getVotesResultPo().getAdoptVotingPower()
-  ).toBeLessThanOrEqual(20);
-  expect(await nnsProposalPo.getVotesResultPo().getRejectVotingPower()).toBe(0);
-
-  // Summary
-  expect(await nnsProposalPo.getProposalSummaryPo().getProposalTitle()).toMatch(
-    /^Test proposal title - Lower all prices!/
-  );
-  expect(await nnsProposalPo.getProposalSummaryPo().getProposalUrlText()).toBe(
-    "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only"
-  );
-
-  // Actions
-  expect(
-    await nnsProposalPo.getProposalProposerActionsEntryPo().getActionTitle()
-  ).toBe("Motion");
-  expect(
-    await nnsProposalPo.getProposalProposerActionsEntryPo().getJsonPos()
-  ).toHaveLength(1);
-
-  await appPo.goBack();
-
-  /*
    * Test proposal filters
    */
   step("Open proposals list");
@@ -129,4 +73,74 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
 
   expect(await getVisibleCardStatuses()).not.toContain("Open");
+
+  /*
+   * Validate proposal details
+   */
+  step("Filter Open Governance proposals");
+  // Filter by topic and status to get less proposals
+  // in case of a multiple dummy proposals created before calling this test
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectTopicFilter([Topic.Governance]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .selectStatusFilter([ProposalStatus.Open]);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  step("Open proposal details");
+  const governanceProposalCard = await appPo
+    .getProposalsPo()
+    .getNnsProposalListPo()
+    .getFirstProposalCardPoForProposer(proposerNeuronId);
+  expect(await governanceProposalCard.getProposalTopicText()).toBe(
+    "Governance"
+  );
+
+  await governanceProposalCard.click();
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+
+  step("Check proposal details");
+  const nnsProposalPo = appPo.getProposalDetailPo().getNnsProposalPo();
+
+  // System info
+  const systemInfoSectionPo =
+    nnsProposalPo.getProposalProposalSystemInfoSectionPo();
+
+  expect(await systemInfoSectionPo.getProposalTypeText()).toBe("Motion");
+  expect(await systemInfoSectionPo.getProposalTopicText()).toBe("Governance");
+  expect(await systemInfoSectionPo.getProposalStatusText()).toBe("Open");
+  expect(await systemInfoSectionPo.getProposalRewardText()).toBe(
+    "Accepting Votes"
+  );
+  expect(await systemInfoSectionPo.getProposalProposerNeuronIdText()).toBe(
+    proposerNeuronId
+  );
+
+  // Votes result
+  expect(
+    await nnsProposalPo.getVotesResultPo().getAdoptVotingPower()
+  ).toBeLessThanOrEqual(20);
+  expect(await nnsProposalPo.getVotesResultPo().getRejectVotingPower()).toBe(0);
+
+  // Summary
+  expect(await nnsProposalPo.getProposalSummaryPo().getProposalTitle()).toMatch(
+    /^Test proposal title - Lower all prices!/
+  );
+  expect(await nnsProposalPo.getProposalSummaryPo().getProposalUrlText()).toBe(
+    "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only"
+  );
+
+  // Actions
+  expect(
+    await nnsProposalPo.getProposalProposerActionsEntryPo().getActionTitle()
+  ).toBe("Motion");
+  expect(
+    await nnsProposalPo.getProposalProposerActionsEntryPo().getJsonPos()
+  ).toHaveLength(1);
+
+  await appPo.goBack();
 });

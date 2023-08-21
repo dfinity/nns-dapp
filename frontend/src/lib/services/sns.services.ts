@@ -6,6 +6,8 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -20,7 +22,7 @@ import {
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
@@ -144,7 +146,7 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
-export const loadSnsTotalCommitment = async ({
+export const loadSnsDerivedState = async ({
   rootCanisterId,
   strategy,
 }: {
@@ -160,9 +162,14 @@ export const loadSnsTotalCommitment = async ({
         identity,
         certified,
       }),
-    onLoad: ({ response: derivedState }) => {
+    onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
         snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
+        snsDerivedStateStore.setDerivedState({
+          rootCanisterId: Principal.fromText(rootCanisterId),
+          certified,
+          data: derivedState,
+        });
       }
     },
     onError: ({ error: err, certified }) => {
@@ -186,7 +193,7 @@ export const watchSnsTotalCommitment = ({
   rootCanisterId: string;
 }) => {
   const id = setInterval(() => {
-    loadSnsTotalCommitment({ rootCanisterId, strategy: "query" });
+    loadSnsDerivedState({ rootCanisterId, strategy: "query" });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {
@@ -206,10 +213,17 @@ export const loadSnsLifecycle = async ({
         identity,
         certified,
       }),
-    onLoad: ({ response: lifecycleResponse }) => {
+    onLoad: ({ response: lifecycleResponse, certified }) => {
       const lifecycle = fromNullable(lifecycleResponse?.lifecycle ?? []);
       if (nonNullish(lifecycle)) {
         snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
+      }
+      if (nonNullish(lifecycleResponse)) {
+        snsLifecycleStore.setData({
+          rootCanisterId: Principal.from(rootCanisterId),
+          data: lifecycleResponse,
+          certified,
+        });
       }
     },
     onError: ({ error: err, certified }) => {

@@ -11,6 +11,7 @@ import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.s
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { disburse } from "$lib/services/neurons.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -39,6 +40,7 @@ jest.mock("$lib/services/neurons.services", () => {
 
 describe("DisburseNnsNeuronModal", () => {
   beforeEach(() => {
+    resetIdentity();
     cancelPollAccounts();
   });
 

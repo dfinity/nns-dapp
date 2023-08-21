@@ -1,22 +1,19 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    hasJoinedCommunityFund,
-    isHotKeyControllable,
-  } from "$lib/utils/neuron.utils";
+  import { getNeuronTags, type NeuronTag } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
 
-  let isCommunityFund: boolean;
-  $: isCommunityFund = hasJoinedCommunityFund(neuron);
-
-  let isHotKeyControl: boolean;
-  $: isHotKeyControl = isHotKeyControllable({
+  let neuronTags: NeuronTag[];
+  $: neuronTags = getNeuronTags({
     neuron,
     identity: $authStore.identity,
+    accounts: $icpAccountsStore,
+    i18n: $i18n,
   });
 </script>
 
@@ -25,12 +22,9 @@
     >{neuron.neuronId}</svelte:element
   >
 
-  {#if isCommunityFund}
-    <small class="label">{$i18n.neurons.community_fund}</small>
-  {/if}
-  {#if isHotKeyControl}
-    <small class="label">{$i18n.neurons.hotkey_control}</small>
-  {/if}
+  {#each neuronTags as tag}
+    <small class="label" data-tid="neuron-tag">{tag.text}</small>
+  {/each}
 </div>
 
 <style lang="scss">
