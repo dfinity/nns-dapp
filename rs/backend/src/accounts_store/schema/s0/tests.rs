@@ -1,5 +1,5 @@
 //! Tests for the S0 schema data storage.
-use super::{Account, AccountStorageKey, AccountStoragePage, AccountsDbTrait};
+use super::{Account, AccountStorageKey, AccountStoragePage, AccountsDbS0Trait};
 use crate::accounts_store::NamedCanister;
 use ic_base_types::{CanisterId, PrincipalId};
 use icp_ledger::AccountIdentifier;
@@ -9,7 +9,7 @@ struct MockS0DataStorage {
     accounts_storage: BTreeMap<AccountStorageKey, AccountStoragePage>,
 }
 
-impl AccountsDbTrait for MockS0DataStorage {
+impl AccountsDbS0Trait for MockS0DataStorage {
     fn get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.get(account_storage_key).cloned()
     }
