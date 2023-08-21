@@ -16,6 +16,12 @@ export class ProjectSwapDetailsPo extends BasePageObject {
     ).getAmount();
   }
 
+  getTokensDistributed(): Promise<string> {
+    return AmountDisplayPo.under(
+      this.root.querySelector("[data-tid=sns-tokens-distributed]")
+    ).getAmount();
+  }
+
   getExcludedCountriesPo(): KeyValuePairPo {
     return KeyValuePairPo.under({
       element: this.root,
@@ -27,6 +33,31 @@ export class ProjectSwapDetailsPo extends BasePageObject {
     return KeyValuePairPo.under({
       element: this.root,
       testId: "project-swap-min-participants",
+    }).getValueText();
+  }
+
+  async getMinParticipantCommitment(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "sns-min-participant-commitment",
+      }).getValueText()
+    ).trim();
+  }
+
+  async getMaxParticipantCommitment(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "sns-max-participant-commitment",
+      }).getValueText()
+    ).trim();
+  }
+
+  getSaleEnd(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "sns-sale-end",
     }).getValueText();
   }
 }
