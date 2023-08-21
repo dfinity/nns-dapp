@@ -75,12 +75,9 @@ thread_local! {
     // Initialize a `StableBTreeMap` that holds the accounts data.
     // TODO: Change the key to a struct consisting of pagenum, principal length and a byte vec.
     // TODO: Change the value to a 1kb page; u16len+data; use -1 if the page is full and there is a follow-on page.
-    #[allow(clippy::type_complexity)] // TODO: Remove once the Option is removed.
-    static ACCOUNTS_MEMORY_A: RefCell<Option<StableBTreeMap<[u8;32], [u8;1024], DefaultVirtualMemory>>> = RefCell::new(None);
-
-    static ACCOUNTS_MEMORY_B: RefCell<StableBTreeMap<s0::AccountStorageKey, s0::AccountStoragePage, VM>> =
+    static ACCOUNTS_MEMORY_A: RefCell<StableBTreeMap<s0::AccountStorageKey, s0::AccountStoragePage, VM>> =
     MEMORY_MANAGER.with(|mm| {
-      RefCell::new(StableBTreeMap::init(mm.borrow().get(ACCOUNTS_DATA_MEMORY_ID_SCHEMA_B)))
+      RefCell::new(StableBTreeMap::init(mm.borrow().get(ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A)))
     });
 }
 
