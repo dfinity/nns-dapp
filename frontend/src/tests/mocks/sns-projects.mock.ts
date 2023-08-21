@@ -297,7 +297,7 @@ export const createSummary = ({
   buyersCount = 300n,
   tokensDistributed = 2_000_000_000_000n,
   minParticipantCommitment = 100_000_000n,
-  maxParticipantCommitment = 100_000_000n,
+  maxParticipantCommitment = 5_000_000_000n,
   swapDueTimestampSeconds = 1630444800n,
 }: {
   lifecycle?: SnsSwapLifecycle;
