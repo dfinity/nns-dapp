@@ -161,7 +161,7 @@ export type CachedSnsSwapDerivedDto = {
 };
 
 type CachedSwapParamsResponseDto = {
-  params: CachedSwapParamsDto;
+  params: CachedSwapParamsDto | null;
 };
 
 type CachedInitResponseDto = {

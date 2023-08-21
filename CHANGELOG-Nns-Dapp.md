@@ -34,7 +34,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix wrong "ICP Staked" message in SNS neurons.
-* Disable HW from participating in swaps.
 
 #### Security
 
@@ -52,14 +51,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+* Change some unit tests to set a system time and not rely on actual time.
 
 #### Deprecated
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
-* Removed e2e-tests/scripts/update-chromedriver
 * Remove `frontend/jest-spy.ts`.
+* Remove e2e-tests/
 
 #### Fixed
 
@@ -69,6 +70,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fixed some tests that depended on execution order.
 * [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+
+## Proposal 124252 (cherry-pick)
+
+### Application
+
+#### Fixed
+
+* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+* Disable HW from participating in swaps.
 
 ## Proposal 124014
 

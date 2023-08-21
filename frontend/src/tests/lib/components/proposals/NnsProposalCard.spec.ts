@@ -13,6 +13,12 @@ import { ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalCard", () => {
+  const nowInSeconds = 1689843195;
+
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
+  });
+
   it("should render a proposal title", () => {
     const { getByText } = render(NnsProposalCard, {
       props: {
@@ -91,7 +97,7 @@ describe("NnsProposalCard", () => {
 
     const durationTillDeadline =
       (mockProposals[0].deadlineTimestampSeconds as bigint) -
-      BigInt(Math.round(Date.now() / 1000));
+      BigInt(nowInSeconds);
 
     const text = `${secondsToDuration(durationTillDeadline)} ${
       en.proposal_detail.remaining

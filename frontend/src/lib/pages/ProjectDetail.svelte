@@ -9,7 +9,7 @@
   import {
     loadSnsLifecycle,
     loadSnsSwapCommitment,
-    loadSnsTotalCommitment,
+    loadSnsDerivedState,
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -66,7 +66,7 @@
     }
 
     await Promise.all([
-      loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
+      loadSnsDerivedState({ rootCanisterId, strategy: "update" }),
       loadSnsLifecycle({ rootCanisterId }),
       loadSnsSwapCommitment({
         rootCanisterId,
