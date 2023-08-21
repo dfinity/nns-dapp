@@ -305,15 +305,24 @@ export const createSummary = ({
   restrictedCountries = undefined,
   minParticipants = 20,
   buyersCount = 300n,
+  tokensDistributed = 2_000_000_000_000n,
+  minParticipantCommitment = 100_000_000n,
+  maxParticipantCommitment = 100_000_000n,
+  swapDueTimestampSeconds = 1630444800n,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
   restrictedCountries?: string[] | undefined;
   minParticipants?: number;
   buyersCount?: bigint | null;
+  tokensDistributed?: bigint;
+  minParticipantCommitment?: bigint;
+  maxParticipantCommitment?: bigint;
+  swapDueTimestampSeconds?: bigint;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
+    swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
@@ -322,6 +331,10 @@ export const createSummary = ({
   const params: SnsParams = {
     ...mockSnsParams,
     min_participants: minParticipants,
+    sns_token_e8s: tokensDistributed,
+    min_participant_icp_e8s: minParticipantCommitment,
+    max_participant_icp_e8s: maxParticipantCommitment,
+    swap_due_timestamp_seconds: swapDueTimestampSeconds,
   };
   const derived: SnsSwapDerivedState = {
     ...mockDerived,
