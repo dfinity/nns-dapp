@@ -29,7 +29,7 @@ impl AccountStorageTrait for MockS0DataStorage {
 }
 
 /// Creates atoy account.  The contents do not need to be meaningful; do need to have size.
-fn toy_account(account_index: u64, num_canisters: usize) -> Account {
+fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
     let mut account = Account {
@@ -59,11 +59,15 @@ fn test_account_storage() {
         accounts_storage: BTreeMap::new(),
     };
     let account_key = vec![1, 2, 3];
-    let account = toy_account(1, 1000);
+    let account = toy_account(1, 5);
     // TODO: Check that this spans several pages.
     storage.insert_account(&account_key, account.clone());
     assert_eq!(storage.contains_account(&account_key), true);
     assert_eq!(storage.get_account(&account_key), Some(account.clone()));
+    let updated_account = toy_account(1, 1000);
+    storage.insert_account(&account_key, updated_account.clone());
+    assert_eq!(storage.contains_account(&account_key), true);
+    assert_eq!(storage.get_account(&account_key), Some(updated_account.clone()));
     storage.remove_account(&account_key);
     assert_eq!(storage.contains_account(&account_key), false);
     assert_eq!(storage.get_account(&account_key), None);
