@@ -37,24 +37,14 @@ export const mockProjectSubscribe =
     return () => undefined;
   };
 
-export const principal = (index: number): Principal =>
-  [
-    Principal.fromText(
-      "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe"
-    ),
-    Principal.fromText(
-      "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae"
-    ),
-    Principal.fromText(
-      "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe"
-    ),
-    Principal.fromText(
-      "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe"
-    ),
-    Principal.fromText(
-      "4etav-nasrq-uvswa-iqsll-6spts-ryhsl-e4yf6-xtycj-4sxvp-ciay5-yae"
-    ),
-  ][index];
+// Opaque ids end with 0x01: https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal
+export const principal = (index: number): Principal => {
+  let hexString = index.toString(16) + "01";
+  if (hexString.length % 2 === 1) {
+    hexString = "0" + hexString;
+  }
+  return Principal.fromHex(hexString);
+};
 
 export const createTransferableAmount = (
   amount: bigint
