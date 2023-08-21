@@ -26,7 +26,7 @@ import {
   type SnsTransferableAmount,
 } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
-import { hexStringToUint8Array, nonNullish, toNullable } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =
@@ -38,8 +38,13 @@ export const mockProjectSubscribe =
   };
 
 // Opaque ids end with 0x01: https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal
-export const principal = (index: number): Principal =>
-  Principal.fromUint8Array(hexStringToUint8Array(index.toString(16)));
+export const principal = (index: number): Principal => {
+  let hexString = index.toString(16) + "01";
+  if (hexString.length % 2 === 1) {
+    hexString = "0" + hexString;
+  }
+  return Principal.fromHex(hexString);
+};
 
 export const createTransferableAmount = (
   amount: bigint
