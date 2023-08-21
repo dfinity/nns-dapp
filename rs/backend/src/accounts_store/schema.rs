@@ -10,6 +10,10 @@ pub trait AccountsDbTrait {
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account>;
     fn db_insert_account(&mut self, account_key: &[u8], account: Account);
     fn db_contains_account(&self, account_key: &[u8]) -> bool;
+    fn db_with_account<F, T>(&mut self, account_key: &[u8], f: F) -> Option<T>
+    where
+        // The closure takes an account as an argument.  It may return any type.
+        F: Fn(&mut Account) -> T;
     fn db_remove_account(&mut self, account_key: &[u8]);
     fn db_accounts_len(&self) -> u64;
 }
@@ -59,6 +63,12 @@ impl s0::AccountsDbS0Trait for AccountsStore {
 impl AccountsDbTrait for AccountsStore {
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
         self.s0_get_account(account_key)
+    }
+    fn db_with_account<F, T>(&mut self, account_key: &[u8], f: F) -> Option<T>
+    where
+        F: Fn(&mut Account) -> T,
+    {
+        self.s0_with_account(account_key, f)
     }
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.s0_insert_account(account_key, account);

@@ -69,6 +69,19 @@ pub trait AccountsDbS0Trait {
             None
         }
     }
+    fn s0_with_account<F, T>(&mut self, account_key: &[u8], f: F) -> Option<T>
+    where
+        // The closure takes an account as an argument.  It may return any type.
+        F: Fn(&mut Account) -> T,
+    {
+        if let Some(mut account) = self.s0_get_account(account_key) {
+            let ans = f(&mut account);
+            self.s0_insert_account(account_key, account);
+            Some(ans)
+        } else {
+            None
+        }
+    }
     fn s0_insert_account(&mut self, account_key: &[u8], account: Account) {
         // Serilaize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);

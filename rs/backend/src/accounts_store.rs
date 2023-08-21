@@ -15,6 +15,7 @@ use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
+use schema::AccountsDbTrait;
 use serde::Deserialize;
 use std::cmp::{min, Ordering};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -291,7 +292,7 @@ pub enum AddPendingTransactionResponse {
 impl AccountsStore {
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
-        if let Some(account) = self.accounts.get(&account_identifier.to_vec()) {
+        if let Some(account) = self.db_get_account(&account_identifier.to_vec()) {
             // If the principal is empty, return None so that the browser will call add_account
             // which will allow us to set the principal.
             let principal = account.principal?;
@@ -333,86 +334,89 @@ impl AccountsStore {
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
-        let retval = if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let mut canister_ids = vec![];
-            let mut transactions: Vec<TransactionIndex> = vec![];
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            if account.principal.is_none() {
-                account.principal = Some(caller);
-                canister_ids = account.canisters.iter().map(|c| c.canister_id).collect();
-                transactions = account.get_all_transactions_linked_to_principal_sorted();
-            }
-            // Now that we know the principal we can set the transaction types. The
-            // transactions must be sorted since some transaction types can only be
-            // determined based on earlier transactions (eg. we can only detect
-            // TopUpNeuron transactions that happen after StakeNeuron transactions).
-            for transaction_index in transactions {
-                let transaction = self.get_transaction(transaction_index).unwrap();
-                if transaction.transaction_type.is_none() {
-                    let transaction_type = match transaction.transfer {
-                        Burn { from: _, amount: _ } => TransactionType::Burn,
-                        Mint { to: _, amount: _ } => TransactionType::Mint,
-                        Transfer {
-                            from,
-                            to,
-                            amount,
-                            fee: _,
-                        }
-                        | TransferFrom {
-                            spender: _,
-                            from,
-                            to,
-                            amount,
-                            fee: _,
-                        } => {
-                            let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
-                                TransactionType::Transfer
-                            } else {
-                                TransactionType::TransferFrom
-                            };
-
-                            if self.accounts.get(&to.to_vec()).is_some() {
-                                // If the recipient is a known account then the transaction must be either Transfer or TransferFrom,
-                                // since for all the 'special' transaction types the recipient is not a user account
-                                default_transaction_type
-                            } else {
-                                let memo = transaction.memo;
-                                let transaction_type = self.get_transaction_type(
-                                    from,
-                                    to,
-                                    amount,
-                                    memo,
-                                    &caller,
-                                    &canister_ids,
-                                    default_transaction_type,
-                                );
-                                let block_height = transaction.block_height;
-                                self.process_transaction_type(
-                                    transaction_type,
-                                    caller,
-                                    from,
-                                    to,
-                                    memo,
-                                    amount,
-                                    block_height,
-                                );
-                                transaction_type
-                            }
-                        }
-                        Approve { .. } => TransactionType::Approve,
-                    };
-                    self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
+        if let Some(mut account) = self.db_get_account(&account_identifier.to_vec()) {
+                // TODO: Figure out if this is an early account.
+                if account.principal.is_none() {
+                                    account.principal = Some(caller);
+                                    self.fix_transactions_for_early_user(&account, caller);
+                                    self.db_insert_account(&account_identifier.to_vec(), account.clone());
                 }
+                false
             }
-            false
-        } else {
-            let new_account = Account::new(caller, account_identifier);
-            self.accounts.insert(account_identifier.to_vec(), new_account);
+            else {
+                let new_account = Account::new(caller, account_identifier);
+                self.accounts.insert(account_identifier.to_vec(), new_account);
+                true
+            }
+    }
 
-            true
-        };
+    // TODO: Spin this out as a separate PR and add tests.
+    fn fix_transactions_for_early_user(&mut self, account: &Account, caller: PrincipalId) {
+        let canister_ids: Vec<dfn_core::CanisterId> = account.canisters.iter().map(|c| c.canister_id).collect();
+        let transactions: Vec<TransactionIndex> = account.get_all_transactions_linked_to_principal_sorted();
 
-        retval
+        // Now that we know the principal we can set the transaction types. The
+        // transactions must be sorted since some transaction types can only be
+        // determined based on earlier transactions (eg. we can only detect
+        // TopUpNeuron transactions that happen after StakeNeuron transactions).
+        for transaction_index in transactions {
+            let transaction = self.get_transaction(transaction_index).unwrap(); // TODO: Why do we iterate, then look up?
+            if transaction.transaction_type.is_none() {
+                let transaction_type = match transaction.transfer {
+                    Burn { from: _, amount: _ } => TransactionType::Burn,
+                    Mint { to: _, amount: _ } => TransactionType::Mint,
+                    Transfer {
+                        from,
+                        to,
+                        amount,
+                        fee: _,
+                    }
+                    | TransferFrom {
+                        spender: _,
+                        from,
+                        to,
+                        amount,
+                        fee: _,
+                    } => {
+                        let default_transaction_type = if matches!(transaction.transfer, Transfer { .. }) {
+                            TransactionType::Transfer
+                        } else {
+                            TransactionType::TransferFrom
+                        };
+
+                        if self.accounts.get(&to.to_vec()).is_some() {
+                            // If the recipient is a known account then the transaction must be either Transfer or TransferFrom,
+                            // since for all the 'special' transaction types the recipient is not a user account
+                            default_transaction_type
+                        } else {
+                            let memo = transaction.memo;
+                            let transaction_type = self.get_transaction_type(
+                                from,
+                                to,
+                                amount,
+                                memo,
+                                &caller,
+                                &canister_ids,
+                                default_transaction_type,
+                            );
+                            let block_height = transaction.block_height;
+                            self.process_transaction_type(
+                                transaction_type,
+                                caller,
+                                from,
+                                to,
+                                memo,
+                                amount,
+                                block_height,
+                            );
+                            transaction_type
+                        }
+                    }
+                    Approve { .. } => TransactionType::Approve,
+                };
+                self.get_transaction_mut(transaction_index).unwrap().transaction_type = Some(transaction_type);
+            }
+        }
     }
 
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
