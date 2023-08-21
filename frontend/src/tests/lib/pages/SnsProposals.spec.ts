@@ -4,6 +4,7 @@
 
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
@@ -43,6 +44,7 @@ describe("SnsProposals", () => {
     jest.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
+    snsFiltersStore.reset();
     setSnsProjects([
       {
         rootCanisterId,
