@@ -538,6 +538,12 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         };
         jest
           .spyOn(snsApi, "querySnsSwapCommitment")
+          // Query call
+          .mockResolvedValueOnce({
+            rootCanisterId,
+            myCommitment: initialCommitment,
+          } as SnsSwapCommitment)
+          // Update call
           .mockResolvedValueOnce({
             rootCanisterId,
             myCommitment: initialCommitment,
