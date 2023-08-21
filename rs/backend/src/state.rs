@@ -63,7 +63,7 @@ type VM = VirtualMemory<RM>;
 thread_local! {
     pub static STATE: State = State::default();
 
-    static METADATA_MEMORY: RefCell<RM> = RefCell::new(RM::new(DefaultMemoryImpl::default(), 0..METADATA_PAGES));
+    pub static METADATA_MEMORY: RefCell<RM> = RefCell::new(RM::new(DefaultMemoryImpl::default(), 0..METADATA_PAGES));
 
     /// The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
     /// return a memory that can be used by stable structures.
@@ -75,7 +75,7 @@ thread_local! {
     // Initialize a `StableBTreeMap` that holds the accounts data.
     // TODO: Change the key to a struct consisting of pagenum, principal length and a byte vec.
     // TODO: Change the value to a 1kb page; u16len+data; use -1 if the page is full and there is a follow-on page.
-    static ACCOUNTS_MEMORY_A: RefCell<StableBTreeMap<s0::AccountStorageKey, s0::AccountStoragePage, VM>> =
+    pub static ACCOUNTS_MEMORY_A: RefCell<StableBTreeMap<s0::AccountStorageKey, s0::AccountStoragePage, VM>> =
     MEMORY_MANAGER.with(|mm| {
       RefCell::new(StableBTreeMap::init(mm.borrow().get(ACCOUNTS_DATA_MEMORY_ID_SCHEMA_A)))
     });
