@@ -8,6 +8,9 @@ use on_wire::{FromWire, IntoWire};
 use std::borrow::Cow;
 use std::convert::TryInto;
 
+#[cfg(test)]
+mod tests;
+
 pub trait AccountStorageTrait {
     /// Every account  is serialized and stored in betwen 0 and 256 pages.
     const MAX_PAGES_PER_ACCOUNT: usize = (u8::MAX as usize) + 1;
@@ -107,9 +110,6 @@ pub trait AccountStorageTrait {
         }
     }
 }
-
-#[cfg(test)]
-mod tests;
 
 /// Key for account data in a stable BTreeMap.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
