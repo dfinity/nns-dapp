@@ -9,10 +9,20 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ## Unreleased
 
 ### Added
+### Changed
+* Various minor style improvements: favicon, spacing, status "open" color and text clamp
+### Fixed
+### Security
+### Not Published
+### Removed
+### Deprecated
+
+## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)
+
+### Added
 * More tests that the SNS aggregator contains the expected number of SNSs.
 * Display commit, branch name and similar data when deploying to a test canister.
 ### Changed
-- Various minor style improvements: favicon, spacing, status "open" color and text clamp
 - Ensure that the last paginated entry is incomplete.
 ### Fixed
 * Update the path to the `nns-sns-wasm` .did file.
@@ -26,7 +36,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 - Style (UI design) for the landing page
-- Add a link that points to NNS Dapp GitHub repo
+- Add a link that points to NNS Dapp GitHub repo 
 - Display swaps' lifecycle on the landing page
 ### Changed
 - Updated `ic-cdk` to the latest version and use the, now separate, `ic-cdk-timers`.
