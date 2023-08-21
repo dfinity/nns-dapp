@@ -60,6 +60,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Not Published
 
 ### Operations
+* Format all markdown files, except those under `frontend`.
 
 #### Added
 
