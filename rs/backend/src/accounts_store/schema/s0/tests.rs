@@ -10,20 +10,20 @@ struct MockS0DataStorage {
 }
 
 impl AccountsDbS0Trait for MockS0DataStorage {
-    fn get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
+    fn s0_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.get(account_storage_key).cloned()
     }
-    fn insert_account_page(
+    fn s0_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage> {
         self.accounts_storage.insert(account_storage_key, account)
     }
-    fn contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool {
+    fn s0_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool {
         self.accounts_storage.contains_key(account_storage_key)
     }
-    fn remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
+    fn s0_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.remove(account_storage_key)
     }
 }
@@ -61,14 +61,14 @@ fn test_account_storage() {
     let account_key = vec![1, 2, 3];
     let account = toy_account(1, 5);
     // TODO: Check that this spans several pages.
-    storage.insert_account(&account_key, account.clone());
-    assert!(storage.contains_account(&account_key));
-    assert_eq!(storage.get_account(&account_key), Some(account.clone()));
+    storage.s0_insert_account(&account_key, account.clone());
+    assert!(storage.s0_contains_account(&account_key));
+    assert_eq!(storage.s0_get_account(&account_key), Some(account.clone()));
     let updated_account = toy_account(1, 1000);
-    storage.insert_account(&account_key, updated_account.clone());
-    assert!(storage.contains_account(&account_key));
-    assert_eq!(storage.get_account(&account_key), Some(updated_account.clone()));
-    storage.remove_account(&account_key);
-    assert!(!storage.contains_account(&account_key));
-    assert_eq!(storage.get_account(&account_key), None);
+    storage.s0_insert_account(&account_key, updated_account.clone());
+    assert!(storage.s0_contains_account(&account_key));
+    assert_eq!(storage.s0_get_account(&account_key), Some(updated_account.clone()));
+    storage.s0_remove_account(&account_key);
+    assert!(!storage.s0_contains_account(&account_key));
+    assert_eq!(storage.s0_get_account(&account_key), None);
 }

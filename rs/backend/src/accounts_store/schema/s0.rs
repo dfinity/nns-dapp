@@ -17,20 +17,20 @@ pub trait AccountsDbS0Trait {
 
     // Low level methods to get and set pages.
     /// Gets a page of memory.
-    fn get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+    fn s0_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
     /// Inserts a page of memory.
-    fn insert_account_page(
+    fn s0_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage>;
     /// Checks whether a page of memory exists.
-    fn contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
+    fn s0_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
     /// Removes a page of memory.
-    fn remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+    fn s0_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
     /// Checks whether to get the next page.
     /// - If the very last page is full, getting the next page will return None. That is expected.
-    fn is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
+    fn s0_is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
         if let Some(last_page) = last_page_maybe {
             // If the page is not full, there are no more pages.
             last_page.len() < AccountStoragePage::MAX_PAYLOAD_LEN
@@ -41,12 +41,14 @@ pub trait AccountsDbS0Trait {
     }
 
     // High level methods to get and set accounts.
-    fn get_account(&self, account_key: &[u8]) -> Option<Account> {
+    // Note: Rust does not support traits on traits.  Imagine, when you read the following, that they implement the AccountsDbTrait.
+    //       In reality, both traits are implemented for the AccountsStore struct.
+    fn s0_get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
         let mut have_account = false;
         for page_num in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(page_num as u8, account_key);
-            if let Some(page) = self.get_account_page(&account_storage_key) {
+            if let Some(page) = self.s0_get_account_page(&account_storage_key) {
                 have_account = true;
                 let len = page.len();
                 bytes.extend_from_slice(&page.bytes[AccountStoragePage::PAYLOAD_OFFSET..][..len]);
@@ -67,7 +69,7 @@ pub trait AccountsDbS0Trait {
             None
         }
     }
-    fn insert_account(&mut self, account_key: &[u8], account: Account) {
+    fn s0_insert_account(&mut self, account_key: &[u8], account: Account) {
         // Serilaize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);
         if pages_to_insert.len() > Self::MAX_PAGES_PER_ACCOUNT {
@@ -83,28 +85,28 @@ pub trait AccountsDbS0Trait {
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {
-                last_removed_page = self.insert_account_page(account_storage_key, *page_to_insert);
+                last_removed_page = self.s0_insert_account_page(account_storage_key, *page_to_insert);
             } else {
                 // If the number of pages has reduced, we need to remove some pages.
                 // ... If the last removed or replaced page was not full, we are done.
-                if Self::is_last_page(&last_removed_page) {
+                if Self::s0_is_last_page(&last_removed_page) {
                     break;
                 }
-                last_removed_page = self.remove_account_page(&account_storage_key);
+                last_removed_page = self.s0_remove_account_page(&account_storage_key);
             }
         }
     }
-    fn contains_account(&self, account_key: &[u8]) -> bool {
+    fn s0_contains_account(&self, account_key: &[u8]) -> bool {
         let account_storage_key = AccountStorageKey::new(0, account_key);
-        self.contains_account_page(&account_storage_key)
+        self.s0_contains_account_page(&account_storage_key)
     }
-    fn remove_account(&mut self, account_key: &[u8]) {
+    fn s0_remove_account(&mut self, account_key: &[u8]) {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         let mut last_page = None;
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
-            last_page = self.remove_account_page(&account_storage_key);
-            if Self::is_last_page(&last_page) {
+            last_page = self.s0_remove_account_page(&account_storage_key);
+            if Self::s0_is_last_page(&last_page) {
                 break;
             }
         }
