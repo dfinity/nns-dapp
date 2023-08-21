@@ -22,11 +22,12 @@ describe("Settings", () => {
 
   it("should set title", async () => {
     const titleBefore = get(layoutTitleStore);
-    expect(titleBefore).toEqual("");
+    expect(titleBefore).toEqual({ title: "" });
 
     render(Settings);
 
-    await (() => expect(get(layoutTitleStore)).toEqual(en.navigation.settings));
+    await (() =>
+      expect(get(layoutTitleStore)).toEqual({ title: en.navigation.settings }));
   });
 
   it("should render principal", () => {

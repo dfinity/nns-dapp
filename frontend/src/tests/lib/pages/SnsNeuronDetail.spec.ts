@@ -17,7 +17,6 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
@@ -37,10 +36,10 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
@@ -58,21 +57,12 @@ describe("SnsNeuronDetail", () => {
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
-  const responses = snsResponseFor({
-    principal: rootCanisterId,
-    lifecycle: SnsSwapLifecycle.Committed,
-  });
   const projectName = "Test SNS";
 
   const nonExistingNeuron = createMockSnsNeuron({
     id: [1, 1, 1, 1, 1],
   });
   const nonExistingNeuronId = getSnsNeuronIdAsHexString(nonExistingNeuron);
-
-  // Clone the summary to avoid mutating the mock
-  const summary = { ...responses[0][0] };
-  summary.metadata.name = [projectName];
-  responses[0][0] = summary;
 
   const mainAccount = {
     owner: mockIdentity.getPrincipal(),
@@ -87,8 +77,13 @@ describe("SnsNeuronDetail", () => {
     snsParametersStore.reset();
     snsNeuronsStore.reset();
     snsAccountsStore.reset();
-    snsQueryStore.reset();
-    snsQueryStore.setData(responses);
+    setSnsProjects([
+      {
+        projectName,
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     fakeSnsLedgerApi.addAccountWith({
       rootCanisterId,
@@ -120,35 +115,80 @@ describe("SnsNeuronDetail", () => {
 
   describe("with new settings", () => {
     beforeEach(() => {
-      page.mock({
-        data: { universe: rootCanisterIdMock.toText() },
-        routeId: AppPath.Neuron,
-      });
-
-      fakeSnsGovernanceApi.addNeuronWith({
-        rootCanisterId,
-        id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
-      });
-
       overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", true);
     });
 
-    it("should render new sections", async () => {
-      const po = await renderComponent({
-        neuronId: validNeuronIdAsHexString,
+    describe("when neuron and projects are valid and present", () => {
+      beforeEach(() => {
+        fakeSnsGovernanceApi.addNeuronWith({
+          rootCanisterId,
+          id: [validNeuronId],
+          cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        });
       });
 
-      // Old cards should not be present
-      expect(await po.getMetaInfoCardPo().isPresent()).toBe(false);
-      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getStakeCardPo().isPresent()).toBe(false);
+      it("should render sns project name", async () => {
+        const po = await renderComponent({
+          neuronId: validNeuronIdAsHexString,
+        });
 
-      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
-      expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
-      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
-      expect(await po.getFollowingCardPo().isPresent()).toBe(true);
-      expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+        expect(await po.getUniverse()).toBe(projectName);
+      });
+
+      it("should render new sections", async () => {
+        const po = await renderComponent({
+          neuronId: validNeuronIdAsHexString,
+        });
+
+        // Old cards should not be present
+        expect(await po.getMetaInfoCardPo().isPresent()).toBe(false);
+        expect(await po.getMaturityCardPo().isPresent()).toBe(false);
+        expect(await po.getStakeCardPo().isPresent()).toBe(false);
+
+        expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
+        expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
+        expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+        expect(await po.getFollowingCardPo().isPresent()).toBe(true);
+        expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+      });
+    });
+
+    describe("increase stake functionality", () => {
+      const props = {
+        neuronId: validNeuronIdAsHexString,
+      };
+
+      it("should increase neuron stake", async () => {
+        fakeSnsGovernanceApi.addNeuronWith({
+          rootCanisterId,
+          id: [validNeuronId],
+          cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        });
+        const po = await renderComponent(props);
+
+        // `neuronStake` to string formatted as expected
+        expect(await po.getStakeNewUI()).toBe("1.00");
+        const amountToStake = 20;
+        fakeSnsGovernanceApi.setNeuronWith({
+          rootCanisterId,
+          id: [validNeuronId],
+          cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
+        });
+
+        await po.increaseStakeNewUI(amountToStake);
+        await runResolvedPromises();
+
+        // `neuronStake` + 10 to string and formatted as expected
+        expect(await po.getStakeNewUI()).toBe("21.00");
+        expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
+        expect(increaseStakeNeuron).toHaveBeenCalledWith({
+          neuronId: validNeuronId,
+          stakeE8s: numberToE8s(amountToStake),
+          rootCanisterId,
+          identity: mockIdentity,
+          source: mainAccount,
+        });
+      });
     });
   });
 
@@ -204,6 +244,10 @@ describe("SnsNeuronDetail", () => {
       neuronId: validNeuronIdAsHexString,
     };
 
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
+    });
+
     it("should increase neuron stake", async () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
@@ -224,7 +268,7 @@ describe("SnsNeuronDetail", () => {
       await po.increaseStake(amountToStake);
       await runResolvedPromises();
 
-      // `neuronStake` + 10 to string and formatted as expected
+      // `neuronStake` + 20 to string and formatted as expected
       expect(await po.getStake()).toBe("21.00");
       expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
       expect(increaseStakeNeuron).toHaveBeenCalledWith({

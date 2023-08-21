@@ -18,4 +18,13 @@ export class NnsNeuronPageHeadingPo extends BasePageObject {
   getStake(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
   }
+
+  getVotingPower(): Promise<string> {
+    return this.getText("voting-power");
+  }
+
+  async getNeuronTags(): Promise<string[]> {
+    const elements = await this.root.allByTestId("neuron-tag");
+    return Promise.all(elements.map((tag) => tag.getText()));
+  }
 }

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as directives from "$lib/directives/intersection.directives";
+import * as dispatchEvents from "$lib/utils/events.utils";
 import {
   IntersectionObserverActive,
   IntersectionObserverPassive,
@@ -26,7 +26,7 @@ describe("IntersectionDirectives", () => {
   beforeEach(
     () =>
       (spy = jest
-        .spyOn(directives, "dispatchIntersecting")
+        .spyOn(dispatchEvents, "dispatchIntersecting")
         .mockImplementation(
           ({ intersecting }) => (testIntersecting = intersecting)
         ))

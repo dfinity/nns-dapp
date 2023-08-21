@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
+import { simplifyJson } from "$tests/utils/json.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { simplifyJson } from "../common/Json.spec";
 
 describe("ProposalProposerPayloadEntry", () => {
   const nestedObj = { b: "c" };

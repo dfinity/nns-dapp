@@ -48,7 +48,9 @@ describe("SnsIncreaseStakeButton", () => {
       },
     });
 
-    fireEvent.click(getByTestId("sns-increase-stake") as HTMLButtonElement);
+    fireEvent.click(
+      getByTestId("increase-stake-button-component") as HTMLButtonElement
+    );
 
     await waitFor(() =>
       expect(getByText(en.neurons.top_up_neuron)).toBeInTheDocument()

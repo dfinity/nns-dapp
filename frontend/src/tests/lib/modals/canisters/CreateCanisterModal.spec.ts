@@ -60,18 +60,28 @@ describe("CreateCanisterModal", () => {
   });
 
   const selectAccountGoToNameForm = async ({
-    queryAllByTestId,
+    container,
     queryByTestId,
+    selectedAccount = mockMainAccount,
   }) => {
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
     // wait to update local variable with conversion rate
     await tick();
 
-    const accountCards = queryAllByTestId("account-card");
+    const accountCards = container.querySelectorAll(
+      '[data-tid="select-account-dropdown"] option'
+    );
     expect(accountCards.length).toBe(2);
 
-    fireEvent.click(accountCards[0]);
+    const selectElement = container.querySelector("select");
+    selectElement &&
+      expect(selectElement.value).toBe(mockMainAccount.identifier);
+
+    selectElement &&
+      fireEvent.change(selectElement, {
+        target: { value: selectedAccount.identifier },
+      });
 
     // Enter Name Screen
     await waitFor(() =>
@@ -79,17 +89,19 @@ describe("CreateCanisterModal", () => {
     );
   };
 
-  const testCreateCanister = async (canisterName: string) => {
-    const {
-      queryByTestId,
-      queryAllByTestId,
+  const testCreateCanister = async ({
+    canisterName,
+    selectedAccount = undefined,
+  }) => {
+    const { queryByTestId, container, component, queryByText } =
+      await renderModal({
+        component: CreateCanisterModal,
+      });
+    await selectAccountGoToNameForm({
       container,
-      component,
-      queryByText,
-    } = await renderModal({
-      component: CreateCanisterModal,
+      queryByTestId,
+      selectedAccount,
     });
-    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
 
     // Enter Name Screen
     await waitFor(() =>
@@ -147,22 +159,29 @@ describe("CreateCanisterModal", () => {
     expect(createCanister).toBeCalledWith({
       name: canisterName,
       amount: icpAmount,
-      account: mockMainAccount,
+      account: selectedAccount ?? mockMainAccount,
     });
     expect(toastsShow).toBeCalled();
   };
 
   it("should create a canister from ICP and close modal", async () => {
-    testCreateCanister("best dapp ever");
+    await testCreateCanister({ canisterName: "best dapp ever" });
+  });
+
+  it("should create a canister with subAccount and close modal", async () => {
+    await testCreateCanister({
+      canisterName: "best dapp ever",
+      selectedAccount: mockSubAccount,
+    });
   });
 
   it("should create canister without name", async () => {
-    testCreateCanister("");
+    await testCreateCanister({ canisterName: "" });
   });
 
   // We added the hardware wallet in the accountsStore subscribe mock above.
   it("should not show hardware wallets in the accounts list", async () => {
-    const { queryAllByTestId, queryByText } = await renderModal({
+    const { container, queryByText } = await renderModal({
       component: CreateCanisterModal,
     });
     // Wait for the onMount to load the conversion rate
@@ -170,18 +189,20 @@ describe("CreateCanisterModal", () => {
     // wait to update local variable with conversion rate
     await tick();
 
-    const accountCards = queryAllByTestId("account-card");
+    const accountCards = container.querySelectorAll(
+      '[data-tid="select-account-dropdown"] option'
+    );
 
     expect(accountCards.length).toBe(2);
     expect(queryByText(mockHardwareWalletAccount.name as string)).toBeNull();
   });
 
   it("should have disabled button when creating a canister with name longer than maximum allowed", async () => {
-    const { queryByTestId, queryAllByTestId } = await renderModal({
+    const { queryByTestId, container } = await renderModal({
       component: CreateCanisterModal,
     });
 
-    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+    await selectAccountGoToNameForm({ container, queryByTestId });
 
     const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
     const nameInputElement = queryByTestId("input-ui-element");
@@ -196,11 +217,11 @@ describe("CreateCanisterModal", () => {
   });
 
   it("should have enabled button when creating a canister with name maximum allowed", async () => {
-    const { queryByTestId, queryAllByTestId } = await renderModal({
+    const { queryByTestId, container } = await renderModal({
       component: CreateCanisterModal,
     });
 
-    await selectAccountGoToNameForm({ queryAllByTestId, queryByTestId });
+    await selectAccountGoToNameForm({ container, queryByTestId });
 
     const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
     const nameInputElement = queryByTestId("input-ui-element");
@@ -215,7 +236,7 @@ describe("CreateCanisterModal", () => {
   });
 
   it("should have disabled button when creating canister with less T Cycles than minimum", async () => {
-    const { queryByTestId, queryAllByTestId, container } = await renderModal({
+    const { queryByTestId, container } = await renderModal({
       component: CreateCanisterModal,
     });
     // Wait for the onMount to load the conversion rate
@@ -223,10 +244,10 @@ describe("CreateCanisterModal", () => {
     // wait to update local variable with conversion rate
     await tick();
 
-    const accountCards = queryAllByTestId("account-card");
+    const accountCards = container.querySelectorAll(
+      '[data-tid="select-account-dropdown"] option'
+    );
     expect(accountCards.length).toBe(2);
-
-    fireEvent.click(accountCards[0]);
 
     // Enter Name Screen
     await waitFor(() =>

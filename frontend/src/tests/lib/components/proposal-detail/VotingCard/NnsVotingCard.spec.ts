@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -16,11 +17,13 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
@@ -70,6 +73,7 @@ describe("VotingCard", () => {
       .mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterAll(() => {

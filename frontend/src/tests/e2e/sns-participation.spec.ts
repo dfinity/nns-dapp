@@ -43,7 +43,7 @@ test("Test SNS participation", async ({ page, context }) => {
 
   step("Get some ICP to participate in the sale");
   await appPo.goBack();
-  await appPo.getTokens(20);
+  await appPo.getIcpTokens(20);
   await openProjects[0].click();
 
   step("D004: User can participate in a sale");

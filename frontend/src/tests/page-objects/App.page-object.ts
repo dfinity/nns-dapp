@@ -15,6 +15,7 @@ import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.pag
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { expect } from "@playwright/test";
 
 export class AppPo extends BasePageObject {
   getLoginLinksPo(): LoginLinksPo {
@@ -134,9 +135,15 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  async getTokens(amount: number): Promise<void> {
+  async getSnsTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getTokens(amount);
+    await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(amount);
+    await this.closeMenu();
+  }
+
+  async getIcpTokens(amount: number): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().getGetTokensPo().getIcpTokens(amount);
     await this.closeMenu();
   }
 
@@ -147,5 +154,14 @@ export class AppPo extends BasePageObject {
 
   waitForNotBusy(): Promise<void> {
     return this.getBusyScreenPo().waitForAbsent();
+  }
+
+  async openUniverses() {
+    await this.getRoleButton("select-universe-card").waitFor();
+    await this.getRoleButton("select-universe-card").click();
+
+    const snsUniverseCards =
+      await this.getSelectUniverseListPo().getSnsUniverseCards();
+    expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
   }
 }

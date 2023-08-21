@@ -8,7 +8,6 @@ import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDi
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -21,7 +20,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -80,13 +79,12 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       parameters: snsNervousSystemParametersMock,
     });
 
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockPrincipal,
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });

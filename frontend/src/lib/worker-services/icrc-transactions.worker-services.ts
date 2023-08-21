@@ -6,7 +6,6 @@ import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
 } from "$lib/types/post-message.transactions";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { getIcrcTransactions as getIcrcIndexTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import type { DictionaryWorkerState } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
@@ -19,7 +18,7 @@ import {
   type IcrcTransactionWithId,
   type IcrcTxId,
 } from "@dfinity/ledger";
-import { nonNullish } from "@dfinity/utils";
+import { jsonReplacer, nonNullish } from "@dfinity/utils";
 
 export type GetAccountsTransactionsResults = Omit<
   PostMessageDataResponseTransaction,

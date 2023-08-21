@@ -22,9 +22,13 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
 
 describe("Layout", () => {
   describe("Main layout", () => {
-    beforeAll(() => layoutTitleStore.set("the header"));
+    beforeAll(() =>
+      layoutTitleStore.set({
+        title: "the header",
+      })
+    );
 
-    afterAll(() => layoutTitleStore.set(""));
+    afterAll(() => layoutTitleStore.set({ title: "" }));
 
     it("should render a menu button", () => {
       const { getByTestId } = render(LayoutTest, { props: { spy: undefined } });

@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
+  import {
+    type ProposalStatusColor,
+    PROPOSER_ID_DISPLAY_SPLIT_LENGTH,
+  } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
@@ -14,10 +17,11 @@
   export let proposer: string | undefined;
   export let type: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
+  export let href: string;
 </script>
 
 <li class:hidden>
-  <Card role="link" on:click testId="proposal-card" icon="arrow">
+  <Card testId="proposal-card" {href}>
     <div class="id" data-proposal-id={id}>
       <Value ariaLabel={$i18n.proposal_detail.id_prefix} testId="proposal-id"
         >{id}</Value
@@ -37,17 +41,20 @@
       {/if}
 
       {#if topic !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="proposal-topic">
           <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
           <span slot="value" class="meta-data-value">{topic ?? ""}</span>
         </KeyValuePair>
       {/if}
 
       {#if proposer !== undefined}
-        <KeyValuePair>
+        <KeyValuePair testId="shortened-proposer">
           <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
           <span slot="value" class="meta-data-value"
-            >{shortenWithMiddleEllipsis(proposer, 5)}</span
+            >{shortenWithMiddleEllipsis(
+              proposer,
+              PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+            )}</span
           >
         </KeyValuePair>
       {/if}
@@ -57,7 +64,7 @@
       <p class="description">{title}</p>
     </blockquote>
 
-    <KeyValuePair>
+    <KeyValuePair testId="proposal-status">
       <p slot="key" class={`${color ?? ""} status`}>
         {statusString}
       </p>

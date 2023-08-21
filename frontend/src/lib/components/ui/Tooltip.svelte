@@ -3,6 +3,7 @@
   import { debounce } from "@dfinity/utils";
 
   export let id: string;
+  export let testId = "tooltip-component";
   export let text = "";
   export let noWrap = false;
   export let top = false;
@@ -75,7 +76,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="tooltip-wrapper" data-tid="tooltip-component">
+<div class="tooltip-wrapper" data-tid={testId}>
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>

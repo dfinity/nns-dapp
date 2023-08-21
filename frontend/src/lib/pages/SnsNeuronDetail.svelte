@@ -173,7 +173,10 @@
           {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
             <div class="section-wrapper">
               <SnsNeuronPageHeader {token} />
-              <SnsNeuronPageHeading {parameters} />
+              <SnsNeuronPageHeading
+                {parameters}
+                neuron={$selectedSnsNeuronStore.neuron}
+              />
               <Separator spacing="none" />
               <SnsNeuronVotingPowerSection
                 neuron={$selectedSnsNeuronStore.neuron}

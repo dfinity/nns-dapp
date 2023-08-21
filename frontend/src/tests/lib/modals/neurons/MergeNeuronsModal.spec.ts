@@ -3,12 +3,12 @@
  */
 
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
-import { mergeNeurons, simulateMergeNeurons } from "$lib/api/governance.api";
+import * as governanceApi from "$lib/api/governance.api";
+import { mergeNeurons } from "$lib/api/governance.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
@@ -23,7 +23,9 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
 
 jest.mock("$lib/api/governance.api");
 
@@ -31,6 +33,14 @@ const testIdentity = createMockIdentity(37373);
 
 const getStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron.cachedNeuronStake;
+
+const expectToastError = (contained: string) =>
+  expect(get(toastsStore)).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
 
 describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
@@ -43,6 +53,7 @@ describe("MergeNeuronsModal", () => {
     icpAccountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
+    toastsStore.reset();
   });
 
   const selectAndTestTwoNeurons = async ({ po, neurons }) => {
@@ -203,60 +214,7 @@ describe("MergeNeuronsModal", () => {
       );
     });
 
-    it("should not simulate merging with feature disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", false);
-
-      const po = await renderMergeModal(mergeableNeurons);
-
-      await selectAndTestTwoNeurons({
-        po,
-        neurons: mergeableNeurons,
-      });
-
-      await po
-        .getSelectNeuronsToMergePo()
-        .getConfirmSelectionButtonPo()
-        .click();
-
-      expect(await po.getConfirmNeuronsMergePo().isPresent()).toBe(true);
-      expect(
-        await po.getConfirmNeuronsMergePo().getSourceNeuronInfoPo().isPresent()
-      ).toBe(true);
-      expect(
-        await po
-          .getConfirmNeuronsMergePo()
-          .getSourceNeuronDetailCardPo()
-          .isPresent()
-      ).toBe(false);
-      expect(
-        await po.getConfirmNeuronsMergePo().getTargetNeuronInfoPo().isPresent()
-      ).toBe(true);
-      expect(
-        await po
-          .getConfirmNeuronsMergePo()
-          .getTargetNeuronDetailCardPo()
-          .isPresent()
-      ).toBe(false);
-
-      await runResolvedPromises();
-      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
-        false
-      );
-      expect(
-        await po
-          .getConfirmNeuronsMergePo()
-          .getMergedNeuronDetailCardPo()
-          .isPresent()
-      ).toBe(false);
-      expect(simulateMergeNeurons).not.toBeCalled();
-
-      // Make sure no actual merge happened either.
-      expect(mergeNeurons).not.toBeCalled();
-    });
-
     it("should simulate merging with feature enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
-
       const po = await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
@@ -308,8 +266,6 @@ describe("MergeNeuronsModal", () => {
     });
 
     it("should show a skeleton card while simulating the merging", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_SIMULATE_MERGE_NEURONS", true);
-
       const po = await renderMergeModal(mergeableNeurons);
 
       await selectAndTestTwoNeurons({
@@ -344,6 +300,34 @@ describe("MergeNeuronsModal", () => {
         await po.getConfirmNeuronsMergePo().getSkeletonCardPo().isPresent()
       ).toBe(false);
       expect(await mergedNeuronCard.isPresent()).toBe(true);
+    });
+
+    it("should hide result section if simulating the merging fails", async () => {
+      const po = await renderMergeModal(mergeableNeurons);
+
+      await selectAndTestTwoNeurons({
+        po,
+        neurons: mergeableNeurons,
+      });
+
+      // Start dissolving will cause the merge simulation to fail.
+      await governanceApi.startDissolving({
+        neuronId: mergeableNeuron1.neuronId,
+        identity: testIdentity,
+      });
+
+      await po
+        .getSelectNeuronsToMergePo()
+        .getConfirmSelectionButtonPo()
+        .click();
+
+      await runResolvedPromises();
+      expect(await po.getConfirmNeuronsMergePo().hasMergeResultSection()).toBe(
+        false
+      );
+      expectToastError(
+        "Sorry, there was an unexpected error. Please try again later. Only locked neurons can be merged"
+      );
     });
   });
 

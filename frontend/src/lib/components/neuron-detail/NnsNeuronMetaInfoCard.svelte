@@ -32,11 +32,12 @@
       detail: { intersecting },
     } = $event as unknown as CustomEvent<IntersectingDetail>;
 
-    layoutTitleStore.set(
-      intersecting
+    layoutTitleStore.set({
+      title: $i18n.neuron_detail.title,
+      header: intersecting
         ? $i18n.neuron_detail.title
-        : `${$i18n.core.icp} – ${neuron.neuronId}`
-    );
+        : `${$i18n.core.icp} – ${neuron.neuronId}`,
+    });
   };
 
   // Note about replacePlaceholders and $st4kedMaturity

@@ -36,12 +36,10 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
-  afterAll(() => {
+  beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllTimers();
-  });
 
-  beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
     jest.useFakeTimers().setSystemTime(now);
@@ -62,8 +60,6 @@ describe("canisters-api", () => {
   });
 
   describe("queryCanisters", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the canister to list the canisters 🤪", async () => {
       await queryCanisters({ identity: mockIdentity, certified: true });
 
@@ -72,24 +68,25 @@ describe("canisters-api", () => {
   });
 
   describe("attachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to attach the canister id", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
         name: "test name",
       });
 
-      expect(mockNNSDappCanister.attachCanister).toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
     });
 
     it("should call the nns dapp canister to attach the canister id with empty string as name when not present", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
       });
 
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         canisterId: mockCanisterDetails.id,
         name: "",
@@ -98,6 +95,7 @@ describe("canisters-api", () => {
 
     it("should fail to attach if name is longer than max", async () => {
       const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       const call = () =>
         attachCanister({
           identity: mockIdentity,
@@ -115,8 +113,6 @@ describe("canisters-api", () => {
   });
 
   describe("renameCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to rename the canister", async () => {
       await renameCanister({
         identity: mockIdentity,
@@ -146,8 +142,6 @@ describe("canisters-api", () => {
   });
 
   describe("updateSettings", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the ic management canister to update settings", async () => {
       mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
       await updateSettings({
@@ -177,8 +171,6 @@ describe("canisters-api", () => {
   });
 
   describe("detachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to detach the canister id", async () => {
       await detachCanister({
         identity: mockIdentity,
@@ -220,7 +212,6 @@ describe("canisters-api", () => {
 
   describe("createCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
@@ -366,7 +357,6 @@ describe("canisters-api", () => {
 
   describe("topUpCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test

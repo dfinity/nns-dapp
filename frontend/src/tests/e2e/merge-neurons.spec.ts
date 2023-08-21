@@ -12,7 +12,7 @@ test("Test merge neurons", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(10);
+  await appPo.getIcpTokens(10);
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();

@@ -50,6 +50,7 @@ export const queryProposals = async ({
             }),
       includeRewardStatus: rewards,
       includeStatus: status,
+      includeAllManageNeuronProposals: false,
     },
     certified,
   });
@@ -90,6 +91,7 @@ export const queryProposal = async ({
       includeRewardStatus: [],
       excludeTopic: [],
       includeStatus: [],
+      includeAllManageNeuronProposals: false,
     },
     certified,
   });

@@ -80,6 +80,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
+  isChecked(): Promise<boolean | null> {
+    return this.locator.isChecked();
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }
@@ -102,5 +106,9 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
 
   async selectOption(text: string): Promise<void> {
     await this.locator.selectOption(text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    throw new Error("Not implement");
   }
 }

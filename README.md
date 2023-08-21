@@ -2,7 +2,7 @@
   <h1>NNS Dapp</h1>
 
   <a href="https://nns.ic0.app/">
-    <img src="./frontend/static/assets/favicons/icon-512x512.png" width="180px" alt="NNS dapp logo" role="presentation"/>
+    <img src="./frontend/static/assets/favicons/icon-512x512.png" width="180px" alt="NNS Dapp logo" role="presentation"/>
   </a>
 
 <br/>

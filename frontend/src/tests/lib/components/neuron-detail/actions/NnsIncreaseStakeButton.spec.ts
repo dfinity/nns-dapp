@@ -40,7 +40,7 @@ describe("NnsIncreaseStakeButton", () => {
     });
 
     expect(
-      queryByTestId("nns-increase-stake-button-component").classList.contains(
+      queryByTestId("increase-stake-button-component").classList.contains(
         variant
       )
     ).toBe(true);

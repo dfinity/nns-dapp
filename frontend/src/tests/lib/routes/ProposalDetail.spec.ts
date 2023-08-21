@@ -6,11 +6,10 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import ProposalDetail from "$lib/routes/ProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -34,13 +33,12 @@ describe("ProposalDetail", () => {
   afterAll(jest.clearAllMocks);
 
   beforeEach(() => {
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockSnsFullProject.rootCanisterId,
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
   });
 
   it("should render NnsProposalDetail by default", () => {

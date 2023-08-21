@@ -15,6 +15,8 @@
 </script>
 
 <!-- Workaround for SvelteKit issue https://github.com/sveltejs/kit/issues/5434 -->
+<!-- We do not use the <LayoutNavGuard /> here because the Spinner has to find place in this +layout.svelte -->
+<!-- If we would move the spinner to that <LayoutNavGuard /> component, then we would face the issue too -->
 {#if isNullish($navigating)}
   <Layout layout="stretch">
     <Banner />

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -9,8 +10,10 @@ import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 describe("VotingHistoryModal", () => {
   const props = {
@@ -28,6 +31,7 @@ describe("VotingHistoryModal", () => {
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should display modal", () => {

@@ -3,7 +3,9 @@
  */
 
 import * as proposalsApi from "$lib/api/proposals.api";
+import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import {
   generateMockProposals,
   mockProposalInfo,
@@ -94,5 +96,19 @@ describe("Proposal", () => {
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should not render proposal navigation when on launchpad", async () => {
+    jest
+      .spyOn(filteredProposals, "subscribe")
+      .mockImplementation(
+        createMockProposalsStoreSubscribe(generateMockProposals(10))
+      );
+    referrerPathStore.set(AppPath.Launchpad);
+
+    const { container } = renderProposalModern(5n);
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+
+    expect(await po.isPresent()).toBe(false);
   });
 });

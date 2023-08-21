@@ -1,10 +1,13 @@
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
+import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
-import { HttpAgent } from "@dfinity/agent";
+import { HttpAgent, type Agent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
+import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -19,7 +22,7 @@ export const testAccountPrincipal =
 export const testAccountAddress =
   "5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087";
 
-const getTestAccountAgent = async (): Promise<HttpAgent> => {
+const getTestAccountAgent = async (): Promise<Agent> => {
   // Create an identity who's default ledger account is initialised with 10k ICP on the testnet, then use that
   // identity to send the current user some ICP to test things with.
   // The identity's principal is ${testAccountPrincipal}
@@ -32,7 +35,7 @@ const getTestAccountAgent = async (): Promise<HttpAgent> => {
     base64ToUInt8Array(privateKey)
   );
 
-  const agent: HttpAgent = new HttpAgent({
+  const agent: Agent = new HttpAgent({
     host: HOST,
     identity,
   });
@@ -82,6 +85,27 @@ export const acquireICPTs = async ({
 
   const agent = await getTestAccountAgent();
 
+  const validIcrcAddress = !invalidIcrcAddress(accountIdentifier);
+
+  // Icrc
+  if (validIcrcAddress) {
+    const canister = IcrcLedgerCanister.create({
+      agent,
+      canisterId: LEDGER_CANISTER_ID,
+    });
+
+    const { owner, subaccount } = decodeIcrcAccount(accountIdentifier);
+
+    return canister.transfer({
+      amount: e8s,
+      to: {
+        owner,
+        subaccount: toNullable(subaccount),
+      },
+    });
+  }
+
+  // Old school ICP
   const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
 
   return ledgerCanister.transfer({

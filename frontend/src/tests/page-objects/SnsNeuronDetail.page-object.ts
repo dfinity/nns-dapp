@@ -8,6 +8,7 @@ import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.pag
 import { SnsNeuronMaturityCardPo } from "$tests/page-objects/SnsNeuronMaturityCard.page-object";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
+import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
 import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -46,8 +47,14 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return SnsNeuronInfoStakePo.under(this.root);
   }
 
+  // TODO: Remove GIX-1688
   getStake(): Promise<string> {
     return this.getStakeCardPo().getStakeAmount();
+  }
+
+  // TODO: Rename GIX-1688
+  getStakeNewUI(): Promise<string> {
+    return this.getVotingPowerSectionPo().getStakeAmount();
   }
 
   getFollowingCardPo(): SnsNeuronFollowingCardPo {
@@ -62,12 +69,27 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return (await this.getSummaryPo().getTitle()).trim();
   }
 
+  getPageHeader(): SnsNeuronPageHeaderPo {
+    return SnsNeuronPageHeaderPo.under(this.root);
+  }
+
+  getUniverse(): Promise<string> {
+    return this.getPageHeader().getUniverse();
+  }
+
   getIncreaseStakeModalPo(): SnsIncreaseStakeNeuronModalPo {
     return SnsIncreaseStakeNeuronModalPo.under(this.root);
   }
 
+  // TODO: Remove GIX-1688
   async increaseStake(amount: number): Promise<void> {
     await this.getStakeCardPo().getIncreaseStakeButtonPo().click();
+    await this.getIncreaseStakeModalPo().increase(amount);
+  }
+
+  // TODO: Rename GIX-1688
+  async increaseStakeNewUI(amount: number): Promise<void> {
+    await this.getVotingPowerSectionPo().clickIncrease();
     await this.getIncreaseStakeModalPo().increase(amount);
   }
 

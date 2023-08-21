@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
@@ -9,10 +10,12 @@ import {
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
+import { simplifyJson } from "$tests/utils/json.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
-import { simplifyJson } from "../common/Json.spec";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
@@ -28,9 +31,12 @@ describe("NnsProposalProposerPayloadEntry", () => {
     a: JSON.stringify(nestedObj),
   };
 
-  afterAll(jest.clearAllMocks);
+  beforeEach(() => {
+    jest.clearAllMocks();
+    proposalPayloadsStore.reset();
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
-  beforeEach(() => proposalPayloadsStore.reset);
   it("should trigger getProposalPayload", async () => {
     const nestedObj = { b: "c" };
     const payloadWithJsonString = {
@@ -39,6 +45,8 @@ describe("NnsProposalProposerPayloadEntry", () => {
     const spyGetProposalPayload = jest
       .spyOn(nnsDappMock, "getProposalPayload")
       .mockImplementation(async () => payloadWithJsonString);
+
+    expect(spyGetProposalPayload).toBeCalledTimes(0);
     render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
@@ -46,7 +54,8 @@ describe("NnsProposalProposerPayloadEntry", () => {
       },
     });
 
-    await waitFor(() => expect(spyGetProposalPayload).toBeCalledTimes(1));
+    await runResolvedPromises();
+    expect(spyGetProposalPayload).toBeCalledTimes(1);
   });
 
   it("should parse JSON strings and render them", async () => {
@@ -60,11 +69,10 @@ describe("NnsProposalProposerPayloadEntry", () => {
       },
     });
 
+    await runResolvedPromises();
     const jsonElement = queryByTestId("json-wrapper");
-    await waitFor(() =>
-      expect(simplifyJson(jsonElement.textContent)).toBe(
-        simplifyJson(JSON.stringify({ a: nestedObj }))
-      )
+    expect(simplifyJson(jsonElement.textContent)).toBe(
+      simplifyJson(JSON.stringify({ a: nestedObj }))
     );
   });
 });

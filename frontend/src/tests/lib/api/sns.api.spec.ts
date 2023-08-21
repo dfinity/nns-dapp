@@ -33,7 +33,7 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { Agent } from "@dfinity/agent";
 import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
@@ -45,7 +45,7 @@ import mock from "jest-mock-extended/lib/Mock";
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
   return {
-    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+    createAgent: () => Promise.resolve(mock<Agent>()),
   };
 });
 

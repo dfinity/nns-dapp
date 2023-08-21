@@ -11,6 +11,7 @@ import {
   PollingCancelledError,
   PollingLimitExceededError,
   removeKeys,
+  sameBufferData,
   smallerVersion,
   stringifyJson,
   uniqueObjects,
@@ -833,6 +834,24 @@ describe("utils", () => {
     it("should parse JSON strings", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
+    });
+  });
+
+  describe("sameBufferData", () => {
+    it("returns true if same data", () => {
+      const a = new Uint16Array([1, 2, 3]).buffer;
+      const b = new Uint16Array([1, 2, 3]).buffer;
+      expect(sameBufferData(a, b)).toBe(true);
+    });
+
+    it("returns false if not same data", () => {
+      const a = new Uint16Array([1, 2, 3]).buffer;
+      const b1 = new Uint16Array([1, 2, 4]).buffer;
+      expect(sameBufferData(a, b1)).toBe(false);
+      const b2 = new Uint16Array([1, 2]).buffer;
+      expect(sameBufferData(a, b2)).toBe(false);
+      const b3 = new Uint16Array([1, 2, 3, 4]).buffer;
+      expect(sameBufferData(a, b3)).toBe(false);
     });
   });
 });

@@ -130,6 +130,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
+  async isChecked(): Promise<boolean | null> {
+    throw new Error("Not implemented");
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);
@@ -146,5 +150,14 @@ export class JestPageObjectElement implements PageObjectElement {
     throw new Error("Not implemented");
     // Not tested:
     // userEvent.selectOption(this.element, text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    try {
+      expect(this.element).toBeVisible();
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
