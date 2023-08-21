@@ -350,6 +350,7 @@ impl AccountsStore {
     }
 
     // TODO: Spin this out as a separate PR and add tests.
+    // TODO: Determine whether there are any early accounts left.  If not, we can nuke this code.  Maybe call them unclaimed accounts.
     fn fix_transactions_for_early_user(&mut self, account: &Account, caller: PrincipalId) {
         let canister_ids: Vec<dfn_core::CanisterId> = account.canisters.iter().map(|c| c.canister_id).collect();
         let transactions: Vec<TransactionIndex> = account.get_all_transactions_linked_to_principal_sorted();
