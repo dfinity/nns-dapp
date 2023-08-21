@@ -19,6 +19,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - New lifecycle store for SNS projects.
 - New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 - Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+
 * New tag for NNS neurons: "Hardware Wallet".
 * New derived state store for SNS projects.
 * Identify swap participation ICP transactions.
@@ -51,6 +52,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 - Fix wrong "ICP Staked" message in SNS neurons.
 - Disable HW from participating in swaps.
+
 * Fix wrong "ICP Staked" message in SNS neurons.
 
 #### Security
@@ -96,8 +98,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
-* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
-* Disable HW from participating in swaps.
+- Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+- Disable HW from participating in swaps.
 
 ## Proposal 124014
 
