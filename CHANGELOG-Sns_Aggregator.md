@@ -21,11 +21,16 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 * More tests that the SNS aggregator contains the expected number of SNSs.
 * Display commit, branch name and similar data when deploying to a test canister.
+
 ### Changed
+
 - Ensure that the last paginated entry is incomplete.
+
 ### Fixed
-* Update the path to the `nns-sns-wasm` .did file.
-* Update the index.html when it has changed.
+
+- Update the path to the `nns-sns-wasm` .did file.
+- Update the index.html when it has changed.
+
 ### Security
 
 ### Not Published
@@ -40,7 +45,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 - Style (UI design) for the landing page
 - Add a link that points to NNS dapp GitHub repo
-- Add a link that points to NNS Dapp GitHub repo 
+- Add a link that points to NNS Dapp GitHub repo
 - Display swaps' lifecycle on the landing page
 
 ### Changed

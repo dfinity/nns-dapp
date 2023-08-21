@@ -12,20 +12,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* New tag for NNS neurons: "Hardware Wallet".
-* New derived state store for SNS projects.
-* Identify swap participation ICP transactions.
-* Improve error messaging on payload size limit in proposals list page.
-* New lifecycle store for SNS projects.
-* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
-* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+- New tag for NNS neurons: "Hardware Wallet".
+- New derived state store for SNS projects.
+- Identify swap participation ICP transactions.
+- Improve error messaging on payload size limit in proposals list page.
+- New lifecycle store for SNS projects.
+- New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+- Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
 
 #### Changed
 
 - bump agent-js `v0.18.1`
 
 * Clarify Ledger app version error message.
-* Update SNS Swap types to match the latest canister interface. 
+* Update SNS Swap types to match the latest canister interface.
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
@@ -39,12 +39,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
 
 #### Security
-* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
+
+- Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
 
 #### Fixed
 
-* Fix wrong "ICP Staked" message in SNS neurons.
-* Disable HW from participating in swaps.
+- Fix wrong "ICP Staked" message in SNS neurons.
+- Disable HW from participating in swaps.
 
 #### Security
 
@@ -54,33 +55,34 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Make it easy to skip the CI build step for quick testing.
-* Screenshot e2e tests.
-* Allow specifying a test_filter to the e2e CI action.
-* New test util to set SNS projects for testing.
-* Make scripts/past-changelog-test check again the previous commit when run on main.
+- Make it easy to skip the CI build step for quick testing.
+- Screenshot e2e tests.
+- Allow specifying a test_filter to the e2e CI action.
+- New test util to set SNS projects for testing.
+- Make scripts/past-changelog-test check again the previous commit when run on main.
 
 #### Changed
 
-* Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
-* Moved e2e-tests/scripts/ to scripts/e2e-tests/.
-* Change some unit tests to set a system time and not rely on actual time.
+- Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
+- Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+- Change some unit tests to set a system time and not rely on actual time.
 
 #### Deprecated
+
 #### Removed
 
-* Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
-* Remove `frontend/jest-spy.ts`.
-* Remove e2e-tests/
+- Remove compressed `.wasm` files from releases. Please use `.wasm.gz` instead.
+- Remove `frontend/jest-spy.ts`.
+- Remove e2e-tests/
 
 #### Fixed
 
-* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
+- Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
 
 #### Security
 
-* Fixed some tests that depended on execution order.
-* [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+- Fixed some tests that depended on execution order.
+- [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
 
 ## Proposal 124014
 
@@ -88,48 +90,48 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Don't display proposal navigation on launch-pad page.
-* Update SNS Aggregator response type and related converters.
-* Implement the standard accounts dropdown selector in canisters' features.
-* Review and optimize the number of steps and the UI of the canisters' related modals.
-* Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
-* Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
-* New NNS and SNS neuron details page layout.
+- Don't display proposal navigation on launch-pad page.
+- Update SNS Aggregator response type and related converters.
+- Implement the standard accounts dropdown selector in canisters' features.
+- Review and optimize the number of steps and the UI of the canisters' related modals.
+- Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
+- Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
+- New NNS and SNS neuron details page layout.
 
 #### Removed
 
-* Remove fallback to load SNSes directly from SNS canisters.
-* Remove ENABLE_SNS_AGGREGATOR flag.
-* Remove relying on the swap raw metrics to get the number of buyers of a Swap.
+- Remove fallback to load SNSes directly from SNS canisters.
+- Remove ENABLE_SNS_AGGREGATOR flag.
+- Remove relying on the swap raw metrics to get the number of buyers of a Swap.
 
 #### Fixed
 
-* Fix missing referrer path on subpages.
-* Fix some type discrepancies with SNS aggregator data.
-* Do not show unnecessary scrollbar in notifications.
-* Fix error when getting an SNS Aggregator page fails.
-* Maintain text color in hyperlinks card when hovered.
-* Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
-* Prevent the submission of cycles for top-up review unless an amount has been entered first.
+- Fix missing referrer path on subpages.
+- Fix some type discrepancies with SNS aggregator data.
+- Do not show unnecessary scrollbar in notifications.
+- Fix error when getting an SNS Aggregator page fails.
+- Maintain text color in hyperlinks card when hovered.
+- Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
+- Prevent the submission of cycles for top-up review unless an amount has been entered first.
 
 ### Operations
 
 #### Added
 
-* Proposal details e2e test.
-* Automatically populate the change log section in the release proposal.
-* Remove empty section headings in scripts/nns-dapp/split-changelog.
-* Make it easy to skip the CI build step for quick testing
+- Proposal details e2e test.
+- Automatically populate the change log section in the release proposal.
+- Remove empty section headings in scripts/nns-dapp/split-changelog.
+- Make it easy to skip the CI build step for quick testing
 
 #### Changed
 
-* Update candid interface for NNS governance to improve 1-proposal support.
-* Rename deleted workflows to start with "ZZZ".
+- Update candid interface for NNS governance to improve 1-proposal support.
+- Rename deleted workflows to start with "ZZZ".
 
 #### Fixed
 
-* past-changelog-test compares lines numbers correctly.
-* Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
+- past-changelog-test compares lines numbers correctly.
+- Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
 
 ## Proposal 123921
 
@@ -137,27 +139,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Enable merge neurons preview.
-* Display page title in browser's tab.
+- Enable merge neurons preview.
+- Display page title in browser's tab.
 
 #### Changed
 
-* Refactor storage to prepare for schema migration.
-* Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
-* Bump agent-js `v0.18.1`.
-* Clarify Ledger app version error message.
-* Increase the displayed size of the projects logo on the "Launchpad".
-* Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
-* New icon for dissolving neuron state.
-* Keep menu open and visible on large screen (not only on extra large screen).
-* Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
+- Refactor storage to prepare for schema migration.
+- Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
+- Bump agent-js `v0.18.1`.
+- Clarify Ledger app version error message.
+- Increase the displayed size of the projects logo on the "Launchpad".
+- Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
+- New icon for dissolving neuron state.
+- Keep menu open and visible on large screen (not only on extra large screen).
+- Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
 
 #### Fixed
 
-* Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
-* Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
-* Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
-* Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
+- Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
+- Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
+- Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages.
+- Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
 
 #### Not Published
 
@@ -179,25 +181,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Removed
 
-* A separate build of nns-dapp for testing.  See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
-* A test that state is preserved in downgrade-upgrade tests.
-* Support SNS neuron permission in fake SNS governance API.
-* Support selective pausing and resuming in API fakes.
+- A separate build of nns-dapp for testing. See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
+- A test that state is preserved in downgrade-upgrade tests.
+- Support SNS neuron permission in fake SNS governance API.
+- Support selective pausing and resuming in API fakes.
 
 #### Changed
 
-* Create the `noassets` build using rust feature flags, for consistency, instead of with a separate build stage.
-* Updated the downgrade-upgrade test summary.
-* Increased the size of the persistent state in downgrade-upgrade tests.
-* Moved the downgrade-upgrade test into a dedicated job.
-* Faster formatting of shell and yaml files, by operating only on named or changed files.
-* Updated the calls to `docker-build` to use the `--network` flag.
-* Upgraded to Playwright 1.36.
+- Create the `noassets` build using rust feature flags, for consistency, instead of with a separate build stage.
+- Updated the downgrade-upgrade test summary.
+- Increased the size of the persistent state in downgrade-upgrade tests.
+- Moved the downgrade-upgrade test into a dedicated job.
+- Faster formatting of shell and yaml files, by operating only on named or changed files.
+- Updated the calls to `docker-build` to use the `--network` flag.
+- Upgraded to Playwright 1.36.
 
 #### Fixed
 
-* Deploy.sh script
-* Improve sns governance e2e test.
+- Deploy.sh script
+- Improve sns governance e2e test.
 
 #### Security
 
@@ -295,6 +297,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Render SNS neuron voting power in neuron detail page.
 - Users can now add names to canisters to easily identify them within NNS dapp only.
 - Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+
 * Render SNS neuron voting power in neuron detail page.
 * Users can now add names to canisters to easily identify them within NNS Dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
