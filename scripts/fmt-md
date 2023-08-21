@@ -16,8 +16,9 @@ list_files() {
 
 # Selects eligible files; filenames are read from stdin, one line per filename.
 # TODO: Formatting fails in the frontend directory, due to some npx or prettier magic.  Fix.
+# TODO: Remove the union merge rule for one week, to help PRs that struggle to merge correctly.
 filter() {
-  grep -E '[.]md$' | grep -v frontend
+  grep -E '[.]md$' | grep -v frontend | grep -v CHANGELOG
 }
 
 case "${1:-}" in
