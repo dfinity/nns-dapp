@@ -68,7 +68,7 @@ for ((i = 1; i <= "$TIMES_TO_RUN"; i++)); do
     ((counter++))
     # Waiting limit >=20 minutes (20m / 10s = 120s)
     if ((counter > 120)); then
-      echo "⌛️ Waited too long for job to done, exiting"
+      echo "⌛️ Waited too long for job to complete.  Exiting"
       exit 1
     fi
   done
