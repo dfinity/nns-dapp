@@ -62,13 +62,13 @@ fn test_account_storage() {
     let account = toy_account(1, 5);
     // TODO: Check that this spans several pages.
     storage.insert_account(&account_key, account.clone());
-    assert_eq!(storage.contains_account(&account_key), true);
+    assert!(storage.contains_account(&account_key));
     assert_eq!(storage.get_account(&account_key), Some(account.clone()));
     let updated_account = toy_account(1, 1000);
     storage.insert_account(&account_key, updated_account.clone());
-    assert_eq!(storage.contains_account(&account_key), true);
+    assert!(storage.contains_account(&account_key));
     assert_eq!(storage.get_account(&account_key), Some(updated_account.clone()));
     storage.remove_account(&account_key);
-    assert_eq!(storage.contains_account(&account_key), false);
+    assert!(!storage.contains_account(&account_key));
     assert_eq!(storage.get_account(&account_key), None);
 }

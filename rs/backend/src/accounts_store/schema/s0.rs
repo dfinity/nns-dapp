@@ -80,7 +80,7 @@ pub trait AccountStorageTrait {
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {
-                last_removed_page = self.insert_account_page(account_storage_key, page_to_insert.clone());
+                last_removed_page = self.insert_account_page(account_storage_key, *page_to_insert);
             } else {
                 // If the number of pages has reduced, we need to remove some pages.
                 // ... If the last removed or replaced page was not full, we are done.
@@ -96,6 +96,7 @@ pub trait AccountStorageTrait {
         self.contains_account_page(&account_storage_key)
     }
     fn remove_account(&mut self, account_key: &[u8]) {
+        #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         let mut last_page = None;
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
@@ -143,19 +144,21 @@ impl AccountStorageKey {
     const ACCOUNT_IDENTIFIER_OFFSET: usize = 2;
 
     /// Accounts are currently keyed by Vec[u8]; we continue this tradition, although it is tempting to use AccountIdentifier instead.
+    #[allow(dead_code)]
     pub fn new(page_num: u8, account_identifier: &[u8]) -> Self {
         let account_identifier_len = account_identifier.len() as u8;
         let mut ans = [0u8; Self::MAX_SIZE as usize];
         ans[Self::PAGE_NUM_OFFSET] = page_num;
         ans[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] = account_identifier_len;
         ans[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier.len()]
-            .copy_from_slice(&account_identifier);
+            .copy_from_slice(account_identifier);
         Self { bytes: ans }
     }
 
     /// Gets the key to the next page.
+    #[allow(dead_code)]
     pub fn next(&self) -> Self {
-        let mut ans = self.bytes.clone();
+        let mut ans = self.bytes;
         ans[Self::PAGE_NUM_OFFSET] += 1;
         Self { bytes: ans }
     }
@@ -163,6 +166,7 @@ impl AccountStorageKey {
 
 /// A page of account data; a single account is stored on one or more pages.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(dead_code)]
 pub struct AccountStoragePage {
     /// TODO: See whether this can be variable length.  Stable structures would have to support this.
     bytes: [u8; AccountStoragePage::SIZE as usize],
@@ -179,8 +183,9 @@ impl AccountStoragePage {
     /// The maximum length of the payload.
     pub const MAX_PAYLOAD_LEN: usize = Self::SIZE as usize - Self::PAYLOAD_OFFSET;
 
+    #[allow(dead_code)]
     fn new(chunk: &[u8]) -> Self {
-        if chunk.len() > Self::MAX_PAYLOAD_LEN as usize {
+        if chunk.len() > Self::MAX_PAYLOAD_LEN {
             panic!("Attempt to create AccountStoragePage from chunk of length {}, which is longer than the maximum payload length of {}.", chunk.len(), Self::MAX_PAYLOAD_LEN);
         }
         let page_len = chunk.len() as u16;
@@ -189,6 +194,7 @@ impl AccountStoragePage {
         page[Self::PAYLOAD_OFFSET..Self::PAYLOAD_OFFSET + chunk.len()].copy_from_slice(chunk);
         Self { bytes: page }
     }
+    #[allow(dead_code)]
     fn pages_from_account(account: &Account) -> Vec<Self> {
         let account_serialized = Candid((account,)).into_bytes().unwrap();
         account_serialized
@@ -197,6 +203,7 @@ impl AccountStoragePage {
             .collect::<Vec<_>>()
     }
     /// The payload length.
+    #[allow(dead_code)]
     fn len(&self) -> usize {
         let len_bytes = self.bytes[Self::LEN_OFFSET..Self::LEN_OFFSET + Self::LEN_LEN]
             .try_into()
