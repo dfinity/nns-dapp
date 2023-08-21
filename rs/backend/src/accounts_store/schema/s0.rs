@@ -115,7 +115,7 @@ pub trait AccountStorageTrait {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct AccountStorageKey {
     // TODO: Consider changing this to Cow<'a, [u8]>.
-    bytes: [u8; AccountStorageKey::MAX_SIZE as usize],
+    bytes: [u8; AccountStorageKey::SIZE as usize],
 }
 impl Storable for AccountStorageKey {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
@@ -132,10 +132,12 @@ impl Storable for AccountStorageKey {
     }
 }
 impl BoundedStorable for AccountStorageKey {
-    const MAX_SIZE: u32 = 34;
+    const MAX_SIZE: u32 = Self::SIZE;
     const IS_FIXED_SIZE: bool = true;
 }
 impl AccountStorageKey {
+    /// The number of bytes in a page
+    const SIZE: u32 = 34;
     /// Location of the page number in the key bytes.
     const PAGE_NUM_OFFSET: usize = 0;
     /// Location of the account identifier length in the key bytes.
@@ -170,6 +172,24 @@ impl AccountStorageKey {
 pub struct AccountStoragePage {
     /// TODO: See whether this can be variable length.  Stable structures would have to support this.
     bytes: [u8; AccountStoragePage::SIZE as usize],
+}
+impl Storable for AccountStoragePage {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        self.bytes[..].into()
+    }
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        Self {
+            bytes: bytes
+                .into_owned()
+                .try_into()
+                .map_err(|err| format!("Attempt to create AccountStorageKey from bytes of wrong length: {err:?}"))
+                .unwrap(),
+        }
+    }
+}
+impl BoundedStorable for AccountStoragePage {
+    const MAX_SIZE: u32 = AccountStoragePage::SIZE as u32;
+    const IS_FIXED_SIZE: bool = true;
 }
 impl AccountStoragePage {
     /// The size of a page in bytes.
