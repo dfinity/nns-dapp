@@ -23,12 +23,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 - bump agent-js `v0.18.1`
-
-* Clarify Ledger app version error message.
-* Update SNS Swap types to match the latest canister interface.
-* Hide by default the proposal summary in ballots.
-* Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
-* Launchpad proposal requests only Open proposals of the SNS topic.
+- Clarify Ledger app version error message.
+- Update SNS Swap types to match the latest canister interface.
+- Hide by default the proposal summary in ballots.
+- Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
+- Launchpad proposal requests only Open proposals of the SNS topic.
 
 #### Deprecated
 
@@ -297,10 +296,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Render SNS neuron voting power in neuron detail page.
 - Users can now add names to canisters to easily identify them within NNS dapp only.
 - Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
-
-* Render SNS neuron voting power in neuron detail page.
-* Users can now add names to canisters to easily identify them within NNS Dapp only.
-* Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
+- Render SNS neuron voting power in neuron detail page.
+- Users can now add names to canisters to easily identify them within NNS Dapp only.
+- Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
 
 #### Changed
 
@@ -370,9 +368,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Added a command line tool to get the arguments of a canister upgrade proposal, for verification purposes.
 - Publish the arguments used in every release.
 - A script to download the WASM from GitHub CI build.
-
-* A script to get the WASM hash from the GitHub CI build log.
-
+- A script to get the WASM hash from the GitHub CI build log.
 - Instructions to verify canister args in proposal.
 - Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
 - More test for the release-sop script.
