@@ -1,4 +1,4 @@
-import type { CachedSns, CachedSnsDto } from "$lib/types/sns-aggregator";
+import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import {
   convertDtoData,
   convertDtoToSnsSummary,
@@ -15,22 +15,6 @@ describe("sns aggregator converters utils", () => {
       expect(convertDtoData([aggregatorSnsMockDto])).toEqual([
         aggregatorSnsMock,
       ]);
-    });
-
-    it("converts aggregator types to ic-js types if no swap params", () => {
-      const aggregatorDto: CachedSnsDto = {
-        ...aggregatorSnsMockDto,
-        swap_params: {
-          params: null,
-        },
-      };
-      const expected: CachedSns = {
-        ...aggregatorSnsMock,
-        swap_params: {
-          params: [],
-        },
-      };
-      expect(convertDtoData([aggregatorDto])).toEqual([expected]);
     });
   });
 

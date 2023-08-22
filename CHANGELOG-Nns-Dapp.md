@@ -18,6 +18,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+* Remove some unused fields from the aggregator converted type.
 
 #### Changed
 
@@ -48,6 +49,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow specifying a test_filter to the e2e CI action.
 * New test util to set SNS projects for testing.
 * Make scripts/past-changelog-test check again the previous commit when run on main.
+* Unit tests for the detailed `min_participant_icp_e8s` rendering.
 
 #### Changed
 

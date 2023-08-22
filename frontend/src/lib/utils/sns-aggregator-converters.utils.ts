@@ -9,7 +9,6 @@ import type {
 } from "$lib/types/sns";
 import type {
   CachedFunctionTypeDto,
-  CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
   CachedSns,
   CachedSnsDto,
@@ -25,7 +24,6 @@ import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
   SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsParams,
@@ -195,17 +193,6 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   ),
 });
 
-const convertLifecycleResponse = (
-  response: CachedLifecycleResponseDto
-): SnsGetLifecycleResponse => ({
-  decentralization_sale_open_timestamp_seconds: toNullable(
-    convertOptionalNumToBigInt(
-      response.decentralization_sale_open_timestamp_seconds
-    )
-  ),
-  lifecycle: toNullable(response.lifecycle),
-});
-
 const convertSwap = ({
   lifecycle,
   open_sns_token_swap_proposal_id,
@@ -307,9 +294,6 @@ const convertSnsData = ({
   icrc1_fee,
   icrc1_total_supply,
   derived_state,
-  swap_params,
-  init,
-  lifecycle,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -327,15 +311,6 @@ const convertSnsData = ({
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
   derived_state: convertDerivedToResponse(derived_state),
-  swap_params: {
-    params: isNullish(swap_params.params)
-      ? []
-      : [convertSwapParams(swap_params.params)],
-  },
-  init: {
-    init: convertSwapInitParams(init.init),
-  },
-  lifecycle: convertLifecycleResponse(lifecycle),
 });
 
 export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>

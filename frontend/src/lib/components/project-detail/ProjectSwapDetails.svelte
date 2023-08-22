@@ -70,7 +70,7 @@
       <AmountDisplay slot="value" amount={snsTotalTokenSupply} singleLine />
     </KeyValuePair>
   {/if}
-  <KeyValuePair>
+  <KeyValuePair testId="sns-tokens-distributed">
     <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
     <AmountDisplay slot="value" amount={snsTokens} singleLine />
   </KeyValuePair>
@@ -83,15 +83,15 @@
       })}</span
     >
   </KeyValuePair>
-  <KeyValuePair>
+  <KeyValuePair testId="sns-min-participant-commitment">
     <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
     <AmountDisplay slot="value" amount={minCommitmentIcp} detailed singleLine />
   </KeyValuePair>
-  <KeyValuePair>
+  <KeyValuePair testId="sns-max-participant-commitment">
     <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
     <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
   </KeyValuePair>
-  <KeyValuePair>
+  <KeyValuePair testId="sns-sale-end">
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds
       slot="value"
