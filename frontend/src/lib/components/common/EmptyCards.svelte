@@ -18,11 +18,11 @@
   <Card disabled>
     <div class="card-item" />
   </Card>
-  <button class="card" disabled>
+  <article class="card-dashed">
     <div class="card-item">
       <div class="select" />
     </div>
-  </button>
+  </article>
 </div>
 
 <style lang="scss">
@@ -51,12 +51,18 @@
     flex-direction: column;
   }
 
-  .select {
-    width: 40%;
-    height: calc(var(--line-height-standard) * 1rem);
-
+  .card-dashed {
+    border: 4px dashed var(--input-background);
     border-radius: var(--border-radius);
 
-    background-color: var(--card-background);
+    padding: calc(var(--padding-2x) - var(--card-border-size));
+    .select {
+      width: 40%;
+      height: calc(var(--line-height-standard) * 1rem);
+
+      border-radius: var(--border-radius);
+
+      background-color: var(--input-background);
+    }
   }
 </style>
