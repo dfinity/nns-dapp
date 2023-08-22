@@ -173,12 +173,6 @@
     span {
       white-space: nowrap;
     }
-
-    &.collapsed {
-      span {
-        display: none;
-      }
-    }
   }
 
   form {
