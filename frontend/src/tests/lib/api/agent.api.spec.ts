@@ -1,5 +1,4 @@
 import * as agentApi from "$lib/api/agent.api";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import type {
   Agent,
   ApiQueryResponse,
@@ -43,7 +42,6 @@ describe("agent-api", () => {
   const utilsCreateAgentSpy = jest.spyOn(utils, "createAgent");
 
   beforeEach(() => {
-    allowLoggingInOneTestForDebugging();
     jest.resetAllMocks();
     agentApi.resetAgents();
 
