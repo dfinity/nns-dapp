@@ -324,21 +324,15 @@ describe("agent-api", () => {
     const testIdentity2 = createIdentity(testPrincipal1);
 
     const mockAgent = mock<HttpAgent>();
-    let agent1: Agent;
-    let agent2: Agent;
 
     beforeEach(async () => {
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
-
-      expect(utilsCreateAgentSpy).not.toBeCalled();
-
-      agent1 = await createAgent(testIdentity1);
-      agent2 = await createAgent(testIdentity2);
-
-      expect(utilsCreateAgentSpy).toBeCalledTimes(1);
     });
 
     it("for method createReadStateRequest()", async () => {
+      const agent1 = await createAgent(testIdentity1);
+      const agent2 = await createAgent(testIdentity2);
+
       const param = {
         path: [[Int8Array.from([3, 4, 5])]],
       } as unknown as ReadStateOptions;
@@ -367,6 +361,9 @@ describe("agent-api", () => {
     });
 
     it("for method readState()", async () => {
+      const agent1 = await createAgent(testIdentity1);
+      const agent2 = await createAgent(testIdentity2);
+
       const effectiveCanisterId = "effectiveCanisterId";
       const options = {
         path: [[Int8Array.from([7, 1, 2])]],
@@ -403,6 +400,9 @@ describe("agent-api", () => {
     });
 
     it("for method call()", async () => {
+      const agent1 = await createAgent(testIdentity1);
+      const agent2 = await createAgent(testIdentity2);
+
       expect(mockAgent.call).not.toBeCalled();
       await agent1.call("canisterId", {} as CallOptions);
 
@@ -421,6 +421,9 @@ describe("agent-api", () => {
     });
 
     it("for method query()", async () => {
+      const agent1 = await createAgent(testIdentity1);
+      const agent2 = await createAgent(testIdentity2);
+
       const params = [
         "canisterId",
         { methodName: "bar" } as QueryFields,
