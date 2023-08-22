@@ -28,6 +28,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
 * When reusing cached agents, use the current identity instead of the one in the cached agent.
+* New page UI for Accounts, Neurons, Canister and Settings when not logged in.
+* Remove login page and redirect to accounts instead.
 
 #### Deprecated
 #### Removed
