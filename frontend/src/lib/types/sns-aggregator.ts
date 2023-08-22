@@ -4,10 +4,7 @@ import type {
 } from "@dfinity/ledger";
 import type {
   SnsGetDerivedStateResponse,
-  SnsGetInitResponse,
-  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
-  SnsGetSaleParametersResponse,
   SnsNervousSystemFunction,
   SnsSwap,
   SnsSwapDerivedState,
@@ -53,9 +50,6 @@ export type CachedSns = {
   icrc1_fee?: bigint;
   icrc1_total_supply: bigint;
   derived_state: SnsGetDerivedStateResponse;
-  swap_params: SnsGetSaleParametersResponse;
-  init: SnsGetInitResponse;
-  lifecycle: SnsGetLifecycleResponse;
 };
 
 export type CachedSnsMetadataDto = {
