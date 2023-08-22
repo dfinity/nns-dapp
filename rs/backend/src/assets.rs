@@ -291,10 +291,10 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     })
 }
 
-/// List of recommended security headers as per https://owasp.org/www-project-secure-headers/
+/// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
 /// These headers enable browser security features (like limit access to platform apis and set
 /// iFrame policies, etc.).
-/// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
+/// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
         ("X-Frame-Options".to_string(), "DENY".to_string()),

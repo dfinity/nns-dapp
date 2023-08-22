@@ -20,11 +20,11 @@ pub struct FastScheduler {
     /// The time of the next sale start, with a trigger to start collecting data then.
     ///
     /// The time is in seconds since the UNIX epoch, as provided by ic0::time() / 1_000_000_000.
-    /// See: https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-time
+    /// See: <https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-time>
     next_start_seconds: Option<(u64, TimerId)>,
 }
 impl FastScheduler {
-    /// Lifecycle of an open swap with an active sale.  See https://github.com/dfinity/ic/blob/master/rs/sns/swap/proto/ic_sns_swap/pb/v1/swap.proto
+    /// Lifecycle of an open swap with an active sale.  See <https://github.com/dfinity/ic/blob/master/rs/sns/swap/proto/ic_sns_swap/pb/v1/swap.proto>
     const LIFECYCLE_OPEN: i32 = 2;
     /// A lifecycle state that can lead to open.
     const LIFECYCLE_PENDING: i32 = 1;
