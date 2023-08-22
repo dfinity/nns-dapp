@@ -16,6 +16,7 @@ import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -79,6 +80,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     snsQueryStore.reset();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
+    snsTicketsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
     jest.clearAllTimers();
@@ -554,6 +556,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           } as SnsSwapCommitment);
         jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
+        expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
+
         const { getByTestId, queryByTestId } = render(ProjectDetail, props);
 
         expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
@@ -561,6 +565,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         await waitFor(() =>
           expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
         );
+
+        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
 
         await waitFor(() =>
           expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
@@ -571,6 +577,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             "[data-tid='token-value']"
           )?.innerHTML
         ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
       });
     });
 
