@@ -222,7 +222,7 @@ describe("ParticipateSwapModal", () => {
       expect(await form.isContinueButtonEnabled()).toBe(true);
     });
 
-    it("should not show an error when amount is no too small", async () => {
+    it("should not show an error when amount is not too small", async () => {
       const po = await renderSwapModalPo({
         swapCommitment: {
           ...mockSwapCommitment,
