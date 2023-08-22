@@ -2,6 +2,7 @@ import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import {
   convertDtoData,
   convertDtoToSnsSummary,
+  convertNervousFuncttion,
 } from "$lib/utils/sns-aggregator-converters.utils";
 import {
   aggregatorSnsMock,
@@ -376,6 +377,60 @@ describe("sns aggregator converters utils", () => {
         ),
       };
       expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
+    });
+
+    it("returns undefined if a swap params required field is missing", () => {
+      const aggregatorMissingSwapParams: CachedSnsDto = {
+        ...mockData,
+        swap_state: {
+          ...mockData.swap_state,
+          swap: {
+            ...mockData.swap_state.swap,
+            params: null,
+          },
+        },
+      };
+      expect(
+        convertDtoToSnsSummary(aggregatorMissingSwapParams)
+      ).toBeUndefined();
+    });
+  });
+
+  describe("convertNervousFunction", () => {
+    it("converts nervous function to ic-js type", () => {
+      const nsFunction = {
+        id: 0,
+        name: "All Topics",
+        description: "Catch-all w.r.t to following for all types of proposals.",
+        function_type: { NativeNervousSystemFunction: {} },
+      };
+
+      expect(convertNervousFuncttion(nsFunction)).toEqual({
+        id: 0n,
+        name: "All Topics",
+        description: [
+          "Catch-all w.r.t to following for all types of proposals.",
+        ],
+        function_type: [{ NativeNervousSystemFunction: {} }],
+      });
+    });
+
+    it("returns function_type as empty array when null", () => {
+      const nsFunction = {
+        id: 0,
+        name: "All Topics",
+        description: "Catch-all w.r.t to following for all types of proposals.",
+        function_type: null,
+      };
+
+      expect(convertNervousFuncttion(nsFunction)).toEqual({
+        id: 0n,
+        name: "All Topics",
+        description: [
+          "Catch-all w.r.t to following for all types of proposals.",
+        ],
+        function_type: [],
+      });
     });
   });
 });
