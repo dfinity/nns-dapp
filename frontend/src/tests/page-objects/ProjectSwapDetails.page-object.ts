@@ -2,6 +2,7 @@ import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 export class ProjectSwapDetailsPo extends BasePageObject {
   private static readonly TID = "project-swap-details-component";
@@ -54,10 +55,12 @@ export class ProjectSwapDetailsPo extends BasePageObject {
     ).trim();
   }
 
-  getSaleEnd(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "sns-sale-end",
-    }).getValueText();
+  async getSaleEnd(): Promise<string> {
+    return normalizeWhitespace(
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "sns-sale-end",
+      }).getValueText()
+    );
   }
 }

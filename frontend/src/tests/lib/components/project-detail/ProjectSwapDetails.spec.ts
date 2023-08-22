@@ -91,7 +91,7 @@ describe("ProjectSwapDetails", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
-    expect(await po.getSaleEnd()).toEqual("Oct 4, 2023 3:00 PM");
+    expect(await po.getSaleEnd()).toEqual("Oct 4, 2023 3:00 PM");
   });
 
   it("should render total token supply if present", async () => {
