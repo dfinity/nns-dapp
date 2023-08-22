@@ -394,7 +394,7 @@ describe("sns aggregator converters utils", () => {
     });
   });
 
-  describe("convertNervousFuncttion", () => {
+  describe("convertNervousFunction", () => {
     it("converts nervous function to ic-js type", () => {
       const nsFunction = {
         id: 0,
