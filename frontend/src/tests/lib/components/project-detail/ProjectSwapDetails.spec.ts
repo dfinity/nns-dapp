@@ -15,7 +15,6 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectSwapDetailsPo } from "$tests/page-objects/ProjectSwapDetails.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 
 describe("ProjectSwapDetails", () => {
@@ -81,9 +80,7 @@ describe("ProjectSwapDetails", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
-    expect(normalizeWhitespace(await po.getSaleEnd())).toEqual(
-      "Oct 4, 2023 3:00 PM"
-    );
+    expect(await po.getSaleEnd()).toEqual("Oct 4, 2023 3:00 PM");
   });
 
   it("should render total token supply if present", async () => {
