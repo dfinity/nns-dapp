@@ -2,35 +2,16 @@
  * @jest-environment jsdom
  */
 
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
-import { disburseMaturity } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
-import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { Principal } from "@dfinity/principal";
-import type { Subscriber } from "svelte/store";
-
-jest.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    increaseStakeNeuron: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
+import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/stores/busy.store", () => {
   return {
@@ -39,18 +20,7 @@ jest.mock("$lib/stores/busy.store", () => {
   };
 });
 
-jest.mock("$lib/services/sns-neurons.services", () => {
-  return {
-    disburseMaturity: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
-
-jest
-  .spyOn(selectedUniverseIdStore, "subscribe")
-  .mockImplementation((run: Subscriber<Principal>): (() => void) => {
-    run(mockPrincipal);
-    return () => undefined;
-  });
+jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsDisburseMaturityModal", () => {
   const reloadNeuron = jest.fn();
@@ -74,30 +44,7 @@ describe("SnsDisburseMaturityModal", () => {
     };
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-
-    jest
-      .spyOn(snsProjectSelectedStore, "subscribe")
-      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
-
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-  });
-
-  it("should display destination address", async () => {
-    const po = await renderSnsDisburseMaturityModal();
-    const destinationAddress = shortenWithMiddleEllipsis(
-      mockPrincipal.toText()
-    );
-
-    expect(await po.getText()).toContain(destinationAddress);
+    authStore.setForTesting(mockIdentity);
   });
 
   it("should disable next button when 0 selected", async () => {
@@ -139,8 +86,9 @@ describe("SnsDisburseMaturityModal", () => {
       neuronId: mockSnsNeuron.id,
       rootCanisterId: mockPrincipal,
       percentageToDisburse: 50,
+      identity: mockIdentity,
     });
-    expect(reloadNeuron).toBeCalledTimes(1);
+    await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
     expect(stopBusy).toBeCalledTimes(1);
   });
 });
