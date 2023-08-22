@@ -377,5 +377,19 @@ describe("sns aggregator converters utils", () => {
       };
       expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
     });
+
+    it("returns undefined if a swap params required field is missing", () => {
+      const aggregatorMissingMetadata: CachedSnsDto = {
+        ...mockData,
+        swap_state: {
+          ...mockData.swap_state,
+          swap: {
+            ...mockData.swap_state.swap,
+            params: null,
+          },
+        },
+      };
+      expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
+    });
   });
 });
