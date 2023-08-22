@@ -13,7 +13,7 @@
   } from "@dfinity/gix-components";
 
   export let formattedMaturity: string;
-  export let formattedDestination: string;
+  export let tokenSymbol: string;
 
   const steps: WizardSteps = [
     {
@@ -60,12 +60,12 @@
       disabled={percentageToDisburse === 0}
     >
       <svelte:fragment slot="text">
-        {replacePlaceholders(
-          $i18n.neuron_detail.disburse_maturity_modal_description,
-          {
-            $account: formattedDestination,
-          }
-        )}
+        <Html
+          text={replacePlaceholders(
+            $i18n.neuron_detail.disburse_maturity_modal_description,
+            { $symbol: tokenSymbol }
+          )}
+        />
       </svelte:fragment>
     </NeuronSelectPercentage>
   {:else if currentStep?.name === "ConfirmDisburseMaturity"}
