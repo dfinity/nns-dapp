@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
+* When reusing cached agents, use the current identity instead of the one in the cached agent.
 
 #### Deprecated
 #### Removed
