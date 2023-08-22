@@ -380,7 +380,7 @@ describe("sns aggregator converters utils", () => {
     });
 
     it("returns undefined if a swap params required field is missing", () => {
-      const aggregatorMissingMetadata: CachedSnsDto = {
+      const aggregatorMissingSwapParams: CachedSnsDto = {
         ...mockData,
         swap_state: {
           ...mockData.swap_state,
@@ -390,7 +390,9 @@ describe("sns aggregator converters utils", () => {
           },
         },
       };
-      expect(convertDtoToSnsSummary(aggregatorMissingMetadata)).toBeUndefined();
+      expect(
+        convertDtoToSnsSummary(aggregatorMissingSwapParams)
+      ).toBeUndefined();
     });
   });
 

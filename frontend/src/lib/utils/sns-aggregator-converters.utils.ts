@@ -100,7 +100,7 @@ export const convertNervousFuncttion = ({
 });
 
 const convertSwapInitParams = (
-  init: CachedSwapInitParamsDto
+  init: CachedSwapInitParamsDto | null
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
@@ -225,7 +225,7 @@ const convertSwap = ({
     open_sns_token_swap_proposal_id !== undefined
       ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
       : [],
-  init: nonNullish(init) ? convertSwapInitParams(init) : [],
+  init: convertSwapInitParams(init),
   params: isNullish(params) ? [] : [convertSwapParams(params)],
 });
 
