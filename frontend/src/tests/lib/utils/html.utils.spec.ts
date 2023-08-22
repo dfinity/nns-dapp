@@ -94,7 +94,10 @@ describe("markdown.utils", () => {
 
   describe("markdown", () => {
     let renderer: unknown;
-    beforeAll(() => {
+
+    beforeEach(() => {
+      renderer = undefined;
+
       function marked(...args) {
         renderer = args[1];
         return args[0] + "-markdown";
@@ -116,6 +119,8 @@ describe("markdown.utils", () => {
     });
 
     it("should call markedjs/marked with custom renderers", async () => {
+      await markdownToHTML("test");
+
       expect(renderer).toEqual({
         renderer: {
           link: targetBlankLinkRenderer,
