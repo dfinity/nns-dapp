@@ -58,9 +58,9 @@ describe("agent-api", () => {
   it("createAgent should cache the underlying agent for the same identity", async () => {
     const testIdentity = createIdentity(testPrincipal1);
     expect(utilsCreateAgentSpy).not.toBeCalled();
-    const agent1 = await createAgent(testIdentity);
+    await createAgent(testIdentity);
     expect(utilsCreateAgentSpy).toBeCalledTimes(1);
-    const agent2 = await createAgent(testIdentity);
+    await createAgent(testIdentity);
     expect(utilsCreateAgentSpy).toBeCalledTimes(1);
   });
 
