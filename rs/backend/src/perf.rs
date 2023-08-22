@@ -1,4 +1,4 @@
-//! Capture snd store performance counters.
+//! Capture and store performance counters.
 use crate::stats::Stats;
 use crate::{StableState, STATE};
 use candid::CandidType;

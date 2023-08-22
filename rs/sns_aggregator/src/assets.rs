@@ -10,7 +10,7 @@ use std::collections::HashMap;
 /// A standard HTTP header
 type HeaderField = (String, String);
 
-/// The standardised data structure for HTTP responses as supported natively by the replica.
+/// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpRequest {
     /// The HTTP method of the request, such as "GET" or "POST".
@@ -25,10 +25,10 @@ pub struct HttpRequest {
     pub body: ByteBuf,
 }
 
-/// The standardised data structure for HTTP responses as supported natively by the replica.
+/// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpResponse {
-    /// The HTTP status code.  E.g. 200 for succcess, 4xx for "you did something wrong", 5xx for "we broke".
+    /// The HTTP status code.  E.g. 200 for success, 4xx for "you did something wrong", 5xx for "we broke".
     pub status_code: u16,
     /// The headers of the HTTP response
     pub headers: Vec<HeaderField>,
@@ -142,7 +142,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 }
 
 /// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
-/// These headers enable browser security features (like limit access to platform apis and set
+/// These headers enable browser security features (like limit access to platform APIs and set
 /// iFrame policies, etc.).
 /// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
@@ -260,7 +260,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 
 /// Inserts a favicon into the certified assets, if there is not one already.
 ///
-/// Note: If a browser visits the aggregation canister directy, it will request
+/// Note: If a browser visits the aggregation canister directly, it will request
 ///       a favicon.  As there is none, the asset canister will return an error
 ///       and the error also has no certification header, so for two reasons the
 ///       users will see errors in their console.  While these errors are not an

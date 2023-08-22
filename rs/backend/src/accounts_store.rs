@@ -87,7 +87,7 @@ impl NamedCanister {
     /// Note: This allocates a string, so for sorting long lists this will be slow.
     /// - Consider using `sort_by_cached_key(|x| x.sorting_key())`, if allowed in canisters.
     /// - Determine whether the native ordering of principals is acceptable.  If so, the key can
-    ///   be of type (bool, &str, &Principal) where the string is the name.
+    ///   be of type `(bool, &str, &Principal)` where the string is the name.
     fn sorting_key(&self) -> (bool, String) {
         if self.name.is_empty() {
             (true, self.canister_id.to_string())

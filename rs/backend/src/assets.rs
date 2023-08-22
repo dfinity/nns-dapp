@@ -118,24 +118,24 @@ impl Assets {
     ///   directory may be returned, e.g. `/launchpad/index.html`
     /// - "" -> "/index.html" A directory does not need a trailing slash.  E.g. `/launchpad` may
     ///   serve `/launchpad/index.html`.  Please note that if this is done, relative URLs in
-    ///   index.html will break so be careful if using this much requested but error-prone option.
+    ///   `index.html` will break so be careful if using this much requested but error-prone option.
     const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
-    ///   e.g. foo.js.gz should be entered with the .gz suffix.
+    ///   e.g. `foo.js.gz` should be entered with the `.gz` suffix.
     pub fn insert<S: Into<String>>(&mut self, path: S, asset: Asset) {
         self.0.insert(path.into(), asset);
     }
     /// Gets a given URL path from the assets, if available.
     ///
-    /// - If the path looks like an index, the canonical suffix "/index.html" will be used.
+    /// - If the path looks like an index, the canonical suffix `/index.html` will be used.
     /// - The retrieval search will look for compressed versions of the data.  E.g. if
-    ///   foo.json is requested and foo.json.gz is available, that will be returned along with
-    ///   "gzip" as the encoding.  The encoding can be set in the browser response HTTP header
-    ///   so that the browser will decompress the data before giving it to the requestor.  If
-    ///   the requestor wishes to receive the compressed data, without transparent decoding,
-    ///   the requestor should ask for "foo.json.gz" instead of "foo.json".
+    ///   `foo.json` is requested and foo.json.gz is available, that will be returned along with
+    ///   `gzip` as the encoding.  The encoding can be set in the browser response HTTP header
+    ///   so that the browser will decompress the data before giving it to the requester.  If
+    ///   the requester wishes to receive the compressed data, without transparent decoding,
+    ///   the requester should ask for `foo.json.gz` instead of `foo.json`.
     /// - The current asset signature scheme supports only one signature per path, so we cannot
     ///   take browser capabilities into account.
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
@@ -292,7 +292,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 }
 
 /// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
-/// These headers enable browser security features (like limit access to platform apis and set
+/// These headers enable browser security features (like limit access to platform APIs and set
 /// iFrame policies, etc.).
 /// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
@@ -358,9 +358,9 @@ pub fn insert_asset_into_state<S: Into<String> + Clone>(state: &State, path: S, 
     assets.insert(path, asset);
 }
 
-/// Adds the files bundled in the wasm to the state.
+/// Adds the files bundled in the WASM to the state.
 ///
-/// Note: Used both in init and post_upgrade
+/// Note: Used both in `init` and `post_upgrade`
 pub fn init_assets() {
     #[cfg(feature = "assets")]
     {

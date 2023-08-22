@@ -19,7 +19,7 @@ pub struct FastScheduler {
     update_timer: Option<TimerId>,
     /// The time of the next sale start, with a trigger to start collecting data then.
     ///
-    /// The time is in seconds since the UNIX epoch, as provided by ic0::time() / 1_000_000_000.
+    /// The time is in seconds since the UNIX epoch, as provided by `ic0::time() / 1_000_000_000`.
     /// See: <https://internetcomputer.org/docs/current/references/ic-interface-spec#system-api-time>
     next_start_seconds: Option<(u64, TimerId)>,
 }
