@@ -108,6 +108,22 @@
       }
     </script>
 
+    <!-- Init menu as fast as possible as well -->
+    <script menu-loader>
+      try {
+        const currentMenu = !localStorage.nnsMenu
+          ? undefined
+          : JSON.parse(localStorage.nnsMenu);
+
+        document.documentElement.setAttribute(
+          "menu",
+          currentMenu ?? "expanded"
+        );
+      } catch (error) {
+        console.error("Error initializing menu", error);
+      }
+    </script>
+
     <!-- SCRIPT_LOADER -->
     <!-- LINKS_PRELOADER -->
 
