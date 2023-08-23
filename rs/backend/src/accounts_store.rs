@@ -427,8 +427,7 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
-        } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+        } else if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             let response = if account.sub_accounts.len() < (u8::MAX as usize) {
                 let sub_account_id = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)).unwrap();
 
@@ -437,6 +436,7 @@ impl AccountsStore {
                 let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
 
                 account.sub_accounts.insert(sub_account_id, named_sub_account);
+                self.accounts.insert(account_identifier.to_vec(), account);
 
                 CreateSubAccountResponse::Ok(SubAccountDetails {
                     name: sub_account_name,
