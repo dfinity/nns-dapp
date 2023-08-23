@@ -504,17 +504,16 @@ impl AccountsStore {
             RegisterHardwareWalletResponse::NameTooLong
         } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
-            let mut response = RegisterHardwareWalletResponse::Ok;
 
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
-                response = RegisterHardwareWalletResponse::HardwareWalletLimitExceeded;
+                RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
                 .hardware_wallet_accounts
                 .iter()
                 .any(|hw| hw.principal == request.principal)
             {
-                response = RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered;
+                RegisterHardwareWalletResponse::HardwareWalletAlreadyRegistered
             } else {
                 account.hardware_wallet_accounts.push(NamedHardwareWalletAccount {
                     name: request.name,
@@ -527,9 +526,8 @@ impl AccountsStore {
 
                 self.hardware_wallet_accounts_count += 1;
                 self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
+                RegisterHardwareWalletResponse::Ok
             }
-
-            response
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
