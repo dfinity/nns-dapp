@@ -3,7 +3,7 @@
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { onMount } from "svelte";
-  import { Toasts, BusyScreen } from "@dfinity/gix-components";
+  import { Toasts, BusyScreen, Spinner } from "@dfinity/gix-components";
   import {
     initAppAuth,
     initAppPublicData,
@@ -14,6 +14,7 @@
   import { afterNavigate } from "$app/navigation";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
+  import { authStore } from "$lib/stores/auth.store";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
@@ -30,7 +31,12 @@
   );
 </script>
 
-<slot />
+<!-- We are waiting agent-js / the auth store to be loaded before rendering the pages to avoid visual glitch -->
+{#if $authStore.identity === undefined}
+  <Spinner />
+{:else}
+  <slot />
+{/if}
 
 <Warnings ckBTCWarnings testEnvironmentWarning />
 
