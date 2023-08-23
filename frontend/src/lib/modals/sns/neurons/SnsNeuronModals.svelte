@@ -31,6 +31,7 @@
   import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import AddPermissionsModal from "./AddPermissionsModal.svelte";
+  import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
 
   // Modal events
 
@@ -127,6 +128,12 @@
       {/if}
 
       {#if type === "view-active-disbursements"}
+        <SnsActiveDisbursementsModal
+          on:nnsClose={close}
+          {neuronId}
+          {neuron}
+          {rootCanisterId}
+        />
       {/if}
 
       {#if type === "auto-stake-maturity"}

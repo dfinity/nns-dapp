@@ -596,7 +596,7 @@
     "view_active_disbursements": "View Active Disbursements",
     "view_active_disbursements_status": "Disbursing",
     "view_active_disbursements_modal_title": "Active Disbursements",
-    "view_active_disbursements_entry_description": "$time remaining for rewards to disburse to $destination",
+    "view_active_disbursements_entry_description": "$time remaining for rewards to disburse to $account",
     "view_active_disbursements_maturity": "~$maturity Maturity",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
