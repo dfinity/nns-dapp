@@ -476,7 +476,6 @@ impl AccountsStore {
         if !Self::validate_account_name(&request.new_name) {
             RenameSubAccountResponse::NameTooLong
         } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let mut response = RenameSubAccountResponse::Ok;
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
             if let Some(sub_account) = account
                 .sub_accounts
@@ -484,10 +483,10 @@ impl AccountsStore {
                 .find(|sub_account| sub_account.account_identifier == request.account_identifier)
             {
                 sub_account.name = request.new_name;
+                RenameSubAccountResponse::Ok
             } else {
-                response = RenameSubAccountResponse::SubAccountNotFound;
+                RenameSubAccountResponse::SubAccountNotFound
             }
-            response
         } else {
             RenameSubAccountResponse::AccountNotFound
         }
