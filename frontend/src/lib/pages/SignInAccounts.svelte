@@ -11,7 +11,7 @@
   });
 </script>
 
-<main class="sign-in">
+<main class="sign-in" data-tid="accounts-landing-page">
   <PageBanner>
     <IconAccountsPage slot="image" />
     <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment>
