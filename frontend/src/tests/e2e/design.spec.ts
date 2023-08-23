@@ -7,6 +7,8 @@ test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
     await expect(page).toHaveTitle("NNS Dapp");
+    // Wait for the button to make sure the screenshot is taken after the page is loaded
+    await page.locator("[data-tid=login-button]").waitFor();
 
     await expect(page).toHaveScreenshot();
   });
