@@ -49,6 +49,10 @@ pub trait AccountsDbTrait {
     /// Tries to modify an account, if it exists, with the given function.  The modified account is
     /// saved only if the function returns a successful result.
     ///
+    /// Warning: This does NOT guarantee any locking mechanism.  IC canisters can execute only one
+    /// update function at a time, so there is no issue of several functions executing at the same
+    /// time.  As such, protection against concurrent access is not a priority.
+    ///
     /// # Arguments
     /// - `account_key` = the account lookup key, typically `account_identifier.to_vec()`.
     /// - `f` = a function that takes a mutable reference to the account as an argument and returns
