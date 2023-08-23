@@ -1,13 +1,10 @@
 main.sign-in {
   display: flex;
   flex-direction: column;
+  gap: var(--padding-2x);
 
   h1 {
     line-height: var(--line-height-standard);
-  }
-
-  p {
-    margin-bottom: var(--padding-3x);
   }
 }
 
