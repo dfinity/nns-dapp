@@ -428,9 +428,8 @@ impl AccountsStore {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
         } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let mut response = CreateSubAccountResponse::SubAccountLimitExceeded;
             let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            if account.sub_accounts.len() < (u8::MAX as usize) {
+            let response = if account.sub_accounts.len() < (u8::MAX as usize) {
                 let sub_account_id = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)).unwrap();
 
                 let sub_account = convert_byte_to_sub_account(sub_account_id);
@@ -439,12 +438,14 @@ impl AccountsStore {
 
                 account.sub_accounts.insert(sub_account_id, named_sub_account);
 
-                response = CreateSubAccountResponse::Ok(SubAccountDetails {
+                CreateSubAccountResponse::Ok(SubAccountDetails {
                     name: sub_account_name,
                     sub_account,
                     account_identifier: sub_account_identifier,
-                });
-            }
+                })
+            } else {
+                CreateSubAccountResponse::SubAccountLimitExceeded
+            };
 
             if let CreateSubAccountResponse::Ok(SubAccountDetails {
                 name: _,
