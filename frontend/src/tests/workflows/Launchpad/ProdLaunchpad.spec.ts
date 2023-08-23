@@ -17,7 +17,7 @@ jest.mock("$lib/api/proposals.api");
 describe("Launchpad", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    authStore.setForTesting(undefined);
+    authStore.setForTesting(null);
 
     jest
       .spyOn(proposalsApi, "queryProposals")
