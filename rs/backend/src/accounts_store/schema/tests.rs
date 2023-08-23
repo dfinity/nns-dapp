@@ -129,13 +129,100 @@ where
             &expected_last_canister
         );
     }
-    storage.db_remove_account(&account_key);
-    assert!(!storage.db_contains_account(&account_key));
-    assert_eq!(storage.db_get_account(&account_key), None);
+}
+
+/// Verifies that the update function `db_try_with_account()` does NOT save changes if
+/// the modifying function returns an error.
+fn assert_update_not_saved_on_error<D>(mut storage: D)
+where
+    D: AccountsDbTrait,
+{
+    let account_key = vec![1, 2, 3];
+    let account_initial_value = toy_account(1, 5);
+    // Create:
+    storage.db_insert_account(&account_key, account_initial_value.clone());
+    assert_eq!(
+        storage.db_get_account(&account_key),
+        Some(account_initial_value.clone())
+    );
+    // Update:
+    // Modify by adding a canister but then return an error.
+    {
+        // We will add a new canister:
+        let canister = toy_canister(3, 14159265359);
+        let expected_last_canister = canister.clone();
+        // Verify that it is not already the last...
+        assert_ne!(
+            storage
+                .db_get_account(&account_key)
+                .expect("Failed to get account")
+                .canisters
+                .last()
+                .expect("Account should have had canisters"),
+            &expected_last_canister
+        );
+        // The function return value; it should be passed through.
+        let return_value: Result<i32, i32> = Err(42);
+        // Update the account:
+        let actual_return_value = storage.db_try_with_account(&account_key, move |account| {
+            account.canisters.push(canister.clone());
+            // The return value should be passed through.
+            return_value
+        });
+        assert_eq!(Some(return_value), actual_return_value);
+        // Verify that the account has not changed.
+        assert_eq!(
+            storage.db_get_account(&account_key).expect("Failed to get account"),
+            account_initial_value
+        );
+    }
+}
+
+/// Verifies that the update function `db_try_with_account()` returns None if there is no account
+/// for the given key.
+fn assert_update_with_missing_key_returns_none<D>(mut storage: D)
+where
+    D: AccountsDbTrait,
+{
+    let account_key = vec![1, 2, 3];
+    let account_key_2 = vec![1, 2, 3, 4];
+    let account = toy_account(1, 5);
+    // Create:
+    storage.db_insert_account(&account_key, account.clone());
+    assert_eq!(storage.db_get_account(&account_key), Some(account.clone()));
+    // Updates:
+    // Modifies by adding a canister
+    {
+        // Updates the account:
+        let actual_return_value: Option<Result<i32, i32>> = storage
+            .db_try_with_account(&account_key_2, move |_account| {
+                panic!("If the requested account is not found, the update function should not be called.")
+            });
+        assert_eq!(None, actual_return_value);
+        // Verifies that the one account we created before the update call is unchanged.
+        assert_eq!(
+            storage.db_get_account(&account_key).expect("Failed to get account"),
+            account
+        );
+    }
 }
 
 #[test]
 fn mock_accounts_db_should_crud() {
     assert_basic_crud_works(MockAccountsDb::default());
+}
+
+#[test]
+fn mock_accounts_update_with_happy_path_should_update_account() {
     assert_update_with_happy_path_works(MockAccountsDb::default());
+}
+
+#[test]
+fn mock_accounts_update_with_error_path_should_not_change_account() {
+    assert_update_not_saved_on_error(MockAccountsDb::default());
+}
+
+#[test]
+fn mock_update_with_missing_key_should_return_none() {
+    assert_update_with_missing_key_returns_none(MockAccountsDb::default());
 }
