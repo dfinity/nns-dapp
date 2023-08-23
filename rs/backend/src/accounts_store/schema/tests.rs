@@ -83,9 +83,8 @@ where
     assert_eq!(storage.db_get_account(&account_key), None);
 }
 
-/*
-/// Verifies that the update function `db_with_account()` works correctly.
-fn assert_update_with_works(storage: AccountsDbTrait) {
+/// Verifies that the update function `db_try_with_account()` works correctly.
+fn assert_update_with_happy_path_works<D>(mut storage: D) where D: AccountsDbTrait {
     let account_key = vec![1, 2, 3];
     let account = toy_account(1, 5);
     // Create:
@@ -100,37 +99,38 @@ fn assert_update_with_works(storage: AccountsDbTrait) {
         // Verify that it is not already the last...
         assert_ne!(
             storage
-                .db_get_account(&account.key())
+                .db_get_account(&account_key)
                 .expect("Failed to get account")
+                .canisters.last()
                 .expect("Account should have had canisters"),
-            expected_last_canister
+            &expected_last_canister
         );
         // The function return value; it should be passed through.
-        let return_value = 42;
+        let return_value: Result<i32, i32> = Ok(42);
         // Update the account:
-        let actual_return_value = storage.db_with_account(&account_key, move |mut account| {
-            account.canisters.push(canister);
+        let actual_return_value = storage.db_try_with_account(&account_key, move |account| {
+            account.canisters.push(canister.clone());
             // The return value should be passed through.
             return_value
         });
-        assert_eq!(return_value, actual_return_value);
+        assert_eq!(Some(return_value), actual_return_value);
         // Verify that the new canister is now the last.
         assert_eq!(
             storage
-                .db_get_account(&account.key())
+                .db_get_account(&account_key)
                 .expect("Failed to get account")
+                .canisters.last()
                 .expect("Account should have had canisters"),
-            expected_last_canister
+            &expected_last_canister
         );
     }
     storage.db_remove_account(&account_key);
     assert!(!storage.db_contains_account(&account_key));
     assert_eq!(storage.db_get_account(&account_key), None);
 }
-*/
 
 #[test]
 fn mock_accounts_db_should_crud() {
-    let db = MockAccountsDb::default();
-    assert_basic_crud_works(db);
+    assert_basic_crud_works(MockAccountsDb::default());
+    assert_update_with_happy_path_works(MockAccountsDb::default());
 }
