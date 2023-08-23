@@ -925,16 +925,15 @@ impl AccountsStore {
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
-        if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-
+        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             // We only attach if it doesn't already exist
-            if Self::find_canister_index(account, canister_id).is_none() {
+            if Self::find_canister_index(&account, canister_id).is_none() {
                 account.canisters.push(NamedCanister {
                     name: "".to_string(),
                     canister_id,
                 });
                 account.canisters.sort();
+                self.accounts.insert(account_identifier.to_vec(), account);
             }
         }
     }
