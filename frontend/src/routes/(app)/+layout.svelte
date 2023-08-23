@@ -15,6 +15,8 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { authStore } from "$lib/stores/auth.store";
+  import { isNullish } from "@dfinity/utils";
+  import {browser} from "$app/environment";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
@@ -29,12 +31,30 @@
     // TODO: e2e to test this
     referrerPathStore.set(referrerPathForNav(nav))
   );
+
+  // To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
+  // Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
+  $: (() => {
+    if (!browser) {
+      return;
+    }
+
+    if ($authStore === undefined) {
+      return;
+    }
+
+    const spinner = document.querySelector("body > svg.spinner");
+
+    if (isNullish(spinner)) {
+      return;
+    }
+
+    document.body.removeChild(spinner);
+  })();
 </script>
 
 <!-- We are waiting agent-js / the auth store to be loaded before rendering the pages to avoid visual glitch -->
-{#if $authStore.identity === undefined}
-  <Spinner />
-{:else}
+{#if $authStore.identity !== undefined}
   <slot />
 {/if}
 
