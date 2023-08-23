@@ -94,7 +94,7 @@ pub enum ArchiveIntegration {
     Pull,
 }
 
-/// Best effort to determine the types of a cansiter args.
+/// Best effort to determine the types of a canister args.
 fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     // If canister id is II
     // use InternetIdentityInit type

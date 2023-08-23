@@ -39,6 +39,7 @@ describe("sns-proposals services", () => {
     snsProposalsStore.reset();
     toastsStore.reset();
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockRestore();
   });
   const proposal1: SnsProposalData = {
     ...mockSnsProposal,
@@ -475,6 +476,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should call handle error if api call fails", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => undefined);
         jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
         const handleErrorSpy = jest.fn();
         const setProposalSpy = jest.fn();
@@ -490,6 +492,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should show error if api call fails", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => undefined);
         jest.spyOn(api, "queryProposal").mockRejectedValue(new Error("error"));
         const handleErrorSpy = jest.fn();
         const setProposalSpy = jest.fn();

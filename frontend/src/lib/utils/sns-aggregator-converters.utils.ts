@@ -94,11 +94,13 @@ export const convertNervousFuncttion = ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
-  function_type: toNullable(convertFunctionType(function_type)),
+  function_type: nonNullish(function_type)
+    ? toNullable(convertFunctionType(function_type))
+    : [],
 });
 
 const convertSwapInitParams = (
-  init: CachedSwapInitParamsDto
+  init: CachedSwapInitParamsDto | null
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
@@ -349,21 +351,29 @@ const convertDtoToTokenMetadata = (
 
 const convertDtoToSnsSummarySwap = (
   swap: CachedSnsSwapDto
-): SnsSummarySwap => ({
-  ...convertSwap(swap),
-  decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
-    swap.decentralization_sale_open_timestamp_seconds
-  ),
-  params: convertSwapParams(swap.params),
-});
+): SnsSummarySwap | undefined => {
+  if (isNullish(swap.params)) {
+    return undefined;
+  }
+  return {
+    ...convertSwap(swap),
+    decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
+      swap.decentralization_sale_open_timestamp_seconds
+    ),
+    params: convertSwapParams(swap.params),
+  };
+};
 
-type PartialSummary = Omit<SnsSummary, "metadata" | "token"> & {
+type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
+  swap?: SnsSummarySwap;
 };
 
 const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
-  entry.metadata !== undefined && entry.token !== undefined;
+  nonNullish(entry.metadata) &&
+  nonNullish(entry.token) &&
+  nonNullish(entry.swap);
 
 export const convertDtoToSnsSummary = ({
   canister_ids: {
