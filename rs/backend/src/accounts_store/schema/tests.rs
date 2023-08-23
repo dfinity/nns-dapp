@@ -207,6 +207,89 @@ where
     }
 }
 
+/// Verifies that the account count is correct.
+fn assert_account_count_is_correct<D>(mut storage: D)
+where
+    D: AccountsDbTrait,
+{
+    // We will generate this many accounts in this test
+    const NUM_TEST_ACCOUNTS: u64 = 10;
+
+    // Loookup key for a test account
+    fn account_key(account_index: u64) -> [u8; 1] {
+        [account_index as u8 + 5]
+    }
+
+    // Local toy account, making sure that the index and canister ID are not the same
+    fn test_account(account_index: u64) -> Account {
+        let account_id = 100 - account_index;
+        let num_canisters = 10 * account_index * account_index; // This takes up to 810 canisters, which should be enough to stress any storage backend.
+        toy_account(account_id, num_canisters)
+    }
+
+    // Verify that the provided database is empty.
+    assert_eq!(
+        storage.db_accounts_len(),
+        0,
+        "The account database should be empty before we start testing."
+    );
+    for account_index in 0..NUM_TEST_ACCOUNTS {
+        storage.db_insert_account(&account_key(account_index), test_account(account_index));
+        assert_eq!(
+            account_index + 1,
+            storage.db_accounts_len(),
+            "Number of canisters does not correspond to the number of canisters inserted."
+        );
+    }
+    // Modifying accounts should not change the length.
+    assert_eq!(
+        NUM_TEST_ACCOUNTS,
+        storage.db_accounts_len(),
+        "Expected to have all the canisters by now."
+    );
+    let response: Result<(), ()> = Ok(());
+    storage.db_try_with_account(&[0], move |_| response);
+    assert_eq!(
+        NUM_TEST_ACCOUNTS,
+        storage.db_accounts_len(),
+        "Modifying a canister should not change the count."
+    );
+
+    // Deleting accounts should reduce the length.
+    // To test, we will delete the first, one in the middle and the last.
+    storage.db_remove_account(&account_key(0));
+    assert_eq!(
+        NUM_TEST_ACCOUNTS - 1,
+        storage.db_accounts_len(),
+        "Deleting one account should reduce the account count by one."
+    );
+    storage.db_remove_account(&account_key(5));
+    assert_eq!(
+        NUM_TEST_ACCOUNTS - 2,
+        storage.db_accounts_len(),
+        "Deleting two accounts should reduce the account count by two."
+    );
+    storage.db_remove_account(&account_key(NUM_TEST_ACCOUNTS - 1));
+    assert_eq!(
+        NUM_TEST_ACCOUNTS - 3,
+        storage.db_accounts_len(),
+        "Deleting three accounts should reduce the account count by three."
+    );
+    // Deleting a non-existent account, or an account that has already been deleted, should change nothing.
+    storage.db_remove_account(&account_key(NUM_TEST_ACCOUNTS - 1));
+    assert_eq!(
+        NUM_TEST_ACCOUNTS - 3,
+        storage.db_accounts_len(),
+        "Deleting an account again should not affect the count.."
+    );
+    storage.db_remove_account(&account_key(NUM_TEST_ACCOUNTS + 1));
+    assert_eq!(
+        NUM_TEST_ACCOUNTS - 3,
+        storage.db_accounts_len(),
+        "Deleting a non-existent canister should not affect the count."
+    );
+}
+
 #[test]
 fn mock_accounts_db_should_crud() {
     assert_basic_crud_works(MockAccountsDb::default());
@@ -225,4 +308,9 @@ fn mock_accounts_update_with_error_path_should_not_change_account() {
 #[test]
 fn mock_update_with_missing_key_should_return_none() {
     assert_update_with_missing_key_returns_none(MockAccountsDb::default());
+}
+
+#[test]
+fn mock_account_counts_should_be_correct() {
+    assert_account_count_is_correct(MockAccountsDb::default());
 }
