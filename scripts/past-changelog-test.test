@@ -3,7 +3,6 @@ set -xeuo pipefail
 
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 SCRIPT="$SOURCE_DIR/past-changelog-test"
-CHANGELOG="CHANGELOG-Nns-Dapp.md"
 
 if ! "$SCRIPT"; then
   echo "Should have passed without additional changes." >&2
