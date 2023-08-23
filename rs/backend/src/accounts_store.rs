@@ -475,8 +475,7 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.new_name) {
             RenameSubAccountResponse::NameTooLong
-        } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let mut account = self.accounts.get(&account_identifier.to_vec()).unwrap().clone();
+        } else if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             if let Some(sub_account) = account
                 .sub_accounts
                 .values_mut()
@@ -505,7 +504,7 @@ impl AccountsStore {
         } else if self.accounts.get(&account_identifier.to_vec()).is_some() {
             let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
 
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+            let mut account = self.accounts.get(&account_identifier.to_vec()).unwrap().clone();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -523,6 +522,7 @@ impl AccountsStore {
                 account
                     .hardware_wallet_accounts
                     .sort_unstable_by_key(|hw| hw.name.clone());
+                self.accounts.insert(account_identifier.to_vec(), account);
 
                 self.hardware_wallet_accounts_count += 1;
                 self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
