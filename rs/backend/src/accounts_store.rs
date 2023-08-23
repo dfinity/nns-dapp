@@ -899,14 +899,13 @@ impl AccountsStore {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
         if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
-            let mut response = DetachCanisterResponse::Ok;
             if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
                 self.accounts.insert(account_identifier.to_vec(), account);
+                DetachCanisterResponse::Ok
             } else {
-                response = DetachCanisterResponse::CanisterNotFound
+                DetachCanisterResponse::CanisterNotFound
             }
-            response
         } else {
             DetachCanisterResponse::AccountNotFound
         }
