@@ -53,7 +53,7 @@ export default defineConfig({
       name: 'firefox',
       use: { ...devices['Desktop Firefox'], channel: "firefox", viewport },
     },
-    {
+    // {
     //   name: "chromium",
     //   use: { ...devices["Desktop Chrome"] },
     // },
