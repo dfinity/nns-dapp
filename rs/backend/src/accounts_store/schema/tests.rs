@@ -84,7 +84,10 @@ where
 }
 
 /// Verifies that the update function `db_try_with_account()` works correctly.
-fn assert_update_with_happy_path_works<D>(mut storage: D) where D: AccountsDbTrait {
+fn assert_update_with_happy_path_works<D>(mut storage: D)
+where
+    D: AccountsDbTrait,
+{
     let account_key = vec![1, 2, 3];
     let account = toy_account(1, 5);
     // Create:
@@ -101,7 +104,8 @@ fn assert_update_with_happy_path_works<D>(mut storage: D) where D: AccountsDbTra
             storage
                 .db_get_account(&account_key)
                 .expect("Failed to get account")
-                .canisters.last()
+                .canisters
+                .last()
                 .expect("Account should have had canisters"),
             &expected_last_canister
         );
@@ -119,7 +123,8 @@ fn assert_update_with_happy_path_works<D>(mut storage: D) where D: AccountsDbTra
             storage
                 .db_get_account(&account_key)
                 .expect("Failed to get account")
-                .canisters.last()
+                .canisters
+                .last()
                 .expect("Account should have had canisters"),
             &expected_last_canister
         );
