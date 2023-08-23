@@ -11,7 +11,7 @@
   // TODO(GIX-1071): this static pre-rendering component should be improved with some more information and shiny design
 </script>
 
-<main class="sign-in">
+<main class="sign-in" data-tid="accounts-landing-page">
   <h1>{$i18n.auth_accounts.title}</h1>
 
   <p>

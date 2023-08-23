@@ -2,24 +2,13 @@
  * @jest-environment jsdom
  */
 
-import { AppPath } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/derived/page.derived";
 import App from "$routes/(login)/+page.svelte";
-import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
+import { render } from "@testing-library/svelte";
 
 describe("Layout", () => {
-  afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
+  it("should render accounts landing page", async () => {
+    const { queryByTestId } = render(App);
 
-  it("should redirect to accounts", async () => {
-    render(App);
-
-    await waitFor(() => {
-      const { path } = get(pageStore);
-      expect(path).toEqual(AppPath.Accounts);
-    });
+    expect(queryByTestId("accounts-landing-page")).toBeInTheDocument();
   });
 });
