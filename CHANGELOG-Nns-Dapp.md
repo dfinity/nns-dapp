@@ -44,6 +44,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 ### Operations
 * Improve the rust document generation.
+* Fix shellcheck issues.
 
 #### Added
 
