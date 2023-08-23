@@ -1056,19 +1056,21 @@ impl AccountsStore {
         account_identifier: AccountIdentifier,
         transaction_index: TransactionIndex,
     ) -> bool {
-        if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             account.append_default_account_transaction(transaction_index);
+            self.accounts.insert(account_identifier.to_vec(), account);
         } else {
             match self.hardware_wallets_and_sub_accounts.get(&account_identifier) {
                 Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
-                    let account = self.accounts.get_mut(&parent_account_identifier.to_vec()).unwrap();
+                    let mut account = self.accounts.get(&parent_account_identifier.to_vec()).cloned().unwrap();
                     account.append_sub_account_transaction(*sub_account_index, transaction_index);
+                    self.accounts.insert(parent_account_identifier.to_vec(), account);
                 }
                 Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
                     for linked_account_identifier in linked_account_identifiers {
-                        let account = self.accounts.get_mut(&linked_account_identifier.to_vec()).unwrap();
+                        let mut account = self.accounts.get(&linked_account_identifier.to_vec()).cloned().unwrap();
                         account.append_hardware_wallet_transaction(account_identifier, transaction_index);
+                        self.accounts.insert(linked_account_identifier.to_vec(), account);
                     }
                 }
                 None => return false,
