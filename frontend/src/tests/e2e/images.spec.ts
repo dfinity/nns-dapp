@@ -5,7 +5,6 @@ import { expect, test } from "@playwright/test";
 
 const expectImagesLoaded = async ({ page, sources }) => {
   const images = page.locator("img");
-  console.log("images", images);
   await expect(images).toHaveCount(sources.length);
   const imageSources = await Promise.all(
     (await images.all()).map((img) => img.getAttribute("src"))
@@ -30,7 +29,7 @@ const expectImagesLoaded = async ({ page, sources }) => {
   }, sources.length);
 };
 
-test("Test images load on home page", async ({ page, context }) => {
+test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
   await expect(page).toHaveTitle("Account / NNS Dapp");
 
