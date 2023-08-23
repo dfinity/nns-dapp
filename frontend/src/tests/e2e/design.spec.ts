@@ -6,7 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
-    await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+    await expect(page).toHaveTitle("Account / NNS Dapp");
     // Wait for the button to make sure the screenshot is taken after the page is loaded
     await page.locator("[data-tid=login-button]").waitFor();
 
@@ -24,7 +24,7 @@ test.describe("Design", () => {
       page = await browser.newPage();
 
       await page.goto("/accounts");
-      await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+      await expect(page).toHaveTitle("Account / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
