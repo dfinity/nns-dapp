@@ -221,6 +221,7 @@ export const validParticipation = ({
       substitutions: {
         $amount: formatToken({
           value: project.summary.swap.params.min_participant_icp_e8s,
+          detailed: true,
         }),
       },
     };

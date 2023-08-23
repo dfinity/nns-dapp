@@ -6,8 +6,8 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
-import { getOrCreateDerivedStateStore } from "$lib/stores/sns-derived-state.store";
-import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
   snsQueryStore,
   snsSummariesStore,
@@ -146,7 +146,7 @@ export const loadSnsSwapCommitment = async ({
   });
 };
 
-export const loadSnsTotalCommitment = async ({
+export const loadSnsDerivedState = async ({
   rootCanisterId,
   strategy,
 }: {
@@ -165,12 +165,10 @@ export const loadSnsTotalCommitment = async ({
     onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
         snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
-        const store = getOrCreateDerivedStateStore(
-          Principal.fromText(rootCanisterId)
-        );
-        store.setDerivedState({
+        snsDerivedStateStore.setDerivedState({
+          rootCanisterId: Principal.fromText(rootCanisterId),
           certified,
-          derivedState,
+          data: derivedState,
         });
       }
     },
@@ -195,7 +193,7 @@ export const watchSnsTotalCommitment = ({
   rootCanisterId: string;
 }) => {
   const id = setInterval(() => {
-    loadSnsTotalCommitment({ rootCanisterId, strategy: "query" });
+    loadSnsDerivedState({ rootCanisterId, strategy: "query" });
   }, WATCH_SALE_STATE_EVERY_MILLISECONDS);
 
   return () => {
@@ -221,10 +219,8 @@ export const loadSnsLifecycle = async ({
         snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
       }
       if (nonNullish(lifecycleResponse)) {
-        const lifecycleStore = getOrCreateLifecycleStore(
-          Principal.from(rootCanisterId)
-        );
-        lifecycleStore.setData({
+        snsLifecycleStore.setData({
+          rootCanisterId: Principal.from(rootCanisterId),
           data: lifecycleResponse,
           certified,
         });

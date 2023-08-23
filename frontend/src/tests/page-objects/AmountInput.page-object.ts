@@ -11,4 +11,12 @@ export class AmountInputPo extends BasePageObject {
   enterAmount(amount: number): Promise<void> {
     return this.getTextInput().typeText(amount.toString());
   }
+
+  hasError(): Promise<boolean> {
+    return this.root.byTestId("input-error-message").isPresent();
+  }
+
+  async getErrorMessage(): Promise<string> {
+    return (await this.getText("input-error-message")).trim();
+  }
 }

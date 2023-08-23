@@ -168,6 +168,10 @@ describe("sns-neuron utils", () => {
   const monthAgo = BigInt(nowSeconds - SECONDS_IN_MONTH);
   const oneWeek = BigInt(SECONDS_IN_DAY * 7);
 
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowSeconds * 1000);
+  });
+
   describe("sortNeuronsByCreatedTimestamp", () => {
     it("should sort neurons by created_timestamp_seconds", () => {
       const neuron1 = {
@@ -226,7 +230,7 @@ describe("sns-neuron utils", () => {
       const dissolveState = neuron.dissolve_state[0];
       if ("WhenDissolvedTimestampSeconds" in dissolveState) {
         dissolveState.WhenDissolvedTimestampSeconds = BigInt(
-          Math.floor(Date.now() / 1000 - 3600)
+          Math.floor(nowSeconds - 3600)
         );
       }
       expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
@@ -261,7 +265,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns dissolve date", () => {
-      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const todayInSeconds = BigInt(nowSeconds);
       const dissolveDate = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
@@ -281,7 +285,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns time in seconds until dissolve", () => {
-      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const todayInSeconds = BigInt(nowSeconds);
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,

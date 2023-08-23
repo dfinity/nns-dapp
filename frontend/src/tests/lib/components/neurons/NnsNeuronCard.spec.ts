@@ -24,7 +24,9 @@ import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
+  const nowInSeconds = 1689843195;
   beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -211,7 +213,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
-    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
+    const ONE_YEAR_FROM_NOW = nowInSeconds + SECONDS_IN_YEAR;
     const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {

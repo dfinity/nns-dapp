@@ -55,6 +55,8 @@ jobs:
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
+      - name: Lint rustdoc
+        run: ./scripts/lint-rustdoc
   svelte-tests:
     runs-on: ubuntu-latest-m
     defaults:

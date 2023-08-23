@@ -8,6 +8,22 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ## Unreleased
 
+### Wasm changes
+### Operations
+
+## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)
+
+### Added
+### Changed
+* Various minor style improvements: favicon, spacing, status "open" color and text clamp
+### Fixed
+### Security
+### Not Published
+### Removed
+### Deprecated
+
+## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)
+
 ### Added
 * More tests that the SNS aggregator contains the expected number of SNSs.
 * Display commit, branch name and similar data when deploying to a test canister.

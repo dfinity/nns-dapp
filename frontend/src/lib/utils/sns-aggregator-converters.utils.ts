@@ -1,8 +1,14 @@
+import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
 import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
 import { AGGREGATOR_CANISTER_VERSION } from "$lib/constants/sns.constants";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type {
+  SnsSummary,
+  SnsSummaryMetadata,
+  SnsSummarySwap,
+} from "$lib/types/sns";
 import type {
   CachedFunctionTypeDto,
-  CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
   CachedSns,
   CachedSnsDto,
@@ -18,7 +24,6 @@ import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
   SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsParams,
@@ -27,6 +32,8 @@ import type {
   SnsSwapInit,
 } from "@dfinity/sns";
 import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
+import { mapOptionalToken } from "./icrc-tokens.utils";
+import { isPngAsset } from "./utils";
 
 const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
@@ -87,11 +94,13 @@ export const convertNervousFuncttion = ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
-  function_type: toNullable(convertFunctionType(function_type)),
+  function_type: nonNullish(function_type)
+    ? toNullable(convertFunctionType(function_type))
+    : [],
 });
 
 const convertSwapInitParams = (
-  init: CachedSwapInitParamsDto
+  init: CachedSwapInitParamsDto | null
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
@@ -166,40 +175,24 @@ const convertSwapInitParams = (
       })
     : [];
 
-const convertSwapParams = (
-  params: CachedSwapParamsDto | null | undefined
-): [SnsParams] | [] =>
-  nonNullish(params)
-    ? toNullable({
-        min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
-        max_icp_e8s: BigInt(params.max_icp_e8s),
-        min_icp_e8s: BigInt(params.min_icp_e8s),
-        sns_token_e8s: BigInt(params.sns_token_e8s),
-        min_participants: params.min_participants,
-        max_participant_icp_e8s: BigInt(params.max_participant_icp_e8s),
-        swap_due_timestamp_seconds: BigInt(params.swap_due_timestamp_seconds),
-        neuron_basket_construction_parameters: toNullable({
-          dissolve_delay_interval_seconds: BigInt(
-            params.neuron_basket_construction_parameters
-              .dissolve_delay_interval_seconds
-          ),
-          count: BigInt(params.neuron_basket_construction_parameters.count),
-        }),
-        sale_delay_seconds: toNullable(
-          convertOptionalNumToBigInt(params.sale_delay_seconds)
-        ),
-      })
-    : [];
-
-const convertLifecycleResponse = (
-  response: CachedLifecycleResponseDto
-): SnsGetLifecycleResponse => ({
-  decentralization_sale_open_timestamp_seconds: toNullable(
-    convertOptionalNumToBigInt(
-      response.decentralization_sale_open_timestamp_seconds
-    )
+const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
+  min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
+  max_icp_e8s: BigInt(params.max_icp_e8s),
+  min_icp_e8s: BigInt(params.min_icp_e8s),
+  sns_token_e8s: BigInt(params.sns_token_e8s),
+  min_participants: params.min_participants,
+  max_participant_icp_e8s: BigInt(params.max_participant_icp_e8s),
+  swap_due_timestamp_seconds: BigInt(params.swap_due_timestamp_seconds),
+  neuron_basket_construction_parameters: toNullable({
+    dissolve_delay_interval_seconds: BigInt(
+      params.neuron_basket_construction_parameters
+        .dissolve_delay_interval_seconds
+    ),
+    count: BigInt(params.neuron_basket_construction_parameters.count),
+  }),
+  sale_delay_seconds: toNullable(
+    convertOptionalNumToBigInt(params.sale_delay_seconds)
   ),
-  lifecycle: toNullable(response.lifecycle),
 });
 
 const convertSwap = ({
@@ -233,7 +226,7 @@ const convertSwap = ({
       ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
       : [],
   init: convertSwapInitParams(init),
-  params: convertSwapParams(params),
+  params: isNullish(params) ? [] : [convertSwapParams(params)],
 });
 
 const convertDerived = ({
@@ -303,9 +296,6 @@ const convertSnsData = ({
   icrc1_fee,
   icrc1_total_supply,
   derived_state,
-  swap_params,
-  init,
-  lifecycle,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -323,14 +313,92 @@ const convertSnsData = ({
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
   derived_state: convertDerivedToResponse(derived_state),
-  swap_params: {
-    params: convertSwapParams(swap_params.params),
-  },
-  init: {
-    init: convertSwapInitParams(init.init),
-  },
-  lifecycle: convertLifecycleResponse(lifecycle),
 });
 
 export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
   data.map(convertSnsData);
+
+/**
+ * Metadata is given only if all its properties are defined.
+ */
+const convertDtoToSnsSummaryMetadata = (
+  { url, name, description }: CachedSnsMetadataDto,
+  rootCanisterId: string
+): SnsSummaryMetadata | undefined => {
+  const nullishLogo = aggregatorCanisterLogoPath(rootCanisterId);
+
+  if (isNullish(url) || isNullish(name) || isNullish(description)) {
+    return undefined;
+  }
+
+  // We have to check if the logo is a png asset for security reasons.
+  // Default logo can be svg.
+  return {
+    logo: isPngAsset(nullishLogo) ? nullishLogo : DEFAULT_SNS_LOGO,
+    url,
+    name,
+    description,
+  };
+};
+
+/**
+ * Token metadata is given only if all IcrcTokenMetadata properties are defined.
+ */
+const convertDtoToTokenMetadata = (
+  data: CachedSnsTokenMetadataDto
+): IcrcTokenMetadata | undefined =>
+  mapOptionalToken(convertIcrc1Metadata(data));
+
+const convertDtoToSnsSummarySwap = (
+  swap: CachedSnsSwapDto
+): SnsSummarySwap | undefined => {
+  if (isNullish(swap.params)) {
+    return undefined;
+  }
+  return {
+    ...convertSwap(swap),
+    decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
+      swap.decentralization_sale_open_timestamp_seconds
+    ),
+    params: convertSwapParams(swap.params),
+  };
+};
+
+type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
+  metadata?: SnsSummaryMetadata;
+  token?: IcrcTokenMetadata;
+  swap?: SnsSummarySwap;
+};
+
+const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
+  nonNullish(entry.metadata) &&
+  nonNullish(entry.token) &&
+  nonNullish(entry.swap);
+
+export const convertDtoToSnsSummary = ({
+  canister_ids: {
+    root_canister_id,
+    swap_canister_id,
+    governance_canister_id,
+    ledger_canister_id,
+    index_canister_id,
+  },
+  meta,
+  icrc1_metadata,
+  swap_state,
+  derived_state,
+}: CachedSnsDto): SnsSummary | undefined => {
+  const partialSummary: PartialSummary = {
+    rootCanisterId: Principal.from(root_canister_id),
+    swapCanisterId: Principal.from(swap_canister_id),
+    governanceCanisterId: Principal.from(governance_canister_id),
+    ledgerCanisterId: Principal.from(ledger_canister_id),
+    indexCanisterId: Principal.from(index_canister_id),
+    metadata: convertDtoToSnsSummaryMetadata(meta, root_canister_id),
+    token: convertDtoToTokenMetadata(icrc1_metadata),
+    swap: convertDtoToSnsSummarySwap(swap_state.swap),
+    derived: convertDerived(derived_state),
+  };
+
+  return isValidSummary(partialSummary) ? partialSummary : undefined;
+};

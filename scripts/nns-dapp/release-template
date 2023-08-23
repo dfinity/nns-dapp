@@ -59,11 +59,11 @@ cat <<EOF >release/PROPOSAL.md
 # Upgrade frontend NNS Dapp canister to commit \`$(git rev-parse tags/release-candidate)\`
 Wasm sha256 hash: \`${SHA}\` (\`${CI}\`)
 
-## Change Log:
+## Change Log
 
 $(get_unreleased_changelog)
 
-## Commit Log:
+## Commit Log
 
 \`\`\`
 + bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/prod)..$(git rev-parse --short tags/release-candidate)"

@@ -96,6 +96,7 @@
       data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
+      title={`Get ${token.symbol}`}
     >
       <IconAccountBalance />
       <span>{`Get ${token.symbol}`}</span>
@@ -162,6 +163,16 @@
     }
 
     z-index: var(--z-index);
+
+    :global(svg) {
+      width: var(--padding-3x);
+      min-width: var(--padding-3x);
+      height: var(--padding-3x);
+    }
+
+    span {
+      white-space: nowrap;
+    }
   }
 
   form {

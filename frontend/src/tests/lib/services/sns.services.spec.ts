@@ -6,11 +6,8 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
-import {
-  getOrCreateDerivedStateStore,
-  resetDerivedStateStoresForTesting,
-} from "$lib/stores/sns-derived-state.store";
-import { getOrCreateLifecycleStore } from "$lib/stores/sns-lifecycle.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import {
   mockIdentity,
@@ -40,7 +37,7 @@ const {
   getSwapAccount,
   loadSnsSwapCommitments,
   loadSnsSwapCommitment,
-  loadSnsTotalCommitment,
+  loadSnsDerivedState,
   watchSnsTotalCommitment,
 } = services;
 
@@ -53,9 +50,9 @@ describe("sns-services", () => {
     jest.useFakeTimers();
     jest.clearAllTimers();
     jest.clearAllMocks();
-    resetDerivedStateStoresForTesting();
     snsSwapCommitmentsStore.reset();
     snsQueryStore.reset();
+    snsDerivedStateStore.reset();
   });
 
   describe("getSwapAccount", () => {
@@ -111,7 +108,7 @@ describe("sns-services", () => {
     });
   });
 
-  describe("loadSnsTotalCommitment", () => {
+  describe("loadSnsDerivedState", () => {
     it("should call api to get total commitments and load them in stores", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
@@ -146,7 +143,7 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
 
-      await loadSnsTotalCommitment({
+      await loadSnsDerivedState({
         rootCanisterId: rootCanisterId1.toText(),
       });
       expect(spy).toBeCalled();
@@ -162,8 +159,9 @@ describe("sns-services", () => {
         fromNullable(derivedState.sns_tokens_per_icp)
       );
 
-      const derivedStateStore = getOrCreateDerivedStateStore(rootCanisterId1);
-      expect(get(derivedStateStore)?.derivedState).toEqual(derivedState);
+      expect(
+        get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+      ).toEqual(derivedState);
     });
 
     it("should call api with the strategy passed", async () => {
@@ -178,7 +176,7 @@ describe("sns-services", () => {
         .spyOn(api, "querySnsDerivedState")
         .mockImplementation(() => Promise.resolve(derivedState));
 
-      await loadSnsTotalCommitment({
+      await loadSnsDerivedState({
         rootCanisterId: mockPrincipal.toText(),
         strategy: "update",
       });
@@ -371,8 +369,9 @@ describe("sns-services", () => {
       )?.swap[0].lifecycle;
       expect(updatedLifecycle).toEqual(newLifeCycle);
 
-      const lifecycleStore = getOrCreateLifecycleStore(rootCanisterId1);
-      expect(get(lifecycleStore).data).toEqual(lifeCycleResponse);
+      expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
+        lifeCycleResponse
+      );
     });
   });
 });

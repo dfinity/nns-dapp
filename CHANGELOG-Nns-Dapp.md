@@ -17,6 +17,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Identify swap participation ICP transactions.
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
+* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+* Introduce an option to collapse or expand the application's menu on large screen.
+* Remove some unused fields from the aggregator converted type.
 
 #### Changed
 
@@ -24,6 +27,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
+* When reusing cached agents, use the current identity instead of the one in the cached agent.
 
 #### Deprecated
 #### Removed
@@ -33,13 +37,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix wrong "ICP Staked" message in SNS neurons.
-* Disable HW from participating in swaps.
 
 #### Security
 
 #### Not Published
 
 ### Operations
+* Improve the rust document generation.
 
 #### Added
 
@@ -48,17 +52,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow specifying a test_filter to the e2e CI action.
 * New test util to set SNS projects for testing.
 * Make scripts/past-changelog-test check again the previous commit when run on main.
+* Unit tests for the detailed `min_participant_icp_e8s` rendering.
 
 #### Changed
 
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+* Change some unit tests to set a system time and not rely on actual time.
 
 #### Deprecated
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
-* Removed e2e-tests/scripts/update-chromedriver
 * Remove `frontend/jest-spy.ts`.
+* Remove e2e-tests/
 
 #### Fixed
 
@@ -68,6 +75,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fixed some tests that depended on execution order.
 * [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+
+## Proposal 124252 (cherry-pick)
+
+### Application
+
+#### Fixed
+
+* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+* Disable HW from participating in swaps.
 
 ## Proposal 124014
 
