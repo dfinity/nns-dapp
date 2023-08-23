@@ -126,6 +126,9 @@
         <!-- Todo: disburse maturity modal -->
       {/if}
 
+      {#if type === "view-active-disbursements"}
+      {/if}
+
       {#if type === "auto-stake-maturity"}
         <SnsAutoStakeMaturityModal
           {reloadNeuron}
