@@ -825,9 +825,7 @@ impl AccountsStore {
         } else {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if self.accounts.get(&account_identifier.to_vec()).is_some() {
-                let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-
+            if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
                 let mut index_to_remove: Option<usize> = None;
                 for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
@@ -858,6 +856,8 @@ impl AccountsStore {
                     canister_id: request.canister_id,
                 });
                 account.canisters.sort();
+
+                self.accounts.insert(account_identifier.to_vec(), account);
 
                 AttachCanisterResponse::Ok
             } else {
