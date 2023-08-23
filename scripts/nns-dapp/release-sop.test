@@ -30,7 +30,7 @@ test_with_data() {
     else
       (
         echo "ERROR: actual output differs from expected output. See diff above."
-        echo "Run '"$0" --update' to update the tests."
+        echo "Run '\"$0\" --update' to update the tests."
         echo "FAILED: $1"
       ) >&2
       exit 1

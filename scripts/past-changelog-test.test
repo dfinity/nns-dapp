@@ -3,7 +3,6 @@ set -xeuo pipefail
 
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 SCRIPT="$SOURCE_DIR/past-changelog-test"
-CHANGELOG="CHANGELOG-Nns-Dapp.md"
 
 if ! "$SCRIPT"; then
   echo "Should have passed without additional changes." >&2
@@ -48,9 +47,7 @@ if ! "$SCRIPT"; then
 fi
 git checkout CHANGELOG-Nns-Dapp.md
 
-sed '199i\
-* changed on line 199
-' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+sed '199i* changed on line 199\n' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
 if "$SCRIPT"; then
   echo "Should have failed with change on line 199." >&2
   exit 1

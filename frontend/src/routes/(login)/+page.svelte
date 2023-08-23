@@ -1,5 +1,9 @@
 <script lang="ts">
-  import Login from "$lib/pages/Login.svelte";
-</script>
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { onMount } from "svelte";
 
-<Login />
+  onMount(() => {
+    goto(AppPath.Accounts, { replaceState: true });
+  });
+</script>
