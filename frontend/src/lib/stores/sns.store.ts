@@ -344,12 +344,12 @@ const overrideLifecycle =
     }
     const projectData = lifecycleStore[summary.rootCanisterId.toText()];
     const lifecycle = fromNullable(projectData?.data.lifecycle ?? []);
-    const saleOpenTimestamp = fromNullable(
-      projectData?.data.decentralization_sale_open_timestamp_seconds
-    );
     if (isNullish(lifecycle)) {
       return summary;
     }
+    const saleOpenTimestamp = fromNullable(
+      projectData?.data.decentralization_sale_open_timestamp_seconds ?? []
+    );
     return {
       ...summary,
       swap: {
