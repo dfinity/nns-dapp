@@ -24,7 +24,6 @@ import * as toastsFunctions from "$lib/stores/toasts.store";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
-  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { toastsStore } from "@dfinity/gix-components";
@@ -32,31 +31,33 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("proposals-services", () => {
+  beforeEach(() => {
+    toastsStore.reset();
+    proposalsStore.setProposals({ proposals: [], certified: true });
+    jest.clearAllMocks();
+    jest.spyOn(console, "error").mockRestore();
+  });
+
   describe("logged in user", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+    });
+
     describe("list", () => {
       const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
       const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
       let spyQueryProposals;
 
-      beforeAll(() => {
+      beforeEach(() => {
         spyQueryProposals = jest
           .spyOn(api, "queryProposals")
           .mockImplementation(() => Promise.resolve(mockProposals));
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe);
       });
-
-      afterEach(() => {
-        proposalsStore.setProposals({ proposals: [], certified: true });
-
-        spySetProposals.mockClear();
-        spyPushProposals.mockClear();
-      });
-
-      afterAll(() => jest.clearAllMocks());
 
       it("should call the canister to list proposals", async () => {
+        expect(spyQueryProposals).not.toHaveBeenCalled();
         await listProposals({
           loadFinished: () => {
             // do nothing here
@@ -70,6 +71,7 @@ describe("proposals-services", () => {
       });
 
       it("should call the canister to list the next proposals", async () => {
+        expect(spyQueryProposals).not.toHaveBeenCalled();
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
@@ -84,6 +86,7 @@ describe("proposals-services", () => {
       });
 
       it("should not clear the list proposals before query", async () => {
+        expect(spySetProposals).not.toHaveBeenCalled();
         await listProposals({
           loadFinished: () => {
             // do nothing here
@@ -93,6 +96,7 @@ describe("proposals-services", () => {
       });
 
       it("should push new proposals to the list", async () => {
+        expect(spyPushProposals).not.toHaveBeenCalled();
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
@@ -115,8 +119,6 @@ describe("proposals-services", () => {
 
     describe("list proposal fails", () => {
       beforeEach(() => {
-        jest.clearAllMocks();
-        toastsStore.reset();
         jest.spyOn(console, "error").mockImplementation(() => undefined);
       });
 
@@ -160,22 +162,20 @@ describe("proposals-services", () => {
     });
 
     describe("load", () => {
-      const spyQueryProposal = jest
-        .spyOn(api, "queryProposal")
-        .mockImplementation(() =>
+      const spyQueryProposal = jest.spyOn(api, "queryProposal");
+
+      beforeEach(() => {
+        spyQueryProposal.mockImplementation(() =>
           Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
         );
-
-      beforeAll(() =>
         proposalsStore.setProposals({
           proposals: mockProposals,
           certified: true,
-        })
-      );
-
-      afterEach(() => jest.clearAllMocks());
+        });
+      });
 
       it("should call the canister to get proposalInfo", async () => {
+        expect(spyQueryProposal).not.toBeCalled();
         let result;
         await loadProposal({
           proposalId: BigInt(666),
@@ -193,16 +193,16 @@ describe("proposals-services", () => {
         });
         jest.spyOn(console, "error").mockImplementation(jest.fn);
       });
-      afterEach(() => jest.clearAllMocks());
 
       it("should show error message in details", async () => {
         const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
+        expect(toastsShow).not.toBeCalled();
 
         await loadProposal({
           proposalId: BigInt(0),
           setProposal: jest.fn,
         });
-        expect(toastsShow).toBeCalled();
+        expect(toastsShow).toBeCalledTimes(1);
         expect(toastsShow).toBeCalledWith({
           detail: 'id: "0". test-message',
           labelKey: "error.proposal_not_found",
@@ -212,10 +212,6 @@ describe("proposals-services", () => {
     });
 
     describe("empty list", () => {
-      afterAll(() =>
-        proposalsStore.setProposals({ proposals: [], certified: true })
-      );
-
       it("should not push empty proposals to the list", async () => {
         jest
           .spyOn(api, "queryProposals")
@@ -255,8 +251,6 @@ describe("proposals-services", () => {
 
   describe("no identity", () => {
     beforeEach(() => {
-      resetIdentity();
-      jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(jest.fn);
       jest
         .spyOn(authStore, "subscribe")
@@ -296,6 +290,7 @@ describe("proposals-services", () => {
         .mockImplementation(() =>
           Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
         );
+      expect(spyQueryProposal).not.toBeCalled();
 
       let result;
       await loadProposal({
@@ -312,27 +307,20 @@ describe("proposals-services", () => {
     const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
     let spyQueryProposals;
 
-    beforeAll(() => {
-      jest.clearAllMocks();
-
+    beforeEach(() => {
+      jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       spyQueryProposals = jest
         .spyOn(api, "queryProposals")
         .mockImplementation(() => Promise.resolve(mockProposals));
     });
 
-    afterEach(() => {
-      proposalsStore.setProposals({ proposals: [], certified: true });
-
-      spySetProposals.mockClear();
-      spyPushProposals.mockClear();
-    });
-
-    afterAll(() => jest.clearAllMocks());
-
     it("should load proposals if filters are empty", async () => {
       proposalsFiltersStore.filterStatus([]);
       proposalsFiltersStore.filterRewards([]);
       proposalsFiltersStore.filterTopics([]);
+      expect(spyQueryProposals).not.toHaveBeenCalled();
 
       await listProposals({
         loadFinished: () => {
@@ -350,22 +338,24 @@ describe("proposals-services", () => {
   });
 
   describe("getProposalPayload", () => {
-    const spyQueryProposalPayload = jest
-      .spyOn(api, "queryProposalPayload")
-      .mockImplementation(() => Promise.resolve({ data: "test" }));
+    const spyQueryProposalPayload = jest.spyOn(api, "queryProposalPayload");
 
     beforeEach(() => {
-      jest.clearAllMocks();
       jest.spyOn(console, "error").mockImplementation(jest.fn);
+      spyQueryProposalPayload.mockImplementation(() =>
+        Promise.resolve({ data: "test" })
+      );
     });
 
     it("should call queryProposalPayload", async () => {
+      expect(spyQueryProposalPayload).not.toBeCalled();
       await loadProposalPayload({ proposalId: BigInt(0) });
       expect(spyQueryProposalPayload).toBeCalledTimes(1);
     });
 
     it("should update proposalPayloadsStore", async () => {
       const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
+      expect(spyOnSetPayload).not.toBeCalled();
       await loadProposalPayload({ proposalId: BigInt(0) });
 
       expect(spyOnSetPayload).toBeCalledTimes(2);
