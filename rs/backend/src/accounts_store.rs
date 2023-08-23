@@ -872,19 +872,19 @@ impl AccountsStore {
         } else {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if self.accounts.get(&account_identifier.to_vec()).is_some() {
-                let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
+            if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
                 if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
                     return RenameCanisterResponse::NameAlreadyTaken;
                 }
 
-                if let Some(index) = Self::find_canister_index(account, request.canister_id) {
+                if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                     account.canisters.remove(index);
                     account.canisters.push(NamedCanister {
                         name: request.name,
                         canister_id: request.canister_id,
                     });
                     account.canisters.sort();
+                    self.accounts.insert(account_identifier.to_vec(), account);
                     RenameCanisterResponse::Ok
                 } else {
                     RenameCanisterResponse::CanisterNotFound
