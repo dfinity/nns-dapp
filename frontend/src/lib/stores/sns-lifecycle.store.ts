@@ -7,7 +7,7 @@ interface SnsLifecycleProjectData {
   certified: boolean;
 }
 
-interface SnsLifecycleData {
+export interface SnsLifecycleData {
   [rootCanisterId: string]: SnsLifecycleProjectData;
 }
 

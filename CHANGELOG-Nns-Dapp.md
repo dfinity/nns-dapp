@@ -42,6 +42,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* Use new stores as source of data instead of snsQueryStore.
+
 ### Operations
 * Improve the rust document generation.
 * Fix shellcheck issues.
