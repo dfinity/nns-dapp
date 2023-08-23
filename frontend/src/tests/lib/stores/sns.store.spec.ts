@@ -38,6 +38,13 @@ import {
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
+  beforeEach(() => {
+    snsQueryStore.reset();
+    snsAggregatorStore.reset();
+    snsDerivedStateStore.reset();
+    snsLifecycleStore.reset();
+  });
+
   describe("snsSwapStatesStore", () => {
     it("should store swap states", () => {
       const swapCommitment = mockSnsSwapCommitment(
@@ -118,10 +125,6 @@ describe("sns.store", () => {
   });
 
   describe("query store", () => {
-    beforeAll(() => snsQueryStore.reset());
-
-    afterEach(() => snsQueryStore.reset());
-
     it("should set the data", () => {
       const data = snsResponsesForLifecycle({
         lifecycles: [SnsSwapLifecycle.Open],
@@ -480,13 +483,6 @@ describe("sns.store", () => {
   });
 
   describe("snsSummariesStore", () => {
-    beforeEach(() => {
-      snsQueryStore.reset();
-      snsAggregatorStore.reset();
-      snsDerivedStateStore.reset();
-      snsLifecycleStore.reset();
-    });
-
     describe("flag ENABLE_SNS_AGGREGATOR_STORE not enabled", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);

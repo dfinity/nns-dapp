@@ -318,22 +318,25 @@ const overrideDerivedState =
       return undefined;
     }
     const projectDerivedState = derivedStore[summary.rootCanisterId.toText()];
-    const derivedState = nonNullish(projectDerivedState)
-      ? convertToDerivedState(projectDerivedState.derivedState)
-      : undefined;
-    if (nonNullish(derivedState)) {
-      return {
-        ...summary,
-        derived: derivedState,
-      };
+    if (isNullish(projectDerivedState?.derivedState)) {
+      return summary;
     }
-    return summary;
+    const convertedData = convertToDerivedState(
+      projectDerivedState.derivedState
+    );
+    if (isNullish(convertedData)) {
+      return summary;
+    }
+    return {
+      ...summary,
+      derived: convertedData,
+    };
   };
 
 /**
  * Override the lifecycle in the SnsSummary with the one from the store.
  */
-const overrieLifecycle =
+const overrideLifecycle =
   (lifecycleStore: SnsLifecycleData) =>
   (summary: SnsSummary | undefined): SnsSummary | undefined => {
     if (isNullish(summary)) {
@@ -344,17 +347,17 @@ const overrieLifecycle =
     const saleOpenTimestamp = fromNullable(
       projectData?.data.decentralization_sale_open_timestamp_seconds
     );
-    if (nonNullish(lifecycle)) {
-      return {
-        ...summary,
-        swap: {
-          ...summary.swap,
-          lifecycle,
-          decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
-        },
-      };
+    if (isNullish(lifecycle)) {
+      return summary;
     }
-    return summary;
+    return {
+      ...summary,
+      swap: {
+        ...summary.swap,
+        lifecycle,
+        decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
+      },
+    };
   };
 
 /**
@@ -397,7 +400,7 @@ export const snsSummariesStore = derived<
       aggregatorData.data
         ?.map(convertDtoToSnsSummary)
         .map(overrideDerivedState(derivedStates))
-        .map(overrieLifecycle(lifecycles))
+        .map(overrideLifecycle(lifecycles))
         .filter((optionalSummary): optionalSummary is SnsSummary =>
           nonNullish(optionalSummary)
         ) ?? []
