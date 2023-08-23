@@ -303,8 +303,6 @@ describe("proposals-services", () => {
   });
 
   describe("filter", () => {
-    const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
-    const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
     let spyQueryProposals;
 
     beforeEach(() => {
