@@ -88,11 +88,11 @@
 
 <TestIdWrapper testId="menu-items-component">
   {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
-    <MenuItem {href} testId={`menuitem-${context}`} {selected}>
+    {@const title = keyOf({ obj: $i18n.navigation, key: label })}
+
+    <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
       <svelte:component this={icon} slot="icon" />
-      <svelte:fragment
-        >{keyOf({ obj: $i18n.navigation, key: label })}</svelte:fragment
-      >
+      <svelte:fragment>{title}</svelte:fragment>
       <svelte:component this={statusIcon} slot="statusIcon" />
     </MenuItem>
   {/each}

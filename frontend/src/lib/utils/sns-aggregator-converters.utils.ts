@@ -9,7 +9,6 @@ import type {
 } from "$lib/types/sns";
 import type {
   CachedFunctionTypeDto,
-  CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
   CachedSns,
   CachedSnsDto,
@@ -25,7 +24,6 @@ import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
   SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsParams,
@@ -96,11 +94,13 @@ export const convertNervousFuncttion = ({
   id: BigInt(id),
   name: name,
   description: toNullable(description),
-  function_type: toNullable(convertFunctionType(function_type)),
+  function_type: nonNullish(function_type)
+    ? toNullable(convertFunctionType(function_type))
+    : [],
 });
 
 const convertSwapInitParams = (
-  init: CachedSwapInitParamsDto
+  init: CachedSwapInitParamsDto | null
 ): [SnsSwapInit] | [] =>
   nonNullish(init)
     ? toNullable({
@@ -193,17 +193,6 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   sale_delay_seconds: toNullable(
     convertOptionalNumToBigInt(params.sale_delay_seconds)
   ),
-});
-
-const convertLifecycleResponse = (
-  response: CachedLifecycleResponseDto
-): SnsGetLifecycleResponse => ({
-  decentralization_sale_open_timestamp_seconds: toNullable(
-    convertOptionalNumToBigInt(
-      response.decentralization_sale_open_timestamp_seconds
-    )
-  ),
-  lifecycle: toNullable(response.lifecycle),
 });
 
 const convertSwap = ({
@@ -307,9 +296,6 @@ const convertSnsData = ({
   icrc1_fee,
   icrc1_total_supply,
   derived_state,
-  swap_params,
-  init,
-  lifecycle,
 }: CachedSnsDto): CachedSns => ({
   index,
   canister_ids,
@@ -327,15 +313,6 @@ const convertSnsData = ({
   icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
   icrc1_total_supply: BigInt(icrc1_total_supply),
   derived_state: convertDerivedToResponse(derived_state),
-  swap_params: {
-    params: isNullish(swap_params.params)
-      ? []
-      : [convertSwapParams(swap_params.params)],
-  },
-  init: {
-    init: convertSwapInitParams(init.init),
-  },
-  lifecycle: convertLifecycleResponse(lifecycle),
 });
 
 export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
@@ -374,21 +351,29 @@ const convertDtoToTokenMetadata = (
 
 const convertDtoToSnsSummarySwap = (
   swap: CachedSnsSwapDto
-): SnsSummarySwap => ({
-  ...convertSwap(swap),
-  decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
-    swap.decentralization_sale_open_timestamp_seconds
-  ),
-  params: convertSwapParams(swap.params),
-});
+): SnsSummarySwap | undefined => {
+  if (isNullish(swap.params)) {
+    return undefined;
+  }
+  return {
+    ...convertSwap(swap),
+    decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
+      swap.decentralization_sale_open_timestamp_seconds
+    ),
+    params: convertSwapParams(swap.params),
+  };
+};
 
-type PartialSummary = Omit<SnsSummary, "metadata" | "token"> & {
+type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
+  swap?: SnsSummarySwap;
 };
 
 const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
-  entry.metadata !== undefined && entry.token !== undefined;
+  nonNullish(entry.metadata) &&
+  nonNullish(entry.token) &&
+  nonNullish(entry.swap);
 
 export const convertDtoToSnsSummary = ({
   canister_ids: {

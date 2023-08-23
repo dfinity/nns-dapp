@@ -18,6 +18,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+* Introduce an option to collapse or expand the application's menu on large screen.
+* Remove some unused fields from the aggregator converted type.
 
 #### Changed
 
@@ -26,6 +28,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
+* When reusing cached agents, use the current identity instead of the one in the cached agent.
 
 #### Deprecated
 #### Removed
@@ -41,6 +44,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Not Published
 
 ### Operations
+* Improve the rust document generation.
 
 #### Added
 
@@ -49,6 +53,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow specifying a test_filter to the e2e CI action.
 * New test util to set SNS projects for testing.
 * Make scripts/past-changelog-test check again the previous commit when run on main.
+* Unit tests for the detailed `min_participant_icp_e8s` rendering.
 
 #### Changed
 

@@ -111,7 +111,7 @@ pub fn stable_memory_size_bytes() -> u64 {
     }
 }
 
-/// The wasm memory size in bytes
+/// The WASM memory size in bytes
 pub fn wasm_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {

@@ -62,6 +62,17 @@ describe("ProjectSwapDetails", () => {
     expect(await po.getMinParticipantCommitment()).toEqual("2.50 ICP");
   });
 
+  it("should render min commitment with many significant decimals", async () => {
+    const po = renderComponent({
+      summary: createSummary({
+        minParticipantCommitment: 100000278n,
+      }),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+    });
+
+    expect(await po.getMinParticipantCommitment()).toEqual("1.00000278 ICP");
+  });
+
   it("should render max commitment", async () => {
     const po = renderComponent({
       summary: createSummary({
@@ -80,7 +91,7 @@ describe("ProjectSwapDetails", () => {
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
 
-    expect(await po.getSaleEnd()).toEqual("Oct 4, 2023 3:00 PM");
+    expect(await po.getSaleEnd()).toEqual("Oct 4, 2023 3:00 PM");
   });
 
   it("should render total token supply if present", async () => {
