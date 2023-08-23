@@ -9,6 +9,8 @@
 
   let cmp: typeof SvelteComponent;
   $: cmp = $authSignedInStore ? UniverseSplitContent : Content;
+
+  $: console.log($authSignedInStore);
 </script>
 
 <LayoutList title={$i18n.navigation.tokens}>
