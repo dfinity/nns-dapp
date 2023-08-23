@@ -898,11 +898,11 @@ impl AccountsStore {
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        if self.accounts.get(&account_identifier.to_vec()).is_some() {
+        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             let mut response = DetachCanisterResponse::Ok;
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-            if let Some(index) = Self::find_canister_index(account, request.canister_id) {
+            if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
+                self.accounts.insert(account_identifier.to_vec(), account);
             } else {
                 response = DetachCanisterResponse::CanisterNotFound
             }
