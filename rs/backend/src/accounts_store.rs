@@ -1186,24 +1186,25 @@ impl AccountsStore {
             }
         }
 
-        if self.accounts.get(&account_identifier.to_vec()).is_some() {
-            let account = self.accounts.get_mut(&account_identifier.to_vec()).unwrap();
-
+        if let Some(mut account) = self.accounts.get(&account_identifier.to_vec()).cloned() {
             let transactions = &mut account.default_account_transactions;
             prune_transactions_impl(transactions, prune_blocks_previous_to);
+            self.accounts.insert(account_identifier.to_vec(), account);
         } else {
             match self.hardware_wallets_and_sub_accounts.get(&account_identifier) {
                 Some(AccountWrapper::SubAccount(parent_account_identifier, sub_account_index)) => {
-                    let account = self.accounts.get_mut(&parent_account_identifier.to_vec()).unwrap();
+                    let mut account = self.accounts.get(&parent_account_identifier.to_vec()).cloned().unwrap();
 
                     if let Some(sub_account) = account.sub_accounts.get_mut(sub_account_index) {
                         let transactions = &mut sub_account.transactions;
                         prune_transactions_impl(transactions, prune_blocks_previous_to);
                     }
+
+                    self.accounts.insert(parent_account_identifier.to_vec(), account);
                 }
                 Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => {
                     for linked_account_identifier in linked_account_identifiers {
-                        let account = self.accounts.get_mut(&linked_account_identifier.to_vec()).unwrap();
+                        let mut account = self.accounts.get(&linked_account_identifier.to_vec()).cloned().unwrap();
                         if let Some(hardware_wallet_account) = account
                             .hardware_wallet_accounts
                             .iter_mut()
@@ -1211,6 +1212,7 @@ impl AccountsStore {
                         {
                             let transactions = &mut hardware_wallet_account.transactions;
                             prune_transactions_impl(transactions, prune_blocks_previous_to);
+                            self.accounts.insert(linked_account_identifier.to_vec(), account);
                         }
                     }
                 }
