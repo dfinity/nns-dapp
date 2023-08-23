@@ -12,7 +12,7 @@ test("Test SNS participation", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("D001: User can see the list of open sales");
-  await appPo.getLoginLinksPo().goToLaunchpad();
+  await appPo.goToLaunchpad();
 
   await appPo.getLaunchpadPo().getOpenProjectsPo().waitForContentLoaded();
   const openProjects: ProjectCardPo[] = await appPo
