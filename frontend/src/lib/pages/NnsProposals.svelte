@@ -36,7 +36,7 @@
     listNeurons();
   }
 
-  let loading = false;
+  let loading = true;
   let hidden = false;
   let initialized = false;
 
