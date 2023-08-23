@@ -5,7 +5,7 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
-  await page.goto("/");
+  await page.goto("/accounts");
   await expect(page).toHaveTitle("NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
