@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import App from "$routes/(login)/+page.svelte";
+import App from "$routes/(app)/(u)/(accounts)/+page.svelte";
 import { render } from "@testing-library/svelte";
 
 describe("Layout", () => {
