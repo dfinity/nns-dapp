@@ -334,13 +334,12 @@ impl AccountsStore {
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         let account_identifier = AccountIdentifier::from(caller);
-        if let Some(account) = self.accounts.get(&account_identifier.to_vec()) {
+        if let Some(account) = self.accounts.get_mut(&account_identifier.to_vec()) {
             if account.principal.is_none() {
                 // This is an old account that needs a one-off fix to set the principal and update the transactions.
                 let mut account = account.clone();
                 account.principal = Some(caller);
                 self.fix_transactions_for_early_user(&account, caller);
-                self.accounts.insert(account_identifier.to_vec(), account);
             }
             false
         } else {
