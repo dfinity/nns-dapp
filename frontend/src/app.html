@@ -130,13 +130,13 @@
     %sveltekit.head%
 
     <style>
-      .spinner {
+      #app-spinner {
         --spinner-size: 30px;
 
         width: var(--spinner-size);
         height: var(--spinner-size);
 
-        animation: spinner-linear-rotate 2000ms linear infinite;
+        animation: app-spinner-linear-rotate 2000ms linear infinite;
 
         position: absolute;
         top: calc(50% - (var(--spinner-size) / 2));
@@ -149,14 +149,14 @@
         --end: calc((1 - 0.8) * var(--circumference));
       }
 
-      .spinner circle {
+      #app-spinner circle {
         stroke-dasharray: var(--circumference);
         stroke-width: 10%;
         transform-origin: 50% 50% 0;
 
         transition-property: stroke;
 
-        animation-name: spinner-stroke-rotate-100;
+        animation-name: app-spinner-stroke-rotate-100;
         animation-duration: 4000ms;
         animation-timing-function: cubic-bezier(0.35, 0, 0.25, 1);
         animation-iteration-count: infinite;
@@ -167,7 +167,7 @@
         transition: stroke-dashoffset 225ms linear;
       }
 
-      @keyframes spinner-linear-rotate {
+      @keyframes app-spinner-linear-rotate {
         0% {
           transform: rotate(0deg);
         }
@@ -176,7 +176,7 @@
         }
       }
 
-      @keyframes spinner-stroke-rotate-100 {
+      @keyframes app-spinner-stroke-rotate-100 {
         0% {
           stroke-dashoffset: var(--start);
           transform: rotate(0);
@@ -254,7 +254,7 @@
     <!-- That's why we are displaying a spinner while the dapp is starting. -->
     <!-- Spinner which is then removed as soon as the authentication is initialized (regardless if sign-in or sign-out) -->
     <svg
-      class="spinner"
+      id="app-spinner"
       preserveAspectRatio="xMidYMid meet"
       focusable="false"
       aria-hidden="true"

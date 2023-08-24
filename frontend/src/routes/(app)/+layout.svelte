@@ -3,7 +3,7 @@
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { onMount } from "svelte";
-  import { Toasts, BusyScreen, Spinner } from "@dfinity/gix-components";
+  import { Toasts, BusyScreen } from "@dfinity/gix-components";
   import {
     initAppAuth,
     initAppPublicData,
@@ -15,8 +15,7 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { isNullish } from "@dfinity/utils";
-  import {browser} from "$app/environment";
+  import { browser } from "$app/environment";
 
   onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
@@ -43,13 +42,8 @@
       return;
     }
 
-    const spinner = document.querySelector("body > svg.spinner");
-
-    if (isNullish(spinner)) {
-      return;
-    }
-
-    document.body.removeChild(spinner);
+    const spinner = document.querySelector("body > #app-spinner");
+    spinner?.remove();
   })();
 </script>
 
