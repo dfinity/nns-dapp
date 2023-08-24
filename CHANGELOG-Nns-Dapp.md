@@ -47,6 +47,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use new stores as source of data instead of snsQueryStore.
 
 ### Operations
+* Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
 * Fix shellcheck issues.
 

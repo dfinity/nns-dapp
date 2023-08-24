@@ -108,7 +108,7 @@ cd frontend
 ```
 
 3. Check for Newer Dependencies:
-   
+
 Identify the available newer versions of the dependencies. Run the following command in your terminal:
 
 ```bash
@@ -138,7 +138,7 @@ This command will install the newer versions of the dependencies and update the 
 After the installation is complete, it's crucial to thoroughly test the frontend dapp. Ensure that all the functionalities are working as expected and there are no compatibility issues with the updated dependencies.
 
 7. Create a Pull Request (PR):
-   
+
 If everything looks good and the frontend dapp is functioning correctly with the updated dependencies, it's time to create a pull request. Include the modified `package.json` and `package-lock.json` files in a new PR to let others review and merge the changes.
 
 ## ckBTC deployment
