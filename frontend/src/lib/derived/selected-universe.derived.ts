@@ -56,13 +56,13 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
       return OWN_CANISTER_ID;
     }
     if (
-      canisterId.toText() == CKBTC_UNIVERSE_CANISTER_ID.toText() &&
+      canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText() &&
       !$ENABLE_CKBTC
     ) {
       return OWN_CANISTER_ID;
     }
     if (
-      canisterId.toText() == CKTESTBTC_UNIVERSE_CANISTER_ID.toText() &&
+      canisterId.toText() === CKTESTBTC_UNIVERSE_CANISTER_ID.toText() &&
       !$ENABLE_CKTESTBTC
     ) {
       return OWN_CANISTER_ID;
