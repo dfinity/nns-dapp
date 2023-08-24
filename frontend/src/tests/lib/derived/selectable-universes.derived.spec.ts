@@ -12,13 +12,13 @@ import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {
+    jest.restoreAllMocks();
+
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: OWN_CANISTER_ID.toText() },
     });
   });
-
-  afterAll(() => jest.clearAllMocks());
 
   it("should return Nns, ckBTC and ckTESTBTC (flag for test is true) per default", () => {
     const store = get(selectableUniversesStore);
@@ -44,13 +44,11 @@ describe("selectable universes derived stores", () => {
   });
 
   describe("with projects", () => {
-    beforeAll(() =>
+    beforeEach(() => {
       jest
         .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]))
-    );
-
-    afterAll(jest.clearAllMocks);
+        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    });
 
     it("should return Nns, ckBTC, ckTESTBTC (flag for test is true) and another project", () => {
       const store = get(selectableUniversesStore);
