@@ -9,9 +9,12 @@
 </script>
 
 <div class="disbursement" data-tid="active-disbursement-entry-component">
-  <div class="description">
-    <IconClockNoFill size="20" />
-    <span>
+  <span class="icon">
+    <IconClockNoFill size="24px" />
+  </span>
+
+  <span class="info">
+    <span class="description">
       {replacePlaceholders(
         $i18n.neuron_detail.view_active_disbursements_entry_description,
         {
@@ -20,27 +23,31 @@
         }
       )}
     </span>
-  </div>
-  <span class="value">
-    {replacePlaceholders(
-      $i18n.neuron_detail.view_active_disbursements_maturity,
-      {
-        $maturity: formattedAmount,
-      }
-    )}
+    <span class="value">
+      {replacePlaceholders(
+        $i18n.neuron_detail.view_active_disbursements_maturity,
+        {
+          $maturity: formattedAmount,
+        }
+      )}
+    </span>
   </span>
 </div>
 
 <style lang="scss">
   .disbursement {
     display: flex;
-    flex-direction: column;
-    gap: var(--padding-0_5x);
+    gap: var(--padding-1_5x);
+    align-items: center;
   }
 
-  .description {
+  .icon {
+    flex: 0;
+  }
+
+  .info {
     display: flex;
-    gap: var(--padding);
-    align-items: center;
+    flex-direction: column;
+    gap: var(--padding-0_5x);
   }
 </style>
