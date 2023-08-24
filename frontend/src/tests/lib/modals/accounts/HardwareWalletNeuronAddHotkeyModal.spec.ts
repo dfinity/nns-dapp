@@ -7,8 +7,10 @@ import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWal
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
 import {
+  createMockIdentity,
   mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletNeuronsStore,
@@ -16,8 +18,6 @@ import {
 } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
-import type { Identity } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
@@ -29,12 +29,11 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
   let spyAddHotkey;
   let spyGetNeuron;
 
-  const mockIdentity2 = {
-    getPrincipal: () => principal(0),
-  } as unknown as Identity;
+  const mockIdentity2 = createMockIdentity(0);
 
   beforeEach(() => {
     jest.restoreAllMocks();
+    resetIdentity();
     (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity2)
     );
