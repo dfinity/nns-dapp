@@ -34,6 +34,8 @@ describe("IntersectionDirectives", () => {
   afterEach(() => jest.clearAllMocks());
 
   it("should trigger an intersect event", () => {
+    mockIntersectionObserverIsIntersecting(true);
+
     render(IntersectionTest);
 
     expect(spy).toHaveBeenCalled();
