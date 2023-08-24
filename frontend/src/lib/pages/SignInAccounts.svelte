@@ -9,27 +9,14 @@
     title: $i18n.wallet.title,
     header: "",
   });
-
-  let innerWidth = 0;
-
-  let size = 86;
-
-  const onWindowSizeChange = (innerWidth: number) => {
-    // Change size of the icon
-    size = innerWidth > 768 ? 144 : 86;
-  };
-
-  $: onWindowSizeChange(innerWidth);
 </script>
-
-<svelte:window bind:innerWidth />
 
 <main class="sign-in" data-tid="accounts-landing-page">
   <!-- Safari doesn't handle well grid inside flexbox -->
   <!-- https://stackoverflow.com/questions/62075401/safari-grid-in-flexbox-produces-height-overflow -->
   <div>
     <PageBanner>
-      <IconAccountsPage slot="image" {size} />
+      <IconAccountsPage slot="image" />
       <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment
       >
       <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
