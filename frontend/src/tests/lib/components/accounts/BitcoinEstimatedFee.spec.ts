@@ -18,6 +18,7 @@ describe("BitcoinEstimatedFee", () => {
   const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     resetIdentity();
     spyEstimateFee = jest
       .spyOn(minterApi, "estimateFee")
@@ -51,6 +52,7 @@ describe("BitcoinEstimatedFee", () => {
   });
 
   it("should display estimated fee for network Bitcoin", async () => {
+    expect(spyEstimateFee).not.toHaveBeenCalled();
     const { getByTestId } = render(BitcoinEstimatedFee, {
       props: { selectedNetwork: TransactionNetwork.BTC_TESTNET, ...props },
     });
@@ -79,6 +81,8 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should call service with amount E8s", async () => {
     const amount = 456;
+
+    expect(spyEstimateFee).not.toHaveBeenCalled();
 
     render(BitcoinEstimatedFee, {
       props: {
