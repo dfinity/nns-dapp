@@ -283,7 +283,7 @@ describe("selected universe derived stores", () => {
     it("returns OWN_CANISTER_ID if universe is ckBTC but path not supported", () => {
       page.mock({
         data: {
-          universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+          universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
         },
         routeId: AppPath.Neurons,
       });
