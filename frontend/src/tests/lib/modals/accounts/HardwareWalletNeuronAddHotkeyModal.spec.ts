@@ -126,7 +126,7 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
     await waitFor(() =>
       expect(spyGetNeuron).toBeCalledWith({
         neuronId: mockNeuronStake.neuronId,
-        // Onece the hotkey is added, it uses the current identity to query the neuron
+        // Once the hotkey is added, it uses the current identity to query the neuron
         identity: mockIdentity,
         certified: true,
       })
