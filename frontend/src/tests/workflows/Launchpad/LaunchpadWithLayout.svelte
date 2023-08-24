@@ -9,4 +9,3 @@
     <Launchpad />
   </LaunchpadLayout>
 </MainLayout>
-```

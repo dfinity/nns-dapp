@@ -13,6 +13,15 @@ test.describe("Design", () => {
     await expect(page).toHaveScreenshot();
   });
 
+  test("App loading spinner is removed", async ({ page }) => {
+    await page.goto("/");
+
+    // Wait for the button to make sure the app is loaded
+    await page.locator("[data-tid=login-button]").waitFor();
+
+    expect(await page.locator("#app-spinner").count()).toEqual(0);
+  });
+
   test.describe("Signed-in", () => {
     // Reuse single page between tests
     // Source: https://playwright.dev/docs/test-retries#reuse-single-page-between-tests
