@@ -13,16 +13,9 @@ import AddAccountTest from "./AddAccountTest.svelte";
 describe("HardwareWalletName", () => {
   const props = { testComponent: HardwareWalletName };
 
-  beforeAll(() =>
+  beforeEach(() =>
     addAccountStoreMock.set({
       type: "hardwareWallet",
-      hardwareWalletName: undefined,
-    })
-  );
-
-  afterAll(() =>
-    addAccountStoreMock.set({
-      type: undefined,
       hardwareWalletName: undefined,
     })
   );

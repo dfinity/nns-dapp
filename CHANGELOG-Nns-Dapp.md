@@ -23,6 +23,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Defined an account data store interface, to allow account storage migrations.
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
@@ -47,6 +48,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use new stores as source of data instead of snsQueryStore.
 
 ### Operations
+* Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
 * Fix shellcheck issues.
 
