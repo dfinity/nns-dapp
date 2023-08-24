@@ -12,12 +12,16 @@
 </script>
 
 <main class="sign-in">
-  <PageBanner>
-    <IconNeuronsPage slot="image" />
-    <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
-    <p class="description" slot="description">{$i18n.auth_neurons.text}</p>
-    <SignIn slot="actions" />
-  </PageBanner>
+  <!-- Safari doesn't handle well grid inside flexbox -->
+  <!-- https://stackoverflow.com/questions/62075401/safari-grid-in-flexbox-produces-height-overflow -->
+  <div>
+    <PageBanner>
+      <IconNeuronsPage slot="image" />
+      <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
+      <p class="description" slot="description">{$i18n.auth_neurons.text}</p>
+      <SignIn slot="actions" />
+    </PageBanner>
+  </div>
 
   <EmptyCards />
 </main>

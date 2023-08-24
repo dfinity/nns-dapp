@@ -12,12 +12,17 @@
 </script>
 
 <main class="sign-in" data-tid="accounts-landing-page">
-  <PageBanner>
-    <IconAccountsPage slot="image" />
-    <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment>
-    <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
-    <SignIn slot="actions" />
-  </PageBanner>
+  <!-- Safari doesn't handle well grid inside flexbox -->
+  <!-- https://stackoverflow.com/questions/62075401/safari-grid-in-flexbox-produces-height-overflow -->
+  <div>
+    <PageBanner>
+      <IconAccountsPage slot="image" />
+      <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment
+      >
+      <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
+      <SignIn slot="actions" />
+    </PageBanner>
+  </div>
 
   <EmptyCards />
 </main>
