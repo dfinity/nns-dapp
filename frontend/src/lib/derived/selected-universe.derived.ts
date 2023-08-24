@@ -2,6 +2,10 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
@@ -48,11 +52,23 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
   [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
   ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (($ENABLE_CKBTC || $ENABLE_CKTESTBTC) && pathSupportsCkBTC(page)) {
-      return canisterId;
+    if (isUniverseCkBTC(canisterId) && !pathSupportsCkBTC(page)) {
+      return OWN_CANISTER_ID;
+    }
+    if (
+      canisterId.toText() == CKBTC_UNIVERSE_CANISTER_ID.toText() &&
+      !$ENABLE_CKBTC
+    ) {
+      return OWN_CANISTER_ID;
+    }
+    if (
+      canisterId.toText() == CKTESTBTC_UNIVERSE_CANISTER_ID.toText() &&
+      !$ENABLE_CKTESTBTC
+    ) {
+      return OWN_CANISTER_ID;
     }
 
-    return isUniverseCkBTC(canisterId) ? OWN_CANISTER_ID : canisterId;
+    return canisterId;
   }
 );
 
