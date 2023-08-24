@@ -38,6 +38,7 @@
       return;
     }
 
+    // We want to display a spinner until the authentication is loaded. This to avoid a glitch when either the landing page or effective content (sign-in / sign-out) is presented.
     if ($authStore === undefined) {
       return;
     }
