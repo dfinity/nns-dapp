@@ -16,13 +16,13 @@ const expectSignedInAccountsPage = async (appPo: AppPo) => {
 };
 
 test("Test multi-tab auth", async ({ page: page1, context }) => {
-  await page1.goto("/");
-  await expect(page1).toHaveTitle("NNS Dapp");
+  await page1.goto("/accounts");
+  await expect(page1).toHaveTitle("Account / NNS Dapp");
   const appPo1 = new AppPo(PlaywrightPageObjectElement.fromPage(page1));
 
   const page2 = await context.newPage();
-  await page2.goto("/");
-  await expect(page2).toHaveTitle("NNS Dapp");
+  await page2.goto("/accounts");
+  await expect(page2).toHaveTitle("Account / NNS Dapp");
   const appPo2 = new AppPo(PlaywrightPageObjectElement.fromPage(page2));
 
   // Neither page is signed in.

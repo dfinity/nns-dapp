@@ -7,12 +7,11 @@ interface SnsDerivedStateProjectData {
   certified: boolean;
 }
 
-interface SnsDerivedStateData {
+export interface SnsDerivedStateData {
   [rootCanisterId: string]: SnsDerivedStateProjectData;
 }
 
-export interface SnsDerivedStateStore
-  extends Readable<SnsDerivedStateData | undefined> {
+export interface SnsDerivedStateStore extends Readable<SnsDerivedStateData> {
   setDerivedState: (params: {
     rootCanisterId: Principal;
     data: SnsGetDerivedStateResponse;

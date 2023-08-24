@@ -13,7 +13,7 @@ import type { Navigation } from "@sveltejs/kit";
  */
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   if (isNullish(routeId)) {
-    return AppPath.Authentication;
+    return AppPath.Accounts;
   }
 
   const routeIdWithoutGroups = (routeId: string): string =>
@@ -33,7 +33,7 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   // TODO: solve eslint type checking
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore-line
-  return AppPath[key as keyof AppPath] ?? AppPath.Authentication;
+  return AppPath[key as keyof AppPath] ?? AppPath.Accounts;
 };
 
 export const referrerPathForNav = ({ from }: Navigation): AppPath | undefined =>

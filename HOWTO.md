@@ -391,7 +391,7 @@ pub struct BitcoinSetConfigProposalHumanReadable {
 }
 ```
 
-4. Implmement `From<ProposalType>` for `ProposalTypeHumanReadable`. For
+4. Implement `From<ProposalType>` for `ProposalTypeHumanReadable`. For
    example:
 
 ```

@@ -3,7 +3,6 @@
  */
 
 import * as governanceApi from "$lib/api/governance.api";
-import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
@@ -14,7 +13,6 @@ import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { waitForMilliseconds } from "$lib/utils/utils";
 import {
   mockGetIdentity,
   resetIdentity,
@@ -51,53 +49,40 @@ describe("vote-registration-services", () => {
   const spyOnToastsUpdate = jest.spyOn(toastsStore, "toastsUpdate");
   const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyRegisterVote = jest.spyOn(governanceApi, "registerVote");
+
   let proposal: ProposalInfo = proposalInfo();
 
-  const mockRegisterVote = () => {
-    return Promise.resolve();
-  };
-  const spyRegisterVote = jest
-    .spyOn(governanceApi, "registerVote")
-    .mockImplementation(mockRegisterVote);
-
-  beforeAll(() => {
-    neuronsStore.setNeurons({
-      neurons,
-      certified: true,
-    });
-  });
-
-  afterAll(() => {
-    neuronsStore.reset();
-  });
-
   beforeEach(() => {
-    spyOnToastsUpdate.mockClear();
-    spyOnToastsError.mockClear();
-    spyOnToastsShow.mockClear();
-
+    // Cleanup:
+    jest.clearAllMocks();
+    voteRegistrationStore.reset();
     proposalsStore.reset();
+    resetIdentity();
+
+    // Setup:
     proposal = proposalInfo();
     proposalsStore.setProposals({
       proposals: [proposal],
       certified: true,
     });
-    resetIdentity();
+    neuronsStore.setNeurons({
+      neurons,
+      certified: true,
+    });
     jest
       .spyOn(authServices, "getAuthenticatedIdentity")
       .mockImplementation(mockGetIdentity);
+    jest
+      .spyOn(neuronsServices, "listNeurons")
+      .mockImplementation(() => Promise.resolve());
+    spyRegisterVote.mockResolvedValue(undefined);
   });
 
   describe("success voting", () => {
-    beforeAll(() => {
-      jest
-        .spyOn(neuronsServices, "listNeurons")
-        .mockImplementation(() => Promise.resolve());
-    });
-
-    afterAll(() => jest.clearAllMocks());
-
     it("should call the api to register multiple votes", async () => {
+      expect(spyRegisterVote).not.toBeCalled();
+
       await registerNnsVotes({
         neuronIds,
         proposalInfo: proposal,
@@ -107,9 +92,7 @@ describe("vote-registration-services", () => {
         },
       });
 
-      await waitFor(() =>
-        expect(spyRegisterVote).toBeCalledTimes(neuronIds.length)
-      );
+      expect(spyRegisterVote).toBeCalledTimes(neuronIds.length);
     });
 
     it("should not display errors on successful vote registration", async () => {
@@ -126,32 +109,6 @@ describe("vote-registration-services", () => {
     });
 
     describe("voting in progress", () => {
-      beforeAll(() => {
-        jest
-          .spyOn(neuronsServices, "listNeurons")
-          .mockImplementation(() => Promise.resolve());
-        jest
-          .spyOn(proposalsApi, "queryProposal")
-          .mockImplementation(() => Promise.resolve(proposal));
-
-        jest
-          .spyOn(governanceApi, "registerVote")
-          .mockImplementation(() => waitForMilliseconds(10));
-      });
-
-      afterAll(() => {
-        jest.clearAllMocks();
-
-        voteRegistrationStore.reset();
-        neuronsStore.reset();
-      });
-
-      beforeEach(() => {
-        spyOnToastsUpdate.mockClear();
-        spyOnToastsError.mockClear();
-        spyOnToastsShow.mockClear();
-      });
-
       it("should update store with a new vote registration", (done) => {
         let updateContextCalls = 0;
         registerNnsVotes({
@@ -204,8 +161,6 @@ describe("vote-registration-services", () => {
       });
 
       it("should update successfullyVotedNeuronIdStrings in the store", async () => {
-        voteRegistrationStore.reset();
-
         const spyOnAddSuccessfullyVotedNeuronId = jest.spyOn(
           voteRegistrationStore,
           "addSuccessfullyVotedNeuronId"
@@ -358,19 +313,15 @@ describe("vote-registration-services", () => {
         });
       };
 
-    beforeAll(() => {
-      jest
-        .spyOn(governanceApi, "registerVote")
-        .mockImplementation(mockRegisterVoteGovernanceAlreadyVotedError);
-
-      jest
-        .spyOn(neuronsServices, "listNeurons")
-        .mockImplementation(() => Promise.resolve());
+    beforeEach(() => {
+      spyRegisterVote.mockImplementation(() => {
+        return mockRegisterVoteGovernanceAlreadyVotedError();
+      });
     });
 
-    afterAll(() => jest.clearAllMocks());
-
     it("should ignore already voted error", async () => {
+      expect(spyRegisterVote).not.toBeCalled();
+
       await registerNnsVotes({
         neuronIds,
         proposalInfo: proposal,
@@ -381,6 +332,7 @@ describe("vote-registration-services", () => {
       });
 
       expect(spyOnToastsError).not.toBeCalled();
+      expect(spyRegisterVote).toBeCalled();
     });
   });
 
@@ -397,12 +349,6 @@ describe("vote-registration-services", () => {
 
     beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation(jest.fn);
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
-
-      jest.spyOn(governanceApi, "registerVote").mockClear();
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
@@ -522,12 +468,6 @@ describe("vote-registration-services", () => {
       setNoIdentity();
     });
 
-    afterAll(() => {
-      jest.clearAllMocks();
-
-      resetIdentity();
-    });
-
     it("should display error if no identity", async () => {
       await registerNnsVotes({
         neuronIds: [BigInt(0)],
@@ -550,10 +490,6 @@ describe("vote-registration-services", () => {
   describe("processRegisterVoteErrors", () => {
     beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation(jest.fn);
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
     });
 
     it("should display an error", async () => {

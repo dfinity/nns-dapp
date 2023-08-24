@@ -43,7 +43,7 @@ fn init(args: Option<CanisterArguments>) {
     perf::record_instruction_count("init stop");
 }
 
-/// Redundant function, never called but reqired as this is main.rs.
+/// Redundant function, never called but required as this is main.rs.
 fn main() {}
 
 #[pre_upgrade]
@@ -122,7 +122,7 @@ fn add_account_impl() -> AccountIdentifier {
 
 /// Returns a page of transactions for a given `AccountIdentifier`.
 ///
-/// The `AccountIdentifier` must be linked to the caller's account, else an empty Vec will be
+/// The `AccountIdentifier` must be linked to the caller's account, else an empty `Vec` will be
 /// returned.
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
@@ -170,7 +170,7 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 ///
 /// A single hardware wallet can be linked to multiple user accounts, but in order to make calls to
 /// the IC from the account, the user must use the hardware wallet to sign each request.
-/// Some readonly calls do not require signing, eg. viewing the account's ICP balance.
+/// Some read-only calls do not require signing, e.g. viewing the account's ICP balance.
 #[export_name = "canister_update register_hardware_wallet"]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
@@ -274,7 +274,7 @@ fn get_stats_impl() -> stats::Stats {
 ///
 /// These background processes include:
 /// - Sync transactions from the ledger
-/// - Process any queued 'multi-part' actions (eg. staking a neuron or topping up a canister)
+/// - Process any queued 'multi-part' actions (e.g. staking a neuron or topping up a canister)
 /// - Prune old transactions if memory usage is too high
 #[export_name = "canister_heartbeat"]
 pub fn canister_heartbeat() {

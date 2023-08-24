@@ -4,10 +4,7 @@ import type {
 } from "@dfinity/ledger";
 import type {
   SnsGetDerivedStateResponse,
-  SnsGetInitResponse,
-  SnsGetLifecycleResponse,
   SnsGetMetadataResponse,
-  SnsGetSaleParametersResponse,
   SnsNervousSystemFunction,
   SnsSwap,
   SnsSwapDerivedState,
@@ -53,15 +50,12 @@ export type CachedSns = {
   icrc1_fee?: bigint;
   icrc1_total_supply: bigint;
   derived_state: SnsGetDerivedStateResponse;
-  swap_params: SnsGetSaleParametersResponse;
-  init: SnsGetInitResponse;
-  lifecycle: SnsGetLifecycleResponse;
 };
 
 export type CachedSnsMetadataDto = {
-  url: string;
-  name: string;
-  description: string;
+  url: string | null;
+  name: string | null;
+  description: string | null;
 };
 
 interface GenericNervousSystemFunctionDto {
@@ -78,8 +72,8 @@ export type CachedFunctionTypeDto =
 export type CachedNervousFunctionDto = {
   id: number;
   name: string;
-  description: string;
-  function_type: CachedFunctionTypeDto;
+  description: string | null;
+  function_type: CachedFunctionTypeDto | null;
 };
 
 type CachedCountriesDto = {
@@ -147,9 +141,9 @@ export type CachedSnsSwapDto = {
   lifecycle: number;
   decentralization_sale_open_timestamp_seconds?: number;
   finalize_swap_in_progress?: boolean;
-  init: CachedSwapInitParamsDto;
-  params: CachedSwapParamsDto;
-  open_sns_token_swap_proposal_id: number;
+  init: CachedSwapInitParamsDto | null;
+  params: CachedSwapParamsDto | null;
+  open_sns_token_swap_proposal_id: number | null;
 };
 
 export type CachedSnsSwapDerivedDto = {
@@ -165,7 +159,7 @@ type CachedSwapParamsResponseDto = {
 };
 
 type CachedInitResponseDto = {
-  init: CachedSwapInitParamsDto;
+  init: CachedSwapInitParamsDto | null;
 };
 
 export type CachedLifecycleResponseDto = {
