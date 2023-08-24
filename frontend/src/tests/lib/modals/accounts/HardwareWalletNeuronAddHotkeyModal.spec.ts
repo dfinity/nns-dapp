@@ -24,26 +24,26 @@ jest.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };
+  let spyAddHotkey;
+  let spyGetNeuron;
 
-  const spyAddHotkey = jest
-    .spyOn(api, "addHotkey")
-    .mockImplementation(() => Promise.resolve());
-
-  const spyGetNeuron = jest
-    .spyOn(api, "queryNeuron")
-    .mockImplementation(() => Promise.resolve(mockNeuron));
-
-  jest.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-
-  beforeAll(() => {
+  beforeEach(() => {
     (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity)
     );
-  });
-
-  afterAll(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
+    spyAddHotkey = jest
+      .spyOn(api, "addHotkey")
+      .mockImplementation(() => Promise.resolve());
+
+    spyGetNeuron = jest
+      .spyOn(api, "queryNeuron")
+      .mockImplementation(() => Promise.resolve(mockNeuron));
+
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should display modal", () => {
