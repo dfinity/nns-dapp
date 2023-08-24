@@ -16,6 +16,8 @@ import {
 } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import type { Identity } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
@@ -27,12 +29,15 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
   let spyAddHotkey;
   let spyGetNeuron;
 
+  const mockIdentity2 = {
+    getPrincipal: () => principal(0),
+  } as unknown as Identity;
+
   beforeEach(() => {
-    (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
-      Promise.resolve(mockIdentity)
-    );
-    jest.clearAllMocks();
     jest.restoreAllMocks();
+    (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
+      Promise.resolve(mockIdentity2)
+    );
     spyAddHotkey = jest
       .spyOn(api, "addHotkey")
       .mockImplementation(() => Promise.resolve());
@@ -103,13 +108,30 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
       props,
     });
 
+    expect(spyAddHotkey).not.toBeCalled();
+    expect(spyGetNeuron).not.toBeCalled();
+
     const confirmButton = queryByTestId("confirm-yes") as HTMLButtonElement;
     expect(confirmButton).toBeInTheDocument();
 
     await fireEvent.click(confirmButton);
 
-    await waitFor(() => expect(spyAddHotkey).toBeCalled());
-    await waitFor(() => expect(spyGetNeuron).toBeCalled());
+    await waitFor(() =>
+      expect(spyAddHotkey).toBeCalledWith({
+        neuronId: mockNeuronStake.neuronId,
+        principal: mockIdentity.getPrincipal(),
+        // It uses the ledger identity to add the hotkey
+        identity: mockIdentity2,
+      })
+    );
+    await waitFor(() =>
+      expect(spyGetNeuron).toBeCalledWith({
+        neuronId: mockNeuronStake.neuronId,
+        // Onece the hotkey is added, it uses the current identity to query the neuron
+        identity: mockIdentity,
+        certified: true,
+      })
+    );
 
     const store = get(mockHardwareWalletNeuronsStore);
     expect(
