@@ -18,10 +18,11 @@
   $: account = fromDefinedNullable(disbursement.account_to_disburse_to);
 
   let formattedAccount: string;
+  // TODO: add subaccount support when it's available
   $: formattedAccount = shortenWithMiddleEllipsis(account.owner.toString());
 
-  let formattedAmount: bigint;
-  $: formattedAmount = disbursement.amount_e8s;
+  let formattedAmount: string;
+  $: formattedAmount = `${disbursement.amount_e8s}`;
 </script>
 
 <ActiveDisbursementItem {formattedTime} {formattedAccount} {formattedAmount} />

@@ -128,12 +128,7 @@
       {/if}
 
       {#if type === "view-active-disbursements"}
-        <SnsActiveDisbursementsModal
-          on:nnsClose={close}
-          {neuronId}
-          {neuron}
-          {rootCanisterId}
-        />
+        <SnsActiveDisbursementsModal on:nnsClose={close} {neuron} />
       {/if}
 
       {#if type === "auto-stake-maturity"}
