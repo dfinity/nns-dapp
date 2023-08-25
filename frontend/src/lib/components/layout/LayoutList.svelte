@@ -4,7 +4,6 @@
 
   // TODO: Rename this to make the responsiblity clearer
   export let title: string;
-  export let showHeader = true;
 
   let innerWidth = 0;
 
@@ -14,7 +13,7 @@
   $: (() =>
     layoutTitleStore.set({
       title: title,
-      header: list || !showHeader ? "" : title,
+      header: list ? "" : title,
     }))();
 </script>
 

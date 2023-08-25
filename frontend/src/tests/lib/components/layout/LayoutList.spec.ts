@@ -33,18 +33,6 @@ describe("LayoutList", () => {
       });
     });
 
-    it("should not set header to the prop title if showHeader prop is false", () => {
-      const testTitle = "Test title";
-      render(LayoutList, {
-        props: {
-          title: testTitle,
-          showHeader: false,
-        },
-      });
-
-      expect(get(layoutTitleStore).header).toBe("");
-    });
-
     describe("when innerWidth is more than breakpoint large", () => {
       beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -11,7 +11,7 @@
   $: cmp = $authSignedInStore ? UniverseSplitContent : Content;
 </script>
 
-<LayoutList title={$i18n.navigation.neurons} showHeader={$authSignedInStore}>
+<LayoutList title={$i18n.navigation.neurons}>
   <Layout>
     <svelte:component this={cmp}>
       <slot />
