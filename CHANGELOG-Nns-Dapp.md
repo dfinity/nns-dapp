@@ -24,11 +24,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Access accounts only by getter and setter; do not assume that in-place modifications are possible.
+* Defined an account data store interface, to allow account storage migrations.
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
 * When reusing cached agents, use the current identity instead of the one in the cached agent.
+* New landing pages for Accounts, Neurons, Canister and Settings when not logged in.
+* Remove login page and redirect to accounts instead.
 
 #### Deprecated
 #### Removed
@@ -46,6 +49,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use new stores as source of data instead of snsQueryStore.
 
 ### Operations
+* Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
 * Fix shellcheck issues.
 

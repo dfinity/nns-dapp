@@ -2,7 +2,7 @@ import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import {
   convertDtoData,
   convertDtoToSnsSummary,
-  convertNervousFuncttion,
+  convertNervousFunction,
 } from "$lib/utils/sns-aggregator-converters.utils";
 import {
   aggregatorSnsMock,
@@ -405,7 +405,7 @@ describe("sns aggregator converters utils", () => {
         function_type: { NativeNervousSystemFunction: {} },
       };
 
-      expect(convertNervousFuncttion(nsFunction)).toEqual({
+      expect(convertNervousFunction(nsFunction)).toEqual({
         id: 0n,
         name: "All Topics",
         description: [
@@ -423,7 +423,7 @@ describe("sns aggregator converters utils", () => {
         function_type: null,
       };
 
-      expect(convertNervousFuncttion(nsFunction)).toEqual({
+      expect(convertNervousFunction(nsFunction)).toEqual({
         id: 0n,
         name: "All Topics",
         description: [
