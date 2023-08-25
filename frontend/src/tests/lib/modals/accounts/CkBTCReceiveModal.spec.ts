@@ -41,8 +41,11 @@ describe("BtcCkBTCReceiveModal", () => {
   const reloadSpy = jest.fn();
 
   beforeEach(() => {
+    jest.restoreAllMocks();
     resetIdentity();
-    jest.clearAllMocks();
+    bitcoinAddressStore.reset();
+    ckBTCInfoStore.reset();
+    page.reset();
   });
 
   const renderReceiveModal = ({
@@ -255,7 +258,7 @@ describe("BtcCkBTCReceiveModal", () => {
   });
 
   describe("without btc", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       jest
         .spyOn(tokensStore, "subscribe")
         .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
