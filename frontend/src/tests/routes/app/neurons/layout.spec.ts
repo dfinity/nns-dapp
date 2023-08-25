@@ -12,7 +12,7 @@ describe("Neurons layout", () => {
     layoutTitleStore.set({ title: "" });
   });
 
-  it("should set title and header layout to Canisters text", () => {
+  it("should set title and header layout to 'My Neuron Staking'", () => {
     render(NeuronsLayout);
 
     expect(get(layoutTitleStore)).toEqual({

@@ -12,7 +12,7 @@ describe("Acconuts layout", () => {
     layoutTitleStore.set({ title: "" });
   });
 
-  it("should set title and header layout to Canisters text", () => {
+  it("should set title and header layout to 'My Tokens'", () => {
     render(AccountsLayout);
 
     expect(get(layoutTitleStore)).toEqual({
