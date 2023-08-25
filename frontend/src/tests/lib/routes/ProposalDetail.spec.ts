@@ -16,10 +16,8 @@ import { render } from "@testing-library/svelte";
 jest.mock("$lib/api/governance.api");
 
 describe("ProposalDetail", () => {
-  beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+  beforeEach(() => {
+    jest.clearAllMocks();
 
     // Reset to default value
     page.mock({
@@ -28,17 +26,15 @@ describe("ProposalDetail", () => {
       },
       routeId: AppPath.Proposal,
     });
-  });
-
-  afterAll(jest.clearAllMocks);
-
-  beforeEach(() => {
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render NnsProposalDetail by default", () => {
@@ -52,7 +48,7 @@ describe("ProposalDetail", () => {
   });
 
   describe("SnsProposalDetail", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Proposal,
