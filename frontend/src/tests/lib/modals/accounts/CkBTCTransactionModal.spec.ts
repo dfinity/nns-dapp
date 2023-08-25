@@ -39,12 +39,7 @@ import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
-  return {
-    ckBTCTransferTokens: jest.fn().mockResolvedValue({ success: true }),
-  };
-});
-
+jest.mock("$lib/services/ckbtc-accounts.services");
 jest.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
@@ -63,7 +58,12 @@ describe("CkBTCTransactionModal", () => {
       },
     });
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+
+    jest
+      .mocked(ckBTCTransferTokens)
+      .mockResolvedValue({ blockIndex: undefined });
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -492,6 +492,7 @@ describe("CkBTCTransactionModal", () => {
       jest
         .spyOn(services, "convertCkBTCToBtc")
         .mockResolvedValue({ success: true });
+      jest.spyOn(services, "retrieveBtc").mockResolvedValue({ success: true });
 
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
 
