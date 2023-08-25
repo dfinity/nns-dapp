@@ -7,7 +7,7 @@ import AccountsLayout from "$routes/(app)/(u)/(accounts)/+layout.svelte";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("Acconuts layout", () => {
+describe("Accounts layout", () => {
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
   });
