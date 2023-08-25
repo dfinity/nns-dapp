@@ -31,7 +31,7 @@ const expectImagesLoaded = async ({ page, sources }) => {
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("Account / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
 
   await step("Check images before signing");
   await expectImagesLoaded({

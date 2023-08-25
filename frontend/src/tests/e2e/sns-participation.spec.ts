@@ -6,7 +6,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("Account / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
