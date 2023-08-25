@@ -40,6 +40,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix wrong "ICP Staked" message in SNS neurons.
+* Header in accounts, canisters and neurons was not visible after user came back from logging in.
 
 #### Security
 
