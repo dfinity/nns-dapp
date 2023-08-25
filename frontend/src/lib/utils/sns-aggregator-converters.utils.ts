@@ -85,7 +85,7 @@ const convertFunctionType = (
   };
 };
 
-export const convertNervousFuncttion = ({
+export const convertNervousFunction = ({
   id,
   name,
   description,
@@ -302,7 +302,7 @@ const convertSnsData = ({
   list_sns_canisters,
   meta: convertMeta(meta, canister_ids.root_canister_id),
   parameters: {
-    functions: parameters.functions.map(convertNervousFuncttion),
+    functions: parameters.functions.map(convertNervousFunction),
     reserved_ids: parameters.reserved_ids.map(BigInt),
   },
   swap_state: {

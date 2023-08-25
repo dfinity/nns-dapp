@@ -7,7 +7,7 @@ import {
   type SnsNervousSystemFunctionsStore,
 } from "$lib/stores/sns-functions.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
-import { convertNervousFuncttion } from "$lib/utils/sns-aggregator-converters.utils";
+import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
@@ -37,7 +37,7 @@ export const createSnsNsFunctionsProjectStore = (
         );
       if (nonNullish(aggregatorProject)) {
         return aggregatorProject.parameters.functions.map(
-          convertNervousFuncttion
+          convertNervousFunction
         );
       }
       return undefined;

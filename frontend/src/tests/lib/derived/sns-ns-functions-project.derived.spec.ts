@@ -1,7 +1,7 @@
 import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
-import { convertNervousFuncttion } from "$lib/utils/sns-aggregator-converters.utils";
+import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   aggregatorSnsMockDto,
@@ -45,7 +45,7 @@ describe("nsFunctionsProjectStore", () => {
 
     const store = createSnsNsFunctionsProjectStore(rootCanisterId);
     expect(get(store)).toEqual([nervousSystemFunctionMock]);
-    expect(get(store)).not.toEqual(functions.map(convertNervousFuncttion));
+    expect(get(store)).not.toEqual(functions.map(convertNervousFunction));
   });
 
   it("returns the functions from snsAggregator if no functions in snsFunctionsStore", () => {
@@ -53,7 +53,7 @@ describe("nsFunctionsProjectStore", () => {
     const functions = aggregatorSnsMockDto.parameters.functions;
 
     const store = createSnsNsFunctionsProjectStore(rootCanisterId);
-    expect(get(store)).toEqual(functions.map(convertNervousFuncttion));
+    expect(get(store)).toEqual(functions.map(convertNervousFunction));
   });
 
   it("returns undefined if project is not set in no store", () => {
