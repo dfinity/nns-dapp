@@ -285,7 +285,7 @@ export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
 export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
-const formatMaturity = (value?: bigint): string =>
+export const formatMaturity = (value?: bigint): string =>
   formatToken({
     value: isNullish(value) ? BigInt(0) : value,
   });

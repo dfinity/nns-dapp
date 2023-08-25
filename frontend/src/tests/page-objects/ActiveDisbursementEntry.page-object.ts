@@ -17,4 +17,12 @@ export class ActiveDisbursementEntryPo extends BasePageObject {
       await element.allByTestId(ActiveDisbursementEntryPo.TID)
     ).map((el) => new ActiveDisbursementEntryPo(el));
   }
+
+  getDescriptionText(): Promise<string> {
+    return this.getText("description");
+  }
+
+  getMaturityText(): Promise<string> {
+    return this.getText("maturity");
+  }
 }

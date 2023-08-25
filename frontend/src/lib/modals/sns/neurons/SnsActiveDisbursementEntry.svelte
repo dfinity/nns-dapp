@@ -6,6 +6,7 @@
   import type { Account } from "@dfinity/sns/dist/candid/sns_governance";
   import ActiveDisbursementItem from "$lib/components/neuron-detail/ActiveDisbursementEntry.svelte";
   import { getSnsActiveDisbursementTime } from "$lib/utils/sns-neuron.utils";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
 
   export let disbursement: DisburseMaturityInProgress;
 
@@ -22,7 +23,7 @@
   $: formattedAccount = shortenWithMiddleEllipsis(account.owner.toString());
 
   let formattedAmount: string;
-  $: formattedAmount = `${disbursement.amount_e8s}`;
+  $: formattedAmount = formatMaturity(disbursement.amount_e8s);
 </script>
 
 <ActiveDisbursementItem {formattedTime} {formattedAccount} {formattedAmount} />

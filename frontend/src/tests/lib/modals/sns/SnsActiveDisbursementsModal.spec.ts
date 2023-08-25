@@ -23,18 +23,18 @@ describe("SnsActiveDisbursementsModal", () => {
       new JestPageObjectElement(container)
     );
   };
-  const testActiveDisbursement: DisburseMaturityInProgress = {
-    timestamp_of_disbursement_seconds: 10000n,
-    amount_e8s: 1000000n,
-    account_to_disburse_to: [
-      {
-        owner: [mockPrincipal],
-        subaccount: [],
-      },
-    ],
-  };
 
   it("should display ActiveDisbursementEntries", async () => {
+    const testActiveDisbursement: DisburseMaturityInProgress = {
+      timestamp_of_disbursement_seconds: 10000n,
+      amount_e8s: 1000000n,
+      account_to_disburse_to: [
+        {
+          owner: [mockPrincipal],
+          subaccount: [],
+        },
+      ],
+    };
     const po = await renderComponent({
       ...mockSnsNeuron,
       disburse_maturity_in_progress: [

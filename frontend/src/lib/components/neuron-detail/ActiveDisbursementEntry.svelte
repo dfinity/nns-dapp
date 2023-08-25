@@ -14,7 +14,7 @@
   </span>
 
   <span class="info">
-    <span class="description">
+    <span class="description" data-tid="description">
       {replacePlaceholders(
         $i18n.neuron_detail.view_active_disbursements_entry_description,
         {
@@ -23,7 +23,7 @@
         }
       )}
     </span>
-    <span class="value">
+    <span class="value" data-tid="maturity">
       {replacePlaceholders(
         $i18n.neuron_detail.view_active_disbursements_maturity,
         {
