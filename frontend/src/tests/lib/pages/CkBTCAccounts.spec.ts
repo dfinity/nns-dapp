@@ -59,7 +59,8 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("CkBTCAccounts", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     jest
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
@@ -71,7 +72,7 @@ describe("CkBTCAccounts", () => {
   });
 
   describe("when there are accounts in the store", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       icrcAccountsStore.set({
         accounts: {
           accounts: [mockCkBTCMainAccount],
@@ -119,7 +120,7 @@ describe("CkBTCAccounts", () => {
   });
 
   describe("when no accounts", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       icrcAccountsStore.reset();
     });
 

@@ -17,13 +17,18 @@ import {
 import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    page.reset();
+  });
+
   it("should render a logo", () => {
     const { getByTestId } = render(Summary);
     expect(getByTestId("project-logo")).not.toBeNull();
   });
 
   describe("no universe", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
@@ -53,15 +58,17 @@ describe("Summary", () => {
       jest.resetAllMocks();
     });
 
-    beforeAll(() =>
+    beforeEach(() =>
       jest
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(undefined))
     );
 
-    afterAll(() => jest.clearAllMocks());
-
     it("should render internet computer", () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      });
+
       const { container } = render(Summary);
 
       expect(
@@ -71,7 +78,7 @@ describe("Summary", () => {
   });
 
   describe("sns", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       jest
         .spyOn(snsProjectsCommittedStore, "subscribe")
         .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
@@ -81,8 +88,6 @@ describe("Summary", () => {
         routeId: AppPath.Accounts,
       });
     });
-
-    afterAll(() => jest.clearAllMocks());
 
     it("should render project", () => {
       const { container } = render(Summary);
@@ -95,14 +100,12 @@ describe("Summary", () => {
   });
 
   describe("ckBTC", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
     });
-
-    afterAll(() => jest.clearAllMocks());
 
     it("should render ckBTC", () => {
       const { container } = render(Summary);
