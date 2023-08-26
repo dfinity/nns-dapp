@@ -14,7 +14,8 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Settings", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    authRemainingTimeStore.set(undefined);
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);

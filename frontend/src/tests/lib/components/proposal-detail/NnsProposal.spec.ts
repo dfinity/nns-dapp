@@ -27,6 +27,10 @@ jest.mock("$lib/api/nns-dapp.api");
 describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
 
+  beforeEach(() => {
+    referrerPathStore.set(undefined);
+  });
+
   const renderProposalModern = (id = 1000n) =>
     render(NnsProposalTest, {
       props: {
