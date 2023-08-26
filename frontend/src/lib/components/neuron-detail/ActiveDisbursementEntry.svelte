@@ -12,42 +12,34 @@
   <span class="icon">
     <IconClockNoFill size="24px" />
   </span>
-
-  <span class="info">
-    <span class="description" data-tid="description">
-      {replacePlaceholders(
-        $i18n.neuron_detail.view_active_disbursements_entry_description,
-        {
-          $time: formattedTime,
-          $account: formattedAccount,
-        }
-      )}
-    </span>
-    <span class="value" data-tid="maturity">
-      {replacePlaceholders(
-        $i18n.neuron_detail.view_active_disbursements_maturity,
-        {
-          $maturity: formattedAmount,
-        }
-      )}
-    </span>
+  <span class="description" data-tid="description">
+    {replacePlaceholders(
+      $i18n.neuron_detail.view_active_disbursements_entry_description,
+      {
+        $time: formattedTime,
+        $account: formattedAccount,
+      }
+    )}
+  </span>
+  <span class="value" data-tid="maturity">
+    {replacePlaceholders(
+      $i18n.neuron_detail.view_active_disbursements_maturity,
+      {
+        $maturity: formattedAmount,
+      }
+    )}
   </span>
 </div>
 
 <style lang="scss">
   .disbursement {
-    display: flex;
-    gap: var(--padding-1_5x);
+    display: grid;
+    grid-template-columns: var(--padding-4x) auto;
     align-items: center;
+    gap: var(--padding-05x);
   }
 
-  .icon {
-    flex: 0;
-  }
-
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-0_5x);
+  .value {
+    grid-column: 2;
   }
 </style>
