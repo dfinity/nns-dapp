@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconHistoryTogglePart } from "@dfinity/gix-components";
+  import { IconPace } from "@dfinity/gix-components";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import SnsViewActiveDisbursementsButton from "$lib/components/sns-neuron-detail/actions/SnsViewActiveDisbursementsButton.svelte";
@@ -14,7 +14,7 @@
 
 {#if disbursementsInProgress > 0}
   <CommonItemAction testId="sns-available-maturity-item-action-component">
-    <IconHistoryTogglePart slot="icon" />
+    <IconPace slot="icon" />
     <span slot="title" data-tid="available-maturity"
       >{disbursementsInProgress}</span
     >
