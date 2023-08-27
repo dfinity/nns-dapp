@@ -19,6 +19,7 @@ import {
   formattedMaturity,
   formattedStakedMaturity,
   formattedTotalMaturity,
+  getSnsActiveDisbursementTime,
   getSnsDissolvingTimeInSeconds,
   getSnsDissolvingTimestampSeconds,
   getSnsLockedTimeInSeconds,
@@ -82,7 +83,10 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+import type {
+  DisburseMaturityInProgress,
+  NeuronPermission,
+} from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
@@ -2426,6 +2430,39 @@ describe("sns-neuron utils", () => {
           ...mockSnsNeuron,
           created_timestamp_seconds: monthAgo,
           vesting_period_seconds: [oneWeek],
+        })
+      ).toEqual(0n);
+    });
+  });
+
+  describe("getSnsActiveDisbursementTime", () => {
+    const testActiveDisbursement: DisburseMaturityInProgress = {
+      timestamp_of_disbursement_seconds: 1000n,
+      amount_e8s: 0n,
+      account_to_disburse_to: [
+        {
+          owner: [],
+          subaccount: [],
+        },
+      ],
+    };
+
+    it("returns disbursement duration", () => {
+      jest.useFakeTimers().setSystemTime(new Date(0));
+
+      expect(
+        getSnsActiveDisbursementTime({
+          ...testActiveDisbursement,
+          timestamp_of_disbursement_seconds: 1000n,
+        })
+      ).toEqual(1000n);
+
+      jest.useFakeTimers().setSystemTime(new Date(1000 * 1000));
+
+      expect(
+        getSnsActiveDisbursementTime({
+          ...testActiveDisbursement,
+          timestamp_of_disbursement_seconds: 1000n,
         })
       ).toEqual(0n);
     });
