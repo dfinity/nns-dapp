@@ -20,6 +20,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 * Introduce an option to collapse or expand the application's menu on large screen.
 * Remove some unused fields from the aggregator converted type.
+* Display active sns neuron maturity disbursements.
 
 #### Changed
 
