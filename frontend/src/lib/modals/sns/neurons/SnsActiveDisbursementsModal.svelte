@@ -29,9 +29,9 @@
 
 <style lang="scss">
   .disbursements {
+    padding: var(--padding), 0;
     display: flex;
     flex-direction: column;
-    gap: var(--padding-2x);
-    padding: var(--padding), 0;
+    gap: var(--padding);
   }
 </style>

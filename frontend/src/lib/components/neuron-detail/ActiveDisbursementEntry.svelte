@@ -36,8 +36,7 @@
     display: grid;
     grid-template-columns: var(--padding-4x) auto;
     align-items: center;
-    gap-column: var(--padding);
-    gap-row: var(--padding-05x);
+    gap: var(--padding-0_5x);
   }
 
   .value {
