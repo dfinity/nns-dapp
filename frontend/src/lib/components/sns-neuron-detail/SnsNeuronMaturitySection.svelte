@@ -5,7 +5,7 @@
   import SnsAvailableMaturityItemAction from "./SnsAvailableMaturityItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
-  import SnsActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
+  import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
 
   export let neuron: SnsNeuron;
 </script>
@@ -21,7 +21,7 @@
   <ul class="content">
     <SnsStakedMaturityItemAction {neuron} />
     <SnsAvailableMaturityItemAction {neuron} />
-    <SnsActiveDisbursementsItemAction {neuron} />
+    <SnsViewActiveDisbursementsItemAction {neuron} />
   </ul>
 </Section>
 
