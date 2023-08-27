@@ -35,6 +35,24 @@ describe("SnsViewActiveDisbursementsItemAction", () => {
     );
   };
 
+  it("should not render components when no disbursements available", async () => {
+    const po = renderComponent({
+      ...mockSnsNeuron,
+      disburse_maturity_in_progress: [],
+    });
+
+    expect(await po.isPresent()).toBe(false);
+  });
+
+  it("should render components when disbursements available", async () => {
+    const po = renderComponent({
+      ...mockSnsNeuron,
+      disburse_maturity_in_progress: [testActiveDisbursement],
+    });
+
+    expect(await po.isPresent()).toBe(true);
+  });
+
   it("should render disbursement count", async () => {
     const po = renderComponent({
       ...mockSnsNeuron,
