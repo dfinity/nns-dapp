@@ -13,9 +13,11 @@
 </script>
 
 {#if disbursementsInProgress > 0}
-  <CommonItemAction testId="sns-available-maturity-item-action-component">
+  <CommonItemAction
+    testId="sns-view-active-disbursements-item-action-component"
+  >
     <IconPace slot="icon" />
-    <span slot="title" data-tid="available-maturity"
+    <span slot="title" data-tid="disbursement-count"
       >{disbursementsInProgress}</span
     >
     <svelte:fragment slot="subtitle"
