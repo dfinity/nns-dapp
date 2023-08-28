@@ -5,20 +5,12 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { waitFor } from "@testing-library/svelte";
-
-jest.mock("$lib/stores/busy.store", () => {
-  return {
-    startBusy: jest.fn(),
-    stopBusy: jest.fn(),
-  };
-});
 
 jest.mock("$lib/api/sns-governance.api");
 
@@ -73,14 +65,11 @@ describe("SnsDisburseMaturityModal", () => {
     await po.clickNextButton();
 
     // precondition
-    expect(startBusy).not.toBeCalled();
-    expect(stopBusy).not.toBeCalled();
     expect(disburseMaturity).not.toBeCalled();
     expect(reloadNeuron).not.toBeCalled();
 
     await po.clickConfirmButton();
 
-    expect(startBusy).toBeCalledTimes(1);
     expect(disburseMaturity).toBeCalledTimes(1);
     expect(disburseMaturity).toBeCalledWith({
       neuronId: mockSnsNeuron.id,
@@ -89,6 +78,5 @@ describe("SnsDisburseMaturityModal", () => {
       identity: mockIdentity,
     });
     await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
-    expect(stopBusy).toBeCalledTimes(1);
   });
 });
