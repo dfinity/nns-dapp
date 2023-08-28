@@ -2447,24 +2447,15 @@ describe("sns-neuron utils", () => {
       ],
     };
 
-    it("returns disbursement duration", () => {
-      jest.useFakeTimers().setSystemTime(new Date(0));
+    it("calculates disbursement duration", () => {
+      jest.useFakeTimers().setSystemTime(SECONDS_IN_DAY * 1000);
 
       expect(
         getSnsActiveDisbursementTime({
           ...testActiveDisbursement,
-          timestamp_of_disbursement_seconds: 1000n,
+          timestamp_of_disbursement_seconds: BigInt(SECONDS_IN_DAY * 9),
         })
-      ).toEqual(1000n);
-
-      jest.useFakeTimers().setSystemTime(new Date(1000 * 1000));
-
-      expect(
-        getSnsActiveDisbursementTime({
-          ...testActiveDisbursement,
-          timestamp_of_disbursement_seconds: 1000n,
-        })
-      ).toEqual(0n);
+      ).toEqual(BigInt(SECONDS_IN_DAY * 8));
     });
   });
 });
