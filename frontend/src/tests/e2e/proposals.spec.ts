@@ -16,7 +16,15 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Get some ICP");
   await appPo.goToAccounts();
-  await appPo.getIcpTokens(11);
+  await appPo.getIcpTokens(21);
+
+  // should be created before dummy proposals
+  step("Stake a neuron for voting");
+  await appPo.goToNeurons();
+  await appPo
+    .getNeuronsPo()
+    .getNnsNeuronsFooterPo()
+    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
 
   step("Create dummy proposals");
   const proposerNeuronId = await createDummyProposal(appPo);
@@ -31,6 +39,64 @@ test("Test neuron voting", async ({ page, context }) => {
   step("Open proposals list");
   await appPo.goToProposals();
   await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  step(`Filter proposals by Votable only`);
+
+  // Vote on the first proposal
+  const proposalCardForVoting = await appPo
+    .getProposalsPo()
+    .getNnsProposalListPo()
+    .getFirstProposalCardPoForProposer(proposerNeuronId);
+  const proposalIdForVoting = await proposalCardForVoting.getProposalId();
+  // Open proposal details
+  await proposalCardForVoting.click();
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+
+  // Vote on proposal
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+  await appPo
+    .getProposalDetailPo()
+    .getNnsProposalPo()
+    .getVotingCardPo()
+    .voteYes();
+
+  // Back to proposals list
+  await appPo.goBack();
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+
+  // Get all proposals that are currently votable
+  const createdProposalIds = await Promise.all(
+    (
+      await appPo
+        .getProposalsPo()
+        .getNnsProposalListPo()
+        .getProposalCardPosForProposer(proposerNeuronId)
+    ).map((card) => card.getProposalId())
+  );
+
+  expect(createdProposalIds).toContain(proposalIdForVoting);
+
+  // Hide proposals that are not votable
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setVotableProposalsOnlyValue(true);
+  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  // Get votable proposals
+  const votableCreatedProposalIds = await Promise.all(
+    (
+      await appPo
+        .getProposalsPo()
+        .getNnsProposalListPo()
+        .getProposalCardPosForProposer(proposerNeuronId)
+    ).map((card) => card.getProposalId())
+  );
+
+  expect(votableCreatedProposalIds.length).toEqual(
+    createdProposalIds.length - 1
+  );
+
+  expect(votableCreatedProposalIds).not.toContain(proposalIdForVoting);
 
   step(`Filter proposals by Topic`);
   const getVisibleCardTopics = () =>
@@ -77,6 +143,7 @@ test("Test neuron voting", async ({ page, context }) => {
   /*
    * Validate proposal details
    */
+
   step("Filter Open Governance proposals");
   // Filter by topic and status to get less proposals
   // in case of a multiple dummy proposals created before calling this test
