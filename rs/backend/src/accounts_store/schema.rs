@@ -2,6 +2,7 @@
 use crate::accounts_store::Account;
 
 mod map;
+mod proxy;
 #[cfg(test)]
 mod tests;
 
