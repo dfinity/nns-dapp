@@ -53,6 +53,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
 * Fix shellcheck issues.
+* Add "Filter proposals by Votable only" e2e test.
 
 #### Added
 
