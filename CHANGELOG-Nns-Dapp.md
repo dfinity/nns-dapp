@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Disburse maturity of sns neurons.
+
 #### Changed
 
 #### Deprecated
@@ -50,7 +52,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve error messaging on payload size limit in proposals list page.
 * New lifecycle store for SNS projects.
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
-* Disburse maturity of sns neurons.
 * Introduce an option to collapse or expand the application's menu on large screen.
 * Remove some unused fields from the aggregator converted type.
 
@@ -112,7 +113,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fixed some tests that depended on execution order.
 * [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
-
 ## Proposal 124252 (cherry-pick)
 
 ### Application
