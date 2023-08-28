@@ -32,6 +32,7 @@
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import AddPermissionsModal from "./AddPermissionsModal.svelte";
   import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
+  import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 
   // Modal events
 
@@ -124,7 +125,13 @@
       {/if}
 
       {#if type === "disburse-maturity"}
-        <!-- Todo: disburse maturity modal -->
+        <SnsDisburseMaturityModal
+          {reloadNeuron}
+          on:nnsClose={close}
+          {neuronId}
+          {neuron}
+          {rootCanisterId}
+        />
       {/if}
 
       {#if type === "view-active-disbursements"}
