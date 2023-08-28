@@ -7,6 +7,7 @@ export type SnsNeuronModalType =
   | "add-hotkey"
   | "stake-maturity"
   | "disburse-maturity"
+  | "view-active-disbursements"
   | "split-neuron"
   | "dev-add-permissions"
   | "dev-remove-permissions"
