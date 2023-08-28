@@ -30,6 +30,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+* Add "Filter proposals by Votable only" e2e test.
 
 #### Changed
 
@@ -94,7 +95,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New test util to set SNS projects for testing.
 * Make scripts/past-changelog-test check again the previous commit when run on main.
 * Unit tests for the detailed `min_participant_icp_e8s` rendering.
-* Add "Filter proposals by Votable only" e2e test.
 
 #### Changed
 
