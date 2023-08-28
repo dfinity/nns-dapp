@@ -21,6 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Disburse maturity of sns neurons.
 * Introduce an option to collapse or expand the application's menu on large screen.
 * Remove some unused fields from the aggregator converted type.
+* Display active sns neuron maturity disbursements.
 
 #### Changed
 
