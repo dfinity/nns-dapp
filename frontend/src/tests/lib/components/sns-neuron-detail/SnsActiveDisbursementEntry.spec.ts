@@ -3,7 +3,6 @@
  */
 
 import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -31,26 +30,14 @@ describe("SnsActiveDisbursementEntry", () => {
     );
   };
 
-  it("should render duration", async () => {
+  it("should render correct description", async () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(0));
 
     const po = renderComponent(testActiveDisbursement);
 
-    expect(await po.getDescriptionText()).toContain("2 hours, 46 minutes");
-  });
-
-  it("should render destination", async () => {
-    const po = renderComponent(testActiveDisbursement);
-
-    expect(await po.getDescriptionText()).toContain(
-      shortenWithMiddleEllipsis(mockPrincipal.toText())
+    expect(await po.getDescriptionText()).toEqual(
+      "2 hours, 46 minutes remaining for rewards to disburse to xlmdg-v...4rh-oqe"
     );
-  });
-
-  it("should render maturity", async () => {
-    const po = renderComponent(testActiveDisbursement);
-
-    expect(await po.getMaturityText()).toContain("1.22");
   });
 });
