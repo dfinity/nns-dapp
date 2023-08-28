@@ -2,34 +2,10 @@
 
 use super::super::{AccountIdentifier, CanisterId, NamedCanister, PrincipalId};
 use super::*;
-use std::collections::{BTreeMap, HashMap};
-
-/// Toy accounts database for testing.
-#[derive(Default)]
-pub struct MockAccountsDb {
-    accounts: BTreeMap<Vec<u8>, Account>,
-}
-
-impl AccountsDbTrait for MockAccountsDb {
-    fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        self.accounts.insert(account_key.to_vec(), account);
-    }
-    fn db_contains_account(&self, account_key: &[u8]) -> bool {
-        self.accounts.contains_key(account_key)
-    }
-    fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
-        self.accounts.get(account_key).cloned()
-    }
-    fn db_remove_account(&mut self, account_key: &[u8]) {
-        self.accounts.remove(account_key);
-    }
-    fn db_accounts_len(&self) -> u64 {
-        self.accounts.len() as u64
-    }
-}
+use std::collections::HashMap;
 
 /// Creates a toy canister.
-fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
+pub fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
     let canister_id = CanisterId::from(canister_index);
     NamedCanister {
         name: format!("canister_{account_index}_{canister_index}"),
@@ -38,7 +14,7 @@ fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
 }
 
 /// Creates a toy account.  The contents do not need to be meaningful; do need to have size.
-fn toy_account(account_index: u64, num_canisters: u64) -> Account {
+pub fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
     let mut account = Account {
@@ -61,7 +37,7 @@ fn toy_account(account_index: u64, num_canisters: u64) -> Account {
 ///
 /// Individual implementations are expected to perform their own tests for error conditions
 /// relevant to them.
-fn assert_basic_crud_works<D>(mut storage: D)
+pub fn assert_basic_crud_works<D>(mut storage: D)
 where
     D: AccountsDbTrait,
 {
@@ -84,7 +60,7 @@ where
 }
 
 /// Verifies that the update function `db_try_with_account()` works correctly.
-fn assert_update_with_happy_path_works<D>(mut storage: D)
+pub fn assert_update_with_happy_path_works<D>(mut storage: D)
 where
     D: AccountsDbTrait,
 {
@@ -133,7 +109,7 @@ where
 
 /// Verifies that the update function `db_try_with_account()` does NOT save changes if
 /// the modifying function returns an error.
-fn assert_update_not_saved_on_error<D>(mut storage: D)
+pub fn assert_update_not_saved_on_error<D>(mut storage: D)
 where
     D: AccountsDbTrait,
 {
@@ -180,7 +156,7 @@ where
 
 /// Verifies that the update function `db_try_with_account()` returns None if there is no account
 /// for the given key.
-fn assert_update_with_missing_key_returns_none<D>(mut storage: D)
+pub fn assert_update_with_missing_key_returns_none<D>(mut storage: D)
 where
     D: AccountsDbTrait,
 {
@@ -208,7 +184,7 @@ where
 }
 
 /// Verifies that the account count is correct.
-fn assert_account_count_is_correct<D>(mut storage: D)
+pub fn assert_account_count_is_correct<D>(mut storage: D)
 where
     D: AccountsDbTrait,
 {
@@ -288,29 +264,4 @@ where
         storage.db_accounts_len(),
         "Deleting a non-existent canister should not affect the count."
     );
-}
-
-#[test]
-fn mock_accounts_db_should_crud() {
-    assert_basic_crud_works(MockAccountsDb::default());
-}
-
-#[test]
-fn mock_accounts_update_with_happy_path_should_update_account() {
-    assert_update_with_happy_path_works(MockAccountsDb::default());
-}
-
-#[test]
-fn mock_accounts_update_with_error_path_should_not_change_account() {
-    assert_update_not_saved_on_error(MockAccountsDb::default());
-}
-
-#[test]
-fn mock_update_with_missing_key_should_return_none() {
-    assert_update_with_missing_key_returns_none(MockAccountsDb::default());
-}
-
-#[test]
-fn mock_account_counts_should_be_correct() {
-    assert_account_count_is_correct(MockAccountsDb::default());
 }

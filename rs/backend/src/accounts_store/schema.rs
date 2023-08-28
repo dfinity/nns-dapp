@@ -1,6 +1,7 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
+mod map;
 #[cfg(test)]
 mod tests;
 
