@@ -24,6 +24,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Access accounts only by getter and setter; do not assume that in-place modifications are possible.
 * Defined an account data store interface, to allow account storage migrations.
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
