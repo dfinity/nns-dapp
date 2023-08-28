@@ -48,7 +48,7 @@ describe("SnsActiveDisbursementEntry", () => {
     );
   });
 
-  it("should render destination", async () => {
+  it("should render maturity", async () => {
     const po = renderComponent(testActiveDisbursement);
 
     expect(await po.getMaturityText()).toContain("1.22");
