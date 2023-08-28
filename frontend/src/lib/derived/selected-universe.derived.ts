@@ -2,10 +2,7 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
 import {
   NNS_UNIVERSE,
@@ -18,6 +15,7 @@ import {
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isUniverseCkBTC,
+  isUniverseCkTESTBTC,
   isUniverseNns,
   pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
@@ -61,10 +59,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
     ) {
       return OWN_CANISTER_ID;
     }
-    if (
-      canisterId.toText() === CKTESTBTC_UNIVERSE_CANISTER_ID.toText() &&
-      !$ENABLE_CKTESTBTC
-    ) {
+    if (isUniverseCkTESTBTC(canisterId) && !$ENABLE_CKTESTBTC) {
       return OWN_CANISTER_ID;
     }
 
