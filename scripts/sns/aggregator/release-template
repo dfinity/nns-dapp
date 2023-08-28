@@ -19,18 +19,21 @@ cat <<EOF >release/AGGREGATOR_PROPOSAL.md
 # Upgrade SNS aggregator canister to commit \`$(git rev-parse HEAD)\`
 Wasm sha256 hash: \`${SHA}\` (\`${WASM}\`)
 
-## Change Log:
+## Change Log
 
 * Write about...
 * ... what has changed
 * ... in simple bullet points
 
-## Commit Log:
+## Commit Log
 
 \`\`\`
 + bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/"
 $(bash -xc "git log --format='%C(auto) %h %s' $(git rev-parse --short tags/aggregator-prod)..$(git rev-parse --short HEAD) ./rs/sns_aggregator/")
 \`\`\`
+
+## Forum
+Please see the forum post here: FORUM_LINK
 
 ## Wasm Verification
 

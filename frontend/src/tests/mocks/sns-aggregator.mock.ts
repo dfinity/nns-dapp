@@ -229,67 +229,12 @@ export const aggregatorSnsMock: CachedSns = {
   ],
   icrc1_fee: 100000n,
   icrc1_total_supply: 50000000000000000n,
-  swap_params: {
-    params: [
-      {
-        min_participant_icp_e8s: 100000000n,
-        neuron_basket_construction_parameters: [
-          {
-            dissolve_delay_interval_seconds: 5259486n,
-            count: 7n,
-          },
-        ],
-        max_icp_e8s: 130000000000000n,
-        swap_due_timestamp_seconds: 1691785258n,
-        min_participants: 125,
-        sns_token_e8s: 11250000000000000n,
-        sale_delay_seconds: [],
-        max_participant_icp_e8s: 15000000000000n,
-        min_icp_e8s: 65000000000000n,
-      },
-    ],
-  },
-  init: {
-    init: [
-      {
-        nns_proposal_id: [],
-        min_participant_icp_e8s: [],
-        neuron_basket_construction_parameters: [],
-        max_icp_e8s: [],
-        swap_start_timestamp_seconds: [],
-        swap_due_timestamp_seconds: [],
-        min_participants: [],
-        sns_token_e8s: [],
-        should_auto_finalize: [],
-        neurons_fund_participants: [],
-        max_participant_icp_e8s: [],
-        min_icp_e8s: [],
-        sns_root_canister_id: "5psbn-niaaa-aaaaq-aaa4q-cai",
-        fallback_controller_principal_ids: [
-          "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",
-          "efaeg-aiaaa-aaaap-aan6a-cai",
-        ],
-        neuron_minimum_stake_e8s: [400000000n],
-        confirmation_text: [],
-        nns_governance_canister_id: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-        transaction_fee_e8s: [100000n],
-        icp_ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        sns_ledger_canister_id: "5bqmf-wyaaa-aaaaq-aaa5q-cai",
-        sns_governance_canister_id: "5grkr-3aaaa-aaaaq-aaa5a-cai",
-        restricted_countries: [{ iso_codes: ["US"] }],
-      },
-    ],
-  },
   derived_state: {
     sns_tokens_per_icp: [222.02796936035156],
     buyer_total_icp_e8s: [50669291278205n],
     cf_participant_count: [145n],
     direct_participant_count: [224n],
     cf_neuron_count: [178n],
-  },
-  lifecycle: {
-    decentralization_sale_open_timestamp_seconds: [1690786778n],
-    lifecycle: [2],
   },
 };
 

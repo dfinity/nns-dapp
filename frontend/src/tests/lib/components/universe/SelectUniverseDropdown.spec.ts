@@ -45,13 +45,14 @@ describe("SelectUniverseDropdown", () => {
     .spyOn(snsProjectsCommittedStore, "subscribe")
     .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    snsAccountsStore.reset();
+
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
   });
-
-  afterAll(() => jest.clearAllMocks());
 
   it("should render a universe card with a role button", () => {
     const { getByTestId } = render(SelectUniverseDropdown);
@@ -71,14 +72,12 @@ describe("SelectUniverseDropdown", () => {
   });
 
   describe("no balance", () => {
-    beforeAll(() =>
+    beforeEach(() => {
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Accounts,
-      })
-    );
-
-    afterAll(() => jest.clearAllMocks());
+      });
+    });
 
     it("should render a skeleton on load balance", () => {
       const { container } = render(SelectUniverseDropdown);
@@ -87,7 +86,7 @@ describe("SelectUniverseDropdown", () => {
   });
 
   describe("balance", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       const accounts = [mockSnsMainAccount, mockSnsSubAccount];
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
@@ -102,8 +101,6 @@ describe("SelectUniverseDropdown", () => {
         routeId: AppPath.Accounts,
       });
     });
-
-    afterAll(() => jest.clearAllMocks());
 
     it("should render total balance of the project", async () => {
       const { getByTestId } = render(SelectUniverseDropdown);

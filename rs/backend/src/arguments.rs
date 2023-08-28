@@ -12,10 +12,10 @@ use regex::{Captures, Regex};
 use serde::Serialize;
 use std::collections::HashMap;
 
-/// Init and post_upgrade arguments
+/// `init` and `post_upgrade` arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
-    /// Values that are to be set in the web front end, by injecting them into Javascript.
+    /// Values that are to be set in the web front end, by injecting them into JavaScript.
     pub args: Vec<(String, String)>,
 }
 
@@ -25,12 +25,12 @@ thread_local! {
 }
 
 impl CanisterArguments {
-    /// HTML meta tag to be included in every index.html
+    /// HTML meta tag to be included in every `index.html`.
     ///
     /// Canister arguments are included in the meta tag as data attributes.  Thus:
     /// - Arguments are upper snake case with digits: `SAMPLE_ARG2`
     /// - In the tag, arguments are lower kebab case data attributes: `data-sample-arg2`
-    /// - In Javascript the tag can be read as camel case with:
+    /// - In JavaScript the tag can be read as camel case with:
     ///   `document.querySelector('meta[name="nns-dapp-vars"]').dataset.sampleArg2`
     ///
     /// In Rust, the substitution is as follows:
@@ -102,7 +102,7 @@ pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
 
-/// Escapes a configuration value per the OWASP recommendation: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts
+/// Escapes a configuration value per the OWASP recommendation: <https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts>
 pub fn configvalue2attributevalue(value: &str) -> String {
     value
         .replace('&', "&amp;")

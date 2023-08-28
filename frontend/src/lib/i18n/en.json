@@ -857,8 +857,8 @@
     "sns_reload_no_universe": "A project should be provided to execute this feature"
   },
   "auth_accounts": {
-    "title": "Your wallet",
-    "text": "Create and link accounts (including hardware wallets), transfer ICP, participate in Internet Computer governance by staking ICP in neurons, and earn voting rewards."
+    "title": "100% on-chain wallet",
+    "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with hardware wallets, or participate in governance to earn voting rewards."
   },
   "auth_neurons": {
     "title": "Earn staking rewards",
