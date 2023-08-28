@@ -8,6 +8,7 @@ import {
   newSaleTicket,
   notifyParticipation,
   notifyPaymentFailure,
+  queryFinalizationStatus,
 } from "$lib/api/sns-sale.api";
 import {
   importInitSnsWrapper,
@@ -25,7 +26,10 @@ import {
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
-import { SnsSwapCanister } from "@dfinity/sns";
+import {
+  SnsSwapCanister,
+  type SnsGetAutoFinalizationStatusResponse,
+} from "@dfinity/sns";
 import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/proxy/api.import.proxy");
@@ -39,6 +43,7 @@ describe("sns-sale.api", () => {
   const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
   const notifyPaymentFailureSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const finalizationStatusSpy = jest.fn();
   const participationResponse = {
     icp_accepted_participation_e8s: 666n,
   };
@@ -67,6 +72,7 @@ describe("sns-sale.api", () => {
         newSaleTicket: newSaleTicketSpy,
         notifyPaymentFailure: notifyPaymentFailureSpy,
         notifyParticipation: notifyParticipationSpy,
+        getFinalizationStatus: finalizationStatusSpy,
       })
     );
     jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
@@ -128,6 +134,66 @@ describe("sns-sale.api", () => {
     expect(notifyParticipationSpy).toHaveBeenCalledWith({
       buyer: mockPrincipal.toText(),
       confirmation_text: [confirmationText],
+    });
+  });
+
+  describe("queryFinalizationStatus", () => {
+    beforeEach(() => {
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
+    });
+
+    it("should return the finalization status", async () => {
+      const response: SnsGetAutoFinalizationStatusResponse = {
+        auto_finalize_swap_response: [],
+        has_auto_finalize_been_attempted: [false],
+        is_auto_finalize_enabled: [false],
+      };
+      finalizationStatusSpy.mockResolvedValue(response);
+
+      const result = await queryFinalizationStatus({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        certified: false,
+      });
+
+      expect(result).toEqual(response);
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
+    });
+
+    it("should return undefined if method is not supported", async () => {
+      const errorMessage = `Error message example: "Call was rejected:
+       Request ID: 3a6ef904b35fd19721c95c3df2b0b00b8abefba7f0ad188f5c472809b772c914
+       Reject code: 3
+       Reject text: Canister 75ffu-oaaaa-aaaaa-aabbq-cai has no update method 'get_auto_finalization_status'"`;
+      finalizationStatusSpy.mockRejectedValue(new Error(errorMessage));
+
+      const result = await queryFinalizationStatus({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        certified: false,
+      });
+
+      expect(result).toBeUndefined();
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
+    });
+
+    it("should raise error if api call fails", async () => {
+      const errorMessage = `Any other message`;
+      const error = new Error(errorMessage);
+      finalizationStatusSpy.mockRejectedValue(error);
+
+      const call = () =>
+        queryFinalizationStatus({
+          identity: mockIdentity,
+          rootCanisterId: rootCanisterIdMock,
+          certified: false,
+        });
+
+      await expect(call).rejects.toThrow(error);
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
     });
   });
 });

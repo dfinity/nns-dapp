@@ -1,9 +1,11 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { isMethodNotSupportedError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import type {
+  SnsGetAutoFinalizationStatusResponse,
   SnsRefreshBuyerTokensResponse,
   SnsSwapTicket,
 } from "@dfinity/sns";
@@ -113,4 +115,38 @@ export const notifyParticipation = async ({
   logWithTimestamp(`[sale] notifyParticipation complete.`);
 
   return response;
+};
+
+export const queryFinalizationStatus = async ({
+  identity,
+  rootCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  certified: boolean;
+}): Promise<SnsGetAutoFinalizationStatusResponse | undefined> => {
+  logWithTimestamp(`[sale] get finalize status call...`);
+
+  const { getFinalizationStatus } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified,
+  });
+
+  try {
+    const response = await getFinalizationStatus({});
+
+    return response;
+  } catch (err) {
+    // If the method is not available, return undefined
+    if (
+      isMethodNotSupportedError({ err, method: "get_auto_finalization_status" })
+    ) {
+      return undefined;
+    }
+    throw err;
+  } finally {
+    logWithTimestamp(`[sale] get finalize status complete.`);
+  }
 };
