@@ -12,6 +12,38 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+#### Changed
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+* Header in accounts, canisters and neurons was not visible after user came back from logging in.
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+#### Changed
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 124280
+
+### Application
+
+#### Added
+
 * New tag for NNS neurons: "Hardware Wallet".
 * New derived state store for SNS projects.
 * Identify swap participation ICP transactions.
@@ -32,7 +64,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New landing pages for Accounts, Neurons, Canister and Settings when not logged in.
 * Remove login page and redirect to accounts instead.
 
-#### Deprecated
 #### Removed
 
 * Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
@@ -40,15 +71,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix wrong "ICP Staked" message in SNS neurons.
-* Header in accounts, canisters and neurons was not visible after user came back from logging in.
-
-#### Security
 
 #### Not Published
 
 * Use new stores as source of data instead of snsQueryStore.
 
 ### Operations
+
 * Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
 * Fix shellcheck issues.
@@ -68,7 +97,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/.
 * Change some unit tests to set a system time and not rely on actual time.
 
-#### Deprecated
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
