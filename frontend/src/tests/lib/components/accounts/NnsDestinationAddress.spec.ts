@@ -8,6 +8,8 @@ import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDestinationAddress", () => {
@@ -16,28 +18,58 @@ describe("NnsDestinationAddress", () => {
     identifier: `test-subaccount2-identifier`,
   };
 
-  jest
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
-    );
+  let onAccountSelectedSpy: jest.Mock;
 
-  it("should render an input to enter an address", () => {
-    const { container } = render(NnsDestinationAddress);
-
-    expect(container.querySelector("input")).not.toBeNull();
-    expect(container.querySelector("form")).not.toBeNull();
+  beforeEach(() => {
+    jest
+      .spyOn(icpAccountsStore, "subscribe")
+      .mockImplementation(
+        mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
+      );
+    onAccountSelectedSpy = jest.fn();
   });
 
-  it("should render a list of accounts", () => {
-    const { getByText } = render(NnsDestinationAddress);
+  const renderComponent = () => {
+    const { container, component } = render(NnsDestinationAddress);
+    component.$on("nnsAddress", (event) => {
+      onAccountSelectedSpy(event.detail);
+    });
+    return NnsDestinationAddressPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should render an input to enter an address", async () => {
+    const po = renderComponent();
+
+    expect(await po.getNnsSelectAccountPo().isPresent()).toBe(true);
+  });
+
+  it("should render a list of accounts", async () => {
+    const po = renderComponent();
+    const selectPo = po.getNnsSelectAccountPo();
 
     expect(
-      getByText(mockSubAccount.identifier, { exact: false })
-    ).toBeInTheDocument();
-
+      await (
+        await selectPo.getAccountCardPoForIdentifier(mockSubAccount.identifier)
+      ).isPresent()
+    ).toBe(true);
     expect(
-      getByText(mockSubAccount2.identifier, { exact: false })
-    ).toBeInTheDocument();
+      await (
+        await selectPo.getAccountCardPoForIdentifier(mockSubAccount2.identifier)
+      ).isPresent()
+    ).toBe(true);
+  });
+
+  it("should dispatch event with selected account identifier", async () => {
+    const po = renderComponent();
+    const card = await po
+      .getNnsSelectAccountPo()
+      .getAccountCardPoForIdentifier(mockSubAccount2.identifier);
+
+    expect(onAccountSelectedSpy).not.toBeCalled();
+    await card.click();
+    expect(onAccountSelectedSpy).toBeCalledWith({
+      address: mockSubAccount2.identifier,
+    });
+    expect(onAccountSelectedSpy).toBeCalledTimes(1);
   });
 });
