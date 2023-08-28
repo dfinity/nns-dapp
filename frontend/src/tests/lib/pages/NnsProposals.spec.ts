@@ -21,10 +21,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
-import {
-  buildMockNeuronsStoreSubscribe,
-  mockNeuron,
-} from "$tests/mocks/neurons.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   mockEmptyProposalsStoreSubscribe,
   mockProposals,
@@ -51,35 +48,33 @@ describe("NnsProposals", () => {
     )[0];
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
+    proposalsFiltersStore.reset();
     jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+
+    jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
+
+    // TODO: Mock the canister call instead of the canister itself
+    const mockGovernanceCanister: MockGovernanceCanister =
+      new MockGovernanceCanister([]);
+    jest
+      .spyOn(GovernanceCanister, "create")
+      .mockReturnValue(mockGovernanceCanister);
   });
 
   describe("logged in user", () => {
-    beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-    });
-
-    afterAll(() => jest.clearAllMocks());
-
     describe("neurons", () => {
       beforeEach(() => {
-        // TODO: Mock the canister call instead of the canister itself
-        const mockGovernanceCanister: MockGovernanceCanister =
-          new MockGovernanceCanister([]);
-        jest
-          .spyOn(GovernanceCanister, "create")
-          .mockReturnValue(mockGovernanceCanister);
-
         jest
           .spyOn(proposalsStore, "subscribe")
           .mockImplementation(mockProposalsStoreSubscribe);
         jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
       });
+
       it("should load neurons", async () => {
         render(NnsProposals);
 
@@ -148,9 +143,7 @@ describe("NnsProposals", () => {
       });
 
       it("should hide proposal card if already voted", async () => {
-        jest
-          .spyOn(neuronsStore, "subscribe")
-          .mockImplementation(buildMockNeuronsStoreSubscribe([mockNeuron]));
+        neuronsStore.setNeurons({ neurons: [mockNeuron], certified: true });
 
         const { queryAllByTestId } = render(NnsProposals);
 
@@ -223,8 +216,6 @@ describe("NnsProposals", () => {
       jest.spyOn(governanceApi, "queryNeurons").mockResolvedValue([]);
     });
 
-    afterAll(() => jest.clearAllMocks());
-
     describe("neurons", () => {
       beforeEach(() => {
         // TODO: Mock the canister call instead of the canister itself
@@ -234,6 +225,7 @@ describe("NnsProposals", () => {
           .spyOn(GovernanceCanister, "create")
           .mockReturnValue(mockGovernanceCanister);
       });
+
       it("should NOT load neurons", async () => {
         render(NnsProposals);
 
@@ -293,7 +285,10 @@ describe("NnsProposals", () => {
   });
 
   describe("log in and out", () => {
+    let spyReload;
+
     beforeEach(() => {
+      spyReload = jest.spyOn(proposalsFiltersStore, "reload");
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mutableMockAuthStoreSubscribe);
@@ -303,11 +298,8 @@ describe("NnsProposals", () => {
         .mockImplementation(mockProposalsStoreSubscribe);
     });
 
-    beforeEach(() => jest.clearAllMocks());
-
-    const spyReload = jest.spyOn(proposalsFiltersStore, "reload");
-
     it("should reload filters on sign-in", () => {
+      expect(spyReload).not.toHaveBeenCalled();
       authStoreMock.next({
         identity: undefined,
       });
@@ -322,6 +314,7 @@ describe("NnsProposals", () => {
     });
 
     it("should reload filters after sign-out", () => {
+      expect(spyReload).not.toHaveBeenCalled();
       authStoreMock.next({
         identity: mockIdentity,
       });
