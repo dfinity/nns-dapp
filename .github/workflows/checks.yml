@@ -237,6 +237,10 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Bumping the package versions works
         run: ./scripts/nns-dapp/bump-patch
+      - name: Set git user
+        run: |
+                  git config --global user.email "gix-bot@dfinity.org"
+                  git config --global user.name "GIX bot"
       - name: Command creates commits
         run: |
           original_commit="$(git rev-parse HEAD)"
