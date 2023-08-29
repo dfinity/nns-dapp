@@ -2,7 +2,6 @@
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
-. "$SOURCE_DIR/versions.bash"
 
 print_help() {
   cat <<-EOF
@@ -16,7 +15,7 @@ print_help() {
 }
 
 # Source the clap.bash file ---------------------------------------------------
-source "$SOURCE_DIR/clap.bash"
+source "$SOURCE_DIR/../clap.bash"
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
