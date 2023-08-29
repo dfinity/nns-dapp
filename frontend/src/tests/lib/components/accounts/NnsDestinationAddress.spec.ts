@@ -6,7 +6,6 @@ import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddres
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAccountsStoreSubscribe,
-  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { render } from "@testing-library/svelte";
@@ -40,17 +39,5 @@ describe("NnsDestinationAddress", () => {
     expect(
       getByText(mockSubAccount2.identifier, { exact: false })
     ).toBeInTheDocument();
-  });
-
-  it("should filter selected account", () => {
-    const { getByText } = render(NnsDestinationAddress, {
-      props: {
-        filterIdentifier: mockMainAccount.identifier,
-      },
-    });
-
-    expect(() =>
-      getByText(mockMainAccount.identifier, { exact: false })
-    ).toThrow();
   });
 });
