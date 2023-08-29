@@ -233,6 +233,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install yq
         run: sudo snap install yq
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Bumping the package versions works
         run: ./scripts/nns-dapp/bump-patch
       - name: Command creates commits
