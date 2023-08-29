@@ -17,6 +17,18 @@ expected_file_changes() {
 }
 expected_file_changes="$(expected_file_changes)"
 
+# Check that git is clean before running this test.
+test -z "${COMMIT_CHANGES:-}" || [[ "$(git status --untracked-files=no --porcelain)" == "" ]] || {
+  echo "ERROR: Git should be clean before running this command."
+  echo "       Untracked files will be ignored, but changes to tracked files"
+  echo "       should be removed or committed."
+  echo "       Please do so before re-running this command."
+  echo
+  echo "Changes:"
+  git status --untracked-files=no --porcelain | head
+  exit 1
+} >&2
+
 (
   printf "########\n## %s\n" "Verifies that the expected files are changed"
   git stash # Make sure that git is clean.
