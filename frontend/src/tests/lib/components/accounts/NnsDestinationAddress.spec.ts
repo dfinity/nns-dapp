@@ -5,7 +5,7 @@
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
-  mockAccountsStoreSubscribe,
+  mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
@@ -21,11 +21,13 @@ describe("NnsDestinationAddress", () => {
   let onAccountSelectedSpy: jest.Mock;
 
   beforeEach(() => {
-    jest
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
-      );
+    jest.restoreAllMocks();
+
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount, mockSubAccount2],
+      hardwareWallets: [],
+    });
     onAccountSelectedSpy = jest.fn();
   });
 
