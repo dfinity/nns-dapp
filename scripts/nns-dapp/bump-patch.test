@@ -31,7 +31,6 @@ test -z "${COMMIT_CHANGES:-}" || [[ "$(git status --untracked-files=no --porcela
 
 (
   printf "########\n## %s\n" "Verifies that the expected files are changed"
-  git stash # Make sure that git is clean.
   "${SOURCE_DIR}/bump-patch"
   actual_changes="$(git diff --numstat)"
   [[ "$expected_file_changes" == "$actual_changes" ]] || {
