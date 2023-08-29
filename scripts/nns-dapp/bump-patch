@@ -49,7 +49,9 @@ popd
 #  - yq currently parses TOML but does not emit TOML, so we cannot currently use that to edit Cargo.toml.
 #    Again, if that changes we can use that.
 #
-# ... Increment the minor version in Cargo.toml
+# ... Increment the patch version in Cargo.toml
+#     - On the version line, gets the version number, splits by ".", increments the third field and prints a new version line.
+#     - Other lines are passed through unmodified.
 awk -F'"' '/^version *= *"[0-9.]+"/{split($2,v,".");v[3]++;printf "version = \"%s.%s.%s\"\n", v[1], v[2], v[3];next}{print}' Cargo.toml | sponge Cargo.toml
 # ... Update Cargo.lock
 cargo fetch # Updates cargo lock but saves time by not creating binaries.
