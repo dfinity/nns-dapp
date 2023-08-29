@@ -16,6 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Bigger icon and description first on Sns project page.
+
 #### Deprecated
 #### Removed
 
