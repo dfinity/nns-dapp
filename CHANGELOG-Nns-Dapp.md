@@ -33,6 +33,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 #### Changed
+- Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
 
 #### Deprecated

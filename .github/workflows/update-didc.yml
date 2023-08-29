@@ -51,7 +51,7 @@ jobs:
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
-        uses: ./.github/actions/slack
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
