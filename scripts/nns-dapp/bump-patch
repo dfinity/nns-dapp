@@ -17,10 +17,11 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
+clap.define short=c long=commit desc="Commit changes" variable=COMMIT_CHANGES nargs=0
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-[[ "$(git status --untracked-files=no --porcelain)" == "" ]] || {
+test -z "${COMMIT_CHANGES:-}" || [[ "$(git status --untracked-files=no --porcelain)" == "" ]] || {
   echo "ERROR: Git should be clean before running this command."
   echo "       Untracked files will be ignored, but changes to tracked files"
   echo "       should be removed or committed."
@@ -30,8 +31,8 @@ source "$(clap.build)"
 pushd frontend
 npm version patch
 npm install
-git commit -a -m "Increment nns-dapp frontend patch version"
+test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp frontend patch version"
 popd
 awk -F'"' '/^version *= *"[0-9.]+"/{split($2,v,".");v[3]++;printf "version = \"%s.%s.%s\"\n", v[1], v[2], v[3];next}{print}' Cargo.toml | sponge Cargo.toml
 cargo check # Updates cargo lock but saves time by not creating binaries.
-git commit -a -m "Increment nns-dapp backend and sns aggregator patch version"
+test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp backend and sns aggregator patch version"
