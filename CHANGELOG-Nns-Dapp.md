@@ -28,6 +28,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Not Published
 
 ### Operations
+- Add a command to increment the package versions.
 
 #### Added
 
