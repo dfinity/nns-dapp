@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+. "$SOURCE_DIR/versions.bash"
+
+print_help() {
+  cat <<-EOF
+
+	Increment the patch version of the nns-dapp frontend and backend.
+
+	Note: As the SNS aggregator shares the NNS dapp backend version number,
+	this will also increase the aggregator version number.  The two projects
+	should probably have independent version numbers.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+[[ "$(git status --untracked-files=no --porcelain)" == "" ]] || {
+  echo "ERROR: Git should be clean before running this command."
+  echo "       Untracked files will be ignored, but changes to tracked files"
+  echo "       should be removed or committed."
+  echo "       Please do so before re-running this command."
+  exit 1
+} >&2
+pushd frontend
+npm version patch
+npm install
+git commit -a -m "Increment nns-dapp frontend patch version"
+popd
+awk -F'"' '/^version *= *"[0-9.]+"/{split($2,v,".");v[3]++;printf "version = \"%s.%s.%s\"\n", v[1], v[2], v[3];next}{print}' Cargo.toml | sponge Cargo.toml
+cargo build
+git commit -a -m "Increment nns-dapp backend and sns aggregator patch version"
