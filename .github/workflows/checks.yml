@@ -227,6 +227,25 @@ jobs:
       - uses: actions/checkout@v3
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
+  minor-version-bump-works:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install yq
+        run: sudo snap install yq
+      - name: Bumping the package versions works
+        run: ./scripts/nns-dapp/bump-patch
+      - name: Command creates commits
+        run: |
+          original_commit="$(git rev-parse HEAD)"
+          ./scripts/nns-dapp/bump-patch --commit
+          num_commits="$(git log --oneline "$original_commit..HEAD" | wc -l)"
+          (( num_commits == 2 )) || {
+                  echo "Expected two commits.  Got:"
+                  git log --oneline "$original_commit..HEAD"
+                  exit 1
+          } >&2
+          # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
     runs-on: ubuntu-20.04
     steps:
