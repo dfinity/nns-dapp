@@ -98,7 +98,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         canisters: Vec::default(),
     };
 
-    store.accounts.insert(account_identifier.to_vec(), account);
+    store.accounts_db.db_insert_account(account_identifier.to_vec(), account);
 
     let transfer = Transfer {
         from: account_identifier,

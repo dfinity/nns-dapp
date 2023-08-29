@@ -1,8 +1,8 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
-mod map;
-mod proxy;
+pub mod map;
+pub mod proxy;
 #[cfg(test)]
 mod tests;
 

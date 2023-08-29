@@ -1,11 +1,12 @@
 //! An accounts DB implemented as a hash map.
 
 use super::{Account, AccountsDbTrait};
-use std::collections::BTreeMap;
+use std::collections::HashMap;
+use std::fmt;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AccountsDbAsMap {
-    accounts: BTreeMap<Vec<u8>, Account>,
+    accounts: HashMap<Vec<u8>, Account>,
 }
 
 impl AccountsDbTrait for AccountsDbAsMap {
@@ -23,6 +24,24 @@ impl AccountsDbTrait for AccountsDbAsMap {
     }
     fn db_accounts_len(&self) -> u64 {
         self.accounts.len() as u64
+    }
+}
+
+impl AccountsDbAsMap {
+    /// Creates a db from a hash map of accounts.
+    pub fn from_map(map: HashMap<Vec<u8>, Account>) -> Self {
+        Self { accounts: map }
+    }
+    /// Provides the DB contents as a hash map.
+    pub fn as_map(&self) -> &HashMap<Vec<u8>, Account> {
+        &self.accounts
+    }
+}
+
+impl fmt::Debug for AccountsDbAsMap {
+    /// Summarizes the accounts DB contents for debug printouts.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "AccountsDbAsMap{{... {} entries}}", self.db_accounts_len())
     }
 }
 
