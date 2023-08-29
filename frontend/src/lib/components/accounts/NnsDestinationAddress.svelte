@@ -6,8 +6,6 @@
   import NnsSelectAccount from "./NnsSelectAccount.svelte";
   import { createEventDispatcher, onMount } from "svelte";
 
-  export let filterIdentifier: string | undefined = undefined;
-
   let address: string;
   let mounted = false;
 
@@ -35,7 +33,6 @@
       on:nnsSelectAccount={onSelectAccount}
       disableSelection={!emptyAddress(address)}
       displayTitle={true}
-      {filterIdentifier}
     />
   {/if}
 </TestIdWrapper>
