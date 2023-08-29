@@ -3,7 +3,6 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SnsNeuronHotkeysCard from "$lib/components/sns-neuron-detail/SnsNeuronHotkeysCard.svelte";
-  import SnsNeuronMetaInfoCard from "$lib/components/sns-neuron-detail/SnsNeuronMetaInfoCard.svelte";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import {
     type SelectedSnsNeuronContext,
@@ -16,11 +15,9 @@
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { goto } from "$app/navigation";
   import { pageStore } from "$lib/derived/page.derived";
-  import SnsNeuronMaturityCard from "$lib/components/sns-neuron-detail/SnsNeuronMaturityCard.svelte";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-  import SnsNeuronInfoStake from "$lib/components/sns-neuron-detail/SnsNeuronInfoStake.svelte";
   import { Island } from "@dfinity/gix-components";
   import SnsNeuronModals from "$lib/modals/sns/neurons/SnsNeuronModals.svelte";
   import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
@@ -34,10 +31,8 @@
   import { nonNullish } from "@dfinity/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
-  import Summary from "$lib/components/summary/Summary.svelte";
   import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { ENABLE_NEURON_SETTINGS } from "$lib/stores/feature-flags.store";
   import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
   import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
   import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
@@ -170,7 +165,7 @@
           <SkeletonCard cardType="info" separator />
           <SkeletonCard cardType="info" separator />
         {:else}
-          {#if $ENABLE_NEURON_SETTINGS && nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
+          {#if nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
             <div class="section-wrapper">
               <SnsNeuronPageHeader {token} />
               <SnsNeuronPageHeading
@@ -197,16 +192,6 @@
               />
               <Separator spacing="none" />
             </div>
-          {:else}
-            <Summary />
-
-            {#if nonNullish(transactionFee) && nonNullish(parameters) && nonNullish(token)}
-              <SnsNeuronMetaInfoCard {parameters} {transactionFee} {token} />
-            {:else}
-              <SkeletonCard size="large" cardType="info" separator />
-            {/if}
-            <SnsNeuronInfoStake />
-            <SnsNeuronMaturityCard />
           {/if}
           <SnsNeuronFollowingCard />
           {#if nonNullish(parameters)}

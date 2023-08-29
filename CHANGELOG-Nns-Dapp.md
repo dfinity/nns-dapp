@@ -19,6 +19,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Deprecated
 #### Removed
 
+* Remove ENABLE_NEURON_SETTINGS feature flag.
+
 #### Fixed
 
 * Header in accounts, canisters and neurons was not visible after user came back from logging in.
