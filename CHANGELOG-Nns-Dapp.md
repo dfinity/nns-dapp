@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Header in accounts, canisters and neurons was not visible after user came back from logging in.
+* Address issue with displayed SNS balances on quickly switching between SNSes.
 
 #### Security
 
