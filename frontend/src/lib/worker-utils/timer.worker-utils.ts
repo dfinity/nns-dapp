@@ -85,6 +85,10 @@ export class TimerWorkerUtils {
     this.timer = undefined;
   }
 
+  isIdle(): boolean {
+    return this.timerStatus === "idle";
+  }
+
   private setStatus(state: SyncState) {
     this.timerStatus = state;
 

@@ -87,6 +87,11 @@ const syncBalances = async (
 const emitBalances = (balances: PostMessageDataResponseBalance[]) => {
   const data: PostMessageDataResponseBalances = { balances };
 
+  if (worker.isIdle()) {
+    // Worker has been stopped between the start of the execution and the effective completion of the execution
+    return;
+  }
+
   postMessage({
     msg: "nnsSyncBalances",
     data,
