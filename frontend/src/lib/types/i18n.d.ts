@@ -125,6 +125,7 @@ interface I18nError {
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
+  adding_maturity: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
@@ -655,7 +656,6 @@ interface I18nNeuron_detail {
   stake_maturity_modal_title: string;
   disburse_maturity_modal_title: string;
   disburse_maturity_modal_description: string;
-  disburse_maturity: string;
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_success: string;
