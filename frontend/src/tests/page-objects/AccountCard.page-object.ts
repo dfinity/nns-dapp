@@ -35,4 +35,8 @@ export class AccountCardPo extends BasePageObject {
   getAccountAddress(): Promise<string> {
     return this.getHashPo().getText();
   }
+
+  getIdentifier(): Promise<string> {
+    return this.getText("identifier");
+  }
 }
