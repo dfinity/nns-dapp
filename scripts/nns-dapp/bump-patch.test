@@ -3,12 +3,12 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 expected_file_changes() {
-	# Expect these changes:
-	# Cargo.lock: 2 changes: the nns-dapp and sns_aggregator package versions.
-	# Cargo.toml: 1 change: The workspace version.
-	# frontend/package.json: 1 change: The package version.
-	# frontend/package-lock.json: The number of changes seems to be unbounded in principle but 2 in practice.
-	cat <<-EOF
+  # Expect these changes:
+  # Cargo.lock: 2 changes: the nns-dapp and sns_aggregator package versions.
+  # Cargo.toml: 1 change: The workspace version.
+  # frontend/package.json: 1 change: The package version.
+  # frontend/package-lock.json: The number of changes seems to be unbounded in principle but 2 in practice.
+  cat <<-EOF
 	2	2	Cargo.lock
 	1	1	Cargo.toml
 	2	2	frontend/package-lock.json
@@ -18,25 +18,25 @@ expected_file_changes() {
 expected_file_changes="$(expected_file_changes)"
 
 (
-    printf "########\n## %s\n" "Verifies that the expected files are changed"
-    git stash # Make sure that git is clean.
-    "${SOURCE_DIR}/bump-patch"
-    actual_changes="$(git diff --numstat)"
-    [[ "$expected_file_changes" == "$actual_changes" ]] || {
-    	echo "ERROR: Unexpected file changes."
-        echo
-        echo "Expected:"
-	echo "$expected_file_changes"
-        echo
-        echo "Actual:"
-	echo "$actual_changes"
-	echo
-	echo "Diff:"
-	diff <(echo "$expected_file_changes") <(echo "$actual_changes")
-	echo "Changes checked with: git diff --numstat"
-	    exit 1
-    } >&2
-    git checkout .
+  printf "########\n## %s\n" "Verifies that the expected files are changed"
+  git stash # Make sure that git is clean.
+  "${SOURCE_DIR}/bump-patch"
+  actual_changes="$(git diff --numstat)"
+  [[ "$expected_file_changes" == "$actual_changes" ]] || {
+    echo "ERROR: Unexpected file changes."
+    echo
+    echo "Expected:"
+    echo "$expected_file_changes"
+    echo
+    echo "Actual:"
+    echo "$actual_changes"
+    echo
+    echo "Diff:"
+    diff <(echo "$expected_file_changes") <(echo "$actual_changes")
+    echo "Changes checked with: git diff --numstat"
+    exit 1
+  } >&2
+  git checkout .
 )
 
 # TODO:  Verify that the version number has bumped in:
