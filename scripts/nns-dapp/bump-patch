@@ -37,5 +37,5 @@ npm install
 test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp frontend patch version"
 popd
 awk -F'"' '/^version *= *"[0-9.]+"/{split($2,v,".");v[3]++;printf "version = \"%s.%s.%s\"\n", v[1], v[2], v[3];next}{print}' Cargo.toml | sponge Cargo.toml
-cargo check # Updates cargo lock but saves time by not creating binaries.
+cargo fetch # Updates cargo lock but saves time by not creating binaries.
 test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp backend and sns aggregator patch version"
