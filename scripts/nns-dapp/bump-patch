@@ -45,7 +45,7 @@ popd
 #    It works, but has not released version 1.0.0 yet, is not used much, the install instructions
 #    on crates.io are out of date and the author has not responded to recent issues.  If that
 #    changes, we could use `cargo semver bump patch`.  This also updates the Cargo.lock.
-#  - I checked `cargo metadata` but taht does not seem to have an option for editing the metadata.
+#  - I checked `cargo metadata` but that does not seem to have an option for editing the metadata.
 #  - yq currently parses TOML but does not emit TOML, so we cannot currently use that to edit Cargo.toml.
 #    Again, if that changes we can use that.
 #
