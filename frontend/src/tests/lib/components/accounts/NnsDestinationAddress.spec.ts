@@ -72,4 +72,18 @@ describe("NnsDestinationAddress", () => {
     });
     expect(onAccountSelectedSpy).toBeCalledTimes(1);
   });
+
+  it("should dispatch event with entered account identifier", async () => {
+    const po = renderComponent();
+    await po.enterAddress(mockSubAccount.identifier);
+
+    expect(onAccountSelectedSpy).not.toBeCalled();
+
+    await po.clickContinue();
+
+    expect(onAccountSelectedSpy).toBeCalledWith({
+      address: mockSubAccount.identifier,
+    });
+    expect(onAccountSelectedSpy).toBeCalledTimes(1);
+  });
 });
