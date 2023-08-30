@@ -1377,7 +1377,7 @@ fn prune_transactions() {
     );
 
     let mut transaction_indexes_remaining = Vec::new();
-    for (_, account) in store.accounts_db.iter() {
+    for account in store.accounts_db.values() {
         transaction_indexes_remaining.append(account.default_account_transactions.clone().as_mut());
 
         for sub_account in account.sub_accounts.values() {

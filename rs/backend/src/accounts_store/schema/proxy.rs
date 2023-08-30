@@ -37,7 +37,10 @@ impl AccountsDbTrait for AccountsDbAsProxy {
         self.map.db_remove_account(account_key);
     }
     fn db_accounts_len(&self) -> u64 {
-        self.map.db_accounts_len() as u64
+        self.map.db_accounts_len()
+    }
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        self.map.values()
     }
 }
 

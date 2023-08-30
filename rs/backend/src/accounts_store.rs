@@ -1051,7 +1051,7 @@ impl AccountsStore {
         let duration_since_last_sync =
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
-        stats.accounts_count = self.accounts_db.db_accounts_len() as u64;
+        stats.accounts_count = self.accounts_db.db_accounts_len();
         stats.sub_accounts_count = self.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count;
         stats.transactions_count = self.transactions.len() as u64;
