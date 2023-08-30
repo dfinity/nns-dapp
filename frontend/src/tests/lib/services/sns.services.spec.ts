@@ -147,6 +147,7 @@ describe("sns-services", () => {
         expect(
           get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
         ).toEqual(derivedState);
+        expect(get(snsQueryStore)).toBeUndefined();
       });
 
       it("should call api with the strategy passed", async () => {
@@ -415,6 +416,7 @@ describe("sns-services", () => {
         expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
           lifeCycleResponse
         );
+        expect(get(snsQueryStore)).toBeUndefined();
       });
     });
 
