@@ -130,7 +130,7 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
-  async isChecked(): Promise<boolean | null> {
+  async isChecked(): Promise<boolean> {
     throw new Error("Not implemented");
   }
 
