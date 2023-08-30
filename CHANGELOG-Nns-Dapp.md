@@ -16,6 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Bigger icon and description first on Sns project page.
+
 #### Deprecated
 #### Removed
 
@@ -29,10 +31,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Not Published
 
 ### Operations
+- Add a command to increment the package versions.
 
 #### Added
 
 #### Changed
+- Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
 
 #### Deprecated
