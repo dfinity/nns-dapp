@@ -283,12 +283,14 @@ const initSnsQueryStore = (): SnsQueryStore => {
 export const snsQueryStore = initSnsQueryStore();
 
 export const snsQueryStoreIsLoading = derived<
-  [SnsQueryStore, SnsAggregatorStore],
+  [SnsQueryStore, SnsAggregatorStore, Readable<boolean>],
   boolean
 >(
-  [snsQueryStore, snsAggregatorStore],
-  ([snsQueryStoreData, aggregatorData]) =>
-    isNullish(snsQueryStoreData) && isNullish(aggregatorData.data)
+  [snsQueryStore, snsAggregatorStore, ENABLE_SNS_AGGREGATOR_STORE],
+  ([snsQueryStoreData, aggregatorData, aggregatorStoreEnabled]) =>
+    aggregatorStoreEnabled
+      ? isNullish(aggregatorData.data)
+      : isNullish(snsQueryStoreData)
 );
 
 /**

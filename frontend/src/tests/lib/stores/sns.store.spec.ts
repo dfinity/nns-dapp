@@ -216,27 +216,44 @@ describe("sns.store", () => {
   });
 
   describe("snsQueryStoreIsLoading", () => {
-    it("should not be loading if snsQueryStore is set", () => {
-      snsQueryStore.reset();
-      snsAggregatorStore.reset();
-      expect(get(snsQueryStoreIsLoading)).toBe(true);
-
-      const data = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
-        certified: true,
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
 
-      snsQueryStore.setData(data);
-      expect(get(snsQueryStoreIsLoading)).toBe(false);
+      it("should not be loading if snsQueryStore is set but not snsAggregatorStore", () => {
+        snsQueryStore.reset();
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        expect(get(snsQueryStoreIsLoading)).toBe(true);
+
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        });
+
+        snsQueryStore.setData(data);
+        expect(get(snsQueryStoreIsLoading)).toBe(false);
+      });
     });
 
-    it("should not be loading if sns aggregator store is set", () => {
-      snsQueryStore.reset();
-      snsAggregatorStore.reset();
-      expect(get(snsQueryStoreIsLoading)).toBe(true);
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
 
-      snsAggregatorStore.setData([aggregatorSnsMockDto]);
-      expect(get(snsQueryStoreIsLoading)).toBe(false);
+      it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        });
+
+        snsQueryStore.setData(data);
+        snsAggregatorStore.reset();
+        expect(get(snsQueryStoreIsLoading)).toBe(true);
+
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        expect(get(snsQueryStoreIsLoading)).toBe(false);
+      });
     });
   });
 
