@@ -248,73 +248,143 @@ describe("sns-services", () => {
   });
 
   describe("watchSnsTotalCommitment", () => {
-    it("should call api to get total commitments and load them in store and keep polling", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
-        sns_tokens_per_icp: [2],
-        buyer_total_icp_e8s: [BigInt(2_000_000_000)],
-        cf_participant_count: [],
-        direct_participant_count: [],
-        cf_neuron_count: [],
-      };
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      ]);
-
-      const initStore = get(snsQueryStore);
-      const initState = initStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(initState.buyer_total_icp_e8s).not.toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(initState.sns_tokens_per_icp).not.toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
-
-      const spy = jest
-        .spyOn(api, "querySnsDerivedState")
-        .mockResolvedValue(derivedState);
-
-      const clearWatch = watchSnsTotalCommitment({
-        rootCanisterId: rootCanisterId1.toText(),
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
 
-      await runResolvedPromises();
-      let expectedCalls = 0;
-      expect(spy).toBeCalledTimes(expectedCalls);
+      it("should call api to get total commitments and load them in store and keep polling", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        setSnsProjects([
+          {
+            rootCanisterId: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            rootCanisterId: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
 
-      const callsBeforeClearing = 3;
-      while (expectedCalls < callsBeforeClearing) {
-        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
-        expectedCalls += 1;
+        const initStore = get(snsQueryStore);
+        const initState = initStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(initState.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(initState.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockResolvedValue(derivedState);
+
+        const clearWatch = watchSnsTotalCommitment({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 0;
         expect(spy).toBeCalledTimes(expectedCalls);
-      }
-      clearWatch();
 
-      // Even after waiting a long time there shouldn't be more calls.
-      expect(spy).toBeCalledTimes(expectedCalls);
+        const callsBeforeClearing = 3;
+        while (expectedCalls < callsBeforeClearing) {
+          await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+          expectedCalls += 1;
+          expect(spy).toBeCalledTimes(expectedCalls);
+        }
+        clearWatch();
 
-      const updatedStore = get(snsQueryStore);
-      const updatedState = updatedStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(updatedState?.buyer_total_icp_e8s).toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(updatedState?.sns_tokens_per_icp).toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
+        // Even after waiting a long time there shouldn't be more calls.
+        expect(spy).toBeCalledTimes(expectedCalls);
 
-      expect(
-        get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
-      ).toEqual(derivedState);
+        const updatedStore = get(snsQueryStore);
+        const updatedState = updatedStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(updatedState?.buyer_total_icp_e8s).toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(updatedState?.sns_tokens_per_icp).toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
+      });
+    });
+
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
+
+      it("should call api to get total commitments and load them in store and keep polling", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        setSnsProjects([
+          {
+            rootCanisterId: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            rootCanisterId: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockResolvedValue(derivedState);
+
+        const clearWatch = watchSnsTotalCommitment({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 0;
+        expect(spy).toBeCalledTimes(expectedCalls);
+
+        const callsBeforeClearing = 3;
+        while (expectedCalls < callsBeforeClearing) {
+          await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+          expectedCalls += 1;
+          expect(spy).toBeCalledTimes(expectedCalls);
+        }
+        clearWatch();
+
+        // Even after waiting a long time there shouldn't be more calls.
+        expect(spy).toBeCalledTimes(expectedCalls);
+
+        const updatedStore = get(snsQueryStore);
+        const updatedState = updatedStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(updatedState?.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(updatedState?.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
+      });
     });
   });
 
