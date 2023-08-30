@@ -3,7 +3,6 @@
   import type { SnsProposalData } from "@dfinity/sns";
   import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
-  import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
   import {
@@ -19,6 +18,8 @@
   import { nonNullish } from "@dfinity/utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import type { Readable } from "svelte/store";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
   const onSnsProjectChanged = async (
@@ -81,10 +82,10 @@
       )
     : undefined;
 
-  let nsFunctions: SnsNervousSystemFunction[] | undefined;
-  $: nsFunctions = nonNullish(currentProjectCanisterId)
-    ? $snsFunctionsStore[currentProjectCanisterId.toText()]?.nsFunctions
-    : undefined;
+  let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: nsFunctionsStore = createSnsNsFunctionsProjectStore(
+    currentProjectCanisterId
+  );
 
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
@@ -94,7 +95,7 @@
 
 <SnsProposalsList
   {proposals}
-  {nsFunctions}
+  nsFunctions={$nsFunctionsStore}
   on:nnsIntersect={loadNextPage}
   {disableInfiniteScroll}
   {loadingNextPage}
