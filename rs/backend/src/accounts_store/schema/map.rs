@@ -59,4 +59,9 @@ mod tests {
     fn map_account_counts_should_be_correct() {
         generic_tests::assert_account_count_is_correct(AccountsDbAsMap::default());
     }
+
+    #[test]
+    fn map_accounts_db_should_iterate_over_values() {
+        generic_tests::assert_iterates_over_values(AccountsDbAsMap::default());
+    }
 }
