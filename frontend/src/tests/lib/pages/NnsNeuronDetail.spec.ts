@@ -54,84 +54,82 @@ describe("NeuronDetail", () => {
     });
   });
 
-  describe("when new neuron details page", () => {
-    it("renders new sections", async () => {
-      const po = await renderComponent(`${neuronId}`);
+  it("renders new sections", async () => {
+    const po = await renderComponent(`${neuronId}`);
 
-      // Old components
-      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(false);
-      expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
-      expect(await po.hasJoinFundCard()).toBe(false);
+    // Old components
+    expect(await po.getMaturityCardPo().isPresent()).toBe(false);
+    expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(false);
+    expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
+    expect(await po.hasJoinFundCard()).toBe(false);
 
-      // New components
-      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
-      expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
-      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+    // New components
+    expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
+    expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
+    expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+  });
+
+  it("should display skeletons", async () => {
+    fakeGovernanceApi.pause();
+    const { container } = render(NnsNeuronDetail, {
+      props: {
+        neuronIdText: `${neuronId}`,
+      },
     });
 
-    it("should display skeletons", async () => {
-      fakeGovernanceApi.pause();
-      const { container } = render(NnsNeuronDetail, {
-        props: {
-          neuronIdText: `${neuronId}`,
-        },
-      });
+    const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
 
-      const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+    expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
+  });
 
-      expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
+  it("should hide skeletons after neuron data are available", async () => {
+    fakeGovernanceApi.pause();
+    const { container } = render(NnsNeuronDetail, {
+      props: {
+        neuronIdText: `${neuronId}`,
+      },
     });
 
-    it("should hide skeletons after neuron data are available", async () => {
-      fakeGovernanceApi.pause();
-      const { container } = render(NnsNeuronDetail, {
-        props: {
-          neuronIdText: `${neuronId}`,
-        },
-      });
+    const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
 
-      const po = NnsNeuronDetailPo.under(new JestPageObjectElement(container));
+    expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
 
-      expect((await po.getSkeletonCardPos()).length).toBeGreaterThan(0);
+    fakeGovernanceApi.resume();
 
-      fakeGovernanceApi.resume();
+    await po.getSkeletonCardPo().waitForAbsent();
+  });
 
-      await po.getSkeletonCardPo().waitForAbsent();
+  it("should show the proper neuron id", async () => {
+    const po = await renderComponent(`${neuronId}`);
+
+    expect(await po.getNeuronId()).toEqual(`${neuronId}`);
+  });
+
+  it("should render nns project name", async () => {
+    const po = await renderComponent(`${neuronId}`);
+
+    expect(await po.getUniverse()).toBe("Internet Computer");
+  });
+
+  it("should show skeletons when neuron is in voting process", async () => {
+    const po = await renderComponent(`${neuronId}`);
+
+    expect((await po.getSkeletonCardPos()).length).toBe(0);
+
+    voteRegistrationStore.add({
+      ...mockVoteRegistration,
+      neuronIdStrings: [`${neuronId}`],
+      canisterId: OWN_CANISTER_ID,
     });
 
-    it("should show the proper neuron id", async () => {
-      const po = await renderComponent(`${neuronId}`);
+    await po.getSkeletonCardPo().waitFor();
+  });
 
-      expect(await po.getNeuronId()).toEqual(`${neuronId}`);
-    });
+  it("should render last maturity distribution", async () => {
+    const po = await renderComponent(`${neuronId}`);
 
-    it("should render nns project name", async () => {
-      const po = await renderComponent(`${neuronId}`);
-
-      expect(await po.getUniverse()).toBe("Internet Computer");
-    });
-
-    it("should show skeletons when neuron is in voting process", async () => {
-      const po = await renderComponent(`${neuronId}`);
-
-      expect((await po.getSkeletonCardPos()).length).toBe(0);
-
-      voteRegistrationStore.add({
-        ...mockVoteRegistration,
-        neuronIdStrings: [`${neuronId}`],
-        canisterId: OWN_CANISTER_ID,
-      });
-
-      await po.getSkeletonCardPo().waitFor();
-    });
-
-    it("should render last maturity distribution", async () => {
-      const po = await renderComponent(`${neuronId}`);
-
-      expect(await po.getAdvancedSectionPo().lastRewardsDistribution()).toEqual(
-        "May 19, 1992"
-      );
-    });
+    expect(await po.getAdvancedSectionPo().lastRewardsDistribution()).toEqual(
+      "May 19, 1992"
+    );
   });
 });
