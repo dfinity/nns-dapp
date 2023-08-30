@@ -621,7 +621,6 @@ interface I18nNeuron_detail {
   view_active_disbursements_modal_title: string;
   view_active_disbursements_entry_description: string;
   view_active_disbursements_maturity: string;
-  disburse_maturity_to: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;

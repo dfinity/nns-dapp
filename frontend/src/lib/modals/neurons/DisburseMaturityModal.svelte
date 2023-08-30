@@ -53,7 +53,7 @@
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
       {formattedMaturity}
-      buttonText={$i18n.neuron_detail.disburse_maturity}
+      buttonText={$i18n.neuron_detail.disburse}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
       bind:percentage={percentageToDisburse}
