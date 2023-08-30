@@ -24,6 +24,10 @@ impl AccountsDbTrait for AccountsDbAsMap {
     fn db_accounts_len(&self) -> u64 {
         self.accounts.len() as u64
     }
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        let iterator = self.accounts.values().cloned();
+        Box::new(iterator)
+    }
 }
 
 #[cfg(test)]
@@ -54,5 +58,10 @@ mod tests {
     #[test]
     fn map_account_counts_should_be_correct() {
         generic_tests::assert_account_count_is_correct(AccountsDbAsMap::default());
+    }
+
+    #[test]
+    fn map_accounts_db_should_iterate_over_values() {
+        generic_tests::assert_iterates_over_values(AccountsDbAsMap::default());
     }
 }

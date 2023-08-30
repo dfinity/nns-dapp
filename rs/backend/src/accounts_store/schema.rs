@@ -77,4 +77,7 @@ pub trait AccountsDbTrait {
             None
         }
     }
+
+    /// Iterates over accounts in the data store.
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
 }

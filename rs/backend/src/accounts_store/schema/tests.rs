@@ -2,7 +2,7 @@
 
 use super::super::{AccountIdentifier, CanisterId, NamedCanister, PrincipalId};
 use super::*;
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 
 /// Creates a toy canister.
 pub fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
@@ -264,4 +264,26 @@ where
         storage.db_accounts_len(),
         "Deleting a non-existent canister should not affect the count."
     );
+}
+
+/// Verifies that the `values()` iterator works corerctly.
+pub fn assert_iterates_over_values<D>(mut storage: D)
+where
+    D: AccountsDbTrait,
+{
+    // To store accounts in say a BTreeMap requires adding comparison operators to accounts.
+    // These are not generally needed or wanted.  What we will do instead is to compare
+    // account IDs.
+    let mut expected_values = BTreeSet::new();
+    for account_id in 0..10 {
+        let account_key = vec![account_id as u8];
+        let account = toy_account(account_id, 5);
+        expected_values.insert(account.principal.unwrap());
+        storage.db_insert_account(&account_key, account.clone());
+    }
+    let actual_values = storage
+        .values()
+        .map(|account| account.principal.unwrap())
+        .collect::<BTreeSet<_>>();
+    assert_eq!(expected_values, actual_values);
 }
