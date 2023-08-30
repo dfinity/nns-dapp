@@ -282,9 +282,13 @@ const initSnsQueryStore = (): SnsQueryStore => {
  */
 export const snsQueryStore = initSnsQueryStore();
 
-export const snsQueryStoreIsLoading = derived<SnsQueryStore, boolean>(
-  snsQueryStore,
-  (data: SnsQueryStoreData) => isNullish(data)
+export const snsQueryStoreIsLoading = derived<
+  [SnsQueryStore, SnsAggregatorStore],
+  boolean
+>(
+  [snsQueryStore, snsAggregatorStore],
+  ([snsQueryStoreData, aggregatorData]) =>
+    isNullish(snsQueryStoreData) && isNullish(aggregatorData.data)
 );
 
 /**

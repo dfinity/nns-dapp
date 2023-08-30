@@ -151,19 +151,6 @@ describe("sns.store", () => {
       expect(store).toBeUndefined();
     });
 
-    it("should set the store as loading state", () => {
-      const data = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
-        certified: true,
-      });
-
-      snsQueryStore.setData(data);
-      expect(get(snsQueryStoreIsLoading)).toBe(false);
-
-      snsQueryStore.reset();
-      expect(get(snsQueryStoreIsLoading)).toBe(true);
-    });
-
     it("should update the data", () => {
       const data = snsResponsesForLifecycle({
         lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Pending],
@@ -225,6 +212,31 @@ describe("sns.store", () => {
           (swap) => swap.rootCanisterId === rootCanisterId
         )
       ).toBeUndefined();
+    });
+  });
+
+  describe("snsQueryStoreIsLoading", () => {
+    it("should not be loading if snsQueryStore is set", () => {
+      snsQueryStore.reset();
+      snsAggregatorStore.reset();
+      expect(get(snsQueryStoreIsLoading)).toBe(true);
+
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
+      });
+
+      snsQueryStore.setData(data);
+      expect(get(snsQueryStoreIsLoading)).toBe(false);
+    });
+
+    it("should not be loading if sns aggregator store is set", () => {
+      snsQueryStore.reset();
+      snsAggregatorStore.reset();
+      expect(get(snsQueryStoreIsLoading)).toBe(true);
+
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      expect(get(snsQueryStoreIsLoading)).toBe(false);
     });
   });
 
