@@ -147,7 +147,17 @@ describe("sns-services", () => {
         expect(
           get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
         ).toEqual(derivedState);
-        expect(get(snsQueryStore)).toBeUndefined();
+
+        const store = get(snsQueryStore);
+        const states = store.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(states?.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(states?.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
       });
 
       it("should call api with the strategy passed", async () => {
@@ -416,7 +426,11 @@ describe("sns-services", () => {
         expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
           lifeCycleResponse
         );
-        expect(get(snsQueryStore)).toBeUndefined();
+        const updatedStore = get(snsQueryStore);
+        const updatedLifecycle = updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.swap[0].lifecycle;
+        expect(updatedLifecycle).not.toEqual(newLifeCycle);
       });
     });
 
