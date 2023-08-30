@@ -24,6 +24,10 @@ impl AccountsDbTrait for AccountsDbAsMap {
     fn db_accounts_len(&self) -> u64 {
         self.accounts.len() as u64
     }
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        let iterator = self.accounts.values().cloned();
+        Box::new(iterator)
+    }
 }
 
 #[cfg(test)]
