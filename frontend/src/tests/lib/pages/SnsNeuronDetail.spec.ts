@@ -12,7 +12,6 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -114,10 +113,6 @@ describe("SnsNeuronDetail", () => {
   const neuronStake = 1;
 
   describe("with new settings", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", true);
-    });
-
     describe("when neuron and projects are valid and present", () => {
       beforeEach(() => {
         fakeSnsGovernanceApi.addNeuronWith({
@@ -188,95 +183,6 @@ describe("SnsNeuronDetail", () => {
           identity: mockIdentity,
           source: mainAccount,
         });
-      });
-    });
-  });
-
-  describe("when neuron and projects are valid and present", () => {
-    const props = {
-      neuronId: validNeuronIdAsHexString,
-    };
-    beforeEach(() => {
-      page.mock({
-        data: { universe: rootCanisterIdMock.toText() },
-        routeId: AppPath.Neuron,
-      });
-
-      fakeSnsGovernanceApi.addNeuronWith({
-        rootCanisterId,
-        id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
-      });
-
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
-    });
-
-    it("should load neuron details", async () => {
-      const po = await renderComponent(props);
-
-      expect(await po.isContentLoaded()).toBe(true);
-    });
-
-    it("should render sns project name", async () => {
-      const po = await renderComponent(props);
-
-      expect(await po.getTitle()).toBe(projectName);
-    });
-
-    it("should render cards", async () => {
-      const po = await renderComponent(props);
-
-      // New sections
-      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(false);
-      expect(await po.getMaturitySectionPo().isPresent()).toBe(false);
-      expect(await po.getAdvancedSectionPo().isPresent()).toBe(false);
-
-      expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
-      expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
-      expect(await po.getMetaInfoCardPo().isPresent()).toBe(true);
-      expect(await po.getStakeCardPo().isPresent()).toBe(true);
-      expect(await po.getFollowingCardPo().isPresent()).toBe(true);
-    });
-  });
-
-  describe("increase stake functionality", () => {
-    const props = {
-      neuronId: validNeuronIdAsHexString,
-    };
-
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEURON_SETTINGS", false);
-    });
-
-    it("should increase neuron stake", async () => {
-      fakeSnsGovernanceApi.addNeuronWith({
-        rootCanisterId,
-        id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
-      });
-      const po = await renderComponent(props);
-
-      // `neuronStake` to string formatted as expected
-      expect(await po.getStake()).toBe("1.00");
-      const amountToStake = 20;
-      fakeSnsGovernanceApi.setNeuronWith({
-        rootCanisterId,
-        id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
-      });
-
-      await po.increaseStake(amountToStake);
-      await runResolvedPromises();
-
-      // `neuronStake` + 20 to string and formatted as expected
-      expect(await po.getStake()).toBe("21.00");
-      expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
-      expect(increaseStakeNeuron).toHaveBeenCalledWith({
-        neuronId: validNeuronId,
-        stakeE8s: numberToE8s(amountToStake),
-        rootCanisterId,
-        identity: mockIdentity,
-        source: mainAccount,
       });
     });
   });
