@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Remove ENABLE_NEURON_SETTINGS feature flag.
+* Remove unused components after new neuron details page.
 
 #### Fixed
 
