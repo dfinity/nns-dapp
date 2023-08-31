@@ -15,7 +15,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
 ///   version information and set up the db accordingly.
 ///
 /// # Current data storage
-/// - Accounts are 
+/// - Accounts are
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
@@ -23,12 +23,14 @@ pub struct AccountsDbAsProxy {
 
 impl AccountsDbAsProxy {
     /// Creates a db from a hash map of accounts.
+    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
     pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             map: AccountsDbAsMap::from_map(map),
         }
     }
     /// Provides the DB contents as a hash map.
+    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
     pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         self.map.as_map()
     }
@@ -67,8 +69,8 @@ impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]
 mod tests {
-    use super::AccountsDbAsProxy;
     use super::super::tests::test_accounts_db;
+    use super::AccountsDbAsProxy;
 
     test_accounts_db!(AccountsDbAsProxy::default());
 }

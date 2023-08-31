@@ -2,8 +2,9 @@
 
 use super::{Account, AccountsDbTrait};
 use std::collections::BTreeMap;
+use std::fmt;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AccountsDbAsMap {
     accounts: BTreeMap<Vec<u8>, Account>,
 }
@@ -27,6 +28,26 @@ impl AccountsDbTrait for AccountsDbAsMap {
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.values().cloned();
         Box::new(iterator)
+    }
+}
+
+impl AccountsDbAsMap {
+    /// Creates a db from a map of accounts.
+    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
+    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+        Self { accounts: map }
+    }
+    /// Provides the DB contents as a map.
+    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
+    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+        &self.accounts
+    }
+}
+
+impl fmt::Debug for AccountsDbAsMap {
+    /// Summarizes the accounts DB contents for debug printouts.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "AccountsDbAsMap{{... {} entries}}", self.db_accounts_len())
     }
 }
 
