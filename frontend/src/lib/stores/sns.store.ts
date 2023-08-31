@@ -282,7 +282,7 @@ const initSnsQueryStore = (): SnsQueryStore => {
  */
 export const snsQueryStore = initSnsQueryStore();
 
-export const snsQueryStoreIsLoading = derived<
+export const isLoadingSnsProjectsStore = derived<
   [SnsQueryStore, SnsAggregatorStore, Readable<boolean>],
   boolean
 >(

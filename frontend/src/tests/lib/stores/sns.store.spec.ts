@@ -3,11 +3,11 @@ import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
+  isLoadingSnsProjectsStore,
   openSnsProposalsStore,
   snsProposalsStore,
   snsProposalsStoreIsLoading,
   snsQueryStore,
-  snsQueryStoreIsLoading,
   snsSummariesStore,
   snsSwapCommitmentsStore,
   type SnsQueryStoreData,
@@ -215,7 +215,7 @@ describe("sns.store", () => {
     });
   });
 
-  describe("snsQueryStoreIsLoading", () => {
+  describe("isLoadingSnsProjectsStore", () => {
     describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
       beforeEach(() => {
         overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
@@ -224,7 +224,7 @@ describe("sns.store", () => {
       it("should not be loading if snsQueryStore is set but not snsAggregatorStore", () => {
         snsQueryStore.reset();
         snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(snsQueryStoreIsLoading)).toBe(true);
+        expect(get(isLoadingSnsProjectsStore)).toBe(true);
 
         const data = snsResponsesForLifecycle({
           lifecycles: [SnsSwapLifecycle.Open],
@@ -232,7 +232,7 @@ describe("sns.store", () => {
         });
 
         snsQueryStore.setData(data);
-        expect(get(snsQueryStoreIsLoading)).toBe(false);
+        expect(get(isLoadingSnsProjectsStore)).toBe(false);
       });
     });
 
@@ -249,10 +249,10 @@ describe("sns.store", () => {
 
         snsQueryStore.setData(data);
         snsAggregatorStore.reset();
-        expect(get(snsQueryStoreIsLoading)).toBe(true);
+        expect(get(isLoadingSnsProjectsStore)).toBe(true);
 
         snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(snsQueryStoreIsLoading)).toBe(false);
+        expect(get(isLoadingSnsProjectsStore)).toBe(false);
       });
     });
   });
