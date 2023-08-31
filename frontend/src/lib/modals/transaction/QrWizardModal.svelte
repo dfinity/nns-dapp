@@ -65,19 +65,17 @@
   };
 </script>
 
-{#if nonNullish(stepsPlusQr)}
-  <WizardModal
-    {testId}
-    steps={stepsPlusQr}
-    bind:currentStep
-    bind:this={modal}
-    on:nnsClose
-    {disablePointerEvents}
-  >
-    <slot name="title" slot="title" />
-    <slot />
-    {#if currentStep?.name === STEP_QRCODE}
-      <TransactionQRCode on:nnsCancel={onCancel} on:nnsQRCode={onQRCode} />
-    {/if}
-  </WizardModal>
-{/if}
+<WizardModal
+  {testId}
+  steps={stepsPlusQr}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  {disablePointerEvents}
+>
+  <slot name="title" slot="title" />
+  <slot />
+  {#if currentStep?.name === STEP_QRCODE}
+    <TransactionQRCode on:nnsCancel={onCancel} on:nnsQRCode={onQRCode} />
+  {/if}
+</WizardModal>
