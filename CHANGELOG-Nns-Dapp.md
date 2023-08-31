@@ -17,6 +17,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Bigger icon and description first on Sns project page.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 
 #### Deprecated
 #### Removed
