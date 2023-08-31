@@ -1,3 +1,4 @@
+import { isSnsFinalizing } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
@@ -56,6 +57,6 @@ export const createIsSnsFinalizingStore = (rootCanisterId: Principal) => {
       return false;
     }
 
-    return finalizationData.data;
+    return isSnsFinalizing(finalizationData.data);
   });
 };
