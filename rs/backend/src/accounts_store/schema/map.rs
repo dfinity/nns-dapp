@@ -6,7 +6,7 @@ use std::fmt;
 
 #[derive(Default, Eq, PartialEq)]
 pub struct AccountsDbAsMap {
-    accounts: HashMap<Vec<u8>, Account>,
+    accounts: BTreeMap<Vec<u8>, Account>,
 }
 
 impl AccountsDbTrait for AccountsDbAsMap {

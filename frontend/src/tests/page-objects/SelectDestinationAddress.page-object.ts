@@ -24,9 +24,16 @@ export class SelectDestinationAddressPo extends BasePageObject {
     return this.getTogglePo().toggle();
   }
 
+  async enableSelect(): Promise<void> {
+    return this.getTogglePo().setDisabled();
+  }
+
+  async enableTextInput(): Promise<void> {
+    return this.getTogglePo().setEnabled();
+  }
+
   async selectAccount(accountName: string): Promise<void> {
-    // TODO: Only toggle if necessary.
-    await this.toggleSelect();
+    await this.enableSelect();
     await this.getDropdownPo().select(accountName);
   }
 }

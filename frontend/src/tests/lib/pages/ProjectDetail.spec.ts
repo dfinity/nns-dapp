@@ -17,7 +17,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
@@ -37,7 +37,7 @@ import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -77,7 +77,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
   beforeEach(() => {
     jest.clearAllMocks();
-    snsQueryStore.reset();
+    resetSnsProjects();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
     snsTicketsStore.reset();
@@ -255,6 +255,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           {
             rootCanisterId,
             lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [30n],
             certified: true,
           },
         ]);
@@ -317,6 +318,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           {
             rootCanisterId,
             lifecycle: SnsSwapLifecycle.Open,
+            restrictedCountries: [],
             certified: true,
           },
         ]);
@@ -627,6 +629,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           {
             rootCanisterId,
             lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [30n],
             certified: true,
           },
         ]);
