@@ -57,13 +57,6 @@ describe("NeuronDetail", () => {
   it("renders new sections", async () => {
     const po = await renderComponent(`${neuronId}`);
 
-    // Old components
-    expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-    expect(await po.getNnsNeuronMetaInfoCardPo().isPresent()).toBe(false);
-    expect(await po.getNnsNeuronInfoStakePo().isPresent()).toBe(false);
-    expect(await po.hasJoinFundCard()).toBe(false);
-
-    // New components
     expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
     expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
     expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);

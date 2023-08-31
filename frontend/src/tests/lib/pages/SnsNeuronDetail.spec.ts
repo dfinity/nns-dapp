@@ -134,11 +134,6 @@ describe("SnsNeuronDetail", () => {
         neuronId: validNeuronIdAsHexString,
       });
 
-      // Old cards should not be present
-      expect(await po.getMetaInfoCardPo().isPresent()).toBe(false);
-      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getStakeCardPo().isPresent()).toBe(false);
-
       expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
       expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
