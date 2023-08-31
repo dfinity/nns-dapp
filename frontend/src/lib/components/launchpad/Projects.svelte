@@ -4,7 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { snsQueryStoreIsLoading } from "$lib/stores/sns.store";
+  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
     type SnsFullProject,
@@ -23,7 +23,7 @@
   });
 
   let loading = false;
-  $: loading = $snsQueryStoreIsLoading;
+  $: loading = $isLoadingSnsProjectsStore;
 
   const mapper: Record<SnsSwapLifecycle, string> = {
     [SnsSwapLifecycle.Open]: "no_open_projects",

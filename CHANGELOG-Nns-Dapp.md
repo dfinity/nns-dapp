@@ -18,11 +18,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Bigger icon and description first on Sns project page.
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 
 #### Deprecated
 #### Removed
 
 * Remove ENABLE_NEURON_SETTINGS feature flag.
+* Remove unused components after new neuron details page.
 
 #### Fixed
 
