@@ -37,6 +37,8 @@ describe("SnsProposals", () => {
     )[0];
 
   const rootCanisterId = mockPrincipal;
+  const functionName = "test_function";
+  const functionId = BigInt(3);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -48,14 +50,7 @@ describe("SnsProposals", () => {
   });
 
   describe("logged in user", () => {
-    const functionName = "test_function";
-    const functionId = BigInt(3);
     beforeEach(() => {
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        name: functionName,
-        id: functionId,
-      });
       jest
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
@@ -143,9 +138,6 @@ describe("SnsProposals", () => {
         identity: new AnonymousIdentity(),
         rootCanisterId,
       });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-      });
     });
 
     describe("Matching results", () => {
@@ -191,10 +183,6 @@ describe("SnsProposals", () => {
         rootCanisterId,
         ...proposals[1],
         action: functionId,
-      });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        id: functionId,
       });
     });
 
