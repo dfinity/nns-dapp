@@ -287,3 +287,42 @@ where
         .collect::<BTreeSet<_>>();
     assert_eq!(expected_values, actual_values);
 }
+
+/// Tests common functionality of AccountsDbTrait implementations.
+///
+/// # Arguments
+/// `$implementation`: An expression that evaluates to an AccountsDbTrait implementation.
+macro_rules! test_accounts_db {
+    ($implementation:expr) => {
+        #[test]
+        fn map_accounts_db_should_crud() {
+            crate::accounts_store::schema::tests::assert_basic_crud_works($implementation);
+        }
+
+        #[test]
+        fn map_accounts_update_with_happy_path_should_update_account() {
+            crate::accounts_store::schema::tests::assert_update_with_happy_path_works($implementation);
+        }
+
+        #[test]
+        fn map_accounts_update_with_error_path_should_not_change_account() {
+            crate::accounts_store::schema::tests::assert_update_not_saved_on_error($implementation);
+        }
+
+        #[test]
+        fn map_update_with_missing_key_should_return_none() {
+            crate::accounts_store::schema::tests::assert_update_with_missing_key_returns_none($implementation);
+        }
+
+        #[test]
+        fn map_account_counts_should_be_correct() {
+            crate::accounts_store::schema::tests::assert_account_count_is_correct($implementation);
+        }
+
+        #[test]
+        fn map_accounts_db_should_iterate_over_values() {
+            crate::accounts_store::schema::tests::assert_iterates_over_values($implementation);
+        }
+    };
+}
+pub(crate) use test_accounts_db;
