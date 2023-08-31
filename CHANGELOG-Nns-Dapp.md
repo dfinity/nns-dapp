@@ -42,6 +42,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
