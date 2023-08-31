@@ -15,6 +15,7 @@ import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -33,6 +34,7 @@ import {
   mockAccountDetails,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { snsFinalizationStatusResponseMock } from "$tests/mocks/sns-finalization-status.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -103,6 +105,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       direct_participant_count: [],
       cf_neuron_count: [],
     });
+
+    jest
+      .spyOn(snsSaleApi, "queryFinalizationStatus")
+      .mockResolvedValue(snsFinalizationStatusResponseMock);
 
     jest
       .spyOn(snsMetricsApi, "querySnsSwapMetrics")
@@ -286,6 +292,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         // Even after waiting a long time there shouldn't be more calls.
         await advanceTime(99 * retryDelay);
         expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
+      });
+
+      it("should query finalization status and load it in store", async () => {
+        render(ProjectDetail, props);
+
+        await waitFor(() => {
+          const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
+          expect(get(store).data).toEqual(snsFinalizationStatusResponseMock);
+        });
       });
     });
   });
