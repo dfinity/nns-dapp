@@ -1,4 +1,5 @@
 <script lang="ts">
+  import QrWizardModal from "./QrWizardModal.svelte";
   import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
@@ -75,13 +76,9 @@
       name: STEP_PROGRESS,
       title: "",
     },
-    {
-      name: STEP_QRCODE,
-      title: "",
-    },
   ];
 
-  let modal: WizardModal;
+  let modal: QrWizardModal;
 
   const goNext = () => {
     modal.next();
@@ -94,10 +91,14 @@
     modal.set(steps.findIndex(({ name }) => name === step));
 
   export const goProgress = () => goStep(STEP_PROGRESS);
-  const goQRCode = () => goStep(STEP_QRCODE);
-  const goForm = () => goStep(STEP_FORM);
+  const goQRCode = async () => {
+    const value = await modal.scanQrCode();
+    if (nonNullish(value)) {
+      onQRCode(value);
+    }
+  };
 
-  const onQRCode = ({ detail: value }: CustomEvent<string>) => {
+  const onQRCode = (value: string) => {
     const payment = decodePayment(value);
 
     // if we can successfully decode a payment from the QR code, we can validate that it corresponds to the same token and also set the amount, in addition to populating the destination address.
@@ -112,8 +113,6 @@
         toastsError({
           labelKey: "error.qrcode_token_incompatible",
         });
-
-        goForm();
         return;
       }
 
@@ -122,17 +121,14 @@
       if (nonNullish(paymentAmount)) {
         amount = paymentAmount;
       }
-
-      goForm();
       return;
     }
 
     selectedDestinationAddress = value;
-    goForm();
   };
 </script>
 
-<WizardModal
+<QrWizardModal
   {testId}
   {steps}
   bind:currentStep
@@ -195,7 +191,4 @@
   {#if currentStep?.name === STEP_PROGRESS}
     <slot name="in_progress" />
   {/if}
-  {#if currentStep?.name === STEP_QRCODE}
-    <TransactionQRCode on:nnsCancel={goForm} on:nnsQRCode={onQRCode} />
-  {/if}
-</WizardModal>
+</QrWizardModal>
