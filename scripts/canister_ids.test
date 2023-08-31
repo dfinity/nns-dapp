@@ -5,27 +5,65 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 test_json_file=$(mktemp)
 
-cat >"$test_json_file" <<-EOF
-{
-  "__Candid_UI": {
-    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
-  },
-  "internet_identity": {
-    "staging": "wflfh-4yaaa-aaaaa-aaata-cai"
-  },
-  "nns-dapp": {
-    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
-    "staging": "4yr67-tiaaa-aaaaa-aabka-cai"
-  },
-  "nns-governance": {
-    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
-  }
+reset_test_json_file() {
+  cat >"$test_json_file" <<-EOF
+	{
+	  "__Candid_UI": {
+	    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+	  },
+	  "internet_identity": {
+	    "staging": "wflfh-4yaaa-aaaaa-aaata-cai"
+	  },
+	  "nns-dapp": {
+	    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+	    "staging": "4yr67-tiaaa-aaaaa-aabka-cai"
+	  },
+	  "nns-governance": {
+	    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+	  }
+	}
+	EOF
 }
+
+test_index_html=$(mktemp canister.raw.XXXXXX)
+
+cat >"$test_index_html" <<-EOF
+<html>
+  <head>
+  <meta name="nns-dapp-vars"
+        data-api-host="https://nnsdapp.dfinity.network"
+        data-ckbtc-index-canister-id="tqtu6-byaaa-aaaaa-aaana-cai"
+        data-ckbtc-ledger-canister-id="st75y-vaaaa-aaaaa-aaalq-cai"
+        data-ckbtc-minter-canister-id="t6rzw-2iaaa-aaaaa-aaama-cai"
+        data-cycles-minting-canister-id="rkp4c-7iaaa-aaaaa-aaaca-cai"
+        data-dfx-network="staging"
+        data-feature-flags="{&quot;ENABLE_CKBTC&quot;:true,&quot;ENABLE_CKTESTBTC&quot;:false,&quot;ENABLE_DISBURSE_MATURITY&quot;:false,&quot;ENABLE_ICP_ICRC&quot;:false,&quot;ENABLE_INSTANT_UNLOCK&quot;:false,&quot;ENABLE_NEURON_SETTINGS&quot;:true,&quot;ENABLE_SNS_AGGREGATOR_STORE&quot;:false}"
+        data-fetch-root-key="true"
+        data-governance-canister-id="rrkah-fqaaa-aaaaa-aaaaq-cai"
+        data-host="https://nnsdapp.dfinity.network"
+        data-identity-service-url="https://wqmuk-5qaaa-aaaaa-aaaqq-cai.nnsdapp.dfinity.network"
+        data-ledger-canister-id="ryjl3-tyaaa-aaaaa-aaaba-cai"
+        data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"
+        data-robots="&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;"
+        data-sns-aggregator-url="https://p5kov-xqaaa-aaaaa-aacmq-cai.nnsdapp.dfinity.network"
+        data-static-host="https://nnsdapp.dfinity.network"
+        data-tvl-canister-id=""
+        data-wasm-canister-id="qaa6y-5yaaa-aaaaa-aaafa-cai"
+        data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai">
+  </head>
+</html>
 EOF
 
-trap 'rm $test_json_file' EXIT
+clean_up() {
+  rm "$test_json_file"
+  rm "$test_index_html"
+}
+
+trap 'clean_up' EXIT
 
 : Test export
+
+reset_test_json_file
 
 if ! diff <("$SOURCE_DIR/canister_ids" --export --network staging --json-file "$test_json_file") <(
   cat <<-EOF
@@ -47,6 +85,8 @@ EOF
 fi
 
 : Test import
+
+reset_test_json_file
 
 "$SOURCE_DIR/canister_ids" --import --json-file "$test_json_file" <<-EOF
 {
@@ -82,7 +122,53 @@ EOF
   exit 1
 fi
 
+: Test import-from
+
+reset_test_json_file
+
+"$SOURCE_DIR/canister_ids" --import-from "file://$(realpath "$test_index_html")" --json-file "$test_json_file"
+
+if ! diff "$test_json_file" <(
+  cat <<-EOF
+{
+  "__Candid_UI": {
+    "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
+  },
+  "internet_identity": {
+    "staging": "wqmuk-5qaaa-aaaaa-aaaqq-cai"
+  },
+  "nns-dapp": {
+    "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai",
+    "staging": "lf43c-fyaaa-aaaaa-aacva-cai"
+  },
+  "nns-governance": {
+    "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+  },
+  "ckbtc_index": {
+    "staging": "tqtu6-byaaa-aaaaa-aaana-cai"
+  },
+  "ckbtc_ledger": {
+    "staging": "st75y-vaaaa-aaaaa-aaalq-cai"
+  },
+  "ckbtc_minter": {
+    "staging": "t6rzw-2iaaa-aaaaa-aaama-cai"
+  },
+  "nns-sns-wasm": {
+    "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"
+  },
+  "sns_aggregator": {
+    "staging": "p5kov-xqaaa-aaaaa-aacmq-cai"
+  }
+}
+EOF
+); then
+  echo "ERROR importing from URL: See output of diff above."
+  exit 1
+fi
+
 : Test remove
+
+reset_test_json_file
 
 "$SOURCE_DIR/canister_ids" --remove --canister nns-dapp --network mainnet --json-file "$test_json_file"
 
@@ -95,10 +181,10 @@ if ! diff <(grep -v '"mainnet-before-........-......"' "$test_json_file") <(
     "staging": "tmxop-wyaaa-aaaaa-aaapa-cai"
   },
   "internet_identity": {
-    "staging": "new-ii-id"
+    "staging": "wflfh-4yaaa-aaaaa-aaata-cai"
   },
   "nns-dapp": {
-    "staging": "new-nns-dapp-id",
+    "staging": "4yr67-tiaaa-aaaaa-aabka-cai",
   },
   "nns-governance": {
     "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"

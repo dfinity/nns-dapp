@@ -10,6 +10,7 @@ print_help() {
 
 	Usage: $(basename "$0") --export --network <network> (outputs to stdout)
 	       $(basename "$0") --import                     (reads from stdin)
+	       $(basename "$0") --import-from <URL> --network <network>
 	       $(basename "$0") --remove --network <network> --canister <canister>
 	EOF
 }
@@ -19,36 +20,47 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=e long=export desc="Export canister IDs" variable=EXPORT nargs=0 default="false"
 clap.define short=i long=import desc="Import canister IDs from stdin" variable=IMPORT nargs=0 default="false"
+clap.define long=import-from desc="URL of nns-dapp canister to import from" variable=IMPORT_FROM
 clap.define short=r long=remove desc="Remove canister ID" variable=REMOVE nargs=0 default="false"
 clap.define short=n long=network desc="dfx network to use" variable=NETWORK default="staging"
 clap.define short=c long=canister desc="canister to remove" variable=CANISTER default="nns-dapp"
 clap.define short=j long=json-file desc="Path to the canister_ids.json file" variable=JSON_FILE default="./canister_ids.json"
+clap.define long=create desc="Create the json file if missing" variable=CREATE
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 if ! [ -f "$JSON_FILE" ]; then
-  echo "$JSON_FILE is missing."
-  exit 1
+  if [ "$CREATE" ]; then
+    echo "{}" >"$JSON_FILE"
+  else
+    echo "$JSON_FILE is missing." >&2
+    exit 1
+  fi
 fi
 
+useCommand() {
+  declare -g command
+  if [ "${command:-}" ]; then
+    echo "Only specify one of --import, --import-from, --export, --remove" >&2
+    exit 1
+  fi
+  command="$1"
+}
+
 if [ "$EXPORT" = "true" ]; then
-  command="export"
+  useCommand "export"
 fi
 
 if [ "$IMPORT" = "true" ]; then
-  if [ "${command:-}" ]; then
-    echo "Only specify one of --import, --export, --remove" >&2
-    exit 1
-  fi
-  command="import"
+  useCommand "import"
+fi
+
+if [ "${IMPORT_FROM:-}" ]; then
+  useCommand "import-from"
 fi
 
 if [ "$REMOVE" = "true" ]; then
-  if [ "${command:-}" ]; then
-    echo "Only specify one of --import, --export, --remove" >&2
-    exit 1
-  fi
-  command="remove"
+  useCommand "remove"
 fi
 
 if ! [ "${command:-}" ]; then
@@ -97,4 +109,62 @@ if [ "$command" = "remove" ]; then
 
   echo "Renamed $CANISTER.$NETWORK to $new_name."
   exit
+fi
+
+get_value_from_html() {
+  key="$1"
+  file="$2"
+  pattern="$key=\"([^\"]+)\""
+  # E.g. find a line like `data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"`
+  # and outputs the value between quotes.
+  grep -oE "$pattern" index.html | sed -E "s/$pattern/\\1/" | head -1
+}
+
+canister_id_from_url() {
+  echo "$1" | sed -E 's@https://([^.]*)\..*@\1@'
+}
+
+if [ "$command" = "import-from" ]; then
+  tmp_index_html="$(mktemp)"
+  trap 'rm -f "$tmp_index_html"' EXIT
+  if [[ $IMPORT_FROM != *".raw."* ]]; then
+    IMPORT_FROM=${IMPORT_FROM/./.raw.}
+  fi
+  curl -sS "$IMPORT_FROM" >"$tmp_index_html"
+  if [ "$(file --brief --mime-type "$tmp_index_html")" = "application/gzip" ]; then
+    mv "$tmp_index_html" "${tmp_index_html}.gz"
+    gunzip "${tmp_index_html}.gz"
+  fi
+
+  identityServiceUrl="$(get_value_from_html data-identity-service-url "$tmp_index_html")"
+  internetIdentity="$(canister_id_from_url "$identityServiceUrl")"
+
+  snsAggregatorUrl="$(get_value_from_html data-sns-aggregator-url "$tmp_index_html")"
+  snsAggregator="$(canister_id_from_url "$snsAggregatorUrl")"
+
+  ckbtcIndex="$(get_value_from_html data-ckbtc-index-canister-id "$tmp_index_html")"
+  ckbtcLedger="$(get_value_from_html data-ckbtc-ledger-canister-id "$tmp_index_html")"
+  ckbtcMinter="$(get_value_from_html data-ckbtc-minter-canister-id "$tmp_index_html")"
+  snsWasm="$(get_value_from_html data-wasm-canister-id "$tmp_index_html")"
+  nnsDapp="$(get_value_from_html data-own-canister-id "$tmp_index_html")"
+
+  tmp_file="$(mktemp)"
+  jq '
+    .ckbtc_index[$network] = $ckbtcIndex |
+    .ckbtc_ledger[$network] = $ckbtcLedger |
+    .ckbtc_minter[$network] = $ckbtcMinter |
+    .["nns-sns-wasm"][$network] = $snsWasm |
+    .internet_identity[$network] = $internetIdentity |
+    .["nns-dapp"][$network] = $nnsDapp |
+    .sns_aggregator[$network] = $snsAggregator' \
+    --arg network "$NETWORK" \
+    --arg ckbtcIndex "$ckbtcIndex" \
+    --arg ckbtcLedger "$ckbtcLedger" \
+    --arg ckbtcMinter "$ckbtcMinter" \
+    --arg snsWasm "$snsWasm" \
+    --arg internetIdentity "$internetIdentity" \
+    --arg nnsDapp "$nnsDapp" \
+    --arg snsAggregator "$snsAggregator" \
+    "$JSON_FILE" >"$tmp_file"
+  mv "$tmp_file" "$JSON_FILE"
 fi
