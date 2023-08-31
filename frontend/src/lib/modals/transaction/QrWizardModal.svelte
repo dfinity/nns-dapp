@@ -2,7 +2,6 @@
   import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
-  import { nonNullish } from "@dfinity/utils";
 
   export let testId: string | undefined = undefined;
   export let steps: WizardSteps;
