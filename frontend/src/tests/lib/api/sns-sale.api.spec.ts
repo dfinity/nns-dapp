@@ -28,6 +28,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
   SnsSwapCanister,
+  UnsupportedMethodError,
   type SnsGetAutoFinalizationStatusResponse,
 } from "@dfinity/sns";
 import { mock } from "jest-mock-extended";
@@ -162,11 +163,9 @@ describe("sns-sale.api", () => {
     });
 
     it("should return undefined if method is not supported", async () => {
-      const errorMessage = `Error message example: "Call was rejected:
-       Request ID: 3a6ef904b35fd19721c95c3df2b0b00b8abefba7f0ad188f5c472809b772c914
-       Reject code: 3
-       Reject text: Canister 75ffu-oaaaa-aaaaa-aabbq-cai has no update method 'get_auto_finalization_status'"`;
-      finalizationStatusSpy.mockRejectedValue(new Error(errorMessage));
+      finalizationStatusSpy.mockRejectedValue(
+        new UnsupportedMethodError("get_auto_finalization_status")
+      );
 
       const result = await queryFinalizationStatus({
         identity: mockIdentity,

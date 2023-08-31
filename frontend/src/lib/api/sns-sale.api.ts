@@ -140,9 +140,7 @@ export const queryFinalizationStatus = async ({
     return response;
   } catch (err) {
     // If the method is not available, return undefined
-    if (
-      isMethodNotSupportedError({ err, method: "get_auto_finalization_status" })
-    ) {
+    if (isMethodNotSupportedError(err)) {
       return undefined;
     }
     throw err;
