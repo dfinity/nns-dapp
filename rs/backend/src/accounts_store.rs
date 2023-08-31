@@ -21,7 +21,6 @@ use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
-#[cfg(test)] // TODO: Make available in prod when ready.
 pub mod schema;
 
 type TransactionIndex = u64;

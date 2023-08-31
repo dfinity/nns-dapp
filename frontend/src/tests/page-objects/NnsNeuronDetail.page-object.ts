@@ -40,11 +40,6 @@ export class NnsNeuronDetailPo extends BasePageObject {
     );
   }
 
-  // TODO: To be removed https://dfinity.atlassian.net/browse/GIX-1688
-  hasJoinFundCard(): Promise<boolean> {
-    return this.root.byTestId("neuron-join-fund-card-component").isPresent();
-  }
-
   async disburseNeuron(): Promise<void> {
     await this.getVotingPowerSectionPo().clickDisburse();
     await this.getNnsNeuronModalsPo()
@@ -56,12 +51,8 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return NnsNeuronPageHeaderPo.under(this.root);
   }
 
-  getNeuronIdNewUi(): Promise<string | null> {
+  getNeuronId(): Promise<string> {
     return this.getPageHeaderPo().getNeuronId();
-  }
-
-  async getNeuronId(): Promise<string> {
-    return this.getNeuronIdNewUi();
   }
 
   getUniverse(): Promise<string> {
