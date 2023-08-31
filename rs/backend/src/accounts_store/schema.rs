@@ -1,7 +1,7 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
-mod map;
+pub mod map;
 #[cfg(test)]
 mod tests;
 
@@ -10,14 +10,20 @@ mod tests;
 /// # Example
 ///
 /// ```
-/// let mut mock = MockAccountsDb::default();
+/// use nns_dapp::accounts_store::schema::map::AccountsDbAsMap;
+/// use nns_dapp::accounts_store::Account;
+/// use icp_ledger::{AccountIdentifier};
+/// use ic_base_types::{CanisterId, PrincipalId};
+/// use crate::nns_dapp::accounts_store::schema::AccountsDbTrait;
+///
+/// let mut mock = AccountsDbAsMap::default();
 /// let caller = PrincipalId::new_user_test_id(1); // Typically a user making an API call.
-/// let account_identifier = AccountIdentifier::from(caller).to_vec();
+/// let account_identifier = AccountIdentifier::from(caller);
 /// let new_account = Account::new(caller, account_identifier);
-/// mock.db_insert_account.insert(account_identifier.to_vec(), new_account);
+/// mock.db_insert_account(&account_identifier.to_vec(), new_account.clone());
 /// assert!(mock.db_contains_account(&account_identifier.to_vec()));
 /// assert_eq!(mock.db_accounts_len(), 1);
-/// assert_eq!(mock.db_get_account(&account_identifier.to_vec()), Some(new_account));
+/// assert_eq!(mock.db_get_account(&account_identifier.to_vec()), Some(new_account.clone()));
 /// mock.db_remove_account(&account_identifier.to_vec());
 /// assert!(!mock.db_contains_account(&account_identifier.to_vec()));
 /// assert_eq!(mock.db_accounts_len(), 0);
