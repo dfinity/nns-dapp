@@ -1,6 +1,7 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
+mod map;
 #[cfg(test)]
 mod tests;
 
@@ -76,4 +77,7 @@ pub trait AccountsDbTrait {
             None
         }
     }
+
+    /// Iterates over accounts in the data store.
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
 }

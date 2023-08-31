@@ -65,6 +65,7 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
       });
     },
     stopBalancesTimer: () => {
+      balancesCallback = undefined;
       balancesWorker.postMessage({
         msg: "nnsStopBalancesTimer",
       });

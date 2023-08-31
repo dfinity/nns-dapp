@@ -80,7 +80,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
-  isChecked(): Promise<boolean | null> {
+  isChecked(): Promise<boolean> {
     return this.locator.isChecked();
   }
 

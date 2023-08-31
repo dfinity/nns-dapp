@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test merge neurons", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("Account / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

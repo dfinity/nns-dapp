@@ -18,4 +18,12 @@ export class NnsDestinationAddressPo extends BasePageObject {
   selectMainAccount(): Promise<void> {
     return this.getNnsSelectAccountPo().selectMainAccount();
   }
+
+  enterAddress(address: string): Promise<void> {
+    return this.getTextInput().typeText(address);
+  }
+
+  clickContinue(): Promise<void> {
+    return this.click("address-submit-button");
+  }
 }
