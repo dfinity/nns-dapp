@@ -117,7 +117,7 @@ get_value_from_html() {
   pattern="$key=\"([^\"]+)\""
   # E.g. find a line like `data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"`
   # and outputs the value between quotes.
-  grep -oE "$pattern" $file | sed -E "s/$pattern/\\1/" | head -1
+  grep -oE "$pattern" "$file" | sed -E "s/$pattern/\\1/" | head -1
 }
 
 canister_id_from_url() {
