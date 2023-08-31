@@ -7,15 +7,12 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import IncreaseStakeButton from "./IncreaseStakeButton.svelte";
 
-  export let variant: "primary" | "secondary" = "primary";
-
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
 </script>
 
 <IncreaseStakeButton
-  {variant}
   on:increaseStake={() =>
     openNnsNeuronModal({
       type: "increase-stake",
