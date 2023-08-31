@@ -119,26 +119,26 @@ describe("SnsNeuronDetail", () => {
         id: [validNeuronId],
         cached_neuron_stake_e8s: numberToE8s(neuronStake),
       });
+    });
 
-      it("should render sns project name", async () => {
-        const po = await renderComponent({
-          neuronId: validNeuronIdAsHexString,
-        });
-
-        expect(await po.getUniverse()).toBe(projectName);
+    it("should render sns project name", async () => {
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
       });
 
-      it("should render new sections", async () => {
-        const po = await renderComponent({
-          neuronId: validNeuronIdAsHexString,
-        });
+      expect(await po.getUniverse()).toBe(projectName);
+    });
 
-        expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
-        expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
-        expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
-        expect(await po.getFollowingCardPo().isPresent()).toBe(true);
-        expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+    it("should render new sections", async () => {
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
       });
+
+      expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
+      expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+      expect(await po.getFollowingCardPo().isPresent()).toBe(true);
+      expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
     });
   });
 
