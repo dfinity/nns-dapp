@@ -93,6 +93,12 @@ describe("sns finalization status stores", () => {
       expect(get(isFinalizingStore)).toBe(true);
     });
 
+    it("returns false if the store not set", () => {
+      const isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
+
+      expect(get(isFinalizingStore)).toBe(false);
+    });
+
     it("returns false if not finalizing because not attempted", () => {
       const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
       const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {

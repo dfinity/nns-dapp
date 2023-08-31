@@ -1,6 +1,6 @@
 import type { Principal } from "@dfinity/principal";
 import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 interface SnsFinalizationStatusData {
@@ -56,13 +56,6 @@ export const createIsSnsFinalizingStore = (rootCanisterId: Principal) => {
       return false;
     }
 
-    const {
-      data: { has_auto_finalize_been_attempted, auto_finalize_swap_response },
-    } = finalizationData;
-
-    return (
-      fromNullable(has_auto_finalize_been_attempted) &&
-      isNullish(fromNullable(auto_finalize_swap_response))
-    );
+    return finalizationData.data;
   });
 };

@@ -5,10 +5,12 @@ import {
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
   isInternalRefreshBuyerTokensError,
+  isSnsFinalizing,
   mapAndSortSnsQueryToSummaries,
   parseSnsSwapSaleBuyerCount,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   createBuyersState,
   mockDerived,
@@ -25,6 +27,7 @@ import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {
@@ -418,6 +421,44 @@ sale_participants_count ${saleBuyerCount} 1677707139456
           "The swap has already reached its target"
         )
       ).toBe(false);
+    });
+  });
+
+  describe("isSnsFinalizing", () => {
+    it("returns true if finalizing", () => {
+      const finalizingResponse = createFinalizationStatusMock(true);
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(true);
+    });
+
+    it("returns false if not finalizing because not attempted", () => {
+      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+        is_auto_finalize_enabled: [true],
+        auto_finalize_swap_response: [],
+        has_auto_finalize_been_attempted: [false],
+      };
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(false);
+    });
+
+    it("returns false if not finalizing because it finished", () => {
+      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+        is_auto_finalize_enabled: [true],
+        auto_finalize_swap_response: [
+          {
+            set_dapp_controllers_call_result: [],
+            settle_community_fund_participation_result: [],
+            error_message: [],
+            set_mode_call_result: [],
+            sweep_icp_result: [],
+            claim_neuron_result: [],
+            sweep_sns_result: [],
+          },
+        ],
+        has_auto_finalize_been_attempted: [true],
+      };
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(false);
     });
   });
 });
