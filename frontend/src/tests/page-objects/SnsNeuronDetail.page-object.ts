@@ -32,8 +32,7 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return SnsNeuronHotkeysCardPo.under(this.root);
   }
 
-  // TODO: Rename GIX-1688
-  getStakeNewUI(): Promise<string> {
+  getStake(): Promise<string> {
     return this.getVotingPowerSectionPo().getStakeAmount();
   }
 
@@ -61,8 +60,7 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return SnsIncreaseStakeNeuronModalPo.under(this.root);
   }
 
-  // TODO: Rename GIX-1688
-  async increaseStakeNewUI(amount: number): Promise<void> {
+  async increaseStake(amount: number): Promise<void> {
     await this.getVotingPowerSectionPo().clickIncrease();
     await this.getIncreaseStakeModalPo().increase(amount);
   }
