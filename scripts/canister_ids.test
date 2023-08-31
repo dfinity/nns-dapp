@@ -122,11 +122,11 @@ EOF
   exit 1
 fi
 
-: Test import-from
+: Test import-from-index-html
 
 reset_test_json_file
 
-"$SOURCE_DIR/canister_ids" --import-from "file://$(realpath "$test_index_html")" --json-file "$test_json_file"
+"$SOURCE_DIR/canister_ids" --import-from-index-html "file://$(realpath "$test_index_html")" --json-file "$test_json_file"
 
 if ! diff "$test_json_file" <(
   cat <<-EOF

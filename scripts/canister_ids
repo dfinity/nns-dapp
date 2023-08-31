@@ -10,7 +10,7 @@ print_help() {
 
 	Usage: $(basename "$0") --export --network <network> (outputs to stdout)
 	       $(basename "$0") --import                     (reads from stdin)
-	       $(basename "$0") --import-from <URL> --network <network>
+	       $(basename "$0") --import-from-index-html <URL> --network <network>
 	       $(basename "$0") --remove --network <network> --canister <canister>
 	EOF
 }
@@ -20,7 +20,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=e long=export desc="Export canister IDs" variable=EXPORT nargs=0 default="false"
 clap.define short=i long=import desc="Import canister IDs from stdin" variable=IMPORT nargs=0 default="false"
-clap.define long=import-from desc="URL of nns-dapp canister to import from" variable=IMPORT_FROM
+clap.define long=import-from-index-html desc="URL of nns-dapp canister to import from" variable=IMPORT_FROM
 clap.define short=r long=remove desc="Remove canister ID" variable=REMOVE nargs=0 default="false"
 clap.define short=n long=network desc="dfx network to use" variable=NETWORK default="staging"
 clap.define short=c long=canister desc="canister to remove" variable=CANISTER default="nns-dapp"
@@ -41,7 +41,7 @@ fi
 useCommand() {
   declare -g command
   if [ "${command:-}" ]; then
-    echo "Only specify one of --import, --import-from, --export, --remove" >&2
+    echo "Only specify one of --import, --import-from-index-html, --export, --remove" >&2
     exit 1
   fi
   command="$1"
@@ -56,7 +56,7 @@ if [ "$IMPORT" = "true" ]; then
 fi
 
 if [ "${IMPORT_FROM:-}" ]; then
-  useCommand "import-from"
+  useCommand "import-from-index-html"
 fi
 
 if [ "$REMOVE" = "true" ]; then
@@ -124,7 +124,7 @@ canister_id_from_url() {
   echo "$1" | sed -E 's@https://([^.]*)\..*@\1@'
 }
 
-if [ "$command" = "import-from" ]; then
+if [ "$command" = "import-from-index-html" ]; then
   tmp_index_html="$(mktemp)"
   trap 'rm -f "$tmp_index_html"' EXIT
   if [[ $IMPORT_FROM != *".raw."* ]]; then
