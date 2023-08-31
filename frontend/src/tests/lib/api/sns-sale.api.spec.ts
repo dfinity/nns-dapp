@@ -139,10 +139,6 @@ describe("sns-sale.api", () => {
   });
 
   describe("queryFinalizationStatus", () => {
-    beforeEach(() => {
-      expect(finalizationStatusSpy).toBeCalledTimes(0);
-    });
-
     it("should return the finalization status", async () => {
       const response: SnsGetAutoFinalizationStatusResponse = {
         auto_finalize_swap_response: [],
@@ -151,6 +147,7 @@ describe("sns-sale.api", () => {
       };
       finalizationStatusSpy.mockResolvedValue(response);
 
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
       const result = await queryFinalizationStatus({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
@@ -167,6 +164,7 @@ describe("sns-sale.api", () => {
         new UnsupportedMethodError("get_auto_finalization_status")
       );
 
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
       const result = await queryFinalizationStatus({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
@@ -183,6 +181,7 @@ describe("sns-sale.api", () => {
       const error = new Error(errorMessage);
       finalizationStatusSpy.mockRejectedValue(error);
 
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
       const call = () =>
         queryFinalizationStatus({
           identity: mockIdentity,
