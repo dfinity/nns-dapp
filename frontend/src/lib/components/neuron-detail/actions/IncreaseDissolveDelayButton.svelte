@@ -8,8 +8,6 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { NeuronState } from "@dfinity/nns";
 
-  export let variant: "primary" | "secondary" = "primary";
-
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
   );
@@ -19,7 +17,7 @@
 </script>
 
 <button
-  class={variant}
+  class="secondary"
   data-tid="increase-dissolve-delay-button-component"
   on:click={() =>
     openNnsNeuronModal({

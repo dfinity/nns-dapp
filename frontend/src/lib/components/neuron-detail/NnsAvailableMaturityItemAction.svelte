@@ -31,7 +31,7 @@
     >{$i18n.neuron_detail.available_description}</svelte:fragment
   >
   {#if isControllable}
-    <NnsStakeMaturityButton {neuron} variant="secondary" />
+    <NnsStakeMaturityButton {neuron} />
     <SpawnNeuronButton {neuron} />
   {/if}
 </CommonItemAction>
