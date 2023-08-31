@@ -1,6 +1,5 @@
 <script lang="ts">
   import QrWizardModal from "./QrWizardModal.svelte";
-  import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
@@ -12,7 +11,6 @@
     TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
@@ -61,7 +59,6 @@
   // Wizard modal steps and navigation
   const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";
-  const STEP_QRCODE = "QRCode";
 
   const steps: WizardSteps = [
     {

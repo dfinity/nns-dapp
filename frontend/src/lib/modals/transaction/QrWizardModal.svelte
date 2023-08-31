@@ -2,16 +2,16 @@
   import { WizardModal } from "@dfinity/gix-components";
   import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
   import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let testId: string | undefined = undefined;
-  export let steps: WizardStep[];
+  export let steps: WizardSteps;
   export let currentStep: WizardStep | undefined = undefined;
   export let disablePointerEvents = false;
 
   const STEP_QRCODE = "QRCode";
 
-  let stepsPlusQr: WizardStep;
+  let stepsPlusQr: WizardSteps;
   $: stepsPlusQr = [
     ...steps,
     {
@@ -39,7 +39,7 @@
     set(stepNumber);
   };
 
-  let resolveQrCodePromise: (value: string | undefined) => void | undefined =
+  let resolveQrCodePromise: ((value: string | undefined) => void) | undefined =
     undefined;
 
   export const scanQrCode = async () => {
@@ -50,7 +50,9 @@
     return new Promise<string | undefined>((resolve) => {
       resolveQrCodePromise = resolve;
     }).finally(() => {
-      setStepName(prevStep.name);
+      // TypeScript can't know that currentStep is defined before scanQrCode
+      // will be called.
+      setStepName(prevStep?.name || steps[0].name);
     });
   };
 
