@@ -1,7 +1,7 @@
 //! An accounts DB implemented as a hash map.
 
 use super::{Account, AccountsDbTrait};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt;
 
 #[derive(Default, Eq, PartialEq)]
@@ -32,12 +32,12 @@ impl AccountsDbTrait for AccountsDbAsMap {
 }
 
 impl AccountsDbAsMap {
-    /// Creates a db from a hash map of accounts.
-    pub fn from_map(map: HashMap<Vec<u8>, Account>) -> Self {
+    /// Creates a db from a map of accounts.
+    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self { accounts: map }
     }
-    /// Provides the DB contents as a hash map.
-    pub fn as_map(&self) -> &HashMap<Vec<u8>, Account> {
+    /// Provides the DB contents as a map.
+    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         &self.accounts
     }
 }

@@ -17,7 +17,7 @@ use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::cmp::{min, Ordering};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
@@ -1533,7 +1533,7 @@ impl StableState for AccountsStore {
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         ): (
-            HashMap<Vec<u8>, Account>,
+            BTreeMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
             HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             VecDeque<Transaction>,

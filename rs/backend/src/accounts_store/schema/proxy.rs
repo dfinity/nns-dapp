@@ -1,7 +1,7 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
 
@@ -12,13 +12,13 @@ pub struct AccountsDbAsProxy {
 
 impl AccountsDbAsProxy {
     /// Creates a db from a hash map of accounts.
-    pub fn from_map(map: HashMap<Vec<u8>, Account>) -> Self {
+    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             map: AccountsDbAsMap::from_map(map),
         }
     }
     /// Provides the DB contents as a hash map.
-    pub fn as_map(&self) -> &HashMap<Vec<u8>, Account> {
+    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         self.map.as_map()
     }
 }
