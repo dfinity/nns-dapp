@@ -291,7 +291,8 @@ where
 /// Tests common functionality of AccountsDbTrait implementations.
 ///
 /// # Arguments
-/// `$implementation`: An expression that evaluates to an AccountsDbTrait implementation.
+/// `$implementation`: An expression that evaluates to an empty AccountsDbTrait implementation.
+///     Note: The expression will be called repeatedly.
 macro_rules! test_accounts_db {
     ($implementation:expr) => {
         #[test]
