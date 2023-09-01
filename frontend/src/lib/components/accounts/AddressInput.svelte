@@ -33,6 +33,7 @@
 </script>
 
 <InputWithError
+  testId="address-input-component"
   inputType="text"
   placeholderLabelKey="accounts.address"
   name="accounts-address"

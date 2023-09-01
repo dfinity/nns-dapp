@@ -1,11 +1,18 @@
 <script lang="ts">
+  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
   import {
+    TokenAmount,
+    ICPToken,
+    type Token,
+    assertNonNullish,
+  } from "@dfinity/utils";
+  import type {
     WizardModal,
-    type WizardSteps,
-    type WizardStep,
+    WizardSteps,
+    WizardStep,
   } from "@dfinity/gix-components";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
@@ -54,7 +61,28 @@
     token: ICPToken,
   });
 
-  let destinationAddress: string | undefined;
+  let showManualAddress = false;
+  let destinationAddress: string;
+
+  let scanQrCode: ({
+    requiredToken,
+  }: {
+    requiredToken: Token;
+  }) => Promise<QrResponse>;
+
+  const goQRCode = async () => {
+    const { result, identifier } = await scanQrCode({
+      requiredToken: ICPToken,
+    });
+
+    if (result !== "success") {
+      return;
+    }
+    // When result === "success", identifier is always defined.
+    assertNonNullish(identifier);
+
+    destinationAddress = identifier;
+  };
 
   const onSelectAddress = ({
     detail: { address },
@@ -96,11 +124,12 @@
   };
 </script>
 
-<WizardModal
+<QrWizardModal
   testId="disburse-nns-neuron-modal-component"
   {steps}
   bind:currentStep
-  bind:this={modal}
+  bind:modal
+  bind:scanQrCode
   on:nnsClose
 >
   <svelte:fragment slot="title"
@@ -108,7 +137,12 @@
     ></svelte:fragment
   >
   {#if currentStep?.name === "SelectDestination"}
-    <NnsDestinationAddress on:nnsAddress={onSelectAddress} />
+    <NnsDestinationAddress
+      bind:showManualAddress
+      bind:selectedDestinationAddress={destinationAddress}
+      on:nnsAddress={onSelectAddress}
+      on:nnsOpenQRCodeReader={goQRCode}
+    />
   {/if}
   {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
@@ -121,4 +155,4 @@
       on:nnsBack={modal.back}
     />
   {/if}
-</WizardModal>
+</QrWizardModal>
