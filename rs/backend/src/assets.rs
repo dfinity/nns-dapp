@@ -131,7 +131,7 @@ impl Assets {
     ///
     /// - If the path looks like an index, the canonical suffix `/index.html` will be used.
     /// - The retrieval search will look for compressed versions of the data.  E.g. if
-    ///   `foo.json` is requested and foo.json.gz is available, that will be returned along with
+    ///   `foo.json` is requested and `foo.json.gz` is available, that will be returned along with
     ///   `gzip` as the encoding.  The encoding can be set in the browser response HTTP header
     ///   so that the browser will decompress the data before giving it to the requester.  If
     ///   the requester wishes to receive the compressed data, without transparent decoding,
@@ -293,7 +293,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 
 /// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
 /// These headers enable browser security features (like limit access to platform APIs and set
-/// iFrame policies, etc.).
+/// iframe policies, etc.).
 /// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
@@ -374,7 +374,7 @@ pub fn init_assets() {
 /// - Adds the files to `state.assets`.
 /// - Signs the given path and all alternate paths for the given asset.
 ///
-/// Note: The vec is mutated during decompression, so pass by reference is inefficient
+/// Note: The `Vec` is mutated during decompression, so pass by reference is inefficient
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
 pub fn insert_tar_xz(compressed: Vec<u8>) {

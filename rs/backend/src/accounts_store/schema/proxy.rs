@@ -3,22 +3,31 @@
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
 
-use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
+use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
+/// An accounts database delegates API calls to underlying implementations.
+///
+/// Notes:
+/// - The proxy manages migrations from one implementation to another, if applicable.
+/// - The proxy code itself will specify which databases are currently in
+///   use and how to migrate from one database to another.
+/// - It is the responsibility of the post-install hook to look at any
+///   version information and set up the db accordingly.
+///
+/// # Current data storage
+/// - Accounts are stored as a map.  No migrations are undertaken.
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
 }
 
-impl AccountsDbAsProxy {
-    /// Creates a db from a hash map of accounts.
-    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             map: AccountsDbAsMap::from_map(map),
         }
     }
-    /// Provides the DB contents as a hash map.
-    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         self.map.as_map()
     }
 }
@@ -56,31 +65,13 @@ impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests as generic_tests;
+    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
     use super::AccountsDbAsProxy;
 
-    #[test]
-    fn proxy_accounts_db_should_crud() {
-        generic_tests::assert_basic_crud_works(AccountsDbAsProxy::default());
-    }
+    test_accounts_db!(AccountsDbAsProxy::default());
 
     #[test]
-    fn proxy_accounts_update_with_happy_path_should_update_account() {
-        generic_tests::assert_update_with_happy_path_works(AccountsDbAsProxy::default());
-    }
-
-    #[test]
-    fn proxy_accounts_update_with_error_path_should_not_change_account() {
-        generic_tests::assert_update_not_saved_on_error(AccountsDbAsProxy::default());
-    }
-
-    #[test]
-    fn proxy_update_with_missing_key_should_return_none() {
-        generic_tests::assert_update_with_missing_key_returns_none(AccountsDbAsProxy::default());
-    }
-
-    #[test]
-    fn proxy_account_counts_should_be_correct() {
-        generic_tests::assert_account_count_is_correct(AccountsDbAsProxy::default());
+    fn map_conversions_should_work() {
+        assert_map_conversions_work::<AccountsDbAsProxy>();
     }
 }

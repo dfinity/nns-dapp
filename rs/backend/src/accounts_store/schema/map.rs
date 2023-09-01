@@ -1,6 +1,6 @@
 //! An accounts DB implemented as a hash map.
 
-use super::{Account, AccountsDbTrait};
+use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
 use std::collections::BTreeMap;
 use std::fmt;
 
@@ -31,13 +31,11 @@ impl AccountsDbTrait for AccountsDbAsMap {
     }
 }
 
-impl AccountsDbAsMap {
-    /// Creates a db from a map of accounts.
-    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+impl AccountsDbBTreeMapTrait for AccountsDbAsMap {
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self { accounts: map }
     }
-    /// Provides the DB contents as a map.
-    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         &self.accounts
     }
 }
@@ -51,8 +49,13 @@ impl fmt::Debug for AccountsDbAsMap {
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests::test_accounts_db;
+    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
     use super::AccountsDbAsMap;
 
     test_accounts_db!(AccountsDbAsMap::default());
+
+    #[test]
+    fn map_conversions_should_work() {
+        assert_map_conversions_work::<AccountsDbAsMap>();
+    }
 }

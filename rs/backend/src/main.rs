@@ -43,7 +43,7 @@ fn init(args: Option<CanisterArguments>) {
     perf::record_instruction_count("init stop");
 }
 
-/// Redundant function, never called but required as this is main.rs.
+/// Redundant function, never called but required as this is `main.rs`.
 fn main() {}
 
 #[pre_upgrade]
