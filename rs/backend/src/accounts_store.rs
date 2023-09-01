@@ -749,25 +749,25 @@ impl AccountsStore {
         };
 
         let account = self.accounts_db.db_get_account(&account_identifier.to_vec());
-        let transactions = match account {
+        let transactions: &Vec<u64> = match &account {
             None => {
                 return empty_transaction_response;
             }
             Some(account) => {
                 if account_identifier == request.account_identifier {
-                    account.default_account_transactions
+                    &account.default_account_transactions
                 } else if let Some(hardware_wallet_account) = account
                     .hardware_wallet_accounts
                     .iter()
                     .find(|a| request.account_identifier == AccountIdentifier::from(a.principal))
                 {
-                    hardware_wallet_account.transactions.clone()
+                    &hardware_wallet_account.transactions
                 } else if let Some(sub_account) = account
                     .sub_accounts
                     .values()
                     .find(|a| a.account_identifier == request.account_identifier)
                 {
-                    sub_account.transactions.clone()
+                    &sub_account.transactions
                 } else {
                     return empty_transaction_response;
                 }
@@ -779,7 +779,7 @@ impl AccountsStore {
             .rev()
             .skip(request.offset as usize)
             .take(request.page_size as usize)
-            .cloned()
+            .copied()
             .map(|transaction_index| {
                 let transaction = self.get_transaction(transaction_index).unwrap();
                 TransactionResult {
