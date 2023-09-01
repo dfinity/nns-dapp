@@ -18,8 +18,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import { decodePayment } from "@dfinity/ledger";
-  import { toastsError } from "$lib/stores/toasts.store";
 
   export let testId = "transaction-modal-component";
   export let transactionInit: TransactionInit = {};
@@ -80,7 +78,12 @@
   ];
 
   let modal: WizardModal;
-  let scanQrCode: () => Promise<string>;
+  let scanQrCode: ({ requiredToken }: { requiredToken: Token }) => Promise<{
+    result: "success" | "canceled" | "token_incompatible";
+    identifier?: string;
+    token?: string;
+    amount?: number;
+  }>;
 
   const goNext = () => {
     modal.next();
@@ -93,40 +96,25 @@
     modal.set(steps.findIndex(({ name }) => name === step));
 
   export const goProgress = () => goStep(STEP_PROGRESS);
+
   const goQRCode = async () => {
-    const value = await scanQrCode();
-    if (nonNullish(value)) {
-      onQRCode(value);
-    }
-  };
+    const {
+      result,
+      identifier,
+      amount: paymentAmount,
+    } = await scanQrCode({
+      requiredToken: token,
+    });
 
-  const onQRCode = (value: string) => {
-    const payment = decodePayment(value);
-
-    // if we can successfully decode a payment from the QR code, we can validate that it corresponds to the same token and also set the amount, in addition to populating the destination address.
-    if (nonNullish(payment)) {
-      const {
-        token: paymentToken,
-        identifier,
-        amount: paymentAmount,
-      } = payment;
-
-      if (paymentToken !== token.symbol.toLowerCase()) {
-        toastsError({
-          labelKey: "error.qrcode_token_incompatible",
-        });
-        return;
-      }
-
-      selectedDestinationAddress = identifier;
-
-      if (nonNullish(paymentAmount)) {
-        amount = paymentAmount;
-      }
+    if (result !== "success") {
       return;
     }
 
-    selectedDestinationAddress = value;
+    if (nonNullish(paymentAmount)) {
+      amount = paymentAmount;
+    }
+
+    selectedDestinationAddress = identifier;
   };
 </script>
 

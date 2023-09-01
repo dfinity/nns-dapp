@@ -4,6 +4,7 @@
 
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("QrWizardModal", () => {
@@ -12,7 +13,9 @@ describe("QrWizardModal", () => {
   };
 
   const scanQrCode = (component) => {
-    return component.$$.ctx[component.$$.props["scanQrCode"]]();
+    return component.$$.ctx[component.$$.props["scanQrCode"]]({
+      requiredToken: ICPToken,
+    });
   };
 
   const goToNextStep = (component) => {
@@ -41,7 +44,7 @@ describe("QrWizardModal", () => {
     expect(getCurrentStep(component).name).toEqual("QRCode");
   });
 
-  it("resolves scanQrCode() to undefined when canceled", async () => {
+  it("resolves scanQrCode() to 'canceled' when canceled", async () => {
     const steps = [
       {
         title: "Step 1",
@@ -67,7 +70,7 @@ describe("QrWizardModal", () => {
     await runResolvedPromises();
 
     expect(qrPromiseResolved).toBeCalled();
-    expect(await qrPromise).toBeUndefined();
+    expect(await qrPromise).toEqual({ result: "canceled" });
   });
 
   it("can go to next step and back", async () => {
