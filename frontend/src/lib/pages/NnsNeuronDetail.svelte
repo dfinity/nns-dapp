@@ -143,31 +143,32 @@
     <main class="legacy">
       <section data-tid="neuron-detail">
         {#if neuron && !inVotingProcess}
-          <div class="section-wrapper">
-            <NnsNeuronPageHeader {neuron} />
-            <NnsNeuronPageHeading {neuron} />
+          <NnsNeuronPageHeader {neuron} />
+          <NnsNeuronPageHeading {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronVotingPowerSection {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronMaturitySection {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronAdvancedSection {neuron} />
+          <Separator spacing="none" />
+          <NeuronFollowingCard {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronHotkeysCard {neuron} />
+          <Separator spacing="none" />
+          {#if IS_TESTNET}
+            <NnsNeuronProposalsCard {neuron} />
             <Separator spacing="none" />
-            <NnsNeuronVotingPowerSection {neuron} />
-            <Separator spacing="none" />
-            <NnsNeuronMaturitySection {neuron} />
-            <Separator spacing="none" />
-            <NnsNeuronAdvancedSection {neuron} />
-            <Separator spacing="none" />
-            <NeuronFollowingCard {neuron} />
-            <Separator spacing="none" />
-            <NnsNeuronHotkeysCard {neuron} />
-            <Separator spacing="none" />
-            {#if IS_TESTNET}
-              <NnsNeuronProposalsCard {neuron} />
-              <Separator spacing="none" />
-            {/if}
-            <NeuronVotingHistoryCard {neuron} />
-          </div>
+          {/if}
+          <NeuronVotingHistoryCard {neuron} />
         {:else}
-          <SkeletonCard size="large" cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
+          <SkeletonCard noMargin size="large" cardType="info" />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
         {/if}
       </section>
     </main>
@@ -177,7 +178,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .section-wrapper {
+  section {
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);

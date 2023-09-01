@@ -9,6 +9,7 @@
   export let size: "small" | "medium" | "large" = "small";
   export let cardType: CardType = "card";
   export let separator = false;
+  export let noMargin = false;
 
   const cards: Record<CardType, typeof SvelteComponent> = {
     card: Card,
@@ -16,7 +17,7 @@
   };
 </script>
 
-<svelte:component this={cards[cardType]} testId="skeleton-card">
+<svelte:component this={cards[cardType]} testId="skeleton-card" {noMargin}>
   <div class="small" slot="start">
     <SkeletonText />
   </div>
