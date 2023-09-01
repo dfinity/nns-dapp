@@ -50,6 +50,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
 
 #### Deprecated
 #### Removed
