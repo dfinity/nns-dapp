@@ -16,11 +16,11 @@ describe("QrWizardModal", () => {
   };
 
   const goToNextStep = (component) => {
-    return component.$$.ctx[component.$$.props["next"]]();
+    return component.$$.ctx[component.$$.props["modal"]].next();
   };
 
   const goToPreviousStep = (component) => {
-    return component.$$.ctx[component.$$.props["back"]]();
+    return component.$$.ctx[component.$$.props["modal"]].back();
   };
 
   it("moves to QRCode step when scanQrCode is called", async () => {

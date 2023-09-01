@@ -19,15 +19,7 @@
     },
   ];
 
-  let modal: WizardModal;
-
-  export const next = () => {
-    modal.next();
-  };
-
-  export const back = () => {
-    modal.back();
-  };
+  export let modal: WizardModal;
 
   export const set = (step: number) => {
     modal.set(step);

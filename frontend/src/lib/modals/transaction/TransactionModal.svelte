@@ -75,7 +75,8 @@
     },
   ];
 
-  let modal: QrWizardModal;
+  let modal: WizardModal;
+  let scanQrCode: () => Promise<string>;
 
   const goNext = () => {
     modal.next();
@@ -89,7 +90,7 @@
 
   export const goProgress = () => goStep(STEP_PROGRESS);
   const goQRCode = async () => {
-    const value = await modal.scanQrCode();
+    const value = await scanQrCode();
     if (nonNullish(value)) {
       onQRCode(value);
     }
@@ -129,7 +130,8 @@
   {testId}
   {steps}
   bind:currentStep
-  bind:this={modal}
+  bind:modal
+  bind:scanQrCode
   on:nnsClose
   disablePointerEvents={currentStep?.name === STEP_PROGRESS}
 >
