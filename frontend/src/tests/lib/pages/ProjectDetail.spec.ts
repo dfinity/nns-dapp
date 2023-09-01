@@ -34,7 +34,10 @@ import {
   mockAccountDetails,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { snsFinalizationStatusResponseMock } from "$tests/mocks/sns-finalization-status.mock";
+import {
+  createFinalizationStatusMock,
+  snsFinalizationStatusResponseMock,
+} from "$tests/mocks/sns-finalization-status.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -479,7 +482,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             } as SnsSwapCommitment);
         });
 
-        const participateInSwap = async () => {
+        const participateInSwap = async (): Promise<ProjectDetailPo> => {
           const { container } = render(ProjectDetail, props);
 
           await runResolvedPromises();
@@ -507,6 +510,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
+
+          return projectDetail;
         };
 
         it("when no restricted countries", async () => {
@@ -541,6 +546,17 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             },
           ]);
           await participateInSwap();
+        });
+
+        it("should show finalizing after successful participation if api returns finalizing state", async () => {
+          const finalizingStatus = createFinalizationStatusMock(true);
+          jest
+            .spyOn(snsSaleApi, "queryFinalizationStatus")
+            .mockResolvedValue(finalizingStatus);
+
+          const po = await participateInSwap();
+
+          expect(await po.getStatus()).toBe("Finalizing");
         });
       });
 
