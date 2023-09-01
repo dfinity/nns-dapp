@@ -7,23 +7,39 @@ print_help() {
   cat <<-EOF
 
 	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_test_account'.
+
+	Note: This test requires a blank nns-dapp with no existing test accounts.
 	EOF
 }
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
+clap.define short=i long=install desc="Install nns-dapp in an empty dfx server" variable=INSTALL nargs=0
 clap.define short=d long=dir desc="A directory containing nns-dapp-arg-local.did and nns-dapp_test.wasm.gz" variable=BUILD_DIR default="."
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-dfx stop || true
-dfx start --clean --background
-dfx canister create nns-dapp
-dfx canister install nns-dapp --wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --argument "$(cat "$BUILD_DIR/nns-dapp-arg-local.did")"
+# On request, we can install a blank nns-dapp on a blank dfx server.
+test -z "${INSTALL:-}" || {
+  dfx stop || true
+  dfx start --clean --background
 
+  dfx canister create nns-dapp
+  dfx canister install nns-dapp --wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --argument "$(cat "$BUILD_DIR/nns-dapp-arg-local.did")"
+}
+# However the network was created, the number of pre-existing test accounts must be zero.  We will enforce
+# the stronger constraint that the number of accounts is zero.
+dfx canister call nns-dapp get_stats | idl2json | jq -e '.accounts_count == "0"' >/dev/null || {
+  echo "ERROR: The nns-dapp must be empty; it has existing accounts."
+  exit 1
+} >&2
+
+# Create some toy accounts
 NUM_TOY_ACCOUNTS=4
-dfx canister call nns-dapp create_toy_accounts "(10: nat)"
+dfx canister call nns-dapp create_toy_accounts "($NUM_TOY_ACCOUNTS: nat)"
+
+# Get the toy accounts
 actual_output_file="$(mktemp get-toy-canister-output.XXXXXX)"
 {
   for ((index = 0; index < NUM_TOY_ACCOUNTS; index++)); do
@@ -32,9 +48,9 @@ actual_output_file="$(mktemp get-toy-canister-output.XXXXXX)"
   done
 } >"$actual_output_file"
 
+# Verify that the accounts are as expected
 expected_output="$(cat "$0.data")"
 actual_output="$(cat "$actual_output_file")"
-
 [[ "$expected_output" == "$actual_output" ]] || {
   echo "ERROR: Output does not match expected output."
   echo
@@ -52,5 +68,5 @@ actual_output="$(cat "$actual_output_file")"
 } >&2
 
 rm "$actual_output_file"
-dfx stop || true
+test -z "${INSTALL:-}" || dfx stop || true
 echo "Tests in $0 passed."

@@ -128,7 +128,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_test
-      - name: Start snapshot environment
+      - name: Start empty nns-dapp
+        # As long as the snapshot environment can be installed with no accounts, we can use that.
+        # The snapshot action also installs idl2json and jq; commands that we will need.
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
@@ -469,7 +471,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
