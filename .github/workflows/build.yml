@@ -131,6 +131,8 @@ jobs:
         with:
           name: nns-dapp_test
           path: out
+      - name: Show us what you got
+        run: ls -l out
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
