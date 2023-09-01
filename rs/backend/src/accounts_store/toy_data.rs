@@ -1,8 +1,8 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails, NeuronId,
-    Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
+    AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails, NeuronId, Operation,
+    PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
@@ -96,17 +96,6 @@ impl AccountsStore {
             }
         }
         index_range_start
-    }
-
-    /// Gets the toy account with the given index.
-    pub fn get_toy_account(&self, toy_account_index: u64) -> Result<Account, String> {
-        let principal = PrincipalId::new_user_test_id(toy_account_index);
-        let account_identifier = AccountIdentifier::from(principal);
-        let account = self
-            .accounts
-            .get(&account_identifier.to_vec())
-            .ok_or_else(|| format!("Account not found: {}", toy_account_index))?;
-        Ok((*account).clone())
     }
 
     /// Creates an account store with the given number of test accounts.
