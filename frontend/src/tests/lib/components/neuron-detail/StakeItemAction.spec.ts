@@ -54,11 +54,10 @@ describe("StakeItemAction", () => {
     expect(await po.getDescription()).toBe("FLURB staked");
   });
 
-  it("should render increase stake button secondary variant", async () => {
+  it("should render increase stake button", async () => {
     const po = renderComponent({});
 
     expect(await po.hasIncreaseStakeButton()).toBe(true);
-    expect(await po.getIncreaseStakeButtonPo().getVariant()).toBe("secondary");
   });
 
   it("should not render increase stake button", async () => {

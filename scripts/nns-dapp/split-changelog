@@ -61,7 +61,7 @@ fi
 # Add 1 to start after the title.
 START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$OLD_CHANGELOG" | cut -d: -f1) + 1))"
 # Subtract 1 to end before the next title.
-END_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Proposal [0-9]\+$' "$OLD_CHANGELOG" | cut -d: -f1) - 1))"
+END_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Proposal [0-9]\+' "$OLD_CHANGELOG" | cut -d: -f1) - 1))"
 
 # Find which entries are new.
 PATCH="$(mktemp)"

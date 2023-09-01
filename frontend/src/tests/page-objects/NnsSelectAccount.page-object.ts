@@ -9,6 +9,22 @@ export class NnsSelectAccountPo extends BasePageObject {
     return new NnsSelectAccountPo(element.byTestId(NnsSelectAccountPo.TID));
   }
 
+  getAccountCardPos(): Promise<AccountCardPo[]> {
+    return AccountCardPo.allUnder(this.root);
+  }
+
+  async getAccountCardPoForIdentifier(
+    identifier: string
+  ): Promise<AccountCardPo> {
+    const accountCards = await this.getAccountCardPos();
+    for (const accountCard of accountCards) {
+      if ((await accountCard.getIdentifier()) === identifier) {
+        return accountCard;
+      }
+    }
+    throw new Error(`Account card with identifier ${identifier} not found`);
+  }
+
   getMainAccountCardPo(): AccountCardPo {
     // There might be multiple cards but the first one should be the main account.
     return AccountCardPo.under(this.root);

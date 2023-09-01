@@ -73,4 +73,5 @@ const initSnsFunctionsStore = (): SnsNervousSystemFunctionsStore => {
   };
 };
 
+// TODO: expose update only functions instead of a readable store
 export const snsFunctionsStore = initSnsFunctionsStore();

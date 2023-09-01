@@ -70,6 +70,6 @@
     {/if}</svelte:fragment
   >
   {#if allowedToDissolve}
-    <IncreaseSnsDissolveDelayButton {neuron} variant="secondary" />
+    <IncreaseSnsDissolveDelayButton {neuron} />
   {/if}
 </CommonItemAction>

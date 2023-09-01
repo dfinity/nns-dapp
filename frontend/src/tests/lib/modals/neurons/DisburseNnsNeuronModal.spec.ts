@@ -4,6 +4,7 @@
 
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -20,12 +21,14 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
+import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 
@@ -53,6 +56,11 @@ describe("DisburseNnsNeuronModal", () => {
     });
   };
 
+  const renderComponent = async (neuron: NeuronInfo) => {
+    const { container } = await renderDisburseModal(neuron);
+    return DisburseNnsNeuronModalPo.under(new JestPageObjectElement(container));
+  };
+
   describe("when accounts are loaded", () => {
     beforeEach(() => {
       icpAccountsStore.setForTesting({
@@ -60,86 +68,65 @@ describe("DisburseNnsNeuronModal", () => {
         subAccounts: [mockSubAccount],
       });
     });
-    it("should display modal", async () => {
-      const { container } = await renderDisburseModal(mockNeuron);
 
-      expect(container.querySelector("div.modal")).not.toBeNull();
+    it("should display modal", async () => {
+      const po = await renderComponent(mockNeuron);
+
+      expect(await po.isPresent()).toBe(true);
     });
 
     it("should render accounts", async () => {
-      const { queryAllByTestId } = await renderDisburseModal(mockNeuron);
+      const po = await renderComponent(mockNeuron);
 
-      const accountCards = queryAllByTestId("account-card");
+      const accountCards = await po
+        .getNnsDestinationAddressPo()
+        .getNnsSelectAccountPo()
+        .getAccountCardPos();
       expect(accountCards.length).toBe(2);
     });
 
     it("should be able to select an account", async () => {
-      const { queryAllByTestId, queryByTestId } = await renderDisburseModal(
-        mockNeuron
-      );
+      const po = await renderComponent(mockNeuron);
 
-      const accountCards = queryAllByTestId("account-card");
+      const accountCards = await po
+        .getNnsDestinationAddressPo()
+        .getNnsSelectAccountPo()
+        .getAccountCardPos();
       expect(accountCards.length).toBe(2);
 
-      const firstAccount = accountCards[0];
-      await fireEvent.click(firstAccount);
-
-      const confirmScreen = queryByTestId("confirm-disburse-screen");
-      expect(confirmScreen).not.toBeNull();
+      expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(false);
+      await accountCards[0].click();
+      expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
     });
 
     it("should be able to add address in input", async () => {
-      const { container, queryByTestId } = await renderDisburseModal(
-        mockNeuron
-      );
-
-      const addressInput = container.querySelector("input[type='text']");
-      expect(addressInput).not.toBeNull();
-      const continueButton = queryByTestId("address-submit-button");
-      expect(continueButton).not.toBeNull();
-      expect(continueButton?.getAttribute("disabled")).not.toBeNull();
+      const po = await renderComponent(mockNeuron);
+      const destinationPo = po.getNnsDestinationAddressPo();
 
       const address = mockMainAccount.identifier;
-      addressInput &&
-        (await fireEvent.input(addressInput, { target: { value: address } }));
-      expect(continueButton?.getAttribute("disabled")).toBeNull();
+      await destinationPo.enterAddress(address);
 
-      continueButton && (await fireEvent.click(continueButton));
-
-      const confirmScreen = queryByTestId("confirm-disburse-screen");
-      expect(confirmScreen).not.toBeNull();
+      expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(false);
+      await destinationPo.clickContinue();
+      expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
     });
 
     it("should call disburse service", async () => {
-      const { container, queryByTestId } = await renderDisburseModal(
-        mockNeuron
-      );
-
-      const addressInput = container.querySelector("input[type='text']");
-      expect(addressInput).not.toBeNull();
-      const continueButton = queryByTestId("address-submit-button");
-      expect(continueButton).not.toBeNull();
-      expect(continueButton?.getAttribute("disabled")).not.toBeNull();
+      const po = await renderComponent(mockNeuron);
+      const destinationPo = po.getNnsDestinationAddressPo();
 
       const address = mockMainAccount.identifier;
-      addressInput &&
-        (await fireEvent.input(addressInput, { target: { value: address } }));
-      expect(continueButton?.getAttribute("disabled")).toBeNull();
+      await destinationPo.enterAddress(address);
 
-      continueButton && (await fireEvent.click(continueButton));
+      await destinationPo.clickContinue();
 
-      const confirmScreen = queryByTestId("confirm-disburse-screen");
-      expect(confirmScreen).not.toBeNull();
+      expect(disburse).not.toBeCalled();
+      expect(get(pageStore).path).not.toEqual(AppPath.Neurons);
 
-      const confirmButton = queryByTestId("disburse-neuron-button");
-      expect(confirmButton).not.toBeNull();
+      await po.getConfirmDisburseNeuronPo().clickConfirm();
 
-      confirmButton && (await fireEvent.click(confirmButton));
       expect(disburse).toBeCalled();
-      await waitFor(() => {
-        const { path } = get(pageStore);
-        expect(path).toEqual(AppPath.Neurons);
-      });
+      expect(get(pageStore).path).toEqual(AppPath.Neurons);
     });
   });
 
@@ -147,22 +134,43 @@ describe("DisburseNnsNeuronModal", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
     });
+
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = BigInt(10_000_000);
+      let resolveQueryAccount;
+      const queryAccountPromise = new Promise<AccountDetails>((resolve) => {
+        resolveQueryAccount = () => resolve(mockAccountDetails);
+      });
+
       jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
       jest
         .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
-      const { queryByTestId } = await renderDisburseModal(mockNeuron);
+        .mockReturnValue(queryAccountPromise);
 
-      expect(queryByTestId("account-card")).not.toBeInTheDocument();
+      const po = await renderComponent(mockNeuron);
 
-      // Component is rendered after the accounts are loaded
-      await waitFor(() =>
-        expect(queryByTestId("account-card")).toBeInTheDocument()
-      );
+      await runResolvedPromises();
+      expect(
+        (
+          await po
+            .getNnsDestinationAddressPo()
+            .getNnsSelectAccountPo()
+            .getAccountCardPos()
+        ).length
+      ).toBe(0);
+
+      resolveQueryAccount();
+      await runResolvedPromises();
+      expect(
+        (
+          await po
+            .getNnsDestinationAddressPo()
+            .getNnsSelectAccountPo()
+            .getAccountCardPos()
+        ).length
+      ).toBe(1);
     });
   });
 

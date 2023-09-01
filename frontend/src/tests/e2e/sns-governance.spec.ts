@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("Account / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -65,7 +65,7 @@ test("Test SNS governance", async ({ page, context }) => {
   await neuronCard.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
   expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
-  expect(await neuronDetail.getStakeNewUI()).toBe(formattedStake);
+  expect(await neuronDetail.getStake()).toBe(formattedStake);
   expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 
   step("SN003: User can add a hotkey");
