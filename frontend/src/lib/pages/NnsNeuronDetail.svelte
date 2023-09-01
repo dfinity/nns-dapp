@@ -153,15 +153,16 @@
             <Separator spacing="none" />
             <NnsNeuronAdvancedSection {neuron} />
             <Separator spacing="none" />
+            <NeuronFollowingCard {neuron} />
+            <Separator spacing="none" />
+            <NnsNeuronHotkeysCard {neuron} />
+            <Separator spacing="none" />
+            {#if IS_TESTNET}
+              <NnsNeuronProposalsCard {neuron} />
+              <Separator spacing="none" />
+            {/if}
+            <NeuronVotingHistoryCard {neuron} />
           </div>
-          <NeuronFollowingCard {neuron} />
-
-          {#if IS_TESTNET}
-            <NnsNeuronProposalsCard {neuron} />
-          {/if}
-
-          <NnsNeuronHotkeysCard {neuron} />
-          <NeuronVotingHistoryCard {neuron} />
         {:else}
           <SkeletonCard size="large" cardType="info" separator />
           <SkeletonCard cardType="info" separator />
