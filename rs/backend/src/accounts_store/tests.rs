@@ -98,7 +98,9 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         canisters: Vec::default(),
     };
 
-    store.accounts.insert(account_identifier.to_vec(), account);
+    store
+        .accounts_db
+        .db_insert_account(&account_identifier.to_vec(), account);
 
     let transfer = Transfer {
         from: account_identifier,
@@ -1375,7 +1377,7 @@ fn prune_transactions() {
     );
 
     let mut transaction_indexes_remaining = Vec::new();
-    for (_, account) in store.accounts.iter() {
+    for account in store.accounts_db.values() {
         transaction_indexes_remaining.append(account.default_account_transactions.clone().as_mut());
 
         for sub_account in account.sub_accounts.values() {
