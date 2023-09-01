@@ -1,5 +1,6 @@
 <script lang="ts">
   import QrWizardModal from "./QrWizardModal.svelte";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import type {
     WizardModal,
     WizardStep,
@@ -78,12 +79,11 @@
   ];
 
   let modal: WizardModal;
-  let scanQrCode: ({ requiredToken }: { requiredToken: Token }) => Promise<{
-    result: "success" | "canceled" | "token_incompatible";
-    identifier?: string;
-    token?: string;
-    amount?: number;
-  }>;
+  let scanQrCode: ({
+    requiredToken,
+  }: {
+    requiredToken: Token;
+  }) => Promise<QrResponse>;
 
   const goNext = () => {
     modal.next();
@@ -110,11 +110,11 @@
       return;
     }
 
+    selectedDestinationAddress = identifier;
+
     if (nonNullish(paymentAmount)) {
       amount = paymentAmount;
     }
-
-    selectedDestinationAddress = identifier;
   };
 </script>
 
