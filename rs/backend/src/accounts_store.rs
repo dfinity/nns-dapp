@@ -779,9 +779,8 @@ impl AccountsStore {
             .rev()
             .skip(request.offset as usize)
             .take(request.page_size as usize)
-            .copied()
             .map(|transaction_index| {
-                let transaction = self.get_transaction(transaction_index).unwrap();
+                let transaction = self.get_transaction(*transaction_index).unwrap();
                 TransactionResult {
                     block_height: transaction.block_height,
                     timestamp: transaction.timestamp,
