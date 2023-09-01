@@ -25,7 +25,7 @@
     modal.set(step);
   };
 
-  const setStepName = (stepName: string) => {
+  const goStep = (stepName: string) => {
     const stepNumber = stepsPlusQr.findIndex(({ name }) => name === stepName);
     set(stepNumber);
   };
@@ -36,14 +36,14 @@
   export const scanQrCode = async () => {
     const prevStep = currentStep;
 
-    setStepName(STEP_QRCODE);
+    goStep(STEP_QRCODE);
 
     return new Promise<string | undefined>((resolve) => {
       resolveQrCodePromise = resolve;
     }).finally(() => {
       // TypeScript can't know that currentStep is defined before scanQrCode
       // will be called.
-      setStepName(prevStep?.name || steps[0].name);
+      goStep(prevStep?.name || steps[0].name);
     });
   };
 
