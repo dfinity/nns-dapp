@@ -7,7 +7,7 @@
   export let neuron: NeuronInfo;
 </script>
 
-<CardInfo>
+<CardInfo noMargin>
   <h3>{$i18n.neuron_detail.voting_history}</h3>
   <Ballots {neuron} />
 </CardInfo>

@@ -15,7 +15,6 @@
   import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
   import Followee from "./Followee.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let neuron: NeuronInfo;
   let isControllable: boolean;
@@ -35,7 +34,7 @@
   onMount(listKnownNeurons);
 </script>
 
-<CardInfo>
+<CardInfo noMargin>
   <KeyValuePairInfo testId="neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"
@@ -57,8 +56,6 @@
     {/if}
   </div>
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {
