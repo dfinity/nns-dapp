@@ -1,6 +1,10 @@
 <script lang="ts">
   import QrWizardModal from "./QrWizardModal.svelte";
-  import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
+  import type {
+    WizardModal,
+    WizardStep,
+    WizardSteps,
+  } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
