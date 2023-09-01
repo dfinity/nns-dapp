@@ -15,7 +15,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 ///   version information and set up the db accordingly.
 ///
 /// # Current data storage
-/// - Accounts are
+/// - Accounts are stored as a map.  No migrations are undertaken.
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
