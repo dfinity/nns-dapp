@@ -1,8 +1,8 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails, NeuronId, Operation,
-    PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
+    schema::AccountsDbTrait, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails,
+    NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
@@ -23,7 +23,7 @@ impl AccountsStore {
     /// - The index of the first account created by this call.  The account indices are `first...first+num_accounts-1`.
     pub fn create_toy_accounts(&mut self, num_accounts: u64) -> u64 {
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
-        let num_existing_accounts = self.accounts.len() as u64;
+        let num_existing_accounts = self.accounts_db.db_accounts_len();
         let (index_range_start, index_range_end) = (num_existing_accounts, (num_existing_accounts + num_accounts));
         let mut neurons_needed: f32 = 0.0;
         let mut neurons_created: f32 = 0.0;
@@ -111,5 +111,5 @@ impl AccountsStore {
 fn should_be_able_to_create_large_accounts_store() {
     let num_accounts = 10_000;
     let accounts_store = AccountsStore::with_toy_accounts(num_accounts);
-    assert_eq!(num_accounts, accounts_store.accounts.len() as u64);
+    assert_eq!(num_accounts, accounts_store.accounts_db.db_accounts_len());
 }
