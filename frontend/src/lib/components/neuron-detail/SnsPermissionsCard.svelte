@@ -1,6 +1,5 @@
 <script lang="ts">
   import CardInfo from "../ui/CardInfo.svelte";
-  import Separator from "../ui/Separator.svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
   import TagsList from "../ui/TagsList.svelte";

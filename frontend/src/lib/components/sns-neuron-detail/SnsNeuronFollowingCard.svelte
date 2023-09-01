@@ -18,7 +18,6 @@
   import { getContext } from "svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import SnsFollowee from "./SnsFollowee.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
   import {
