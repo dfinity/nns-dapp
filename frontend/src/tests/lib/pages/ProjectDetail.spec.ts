@@ -300,10 +300,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       it("should query finalization status and load it in store", async () => {
         render(ProjectDetail, props);
 
-        await waitFor(() => {
-          const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
-          expect(get(store).data).toEqual(snsFinalizationStatusResponseMock);
-        });
+        await runResolvedPromises();
+        const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
+        expect(get(store)?.data).toEqual(snsFinalizationStatusResponseMock);
       });
     });
   });
