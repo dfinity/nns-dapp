@@ -160,45 +160,41 @@
     <main class="legacy">
       <section data-tid="sns-neuron-detail-page">
         {#if loading}
-          <SkeletonCard size="large" cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-        {:else}
-          {#if nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
-            <div class="section-wrapper">
-              <SnsNeuronPageHeader {token} />
-              <SnsNeuronPageHeading
-                {parameters}
-                neuron={$selectedSnsNeuronStore.neuron}
-              />
-              <Separator spacing="none" />
-              <SnsNeuronVotingPowerSection
-                neuron={$selectedSnsNeuronStore.neuron}
-                {parameters}
-                {token}
-              />
-              <Separator spacing="none" />
-              <SnsNeuronMaturitySection
-                neuron={$selectedSnsNeuronStore.neuron}
-              />
-              <Separator spacing="none" />
-              <SnsNeuronAdvancedSection
-                neuron={$selectedSnsNeuronStore.neuron}
-                {governanceCanisterId}
-                {parameters}
-                {token}
-                {transactionFee}
-              />
-              <Separator spacing="none" />
-            </div>
-          {/if}
+          <SkeletonCard noMargin size="large" cardType="info" />
+          <SkeletonCard noMargin cardType="info" separator />
+          <SkeletonCard noMargin cardType="info" separator />
+          <SkeletonCard noMargin cardType="info" separator />
+          <!-- `loading` already checks for all that but TS is not smart enough to understand it -->
+        {:else if nonNullish(parameters) && nonNullish(token) && nonNullish($selectedSnsNeuronStore.neuron) && nonNullish(transactionFee)}
+          <SnsNeuronPageHeader {token} />
+          <SnsNeuronPageHeading
+            {parameters}
+            neuron={$selectedSnsNeuronStore.neuron}
+          />
+          <Separator spacing="none" />
+          <SnsNeuronVotingPowerSection
+            neuron={$selectedSnsNeuronStore.neuron}
+            {parameters}
+            {token}
+          />
+          <Separator spacing="none" />
+          <SnsNeuronMaturitySection neuron={$selectedSnsNeuronStore.neuron} />
+          <Separator spacing="none" />
+          <SnsNeuronAdvancedSection
+            neuron={$selectedSnsNeuronStore.neuron}
+            {governanceCanisterId}
+            {parameters}
+            {token}
+            {transactionFee}
+          />
+          <Separator spacing="none" />
           <SnsNeuronFollowingCard />
-          {#if nonNullish(parameters)}
-            <SnsNeuronHotkeysCard {parameters} />
-          {/if}
+          <Separator spacing="none" />
+          <SnsNeuronHotkeysCard {parameters} />
           {#if IS_TESTNET}
+            <Separator spacing="none" />
             <SnsNeuronProposalsCard />
+            <Separator spacing="none" />
             <SnsPermissionsCard />
           {/if}
         {/if}
@@ -210,7 +206,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .section-wrapper {
+  section {
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
