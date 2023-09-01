@@ -16,12 +16,10 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -45,12 +43,6 @@ describe("SnsProposals", () => {
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
     snsFiltersStore.reset();
-    setSnsProjects([
-      {
-        rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-    ]);
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
   });
