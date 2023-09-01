@@ -49,10 +49,12 @@
 
   const onQRCode = ({ detail: value }: CustomEvent<string>) => {
     resolveQrCodePromise?.(value);
+    resolveQrCodePromise = undefined;
   };
 
   const onCancel = () => {
     resolveQrCodePromise?.(undefined);
+    resolveQrCodePromise = undefined;
   };
 </script>
 
