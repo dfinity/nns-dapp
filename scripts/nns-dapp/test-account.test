@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_test_account'.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+dfx stop || true
+dfx start --clean --background
+dfx canister create nns-dapp
+dfx canister install nns-dapp --wasm ./out/nns-dapp_test.wasm.gz --argument "$(cat out/nns-dapp-arg-local.did)"
+
+NUM_TOY_ACCOUNTS=4
+dfx canister call nns-dapp create_toy_accounts "(10: nat)"
+actual_output_file="$(mktemp get-toy-canister-output.XXXXXX)"
+{
+  for ((index = 0; index < NUM_TOY_ACCOUNTS; index++)); do
+    printf "\n===== Account %d =====\n" "$index"
+    dfx canister call nns-dapp get_toy_account "($index)"
+  done
+} >"$actual_output_file"
+
+expected_output="$(cat "$0.data")"
+actual_output="$(cat "$actual_output_file")"
+
+[[ "$expected_output" == "$actual_output" ]] || {
+  echo "ERROR: Output does not match expected output."
+  echo
+  echo "Expected:"
+  echo "$expected_output"
+  echo
+  echo "Actual:"
+  echo "$actual_output"
+  echo
+  echo "Diff:"
+  diff -u <(echo "$expected_output") <(echo "$actual_output") || true
+  echo
+  echo "The actual output is in: $actual_output_file"
+  exit 1
+} >&2
+
+rm "$actual_output_file"
+dfx stop || true
+echo "Tests in $0 passed."
