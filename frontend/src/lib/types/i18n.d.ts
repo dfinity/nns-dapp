@@ -729,6 +729,7 @@ interface I18nSns_project_detail {
   status_aborted: string;
   status_pending: string;
   status_unspecified: string;
+  status_finalizing: string;
   participate_swap_description: string;
   understand_agree: string;
   participate_success: string;
