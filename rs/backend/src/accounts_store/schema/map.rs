@@ -51,36 +51,8 @@ impl fmt::Debug for AccountsDbAsMap {
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests as generic_tests;
+    use super::super::tests::test_accounts_db;
     use super::AccountsDbAsMap;
 
-    #[test]
-    fn map_accounts_db_should_crud() {
-        generic_tests::assert_basic_crud_works(AccountsDbAsMap::default());
-    }
-
-    #[test]
-    fn map_accounts_update_with_happy_path_should_update_account() {
-        generic_tests::assert_update_with_happy_path_works(AccountsDbAsMap::default());
-    }
-
-    #[test]
-    fn map_accounts_update_with_error_path_should_not_change_account() {
-        generic_tests::assert_update_not_saved_on_error(AccountsDbAsMap::default());
-    }
-
-    #[test]
-    fn map_update_with_missing_key_should_return_none() {
-        generic_tests::assert_update_with_missing_key_returns_none(AccountsDbAsMap::default());
-    }
-
-    #[test]
-    fn map_account_counts_should_be_correct() {
-        generic_tests::assert_account_count_is_correct(AccountsDbAsMap::default());
-    }
-
-    #[test]
-    fn map_accounts_db_should_iterate_over_values() {
-        generic_tests::assert_iterates_over_values(AccountsDbAsMap::default());
-    }
+    test_accounts_db!(AccountsDbAsMap::default());
 }

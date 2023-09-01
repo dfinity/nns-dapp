@@ -33,7 +33,7 @@
   </div>
   <svelte:fragment slot="actions">
     {#if isIncreaseStakeAllowed}
-      <IncreaseStakeButton variant="secondary" on:increaseStake />
+      <IncreaseStakeButton on:increaseStake />
     {/if}
   </svelte:fragment>
 </ItemAction>

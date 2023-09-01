@@ -36,7 +36,7 @@
     >{$i18n.neuron_detail.available_description}</svelte:fragment
   >
   {#if allowedToStakeMaturity}
-    <SnsStakeMaturityButton variant="secondary" />
+    <SnsStakeMaturityButton />
   {/if}
 
   {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}

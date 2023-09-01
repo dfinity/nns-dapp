@@ -13,15 +13,19 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Disburse maturity of sns neurons.
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
 
 #### Changed
 
 * Bigger icon and description first on Sns project page.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 
 #### Deprecated
 #### Removed
 
 * Remove ENABLE_NEURON_SETTINGS feature flag.
+* Remove unused components after new neuron details page.
 
 #### Fixed
 
@@ -38,6 +42,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Add a command to increment the package versions.
 
 #### Added
+
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.

@@ -134,11 +134,6 @@ describe("SnsNeuronDetail", () => {
         neuronId: validNeuronIdAsHexString,
       });
 
-      // Old cards should not be present
-      expect(await po.getMetaInfoCardPo().isPresent()).toBe(false);
-      expect(await po.getMaturityCardPo().isPresent()).toBe(false);
-      expect(await po.getStakeCardPo().isPresent()).toBe(false);
-
       expect(await po.getVotingPowerSectionPo().isPresent()).toBe(true);
       expect(await po.getMaturitySectionPo().isPresent()).toBe(true);
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
@@ -161,7 +156,7 @@ describe("SnsNeuronDetail", () => {
       const po = await renderComponent(props);
 
       // `neuronStake` to string formatted as expected
-      expect(await po.getStakeNewUI()).toBe("1.00");
+      expect(await po.getStake()).toBe("1.00");
       const amountToStake = 20;
       fakeSnsGovernanceApi.setNeuronWith({
         rootCanisterId,
@@ -169,11 +164,11 @@ describe("SnsNeuronDetail", () => {
         cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
       });
 
-      await po.increaseStakeNewUI(amountToStake);
+      await po.increaseStake(amountToStake);
       await runResolvedPromises();
 
       // `neuronStake` + 10 to string and formatted as expected
-      expect(await po.getStakeNewUI()).toBe("21.00");
+      expect(await po.getStake()).toBe("21.00");
       expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
       expect(increaseStakeNeuron).toHaveBeenCalledWith({
         neuronId: validNeuronId,
