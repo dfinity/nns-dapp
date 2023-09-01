@@ -3,7 +3,7 @@
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
 
-use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
+use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -21,17 +21,13 @@ pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
 }
 
-impl AccountsDbAsProxy {
-    /// Creates a db from a hash map of accounts.
-    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
-    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             map: AccountsDbAsMap::from_map(map),
         }
     }
-    /// Provides the DB contents as a hash map.
-    #[allow(dead_code)] // TODO: Remove allow when this is used in production.
-    pub fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
         self.map.as_map()
     }
 }
@@ -69,8 +65,13 @@ impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]
 mod tests {
-    use super::super::tests::test_accounts_db;
+    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
     use super::AccountsDbAsProxy;
 
     test_accounts_db!(AccountsDbAsProxy::default());
+
+    #[test]
+    fn map_conversions_should_work() {
+        assert_map_conversions_work::<AccountsDbAsProxy>();
+    }
 }

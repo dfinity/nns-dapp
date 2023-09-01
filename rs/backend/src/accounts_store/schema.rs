@@ -88,3 +88,11 @@ pub trait AccountsDbTrait {
     /// Iterates over accounts in the data store.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
 }
+
+/// A trait for data stores that support BTreeMap for account storage.
+pub trait AccountsDbBTreeMapTrait {
+    /// Creates a database from a map of accounts.
+    fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;
+    /// Provides the accounts as a map.
+    fn as_map(&self) -> &std::collections::BTreeMap<Vec<u8>, Account>;
+}
