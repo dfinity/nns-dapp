@@ -74,7 +74,7 @@ impl CanisterArguments {
         self
     }
 
-    /// Utility to convert static strings to an args field.
+    /// Utility to convert static strings to an `args` field.
     ///
     /// ```
     /// use nns_dapp::arguments::CanisterArguments;
@@ -156,7 +156,7 @@ impl TemplateEngine {
     ///
     /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
     /// * Values are taken from the engine `args` map.
-    ///   * If no match is found in the args map, variables are left unchanged.
+    ///   * If no match is found in the `args` map, variables are left unchanged.
     ///
     pub fn populate(&self, input: &str) -> String {
         self.regex
