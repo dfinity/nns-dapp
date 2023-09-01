@@ -28,7 +28,7 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import type { Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, isNullish } from "@dfinity/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
   import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
@@ -150,9 +150,9 @@
 
   let loading: boolean;
   $: loading =
-    $selectedSnsNeuronStore.neuron === null ||
-    parameters === undefined ||
-    transactionFee === undefined;
+    isNullish($selectedSnsNeuronStore.neuron) ||
+    isNullish(parameters) ||
+    isNullish(transactionFee);
 </script>
 
 <TestIdWrapper testId="sns-neuron-detail-component">

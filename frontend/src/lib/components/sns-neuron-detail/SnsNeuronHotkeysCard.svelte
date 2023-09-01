@@ -107,7 +107,7 @@
 
 <TestIdWrapper testId="sns-neuron-hotkeys-card-component">
   {#if neuron !== undefined && neuron !== null}
-    <CardInfo testId="sns-hotkeys-card">
+    <CardInfo noMargin testId="sns-hotkeys-card">
       <div class="title" slot="start">
         <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
         {#if showTooltip}

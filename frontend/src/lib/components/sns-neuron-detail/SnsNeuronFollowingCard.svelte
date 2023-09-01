@@ -71,7 +71,7 @@
     isNullish($nsFunctions);
 </script>
 
-<CardInfo testId="sns-neuron-following-card-component">
+<CardInfo noMargin testId="sns-neuron-following-card-component">
   <KeyValuePairInfo testId="sns-neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"
@@ -100,8 +100,6 @@
     </div>
   {/if}
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {

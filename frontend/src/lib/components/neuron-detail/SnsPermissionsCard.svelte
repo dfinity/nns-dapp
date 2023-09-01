@@ -26,7 +26,7 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<CardInfo>
+<CardInfo noMargin>
   <h3 slot="start">Permissions TESTNET ONLY</h3>
 
   {#each neuron?.permissions || [] as permission}
@@ -53,8 +53,6 @@
     >
   </div>
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {
