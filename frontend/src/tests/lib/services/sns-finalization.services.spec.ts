@@ -33,7 +33,10 @@ describe("sns-finalization-services", () => {
       await loadSnsFinalizationStatus(rootCanisterId);
 
       const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
-      expect(get(store).data).toEqual(snsFinalizationStatusResponseMock);
+      expect(get(store)).toEqual({
+        data: snsFinalizationStatusResponseMock,
+        certified: false,
+      });
       expect(spyQuery).toBeCalled();
     });
 
