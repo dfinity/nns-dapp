@@ -22,6 +22,7 @@ export class DisburseNnsNeuronModalPo extends BasePageObject {
 
   async disburseNeuron(): Promise<void> {
     // Main account is selected by default.
+    await this.getNnsDestinationAddressPo().clickContinue();
     await this.getConfirmDisburseNeuronPo().clickConfirm();
   }
 }
