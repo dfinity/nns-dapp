@@ -138,7 +138,7 @@ impl State {
     ///
     /// Also, the list of most recent SNSs is limited to the page size.
     pub const PAGE_SIZE: u64 = 10;
-    /// The prefix for all "v1" assets.
+    /// The prefix for all `v1` assets.
     pub const PREFIX_V1: &'static str = "/v1";
 
     /// Adds an SNS into the state accessible via certified query calls.

@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Disburse maturity of sns neurons.
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
 
 #### Changed
 
@@ -44,6 +45,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
 
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.

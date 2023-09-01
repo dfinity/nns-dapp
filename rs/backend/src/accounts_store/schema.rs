@@ -30,7 +30,7 @@ mod tests;
 /// assert_eq!(mock.db_accounts_len(), 0);
 /// ```
 ///
-/// Note: The key is &[u8] for historical reasons.  It _may_ be possible
+/// Note: The key is `&[u8]` for historical reasons.  It _may_ be possible
 /// to change this to `AccountIdentifier`.
 pub trait AccountsDbTrait {
     // Basic CRUD
@@ -62,8 +62,8 @@ pub trait AccountsDbTrait {
     /// time.  As such, protection against concurrent access is not a priority.
     ///
     /// # Arguments
-    /// - `account_key` = the account lookup key, typically `account_identifier.to_vec()`.
-    /// - `f` = a function that takes a mutable reference to the account as an argument and returns
+    /// - `account_key`: the account lookup key, typically `account_identifier.to_vec()`.
+    /// - `f`: a function that takes a mutable reference to the account as an argument and returns
     ///   a result.
     ///
     /// # Returns
@@ -89,7 +89,7 @@ pub trait AccountsDbTrait {
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
 }
 
-/// A trait for data stores that support BTreeMap for account storage.
+/// A trait for data stores that support `BTreeMap` for account storage.
 pub trait AccountsDbBTreeMapTrait {
     /// Creates a database from a map of accounts.
     fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;

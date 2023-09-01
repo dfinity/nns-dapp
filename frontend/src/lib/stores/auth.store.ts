@@ -23,7 +23,7 @@ let authClient: AuthClient | undefined | null;
 
 const getIdentityProvider = () => {
   // If we are in mainnet in the old domain, we use the old identity provider.
-  if (location.host === "nns.ic0.app") {
+  if (location.host.endsWith(".ic0.app")) {
     return OLD_MAINNET_IDENTITY_SERVICE_URL;
   }
 
