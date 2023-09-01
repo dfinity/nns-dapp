@@ -124,15 +124,14 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_test
-          path: out
-      - name: Show us what you got
-        run: ls -l out
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
