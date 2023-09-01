@@ -2,7 +2,7 @@
 
 use super::super::{AccountIdentifier, CanisterId, NamedCanister, PrincipalId};
 use super::*;
-use std::collections::{BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 /// Creates a toy canister.
 pub fn toy_canister(account_index: u64, canister_index: u64) -> NamedCanister {
@@ -286,6 +286,32 @@ where
         .map(|account| account.principal.unwrap())
         .collect::<BTreeSet<_>>();
     assert_eq!(expected_values, actual_values);
+}
+
+/// Verifies that a database, created from a map, returns that same map.
+///
+/// Note: This applies only to some implementations; it is not generally expected of all db
+/// implementations.
+pub fn assert_map_conversions_work<D>()
+where
+    D: AccountsDbTrait + AccountsDbBTreeMapTrait,
+{
+    // Prepare a map of accounts.
+    let accounts = (0..5).fold(BTreeMap::new(), |mut accounts, index| {
+        let account_key = vec![index as u8, 9, 1, 4];
+        let account = toy_account(index, 1);
+        accounts.insert(account_key, account);
+        accounts
+    });
+    // Create a database from the map of accounts.
+    let accounts_db = D::from_map(accounts.clone());
+    // Verify that the database contains all the accounts and no more.
+    for (account_key, account) in &accounts {
+        assert_eq!(accounts_db.db_get_account(account_key), Some(account.clone()));
+    }
+    assert_eq!(accounts_db.db_accounts_len(), accounts.len() as u64);
+    // Verify that the database returns the same map.
+    assert_eq!(accounts_db.as_map(), &accounts);
 }
 
 /// Tests common functionality of AccountsDbTrait implementations.

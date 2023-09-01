@@ -1,9 +1,10 @@
 //! An accounts DB implemented as a hash map.
 
-use super::{Account, AccountsDbTrait};
+use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
 use std::collections::BTreeMap;
+use std::fmt;
 
-#[derive(Default)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AccountsDbAsMap {
     accounts: BTreeMap<Vec<u8>, Account>,
 }
@@ -30,10 +31,31 @@ impl AccountsDbTrait for AccountsDbAsMap {
     }
 }
 
+impl AccountsDbBTreeMapTrait for AccountsDbAsMap {
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+        Self { accounts: map }
+    }
+    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+        &self.accounts
+    }
+}
+
+impl fmt::Debug for AccountsDbAsMap {
+    /// Summarizes the accounts DB contents for debug printouts.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "AccountsDbAsMap{{... {} entries}}", self.db_accounts_len())
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::super::tests::test_accounts_db;
+    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
     use super::AccountsDbAsMap;
 
     test_accounts_db!(AccountsDbAsMap::default());
+
+    #[test]
+    fn map_conversions_should_work() {
+        assert_map_conversions_work::<AccountsDbAsMap>();
+    }
 }

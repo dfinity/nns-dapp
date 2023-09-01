@@ -177,7 +177,7 @@ fn add_account_adds_principal_and_sets_transaction_types() {
         .map(|t| t.transaction_type.unwrap())
         .collect();
 
-    let expected_transaction_types = vec![
+    let expected_transaction_types = [
         TransactionType::TopUpNeuron,
         TransactionType::StakeNeuron,
         TransactionType::Transfer,

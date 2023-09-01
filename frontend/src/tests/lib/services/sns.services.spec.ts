@@ -19,6 +19,7 @@ import {
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { snsResponsesFor } from "$tests/mocks/sns-response.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -52,6 +53,7 @@ describe("sns-services", () => {
     jest.clearAllTimers();
     jest.clearAllMocks();
     snsSwapCommitmentsStore.reset();
+    snsQueryStore.reset();
     resetSnsProjects();
     snsDerivedStateStore.reset();
     overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
@@ -124,16 +126,17 @@ describe("sns-services", () => {
           direct_participant_count: [],
           cf_neuron_count: [],
         };
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: SnsSwapLifecycle.Open,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const spy = jest
           .spyOn(api, "querySnsDerivedState")
@@ -198,16 +201,17 @@ describe("sns-services", () => {
           direct_participant_count: [],
           cf_neuron_count: [],
         };
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: SnsSwapLifecycle.Open,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const spy = jest
           .spyOn(api, "querySnsDerivedState")
@@ -261,16 +265,17 @@ describe("sns-services", () => {
           direct_participant_count: [],
           cf_neuron_count: [],
         };
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: SnsSwapLifecycle.Open,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const initStore = get(snsQueryStore);
         const initState = initStore.swaps.find(
@@ -336,16 +341,17 @@ describe("sns-services", () => {
           direct_participant_count: [],
           cf_neuron_count: [],
         };
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: SnsSwapLifecycle.Open,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const spy = jest
           .spyOn(api, "querySnsDerivedState")
@@ -473,16 +479,17 @@ describe("sns-services", () => {
           decentralization_sale_open_timestamp_seconds: [BigInt(1)],
         };
         const dataLifecycle = SnsSwapLifecycle.Open;
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: dataLifecycle,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const spy = jest
           .spyOn(api, "querySnsLifecycle")
@@ -516,16 +523,17 @@ describe("sns-services", () => {
           decentralization_sale_open_timestamp_seconds: [BigInt(1)],
         };
         const dataLifecycle = SnsSwapLifecycle.Open;
-        setSnsProjects([
+        const responses = snsResponsesFor([
           {
-            rootCanisterId: rootCanisterId1,
+            principal: rootCanisterId1,
             lifecycle: dataLifecycle,
           },
           {
-            rootCanisterId: rootCanisterId2,
+            principal: rootCanisterId2,
             lifecycle: SnsSwapLifecycle.Open,
           },
         ]);
+        snsQueryStore.setData(responses);
 
         const spy = jest
           .spyOn(api, "querySnsLifecycle")

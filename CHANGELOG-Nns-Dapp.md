@@ -18,6 +18,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Bigger icon and description first on Sns project page.
+* Add a database abstraction layer, preparing for migration.
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 
@@ -44,10 +45,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
 
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
 
 #### Deprecated
 #### Removed
