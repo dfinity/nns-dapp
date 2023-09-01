@@ -37,7 +37,7 @@ pub async fn update_cache() {
     }
 }
 
-/// The NNS SNS wasm canister ID
+/// The NNS SNS Wasm canister ID
 ///
 /// This canister contains a list of all SNS root canisters it has created.
 #[allow(clippy::expect_used)]
@@ -47,7 +47,7 @@ fn nns_sns_wasm_canister_id() -> CanisterId {
 
 /// Gets a list of SNSs from the nns-sns-wasm canister and puts it in the queue of SNSs to query.
 ///
-/// Note: We can improve on this by filtering out SNSs that have become const.
+/// Note: We can improve on this by filtering out SNSs that have stopped changing.
 async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asking for more SNSs".to_string());
     let result: Result<(ListDeployedSnsesResponse,), (RejectionCode, std::string::String)> =

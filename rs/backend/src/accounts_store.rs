@@ -1,3 +1,4 @@
+//! User accounts and transactions.
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
@@ -26,6 +27,7 @@ pub mod schema;
 
 type TransactionIndex = u64;
 
+/// Accounts, transactions and related data.
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
@@ -45,12 +47,14 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 }
 
+/// An abstraction over sub-accounts and hardware wallets.
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
 enum AccountWrapper {
     SubAccount(AccountIdentifier, u8),      // Account Identifier + Sub Account Identifier
     HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
 }
 
+/// A user's account.
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 pub struct Account {
     /// The user principal.
@@ -1390,7 +1394,7 @@ impl AccountsStore {
 
     /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
     /// etc). Each time we detect one of these transaction types we need to add the details to the
-    /// multi_part_transactions_processor which will work through the required actions in the
+    /// `multi_part_transactions_processor` which will work through the required actions in the
     /// background.
     #[allow(clippy::too_many_arguments)]
     fn process_transaction_type(
