@@ -124,6 +124,8 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
