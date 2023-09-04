@@ -16,31 +16,90 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Get some ICP");
   await appPo.goToAccounts();
-  await appPo.getIcpTokens(11);
+  await appPo.getIcpTokens(21);
+
+  // should be created before dummy proposals
+  step("Stake a neuron for voting");
+  await appPo.goToNeurons();
+  await appPo
+    .getNeuronsPo()
+    .getNnsNeuronsFooterPo()
+    .stakeNeuron({ amount: 10, dissolveDelayDays: "max" });
 
   step("Create dummy proposals");
   const proposerNeuronId = await createDummyProposal(appPo);
 
   step("Open proposals list");
   await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  const nnsProposalListPo = appPo.getProposalsPo().getNnsProposalListPo();
+  await nnsProposalListPo.waitForContentLoaded();
 
   /*
    * Test proposal filters
    */
   step("Open proposals list");
   await appPo.goToProposals();
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
 
-  step(`Filter proposals by Topic`);
-  const getVisibleCardTopics = () =>
-    appPo.getProposalsPo().getNnsProposalListPo().getCardTopics();
+  step("Filter proposals by Votable only");
+  // Hide proposals that are not votable
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setVotableProposalsOnlyValue(true);
+  await nnsProposalListPo.waitForContentLoaded();
+  const proposalIdsBeforeVoting = await nnsProposalListPo.getVisibleProposalIds(
+    proposerNeuronId
+  );
+  step("Vote for a proposal");
+  const proposalCardForVoting =
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
+  const proposalIdForVoting = await proposalCardForVoting.getProposalId();
+  // Open proposal details
+  await proposalCardForVoting.click();
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+  // Vote on proposal
+  await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
+  await appPo
+    .getProposalDetailPo()
+    .getNnsProposalPo()
+    .getVotingCardPo()
+    .voteYes();
+  // Back to proposals list
+  await appPo.goBack();
+  await nnsProposalListPo.waitForContentLoaded();
+  const proposalIdsAfterVoting = await nnsProposalListPo.getVisibleProposalIds(
+    proposerNeuronId
+  );
+
+  step("Voted proposal should be hidden");
+  expect(proposalIdsAfterVoting).toHaveLength(
+    proposalIdsBeforeVoting.length - 1
+  );
+  expect(proposalIdsBeforeVoting).toContain(proposalIdForVoting);
+  expect(proposalIdsAfterVoting).not.toContain(proposalIdForVoting);
+
+  // switch filter back
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setVotableProposalsOnlyValue(false);
+  await nnsProposalListPo.waitForContentLoaded();
+  // check that all proposals are visible again
+
+  step("Voted proposal should be visible again");
+  expect(
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId)
+  ).toEqual(proposalIdsBeforeVoting);
+
+  step("Filter proposals by Topic");
+  const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
 
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectTopicFilter([Topic.ExchangeRate]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
 
   expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
 
@@ -49,19 +108,18 @@ test("Test neuron voting", async ({ page, context }) => {
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectAllTopicsExcept([Topic.ExchangeRate]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
 
   expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
 
   step("Filter proposals by Status");
-  const getVisibleCardStatuses = () =>
-    appPo.getProposalsPo().getNnsProposalListPo().getCardStatuses();
+  const getVisibleCardStatuses = () => nnsProposalListPo.getCardStatuses();
 
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectStatusFilter([ProposalStatus.Open]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
 
   expect(await getVisibleCardStatuses()).toEqual(["Open"]);
 
@@ -70,13 +128,14 @@ test("Test neuron voting", async ({ page, context }) => {
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectAllStatusesExcept([ProposalStatus.Open]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
 
   expect(await getVisibleCardStatuses()).not.toContain("Open");
 
   /*
    * Validate proposal details
    */
+
   step("Filter Open Governance proposals");
   // Filter by topic and status to get less proposals
   // in case of a multiple dummy proposals created before calling this test
@@ -84,18 +143,22 @@ test("Test neuron voting", async ({ page, context }) => {
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectTopicFilter([Topic.Governance]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
     .selectStatusFilter([ProposalStatus.Open]);
-  await appPo.getProposalsPo().getNnsProposalListPo().waitForContentLoaded();
+  await nnsProposalListPo.waitForContentLoaded();
+  // be sure that "votable proposals only" filter is off
+  await appPo
+    .getProposalsPo()
+    .getNnsProposalFiltersPo()
+    .setVotableProposalsOnlyValue(false);
+  await nnsProposalListPo.waitForContentLoaded();
 
   step("Open proposal details");
-  const governanceProposalCard = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getFirstProposalCardPoForProposer(proposerNeuronId);
+  const governanceProposalCard =
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
   expect(await governanceProposalCard.getProposalTopicText()).toBe(
     "Governance"
   );

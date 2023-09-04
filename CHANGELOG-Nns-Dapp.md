@@ -36,6 +36,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+* Add "Filter proposals by Votable only" e2e test.
 
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.
