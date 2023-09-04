@@ -1,6 +1,7 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
@@ -471,11 +472,13 @@ export const disburseMaturity = async ({
   rootCanisterId,
   identity,
   percentageToDisburse,
+  toAccount,
 }: {
   neuronId: SnsNeuronId;
   rootCanisterId: Principal;
   identity: Identity;
   percentageToDisburse: number;
+  toAccount: IcrcAccount;
 }): Promise<void> => {
   logWithTimestamp(`Disburse maturity: call...`);
 
@@ -488,6 +491,7 @@ export const disburseMaturity = async ({
   await percentageToDisburseApi({
     neuronId,
     percentageToDisburse,
+    toAccount,
   });
 
   logWithTimestamp(`Disburse maturity: complete`);

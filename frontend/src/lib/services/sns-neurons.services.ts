@@ -47,7 +47,7 @@ import {
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -776,10 +776,12 @@ export const disburseMaturity = async ({
   neuronId,
   rootCanisterId,
   percentageToDisburse,
+  toAccount,
 }: {
   neuronId: SnsNeuronId;
   rootCanisterId: Principal;
   percentageToDisburse: number;
+  toAccount: IcrcAccount;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
@@ -788,6 +790,7 @@ export const disburseMaturity = async ({
       neuronId,
       rootCanisterId,
       percentageToDisburse,
+      toAccount,
       identity,
     });
 
