@@ -87,4 +87,12 @@ export class NnsProposalListPo extends BasePageObject {
     await this.waitFor();
     await this.getSkeletonCardPo().waitForAbsent();
   }
+
+  async getVisibleProposalIds(proposerNeuronId: string): Promise<string[]> {
+    return Promise.all(
+      (await this.getProposalCardPosForProposer(proposerNeuronId)).map((card) =>
+        card.getProposalId()
+      )
+    );
+  }
 }
