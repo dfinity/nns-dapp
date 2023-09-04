@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=r long=snsdemo_repo desc="The path to an snsdemo repo at the desired commit" variable=SNSDEMO_REPO
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Check that the snsdemo repository directory exists
+SNSDEMO_REPO="${SNSDEMO_REPO:-${1:-}}"
+test -e "${SNSDEMO_REPO:-}" || {
+  echo "ERROR: Please supply the path to the snsdemo repository with --snsdemo_repo" >&2
+  exit 1
+} >&2
+
+SNSDEMO_COMMIT="$(cd "$SNSDEMO_REPO" && git rev-parse HEAD)"
+DFX_VERSION="$(jq -r .dfx "$SNSDEMO_REPO/dfx.json")"
+IC_COMMIT="$(. "$SNSDEMO_REPO/bin/versions.bash" ; echo "$DFX_IC_COMMIT")"
+
+# Check that all values were found.
+for var in SNSDEMO_COMMIT DFX_VERSION IC_COMMIT ; do
+  test -n "${!var}" || {
+    echo "ERROR: Could not find $var" >&2
+    exit 1
+  } >&2
+done
+
+list_workflow_files() {
+  git ls-files .github/workflows/ | grep -E '[.]ya?ml$'
+}
+
+update_checkouts_in_file() {
+  local filename="$1"
+  commit="${SNSDEMO_COMMIT}" yq -i '.jobs |= ([(. | to_entries | .[] | .value.steps[] |= with(select(.with.repository == "dfinity/snsdemo"); .with.ref=env(commit)))] | from_entries)' "$filename"
+}
+
+update_snapshot_references() {
+  local filename="$1"
+  commit="${SNSDEMO_COMMIT}" yq -i '.jobs |= ([(. | to_entries | .[] | .value.steps[] |= with(select(.with.snsdemo_ref); .with.snsdemo_ref=env(commit)))] | from_entries)' "$filename"
+}
+
+# Move to the root of the nns-dapp repository
+cd "$SOURCE_DIR/.."
+
+# Update the snsdemo commit in the workflows
+list_workflow_files | while read -r path ; do
+  update_checkouts_in_file "$path"
+  update_snapshot_references "$path"
+done
+# ... and in the snapshot action
+commit="$SNSDEMO_COMMIT" yq -i '.inputs.snsdemo_ref.default |= (env(commit))' .github/actions/start_dfx_snapshot/action.yaml
+
+# Update the IC commit to match snsdemo
+scripts/update_ic_commit --ic_commit "$IC_COMMIT"
+
+# Update dfx to match snsdemo
+v="$DFX_VERSION" jq '.dfx |= env.v' dfx.json | sponge dfx.json
+
+echo "Updated:"
+echo " snsdemo commit to $SNSDEMO_COMMIT"
+echo " dfx version to $DFX_VERSION"
+echo " IC commit to $IC_COMMIT"
