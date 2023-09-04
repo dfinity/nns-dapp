@@ -19,6 +19,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Add a database abstraction layer, preparing for migration.
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
 
 #### Deprecated

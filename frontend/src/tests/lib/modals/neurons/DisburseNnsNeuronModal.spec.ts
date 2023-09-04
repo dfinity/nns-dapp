@@ -78,24 +78,22 @@ describe("DisburseNnsNeuronModal", () => {
     it("should render accounts", async () => {
       const po = await renderComponent(mockNeuron);
 
-      const accountCards = await po
-        .getNnsDestinationAddressPo()
-        .getNnsSelectAccountPo()
-        .getAccountCardPos();
-      expect(accountCards.length).toBe(2);
+      const options = await po.getNnsDestinationAddressPo().getOptions();
+      expect(options).toEqual(["Main", "test subaccount"]);
     });
 
     it("should be able to select an account", async () => {
       const po = await renderComponent(mockNeuron);
 
-      const accountCards = await po
-        .getNnsDestinationAddressPo()
-        .getNnsSelectAccountPo()
-        .getAccountCardPos();
-      expect(accountCards.length).toBe(2);
+      const options = await po.getNnsDestinationAddressPo().getOptions();
+      expect(options).toEqual(["Main", "test subaccount"]);
 
       expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(false);
-      await accountCards[0].click();
+      await po
+        .getNnsDestinationAddressPo()
+        .getSelectDestinationAddressPo()
+        .selectAccount("Main");
+      await po.getNnsDestinationAddressPo().clickContinue();
       expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
     });
 
@@ -153,24 +151,22 @@ describe("DisburseNnsNeuronModal", () => {
 
       await runResolvedPromises();
       expect(
-        (
-          await po
-            .getNnsDestinationAddressPo()
-            .getNnsSelectAccountPo()
-            .getAccountCardPos()
-        ).length
-      ).toBe(0);
+        await po
+          .getNnsDestinationAddressPo()
+          .getSelectDestinationAddressPo()
+          .getDropdownPo()
+          .isPresent()
+      ).toBe(false);
 
       resolveQueryAccount();
       await runResolvedPromises();
       expect(
-        (
-          await po
-            .getNnsDestinationAddressPo()
-            .getNnsSelectAccountPo()
-            .getAccountCardPos()
-        ).length
-      ).toBe(1);
+        await po
+          .getNnsDestinationAddressPo()
+          .getSelectDestinationAddressPo()
+          .getDropdownPo()
+          .isPresent()
+      ).toBe(true);
     });
   });
 
