@@ -19,10 +19,13 @@ test -e "${SNSDEMO_REPO:-}" || {
 
 SNSDEMO_COMMIT="$(cd "$SNSDEMO_REPO" && git rev-parse HEAD)"
 DFX_VERSION="$(jq -r .dfx "$SNSDEMO_REPO/dfx.json")"
-IC_COMMIT="$(. "$SNSDEMO_REPO/bin/versions.bash" ; echo "$DFX_IC_COMMIT")"
+IC_COMMIT="$(
+  . "$SNSDEMO_REPO/bin/versions.bash"
+  echo "$DFX_IC_COMMIT"
+)"
 
 # Check that all values were found.
-for var in SNSDEMO_COMMIT DFX_VERSION IC_COMMIT ; do
+for var in SNSDEMO_COMMIT DFX_VERSION IC_COMMIT; do
   test -n "${!var}" || {
     echo "ERROR: Could not find $var" >&2
     exit 1
@@ -47,7 +50,7 @@ update_snapshot_references() {
 cd "$SOURCE_DIR/.."
 
 # Update the snsdemo commit in the workflows
-list_workflow_files | while read -r path ; do
+list_workflow_files | while read -r path; do
   update_checkouts_in_file "$path"
   update_snapshot_references "$path"
 done
