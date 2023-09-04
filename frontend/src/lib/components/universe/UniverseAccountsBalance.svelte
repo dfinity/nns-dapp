@@ -22,7 +22,7 @@
       : undefined;
 </script>
 
-<div class="amount">
+<div class="amount" data-tid="universe-accounts-balance-component">
   {#if nonNullish(balance)}
     <AmountDisplay text amount={balance} />
   {:else}
