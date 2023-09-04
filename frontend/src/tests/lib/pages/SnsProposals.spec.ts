@@ -4,9 +4,9 @@
 
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
@@ -16,12 +16,10 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -44,13 +42,7 @@ describe("SnsProposals", () => {
     jest.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+    snsFiltersStore.reset();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
   });

@@ -1,3 +1,4 @@
+import type { FeatureKey } from "$lib/constants/environment.constants";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
 let resolvePreviousStep = () => {
@@ -78,4 +79,38 @@ export const signInWithNewUser = async ({
   await expect(iiPage.isClosed()).toBe(true);
 
   await step("Running the main test");
+};
+
+export const setFeatureFlag = ({
+  page,
+  featureFlag,
+  value,
+}: {
+  page: Page;
+  featureFlag: FeatureKey;
+  value: boolean;
+}) =>
+  page.evaluate(
+    ({ featureFlag, value }) =>
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      (window as any).__featureFlags[featureFlag]["overrideWith"](value),
+    { featureFlag, value }
+  );
+
+export const replaceContent = ({
+  page,
+  selectors,
+  innerHtml,
+}: {
+  page: Page;
+  selectors: string[];
+  innerHtml: string;
+}) => {
+  page.evaluate(
+    ({ selectors, innerHtml }) =>
+      document.querySelectorAll(selectors.join(", ")).forEach((el) => {
+        el.innerHTML = innerHtml;
+      }),
+    { selectors, innerHtml }
+  );
 };

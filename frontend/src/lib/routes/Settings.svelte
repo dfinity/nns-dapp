@@ -19,7 +19,15 @@
   $: remainingTimeMilliseconds = $authRemainingTimeStore;
 
   // Defer the title to avoid a visual glitch where the title moves from left to center in the header if navigation happens from Accounts page
-  onMount(debounce(() => layoutTitleStore.set($i18n.navigation.settings), 500));
+  onMount(
+    debounce(
+      () =>
+        layoutTitleStore.set({
+          title: $i18n.navigation.settings,
+        }),
+      500
+    )
+  );
 </script>
 
 <Island>

@@ -17,6 +17,7 @@ import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsGetAutoFinalizationStatusResponse,
   SnsGetMetadataResponse,
   SnsParams,
   SnsSwap,
@@ -293,4 +294,22 @@ export const parseSnsSwapSaleBuyerCount = (
       ?.split(/\s/)?.[1]
   );
   return isNaN(value) ? undefined : value;
+};
+
+/**
+ * An SNS is in finalization state if:
+ *
+ * 1. `has_auto_finalize_been_attempted` is true
+ * 2. `auto_finalize_swap_response` is empty
+ */
+export const isSnsFinalizing = (
+  finalizationStatus: SnsGetAutoFinalizationStatusResponse
+): boolean => {
+  const { has_auto_finalize_been_attempted, auto_finalize_swap_response } =
+    finalizationStatus;
+
+  return (
+    Boolean(fromNullable(has_auto_finalize_been_attempted)) &&
+    isNullish(fromNullable(auto_finalize_swap_response))
+  );
 };

@@ -19,7 +19,9 @@ import {
   formattedMaturity,
   formattedStakedMaturity,
   formattedTotalMaturity,
+  getSnsActiveDisbursementTime,
   getSnsDissolvingTimeInSeconds,
+  getSnsDissolvingTimestampSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronByHexId,
   getSnsNeuronHotkeys,
@@ -27,9 +29,10 @@ import {
   getSnsNeuronStake,
   getSnsNeuronState,
   getSnsNeuronVote,
-  hasEnoughMaturityToStake,
+  hasEnoughMaturityToStakeOrDisburse,
   hasEnoughStakeToSplit,
   hasPermissionToDisburse,
+  hasPermissionToDisburseMaturity,
   hasPermissionToDissolve,
   hasPermissionToSplit,
   hasPermissionToStakeMaturity,
@@ -80,7 +83,10 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+import type {
+  DisburseMaturityInProgress,
+  NeuronPermission,
+} from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
@@ -166,6 +172,10 @@ describe("sns-neuron utils", () => {
   const monthAgo = BigInt(nowSeconds - SECONDS_IN_MONTH);
   const oneWeek = BigInt(SECONDS_IN_DAY * 7);
 
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowSeconds * 1000);
+  });
+
   describe("sortNeuronsByCreatedTimestamp", () => {
     it("should sort neurons by created_timestamp_seconds", () => {
       const neuron1 = {
@@ -224,7 +234,7 @@ describe("sns-neuron utils", () => {
       const dissolveState = neuron.dissolve_state[0];
       if ("WhenDissolvedTimestampSeconds" in dissolveState) {
         dissolveState.WhenDissolvedTimestampSeconds = BigInt(
-          Math.floor(Date.now() / 1000 - 3600)
+          Math.floor(nowSeconds - 3600)
         );
       }
       expect(getSnsNeuronState(neuron)).toEqual(NeuronState.Dissolved);
@@ -244,6 +254,31 @@ describe("sns-neuron utils", () => {
     });
   });
 
+  describe("getSnsDissolvingTimestampSeconds", () => {
+    it("returns undefined if not dissolving", () => {
+      const lockedNeuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: NeuronState.Locked,
+      });
+      expect(getSnsDissolvingTimestampSeconds(lockedNeuron)).toBeUndefined();
+      const dissolvedNeuron = createMockSnsNeuron({
+        id: [1, 2, 3, 4],
+        state: NeuronState.Dissolved,
+      });
+      expect(getSnsDissolvingTimestampSeconds(dissolvedNeuron)).toBeUndefined();
+    });
+
+    it("returns dissolve date", () => {
+      const todayInSeconds = BigInt(nowSeconds);
+      const dissolveDate = todayInSeconds + BigInt(SECONDS_IN_YEAR);
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        dissolve_state: [{ WhenDissolvedTimestampSeconds: dissolveDate }],
+      };
+      expect(getSnsDissolvingTimestampSeconds(neuron)).toBe(dissolveDate);
+    });
+  });
+
   describe("getSnsDissolvingTimeInSeconds", () => {
     it("returns undefined if not dissolving", () => {
       const neuron = createMockSnsNeuron({
@@ -254,7 +289,7 @@ describe("sns-neuron utils", () => {
     });
 
     it("returns time in seconds until dissolve", () => {
-      const todayInSeconds = BigInt(Math.round(Date.now() / 1000));
+      const todayInSeconds = BigInt(nowSeconds);
       const delayInSeconds = todayInSeconds + BigInt(SECONDS_IN_YEAR);
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
@@ -972,6 +1007,45 @@ describe("sns-neuron utils", () => {
     });
   });
 
+  describe("hasPermissionToDisburseMaturity", () => {
+    it("returns true when user has disburse maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburseMaturity({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(true);
+    });
+
+    it("returns false when user has no disburse maturity permissions", () => {
+      const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
+      appendPermissions({
+        neuron,
+        identity: mockIdentity,
+        permissions: [
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+          SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_SUBMIT_PROPOSAL,
+        ],
+      });
+
+      expect(
+        hasPermissionToDisburseMaturity({
+          neuron,
+          identity: mockIdentity,
+        })
+      ).toBe(false);
+    });
+  });
+
   describe("hasPermissions", () => {
     it("returns true when user has one selected permission", () => {
       const neuron: SnsNeuron = { ...mockSnsNeuron, permissions: [] };
@@ -1284,7 +1358,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: BigInt(200000000),
       };
-      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy();
+      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBeTruthy();
     });
 
     it("should return false if no staked maturity", () => {
@@ -1293,12 +1367,12 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
 
-      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
+      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBe(false);
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasEnoughMaturityToStake(null)).toBe(false);
-      expect(hasEnoughMaturityToStake(undefined)).toBe(false);
+      expect(hasEnoughMaturityToStakeOrDisburse(null)).toBe(false);
+      expect(hasEnoughMaturityToStakeOrDisburse(undefined)).toBe(false);
     });
   });
 
@@ -2358,6 +2432,30 @@ describe("sns-neuron utils", () => {
           vesting_period_seconds: [oneWeek],
         })
       ).toEqual(0n);
+    });
+  });
+
+  describe("getSnsActiveDisbursementTime", () => {
+    const testActiveDisbursement: DisburseMaturityInProgress = {
+      timestamp_of_disbursement_seconds: 1000n,
+      amount_e8s: 0n,
+      account_to_disburse_to: [
+        {
+          owner: [],
+          subaccount: [],
+        },
+      ],
+    };
+
+    it("calculates disbursement duration", () => {
+      jest.useFakeTimers().setSystemTime(SECONDS_IN_DAY * 1000);
+
+      expect(
+        getSnsActiveDisbursementTime({
+          ...testActiveDisbursement,
+          timestamp_of_disbursement_seconds: BigInt(SECONDS_IN_DAY * 9),
+        })
+      ).toEqual(BigInt(SECONDS_IN_DAY * 8));
     });
   });
 });

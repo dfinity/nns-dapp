@@ -1,3 +1,5 @@
+import { AppPo } from "$tests/page-objects/App.page-object";
+import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
@@ -27,30 +29,35 @@ const expectImagesLoaded = async ({ page, sources }) => {
   }, sources.length);
 };
 
-test("Test images load on home page", async ({ page, context }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle("NNS Dapp");
+test("Test images load on accounts page", async ({ page, context }) => {
+  await page.goto("/accounts");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
 
   await step("Check images before signing");
   await expectImagesLoaded({
     page,
-    sources: [
-      "576.png",
-      "logo-nns.svg",
-      "logo-onchain-light.svg",
-      "menu-bg-light.png",
-      "nns-logo.svg",
-    ],
+    sources: ["logo-nns.svg", "logo-onchain-light.svg", "menu-bg-light.png"],
   });
 
   await signInWithNewUser({ page, context });
 
   await step("Check images after signing");
+
+  // Open Snses list
+  const pageElement = PlaywrightPageObjectElement.fromPage(page);
+  const appPo = new AppPo(pageElement);
+  await appPo.openUniverses();
+
   await expectImagesLoaded({
     page,
     sources: [
+      // Universe selector in main layout
       "icp-rounded.svg",
+      // Hidden title in main layout
       "icp-rounded.svg",
+      // ICP universe card in the universes selector modal
+      "icp-rounded.svg",
+      // Menu
       "logo-nns.svg",
       "logo-onchain-light.svg",
       // logo.png are for all the different SNSes and are loaded from the
@@ -66,6 +73,7 @@ test("Test images load on home page", async ({ page, context }) => {
       "logo.png",
       "logo.png",
       "logo.png",
+      // Menu background
       "menu-bg-light.png",
     ],
   });

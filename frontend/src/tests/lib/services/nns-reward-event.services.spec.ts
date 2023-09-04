@@ -1,7 +1,9 @@
 import * as api from "$lib/api/governance.api";
+import * as authServices from "$lib/services/auth.services";
 import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
+  mockGetIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
@@ -18,6 +20,10 @@ describe("nns-reward-event-services", () => {
     spyQueryLatestRewardEvent = jest
       .spyOn(api, "queryLastestRewardEvent")
       .mockResolvedValue(mockRewardEvent);
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   it("should load nns reward event store", async () => {

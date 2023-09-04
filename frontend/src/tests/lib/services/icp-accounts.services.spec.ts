@@ -13,6 +13,7 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
+import * as authServices from "$lib/services/auth.services";
 import {
   addSubAccount,
   cancelPollAccounts,
@@ -35,6 +36,7 @@ import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {
+  mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
@@ -91,6 +93,10 @@ describe("icp-accounts.services", () => {
     toastsStore.reset();
     icpAccountsStore.resetForTesting();
     overrideFeatureFlagsStore.reset();
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   const mockSnsAccountIcpAccountIdentifier = AccountIdentifier.fromPrincipal({

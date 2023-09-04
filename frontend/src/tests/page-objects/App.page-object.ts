@@ -4,7 +4,6 @@ import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
-import { LoginLinksPo } from "$tests/page-objects/LoginLinks.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
@@ -15,12 +14,9 @@ import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.pag
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { expect } from "@playwright/test";
 
 export class AppPo extends BasePageObject {
-  getLoginLinksPo(): LoginLinksPo {
-    return LoginLinksPo.under(this.root);
-  }
-
   getSignInPo(): SignInPo {
     return SignInPo.under(this.root);
   }
@@ -110,6 +106,7 @@ export class AppPo extends BasePageObject {
     await this.getMenuItemsPo().clickNeuronStaking();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
+    await this.getNeuronsPo().waitForContentLoaded();
   }
 
   async goToNeuronDetails(neuronId: string): Promise<void> {
@@ -134,9 +131,15 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  async getTokens(amount: number): Promise<void> {
+  async getSnsTokens(amount: number): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getTokens(amount);
+    await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(amount);
+    await this.closeMenu();
+  }
+
+  async getIcpTokens(amount: number): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().getGetTokensPo().getIcpTokens(amount);
     await this.closeMenu();
   }
 
@@ -147,5 +150,14 @@ export class AppPo extends BasePageObject {
 
   waitForNotBusy(): Promise<void> {
     return this.getBusyScreenPo().waitForAbsent();
+  }
+
+  async openUniverses() {
+    await this.getRoleButton("select-universe-card").waitFor();
+    await this.getRoleButton("select-universe-card").click();
+
+    const snsUniverseCards =
+      await this.getSelectUniverseListPo().getSnsUniverseCards();
+    expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
   }
 }

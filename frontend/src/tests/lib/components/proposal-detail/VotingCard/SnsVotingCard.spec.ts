@@ -4,6 +4,7 @@
 
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -37,6 +38,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
 describe("SnsVotingCard", () => {
+  const nowInSeconds = 1689843195;
   const testBallots: [string, SnsBallot][] = [
     [
       "01",
@@ -63,13 +65,15 @@ describe("SnsVotingCard", () => {
       },
     ],
   ];
+  const neuronCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY * 2);
+  const proposalCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY);
   const testProposal: SnsProposalData = {
     ...createSnsProposal({
       proposalId: 123n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ballots: testBallots,
-      createdAt: BigInt(Math.round(Date.now() / 1000)),
+      createdAt: proposalCreatedAt,
     }),
   };
   const permissionsWithTypeVote = [
@@ -86,6 +90,7 @@ describe("SnsVotingCard", () => {
       ...createMockSnsNeuron({
         id: [1],
         state: NeuronState.Locked,
+        createdTimestampSeconds: neuronCreatedAt,
       }),
       permissions: permissionsWithTypeVote,
     },
@@ -93,6 +98,7 @@ describe("SnsVotingCard", () => {
       ...createMockSnsNeuron({
         id: [2],
         state: NeuronState.Locked,
+        createdTimestampSeconds: neuronCreatedAt,
       }),
       permissions: permissionsWithTypeVote,
     },
@@ -110,6 +116,7 @@ describe("SnsVotingCard", () => {
     });
 
   beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
     jest
       .spyOn(authStore, "subscribe")
@@ -223,7 +230,7 @@ describe("SnsVotingCard", () => {
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ballots: testBallots,
-      createdAt: BigInt(Math.round(Date.now() / 1000)),
+      createdAt: proposalCreatedAt,
     });
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,

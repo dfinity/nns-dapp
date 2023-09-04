@@ -1,20 +1,5 @@
 import { INTERSECTION_THRESHOLD } from "$lib/constants/layout.constants";
-import type { IntersectingDetail } from "$lib/types/intersection.types";
-
-// Exposed for test purpose only
-export const dispatchIntersecting = ({
-  element,
-  intersecting,
-}: {
-  element: HTMLElement;
-  intersecting: boolean;
-}) => {
-  const $event = new CustomEvent<IntersectingDetail>("nnsIntersecting", {
-    detail: { intersecting },
-    bubbles: false,
-  });
-  element.dispatchEvent($event);
-};
+import { dispatchIntersecting } from "$lib/utils/events.utils";
 
 export const onIntersection = (element: HTMLElement) => {
   // IntersectionObserverInit is not recognized by the linter

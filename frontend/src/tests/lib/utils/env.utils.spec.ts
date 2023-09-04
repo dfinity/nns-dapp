@@ -23,67 +23,41 @@ describe("env-utils", () => {
       });
     });
 
-    it("should be an alternative origin", () => {
+    const setOrigin = (origin: string) => {
       Object.defineProperty(window, "location", {
         writable: true,
         value: {
           ...location,
-          origin: `https://nns.internetcomputer.org`,
+          origin,
         },
       });
+    };
 
+    it("should be an alternative origin", () => {
+      setOrigin("https://nns.internetcomputer.org");
+      expect(isNnsAlternativeOrigin()).toBeTruthy();
+
+      setOrigin("https://wallet.internetcomputer.org");
+      expect(isNnsAlternativeOrigin()).toBeTruthy();
+
+      setOrigin("https://wallet.ic0.app");
       expect(isNnsAlternativeOrigin()).toBeTruthy();
     });
 
     it("should not be an alternative origin", () => {
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...location,
-          origin: `https://nns.ic0.app`,
-        },
-      });
-
+      setOrigin("https://nns.ic0.app");
       expect(isNnsAlternativeOrigin()).toBe(false);
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...location,
-          origin: `https://ic0.app`,
-        },
-      });
-
+      setOrigin("https://ic0.app");
       expect(isNnsAlternativeOrigin()).toBe(false);
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...location,
-          origin: `https://test.com`,
-        },
-      });
-
+      setOrigin("https://test.com");
       expect(isNnsAlternativeOrigin()).toBe(false);
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...location,
-          origin: `https://internetcomputer.org`,
-        },
-      });
-
+      setOrigin("https://internetcomputer.org");
       expect(isNnsAlternativeOrigin()).toBe(false);
 
-      Object.defineProperty(window, "location", {
-        writable: true,
-        value: {
-          ...location,
-          origin: `https://ii.internetcomputer.org`,
-        },
-      });
-
+      setOrigin("https://ii.internetcomputer.org");
       expect(isNnsAlternativeOrigin()).toBe(false);
     });
   });

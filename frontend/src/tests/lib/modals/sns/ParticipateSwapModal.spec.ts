@@ -24,7 +24,9 @@ import {
 import {
   mockAccountDetails,
   mockAccountsStoreData,
+  mockHardwareWalletAccount,
   mockMainAccount,
+  mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
@@ -65,6 +67,7 @@ jest.mock("$lib/services/sns-sale.services", () => ({
 type SwapModalParams = {
   swapCommitment?: SnsSwapCommitment | undefined;
   confirmationText?: string | undefined;
+  minParticipantCommitment?: bigint | undefined;
 };
 
 describe("ParticipateSwapModal", () => {
@@ -83,13 +86,17 @@ describe("ParticipateSwapModal", () => {
   const renderSwapModal = ({
     swapCommitment,
     confirmationText,
+    minParticipantCommitment,
   }: SwapModalParams = {}) =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
       contextKey: PROJECT_DETAIL_CONTEXT_KEY,
       contextValue: {
         store: writable<ProjectDetailStore>({
-          summary: createSummary({ confirmationText }),
+          summary: createSummary({
+            confirmationText,
+            minParticipantCommitment,
+          }),
           swapCommitment,
         }),
         reload,
@@ -131,6 +138,26 @@ describe("ParticipateSwapModal", () => {
     await reviewPo.clickSend();
     expect(initiateSnsSaleParticipation).toBeCalledTimes(1);
   };
+
+  describe("when hardware wallet account is available", () => {
+    beforeEach(() => {
+      icpAccountsStore.setForTesting({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
+    });
+
+    it("should not show hardware wallet account as selectable", async () => {
+      const po = await renderSwapModalPo();
+      const form = po.getTransactionFormPo();
+      expect(await form.getSourceAccounts()).toEqual([
+        "Main",
+        "test subaccount",
+      ]);
+    });
+  });
 
   describe("when accounts are available", () => {
     beforeEach(() => {
@@ -193,6 +220,51 @@ describe("ParticipateSwapModal", () => {
       const form = po.getTransactionFormPo();
       await form.enterAmount(10);
       expect(await form.isContinueButtonEnabled()).toBe(true);
+    });
+
+    it("should not show an error when amount is not too small", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(BigInt(0)),
+        },
+        minParticipantCommitment: BigInt(100000000),
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(1);
+      expect(await form.getAmountInputPo().hasError()).toBe(false);
+    });
+
+    it("should show an error when amount is too small", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(BigInt(0)),
+        },
+        minParticipantCommitment: BigInt(100000000),
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(0.01);
+      expect(await form.getAmountInputPo().hasError()).toBe(true);
+      expect(await form.getAmountInputPo().getErrorMessage()).toBe(
+        "Sorry, the amount is too small. You need a minimum of 1.00 ICP to participate in this swap."
+      );
+    });
+
+    it("should show an error with enough significant digits", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(BigInt(0)),
+        },
+        minParticipantCommitment: BigInt(100000278),
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(0.01);
+      expect(await form.getAmountInputPo().hasError()).toBe(true);
+      expect(await form.getAmountInputPo().getErrorMessage()).toBe(
+        "Sorry, the amount is too small. You need a minimum of 1.00000278 ICP to participate in this swap."
+      );
     });
 
     describe("when user has non-zero swap commitment", () => {

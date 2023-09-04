@@ -130,21 +130,38 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
+  async isChecked(): Promise<boolean> {
+    throw new Error("Not implemented");
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);
   }
 
-  async typeText(text: string): Promise<void> {
+  async input(value: string): Promise<void> {
     await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(this.element, { target: { value: text } });
+    await fireEvent.input(this.element, { target: { value } });
+  }
+
+  async typeText(text: string): Promise<void> {
+    return this.input(text);
   }
 
   async selectOption(_text: string): Promise<void> {
     throw new Error("Not implemented");
     // Not tested:
     // userEvent.selectOption(this.element, text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    try {
+      expect(this.element).toBeVisible();
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

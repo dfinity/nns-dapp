@@ -1,17 +1,15 @@
-import { createAgent } from "$lib/api/agent.api";
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import type { _SERVICE as TVLService } from "$lib/canisters/tvl/tvl.types";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 
 describe("TVL canister", () => {
   const createTVLCanister = async (service: TVLService) => {
-    const defaultAgent = await createAgent({ identity: mockIdentity });
     const canisterId = Principal.fromText("aaaaa-aa");
 
     return TVLCanister.create({
-      agent: defaultAgent,
+      agent: mock<HttpAgent>(),
       certifiedServiceOverride: service,
       canisterId,
     });

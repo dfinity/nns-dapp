@@ -6,12 +6,9 @@ import Json from "$lib/components/common/Json.svelte";
 import { bytesToHexString, stringifyJson } from "$lib/utils/utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { simplifyJson } from "$tests/utils/json.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-
-// remove (array-index:|spaces|")
-export const simplifyJson = (json: string | null) =>
-  json?.replace(/(\d+\s*:\s*)(\w+|"|{|}|\[|])/g, "$2").replace(/"| |,|\\/g, "");
 
 const testJsonRender = (json: unknown, result?: string) => {
   const { container } = render(Json, {

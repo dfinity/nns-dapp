@@ -4,12 +4,15 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle("NNS Dapp");
+  await page.goto("/accounts");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
+
+  // Open universes selector
+  await appPo.openUniverses();
 
   step("Navigate to SNS universe");
   const snsUniverseCards = await appPo
@@ -23,8 +26,9 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(snsProjectName).toMatch(/[A-Z]{5}/);
 
   await snsUniverseCard.click();
+
   step("Acquire tokens");
-  await appPo.getTokens(20);
+  await appPo.getSnsTokens(20);
 
   expect(
     await appPo
@@ -60,7 +64,7 @@ test("Test SNS governance", async ({ page, context }) => {
   step("SN002: User can see the details of a neuron");
   await neuronCard.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
-  expect(await neuronDetail.getTitle()).toBe(snsProjectName);
+  expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
   expect(await neuronDetail.getStake()).toBe(formattedStake);
   expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 

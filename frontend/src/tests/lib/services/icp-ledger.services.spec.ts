@@ -17,12 +17,10 @@ import {
   resetIdentitiesCachedForTesting,
   showAddressAndPubKeyOnHardwareWallet,
 } from "$lib/services/icp-ledger.services";
-import { authStore } from "$lib/stores/auth.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
-  mockAuthStoreSubscribe,
   mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
@@ -37,7 +35,7 @@ import {
 } from "$tests/mocks/ledger.identity.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { Agent } from "@dfinity/agent";
 import { principalToAccountIdentifier } from "@dfinity/nns";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
@@ -53,6 +51,10 @@ describe("icp-ledger.services", () => {
   beforeEach(() => {
     resetIdentitiesCachedForTesting();
     jest.clearAllMocks();
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   describe("connect hardware wallet", () => {
@@ -133,11 +135,7 @@ describe("icp-ledger.services", () => {
         .spyOn(accountsServices, "syncAccounts")
         .mockImplementation(jest.fn());
 
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-
-      const mockCreateAgent = () => Promise.resolve(mock<HttpAgent>());
+      const mockCreateAgent = () => Promise.resolve(mock<Agent>());
       jest.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
 
       jest

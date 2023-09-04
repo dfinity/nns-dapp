@@ -95,7 +95,7 @@
     "Security test: npm audit: https://github.com/advisories/XXXX-xxxx-xxxx-xxxx",
     "Values don't match!",
     "Security test: npm audit: https://github.com/advisories/XXXX-xxxx-xxxx-xxxx",
-    "Expected npm audit: https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+    "Expected npm audit: found 0 vulnerabilities"
   ],
   "expectedExitCode": 1
 }

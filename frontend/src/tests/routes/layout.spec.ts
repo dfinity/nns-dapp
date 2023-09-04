@@ -11,8 +11,9 @@ import {
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: jest.fn(() =>
@@ -31,7 +32,9 @@ jest.mock("$lib/services/app.services", () => ({
 jest.mock("$lib/proxy/app.services.proxy");
 
 describe("Layout", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mutableMockAuthStoreSubscribe);
@@ -39,39 +42,42 @@ describe("Layout", () => {
     jest.spyOn(authStore, "sync").mockImplementation(() => Promise.resolve());
   });
 
-  afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
-  });
-
   it("should init the app after sign in", async () => {
+    expect(initAppPrivateDataProxy).not.toHaveBeenCalled();
+
     render(App);
 
     authStoreMock.next({
       identity: mockIdentity,
     });
+    await runResolvedPromises();
 
-    await waitFor(() => expect(initAppPrivateDataProxy).toHaveBeenCalled());
+    expect(initAppPrivateDataProxy).toHaveBeenCalled();
   });
 
-  it("should register auth worker sync after sign in", () => {
+  it("should register auth worker sync after sign in", async () => {
+    expect(initAuthWorker).not.toHaveBeenCalled();
+
     render(App);
 
     authStoreMock.next({
       identity: mockIdentity,
     });
+    await runResolvedPromises();
 
     expect(initAuthWorker).toHaveBeenCalled();
   });
 
-  it("should reset toasts on sign in", () => {
+  it("should reset toasts on sign in", async () => {
     const spy = jest.spyOn(toastsStore, "reset");
+    expect(spy).not.toBeCalled();
 
     render(App);
 
     authStoreMock.next({
       identity: mockIdentity,
     });
+    await runResolvedPromises();
 
     expect(spy).toBeCalled();
   });

@@ -15,6 +15,7 @@ import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -25,6 +26,7 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -69,7 +71,7 @@ export const getSnsNeuronState = ({
   return NeuronState.Unspecified;
 };
 
-export const getSnsDissolvingTimeInSeconds = (
+export const getSnsDissolvingTimestampSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
@@ -79,8 +81,17 @@ export const getSnsDissolvingTimeInSeconds = (
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
-    return dissolveState.WhenDissolvedTimestampSeconds - BigInt(nowInSeconds());
+    return dissolveState.WhenDissolvedTimestampSeconds;
   }
+};
+
+export const getSnsDissolvingTimeInSeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
 };
 
 export const getSnsLockedTimeInSeconds = (
@@ -265,6 +276,21 @@ export const hasPermissionToStakeMaturity = ({
     identity,
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+    ],
+  });
+
+export const hasPermissionToDisburseMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
     ],
   });
 
@@ -476,7 +502,7 @@ export const formattedTotalMaturity = (
  * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
-export const hasEnoughMaturityToStake = (
+export const hasEnoughMaturityToStakeOrDisburse = (
   neuron: SnsNeuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
 
@@ -622,6 +648,8 @@ export const neuronAge = ({
  * Returns the sns neuron voting power
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
+ *
+ * Returns 0 if the neuron is not eligible to vote.
  *
  * @param {SnsNeuron} neuron
  * @param {SnsNervousSystemParameters} neuron.snsParameters
@@ -923,3 +951,19 @@ export const vestingInSeconds = ({
  */
 export const isVesting = (neuron: SnsNeuron): boolean =>
   vestingInSeconds(neuron) > 0n;
+
+export const neuronDashboardUrl = ({
+  neuron,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  rootCanisterId: Principal;
+}) =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
+    neuron
+  )}`;
+
+export const getSnsActiveDisbursementTime = (
+  disbursement: DisburseMaturityInProgress
+): bigint =>
+  disbursement.timestamp_of_disbursement_seconds - BigInt(nowInSeconds());

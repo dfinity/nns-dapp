@@ -55,6 +55,8 @@ jobs:
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
+      - name: Lint rustdoc
+        run: ./scripts/lint-rustdoc
   svelte-tests:
     runs-on: ubuntu-latest-m
     defaults:
@@ -97,40 +99,16 @@ jobs:
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
-  e2e-lint:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-    env:
-      DFX_NETWORK: mainnet
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Provide a config
-        run: ./config.sh
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Run e2e linter
-        run: npm run lint
-        working-directory: ./e2e-tests
   shell-checks:
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
-        env:
-          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yy shellcheck
+          ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
     runs-on: ubuntu-20.04
@@ -249,6 +227,32 @@ jobs:
       - uses: actions/checkout@v3
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
+  minor-version-bump-works:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install yq
+        run: sudo snap install yq
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Bumping the package versions works
+        run: ./scripts/nns-dapp/bump-patch.test
+      - name: Set git user
+        run: |
+          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.name "GIX bot"
+      - name: Command creates commits
+        run: |
+          original_commit="$(git rev-parse HEAD)"
+          git checkout .
+          ./scripts/nns-dapp/bump-patch --commit
+          num_commits="$(git log --oneline "$original_commit..HEAD" | wc -l)"
+          (( num_commits == 2 )) || {
+                  echo "Expected two commits.  Got:"
+                  git log --oneline "$original_commit..HEAD"
+                  exit 1
+          } >&2
+          # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
     runs-on: ubuntu-20.04
     steps:
@@ -285,8 +289,9 @@ jobs:
         with:
           fetch-depth: 0
       - run: scripts/past-changelog-test
+      - run: scripts/past-changelog-test.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog"]
+    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

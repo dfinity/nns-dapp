@@ -323,9 +323,7 @@ export const toggleCommunityFund = async (
   neuron: NeuronInfo
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuron.neuronId
-    );
+    const { identity } = await getIdentityAndNeuronHelper(neuron.neuronId);
 
     if (hasJoinedCommunityFund(neuron)) {
       await governanceApiService.leaveCommunityFund({

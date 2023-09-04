@@ -7,9 +7,9 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import { mockBTCAddressMainnet } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent, render } from "@testing-library/svelte";
-import { mockBTCAddressMainnet } from "../../../mocks/ckbtc-accounts.mock";
 
 describe("AddressInput", () => {
   const snsAccount = mockPrincipal.toText();

@@ -49,6 +49,7 @@ interface I18nError {
   sns_accounts_balance_load: string;
   icrc_token_load: string;
   list_proposals: string;
+  list_proposals_payload_too_large: string;
   get_proposal: string;
   wrong_proposal_id: string;
   list_canisters: string;
@@ -290,6 +291,7 @@ interface I18nNeurons {
   create: string;
   community_fund: string;
   hotkey_control: string;
+  hardware_wallet_control: string;
   stake: string;
   amount_icp_stake: string;
   ic_stake: string;
@@ -308,6 +310,7 @@ interface I18nNeurons {
   dissolve_delay_label: string;
   dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
+  dissolve_delay_below_current: string;
   dissolve_delay_above_maximum: string;
   voting_power: string;
   skip: string;
@@ -479,6 +482,7 @@ interface I18nTransaction_names {
   topUpNeuron: string;
   createCanister: string;
   topUpCanister: string;
+  refundSwap: string;
   participateSwap: string;
 }
 
@@ -583,8 +587,12 @@ interface I18nNeuron_detail {
   increase_stake: string;
   split_neuron: string;
   voting_power_subtitle: string;
+  voting_power_zero_subtitle: string;
+  voting_power_zero: string;
   voting_power_tooltip_with_stake: string;
-  voting_power_section_description: string;
+  voting_power_section_description_expanded: string;
+  voting_power_section_description_expanded_zero: string;
+  voting_power_section_description_expanded_zero_nns: string;
   maturity_section_description: string;
   staked_description: string;
   age_bonus_label: string;
@@ -593,6 +601,8 @@ interface I18nNeuron_detail {
   no_dissolve_bonus: string;
   available_description: string;
   join_community_fund_description: string;
+  join_community_fund_hw_alert_1: string;
+  join_community_fund_hw_alert_2: string;
   leave_community_fund_description: string;
   participate_community_fund: string;
   auto_stake_maturity: string;
@@ -605,10 +615,17 @@ interface I18nNeuron_detail {
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;
+  disburse_maturity: string;
+  view_active_disbursements: string;
+  view_active_disbursements_status: string;
+  view_active_disbursements_modal_title: string;
+  view_active_disbursements_entry_description: string;
+  view_active_disbursements_maturity: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
   stake_maturity_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip: string;
   stake_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
@@ -635,6 +652,11 @@ interface I18nNeuron_detail {
   disburse_success: string;
   edit_percentage: string;
   stake_maturity_modal_title: string;
+  disburse_maturity_modal_title: string;
+  disburse_maturity_modal_description: string;
+  disburse_maturity_confirmation_modal_title: string;
+  disburse_maturity_confirmation_description: string;
+  disburse_maturity_success: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
   stake_maturity_confirmation: string;
@@ -660,8 +682,8 @@ interface I18nNeuron_detail {
   remaining_title: string;
   unspecified: string;
   advanced_settings_title: string;
-  advanced_settings_description: string;
   neuron_account: string;
+  dissolve_date: string;
   created: string;
 }
 
@@ -707,6 +729,7 @@ interface I18nSns_project_detail {
   status_aborted: string;
   status_pending: string;
   status_unspecified: string;
+  status_finalizing: string;
   participate_swap_description: string;
   understand_agree: string;
   participate_success: string;
@@ -870,6 +893,7 @@ interface I18nError__sns {
   sns_load_functions: string;
   sns_add_hotkey: string;
   sns_stake_maturity: string;
+  sns_disburse_maturity: string;
   sns_amount_not_enough_stake_neuron: string;
   sns_reload_no_universe: string;
 }

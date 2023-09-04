@@ -55,6 +55,10 @@ describe("NnsWallet", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.clearAllTimers();
+    cancelPollAccounts();
+    icpAccountsStore.resetForTesting();
+
     jest
       .spyOn(authStore, "subscribe")
       .mockImplementation(mockAuthStoreSubscribe);
@@ -81,8 +85,6 @@ describe("NnsWallet", () => {
 
   describe("no accounts", () => {
     beforeEach(() => {
-      cancelPollAccounts();
-      icpAccountsStore.resetForTesting();
       jest
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -124,8 +126,7 @@ describe("NnsWallet", () => {
   });
 
   describe("accounts loaded", () => {
-    beforeAll(() => {
-      jest.clearAllMocks();
+    beforeEach(() => {
       icpAccountsStore.setForTesting(mockAccountsStoreData);
     });
 
@@ -269,10 +270,6 @@ describe("NnsWallet", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
-      jest.clearAllTimers();
-      jest.clearAllMocks();
-      cancelPollAccounts();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);

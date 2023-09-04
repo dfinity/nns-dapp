@@ -1,11 +1,15 @@
 import * as snsApi from "$lib/api/sns-ledger.api";
 import { loadSnsTransactionFee } from "$lib/services/transaction-fees.services";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { get } from "svelte/store";
 
 describe("transactionFee-services", () => {
   const fee = BigInt(30_000);
+
+  beforeEach(() => {
+    resetIdentity();
+  });
 
   describe("loadSnsTransactionFee", () => {
     describe("success", () => {

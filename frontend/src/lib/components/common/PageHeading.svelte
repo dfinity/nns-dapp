@@ -1,12 +1,20 @@
 <script lang="ts">
   export let testId: string | undefined = undefined;
+
+  let hasTags: boolean;
+  $: hasTags = $$slots.tags !== undefined;
 </script>
 
 <div class="container" data-tid={testId}>
   <slot name="title" />
-  <h3 class="description">
+  <h4 class="description">
     <slot name="subtitle" />
-  </h3>
+  </h4>
+  {#if hasTags}
+    <div class="tags">
+      <slot name="tags" />
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -19,9 +27,15 @@
 
     width: 100%;
 
-    h3 {
+    h4 {
       margin: 0;
       font-weight: normal;
+    }
+
+    .tags {
+      display: flex;
+      align-items: center;
+      gap: var(--padding);
     }
   }
 </style>

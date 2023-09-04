@@ -33,6 +33,9 @@
   let minDelayInDays = 0;
   $: minDelayInDays = secondsToDays(minDelayInSeconds);
 
+  let minProjectDelayInDays = 0;
+  $: minProjectDelayInDays = secondsToDays(minProjectDelayInSeconds);
+
   let maxDelayInDays = 0;
   $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
 
@@ -55,6 +58,9 @@
     if (delayInSeconds > maxDelayInSeconds) {
       delayInSeconds = maxDelayInSeconds;
     }
+
+    // hide the error
+    inputError = undefined;
   };
   const setMin = () => {
     delayInSeconds = Math.max(
@@ -70,8 +76,10 @@
   const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
       inputError = $i18n.neurons.dissolve_delay_above_maximum;
-    } else if (delayInDays < minDelayInDays) {
+    } else if (delayInDays < minProjectDelayInDays) {
       inputError = $i18n.neurons.dissolve_delay_below_minimum;
+    } else if (delayInDays <= minDelayInDays) {
+      inputError = $i18n.neurons.dissolve_delay_below_current;
     } else if (isDefined(inputError)) {
       // clear the error
       inputError = undefined;

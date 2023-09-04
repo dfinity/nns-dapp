@@ -9,7 +9,7 @@ import {
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -99,7 +99,7 @@ const listSnses = async ({
   agent,
   certified,
 }: {
-  agent: HttpAgent;
+  agent: Agent;
   certified: boolean;
 }): Promise<Principal[]> => {
   logWithTimestamp(`Loading list of Snses certified:${certified} call...`);
@@ -129,7 +129,7 @@ export const initSns = async ({
   rootCanisterId,
   certified,
 }: {
-  agent: HttpAgent;
+  agent: Agent;
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<SnsWrapper> => {

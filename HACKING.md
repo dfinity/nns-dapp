@@ -9,8 +9,6 @@ This document list a couple of useful information to develop the NNS-dapp fronte
 - [Testnet](#testnet)
 - [Preview](#preview)
   - [Configure](#configure)
-- [e2e](#e2e)
-  - [Running against local server](#running-against-local-server)
 - [Requirements](#requirements)
 - [Dependencies](#dependencies)
 - [ckBTC deployment](#ckbtc-deployment)
@@ -78,18 +76,6 @@ To develop and run locally the dapp against a testnet, proceed as following:
 
 e.g. replace `<testnet_name>` with `small11`
 
-## e2e
-
-e2e tests also need a `.env` configuration. Such file can also be generated with the help of the `./config.sh` script by providing a specific output parameter.
-
-e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
-
-### Running against local server
-
-If you wish to run the e2e tests against your local server, please note:
-
-* The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
-
 ## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
@@ -122,7 +108,7 @@ cd frontend
 ```
 
 3. Check for Newer Dependencies:
-   
+
 Identify the available newer versions of the dependencies. Run the following command in your terminal:
 
 ```bash
@@ -152,7 +138,7 @@ This command will install the newer versions of the dependencies and update the 
 After the installation is complete, it's crucial to thoroughly test the frontend dapp. Ensure that all the functionalities are working as expected and there are no compatibility issues with the updated dependencies.
 
 7. Create a Pull Request (PR):
-   
+
 If everything looks good and the frontend dapp is functioning correctly with the updated dependencies, it's time to create a pull request. Include the modified `package.json` and `package-lock.json` files in a new PR to let others review and merge the changes.
 
 ## ckBTC deployment

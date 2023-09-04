@@ -1,7 +1,7 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type EstimateWithdrawalFee,
@@ -151,7 +151,7 @@ const ckBTCMinterCanister = async ({
   canisterId: Principal;
 }): Promise<{
   canister: CkBTCMinterCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,

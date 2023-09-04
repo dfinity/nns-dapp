@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
-  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
@@ -26,8 +25,11 @@
     type WizardStep,
   } from "@dfinity/gix-components";
   import TextInputForm from "$lib/components/common/TextInputForm.svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -36,12 +38,8 @@
 
   const steps: WizardSteps = [
     {
-      name: "SelectAccount",
-      title: $i18n.accounts.select_source,
-    },
-    {
-      name: "SelectName",
-      title: $i18n.canisters.enter_name,
+      name: "SelectData",
+      title: $i18n.canisters.create_canister_title,
     },
     {
       name: "SelectCycles",
@@ -58,13 +56,6 @@
   let account: Account | undefined;
   let name = "";
   let amount: number | undefined;
-
-  const onSelectAccount = ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    account = detail.selectedAccount;
-    modal.next();
-  };
 
   const goNext = () => {
     modal.next();
@@ -119,13 +110,17 @@
     ></svelte:fragment
   >
   <svelte:fragment>
-    {#if currentStep?.name === "SelectAccount"}
-      <NnsSelectAccount
-        hideHardwareWalletAccounts
-        on:nnsSelectAccount={onSelectAccount}
-      />
-    {/if}
-    {#if currentStep?.name === "SelectName"}
+    {#if currentStep?.name === "SelectData"}
+      <div class="from">
+        <TransactionFromAccount
+          bind:selectedAccount={account}
+          canSelectSource={true}
+          rootCanisterId={OWN_CANISTER_ID}
+          token={ICPToken}
+          filterAccounts={filterHardwareWalletAccounts}
+        />
+      </div>
+
       <TextInputForm
         testId="create-canister-name-form"
         placeholderLabelKey="canisters.name"
@@ -140,7 +135,6 @@
         <svelte:fragment slot="label"
           >{$i18n.canisters.enter_name_label}</svelte:fragment
         >
-        <svelte:fragment slot="cancel-text">{$i18n.core.back}</svelte:fragment>
         <svelte:fragment slot="confirm-text">{$i18n.core.next}</svelte:fragment>
       </TextInputForm>
     {/if}
@@ -183,3 +177,9 @@
     {/if}
   </svelte:fragment>
 </WizardModal>
+
+<style lang="scss">
+  .from {
+    margin: 0 0 var(--padding-3x);
+  }
+</style>

@@ -19,6 +19,10 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
     return this.getText("neuron-created");
   }
 
+  dissolveDate(): Promise<string | null> {
+    return this.getText("neuron-dissolve-date");
+  }
+
   getNnsNeuronAgePo(): NnsNeuronAgePo {
     return NnsNeuronAgePo.under(this.root);
   }
@@ -41,8 +45,12 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
       .isPresent();
   }
 
+  getJoinNeuronsFundCheckbox(): PageObjectElement {
+    return this.root.querySelector("#join-community-fund-checkbox");
+  }
+
   hasJoinNeuronsFundCheckbox(): Promise<boolean> {
-    return this.root.querySelector("#join-community-fund-checkbox").isPresent();
+    return this.getJoinNeuronsFundCheckbox().isPresent();
   }
 
   hasSplitNeuronButton(): Promise<boolean> {

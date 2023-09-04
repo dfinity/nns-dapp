@@ -7,12 +7,11 @@ import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -43,13 +42,12 @@ jest.mock("$lib/services/ckbtc-info.services", () => {
 
 describe("Wallet", () => {
   beforeEach(() => {
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockSnsFullProject.rootCanisterId,
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
     icpAccountsStore.setForTesting(mockAccountsStoreData);
   });
 

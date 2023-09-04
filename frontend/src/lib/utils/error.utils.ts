@@ -19,8 +19,8 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import { SnsGovernanceError } from "@dfinity/sns";
-import { InvalidPercentageError } from "@dfinity/utils";
+import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
+import { InvalidPercentageError, nonNullish } from "@dfinity/utils";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
 export const errorToString = (err?: unknown): string | undefined => {
@@ -143,3 +143,27 @@ export const toToastError = ({
     }),
   };
 };
+
+/**
+ * Identifies errors of payload size at the Replica level.
+ *
+ * Error message example: "Call failed:
+ * Canister: rrkah-fqaaa-aaaaa-aaaaq-cai
+ * Method: list_proposals (query)
+ * "Status": "rejected"
+ * "Code": "CanisterError"
+ * "Message": "IC0504: Canister rrkah-fqaaa-aaaaa-aaaaq-cai violated contract: ic0.msg_reply_data_append: application payload size (3824349) cannot be larger than 3145728""
+ */
+export const isPayloadSizeError = (err: unknown): boolean => {
+  if (typeof err === "object" && nonNullish(err) && "message" in err) {
+    const message = err.message as string;
+    return (
+      message.includes("payload size") &&
+      message.includes("cannot be larger than")
+    );
+  }
+  return false;
+};
+
+export const isMethodNotSupportedError = (err: unknown): boolean =>
+  err instanceof UnsupportedMethodError;

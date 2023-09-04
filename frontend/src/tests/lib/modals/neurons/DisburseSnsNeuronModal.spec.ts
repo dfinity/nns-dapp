@@ -7,7 +7,6 @@ import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.s
 import * as authServices from "$lib/services/auth.services";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import {
   createMockIdentity,
@@ -19,7 +18,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -58,12 +57,12 @@ describe("DisburseSnsNeuronModal", () => {
       certified: true,
     });
 
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockSnsMainAccount.principal,
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsMainAccount.principal,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
   });
 
   it("should display modal", async () => {

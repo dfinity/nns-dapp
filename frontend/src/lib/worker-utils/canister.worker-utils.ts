@@ -1,10 +1,10 @@
 import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
-import { HttpAgent } from "@dfinity/agent";
+import { HttpAgent, type Agent } from "@dfinity/agent";
 
 export interface CreateCanisterWorkerParams {
   canisterId: CanisterId;
-  agent: HttpAgent;
+  agent: Agent;
 }
 
 export const createCanisterWorker = async <T>({

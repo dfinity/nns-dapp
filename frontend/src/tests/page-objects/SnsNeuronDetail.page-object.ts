@@ -4,10 +4,8 @@ import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseSt
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowingCard.page-object";
 import { SnsNeuronHotkeysCardPo } from "$tests/page-objects/SnsNeuronHotkeysCard.page-object";
-import { SnsNeuronInfoStakePo } from "$tests/page-objects/SnsNeuronInfoStake.page-object";
-import { SnsNeuronMaturityCardPo } from "$tests/page-objects/SnsNeuronMaturityCard.page-object";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
-import { SnsNeuronMetaInfoCardPo } from "$tests/page-objects/SnsNeuronMetaInfoCard.page-object";
+import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
 import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -30,24 +28,12 @@ export class SnsNeuronDetailPo extends BasePageObject {
     );
   }
 
-  getMetaInfoCardPo(): SnsNeuronMetaInfoCardPo {
-    return SnsNeuronMetaInfoCardPo.under(this.root);
-  }
-
   getHotkeysCardPo(): SnsNeuronHotkeysCardPo {
     return SnsNeuronHotkeysCardPo.under(this.root);
   }
 
-  getMaturityCardPo(): SnsNeuronMaturityCardPo {
-    return SnsNeuronMaturityCardPo.under(this.root);
-  }
-
-  getStakeCardPo(): SnsNeuronInfoStakePo {
-    return SnsNeuronInfoStakePo.under(this.root);
-  }
-
   getStake(): Promise<string> {
-    return this.getStakeCardPo().getStakeAmount();
+    return this.getVotingPowerSectionPo().getStakeAmount();
   }
 
   getFollowingCardPo(): SnsNeuronFollowingCardPo {
@@ -62,12 +48,20 @@ export class SnsNeuronDetailPo extends BasePageObject {
     return (await this.getSummaryPo().getTitle()).trim();
   }
 
+  getPageHeader(): SnsNeuronPageHeaderPo {
+    return SnsNeuronPageHeaderPo.under(this.root);
+  }
+
+  getUniverse(): Promise<string> {
+    return this.getPageHeader().getUniverse();
+  }
+
   getIncreaseStakeModalPo(): SnsIncreaseStakeNeuronModalPo {
     return SnsIncreaseStakeNeuronModalPo.under(this.root);
   }
 
   async increaseStake(amount: number): Promise<void> {
-    await this.getStakeCardPo().getIncreaseStakeButtonPo().click();
+    await this.getVotingPowerSectionPo().clickIncrease();
     await this.getIncreaseStakeModalPo().increase(amount);
   }
 

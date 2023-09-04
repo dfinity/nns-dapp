@@ -1,6 +1,11 @@
 <script lang="ts">
-  import { WizardModal } from "@dfinity/gix-components";
-  import type { WizardStep, WizardSteps } from "@dfinity/gix-components";
+  import QrWizardModal from "./QrWizardModal.svelte";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import type {
+    WizardModal,
+    WizardStep,
+    WizardSteps,
+  } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
@@ -11,14 +16,11 @@
     TransactionNetwork,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import TransactionQRCode from "$lib/components/transaction/TransactionQRCode.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TransactionReceivedAmount from "$lib/components/transaction/TransactionReceivedAmount.svelte";
   import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
-  import { decodePayment } from "@dfinity/ledger";
-  import { toastsError } from "$lib/stores/toasts.store";
 
-  export let testId: string | undefined = undefined;
+  export let testId = "transaction-modal-component";
   export let transactionInit: TransactionInit = {};
 
   // User inputs initialized with given initial parameters when component is mounted. If initial parameters vary, we do not want to overwrite what the user would have already entered.
@@ -60,7 +62,6 @@
   // Wizard modal steps and navigation
   const STEP_FORM = "Form";
   const STEP_PROGRESS = "Progress";
-  const STEP_QRCODE = "QRCode";
 
   const steps: WizardSteps = [
     {
@@ -75,13 +76,14 @@
       name: STEP_PROGRESS,
       title: "",
     },
-    {
-      name: STEP_QRCODE,
-      title: "",
-    },
   ];
 
   let modal: WizardModal;
+  let scanQrCode: ({
+    requiredToken,
+  }: {
+    requiredToken: Token;
+  }) => Promise<QrResponse>;
 
   const goNext = () => {
     modal.next();
@@ -94,49 +96,34 @@
     modal.set(steps.findIndex(({ name }) => name === step));
 
   export const goProgress = () => goStep(STEP_PROGRESS);
-  const goQRCode = () => goStep(STEP_QRCODE);
-  const goForm = () => goStep(STEP_FORM);
 
-  const onQRCode = ({ detail: value }: CustomEvent<string>) => {
-    const payment = decodePayment(value);
+  const goQRCode = async () => {
+    const {
+      result,
+      identifier,
+      amount: paymentAmount,
+    } = await scanQrCode({
+      requiredToken: token,
+    });
 
-    // if we can successfully decode a payment from the QR code, we can validate that it corresponds to the same token and also set the amount, in addition to populating the destination address.
-    if (nonNullish(payment)) {
-      const {
-        token: paymentToken,
-        identifier,
-        amount: paymentAmount,
-      } = payment;
-
-      if (paymentToken !== token.symbol.toLowerCase()) {
-        toastsError({
-          labelKey: "error.qrcode_token_incompatible",
-        });
-
-        goForm();
-        return;
-      }
-
-      selectedDestinationAddress = identifier;
-
-      if (nonNullish(paymentAmount)) {
-        amount = paymentAmount;
-      }
-
-      goForm();
+    if (result !== "success") {
       return;
     }
 
-    selectedDestinationAddress = value;
-    goForm();
+    selectedDestinationAddress = identifier;
+
+    if (nonNullish(paymentAmount)) {
+      amount = paymentAmount;
+    }
   };
 </script>
 
-<WizardModal
+<QrWizardModal
   {testId}
   {steps}
   bind:currentStep
-  bind:this={modal}
+  bind:modal
+  bind:scanQrCode
   on:nnsClose
   disablePointerEvents={currentStep?.name === STEP_PROGRESS}
 >
@@ -195,7 +182,4 @@
   {#if currentStep?.name === STEP_PROGRESS}
     <slot name="in_progress" />
   {/if}
-  {#if currentStep?.name === STEP_QRCODE}
-    <TransactionQRCode on:nnsCancel={goForm} on:nnsQRCode={onQRCode} />
-  {/if}
-</WizardModal>
+</QrWizardModal>

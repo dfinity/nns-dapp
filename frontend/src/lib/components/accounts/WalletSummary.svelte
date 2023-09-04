@@ -55,13 +55,14 @@
       detail: { intersecting },
     } = $event as unknown as CustomEvent<IntersectingDetail>;
 
-    layoutTitleStore.set(
-      intersecting
+    layoutTitleStore.set({
+      title: $i18n.wallet.title,
+      header: intersecting
         ? $i18n.wallet.title
         : `${accountName} – ${formatToken({
             value: accountBalance,
-          })} ${tokenSymbol}`
-    );
+          })} ${tokenSymbol}`,
+    });
   };
 </script>
 

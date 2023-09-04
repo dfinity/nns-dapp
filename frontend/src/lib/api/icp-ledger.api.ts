@@ -6,7 +6,7 @@ import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import type { BlockHeight } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { TokenAmount } from "@dfinity/utils";
@@ -101,7 +101,7 @@ export const ledgerCanister = async ({
   identity: Identity;
 }): Promise<{
   canister: LedgerCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   logWithTimestamp(`LC call...`);
   const agent = await createAgent({
