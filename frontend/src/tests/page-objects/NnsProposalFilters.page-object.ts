@@ -1,3 +1,4 @@
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -20,6 +21,21 @@ export class NnsProposalFiltersPo extends BasePageObject {
 
   getFilterModalPo(): FilterModalPo {
     return FilterModalPo.under(this.root);
+  }
+
+  getVotableProposalsOnlyCheckboxPo(): CheckboxPo {
+    return CheckboxPo.under({
+      element: this.root,
+      testId: "votable-proposals-only",
+    });
+  }
+
+  async setVotableProposalsOnlyValue(checked: boolean): Promise<void> {
+    if (
+      (await this.getVotableProposalsOnlyCheckboxPo().isChecked()) !== checked
+    ) {
+      return await this.getVotableProposalsOnlyCheckboxPo().click();
+    }
   }
 
   async selectEntriesInFilterModal(ids: string[]): Promise<void> {
