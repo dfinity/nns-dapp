@@ -6,6 +6,10 @@ on:
     # check for new rust versions weekly
     - cron: '30 3 * * FRI'
   workflow_dispatch:
+  push:
+    branches:
+      # Run when the development branch for this workflow is updated.
+      - update-snsdemo
 jobs:
   rust-update:
     runs-on: ubuntu-latest
