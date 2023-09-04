@@ -1,0 +1,53 @@
+# A GitHub Actions workflow that regularly checks for new Rust toolchain release
+# and creates a PR on new versions.
+name: Rust Update
+on:
+  schedule:
+    # check for new rust versions weekly
+    - cron: '30 3 * * FRI'
+  workflow_dispatch:
+jobs:
+  rust-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get snsdemo repo
+      - uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+      - name: Update to match the snsdemo repo
+        id: update
+        run: |
+          current_commit="$(yq '.inputs.snsdemo_ref.default' .github/actions/start_dfx_snapshot/action.yaml)"
+          latest_commit="$(cd snsdemo && git rev-parse HEAD)"
+
+          if [ "$current_commit" == "$latest_commit" ]
+          then
+            echo "updated=0" >> "$GITHUB_OUTPUT"
+          else
+            echo snsdemo needs an update
+            ./scripts/update-snsdemo ./snsdemo
+            echo "updated=1" >> "$GITHUB_OUTPUT"
+          fi
+        # If the rust-toolchain was updated, create a PR.
+      - name: Create Pull Request
+        if: ${{ steps.update.outputs.updated == '1' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          base: main
+          commit-message: Update snsdemo
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-snsdemo-update
+          delete-branch: true
+          title: 'Update snsdemo commit'
+          # Since the this is a scheduled job, a failure won't be shown on any
+          # PR status. To notify the team, we send a message to our Slack channel on failure.
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "snsdemo update failed"
