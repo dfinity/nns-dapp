@@ -67,14 +67,12 @@ test("Test neuron voting", async ({ page, context }) => {
     appPo,
     proposerNeuronId,
   });
-  // Vote on the first proposal
+  step("Vote for a proposal");
   const proposalCardForVoting = await appPo
     .getProposalsPo()
     .getNnsProposalListPo()
     .getFirstProposalCardPoForProposer(proposerNeuronId);
   const proposalIdForVoting = await proposalCardForVoting.getProposalId();
-
-  step("Vote for a proposal");
   // Open proposal details
   await proposalCardForVoting.click();
   await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();
