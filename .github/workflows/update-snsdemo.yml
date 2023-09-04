@@ -31,6 +31,9 @@ jobs:
             echo "updated=0" >> "$GITHUB_OUTPUT"
           else
             echo snsdemo needs an update
+            # Install didc
+            snsdemo/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+            # Update
             ./scripts/update-snsdemo ./snsdemo
             echo "updated=1" >> "$GITHUB_OUTPUT"
           fi
