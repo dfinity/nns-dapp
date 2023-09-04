@@ -20,7 +20,7 @@ import {
   mockSnsMainAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
-import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
 import type { Principal } from "@dfinity/principal";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
