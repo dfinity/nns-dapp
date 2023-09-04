@@ -124,10 +124,10 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Get nns-dapp
+      - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
-          name: nns-dapp
+          name: nns-dapp_test
       - name: Get sns_aggregator
         uses: actions/download-artifact@v3
         with:
