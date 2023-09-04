@@ -120,7 +120,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make didc support binstall, then use binstall here.
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -146,7 +146,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use binstall, once didc supports it.
+          # TODO: Use `binstall`, once `didc` supports it.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -172,7 +172,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use binstall, once didc supports it.
+          # TODO: Use `binstall`, once `didc` supports it.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -209,7 +209,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make didc support binstall, then use binstall here.
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Install binstall
         run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
