@@ -117,25 +117,6 @@ jobs:
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
-  test-test-account-api:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 40
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v3
-      - name: Get nns-dapp_test
-        uses: actions/download-artifact@v3
-        with:
-          name: nns-dapp_test
-      - name: Start empty nns-dapp
-        # As long as the snapshot environment can be installed with no accounts, we can use that.
-        # The snapshot action also installs idl2json and jq; commands that we will need.
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-      - name: Check that test accounts can be created and read
-        run: ./scripts/nns-dapp/test-account.test
   test-rest:
     needs: build
     runs-on: ubuntu-20.04
@@ -217,6 +198,10 @@ jobs:
           scripts/dfx-wasm-metadata-add.test --verbose
       - name: Verify that metrics are present
         run: scripts/nns-dapp/e2e-test-metrics-present
+      - name: Verify that test accounts can be created and read
+        # WARNING: This MUST be run on a canister with no accounts, so that we can confirm that the created test accounts have the expected IDs and values.
+        # If you install accounts in any other steps, please run this step first.
+        run: ./scripts/nns-dapp/test-account.test
       - name: Release
         run: |
           for tag in $(git tag --points-at HEAD) ; do
@@ -471,7 +456,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
