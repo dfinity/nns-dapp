@@ -9,14 +9,18 @@
   } from "$lib/types/project-detail.context";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { keyOf } from "$lib/utils/utils";
+  import type { Readable } from "svelte/store";
+  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
+  import type { Principal } from "@dfinity/principal";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
   let swap: SnsSummarySwap;
+  let rootCanisterId: Principal;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap } = $projectDetailStore.summary as SnsSummary);
+  $: ({ swap, rootCanisterId } = $projectDetailStore.summary as SnsSummary);
 
   const statusTextMapper = {
     [SnsSwapLifecycle.Unspecified]: $i18n.sns_project_detail.status_unspecified,
@@ -29,11 +33,23 @@
 
   let lifecycle: number;
   $: ({ lifecycle } = swap);
+
+  let isFinalizingStore: Readable<boolean>;
+  $: isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
+
+  let lifeCycleStatusText: string;
+  $: lifeCycleStatusText = keyOf({ obj: statusTextMapper, key: lifecycle });
+
+  // The finalizing is not a lifecycle status. Instead, is calculated based on a response from the canister.
+  let statusText: string;
+  $: statusText = $isFinalizingStore
+    ? $i18n.sns_project_detail.status_finalizing
+    : lifeCycleStatusText;
 </script>
 
 <div data-tid="project-status-component">
   <h2 class="content-cell-title">{$i18n.sns_project_detail.status}</h2>
-  <Tag>{keyOf({ obj: statusTextMapper, key: lifecycle })}</Tag>
+  <Tag>{statusText}</Tag>
 </div>
 
 <style lang="scss">

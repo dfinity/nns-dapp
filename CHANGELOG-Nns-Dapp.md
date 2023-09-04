@@ -21,6 +21,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Add a database abstraction layer, preparing for migration.
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* New colors in NNS Dapp.
+* Make the format of `get_test_account()`, used in testing, compatible with `get_account()`.
 
 #### Deprecated
 #### Removed
@@ -46,6 +48,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
 
 #### Changed
 - Use the upstream notification action directly, rather than using a local copy.

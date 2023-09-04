@@ -704,6 +704,7 @@
     "status_aborted": "Aborted",
     "status_pending": "Upcoming swap",
     "status_unspecified": "Unspecified",
+    "status_finalizing": "Finalizing",
     "participate_swap_description": "Participate in decentralization swap",
     "understand_agree": "I understand that I cannot withdraw or edit my commitment after I select \"Send Now,\" and that my commitment may be returned to my main ICP account if the swap is unsuccessful for any reason.",
     "participate_success": "Your participation has been successfully committed.",
