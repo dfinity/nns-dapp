@@ -21,6 +21,7 @@
     "**/*.fake.ts",
     "**/*.page-object.ts",
     "**/*Test.svelte",
-    "**/*.test-utils.ts"
+    "**/*.test-utils.ts",
+    "**/*.test.utils.ts"
   ]
 }
