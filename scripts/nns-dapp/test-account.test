@@ -6,7 +6,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
 
-	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_test_account'.
+	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_toy_account'.
 
 	Note: This test requires a blank nns-dapp with no existing test accounts.
 	EOF
