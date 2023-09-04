@@ -11,7 +11,17 @@
     type WizardSteps,
     type WizardStep,
   } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import AddressInput from "$lib/components/accounts/AddressInput.svelte";
+  import {
+    getAccountsByRootCanister,
+    invalidAddress,
+  } from "$lib/utils/accounts.utils";
+  import type { Account } from "$lib/types/account";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
+  export let rootCanisterId: Principal;
   export let formattedMaturity: string;
   export let tokenSymbol: string;
 
@@ -29,12 +39,36 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
+  let selectedDestinationAddress: string | undefined = undefined;
   let percentageToDisburse = 0;
+
+  let disabled = false;
+  $: disabled =
+    invalidAddress({
+      address: selectedDestinationAddress,
+      network: undefined,
+      rootCanisterId,
+    }) || percentageToDisburse === 0;
 
   const dispatcher = createEventDispatcher();
   const disburseNeuronMaturity = () =>
-    dispatcher("nnsDisburseMaturity", { percentageToDisburse });
+    dispatcher("nnsDisburseMaturity", {
+      percentageToDisburse,
+      destinationAddress: selectedDestinationAddress,
+    });
   const close = () => dispatcher("nnsClose");
+
+  let mainAccount: Account | undefined = undefined;
+  $: mainAccount = (
+    getAccountsByRootCanister({
+      rootCanisterId,
+      universesAccounts: $universesAccountsStore,
+    }) ?? []
+  ).find(({ type }) => type === "main");
+  // preselect main account by default
+  $: if (isNullish(selectedDestinationAddress) && nonNullish(mainAccount)) {
+    selectedDestinationAddress = mainAccount?.identifier;
+  }
 
   const goToConfirm = () => modal.next();
 </script>
@@ -51,23 +85,31 @@
   >
 
   {#if currentStep?.name === "SelectPercentage"}
-    <NeuronSelectPercentage
-      {formattedMaturity}
-      buttonText={$i18n.neuron_detail.disburse}
-      on:nnsSelectPercentage={goToConfirm}
-      on:nnsCancel={close}
-      bind:percentage={percentageToDisburse}
-      disabled={percentageToDisburse === 0}
-    >
-      <svelte:fragment slot="text">
-        <Html
-          text={replacePlaceholders(
-            $i18n.neuron_detail.disburse_maturity_modal_description,
-            { $symbol: tokenSymbol }
-          )}
-        />
-      </svelte:fragment>
-    </NeuronSelectPercentage>
+    <form on:submit|preventDefault={goToConfirm}>
+      <Html
+        text={replacePlaceholders(
+          $i18n.neuron_detail.disburse_maturity_modal_description,
+          { $symbol: tokenSymbol }
+        )}
+      />
+
+      <AddressInput
+        qrCode={false}
+        bind:address={selectedDestinationAddress}
+        {rootCanisterId}
+      />
+
+      <NeuronSelectPercentage
+        {formattedMaturity}
+        buttonText={$i18n.neuron_detail.disburse}
+        on:nnsSelectPercentage={goToConfirm}
+        on:nnsCancel={close}
+        bind:percentage={percentageToDisburse}
+        {disabled}
+      >
+        <svelte:fragment slot="text" />
+      </NeuronSelectPercentage>
+    </form>
   {:else if currentStep?.name === "ConfirmDisburseMaturity"}
     <NeuronConfirmActionScreen
       on:nnsConfirm={disburseNeuronMaturity}

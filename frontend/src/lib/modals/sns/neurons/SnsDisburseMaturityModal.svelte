@@ -12,6 +12,7 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { Token } from "@dfinity/utils";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { decodeIcrcAccount } from "@dfinity/ledger";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
@@ -33,14 +34,19 @@
   const close = () => dispatcher("nnsClose");
 
   const disburseMaturity = async ({
-    detail: { percentageToDisburse },
-  }: CustomEvent<{ percentageToDisburse: number }>) => {
+    detail: { percentageToDisburse, destinationAddress },
+  }: CustomEvent<{
+    percentageToDisburse: number;
+    destinationAddress: string;
+  }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
+    const toAccount = decodeIcrcAccount(destinationAddress);
     const { success } = await disburseMaturityService({
+      rootCanisterId,
       neuronId,
       percentageToDisburse,
-      rootCanisterId,
+      toAccount,
     });
 
     await reloadNeuron();
@@ -57,6 +63,7 @@
 </script>
 
 <DisburseMaturityModal
+  {rootCanisterId}
   formattedMaturity={maturity}
   tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
