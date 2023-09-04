@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 * New colors in NNS Dapp.
+* Make the format of `get_test_account()`, used in testing, compatible with `get_account()`.
 
 #### Deprecated
 #### Removed
