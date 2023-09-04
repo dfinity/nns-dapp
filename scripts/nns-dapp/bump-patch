@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Increment the patch version of the nns-dapp frontend and backend.
+
+	Note: As the SNS aggregator shares the NNS dapp backend version number,
+	this will also increase the aggregator version number.  The two projects
+	should probably have independent version numbers.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=c long=commit desc="Commit changes" variable=COMMIT_CHANGES nargs=0
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+test -z "${COMMIT_CHANGES:-}" || [[ "$(git status --untracked-files=no --porcelain)" == "" ]] || {
+  echo "ERROR: Git should be clean before running this command."
+  echo "       Untracked files will be ignored, but changes to tracked files"
+  echo "       should be removed or committed."
+  echo "       Please do so before re-running this command."
+  echo
+  echo "Changes:"
+  git status --untracked-files=no --porcelain | head
+  exit 1
+} >&2
+pushd frontend
+npm version patch
+npm install
+test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp frontend patch version"
+popd
+
+# Update the nns-dapp Rust package version:
+#
+# Note: The code uses awk to edit the Cargo.toml.  Alternatives considered:
+#  - I looked for a cargo extension similar to `npm version`.  I found this:
+#      https://github.com/filipstefansson/cargo-semver
+#    It works, but has not released version 1.0.0 yet, is not used much, the install instructions
+#    on crates.io are out of date and the author has not responded to recent issues.  If that
+#    changes, we could use `cargo semver bump patch`.  This also updates the Cargo.lock.
+#  - I checked `cargo metadata` but that does not seem to have an option for editing the metadata.
+#  - yq currently parses TOML but does not emit TOML, so we cannot currently use that to edit Cargo.toml.
+#    Again, if that changes we can use that.
+#
+# ... Increment the patch version in Cargo.toml
+#     - On the version line, gets the version number, splits by ".", increments the third field and prints a new version line.
+#     - Other lines are passed through unmodified.
+awk -F'"' '/^version *= *"[0-9.]+"/{split($2,v,".");v[3]++;printf "version = \"%s.%s.%s\"\n", v[1], v[2], v[3];next}{print}' Cargo.toml | sponge Cargo.toml
+# ... Update Cargo.lock
+cargo fetch # Updates cargo lock but saves time by not creating binaries.
+
+test -z "${COMMIT_CHANGES:-}" || git commit -a -m "Increment nns-dapp backend and sns aggregator patch version"

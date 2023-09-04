@@ -12,16 +12,22 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Disburse maturity of sns neurons.
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
 
 #### Changed
+
+* Add a database abstraction layer, preparing for migration.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
+* New colors in NNS Dapp.
 
 #### Deprecated
 #### Removed
 
-#### Fixed
+* Remove unused components after new neuron details page.
 
-* Header in accounts, canisters and neurons was not visible after user came back from logging in.
+#### Fixed
 
 #### Security
 
@@ -32,7 +38,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 * Add "Filter proposals by Votable only" e2e test.
 
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
 #### Changed
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
 
 #### Deprecated
 #### Removed
@@ -40,6 +51,42 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 #### Security
+
+## Proposal 124328
+
+### Application
+
+#### Changed
+
+* Bigger icon and description first on Sns project page.
+
+#### Removed
+
+* Remove ENABLE_NEURON_SETTINGS feature flag.
+
+#### Fixed
+
+* Header in accounts, canisters and neurons was not visible after user came back from logging in.
+* Address issue with displayed SNS balances on quickly switching between SNSes.
+
+#### Security
+
+* Update dependency of @adobe/css-tools because of https://github.com/advisories/GHSA-hpx4-r86g-5jrg
+
+#### Not Published
+
+* Disburse maturity of sns neurons.
+
+### Operations
+
+#### Added
+
+- Add a command to increment the package versions.
+
+#### Changed
+
+- Use the upstream notification action directly, rather than using a local copy.
+- Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
 
 ## Proposal 124280
 

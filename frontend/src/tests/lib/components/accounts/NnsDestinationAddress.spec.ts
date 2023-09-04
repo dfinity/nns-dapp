@@ -5,52 +5,96 @@
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
-  mockAccountsStoreSubscribe,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDestinationAddress", () => {
-  const mockSubAccount2 = {
+  const mockSubAccount1 = {
     ...mockSubAccount,
-    identifier: `test-subaccount2-identifier`,
+    name: "Subaccount1",
+    identifier:
+      "b505b85da7d92b7d72e48a38edb31a2a8e1f28bb0d5432a3d6e24aae798b5136",
   };
 
-  jest
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount, mockSubAccount2])
-    );
+  const mockSubAccount2 = {
+    ...mockSubAccount,
+    name: "Subaccount2",
+    identifier:
+      "72c0fde366c2ae6128591316d66429b99373bd2e5485aa07224a7b3f6fbe7104",
+  };
 
-  it("should render an input to enter an address", () => {
-    const { container } = render(NnsDestinationAddress);
+  let onAccountSelectedSpy: jest.Mock;
 
-    expect(container.querySelector("input")).not.toBeNull();
-    expect(container.querySelector("form")).not.toBeNull();
-  });
+  beforeEach(() => {
+    allowLoggingInOneTestForDebugging();
+    jest.restoreAllMocks();
 
-  it("should render a list of accounts", () => {
-    const { getByText } = render(NnsDestinationAddress);
-
-    expect(
-      getByText(mockSubAccount.identifier, { exact: false })
-    ).toBeInTheDocument();
-
-    expect(
-      getByText(mockSubAccount2.identifier, { exact: false })
-    ).toBeInTheDocument();
-  });
-
-  it("should filter selected account", () => {
-    const { getByText } = render(NnsDestinationAddress, {
-      props: {
-        filterIdentifier: mockMainAccount.identifier,
-      },
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount1, mockSubAccount2],
+      hardwareWallets: [],
     });
+    onAccountSelectedSpy = jest.fn();
+  });
 
-    expect(() =>
-      getByText(mockMainAccount.identifier, { exact: false })
-    ).toThrow();
+  const renderComponent = () => {
+    const { container, component } = render(NnsDestinationAddress);
+    component.$on("nnsAddress", (event) => {
+      onAccountSelectedSpy(event.detail);
+    });
+    return NnsDestinationAddressPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should render an input to enter an address", async () => {
+    const po = renderComponent();
+
+    expect(await po.getSelectDestinationAddressPo().isPresent()).toBe(true);
+  });
+
+  it("should render a list of accounts", async () => {
+    const po = renderComponent();
+
+    expect(await po.getOptions()).toEqual([
+      "Main",
+      mockSubAccount1.name,
+      mockSubAccount2.name,
+    ]);
+  });
+
+  it("should dispatch event with selected account identifier", async () => {
+    const po = renderComponent();
+
+    await po
+      .getSelectDestinationAddressPo()
+      .getDropdownPo()
+      .select(mockSubAccount2.name);
+
+    expect(onAccountSelectedSpy).not.toBeCalled();
+    await po.clickContinue();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(onAccountSelectedSpy).toBeCalledWith({
+      address: mockSubAccount2.identifier,
+    });
+    expect(onAccountSelectedSpy).toBeCalledTimes(1);
+  });
+
+  it("should dispatch event with entered account identifier", async () => {
+    const po = renderComponent();
+    await po.getSelectDestinationAddressPo().toggleSelect();
+    await po.enterAddress(mockSubAccount.identifier);
+
+    expect(onAccountSelectedSpy).not.toBeCalled();
+
+    await po.clickContinue();
+
+    expect(onAccountSelectedSpy).toBeCalledWith({
+      address: mockSubAccount.identifier,
+    });
+    expect(onAccountSelectedSpy).toBeCalledTimes(1);
   });
 });

@@ -42,6 +42,7 @@
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -76,6 +77,7 @@
         },
         forceFetch: true,
       }),
+      loadSnsFinalizationStatus(Principal.fromText(rootCanisterId)),
     ]);
   };
 
@@ -165,6 +167,13 @@
   });
   $: if (shouldLoadUserCountry) {
     loadUserCountry();
+  }
+
+  $: if (
+    nonNullish(rootCanisterId) &&
+    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Committed
+  ) {
+    loadSnsFinalizationStatus(Principal.fromText(rootCanisterId));
   }
 
   let derivedStateHasBuyersCount: boolean | undefined;

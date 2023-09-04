@@ -19,7 +19,7 @@ import { waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 
 describe("auth-services", () => {
-  const { reload, href, search } = window.location;
+  const originalLocation = window.location;
 
   beforeEach(async () => {
     jest.restoreAllMocks();
@@ -29,11 +29,14 @@ describe("auth-services", () => {
   beforeAll(() => {
     Object.defineProperty(window, "location", {
       writable: true,
-      value: { reload: jest.fn(), href, search },
+      value: {
+        ...originalLocation,
+        reload: jest.fn(),
+      },
     });
   });
 
-  afterAll(() => (window.location.reload = reload));
+  afterAll(() => (window.location = originalLocation));
 
   describe("auth-client", () => {
     it("agent-js should clear indexeddb auth info on logout", async () => {

@@ -1,6 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import userEvent from "@testing-library/user-event";
 
 const SELF_SELECTOR = ":scope";
 
@@ -130,8 +131,14 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
-  async isChecked(): Promise<boolean | null> {
-    throw new Error("Not implemented");
+  async isChecked(): Promise<boolean> {
+    if ("checked" in this.element) {
+      // TS doesn't know that the "checked" property is of type boolean
+      return this.element.checked as boolean;
+    }
+    throw new Error(
+      `"checked" property is not supported for element: "${this.element.tagName}"`
+    );
   }
 
   async click(): Promise<void> {
@@ -150,10 +157,9 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.input(text);
   }
 
-  async selectOption(_text: string): Promise<void> {
-    throw new Error("Not implemented");
-    // Not tested:
-    // userEvent.selectOption(this.element, text);
+  async selectOption(text: string): Promise<void> {
+    await this.waitFor();
+    return userEvent.selectOptions(this.element, text);
   }
 
   async isVisible(): Promise<boolean> {

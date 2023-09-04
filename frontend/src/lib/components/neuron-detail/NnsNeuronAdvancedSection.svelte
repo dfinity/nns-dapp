@@ -113,7 +113,7 @@
       <JoinCommunityFundCheckbox {neuron} />
     {/if}
     {#if isControllable}
-      <SplitNnsNeuronButton {neuron} variant="secondary" />
+      <SplitNnsNeuronButton {neuron} />
     {/if}
   </div>
 </Section>

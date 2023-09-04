@@ -65,7 +65,7 @@ test("Test SNS governance", async ({ page, context }) => {
   await neuronCard.click();
   const neuronDetail = appPo.getNeuronDetailPo().getSnsNeuronDetailPo();
   expect(await neuronDetail.getUniverse()).toBe(snsProjectName);
-  expect(await neuronDetail.getStakeNewUI()).toBe(formattedStake);
+  expect(await neuronDetail.getStake()).toBe(formattedStake);
   expect(await neuronDetail.getHotkeyPrincipals()).toEqual([]);
 
   step("SN003: User can add a hotkey");
