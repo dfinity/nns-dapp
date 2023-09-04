@@ -52,7 +52,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-snsdemo-update
-          add-paths: .github
+          add-paths: .github/*/*ml
           delete-branch: true
           title: 'Update snsdemo commit'
           # Since the this is a scheduled job, a failure won't be shown on any
