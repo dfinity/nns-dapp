@@ -1074,10 +1074,10 @@ impl AccountsStore {
     }
 
     pub fn get_histogram(&self) -> AccountsStoreHistogram {
-        self.accounts
+        self.accounts_db
             .values()
             .fold(AccountsStoreHistogram::default(), |histogram, account| {
-                histogram + account
+                histogram + &account
             })
     }
 
