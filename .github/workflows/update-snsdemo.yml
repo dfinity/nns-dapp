@@ -47,7 +47,6 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
-          base: main
           commit-message: Update snsdemo
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
