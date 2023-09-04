@@ -37,6 +37,8 @@ jobs:
             sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
             # Update
             ./scripts/update-snsdemo ./snsdemo
+            echo "Changes:"
+            git diff
             echo "updated=1" >> "$GITHUB_OUTPUT"
           fi
         # If the snsdemo repo was updated, create a PR.
