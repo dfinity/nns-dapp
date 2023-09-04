@@ -33,6 +33,8 @@ jobs:
             echo snsdemo needs an update
             # Install didc
             snsdemo/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+            # Install sponge
+            sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
             # Update
             ./scripts/update-snsdemo ./snsdemo
             echo "updated=1" >> "$GITHUB_OUTPUT"
