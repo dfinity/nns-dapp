@@ -1,9 +1,9 @@
-# A GitHub Actions workflow that regularly checks for new Rust toolchain release
-# and creates a PR on new versions.
-name: Rust Update
+# A GitHub Actions workflow that regularly checks for new snsdemo commits
+# and creates a PR on finding any.
+name: Update snsdemo
 on:
   schedule:
-    # check for new rust versions weekly
+    # check for new snsdemo commits weekly
     - cron: '30 3 * * FRI'
   workflow_dispatch:
   push:
@@ -11,7 +11,7 @@ on:
       # Run when the development branch for this workflow is updated.
       - update-snsdemo
 jobs:
-  rust-update:
+  update-snsdemo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
             ./scripts/update-snsdemo ./snsdemo
             echo "updated=1" >> "$GITHUB_OUTPUT"
           fi
-        # If the rust-toolchain was updated, create a PR.
+        # If the snsdemo repo was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
