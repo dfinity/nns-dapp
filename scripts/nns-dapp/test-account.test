@@ -64,6 +64,9 @@ actual_output="$(cat "$actual_output_file")"
   diff -u <(echo "$expected_output") <(echo "$actual_output") || true
   echo
   echo "The actual output is in: $actual_output_file"
+  echo
+  echo "If the actual output is correct, please run:"
+  echo printf "  cp %q %q\n" "$actual_output_file" "$0.data"
   exit 1
 } >&2
 
