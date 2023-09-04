@@ -48,15 +48,12 @@ test("Test neuron voting", async ({ page, context }) => {
     .getNnsProposalFiltersPo()
     .setVotableProposalsOnlyValue(true);
   await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsBeforeVoting = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getVisibleProposalIds(proposerNeuronId);
+  const proposalIdsBeforeVoting = await nnsProposalListPo.getVisibleProposalIds(
+    proposerNeuronId
+  );
   step("Vote for a proposal");
-  const proposalCardForVoting = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getFirstProposalCardPoForProposer(proposerNeuronId);
+  const proposalCardForVoting =
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
   const proposalIdForVoting = await proposalCardForVoting.getProposalId();
   // Open proposal details
   await proposalCardForVoting.click();
@@ -71,10 +68,9 @@ test("Test neuron voting", async ({ page, context }) => {
   // Back to proposals list
   await appPo.goBack();
   await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsAfterVoting = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getVisibleProposalIds(proposerNeuronId);
+  const proposalIdsAfterVoting = await nnsProposalListPo.getVisibleProposalIds(
+    proposerNeuronId
+  );
 
   step("Voted proposal should be hidden");
   expect(proposalIdsAfterVoting).toHaveLength(
@@ -93,10 +89,7 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Voted proposal should be visible again");
   expect(
-    await appPo
-      .getProposalsPo()
-      .getNnsProposalListPo()
-      .getVisibleProposalIds(proposerNeuronId)
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId)
   ).toEqual(proposalIdsBeforeVoting);
 
   step("Filter proposals by Topic");
@@ -164,10 +157,8 @@ test("Test neuron voting", async ({ page, context }) => {
   await nnsProposalListPo.waitForContentLoaded();
 
   step("Open proposal details");
-  const governanceProposalCard = await appPo
-    .getProposalsPo()
-    .getNnsProposalListPo()
-    .getFirstProposalCardPoForProposer(proposerNeuronId);
+  const governanceProposalCard =
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
   expect(await governanceProposalCard.getProposalTopicText()).toBe(
     "Governance"
   );
