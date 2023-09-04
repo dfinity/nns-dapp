@@ -31,4 +31,8 @@ export class CardPo extends BasePageObject {
   async hasIcon(): Promise<boolean> {
     return this.root.querySelector("svg").isPresent();
   }
+
+  async isButton(): Promise<boolean> {
+    return (await this.root.getAttribute("role")) === "button";
+  }
 }

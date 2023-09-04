@@ -19,6 +19,10 @@ export class UniverseAccountsBalancePo extends BasePageObject {
     return this.getAmountDisplayPo().isPresent();
   }
 
+  isLoading(): Promise<boolean> {
+    return this.isPresent("skeleton-text");
+  }
+
   getBalance(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
   }
