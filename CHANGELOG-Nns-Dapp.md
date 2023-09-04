@@ -12,22 +12,56 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Disburse maturity of sns neurons.
 * Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
 
 #### Changed
 
-* Bigger icon and description first on Sns project page.
 * Add a database abstraction layer, preparing for migration.
 * Put common accountsdb tests in a macro and call that rather than copying the list of tests.
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
 
 #### Deprecated
 #### Removed
 
-* Remove ENABLE_NEURON_SETTINGS feature flag.
 * Remove unused components after new neuron details page.
+
+#### Fixed
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
+#### Changed
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 124328
+
+### Application
+
+#### Changed
+
+* Bigger icon and description first on Sns project page.
+
+#### Removed
+
+* Remove ENABLE_NEURON_SETTINGS feature flag.
 
 #### Fixed
 
@@ -40,26 +74,18 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* Disburse maturity of sns neurons.
+
 ### Operations
-- Add a command to increment the package versions.
 
 #### Added
 
-* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
-* A dictionary for spell-checking.
-* New "finalizing" status in SNS project detail page.
+- Add a command to increment the package versions.
 
 #### Changed
+
 - Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
-* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
-
-#### Deprecated
-#### Removed
-
-#### Fixed
-
-#### Security
 
 ## Proposal 124280
 

@@ -26,7 +26,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
-import { testTransferTokens } from "$tests/utils/transaction-modal.test.utils";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
