@@ -4,6 +4,8 @@
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
+  export let editLabel: string = $i18n.neuron_detail.edit_percentage;
+
   const dispatcher = createEventDispatcher();
   const confirm = () => dispatcher("nnsConfirm");
   const cancel = () => dispatcher("nnsCancel");
@@ -14,7 +16,7 @@
 
   <div class="toolbar">
     <button class="secondary" on:click={cancel} data-tid="cancel-action-button">
-      {$i18n.neuron_detail.edit_percentage}
+      {editLabel}
     </button>
     <button
       class="primary"

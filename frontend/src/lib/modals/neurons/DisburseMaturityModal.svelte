@@ -162,6 +162,7 @@
     <NeuronConfirmActionScreen
       on:nnsConfirm={disburseNeuronMaturity}
       on:nnsCancel={modal.back}
+      editLabel={$i18n.neuron_detail.disburse_maturity_edit}
     >
       <Html
         text={replacePlaceholders(
