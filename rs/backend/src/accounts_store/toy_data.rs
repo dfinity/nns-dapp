@@ -1,9 +1,8 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo,
-    NeuronDetails, NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction,
-    TransactionType,
+    schema::AccountsDbTrait, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo, NeuronDetails,
+    NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
 };
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
@@ -11,11 +10,6 @@ const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 
 const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and this many canisters.
 const NEURONS_PER_ACCOUNT: f32 = 0.3;
 const TRANSACTIONS_PER_ACCOUNT: f32 = 3.0;
-
-/// Principal of a toy account with a given index.
-fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
-    PrincipalId::new_user_test_id(toy_account_index)
-}
 
 impl AccountsStore {
     /// Creates the given number of toy accounts, with linked sub-accounts, hardware wallets, pending transactions, and canisters.
@@ -32,7 +26,7 @@ impl AccountsStore {
         let mut transactions_created: f32 = 0.0;
         // Creates accounts:
         for toy_account_index in index_range_start..index_range_end {
-            let account = toy_account_principal_id(toy_account_index);
+            let account = PrincipalId::new_user_test_id(toy_account_index);
             self.add_account(account);
             // Creates linked sub-accounts:
             // Note: Successive accounts have 0, 1, 2 ... MAX_SUB_ACCOUNTS_PER_ACCOUNT-1 sub accounts, restarting at 0.
@@ -97,15 +91,6 @@ impl AccountsStore {
             }
         }
         index_range_start
-    }
-
-    /// Gets the toy account with the given index.
-    pub fn get_toy_account(&self, toy_account_index: u64) -> Result<Account, String> {
-        let principal = PrincipalId::new_user_test_id(toy_account_index);
-        let account_identifier = AccountIdentifier::from(principal);
-        self.accounts_db
-            .db_get_account(&account_identifier.to_vec())
-            .ok_or_else(|| format!("Account not found: {}", toy_account_index))
     }
 
     /// Creates an account store with the given number of test accounts.
