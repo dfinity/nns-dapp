@@ -1745,7 +1745,7 @@ pub(crate) fn setup_test_store() -> AccountsStore {
 
 /// The histogram corresponding to a test store.
 ///
-/// Compare with the setup_test_store() function to verify that this is the expected histogram;
+/// Compare with the `setup_test_store()` function to verify that this is the expected histogram;
 /// if that changes, these stats are likely to change as well.
 pub fn test_store_histogram() -> AccountsStoreHistogram {
     let mut ans = AccountsStoreHistogram::default();

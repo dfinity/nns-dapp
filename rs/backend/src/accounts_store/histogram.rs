@@ -23,9 +23,9 @@ pub struct AccountsStoreHistogram {
     /// There are block explorers so technically this data is already public but we don't need that level of
     /// precision and would rather not leak information.
     default_account_transactions: BTreeMap<u32, u64>,
-    /// A histogram of the number of sub accounts per account.
+    /// A histogram of the number of sub-accounts per account.
     ///
-    /// Note: The maximum number of subaccounts is quite small so a direct count is fine.
+    /// Note: The maximum number of sub-accounts is quite small so a direct count is fine.
     sub_accounts: BTreeMap<u32, u64>,
     /// A histogram of the number of transactions per sub account.
     ///
@@ -45,7 +45,7 @@ impl AccountsStoreHistogram {
     pub fn default_account_transactions(&mut self, count: usize) -> &mut u64 {
         self.default_account_transactions.entry(log2_bucket(count)).or_insert(0)
     }
-    /// The bucket for a given number of sub_accounts.
+    /// The bucket for a given number of sub-accounts.
     pub fn sub_accounts(&mut self, count: usize) -> &mut u64 {
         self.sub_accounts.entry(count as u32).or_insert(0)
     }

@@ -274,7 +274,7 @@ fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
 }
 
-/// Makes a histogram of the number of subaccounts etc per account.
+/// Makes a histogram of the number of sub-accounts etc per account.
 ///
 /// This is to be able to design an efficient account store.
 ///
