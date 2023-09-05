@@ -1555,6 +1555,7 @@ fn get_histogram() {
         assert_eq!(expected_histogram, actual_histogram, "Adding accounts is not accounted for correctly");
     }
 
+    // Sub-accounts should be counted correctly:
     for i in 0..10 {
         store.create_sub_account(principal3, i.to_string());
 
@@ -1569,9 +1570,10 @@ fn get_histogram() {
         assert_eq!(expected_histogram, actual_histogram, "Adding the {}'th subaccount is not accounted for correctly", i);
     }
 
-    /*
     let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
     let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
+    // Hardware wallets should be counted corerctly
+    {
     store.register_hardware_wallet(
         principal3,
         RegisterHardwareWalletRequest {
@@ -1587,9 +1589,10 @@ fn get_histogram() {
         },
     );
 
-    store.get_stats(&mut stats);
-    assert_eq!(2, stats.hardware_wallet_accounts_count);
-
+    let actual_histogram = store.get_stats(&mut stats);
+    assert_eq!(expected_histogram, actual_histogram, "Hardware wallets are not counted correctly");
+}
+/*
     store.mark_ledger_sync_complete();
     store.get_stats(&mut stats);
     assert!(stats.seconds_since_last_ledger_sync < 10);
