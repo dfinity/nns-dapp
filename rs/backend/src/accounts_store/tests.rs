@@ -1552,7 +1552,10 @@ fn get_histogram() {
         *expected_histogram.canisters(0) += 2;
 
         let actual_histogram = store.get_histogram();
-        assert_eq!(expected_histogram, actual_histogram, "Adding accounts is not accounted for correctly");
+        assert_eq!(
+            expected_histogram, actual_histogram,
+            "Adding accounts is not accounted for correctly"
+        );
     }
 
     // Sub-accounts should be counted correctly:
@@ -1560,46 +1563,48 @@ fn get_histogram() {
         store.create_sub_account(principal3, i.to_string());
 
         // The histogram entry for the number of sub-accounts will have changed from 0 to 1, 2 etc for one account:
-        * expected_histogram.sub_accounts(i) -= 1;
-        * expected_histogram.sub_accounts(i+1) += 1;
+        *expected_histogram.sub_accounts(i) -= 1;
+        *expected_histogram.sub_accounts(i + 1) += 1;
         // Also, all these sub-accounts have no transactions:
-        *  expected_histogram.sub_account_transactions(0) += 1;
+        *expected_histogram.sub_account_transactions(0) += 1;
         // Check:
         let actual_histogram = store.get_histogram();
         expected_histogram.remove_empty_buckets();
-        assert_eq!(expected_histogram, actual_histogram, "Adding the {}'th subaccount is not accounted for correctly", i);
+        assert_eq!(
+            expected_histogram, actual_histogram,
+            "Adding the {}'th subaccount is not accounted for correctly",
+            i
+        );
     }
 
     let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
     let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
     // Hardware wallets should be counted corerctly
     {
-    store.register_hardware_wallet(
-        principal3,
-        RegisterHardwareWalletRequest {
-            name: "HW1".to_string(),
-            principal: hw1,
-        },
-    );
-    store.register_hardware_wallet(
-        principal4,
-        RegisterHardwareWalletRequest {
-            name: "HW2".to_string(),
-            principal: hw2,
-        },
-    );
-    // The two accounts (principal3 and principal4) have 1 hardware wallet each, so the 1 bucket should be incremented in each histogram:
-    * expected_histogram.hardware_wallet_accounts(0) -= 2;
-    * expected_histogram.hardware_wallet_accounts(1) += 2;
+        store.register_hardware_wallet(
+            principal3,
+            RegisterHardwareWalletRequest {
+                name: "HW1".to_string(),
+                principal: hw1,
+            },
+        );
+        store.register_hardware_wallet(
+            principal4,
+            RegisterHardwareWalletRequest {
+                name: "HW2".to_string(),
+                principal: hw2,
+            },
+        );
+        // The two accounts (principal3 and principal4) have 1 hardware wallet each, so the 1 bucket should be incremented in each histogram:
+        *expected_histogram.hardware_wallet_accounts(0) -= 2;
+        *expected_histogram.hardware_wallet_accounts(1) += 2;
 
-    let actual_histogram = store.get_histogram();
-    assert_eq!(expected_histogram, actual_histogram, "Hardware wallets are not counted correctly");
-}
-/*
-    store.mark_ledger_sync_complete();
-    store.get_stats(&mut stats);
-    assert!(stats.seconds_since_last_ledger_sync < 10);
-    */
+        let actual_histogram = store.get_histogram();
+        assert_eq!(
+            expected_histogram, actual_histogram,
+            "Hardware wallets are not counted correctly"
+        );
+    }
 }
 
 fn assert_queue_item_eq_stake_neuron(
