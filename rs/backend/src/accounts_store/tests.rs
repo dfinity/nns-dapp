@@ -1579,7 +1579,7 @@ fn get_histogram() {
 
     let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
     let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
-    // Hardware wallets should be counted corerctly
+    // Hardware wallets should be counted correctly
     {
         store.register_hardware_wallet(
             principal3,
@@ -1603,6 +1603,24 @@ fn get_histogram() {
         assert_eq!(
             expected_histogram, actual_histogram,
             "Hardware wallets are not counted correctly"
+        );
+    }
+
+    // Canisters should be counted corerctly.
+    for canister_index in 0..3 {
+        let canister_id = CanisterId::from(canister_index);
+        let attach_canister_request = AttachCanisterRequest {
+            name: format!("canister_{canister_index}"),
+            canister_id,
+        };
+        store.attach_canister(principal4, attach_canister_request);
+        *expected_histogram.canisters(canister_index as usize) -= 1;
+        *expected_histogram.canisters(canister_index as usize + 1) += 1;
+        expected_histogram.remove_empty_buckets();
+        let actual_histogram = store.get_histogram();
+        assert_eq!(
+            expected_histogram, actual_histogram,
+            "Canisters are not counted correctly"
         );
     }
 }
