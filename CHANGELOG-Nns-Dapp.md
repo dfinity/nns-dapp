@@ -21,6 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 * Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
+* Show the token selector also when not signed in.
 
 #### Deprecated
 #### Removed
