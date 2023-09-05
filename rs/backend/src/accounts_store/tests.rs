@@ -1543,24 +1543,33 @@ fn get_histogram() {
     {
         store.add_account(principal3);
         store.add_account(principal4);
-        expected_histogram.accounts_count += 2;
 
+        // These new accounts are empty, so the 0 bucket should be incremented in each histogram:
+        expected_histogram.accounts_count += 2;
         *expected_histogram.default_account_transactions(0) += 2;
-        //*expected_histogram.sub_accounts.entry(1).or_insert(log_2_bucket(0)) += 2; // Bucket for x < 2**0 == 1
+        *expected_histogram.sub_accounts(0) += 2;
+        *expected_histogram.hardware_wallet_accounts(0) += 2;
+        *expected_histogram.canisters(0) += 2;
 
         let actual_histogram = store.get_histogram();
-        assert_eq!(expected_histogram, actual_histogram);
+        assert_eq!(expected_histogram, actual_histogram, "Adding accounts is not accounted for correctly");
+    }
+
+    for i in 0..10 {
+        store.create_sub_account(principal3, i.to_string());
+
+        // The histogram entry for the number of sub-accounts will have changed from 0 to 1, 2 etc for one account:
+        * expected_histogram.sub_accounts(i) -= 1;
+        * expected_histogram.sub_accounts(i+1) += 1;
+        // Also, all these sub-accounts have no transactions:
+        *  expected_histogram.sub_account_transactions(0) += 1;
+        // Check:
+        let actual_histogram = store.get_histogram();
+        expected_histogram.remove_empty_buckets();
+        assert_eq!(expected_histogram, actual_histogram, "Adding the {}'th subaccount is not accounted for correctly", i);
     }
 
     /*
-
-
-    for i in 1..10 {
-        store.create_sub_account(principal3, i.to_string());
-        store.get_stats(&mut stats);
-        assert_eq!(i, stats.sub_accounts_count);
-    }
-
     let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
     let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
     store.register_hardware_wallet(
