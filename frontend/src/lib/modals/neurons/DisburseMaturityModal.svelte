@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { createEventDispatcher } from "svelte";
   import NeuronConfirmActionScreen from "$lib/components/neuron-detail/NeuronConfirmActionScreen.svelte";
   import {
@@ -10,10 +9,8 @@
     type WizardSteps,
     type WizardStep,
     KeyValuePair,
-    InputRange,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import AddressInput from "$lib/components/accounts/AddressInput.svelte";
   import {
     getAccountsByRootCanister,
     invalidAddress,
