@@ -231,6 +231,9 @@ type Histogram =
         accounts_count: nat64;
         default_account_transactions: vec record { nat32; nat64};
         sub_accounts: vec record { nat32; nat64};
+        sub_account_transactions: vec record { nat32; nat64};
+        hardware_wallet_accounts: vec record { nat32; nat64};
+        canisters: vec record { nat32; nat64};
     };
 
 type HeaderField =
