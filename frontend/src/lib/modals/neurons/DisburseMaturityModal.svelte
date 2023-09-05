@@ -23,6 +23,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { formatMaturity } from "$lib/utils/neuron.utils.js";
   import { numberToE8s } from "$lib/utils/token.utils";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let rootCanisterId: Principal;
   export let formattedMaturity: string;
@@ -165,16 +166,39 @@
       editLabel={$i18n.neuron_detail.disburse_maturity_edit}
     >
       <Html
-        text={replacePlaceholders(
-          $i18n.neuron_detail.disburse_maturity_confirmation_description,
-          {
-            $percentage: formatPercentage(percentageToDisburse / 100, {
+        text={$i18n.neuron_detail.disburse_maturity_confirmation_description}
+      />
+      <Separator />
+      <div class="confirmation-info">
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail
+              .disburse_maturity_confirmation_percentage}</span
+          >
+          <!-- TODO: variable for formatPercentage-->
+          <span class="value" slot="value"
+            >{formatPercentage(percentageToDisburse / 100, {
               minFraction: 0,
               maxFraction: 0,
-            }),
-          }
-        )}
-      />
+            })}</span
+          >
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
+          >
+          <span class="value" slot="value"
+            >~{formatMaturity(maturityToDisburse)}
+          </span>
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail
+              .disburse_maturity_confirmation_destination}</span
+          >
+          <span class="value" slot="value">{selectedDestinationAddress} </span>
+        </KeyValuePair>
+      </div>
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>
@@ -187,5 +211,11 @@
       margin-top: var(--padding);
       text-align: right;
     }
+  }
+
+  .confirmation-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
   }
 </style>
