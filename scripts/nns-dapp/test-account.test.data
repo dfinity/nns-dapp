@@ -1,0 +1,93 @@
+
+===== Account 0 =====
+(
+  variant {
+    Ok = record {
+      "principal" = principal "d2zjj-uyaaa-aaaaa-aaaap-4ai";
+      account_identifier = "29ce548d4d90fb49f14331e3a5359864abb56d70c004dbe0458524c134ae2b46";
+      hardware_wallet_accounts = vec {};
+      sub_accounts = vec {};
+    }
+  },
+)
+
+===== Account 1 =====
+(
+  variant {
+    Ok = record {
+      "principal" = principal "6fyp7-3ibaa-aaaaa-aaaap-4ai";
+      account_identifier = "424f9bb98fea906d31d17a702951a6b8f6ab109de112fd1d1553f66af9c2f93a";
+      hardware_wallet_accounts = vec {
+        record {
+          "principal" = principal "amfol-e7iam-aaaaa-aaaap-4ai";
+          name = "hw_wallet_1_0";
+          account_identifier = "1cddb11c3c231a937ba4f0f043155b07cec1113fe18a8a34523a192c7998f524";
+        };
+      };
+      sub_accounts = vec {
+        record {
+          name = "sub_account_1_0";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\01";
+          account_identifier = "e817dfe5d8bbfef8531fd8d343758fbd10e2233316ec54440e64537c6d803070";
+        };
+      };
+    }
+  },
+)
+
+===== Account 2 =====
+(
+  variant {
+    Ok = record {
+      "principal" = principal "djduj-3qcaa-aaaaa-aaaap-4ai";
+      account_identifier = "68c0a4ab26552863c71463bceed4a504c95e0d76fdd7a12d18bcf08f17657610";
+      hardware_wallet_accounts = vec {};
+      sub_accounts = vec {
+        record {
+          name = "sub_account_2_0";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\01";
+          account_identifier = "97ca7af1f84172e35b7e4e9e6aab05f41b0387c6f6cd4613190f4358a8d23404";
+        };
+        record {
+          name = "sub_account_2_1";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02";
+          account_identifier = "dd9d2920be4e4b1a3565289ba9665d8b98abed2928cb075c9f79c2f12a3bf26f";
+        };
+      };
+    }
+  },
+)
+
+===== Account 3 =====
+(
+  variant {
+    Ok = record {
+      "principal" = principal "6wcs7-uadaa-aaaaa-aaaap-4ai";
+      account_identifier = "3898dc43c09440547fd54b9ea999fdff028146d88bc8f5bdbdb7dc9b12ae631d";
+      hardware_wallet_accounts = vec {
+        record {
+          "principal" = principal "a77tl-lxkam-aaaaa-aaaap-4ai";
+          name = "hw_wallet_3_0";
+          account_identifier = "ed5db9c32c21483f6ca8086b9c41b24f328719c5cdac74c2ba6aa8b9e1dc2dcf";
+        };
+      };
+      sub_accounts = vec {
+        record {
+          name = "sub_account_3_0";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\01";
+          account_identifier = "118ff09de77f5699a01d4bc39f37849720b947f14bdd66713d23fc6f4566446c";
+        };
+        record {
+          name = "sub_account_3_1";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\02";
+          account_identifier = "a885219a4a9f0e9a3b9e584d21c01f9ce0f3b940f8b0279226bf3e65cc5b56d9";
+        };
+        record {
+          name = "sub_account_3_2";
+          sub_account = blob "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\03";
+          account_identifier = "7cbd2fcde02f51ded00abe276d32db2eea9b162b489597d231557093db984ba6";
+        };
+      };
+    }
+  },
+)
