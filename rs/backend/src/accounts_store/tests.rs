@@ -1589,7 +1589,7 @@ fn get_histogram() {
         },
     );
 
-    let actual_histogram = store.get_stats(&mut stats);
+    let actual_histogram = store.get_histogram();
     assert_eq!(expected_histogram, actual_histogram, "Hardware wallets are not counted correctly");
 }
 /*
