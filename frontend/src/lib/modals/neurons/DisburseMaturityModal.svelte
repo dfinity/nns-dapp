@@ -24,6 +24,7 @@
   import { formatMaturity } from "$lib/utils/neuron.utils.js";
   import { numberToE8s } from "$lib/utils/token.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import NeuronSelectMaturityDisbursement from "$lib/components/neuron-detail/NeuronSelectMaturityDisbursement.svelte";
 
   export let rootCanisterId: Principal;
   export let formattedMaturity: string;
@@ -43,30 +44,28 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
-  let selectedDestinationAddress: string | undefined = undefined;
-  let percentageToDisburse = 0;
+  let destinationAddress: string | undefined = undefined;
+  let percentage = 0;
 
-  let maturityToDisburse;
+  let maturityToDisburse = 0n;
   $: maturityToDisburse = numberToE8s(
     // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(
-      ((percentageToDisburse / 100) * Number(formattedMaturity)).toFixed(8)
-    )
+    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
   );
 
   let disabled = false;
   $: disabled =
     invalidAddress({
-      address: selectedDestinationAddress,
+      address: destinationAddress,
       network: undefined,
       rootCanisterId,
-    }) || percentageToDisburse === 0;
+    }) || percentage === 0;
 
   const dispatcher = createEventDispatcher();
   const disburseNeuronMaturity = () =>
     dispatcher("nnsDisburseMaturity", {
-      percentageToDisburse,
-      destinationAddress: selectedDestinationAddress,
+      percentage,
+      destinationAddress: destinationAddress,
     });
   const close = () => dispatcher("nnsClose");
 
@@ -78,8 +77,8 @@
     }) ?? []
   ).find(({ type }) => type === "main");
   // preselect main account by default
-  $: if (isNullish(selectedDestinationAddress) && nonNullish(mainAccount)) {
-    selectedDestinationAddress = mainAccount?.identifier;
+  $: if (isNullish(destinationAddress) && nonNullish(mainAccount)) {
+    destinationAddress = mainAccount?.identifier;
   }
 
   const goToConfirm = () => modal.next();
@@ -97,68 +96,15 @@
   >
 
   {#if currentStep?.name === "SelectPercentage"}
-    <form on:submit|preventDefault={goToConfirm}>
-      <div class="available-maturity">
-        <KeyValuePair>
-          <span slot="key" class="label"
-            >{$i18n.neuron_detail.available_maturity}</span
-          >
-          <span class="value" slot="value">{formattedMaturity}</span>
-        </KeyValuePair>
-      </div>
-
-      <p class="description">
-        <Html
-          text={replacePlaceholders(
-            $i18n.neuron_detail.disburse_maturity_modal_description,
-            { $symbol: tokenSymbol }
-          )}
-        />
-      </p>
-
-      <p class="description">
-        {$i18n.neuron_detail.disburse_maturity_modal_destination}
-      </p>
-      <AddressInput
-        qrCode={false}
-        bind:address={selectedDestinationAddress}
-        {rootCanisterId}
-      />
-
-      <div class="select-container">
-        <p class="description">
-          {$i18n.neuron_detail.disburse_maturity_modal_amount}
-        </p>
-        <InputRange
-          ariaLabel={$i18n.neuron_detail.maturity_range}
-          min={0}
-          max={100}
-          bind:value={percentageToDisburse}
-        />
-        <h5>
-          <span class="description"
-            >~{formatMaturity(maturityToDisburse)}
-            {$i18n.neuron_detail.maturity}</span
-          >
-          {formatPercentage(percentageToDisburse / 100, {
-            minFraction: 0,
-            maxFraction: 0,
-          })}
-        </h5>
-      </div>
-
-      <div class="toolbar">
-        <button class="secondary" on:click={close}>{$i18n.core.cancel}</button>
-        <button
-          data-tid="select-maturity-percentage-button"
-          class="primary"
-          on:click={goToConfirm}
-          {disabled}
-        >
-          {$i18n.neuron_detail.disburse}
-        </button>
-      </div>
-    </form>
+    <NeuronSelectMaturityDisbursement
+      on:nnsClose={close}
+      on:nnsSelect={goToConfirm}
+      {rootCanisterId}
+      {formattedMaturity}
+      {tokenSymbol}
+      bind:destinationAddress
+      bind:percentage
+    />
   {:else if currentStep?.name === "ConfirmDisburseMaturity"}
     <NeuronConfirmActionScreen
       on:nnsConfirm={disburseNeuronMaturity}
@@ -169,7 +115,7 @@
         text={$i18n.neuron_detail.disburse_maturity_confirmation_description}
       />
       <Separator />
-      <div class="confirmation-info">
+      <div class="confirmation">
         <KeyValuePair>
           <span slot="key" class="description"
             >{$i18n.neuron_detail
@@ -177,7 +123,7 @@
           >
           <!-- TODO: variable for formatPercentage-->
           <span class="value" slot="value"
-            >{formatPercentage(percentageToDisburse / 100, {
+            >{formatPercentage(percentage / 100, {
               minFraction: 0,
               maxFraction: 0,
             })}</span
@@ -196,7 +142,7 @@
             >{$i18n.neuron_detail
               .disburse_maturity_confirmation_destination}</span
           >
-          <span class="value" slot="value">{selectedDestinationAddress} </span>
+          <span class="value" slot="value">{destinationAddress} </span>
         </KeyValuePair>
       </div>
     </NeuronConfirmActionScreen>
@@ -204,16 +150,7 @@
 </WizardModal>
 
 <style lang="scss">
-  .select-container {
-    width: 100%;
-
-    h5 {
-      margin-top: var(--padding);
-      text-align: right;
-    }
-  }
-
-  .confirmation-info {
+  .confirmation {
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);

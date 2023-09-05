@@ -662,6 +662,10 @@ interface I18nNeuron_detail {
   disburse_maturity: string;
   disburse_maturity_modal_destination: string;
   disburse_maturity_modal_amount: string;
+  disburse_maturity_description_1: string;
+  disburse_maturity_description_2: string;
+  disburse_maturity_destination: string;
+  disburse_maturity_amount: string;
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_confirmation_percentage: string;
