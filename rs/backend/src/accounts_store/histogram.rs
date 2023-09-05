@@ -19,39 +19,63 @@ pub struct AccountsStoreHistogram {
     /// This is because otherwise accounts with a large number of transactions would be insufficiently anonymised.
     /// There are block explorers so technically this data is already public but we don't need that level of
     /// precision and would rather not leak information.
-    pub default_account_transactions: BTreeMap<u32, u64>,
+    default_account_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of sub accounts per account.
     ///
     /// Note: The maximum number of subaccounts is quite small so a direct count is fine.
-    pub sub_accounts: BTreeMap<u32, u64>,
+    sub_accounts: BTreeMap<u32, u64>,
     /// A histogram of the number of transactions per sub account.
     ///
     /// Note: The buckets are logarithmic, as with `default_account_transactions`.
-    pub sub_account_transactions: BTreeMap<u32, u64>,
+    sub_account_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of hardware wallets per account.
     hardware_wallet_accounts: BTreeMap<u32, u64>,
     /// A histogram of the number of canisters per account.
     canisters: BTreeMap<u32, u64>,
 }
+
+// Getter sand setters for the histogram fields that ensure that data is placed in the right columns.
+impl AccountsStoreHistogram {
+    /// The bucket for a given number of default account transactions.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn default_account_transactions(&mut self, count: usize) -> &mut u64 {
+        self.default_account_transactions.entry(log2_bucket(count)).or_insert(0)
+    }
+    /// The bucket for a given number of sub_accounts.
+    pub fn sub_accounts(&mut self, count: usize) -> &mut u64 {
+        self.sub_accounts.entry(count as u32).or_insert(0)
+    }
+    /// The bucket for a given number of sub-account transactions.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn sub_account_transactions(&mut self, count: usize) -> &mut u64 {
+        self.sub_account_transactions.entry(log2_bucket(count)).or_insert(0)
+    }
+    /// The bucket for a given number of hardware wallets.
+    pub fn hardware_wallet_accounts(&mut self, count: usize) -> &mut u64 {
+        self.hardware_wallet_accounts.entry(count as u32).or_insert(0)
+    }
+    /// The bucket for a given number of canisters.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn canisters(&mut self, count: usize) -> &mut u64 {
+        self.canisters.entry(log2_bucket(count)).or_insert(0)
+    }
+}
+
 impl Add<&Account> for AccountsStoreHistogram {
     type Output = AccountsStoreHistogram;
 
     fn add(mut self, rhs: &Account) -> AccountsStoreHistogram {
         self.accounts_count += 1;
-        self.default_account_transactions
-            .entry(log2_bucket(rhs.default_account_transactions.len()))
-            .and_modify(|e| *e += 1)
-            .or_insert(1);
-        self.sub_accounts
-            .entry(log2_bucket(rhs.sub_accounts.len()))
-            .and_modify(|e| *e += 1)
-            .or_insert(1);
+        *self.default_account_transactions(rhs.default_account_transactions.len()) += 1;
+        *self.sub_accounts(rhs.sub_accounts.len()) += 1;
         rhs.sub_accounts.values().for_each(|sub_account| {
-            self.sub_account_transactions
-                .entry(log2_bucket(sub_account.transactions.len()))
-                .and_modify(|e| *e += 1)
-                .or_insert(1);
+            *self.sub_account_transactions(sub_account.transactions.len()) += 1;
         });
+        *self.hardware_wallet_accounts(rhs.hardware_wallet_accounts.len()) += 1;
+        *self.canisters(rhs.canisters.len()) += 1;
         self
     }
 }
@@ -60,8 +84,131 @@ impl Add<&Account> for AccountsStoreHistogram {
 fn log2_bucket(mut count: usize) -> u32 {
     let mut bucket_bound = 1;
     while count != 0 {
-        count <<= 1;
-        bucket_bound >>= 1;
+        count >>= 1;
+        bucket_bound <<= 1;
     }
     bucket_bound - 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Incrementing the account count should work as expected.
+    #[test]
+    fn account_count_should_work() {}
+    /// Tells an empty histogram that an account has N transactions and verifies that the expected bucket is incremented.
+    #[test]
+    fn default_account_transaction_buckets_are_correct() {
+        let test_vectors = [
+            (
+                0,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(0, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                1,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(1, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                2,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(3, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                3,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(3, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                4,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(7, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                5,
+                AccountsStoreHistogram {
+                    default_account_transactions: [(7, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+        ];
+        for (count, expected_histogram) in test_vectors.iter() {
+            let mut histogram = AccountsStoreHistogram::default();
+            *histogram.default_account_transactions(*count) += 1;
+            assert_eq!(
+                histogram, *expected_histogram,
+                "Wrong bucket incremented for count {}",
+                count
+            );
+        }
+    }
+    /// Tells an empty histogram that an account has N subaccounts and verifies that the expected bucket is incremented.
+    #[test]
+    fn sub_account_buckets_are_correct() {
+        let test_vectors = [
+            (
+                0,
+                AccountsStoreHistogram {
+                    sub_accounts: [(0, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                1,
+                AccountsStoreHistogram {
+                    sub_accounts: [(1, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                2,
+                AccountsStoreHistogram {
+                    sub_accounts: [(3, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                3,
+                AccountsStoreHistogram {
+                    sub_accounts: [(3, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                4,
+                AccountsStoreHistogram {
+                    sub_accounts: [(7, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+            (
+                5,
+                AccountsStoreHistogram {
+                    sub_accounts: [(7, 1)].into_iter().collect(),
+                    ..AccountsStoreHistogram::default()
+                },
+            ),
+        ];
+        for (count, expected_histogram) in test_vectors.iter() {
+            let mut histogram = AccountsStoreHistogram::default();
+            *histogram.sub_accounts(*count) += 1;
+            assert_eq!(
+                histogram, *expected_histogram,
+                "Wrong bucket incremented for count {}",
+                count
+            );
+        }
+    }
 }

@@ -1,3 +1,4 @@
+use super::histogram::AccountsStoreHistogram;
 use super::*;
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
@@ -1510,6 +1511,82 @@ fn get_stats() {
     assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
+#[test]
+fn get_histogram() {
+    let mut store = AccountsStore::default();
+
+    // Initially the histogram should be empty.
+    {
+        let expected_histogram = AccountsStoreHistogram::default();
+        let histogram = store.get_histogram();
+        assert_eq!(
+            expected_histogram, histogram,
+            "Histogram of an empty accounts store should be empty"
+        );
+    }
+
+    // If we populate (or rather replace) the db with the standard test data, we should get a corresponding histogram:
+    store = setup_test_store();
+    let mut expected_histogram = test_store_histogram();
+    {
+        let histogram = store.get_histogram();
+        assert_eq!(
+            expected_histogram, histogram,
+            "Histogram of a standard test store may need to be updated"
+        );
+    }
+
+    let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+
+    // Adding accounts should be accounted for correctly.  Pun intended.
+    {
+        store.add_account(principal3);
+        store.add_account(principal4);
+        expected_histogram.accounts_count += 2;
+
+        *expected_histogram.default_account_transactions(0) += 2;
+        //*expected_histogram.sub_accounts.entry(1).or_insert(log_2_bucket(0)) += 2; // Bucket for x < 2**0 == 1
+
+        let actual_histogram = store.get_histogram();
+        assert_eq!(expected_histogram, actual_histogram);
+    }
+
+    /*
+
+
+    for i in 1..10 {
+        store.create_sub_account(principal3, i.to_string());
+        store.get_stats(&mut stats);
+        assert_eq!(i, stats.sub_accounts_count);
+    }
+
+    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
+    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
+    store.register_hardware_wallet(
+        principal3,
+        RegisterHardwareWalletRequest {
+            name: "HW1".to_string(),
+            principal: hw1,
+        },
+    );
+    store.register_hardware_wallet(
+        principal4,
+        RegisterHardwareWalletRequest {
+            name: "HW2".to_string(),
+            principal: hw2,
+        },
+    );
+
+    store.get_stats(&mut stats);
+    assert_eq!(2, stats.hardware_wallet_accounts_count);
+
+    store.mark_ledger_sync_complete();
+    store.get_stats(&mut stats);
+    assert!(stats.seconds_since_last_ledger_sync < 10);
+    */
+}
+
 fn assert_queue_item_eq_stake_neuron(
     expected_block_index: BlockIndex,
     expected_principal: PrincipalId,
@@ -1626,4 +1703,19 @@ pub(crate) fn setup_test_store() -> AccountsStore {
         store.append_transaction(transfer, Memo(0), 3, timestamp).unwrap();
     }
     store
+}
+
+/// The histogram corresponding to a test store.
+///
+/// Compare with the setup_test_store() function to verify that this is the expected histogram;
+/// if that changes, these stats are likely to change as well.
+pub fn test_store_histogram() -> AccountsStoreHistogram {
+    let mut ans = AccountsStoreHistogram::default();
+    ans.accounts_count = 2;
+    *ans.default_account_transactions(4) += 1; // Account ID 1 makes 4 transactions.
+    *ans.default_account_transactions(1) += 1; // Account ID 2 makes 1 transaction.
+    *ans.sub_accounts(0) += 2; // Neither test account has sub-accounts.
+    *ans.hardware_wallet_accounts(0) += 2; // Neither test account has hardware wallets.
+    *ans.canisters(0) += 2; // Neither test account has canisters.
+    ans
 }
