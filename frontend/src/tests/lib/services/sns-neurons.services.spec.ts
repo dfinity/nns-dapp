@@ -770,6 +770,7 @@ describe("sns-neurons-services", () => {
       const identity = mockIdentity;
       const rootCanisterId = mockPrincipal;
       const percentageToDisburse = 75;
+      const toAccount = decodeIcrcAccount(mockSnsMainAccount.identifier);
 
       const spyOnDisburseMaturity = jest
         .spyOn(governanceApi, "disburseMaturity")
@@ -779,6 +780,7 @@ describe("sns-neurons-services", () => {
         neuronId,
         rootCanisterId,
         percentageToDisburse,
+        toAccount,
       });
 
       expect(success).toBeTruthy();
@@ -788,6 +790,7 @@ describe("sns-neurons-services", () => {
         rootCanisterId,
         percentageToDisburse,
         identity,
+        toAccount,
       });
     });
   });
