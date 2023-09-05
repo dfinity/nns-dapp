@@ -7,6 +7,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockHardwareWalletAccount,
@@ -36,6 +37,7 @@ describe("SelectUniverseCard", () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     icpAccountsStore.resetForTesting();
+    resetIdentity();
   });
 
   describe("selected", () => {
@@ -158,56 +160,94 @@ describe("SelectUniverseCard", () => {
       });
     });
 
-    it("should display balance if selected", async () => {
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Accounts,
+    describe("when signed in", () => {
+      beforeEach(() => {
+        resetIdentity();
       });
 
-      const po = renderComponent({
-        props: { universe: NNS_UNIVERSE, selected: true },
+      // TODO: Fix indentation after review before merge.
+
+      it("should display balance if selected", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Accounts,
+        });
+
+        const po = renderComponent({
+          props: { universe: NNS_UNIVERSE, selected: true },
+        });
+        // Expecting 1 + 2 + 4.
+        expect(await po.getBalance()).toBe("7.00");
       });
-      // Expecting 1 + 2 + 4.
-      expect(await po.getBalance()).toBe("7.00");
+
+      it("should display balance if not selected", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Accounts,
+        });
+
+        const po = renderComponent({
+          props: { universe: NNS_UNIVERSE, selected: false },
+        });
+        // Expecting 1 + 2 + 4.
+        expect(await po.getBalance()).toBe("7.00");
+      });
+
+      it("should not display balance on other path than accounts", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Neurons,
+        });
+
+        const po = renderComponent({
+          props: { universe: mockSnsUniverse, selected: true },
+        });
+        expect(await po.hasBalance()).toBe(false);
+      });
+
+      it("should not display balance if summary balance not loaded", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Accounts,
+        });
+
+        // Mock contains only Nns balance
+        const po = renderComponent({
+          props: { universe: mockSnsUniverse, selected: false },
+        });
+        expect(await po.getUniverseAccountsBalancePo().isPresent()).toBe(true);
+        expect(await po.getUniverseAccountsBalancePo().isLoaded()).toBe(false);
+      });
     });
 
-    it("should display balance if not selected", async () => {
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Accounts,
+    describe("when not signed in", () => {
+      beforeEach(() => {
+        setNoIdentity();
       });
 
-      const po = renderComponent({
-        props: { universe: NNS_UNIVERSE, selected: false },
-      });
-      // Expecting 1 + 2 + 4.
-      expect(await po.getBalance()).toBe("7.00");
-    });
+      it("should display balance if selected", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Accounts,
+        });
 
-    it("should not display balance on other path than accounts", async () => {
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Neurons,
-      });
-
-      const po = renderComponent({
-        props: { universe: mockSnsUniverse, selected: true },
-      });
-      expect(await po.hasBalance()).toBe(false);
-    });
-
-    it("should not display balance if summary balance not loaded", async () => {
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Accounts,
+        const po = renderComponent({
+          props: { universe: NNS_UNIVERSE, selected: true },
+        });
+        expect(await po.hasBalance()).toBe(false);
       });
 
-      // Mock contains only Nns balance
-      const po = renderComponent({
-        props: { universe: mockSnsUniverse, selected: false },
+      it("should display balance if not selected", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Accounts,
+        });
+
+        const po = renderComponent({
+          props: { universe: NNS_UNIVERSE, selected: false },
+        });
+        expect(await po.hasBalance()).toBe(false);
       });
-      expect(await po.getUniverseAccountsBalancePo().isPresent()).toBe(true);
-      expect(await po.getUniverseAccountsBalancePo().isLoaded()).toBe(false);
     });
   });
 });

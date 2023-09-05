@@ -3,6 +3,7 @@
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import UniverseAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
   import { pageStore } from "$lib/derived/page.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
@@ -26,10 +27,12 @@
       : undefined;
 
   let displayProjectAccountsBalance = false;
-  $: displayProjectAccountsBalance = isSelectedPath({
-    currentPath: $pageStore.path,
-    paths: [AppPath.Accounts, AppPath.Wallet],
-  });
+  $: displayProjectAccountsBalance =
+    $authSignedInStore &&
+    isSelectedPath({
+      currentPath: $pageStore.path,
+      paths: [AppPath.Accounts, AppPath.Wallet],
+    });
 </script>
 
 <Card
