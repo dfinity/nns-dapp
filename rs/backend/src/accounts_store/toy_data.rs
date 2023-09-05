@@ -11,11 +11,6 @@ const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and thi
 const NEURONS_PER_ACCOUNT: f32 = 0.3;
 const TRANSACTIONS_PER_ACCOUNT: f32 = 3.0;
 
-/// Principal of a toy account with a given index.
-fn toy_account_principal_id(toy_account_index: u64) -> PrincipalId {
-    PrincipalId::new_user_test_id(toy_account_index)
-}
-
 impl AccountsStore {
     /// Creates the given number of toy accounts, with linked sub-accounts, hardware wallets, pending transactions, and canisters.
     ///
@@ -31,7 +26,7 @@ impl AccountsStore {
         let mut transactions_created: f32 = 0.0;
         // Creates accounts:
         for toy_account_index in index_range_start..index_range_end {
-            let account = toy_account_principal_id(toy_account_index);
+            let account = PrincipalId::new_user_test_id(toy_account_index);
             self.add_account(account);
             // Creates linked sub-accounts:
             // Note: Successive accounts have 0, 1, 2 ... MAX_SUB_ACCOUNTS_PER_ACCOUNT-1 sub accounts, restarting at 0.

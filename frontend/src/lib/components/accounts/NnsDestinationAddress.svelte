@@ -1,38 +1,49 @@
 <script lang="ts">
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { emptyAddress } from "$lib/utils/accounts.utils";
-  import type { Account } from "$lib/types/account";
-  import NnsAddress from "./NnsAddress.svelte";
-  import NnsSelectAccount from "./NnsSelectAccount.svelte";
+  import { invalidIcpAddress } from "$lib/utils/accounts.utils";
+  import { i18n } from "$lib/stores/i18n";
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { TransactionNetwork } from "$lib/types/transaction";
   import { createEventDispatcher, onMount } from "svelte";
+  import { assertNonNullish } from "@dfinity/utils";
 
-  let address: string;
+  export let showManualAddress = false;
+  export let selectedDestinationAddress: string | undefined = undefined;
   let mounted = false;
 
   onMount(() => (mounted = true));
 
-  const onEnterAddress = () => chooseDestinationAddress(address);
-
-  const onSelectAccount = ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) =>
-    chooseDestinationAddress(detail.selectedAccount.identifier);
+  const onEnterAddress = () => {
+    // The button is only enabled when the address is valid, so we know that the
+    // address is not undefined here.
+    assertNonNullish(selectedDestinationAddress);
+    chooseDestinationAddress(selectedDestinationAddress);
+  };
 
   const dispatcher = createEventDispatcher();
   const chooseDestinationAddress = (destinationAddress: string) =>
     dispatcher("nnsAddress", { address: destinationAddress });
 </script>
 
-<TestIdWrapper testId="nns-destination-address-component">
-  <NnsAddress bind:address on:submit={onEnterAddress} />
-
-  <!-- Prevent the component to be presented with a scroll offset when navigating between wizard steps -->
-  <!-- note about disableSelection: if user is entering an address with the input field, the address is not empty and therefore no account shall be selected -->
-  {#if mounted}
-    <NnsSelectAccount
-      on:nnsSelectAccount={onSelectAccount}
-      disableSelection={!emptyAddress(address)}
-      displayTitle={true}
-    />
-  {/if}
-</TestIdWrapper>
+<form
+  data-tid="nns-destination-address-component"
+  on:submit|preventDefault={onEnterAddress}
+>
+  <SelectDestinationAddress
+    rootCanisterId={OWN_CANISTER_ID}
+    bind:selectedDestinationAddress
+    selectedNetwork={TransactionNetwork.ICP}
+    bind:showManualAddress
+    on:nnsOpenQRCodeReader
+  />
+  <div class="toolbar">
+    <button
+      class="primary"
+      type="submit"
+      data-tid="address-submit-button"
+      disabled={invalidIcpAddress(selectedDestinationAddress)}
+    >
+      {$i18n.core.continue}
+    </button>
+  </div>
+</form>

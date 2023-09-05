@@ -6,7 +6,7 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
 
-	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_test_account'.
+	Tests whether accounts created by 'create_toy_accounts' can be obtained with 'get_toy_account'.
 
 	Note: This test requires a blank nns-dapp with no existing test accounts.
 	EOF
@@ -64,6 +64,9 @@ actual_output="$(cat "$actual_output_file")"
   diff -u <(echo "$expected_output") <(echo "$actual_output") || true
   echo
   echo "The actual output is in: $actual_output_file"
+  echo
+  echo "If the actual output is correct, please run:"
+  printf "  cp %q %q\n" "$actual_output_file" "$0.data"
   exit 1
 } >&2
 
