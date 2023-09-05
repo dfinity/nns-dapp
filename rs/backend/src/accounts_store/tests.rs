@@ -1588,6 +1588,9 @@ fn get_histogram() {
             principal: hw2,
         },
     );
+    // The two accounts (principal3 and principal4) have 1 hardware wallet each, so the 1 bucket should be incremented in each histogram:
+    * expected_histogram.hardware_wallet_accounts(0) -= 2;
+    * expected_histogram.hardware_wallet_accounts(1) += 2;
 
     let actual_histogram = store.get_histogram();
     assert_eq!(expected_histogram, actual_histogram, "Hardware wallets are not counted correctly");
