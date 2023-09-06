@@ -30,6 +30,7 @@ runs:
   steps:
     - name: Determine snsdemo ref
       id: snsdemo_ref
+      shell: bash
       run: |
         SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
         test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_REF dfx.json)"
