@@ -89,7 +89,7 @@
       />
       <h5>
         <span class="description" data-tid="maturity-to-disburse"
-          >~{formatMaturity(maturityToDisburse)}
+          >{formatMaturity(maturityToDisburse)}
           {$i18n.neuron_detail.maturity}</span
         >
         <span data-tid="percentage-to-disburse"

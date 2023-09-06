@@ -140,7 +140,7 @@
             >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
           >
           <span data-tid="confirm-amount" class="value" slot="value"
-            >~{formatMaturity(maturityToDisburse)}
+            >{formatMaturity(maturityToDisburse)}
           </span>
         </KeyValuePair>
         <KeyValuePair>
