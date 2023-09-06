@@ -19,14 +19,14 @@ filter() {
 }
 
 check_file() {
-   local filename="$1"
-   local comments_file="$filename.spellcheck.md"
-   # Put the comments into another file, preserving line numbers:
-   sed -n 's/^ *#//g;ta;s/.*//g;:a;p' "$filename" > "$comments_file"
-   # Check spelling, but convert the filename in any problem report back to the original file.
-   # Hunspell does not provide the character offset in each line so we do not need to handle that.
-   cargo spellcheck check "$comments_file" | awk -v filename="$filename" -v comments_file="$comments_file" '{gsub(comments_file, filename); print}'
-   rm "$comments_file"
+  local filename="$1"
+  local comments_file="$filename.spellcheck.md"
+  # Put the comments into another file, preserving line numbers:
+  sed -n 's/^ *#//g;ta;s/.*//g;:a;p' "$filename" >"$comments_file"
+  # Check spelling, but convert the filename in any problem report back to the original file.
+  # Hunspell does not provide the character offset in each line so we do not need to handle that.
+  cargo spellcheck check "$comments_file" | awk -v filename="$filename" -v comments_file="$comments_file" '{gsub(comments_file, filename); print}'
+  rm "$comments_file"
 }
 
 case "${1:-}" in
@@ -41,6 +41,3 @@ case "${1:-}" in
   ;;
 *) for file in "$@"; do check_file "$file"; done ;;
 esac
-
-
-
