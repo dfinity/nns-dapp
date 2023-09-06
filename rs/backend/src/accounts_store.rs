@@ -1512,7 +1512,7 @@ impl AccountsStore {
     fn assert_pre_migration_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
-            db_accounts_len <= PRE_MIGRATION_LIMIT,
+            db_accounts_len < PRE_MIGRATION_LIMIT,
             "Pre migration account limit exceeded {}",
             db_accounts_len
         );
