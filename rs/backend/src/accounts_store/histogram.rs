@@ -47,7 +47,7 @@ impl AccountsStoreHistogram {
     }
     /// The bucket for a given number of sub-accounts.
     pub fn sub_accounts(&mut self, count: usize) -> &mut u64 {
-        self.sub_accounts.entry(count as u32).or_insert(0)
+        self.sub_accounts.entry(log2_bucket(count)).or_insert(0)
     }
     /// The bucket for a given number of sub-account transactions.
     ///
@@ -57,7 +57,7 @@ impl AccountsStoreHistogram {
     }
     /// The bucket for a given number of hardware wallets.
     pub fn hardware_wallet_accounts(&mut self, count: usize) -> &mut u64 {
-        self.hardware_wallet_accounts.entry(count as u32).or_insert(0)
+        self.hardware_wallet_accounts.entry(log2_bucket(count)).or_insert(0)
     }
     /// The bucket for a given number of canisters.
     ///

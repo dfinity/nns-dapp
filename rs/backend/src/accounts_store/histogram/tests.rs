@@ -6,24 +6,34 @@ use super::*;
 
 mod should_increment_correct_bucket {
     use super::*;
+
+    /// Macro to create tests for a given field name.  The test increments the histogram for a given field name,
+    /// e.g. by saying that an account has 6 sub accounts, and verifies that the correct bucket (in this case 4..7)
+    /// is incremented.
     macro_rules! should_increment_correct_bucket {
         ($field_name:ident) => {
             should_increment_correct_bucket!(
                 $field_name,
-                concat!("Should increment correct ", stringify!($field_name), " bucket")
+                concat!(
+                    "Tells the histogram that there is an account with N ",
+                    stringify!($field_name),
+                    " and verifies that the correct bucket is incremented"
+                )
             );
         };
         ($field_name:ident, $doc: expr) => {
             #[doc = $doc]
             #[test]
             fn $field_name() {
-                let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)] // Log2 buckets
+                let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7), (6, 7)] // Log2 buckets
                     .into_iter()
                     .map(|(count, bucket)| {
                         (
                             count,
                             AccountsStoreHistogram {
+                                // This is the bucket we expect to contain the count
                                 $field_name: [(bucket, 1)].into_iter().collect(),
+                                // All other values in the histogram should be zero
                                 ..AccountsStoreHistogram::default()
                             },
                         )
@@ -42,129 +52,8 @@ mod should_increment_correct_bucket {
     }
 
     should_increment_correct_bucket!(default_account_transactions);
-}
-
-/// Tells an empty histogram that an account has N transactions and verifies that the expected bucket is incremented.
-#[test]
-fn should_increment_correct_default_account_transaction_bucket() {
-    let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
-        .into_iter()
-        .map(|(count, bucket)| {
-            (
-                count,
-                AccountsStoreHistogram {
-                    default_account_transactions: [(bucket, 1)].into_iter().collect(),
-                    ..AccountsStoreHistogram::default()
-                },
-            )
-        });
-    for (count, expected_histogram) in test_vectors {
-        let mut histogram = AccountsStoreHistogram::default();
-        *histogram.default_account_transactions(count) += 1;
-        assert_eq!(
-            histogram, expected_histogram,
-            "Wrong bucket incremented for count {}",
-            count
-        );
-    }
-}
-
-/// Tells an empty histogram that an account has N subaccounts and verifies that the expected bucket is incremented.
-#[test]
-fn should_increment_correct_sub_account_bucket() {
-    let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
-        .into_iter()
-        .map(|(count, bucket)| {
-            (
-                count,
-                AccountsStoreHistogram {
-                    canisters: [(bucket, 1)].into_iter().collect(),
-                    ..AccountsStoreHistogram::default()
-                },
-            )
-        });
-    for (count, expected_histogram) in test_vectors {
-        let mut histogram = AccountsStoreHistogram::default();
-        *histogram.canisters(count) += 1;
-        assert_eq!(
-            histogram, expected_histogram,
-            "Wrong bucket incremented for count {}",
-            count
-        );
-    }
-}
-
-/// Tells an empty histogram that an account has a subaccount with N transactions and verifies that the expected bucket is incremented.
-#[test]
-fn should_increment_correct_sub_account_transactions_bucket() {
-    let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
-        .into_iter()
-        .map(|(count, bucket)| {
-            (
-                count,
-                AccountsStoreHistogram {
-                    sub_account_transactions: [(bucket, 1)].into_iter().collect(),
-                    ..AccountsStoreHistogram::default()
-                },
-            )
-        });
-    for (count, expected_histogram) in test_vectors {
-        let mut histogram = AccountsStoreHistogram::default();
-        *histogram.sub_account_transactions(count) += 1;
-        assert_eq!(
-            histogram, expected_histogram,
-            "Wrong bucket incremented for count {}",
-            count
-        );
-    }
-}
-
-/// Tells an empty histogram that an account has N hardware wallets and verifies that the expected bucket is incremented.
-#[test]
-fn should_increment_correct_hardware_wallet_accounts_bucket() {
-    let test_vectors = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
-        .into_iter()
-        .map(|(count, bucket)| {
-            (
-                count,
-                AccountsStoreHistogram {
-                    hardware_wallet_accounts: [(bucket, 1)].into_iter().collect(),
-                    ..AccountsStoreHistogram::default()
-                },
-            )
-        });
-    for (count, expected_histogram) in test_vectors {
-        let mut histogram = AccountsStoreHistogram::default();
-        *histogram.hardware_wallet_accounts(count) += 1;
-        assert_eq!(
-            histogram, expected_histogram,
-            "Wrong bucket incremented for count {}",
-            count
-        );
-    }
-}
-
-/// Tells an empty histogram that an account has N canisters and verifies that the expected bucket is incremented.
-#[test]
-fn should_increment_correct_canisters_bucket() {
-    let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
-        .into_iter()
-        .map(|(count, bucket)| {
-            (
-                count,
-                AccountsStoreHistogram {
-                    canisters: [(bucket, 1)].into_iter().collect(),
-                    ..AccountsStoreHistogram::default()
-                },
-            )
-        });
-    for (count, expected_histogram) in test_vectors {
-        let mut histogram = AccountsStoreHistogram::default();
-        *histogram.canisters(count) += 1;
-        assert_eq!(
-            histogram, expected_histogram,
-            "Wrong bucket incremented for count {}",
-            count
-        );
-    }
+    should_increment_correct_bucket!(sub_accounts);
+    should_increment_correct_bucket!(sub_account_transactions);
+    should_increment_correct_bucket!(hardware_wallet_accounts);
+    should_increment_correct_bucket!(canisters);
 }
