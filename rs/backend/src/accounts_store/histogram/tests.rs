@@ -8,21 +8,26 @@ mod should_increment_correct_bucket {
     use super::*;
     macro_rules! should_increment_correct_bucket {
         ($field_name:ident) => {
-            /// Tells an empty histogram that an account has N $field_name and verifies that the expected bucket is incremented.
+            should_increment_correct_bucket!(
+                $field_name,
+                concat!("Should increment correct ", stringify!($field_name), " bucket")
+            );
+        };
+        ($field_name:ident, $doc: expr) => {
+            #[doc = $doc]
             #[test]
             fn $field_name() {
-                let test_vectors =
-                    [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)] // Log2 buckets
-                        .into_iter()
-                        .map(|(count, bucket)| {
-                            (
-                                count,
-                                AccountsStoreHistogram {
-                                    $field_name: [(bucket, 1)].into_iter().collect(),
-                                    ..AccountsStoreHistogram::default()
-                                },
-                            )
-                        });
+                let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)] // Log2 buckets
+                    .into_iter()
+                    .map(|(count, bucket)| {
+                        (
+                            count,
+                            AccountsStoreHistogram {
+                                $field_name: [(bucket, 1)].into_iter().collect(),
+                                ..AccountsStoreHistogram::default()
+                            },
+                        )
+                    });
                 for (count, expected_histogram) in test_vectors {
                     let mut histogram = AccountsStoreHistogram::default();
                     *histogram.$field_name(count) += 1;
