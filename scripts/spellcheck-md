@@ -34,7 +34,8 @@ filter() {
 }
 
 EXIT_CODE=0
-list_files | filter | while read -r filename; do
+readarray -t files < <(list_files | filter)
+for filename in "${files[@]}"; do
   test -s "$filename" || # Skip empty files
     cargo spellcheck check "$filename" || EXIT_CODE=1
 done
