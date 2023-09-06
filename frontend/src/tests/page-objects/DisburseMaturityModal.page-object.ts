@@ -1,5 +1,5 @@
 import { NeuronConfirmActionScreenPo } from "$tests/page-objects/NeuronConfirmActionScreen.page-object";
-import { NeuronSelectPercentagePo } from "$tests/page-objects/NeuronSelectPercentage.page-object";
+import { NeuronSelectMaturityDisbursementPo } from "$tests/page-objects/NeuronSelectMaturityDisbursement.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,27 +12,51 @@ export class DisburseMaturityModalPo extends BasePageObject {
     );
   }
 
-  getNeuronSelectPercentagePo(): NeuronSelectPercentagePo {
-    return NeuronSelectPercentagePo.under(this.root);
+  getNeuronSelectMaturityDisbursementPo(): NeuronSelectMaturityDisbursementPo {
+    return NeuronSelectMaturityDisbursementPo.under(this.root);
   }
 
   getNeuronConfirmActionScreenPo(): NeuronConfirmActionScreenPo {
     return NeuronConfirmActionScreenPo.under(this.root);
   }
 
+  getTotalMaturity(): Promise<string> {
+    return this.getText("total-maturity");
+  }
+
+  getConfirmPercentage(): Promise<string> {
+    return this.getNeuronConfirmActionScreenPo().getText("confirm-percentage");
+  }
+
+  getConfirmAmount(): Promise<string> {
+    return this.getNeuronConfirmActionScreenPo().getText("confirm-amount");
+  }
+
+  getConfirmDestination(): Promise<string> {
+    return this.getNeuronConfirmActionScreenPo().getText("confirm-destination");
+  }
+
   clickNextButton(): Promise<void> {
-    return this.getNeuronSelectPercentagePo().clickNextButton();
+    return this.getNeuronSelectMaturityDisbursementPo().clickNextButton();
   }
 
   clickConfirmButton(): Promise<void> {
     return this.getNeuronConfirmActionScreenPo().clickConfirmButton();
   }
 
-  isNextButtonDisabled(): Promise<boolean> {
-    return this.getNeuronSelectPercentagePo().isNextButtonDisabled();
+  async isNextButtonDisabled(): Promise<boolean> {
+    return this.getNeuronSelectMaturityDisbursementPo().isNextButtonDisabled();
   }
 
   setPercentage(percentage: number): Promise<void> {
-    return this.getNeuronSelectPercentagePo().setPercentage(percentage);
+    return this.getNeuronSelectMaturityDisbursementPo().setPercentage(
+      percentage
+    );
+  }
+
+  setDestinationAddress(address: string): Promise<void> {
+    return this.getNeuronSelectMaturityDisbursementPo().setDestinationAddress(
+      address
+    );
   }
 }

@@ -34,9 +34,9 @@
   const close = () => dispatcher("nnsClose");
 
   const disburseMaturity = async ({
-    detail: { percentageToDisburse, destinationAddress },
+    detail: { percentage, destinationAddress },
   }: CustomEvent<{
-    percentageToDisburse: number;
+    percentage: number;
     destinationAddress: string;
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
@@ -45,7 +45,7 @@
     const { success } = await disburseMaturityService({
       rootCanisterId,
       neuronId,
-      percentageToDisburse,
+      percentageToDisburse: percentage,
       toAccount,
     });
 

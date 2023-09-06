@@ -18,7 +18,7 @@
   import type { Account } from "$lib/types/account";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { formatMaturity } from "$lib/utils/neuron.utils.js";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
   import NeuronSelectMaturityDisbursement from "$lib/components/neuron-detail/NeuronSelectMaturityDisbursement.svelte";
@@ -38,17 +38,13 @@
     },
   ];
 
+  const dispatcher = createEventDispatcher();
+
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
   let destinationAddress: string | undefined = undefined;
   let percentage = 0;
-
-  let maturityToDisburse = 0n;
-  $: maturityToDisburse = numberToE8s(
-    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
-  );
 
   let disabled = false;
   $: disabled =
@@ -57,14 +53,6 @@
       network: undefined,
       rootCanisterId,
     }) || percentage === 0;
-
-  const dispatcher = createEventDispatcher();
-  const disburseNeuronMaturity = () =>
-    dispatcher("nnsDisburseMaturity", {
-      percentage,
-      destinationAddress: destinationAddress,
-    });
-  const close = () => dispatcher("nnsClose");
 
   let mainAccount: Account | undefined = undefined;
   $: mainAccount = (
@@ -78,6 +66,18 @@
     destinationAddress = mainAccount?.identifier;
   }
 
+  let maturityToDisburse = 0n;
+  $: maturityToDisburse = numberToE8s(
+    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
+    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
+  );
+
+  const disburseNeuronMaturity = () =>
+    dispatcher("nnsDisburseMaturity", {
+      percentage,
+      destinationAddress: destinationAddress,
+    });
+  const close = () => dispatcher("nnsClose");
   const goToConfirm = () => modal.next();
 </script>
 
@@ -118,8 +118,7 @@
             >{$i18n.neuron_detail
               .disburse_maturity_confirmation_percentage}</span
           >
-          <!-- TODO: variable for formatPercentage-->
-          <span class="value" slot="value"
+          <span class="value" slot="value" data-tid="confirm-percentage"
             >{formatPercentage(percentage / 100, {
               minFraction: 0,
               maxFraction: 0,
@@ -130,7 +129,7 @@
           <span slot="key" class="description"
             >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
           >
-          <span class="value" slot="value"
+          <span data-tid="confirm-amount" class="value" slot="value"
             >~{formatMaturity(maturityToDisburse)}
           </span>
         </KeyValuePair>
@@ -139,7 +138,9 @@
             >{$i18n.neuron_detail
               .disburse_maturity_confirmation_destination}</span
           >
-          <span class="value" slot="value">{destinationAddress} </span>
+          <span data-tid="confirm-destination" class="value" slot="value"
+            >{destinationAddress}
+          </span>
         </KeyValuePair>
       </div>
     </NeuronConfirmActionScreen>
