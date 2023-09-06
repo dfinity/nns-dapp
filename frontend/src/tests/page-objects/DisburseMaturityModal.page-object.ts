@@ -32,6 +32,12 @@ export class DisburseMaturityModalPo extends BasePageObject {
     return this.getNeuronConfirmActionScreenPo().getText("confirm-amount");
   }
 
+  async getConfirmTokens(): Promise<string> {
+    return (
+      await this.getNeuronConfirmActionScreenPo().getText("confirm-tokens")
+    ).trim();
+  }
+
   getConfirmDestination(): Promise<string> {
     return this.getNeuronConfirmActionScreenPo().getText("confirm-destination");
   }

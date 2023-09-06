@@ -112,6 +112,14 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmAmount()).toBe("~0.10");
   });
 
+  it("should display selected tokens 95%-105%", async () => {
+    const po = await renderSnsDisburseMaturityModal();
+    await po.setPercentage(100);
+    await po.clickNextButton();
+
+    expect(await po.getConfirmTokens()).toBe("0.95-1.05");
+  });
+
   it("should display selected destination", async () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(10);
