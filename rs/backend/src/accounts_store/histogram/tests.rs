@@ -9,11 +9,11 @@ use super::*;
 fn should_increment_correct_default_account_transaction_bucket() {
     let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
         .into_iter()
-        .map(|(count, expected)| {
+        .map(|(count, bucket)| {
             (
                 count,
                 AccountsStoreHistogram {
-                    default_account_transactions: [(expected, 1)].into_iter().collect(),
+                    default_account_transactions: [(bucket, 1)].into_iter().collect(),
                     ..AccountsStoreHistogram::default()
                 },
             )
@@ -34,11 +34,11 @@ fn should_increment_correct_default_account_transaction_bucket() {
 fn should_increment_correct_sub_account_bucket() {
     let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
         .into_iter()
-        .map(|(count, expected)| {
+        .map(|(count, bucket)| {
             (
                 count,
                 AccountsStoreHistogram {
-                    canisters: [(expected, 1)].into_iter().collect(),
+                    canisters: [(bucket, 1)].into_iter().collect(),
                     ..AccountsStoreHistogram::default()
                 },
             )
@@ -59,11 +59,11 @@ fn should_increment_correct_sub_account_bucket() {
 fn should_increment_correct_sub_account_transactions_bucket() {
     let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
         .into_iter()
-        .map(|(count, expected)| {
+        .map(|(count, bucket)| {
             (
                 count,
                 AccountsStoreHistogram {
-                    sub_account_transactions: [(expected, 1)].into_iter().collect(),
+                    sub_account_transactions: [(bucket, 1)].into_iter().collect(),
                     ..AccountsStoreHistogram::default()
                 },
             )
@@ -84,11 +84,11 @@ fn should_increment_correct_sub_account_transactions_bucket() {
 fn should_increment_correct_hardware_wallet_accounts_bucket() {
     let test_vectors = [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
         .into_iter()
-        .map(|(count, expected)| {
+        .map(|(count, bucket)| {
             (
                 count,
                 AccountsStoreHistogram {
-                    hardware_wallet_accounts: [(expected, 1)].into_iter().collect(),
+                    hardware_wallet_accounts: [(bucket, 1)].into_iter().collect(),
                     ..AccountsStoreHistogram::default()
                 },
             )
@@ -109,11 +109,11 @@ fn should_increment_correct_hardware_wallet_accounts_bucket() {
 fn should_increment_correct_canisters_bucket() {
     let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7)]
         .into_iter()
-        .map(|(count, expected)| {
+        .map(|(count, bucket)| {
             (
                 count,
                 AccountsStoreHistogram {
-                    canisters: [(expected, 1)].into_iter().collect(),
+                    canisters: [(bucket, 1)].into_iter().collect(),
                     ..AccountsStoreHistogram::default()
                 },
             )
