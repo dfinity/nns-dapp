@@ -5,7 +5,16 @@
 use super::*;
 
 /// Expected mappings from counts to histogram bucket keys.
-const LOG2_BUCKET_TEST_VECTORS: [(usize, u32); 7] = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7), (6, 7)];
+const LOG2_BUCKET_TEST_VECTORS: [(usize, u32); 8] = [
+    (0, 0),
+    (1, 1),
+    (2, 3),
+    (3, 3),
+    (4, 7),
+    (5, 7),
+    (6, 7),
+    (0xffffffff, 0xffffffff),
+];
 
 /// The function used to compute log2 buckets should give the expected values.
 #[test]
