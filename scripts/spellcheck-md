@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Check spelling of markdown files in the nns-dapp repository.
+
+	The CHANGELOGs are not checked; they have their own custom spell-checker
+	that examines only unreleased changelog entries.
+
+	To configure the spell checker or add words to the custom dictionary, see:
+	`.config/spellcheck.md`
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+URL_TYPES=(static api)
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+list_files() {
+  git ls-files "${@}" | filter
+}
+
+# Selects eligible files; filenames are read from stdin, one line per filename.
+filter() {
+  grep -E '[.]md$' | grep -v CHANGELOG
+}
+
+EXIT_CODE=0
+list_files | filter | while read -r filename ; do
+  cargo spellcheck check "$filename" || EXIT_CODE=1
+done
+exit "$EXIT_CODE"

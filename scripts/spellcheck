@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Check spelling in the nns-dapp repository.
+
+	To configure the spell checker or add words to the custom dictionary, see:
+	`.config/spellcheck.md`
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+URL_TYPES=(static api)
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+EXIT_CODE=0
+cargo spellcheck || EXIT_CODE=1
+"$SOURCE_DIR/spellcheck-md" || EXIT_CODE=1
+"$SOURCE_DIR/spellcheck-changelog" || EXIT_CODE=1
+exit "$EXIT_CODE"
