@@ -4,6 +4,22 @@
 
 use super::*;
 
+/// Expected mappings from counts to histogram bucket keys.
+const LOG2_BUCKET_TEST_VECTORS: [(usize, u32); 7] = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7), (6, 7)];
+
+/// The function used to compute log2 buckets should give the expected values.
+#[test]
+fn correct_log2() {
+    for (count, expected_bucket) in LOG2_BUCKET_TEST_VECTORS.into_iter() {
+        assert_eq!(
+            expected_bucket,
+            log2_bucket(count),
+            "Incorrect bucket for count {}",
+            count
+        );
+    }
+}
+
 mod should_increment_correct_bucket {
     use super::*;
 
@@ -25,19 +41,17 @@ mod should_increment_correct_bucket {
             #[doc = $doc]
             #[test]
             fn $field_name() {
-                let test_vectors = [(0, 0), (1, 1), (2, 3), (3, 3), (4, 7), (5, 7), (6, 7)] // Log2 buckets
-                    .into_iter()
-                    .map(|(count, bucket)| {
-                        (
-                            count,
-                            AccountsStoreHistogram {
-                                // This is the bucket we expect to contain the count:
-                                $field_name: [(bucket, 1)].into_iter().collect(),
-                                // All other values in the histogram should be zero:
-                                ..AccountsStoreHistogram::default()
-                            },
-                        )
-                    });
+                let test_vectors = LOG2_BUCKET_TEST_VECTORS.into_iter().map(|(count, bucket)| {
+                    (
+                        count,
+                        AccountsStoreHistogram {
+                            // This is the bucket we expect to contain the count:
+                            $field_name: [(bucket, 1)].into_iter().collect(),
+                            // All other values in the histogram should be zero:
+                            ..AccountsStoreHistogram::default()
+                        },
+                    )
+                });
                 for (count, expected_histogram) in test_vectors {
                     let mut histogram = AccountsStoreHistogram::default();
                     *histogram.$field_name(count) += 1;

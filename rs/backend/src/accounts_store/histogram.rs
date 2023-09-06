@@ -96,11 +96,6 @@ impl Add<&Account> for AccountsStoreHistogram {
 }
 
 /// Determines which log base 2 bucket a count falls into.
-fn log2_bucket(mut count: usize) -> u32 {
-    let mut bucket_bound = 1;
-    while count != 0 {
-        count >>= 1;
-        bucket_bound <<= 1;
-    }
-    bucket_bound - 1
+fn log2_bucket(count: usize) -> u32 {
+    (1 << usize::ilog2(count * 2 + 1)) - 1
 }
