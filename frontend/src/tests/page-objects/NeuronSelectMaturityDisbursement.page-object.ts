@@ -1,5 +1,5 @@
+import { AddressInputPo } from "$tests/page-objects/AddressInput.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
@@ -16,11 +16,8 @@ export class NeuronSelectMaturityDisbursementPo extends BasePageObject {
     return (await this.getText("total-maturity")).trim();
   }
 
-  getDestinationInput(): InputWithErrorPo {
-    return InputWithErrorPo.under({
-      element: this.root,
-      testId: "destination-address",
-    });
+  getDestinationInput(): AddressInputPo {
+    return AddressInputPo.under(this.root);
   }
 
   getInputRange(): PageObjectElement {
@@ -47,7 +44,7 @@ export class NeuronSelectMaturityDisbursementPo extends BasePageObject {
   }
 
   setDestinationAddress(destination: string): Promise<void> {
-    return this.getDestinationInput().typeText(destination);
+    return this.getDestinationInput().enterAddress(destination);
   }
 
   clickNextButton(): Promise<void> {
