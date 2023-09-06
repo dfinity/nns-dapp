@@ -344,14 +344,7 @@ impl AccountsStore {
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
-        {
-            let db_accounts_len = self.accounts_db.db_accounts_len();
-            assert!(
-                db_accounts_len <= PRE_MIGRATION_LIMIT,
-                "Pre migration account limit exceeded {}",
-                db_accounts_len
-            );
-        }
+        self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             if account.principal.is_none() {
@@ -444,14 +437,7 @@ impl AccountsStore {
     }
 
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
-        {
-            let db_accounts_len = self.accounts_db.db_accounts_len();
-            assert!(
-                db_accounts_len <= PRE_MIGRATION_LIMIT,
-                "Pre migration account limit exceeded {}",
-                db_accounts_len
-            );
-        }
+        self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
@@ -1522,6 +1508,14 @@ impl AccountsStore {
             }
             _ => {}
         };
+    }
+    fn assert_pre_migration_limit(&self) {
+        let db_accounts_len = self.accounts_db.db_accounts_len();
+        assert!(
+            db_accounts_len <= PRE_MIGRATION_LIMIT,
+            "Pre migration account limit exceeded {}",
+            db_accounts_len
+        );
     }
 }
 
