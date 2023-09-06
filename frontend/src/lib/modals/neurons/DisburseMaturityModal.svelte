@@ -17,11 +17,12 @@
   } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import { numberToE8s } from "$lib/utils/token.utils";
+  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
   import NeuronSelectMaturityDisbursement from "$lib/components/neuron-detail/NeuronSelectMaturityDisbursement.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let rootCanisterId: Principal;
   export let formattedMaturity: string;
@@ -71,6 +72,15 @@
     // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
     Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
   );
+  // +/- 5%
+  let predictedMinimumTokens: string;
+  $: predictedMinimumTokens = formatToken({
+    value: BigInt(Number(maturityToDisburse) * 0.95),
+  });
+  let predictedMaximumTokens: string;
+  $: predictedMaximumTokens = formatToken({
+    value: BigInt(Number(maturityToDisburse) * 1.05),
+  });
 
   const disburseNeuronMaturity = () =>
     dispatcher("nnsDisburseMaturity", {
@@ -131,6 +141,18 @@
           >
           <span data-tid="confirm-amount" class="value" slot="value"
             >~{formatMaturity(maturityToDisburse)}
+          </span>
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{replacePlaceholders(
+              $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
+              { $symbol: tokenSymbol }
+            )}</span
+          >
+          <span data-tid="confirm-tokens" class="value" slot="value"
+            >{predictedMinimumTokens}-{predictedMaximumTokens}
+            {tokenSymbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>

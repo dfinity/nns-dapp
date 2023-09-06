@@ -670,6 +670,7 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_description: string;
   disburse_maturity_confirmation_percentage: string;
   disburse_maturity_confirmation_amount: string;
+  disburse_maturity_confirmation_tokens: string;
   disburse_maturity_confirmation_destination: string;
   disburse_maturity_success: string;
   active_maturity_disbursements_description: string;
