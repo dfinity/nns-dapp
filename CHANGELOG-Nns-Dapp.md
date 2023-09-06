@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
 * Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
 
 #### Deprecated
 #### Removed
