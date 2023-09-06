@@ -17,7 +17,7 @@
   } from "$lib/utils/accounts.utils";
   import type { Account } from "$lib/types/account";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-  import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { formatToken, numberToE8s } from "$lib/utils/token.utils";
   import Separator from "$lib/components/ui/Separator.svelte";
