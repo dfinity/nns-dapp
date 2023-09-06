@@ -41,7 +41,7 @@ pub struct AccountsStoreHistogram {
     canisters: BTreeMap<u32, u64>,
 }
 
-// Getter sand setters for the histogram fields that ensure that data is placed in the right columns.
+// Getters and setters for the histogram fields that ensure that data is placed in the right columns.
 impl AccountsStoreHistogram {
     /// The bucket for a given number of default account transactions.
     ///
