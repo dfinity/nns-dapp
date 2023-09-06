@@ -1511,6 +1511,10 @@ fn get_stats() {
     assert!(stats.seconds_since_last_ledger_sync < 10);
 }
 
+/// Tests that `get_histogram()` returns correct values.
+///
+/// The test creates an account store and adds data, mirroring the test for `get_stats()`
+/// exactly, and verifies that the histogram is as expected after every change.
 #[test]
 fn get_histogram() {
     let mut store = AccountsStore::default();

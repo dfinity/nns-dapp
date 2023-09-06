@@ -31,9 +31,9 @@ mod should_increment_correct_bucket {
                         (
                             count,
                             AccountsStoreHistogram {
-                                // This is the bucket we expect to contain the count
+                                // This is the bucket we expect to contain the count:
                                 $field_name: [(bucket, 1)].into_iter().collect(),
-                                // All other values in the histogram should be zero
+                                // All other values in the histogram should be zero:
                                 ..AccountsStoreHistogram::default()
                             },
                         )
