@@ -1,3 +1,4 @@
+use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
@@ -16,6 +17,9 @@ use dfn_core::{over, over_async};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
+
+#[cfg(any(test, feature = "toy_data_gen"))]
+use ic_base_types::PrincipalId;
 
 mod accounts_store;
 mod arguments;
@@ -43,7 +47,7 @@ fn init(args: Option<CanisterArguments>) {
     perf::record_instruction_count("init stop");
 }
 
-/// Redundant function, never called but required as this is main.rs.
+/// Redundant function, never called but required as this is `main.rs`.
 fn main() {}
 
 #[pre_upgrade]
@@ -270,6 +274,24 @@ fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
 }
 
+/// Makes a histogram of the number of sub-accounts etc per account.
+///
+/// This is to be able to design an efficient account store.
+///
+/// Note: This is expensive to compute, as it scans across all
+/// accounts, so this is not included in the general stats above.
+#[export_name = "canister_query get_histogram"]
+pub fn get_histogram() {
+    over(candid, |()| get_histogram_impl());
+}
+
+pub fn get_histogram_impl() -> AccountsStoreHistogram {
+    STATE.with(|state| {
+        let accounts_store = state.accounts_store.borrow();
+        accounts_store.get_histogram()
+    })
+}
+
 /// Executes on every block height and is used to run background processes.
 ///
 /// These background processes include:
@@ -353,12 +375,16 @@ pub fn create_toy_accounts() {
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[export_name = "canister_query get_toy_account"]
 pub fn get_toy_account() {
-    over(candid_one, |toy_account_index: u128| {
+    over(candid_one, |toy_account_index: u64| {
         let caller = ic_cdk::caller();
         if !ic_cdk::api::is_controller(&caller) {
             dfn_core::api::trap_with("Only the controller may access toy accounts");
         }
-        STATE.with(|s| s.accounts_store.borrow_mut().get_toy_account(toy_account_index as u64))
+        let principal = PrincipalId::new_user_test_id(toy_account_index);
+        STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
+            Some(account) => GetAccountResponse::Ok(account),
+            None => GetAccountResponse::AccountNotFound,
+        })
     })
 }
 

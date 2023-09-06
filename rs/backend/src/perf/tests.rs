@@ -17,7 +17,7 @@ fn perf_stable_memory_serde_works() {
 /// to parse them should never ever cause a canister upgrade to fail.
 #[test]
 fn perf_stable_memory_never_fails() {
-    let junk_vectors: Vec<Vec<u8>> = vec!["", "finestkeyboardrandom"]
+    let junk_vectors: Vec<Vec<u8>> = ["", "finestkeyboardrandom"]
         .iter()
         .map(|x| x.as_bytes().to_vec())
         .collect();

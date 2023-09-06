@@ -37,6 +37,10 @@ jest.mock("$lib/constants/environment.constants.ts", () => ({
 }));
 
 describe("Warnings", () => {
+  beforeEach(() => {
+    metricsCallback = undefined;
+  });
+
   describe("TransactionRateWarning", () => {
     beforeEach(() => metricsStore.set(undefined));
 
@@ -80,6 +84,9 @@ describe("Warnings", () => {
       const tmp = container.querySelector(".toast .close");
       tmp && fireEvent.click(tmp);
 
+      // Wait for initialization of the callback
+      await waitFor(() => expect(metricsCallback).not.toBeUndefined());
+
       metricsCallback?.({
         metrics: {
           transactionRate: transactionRateNormalLoad,
@@ -93,6 +100,9 @@ describe("Warnings", () => {
 
     it("should render transaction warning once", async () => {
       const { container } = render(WarningsTest);
+
+      // Wait for initialization of the callback
+      await waitFor(() => expect(metricsCallback).not.toBeUndefined());
 
       metricsCallback?.({
         metrics: {

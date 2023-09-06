@@ -1,15 +1,11 @@
-import { snsQueryStore } from "$lib/stores/sns.store";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import {
-  createQueryMetadataResponse,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
-import {
-  mergeSnsResponses,
-  snsResponseFor,
-} from "$tests/mocks/sns-response.mock";
+import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import type { Principal } from "@dfinity/principal";
-import type { SnsSwapLifecycle } from "@dfinity/sns";
+import type { SnsNervousSystemFunction, SnsSwapLifecycle } from "@dfinity/sns";
 
 export const setSnsProjects = (
   params: {
@@ -20,35 +16,28 @@ export const setSnsProjects = (
     directParticipantCount?: [] | [bigint];
     projectName?: string;
     tokenMetadata?: Partial<IcrcTokenMetadata>;
+    nervousFunctions?: SnsNervousSystemFunction[];
   }[]
 ) => {
-  const responses = params.map(
-    (
-      {
-        rootCanisterId,
-        lifecycle,
-        certified,
-        restrictedCountries,
-        directParticipantCount,
-        projectName,
-        tokenMetadata,
-      },
-      index
-    ) =>
-      snsResponseFor({
-        principal: rootCanisterId ?? principal(index),
-        lifecycle,
-        certified,
-        restrictedCountries,
-        directParticipantCount,
-        projectName,
-        tokenMetadata:
-          tokenMetadata && createQueryMetadataResponse(tokenMetadata),
-      })
-  );
-  snsQueryStore.setData(mergeSnsResponses(responses));
+  const aggregatorProjects = params.map((params, index) => {
+    return aggregatorSnsMockWith({
+      rootCanisterId:
+        params.rootCanisterId?.toText() ?? principal(index).toText(),
+      lifecycle: params.lifecycle,
+      restrictedCountries: params.restrictedCountries,
+      directParticipantCount: params.directParticipantCount,
+      projectName: params.projectName,
+      tokenMetadata: params.tokenMetadata,
+      nervousFunctions: params.nervousFunctions,
+    });
+  });
+  snsLifecycleStore.reset();
+  snsDerivedStateStore.reset();
+  snsAggregatorStore.setData(aggregatorProjects);
 };
 
 export const resetSnsProjects = () => {
-  snsQueryStore.reset();
+  snsLifecycleStore.reset();
+  snsDerivedStateStore.reset();
+  snsAggregatorStore.reset();
 };

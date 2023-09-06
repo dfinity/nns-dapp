@@ -29,7 +29,7 @@ export interface PageObjectElement {
   getClasses(): Promise<string[] | null>;
   click(): Promise<void>;
   input(value: string): Promise<void>;
-  isChecked(): Promise<boolean | null>;
+  isChecked(): Promise<boolean>;
   typeText(text: string): Promise<void>;
   selectOption(option: string): Promise<void>;
   getValue(): Promise<string>;

@@ -18,7 +18,6 @@
   import { getContext } from "svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import FollowSnsNeuronsButton from "./actions/FollowSnsNeuronsButton.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import SnsFollowee from "./SnsFollowee.svelte";
   import SkeletonFollowees from "../ui/SkeletonFollowees.svelte";
   import {
@@ -71,7 +70,7 @@
     isNullish($nsFunctions);
 </script>
 
-<CardInfo testId="sns-neuron-following-card-component">
+<CardInfo noMargin testId="sns-neuron-following-card-component">
   <KeyValuePairInfo testId="sns-neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"
@@ -100,8 +99,6 @@
     </div>
   {/if}
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {

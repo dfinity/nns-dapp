@@ -12,6 +12,90 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
+
+#### Changed
+
+* Add a database abstraction layer, preparing for migration.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
+* New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
+
+#### Deprecated
+#### Removed
+
+* Remove unused components after new neuron details page.
+
+#### Fixed
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+* Add "Filter proposals by Votable only" e2e test.
+
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
+#### Changed
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 124328
+
+### Application
+
+#### Changed
+
+* Bigger icon and description first on Sns project page.
+
+#### Removed
+
+* Remove ENABLE_NEURON_SETTINGS feature flag.
+
+#### Fixed
+
+* Header in accounts, canisters and neurons was not visible after user came back from logging in.
+* Address issue with displayed SNS balances on quickly switching between SNSes.
+
+#### Security
+
+* Update dependency of @adobe/css-tools because of https://github.com/advisories/GHSA-hpx4-r86g-5jrg
+
+#### Not Published
+
+* Disburse maturity of sns neurons.
+
+### Operations
+
+#### Added
+
+- Add a command to increment the package versions.
+
+#### Changed
+
+- Use the upstream notification action directly, rather than using a local copy.
+- Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
+
+## Proposal 124280
+
+### Application
+
+#### Added
+
 * New tag for NNS neurons: "Hardware Wallet".
 * New derived state store for SNS projects.
 * Identify swap participation ICP transactions.
@@ -20,16 +104,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New feature flag ENABLE_SNS_AGGREGATOR_STORE.
 * Introduce an option to collapse or expand the application's menu on large screen.
 * Remove some unused fields from the aggregator converted type.
+* Display active sns neuron maturity disbursements.
 
 #### Changed
 
+* Access accounts only by getter and setter; do not assume that in-place modifications are possible.
+* Defined an account data store interface, to allow account storage migrations.
 * Update SNS Swap types to match the latest canister interface. 
 * Hide by default the proposal summary in ballots.
 * Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
 * Launchpad proposal requests only Open proposals of the SNS topic.
 * When reusing cached agents, use the current identity instead of the one in the cached agent.
+* New landing pages for Accounts, Neurons, Canister and Settings when not logged in.
+* Remove login page and redirect to accounts instead.
 
-#### Deprecated
 #### Removed
 
 * Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
@@ -38,12 +126,15 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fix wrong "ICP Staked" message in SNS neurons.
 
-#### Security
-
 #### Not Published
 
+* Use new stores as source of data instead of snsQueryStore.
+
 ### Operations
+
+* Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
 * Improve the rust document generation.
+* Fix shellcheck issues.
 
 #### Added
 
@@ -60,7 +151,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Moved e2e-tests/scripts/ to scripts/e2e-tests/.
 * Change some unit tests to set a system time and not rely on actual time.
 
-#### Deprecated
 #### Removed
 
 * Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
@@ -75,7 +165,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fixed some tests that depended on execution order.
 * [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
-
 ## Proposal 124252 (cherry-pick)
 
 ### Application

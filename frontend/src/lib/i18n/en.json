@@ -593,6 +593,11 @@
     "maturity_last_distribution_info": "On a day with no settled proposals, no rewards are distributed; rather rewards will roll over to the following day. The last distribution date is the last time rewards were distributed. <a href=\"https://wiki.internetcomputer.org/wiki/Roll-over_of_NNS_voting_rewards\" rel=\"noopener noreferrer\" aria-label=\"more info about the voting rewards\" target=\"_blank\">Learn more</a>",
     "stake_maturity": "Stake Maturity",
     "disburse_maturity": "Disburse to ...",
+    "view_active_disbursements": "View Active Disbursements",
+    "view_active_disbursements_status": "Disbursing",
+    "view_active_disbursements_modal_title": "Active Disbursements",
+    "view_active_disbursements_entry_description": "$time remaining for rewards to disburse to $account",
+    "view_active_disbursements_maturity": "~$maturity Maturity",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
@@ -625,6 +630,11 @@
     "edit_percentage": "Edit percentage",
     "stake_maturity_modal_title": "Stake Maturity",
     "disburse_maturity_modal_title": "Disburse Maturity",
+    "disburse_maturity_modal_description": "Burn maturity to mint new $symbol tokens. This will cause a new neuron to be spawned in your account. In one week, new $symbol tokens will be minted and added to this neuron. At that time, it will be possible to disburse the new $symbol tokens from inside the neuron into an account.<br><br>The quantity of new $symbol minted will depend on the $symbol price trend at the time (see the <a href=\"https://wiki.internetcomputer.org/wiki/Maturity_modulation\" target=\"_blank\">wiki page</a>). The newly minted $symbol may be seen as income by tax authorities, since it is a kind of cryptocurrency, and you should plan accordingly. Always speak to a tax advisor.<br><br>Enter the amount that you want to disburse:",
+    "disburse_maturity": "Disburse Maturity",
+    "disburse_maturity_confirmation_modal_title": "Confirm Disburse Maturity",
+    "disburse_maturity_confirmation_description": "Are you sure you want to disburse $percentage maturity?",
+    "disburse_maturity_success": "Maturity successfully disbursed.",
     "stake_confirmation_modal_title": "Confirm Stake Maturity",
     "stake_maturity_modal_description": "Choose how much of the maturity available to stake into this neuron.",
     "stake_maturity_confirmation": "Are you sure you wish to stake $percentage of the maturity available?",
@@ -694,6 +704,7 @@
     "status_aborted": "Aborted",
     "status_pending": "Upcoming swap",
     "status_unspecified": "Unspecified",
+    "status_finalizing": "Finalizing",
     "participate_swap_description": "Participate in decentralization swap",
     "understand_agree": "I understand that I cannot withdraw or edit my commitment after I select \"Send Now,\" and that my commitment may be returned to my main ICP account if the swap is unsuccessful for any reason.",
     "participate_success": "Your participation has been successfully committed.",
@@ -852,8 +863,8 @@
     "sns_reload_no_universe": "A project should be provided to execute this feature"
   },
   "auth_accounts": {
-    "title": "Your wallet",
-    "text": "Create and link accounts (including hardware wallets), transfer ICP, participate in Internet Computer governance by staking ICP in neurons, and earn voting rewards."
+    "title": "100% on-chain wallet",
+    "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with hardware wallets, or participate in governance to earn voting rewards."
   },
   "auth_neurons": {
     "title": "Earn staking rewards",

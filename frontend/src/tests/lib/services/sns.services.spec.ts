@@ -6,6 +6,7 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -18,7 +19,8 @@ import {
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { snsResponsesFor } from "$tests/mocks/sns-response.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -52,7 +54,9 @@ describe("sns-services", () => {
     jest.clearAllMocks();
     snsSwapCommitmentsStore.reset();
     snsQueryStore.reset();
+    resetSnsProjects();
     snsDerivedStateStore.reset();
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
   });
 
   describe("getSwapAccount", () => {
@@ -109,151 +113,284 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsDerivedState", () => {
-    it("should call api to get total commitments and load them in stores", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
-        sns_tokens_per_icp: [2],
-        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
-        cf_participant_count: [],
-        direct_participant_count: [],
-        cf_neuron_count: [],
-      };
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      ]);
-
-      const spy = jest
-        .spyOn(api, "querySnsDerivedState")
-        .mockImplementation(() => Promise.resolve(derivedState));
-
-      const initStore = get(snsQueryStore);
-      const initState = initStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(initState.buyer_total_icp_e8s).not.toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(initState.sns_tokens_per_icp).not.toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
-
-      await loadSnsDerivedState({
-        rootCanisterId: rootCanisterId1.toText(),
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
       });
-      expect(spy).toBeCalled();
 
-      const updatedStore = get(snsQueryStore);
-      const updatedState = updatedStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(updatedState?.buyer_total_icp_e8s).toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(updatedState?.sns_tokens_per_icp).toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
+      it("should call api to get total commitments and load them in stores", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
 
-      expect(
-        get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
-      ).toEqual(derivedState);
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockImplementation(() => Promise.resolve(derivedState));
+
+        await loadSnsDerivedState({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+        expect(spy).toBeCalled();
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
+
+        const store = get(snsQueryStore);
+        const states = store.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(states?.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(states?.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+      });
+
+      it("should call api with the strategy passed", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [1],
+          buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockImplementation(() => Promise.resolve(derivedState));
+
+        await loadSnsDerivedState({
+          rootCanisterId: mockPrincipal.toText(),
+          strategy: "update",
+        });
+
+        expect(spy).toBeCalledWith({
+          rootCanisterId: mockPrincipal.toText(),
+          identity: mockIdentity,
+          certified: true,
+        });
+        expect(spy).toBeCalledTimes(1);
+      });
     });
 
-    it("should call api with the strategy passed", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
-        sns_tokens_per_icp: [1],
-        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
-        cf_participant_count: [],
-        direct_participant_count: [],
-        cf_neuron_count: [],
-      };
-      const spy = jest
-        .spyOn(api, "querySnsDerivedState")
-        .mockImplementation(() => Promise.resolve(derivedState));
-
-      await loadSnsDerivedState({
-        rootCanisterId: mockPrincipal.toText(),
-        strategy: "update",
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
+      it("should call api to get total commitments and load them in stores", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
 
-      expect(spy).toBeCalledWith({
-        rootCanisterId: mockPrincipal.toText(),
-        identity: mockIdentity,
-        certified: true,
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockImplementation(() => Promise.resolve(derivedState));
+
+        const initStore = get(snsQueryStore);
+        const initState = initStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(initState.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(initState.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        await loadSnsDerivedState({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+        expect(spy).toBeCalled();
+
+        const updatedStore = get(snsQueryStore);
+        const updatedState = updatedStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(updatedState?.buyer_total_icp_e8s).toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(updatedState?.sns_tokens_per_icp).toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
       });
-      expect(spy).toBeCalledTimes(1);
     });
   });
 
   describe("watchSnsTotalCommitment", () => {
-    it("should call api to get total commitments and load them in store and keep polling", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
-        sns_tokens_per_icp: [2],
-        buyer_total_icp_e8s: [BigInt(2_000_000_000)],
-        cf_participant_count: [],
-        direct_participant_count: [],
-        cf_neuron_count: [],
-      };
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      ]);
-
-      const initStore = get(snsQueryStore);
-      const initState = initStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(initState.buyer_total_icp_e8s).not.toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(initState.sns_tokens_per_icp).not.toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
-
-      const spy = jest
-        .spyOn(api, "querySnsDerivedState")
-        .mockResolvedValue(derivedState);
-
-      const clearWatch = watchSnsTotalCommitment({
-        rootCanisterId: rootCanisterId1.toText(),
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
 
-      await runResolvedPromises();
-      let expectedCalls = 0;
-      expect(spy).toBeCalledTimes(expectedCalls);
+      it("should call api to get total commitments and load them in store and keep polling", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
 
-      const callsBeforeClearing = 3;
-      while (expectedCalls < callsBeforeClearing) {
-        await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
-        expectedCalls += 1;
+        const initStore = get(snsQueryStore);
+        const initState = initStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(initState.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(initState.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockResolvedValue(derivedState);
+
+        const clearWatch = watchSnsTotalCommitment({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 0;
         expect(spy).toBeCalledTimes(expectedCalls);
-      }
-      clearWatch();
 
-      // Even after waiting a long time there shouldn't be more calls.
-      expect(spy).toBeCalledTimes(expectedCalls);
+        const callsBeforeClearing = 3;
+        while (expectedCalls < callsBeforeClearing) {
+          await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+          expectedCalls += 1;
+          expect(spy).toBeCalledTimes(expectedCalls);
+        }
+        clearWatch();
 
-      const updatedStore = get(snsQueryStore);
-      const updatedState = updatedStore.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.derived[0];
-      expect(updatedState?.buyer_total_icp_e8s).toEqual(
-        fromNullable(derivedState.buyer_total_icp_e8s)
-      );
-      expect(updatedState?.sns_tokens_per_icp).toEqual(
-        fromNullable(derivedState.sns_tokens_per_icp)
-      );
+        // Even after waiting a long time there shouldn't be more calls.
+        expect(spy).toBeCalledTimes(expectedCalls);
+
+        const updatedStore = get(snsQueryStore);
+        const updatedState = updatedStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(updatedState?.buyer_total_icp_e8s).toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(updatedState?.sns_tokens_per_icp).toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
+      });
+    });
+
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
+
+      it("should call api to get total commitments and load them in store and keep polling", async () => {
+        const derivedState: SnsGetDerivedStateResponse = {
+          sns_tokens_per_icp: [2],
+          buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+          cf_participant_count: [],
+          direct_participant_count: [],
+          cf_neuron_count: [],
+        };
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
+
+        const spy = jest
+          .spyOn(api, "querySnsDerivedState")
+          .mockResolvedValue(derivedState);
+
+        const clearWatch = watchSnsTotalCommitment({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+
+        await runResolvedPromises();
+        let expectedCalls = 0;
+        expect(spy).toBeCalledTimes(expectedCalls);
+
+        const callsBeforeClearing = 3;
+        while (expectedCalls < callsBeforeClearing) {
+          await advanceTime(WATCH_SALE_STATE_EVERY_MILLISECONDS);
+          expectedCalls += 1;
+          expect(spy).toBeCalledTimes(expectedCalls);
+        }
+        clearWatch();
+
+        // Even after waiting a long time there shouldn't be more calls.
+        expect(spy).toBeCalledTimes(expectedCalls);
+
+        const updatedStore = get(snsQueryStore);
+        const updatedState = updatedStore.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.derived[0];
+        expect(updatedState?.buyer_total_icp_e8s).not.toEqual(
+          fromNullable(derivedState.buyer_total_icp_e8s)
+        );
+        expect(updatedState?.sns_tokens_per_icp).not.toEqual(
+          fromNullable(derivedState.sns_tokens_per_icp)
+        );
+
+        expect(
+          get(snsDerivedStateStore)[rootCanisterId1.toText()]?.derivedState
+        ).toEqual(derivedState);
+      });
     });
   });
 
@@ -330,48 +467,99 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsLifecycle", () => {
-    it("should call api to get lifecycle and load them in store", async () => {
-      const newLifeCycle = SnsSwapLifecycle.Committed;
-      const lifeCycleResponse: SnsGetLifecycleResponse = {
-        lifecycle: [newLifeCycle],
-        decentralization_sale_open_timestamp_seconds: [BigInt(1)],
-      };
-      const dataLifecycle = SnsSwapLifecycle.Open;
-      setSnsProjects([
-        {
-          rootCanisterId: rootCanisterId1,
-          lifecycle: dataLifecycle,
-        },
-        {
-          rootCanisterId: rootCanisterId2,
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      ]);
-
-      const spy = jest
-        .spyOn(api, "querySnsLifecycle")
-        .mockImplementation(() => Promise.resolve(lifeCycleResponse));
-
-      const initStore = get(snsQueryStore);
-      const initLifecycle = initStore?.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.swap[0].lifecycle;
-      expect(initLifecycle).toEqual(dataLifecycle);
-
-      await services.loadSnsLifecycle({
-        rootCanisterId: rootCanisterId1.toText(),
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
       });
-      expect(spy).toBeCalled();
 
-      const updatedStore = get(snsQueryStore);
-      const updatedLifecycle = updatedStore?.swaps.find(
-        (swap) => swap.rootCanisterId === rootCanisterId1.toText()
-      )?.swap[0].lifecycle;
-      expect(updatedLifecycle).toEqual(newLifeCycle);
+      it("should call api to get lifecycle and load them in store", async () => {
+        const newLifeCycle = SnsSwapLifecycle.Committed;
+        const lifeCycleResponse: SnsGetLifecycleResponse = {
+          lifecycle: [newLifeCycle],
+          decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+        };
+        const dataLifecycle = SnsSwapLifecycle.Open;
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: dataLifecycle,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
 
-      expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
-        lifeCycleResponse
-      );
+        const spy = jest
+          .spyOn(api, "querySnsLifecycle")
+          .mockImplementation(() => Promise.resolve(lifeCycleResponse));
+
+        await services.loadSnsLifecycle({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+        expect(spy).toBeCalled();
+
+        expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
+          lifeCycleResponse
+        );
+        const updatedStore = get(snsQueryStore);
+        const updatedLifecycle = updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.swap[0].lifecycle;
+        expect(updatedLifecycle).not.toEqual(newLifeCycle);
+      });
+    });
+
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
+      });
+
+      it("should call api to get lifecycle and load them in store", async () => {
+        const newLifeCycle = SnsSwapLifecycle.Committed;
+        const lifeCycleResponse: SnsGetLifecycleResponse = {
+          lifecycle: [newLifeCycle],
+          decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+        };
+        const dataLifecycle = SnsSwapLifecycle.Open;
+        const responses = snsResponsesFor([
+          {
+            principal: rootCanisterId1,
+            lifecycle: dataLifecycle,
+          },
+          {
+            principal: rootCanisterId2,
+            lifecycle: SnsSwapLifecycle.Open,
+          },
+        ]);
+        snsQueryStore.setData(responses);
+
+        const spy = jest
+          .spyOn(api, "querySnsLifecycle")
+          .mockImplementation(() => Promise.resolve(lifeCycleResponse));
+
+        const initStore = get(snsQueryStore);
+        const initLifecycle = initStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.swap[0].lifecycle;
+        expect(initLifecycle).toEqual(dataLifecycle);
+
+        await services.loadSnsLifecycle({
+          rootCanisterId: rootCanisterId1.toText(),
+        });
+        expect(spy).toBeCalled();
+
+        const updatedStore = get(snsQueryStore);
+        const updatedLifecycle = updatedStore?.swaps.find(
+          (swap) => swap.rootCanisterId === rootCanisterId1.toText()
+        )?.swap[0].lifecycle;
+        expect(updatedLifecycle).toEqual(newLifeCycle);
+
+        expect(get(snsLifecycleStore)[rootCanisterId1.toText()].data).toEqual(
+          lifeCycleResponse
+        );
+      });
     });
   });
 });

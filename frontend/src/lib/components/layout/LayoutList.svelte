@@ -2,6 +2,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { BREAKPOINT_LARGE } from "@dfinity/gix-components";
 
+  // TODO: Rename this to make the responsiblity clearer
   export let title: string;
 
   let innerWidth = 0;

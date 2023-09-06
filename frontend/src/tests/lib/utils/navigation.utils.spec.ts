@@ -66,7 +66,7 @@ describe("navigation-utils", () => {
       expect(
         reloadRouteData({
           expectedPreviousPath: AppPath.Canister,
-          effectivePreviousPath: AppPath.Authentication,
+          effectivePreviousPath: AppPath.Accounts,
           currentData: ["test"],
         })
       ).toBeTruthy();
@@ -214,7 +214,7 @@ describe("navigation-utils", () => {
     it("should not match selected path", () => {
       expect(
         isSelectedPath({
-          currentPath: AppPath.Authentication,
+          currentPath: AppPath.Neuron,
           paths: [AppPath.Accounts, AppPath.Wallet],
         })
       ).toBe(false);

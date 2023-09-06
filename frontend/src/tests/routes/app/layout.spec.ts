@@ -15,7 +15,7 @@ jest.mock("$lib/services/$public/app.services", () => ({
 }));
 
 describe("Layout", () => {
-  afterAll(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
   });

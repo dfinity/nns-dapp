@@ -1,5 +1,4 @@
 export enum AppPath {
-  Authentication = "/",
   Accounts = "/accounts",
   Wallet = "/wallet",
   Neurons = "/neurons",

@@ -13,9 +13,9 @@ type HeaderField = (String, String);
 /// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpRequest {
-    /// The HTTP method of the request, such as "GET" or "POST".
+    /// The HTTP method of the request, such as `GET` or `POST`.
     pub method: String,
-    /// The requested path and query string, for example "/some/path?foo=bar".
+    /// The requested path and query string, for example `/some/path?foo=bar`.
     ///
     /// Note: This does NOT contain the domain, port or protocol.
     pub url: String,
@@ -143,7 +143,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
 
 /// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
 /// These headers enable browser security features (like limit access to platform APIs and set
-/// iFrame policies, etc.).
+/// iframe policies, etc.).
 /// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![

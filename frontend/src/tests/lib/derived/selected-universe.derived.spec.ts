@@ -5,7 +5,10 @@ import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import {
@@ -33,6 +36,7 @@ import { get } from "svelte/store";
 
 describe("selected universe derived stores", () => {
   beforeEach(() => {
+    overrideFeatureFlagsStore.reset();
     setSnsProjects([
       {
         rootCanisterId: mockSnsCanisterId,
@@ -212,6 +216,7 @@ describe("selected universe derived stores", () => {
   describe("in ckBTC universe", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       page.mock({
         data: {
           universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
@@ -224,8 +229,14 @@ describe("selected universe derived stores", () => {
       expect(get(selectedUniverseIdStore)).toEqual(CKBTC_UNIVERSE_CANISTER_ID);
     });
 
-    it("returns OWN_CANISTER_ID if universe is ckBTC but flag disabled", () => {
+    it("returns OWN_CANISTER_ID if universe is ckBTC but flags disabled", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+      expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+    });
+
+    it("returns OWN_CANISTER_ID if universe is ckBTC but flag disabled, even with ckTESTBTC enabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
     });
 
@@ -233,6 +244,46 @@ describe("selected universe derived stores", () => {
       page.mock({
         data: {
           universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+        },
+        routeId: AppPath.Neurons,
+      });
+      expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+    });
+  });
+
+  describe("in ckTESTBTC universe", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+      page.mock({
+        data: {
+          universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
+        },
+        routeId: AppPath.Accounts,
+      });
+    });
+
+    it("returns CKTESTBTC_UNIVERSE_CANISTER_ID", () => {
+      expect(get(selectedUniverseIdStore)).toEqual(
+        CKTESTBTC_UNIVERSE_CANISTER_ID
+      );
+    });
+
+    it("returns OWN_CANISTER_ID if universe is ckTESTBTC but flag disabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+      expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+    });
+
+    it("returns OWN_CANISTER_ID if universe is ckTESTBTC but flag disabled, even with ckBTC enabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
+      expect(get(selectedUniverseIdStore)).toEqual(OWN_CANISTER_ID);
+    });
+
+    it("returns OWN_CANISTER_ID if universe is ckBTC but path not supported", () => {
+      page.mock({
+        data: {
+          universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
         },
         routeId: AppPath.Neurons,
       });

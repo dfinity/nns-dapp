@@ -19,4 +19,20 @@ export class CardPo extends BasePageObject {
   async isDisabled(): Promise<boolean> {
     return this.hasClass("disabled");
   }
+
+  async isFramed(): Promise<boolean> {
+    return this.hasClass("framed");
+  }
+
+  async isTransparent(): Promise<boolean> {
+    return this.hasClass("transparent");
+  }
+
+  async hasIcon(): Promise<boolean> {
+    return this.root.querySelector("svg").isPresent();
+  }
+
+  async isButton(): Promise<boolean> {
+    return (await this.root.getAttribute("role")) === "button";
+  }
 }

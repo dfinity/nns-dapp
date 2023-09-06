@@ -13,7 +13,6 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
 
   export let neuron: NeuronInfo;
@@ -65,7 +64,7 @@
   };
 </script>
 
-<CardInfo>
+<CardInfo noMargin>
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     <p>{$i18n.neuron_detail.no_notkeys}</p>
@@ -92,8 +91,6 @@
     </div>
   {/if}
 </CardInfo>
-
-<Separator />
 
 {#if showConfirmationHotkey !== undefined}
   <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->
