@@ -65,7 +65,10 @@
 
     <div>
       <p class="description input-label">
-        {$i18n.neuron_detail.disburse_maturity_destination}
+        {replacePlaceholders(
+          $i18n.neuron_detail.disburse_maturity_destination,
+          { $symbol: tokenSymbol }
+        )}
       </p>
       <AddressInput
         qrCode={false}
