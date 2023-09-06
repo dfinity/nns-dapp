@@ -6,6 +6,7 @@ use crate::stats::Stats;
 use crate::time::time_millis;
 use candid::CandidType;
 use dfn_candid::Candid;
+use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
@@ -22,6 +23,7 @@ use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
+pub mod histogram;
 pub mod schema;
 use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
@@ -1075,6 +1077,14 @@ impl AccountsStore {
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
+    }
+
+    pub fn get_histogram(&self) -> AccountsStoreHistogram {
+        self.accounts_db
+            .values()
+            .fold(AccountsStoreHistogram::default(), |histogram, account| {
+                histogram + &account
+            })
     }
 
     fn try_add_transaction_to_account(

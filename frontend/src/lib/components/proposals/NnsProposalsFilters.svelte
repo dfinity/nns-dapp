@@ -85,6 +85,7 @@
 
     <SignedInOnly>
       <Checkbox
+        testId="votable-proposals-only"
         inputId="hide-unavailable-proposals"
         checked={excludeVotedProposals}
         on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
