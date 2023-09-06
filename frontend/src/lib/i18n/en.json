@@ -640,7 +640,7 @@
     "disburse_maturity_amount": "Choose how much of the maturity available to disburse:",
     "disburse_maturity": "Disburse Maturity",
     "disburse_maturity_confirmation_modal_title": "Confirm Disburse Maturity",
-    "disburse_maturity_confirmation_description": "Action is irreversible. Consider logging this and future transactions for auditing or reference:",
+    "disburse_maturity_confirmation_description": "This action is irreversible. Take a screenshot or record this information somewhere you can reference it. Consult with tax and legal advisors with further questions, and proceed at your own risk.",
     "disburse_maturity_confirmation_percentage": "Maturity Disbursed (%)",
     "disburse_maturity_confirmation_amount": "Maturity Disbursed (Number)",
     "disburse_maturity_confirmation_tokens": "Estimated newly minted $symbol",
