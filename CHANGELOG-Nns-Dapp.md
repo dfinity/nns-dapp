@@ -21,6 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 * Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
 
 #### Deprecated
 #### Removed
@@ -36,6 +37,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+* Add "Filter proposals by Votable only" e2e test.
 
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.

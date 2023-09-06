@@ -48,7 +48,7 @@ get_upgrade_invariant_stats() {
 # Gets some sample accounts
 sample_toy_accounts() {
   echo "Sample accounts will be available once the production commit has a test wasm with get_toy_account()."
-  # seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
+  # seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
