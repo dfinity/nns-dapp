@@ -13,10 +13,10 @@ pub struct AccountsStoreHistogram {
     /// A histogram of the number of transactions per account.
     /// Note: The buckets are logarithmic, so the buckets are:
     ///
-    /// - bucket 0: 0 transactions
-    /// - bucket 1: 1 transaction
-    /// - bucket 3: 2-3 transactions
-    /// - bucket 7: 4-7 transactions
+    /// - bucket key 0: 0 transactions
+    /// - bucket key 1: 1 transaction
+    /// - bucket key 3: 2-3 transactions
+    /// - bucket key 7: 4-7 transactions
     /// - etc
     ///
     /// This is because otherwise accounts with a large number of transactions would be insufficiently anonymised.
@@ -25,15 +25,19 @@ pub struct AccountsStoreHistogram {
     default_account_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of sub-accounts per account.
     ///
-    /// Note: The maximum number of sub-accounts is quite small so a direct count is fine.
+    /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     sub_accounts: BTreeMap<u32, u64>,
     /// A histogram of the number of transactions per sub account.
     ///
     /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     sub_account_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of hardware wallets per account.
+    ///
+    /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     hardware_wallet_accounts: BTreeMap<u32, u64>,
     /// A histogram of the number of canisters per account.
+    ///
+    /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     canisters: BTreeMap<u32, u64>,
 }
 
