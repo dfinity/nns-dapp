@@ -3,6 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
+# shellcheck disable=SC2317 # The help function is called by the argument parser.
 print_help() {
   cat <<-"EOF"
 
@@ -18,11 +19,11 @@ print_help() {
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
-URL_TYPES=(static api)
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+# shellcheck disable=SC2120 # Filters will be passed to match the fmt and lint commands.
 list_files() {
   git ls-files "${@}" | filter
 }
@@ -33,7 +34,8 @@ filter() {
 }
 
 EXIT_CODE=0
-list_files | filter | while read -r filename ; do
-  cargo spellcheck check "$filename" || EXIT_CODE=1
+list_files | filter | while read -r filename; do
+  test -s "$filename" || # Skip empty files
+    cargo spellcheck check "$filename" || EXIT_CODE=1
 done
 exit "$EXIT_CODE"

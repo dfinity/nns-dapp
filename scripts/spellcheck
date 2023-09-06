@@ -3,6 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
+# shellcheck disable=SC2317 # The help function is called by the argument parser.
 print_help() {
   cat <<-"EOF"
 
@@ -15,7 +16,6 @@ print_help() {
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
-URL_TYPES=(static api)
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"

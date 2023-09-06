@@ -15,14 +15,13 @@ print_help() {
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
-URL_TYPES=(static api)
 # Define options
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-for file in CHANGELOG-* ; do
-	unreleased="$file.unreleased.md" # File with unreleased changelog entries.  Must end in `.md`.
-	sed -E '/^#+ *Proposal/q' "$file" > "$unreleased"
-	cargo spellcheck check "$unreleased" | sed 's/.unreleased.md//g'
-	rm "$unreleased"
+for file in CHANGELOG-*; do
+  unreleased="$file.unreleased.md" # File with unreleased changelog entries.  Must end in `.md`.
+  sed -E '/^#+ *Proposal/q' "$file" >"$unreleased"
+  cargo spellcheck check "$unreleased" | sed 's/.unreleased.md//g'
+  rm "$unreleased"
 done
