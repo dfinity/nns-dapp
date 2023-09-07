@@ -20,8 +20,8 @@ export class SimpleBasePageObject {
     return this.getElement(tid).isPresent();
   }
 
-  waitFor(): Promise<void> {
-    return this.root.waitFor();
+  waitFor(tid: string | undefined = undefined): Promise<void> {
+    return this.getElement(tid).waitFor();
   }
 
   waitForAbsent(timeout?: number): Promise<void> {
