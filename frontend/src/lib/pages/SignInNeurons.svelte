@@ -9,12 +9,22 @@
 <main class="sign-in">
   <SummaryUniverse />
 
-  <PageBanner>
-    <IconNeuronsPage slot="image" />
-    <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
-    <p class="description" slot="description">{$i18n.auth_neurons.text}</p>
-    <SignIn slot="actions" />
-  </PageBanner>
+  <div class="content>">
+    <PageBanner>
+      <IconNeuronsPage slot="image" />
+      <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
+      <p class="description" slot="description">{$i18n.auth_neurons.text}</p>
+      <SignIn slot="actions" />
+    </PageBanner>
 
-  <EmptyCards />
+    <EmptyCards />
+  </div>
 </main>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>
