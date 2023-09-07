@@ -39,6 +39,7 @@ jobs:
             ./scripts/update-snsdemo ./snsdemo
             echo "Changes:"
             git diff
+            git commit -a -m "Update snsdemo"
             echo "updated=1" >> "$GITHUB_OUTPUT"
           fi
         # If the snsdemo repo was updated, create a PR.
