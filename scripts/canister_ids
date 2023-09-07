@@ -33,7 +33,7 @@ if ! [ -f "${JSON_FILE:-}" ]; then
   if [ "${CREATE:-}" ]; then
     echo "{}" >"$JSON_FILE"
   else
-    echo "${JSON_FILE:-} is missing." >&2
+    echo "${JSON_FILE:-} is missing.  Consider using: --create" >&2
     exit 1
   fi
 fi
