@@ -46,6 +46,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+* Specify the `snsdemo` version in `dfx.json`.
 
 #### Deprecated
 #### Removed
