@@ -4,13 +4,13 @@ description: |
   Optionally installs nns-dapp and sns_aggregator.
 inputs:
   snsdemo_ref:
-    description: "The commit at which to use the snsdemo scripts.  Defaults to the value in dfx.json"
+    description: "The git ref at which to use the snsdemo scripts.  Defaults to the release tag in dfx.json"
     required: false
     default: ""
   snapshot_url:
-    description: "The URL of the snapshot to download and install"
+    description: "The URL of the snapshot to download and install.  Defaults to the URL of the release tag in dfx.json."
     required: false
-    default: "https://github.com/dfinity/snsdemo/releases/download/release-2023-07-07/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+    default: ""
   nns_dapp_wasm:
     description: "The name of the nns-dapp wasm to install"
     required: false
@@ -33,8 +33,15 @@ runs:
       shell: bash
       run: |
         SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
-        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_COMMIT dfx.json)"
+        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
         echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
+    - name: Determine snsdemo snapshot URL
+      id: snsdemo_snapshot
+      shell: bash
+      run: |
+        URL="${{ inputs.snapshot_url }}"
+        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+        echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       uses: actions/checkout@v3
       with:
@@ -54,7 +61,7 @@ runs:
     - name: Get test environment
       shell: bash
       run: |
-        curl -fL --retry 5 ${{ inputs.snapshot_url }} > state.tar.xz
+        curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         dfx-snapshot-restore --snapshot state.tar.xz --verbose
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck
