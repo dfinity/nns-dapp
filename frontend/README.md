@@ -36,5 +36,5 @@ This project uses [Prettier](https://prettier.io/) and [Eslint](https://eslint.o
 
 There are a few helpful commands:
 
-- `npm run format` automatically formats the code according to prettier. This command also runs in the Github pipeline.
+- `npm run format` automatically formats the code according to prettier. This command also runs in the GitHub pipeline.
 - `npm run check` runs Typescript and Eslint checks.

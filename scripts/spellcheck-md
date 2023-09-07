@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+# shellcheck disable=SC2317 # The help function is called by the argument parser.
+print_help() {
+  cat <<-"EOF"
+
+	Check spelling of markdown files in the nns-dapp repository.
+
+	The CHANGELOGs are not checked; they have their own custom spell-checker
+	that examines only unreleased changelog entries.
+
+	To configure the spell checker or add words to the custom dictionary, see:
+	`.config/spellcheck.md`
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# shellcheck disable=SC2120 # Filters will be passed to match the fmt and lint commands.
+list_files() {
+  git ls-files "${@}" | filter
+}
+
+# Selects eligible files; filenames are read from stdin, one line per filename.
+filter() {
+  grep -E '[.]md$' | grep -v CHANGELOG
+}
+
+EXIT_CODE=0
+readarray -t files < <(list_files | filter)
+for filename in "${files[@]}"; do
+  if test -s "$filename"; then # The file is non-empty
+    cargo spellcheck check "$filename" || EXIT_CODE=1
+  fi
+done
+exit "$EXIT_CODE"
