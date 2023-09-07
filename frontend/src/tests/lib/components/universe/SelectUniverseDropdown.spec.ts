@@ -9,6 +9,7 @@ import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-s
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import {
   mockSnsMainAccount,
@@ -47,6 +48,7 @@ describe("SelectUniverseDropdown", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     snsAccountsStore.reset();
+    resetIdentity();
 
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -119,6 +121,7 @@ describe("SelectUniverseDropdown", () => {
 
     it("should render total balance of the project", async () => {
       const po = renderComponent();
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(true);
       // Expect 1.00 + 0.23
       expect(
         (
@@ -128,6 +131,25 @@ describe("SelectUniverseDropdown", () => {
             .getText()
         ).trim()
       ).toBe("1.23 TST");
+    });
+
+    it("should not render balance when not signed in", async () => {
+      setNoIdentity();
+
+      const po = renderComponent();
+      // Expect 1.00 + 0.23
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(false);
+    });
+
+    it("should not render balance when not on accounts tab", async () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Neurons,
+      });
+
+      const po = renderComponent();
+      // Expect 1.00 + 0.23
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(false);
     });
   });
 
