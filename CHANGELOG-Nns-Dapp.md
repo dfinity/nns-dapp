@@ -44,6 +44,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.
 * New "finalizing" status in SNS project detail page.
+* Cron job to update `snsdemo` weekly.
 
 #### Changed
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
