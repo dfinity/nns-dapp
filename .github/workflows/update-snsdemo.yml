@@ -39,6 +39,8 @@ jobs:
             ./scripts/update-snsdemo ./snsdemo
             echo "Changes:"
             git diff
+            git config --global user.email "gix-bot@dfinity.org"
+            git config --global user.name "GIX bot"
             git commit -a -m "Update snsdemo"
             echo "updated=1" >> "$GITHUB_OUTPUT"
           fi
