@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+cd "$(dirname "$(realpath "$0")")/.." || exit
+
+print_help() {
+  cat <<-EOF
+
+	Formats YAML files.
+	EOF
+  # TODO: Consider using clap.  If not, describe flags here.
+}
+
+list_files() {
+  git ls-files | filter
+}
+
+# Selects eligible files; filenames are read from stdin, one line per filename.
+filter() {
+  grep -E '[.]ya?ml$'
+}
+
+check_file() {
+  local filename="$1"
+  local comments_file
+  comments_file="$(mktemp --suffix .md)"
+  # Put the comments into another file, preserving line numbers:
+  sed -n 's/^ *#//g;ta;s/.*//g;:a;p' "$filename" >"$comments_file"
+  # Check spelling, but convert the filename in any problem report back to the original file.
+  # `cargo spellcheck` does not provide the character offset in each line so we do not need to handle that.
+  cargo spellcheck check "$comments_file" | awk -v filename="$filename" -v comments_file="$comments_file" '{gsub(comments_file, filename); print}'
+  rm "$comments_file"
+}
+
+case "${1:-}" in
+--help) print_help && exit 0 ;;
+--list | -l) list_files ;;
+--check | -c) list_files | while read -r line; do check_file "$line"; done | if grep .; then exit 1; fi ;;
+--modified | -m) git ls-files --modified | filter | while read -r line; do check_file "$line"; done ;;
+"") list_files | while read -r line; do check_file "$line"; done ;;
+--)
+  shift 1
+  for file in "$@"; do check_file "$file"; done
+  ;;
+*) for file in "$@"; do check_file "$file"; done ;;
+esac
