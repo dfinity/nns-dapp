@@ -51,5 +51,8 @@ source "$(clap.build)"
 : "Derive Rust types from candid interfaces"
 time scripts/mk_nns_types.sh
 
+: "... update the patch files to match"
+scripts/mk_nns_patch.sh
+
 : "All done"
 echo FIN
