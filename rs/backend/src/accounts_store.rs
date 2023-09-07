@@ -6,6 +6,7 @@ use crate::stats::Stats;
 use crate::time::time_millis;
 use candid::CandidType;
 use dfn_candid::Candid;
+use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
@@ -22,10 +23,15 @@ use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
+pub mod histogram;
 pub mod schema;
 use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
 type TransactionIndex = u64;
+
+/// The data migration is more complicated if there are too many accounts.  With below this many
+/// accounts we avoid some complications.
+const PRE_MIGRATION_LIMIT: u64 = 220_000;
 
 /// Accounts, transactions and related data.
 #[derive(Default, Debug, Eq, PartialEq)]
@@ -340,6 +346,7 @@ impl AccountsStore {
     // yet been stored, allowing us to set the principal (since originally we created accounts
     // without storing each user's principal).
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
+        self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             if account.principal.is_none() {
@@ -432,6 +439,7 @@ impl AccountsStore {
     }
 
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
+        self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
@@ -1071,6 +1079,14 @@ impl AccountsStore {
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
     }
 
+    pub fn get_histogram(&self) -> AccountsStoreHistogram {
+        self.accounts_db
+            .values()
+            .fold(AccountsStoreHistogram::default(), |histogram, account| {
+                histogram + &account
+            })
+    }
+
     fn try_add_transaction_to_account(
         &mut self,
         account_identifier: AccountIdentifier,
@@ -1502,6 +1518,14 @@ impl AccountsStore {
             }
             _ => {}
         };
+    }
+    fn assert_pre_migration_limit(&self) {
+        let db_accounts_len = self.accounts_db.db_accounts_len();
+        assert!(
+            db_accounts_len < PRE_MIGRATION_LIMIT,
+            "Pre migration account limit exceeded {}",
+            db_accounts_len
+        );
     }
 }
 
