@@ -30,15 +30,15 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
 
 - Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
 - Deploy the NNS backend canisters locally with `dfx nns install`
-- From the last line of output of `dfx nns install` note down the value url for `nns-dapp`
+- From the last line of output of `dfx nns install` note down the value URL for `nns-dapp`
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
-- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the url you noted down before.
+- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the URL you noted down before.
 - Create a file called `canister_ids.json` in `./dfx/local/` with the following content (and make sure to replace the id:
 
 ```
 {
   "nns-dapp": {
-    "local": "<the id from the url from the output of 'dfx nns install'>"
+    "local": "<the id from the URL from the output of 'dfx nns install'>"
   }
 }
 ```
@@ -168,7 +168,7 @@ Add following in `defaults` of [dfx.json](./dfx.json).
 
 Deploying ckBTC ledger, index and minter are as well not yet automated.
 
-Their wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
+Their Wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
 
 ```
 ./scripts/ckbtc/download-ckbtc

@@ -1,3 +1,4 @@
+use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
@@ -271,6 +272,24 @@ pub fn get_stats() {
 
 fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
+}
+
+/// Makes a histogram of the number of sub-accounts etc per account.
+///
+/// This is to be able to design an efficient account store.
+///
+/// Note: This is expensive to compute, as it scans across all
+/// accounts, so this is not included in the general stats above.
+#[export_name = "canister_query get_histogram"]
+pub fn get_histogram() {
+    over(candid, |()| get_histogram_impl());
+}
+
+pub fn get_histogram_impl() -> AccountsStoreHistogram {
+    STATE.with(|state| {
+        let accounts_store = state.accounts_store.borrow();
+        accounts_store.get_histogram()
+    })
 }
 
 /// Executes on every block height and is used to run background processes.
