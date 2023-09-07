@@ -6,12 +6,22 @@
 </script>
 
 <main class="sign-in">
-  <PageBanner>
-    <IconCanistersPage slot="image" />
-    <svelte:fragment slot="title">{$i18n.auth_canisters.title}</svelte:fragment>
-    <p class="description" slot="description">{$i18n.auth_canisters.text}</p>
-    <SignIn slot="actions" />
-  </PageBanner>
+  <div class="content">
+    <PageBanner>
+      <IconCanistersPage slot="image" />
+      <svelte:fragment slot="title">{$i18n.auth_canisters.title}</svelte:fragment>
+      <p class="description" slot="description">{$i18n.auth_canisters.text}</p>
+      <SignIn slot="actions" />
+    </PageBanner>
 
-  <EmptyCards />
+    <EmptyCards />
+  </div>
 </main>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>

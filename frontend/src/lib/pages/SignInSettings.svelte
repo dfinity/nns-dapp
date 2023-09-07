@@ -6,9 +6,7 @@
 </script>
 
 <main class="sign-in">
-  <!-- Safari doesn't handle well grid inside flexbox -->
-  <!-- https://stackoverflow.com/questions/62075401/safari-grid-in-flexbox-produces-height-overflow -->
-  <div>
+  <div class="content">
     <PageBanner>
       <IconSettingsPage slot="image" />
       <svelte:fragment slot="title">{$i18n.navigation.settings}</svelte:fragment
@@ -16,7 +14,15 @@
       <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
-  </div>
 
-  <EmptyCards />
+    <EmptyCards />
+  </div>
 </main>
+
+<style>
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>

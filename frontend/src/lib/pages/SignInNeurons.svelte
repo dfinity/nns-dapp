@@ -9,7 +9,7 @@
 <main class="sign-in">
   <SummaryUniverse />
 
-  <div class="content>">
+  <div class="content">
     <PageBanner>
       <IconNeuronsPage slot="image" />
       <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
