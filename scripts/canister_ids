@@ -25,7 +25,7 @@ clap.define short=r long=remove desc="Remove canister ID" variable=REMOVE nargs=
 clap.define short=n long=network desc="dfx network to use" variable=NETWORK default="staging"
 clap.define short=c long=canister desc="canister to remove" variable=CANISTER default="nns-dapp"
 clap.define short=j long=json-file desc="Path to the canister_ids.json file" variable=JSON_FILE default="./canister_ids.json"
-clap.define long=create desc="Create the json file if missing" variable=CREATE
+clap.define long=create desc="Create the json file if missing" variable=CREATE nargs=0
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
