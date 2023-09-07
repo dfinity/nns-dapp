@@ -21,6 +21,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 * Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
 
 #### Deprecated
 #### Removed
@@ -44,6 +46,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+* Specify the `snsdemo` version in `dfx.json`.
 
 #### Deprecated
 #### Removed

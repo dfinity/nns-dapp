@@ -196,7 +196,7 @@ it. So you should get a new version of `ic-admin`:
 
 **Note**: For Linux, use
 `https://download.dfinity.systems/ic/$IC_COMMIT/binaries/x86_64-linux/ic-admin.gz`
-instead of the darwin URL.
+instead of the Darwin URL.
 
 1. `curl "https://download.dfinity.systems/ic/$IC_COMMIT/openssl-static-binaries/x86_64-darwin/ic-admin.gz" | gunzip > ic-admin`
 2. `chmod +x ./ic-admin`
@@ -235,8 +235,8 @@ If the file/directory doesn't exist at all, create it with that content.
 
 Then deploy `nns-dapp`:
 
-1. Build the wasm. E.g.: `DFX_NETWORK=local ./build.sh`
-2. Deploy the wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
+1. Build the Wasm. E.g.: `DFX_NETWORK=local ./build.sh`
+2. Deploy the Wasm. E.g.: `dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall -v --argument "$(cat nns-dapp-arg-local.did)"`
 
 Now you can visit http://qsgjb-riaaa-aaaaa-aaaga-cai.localhost:8080/ and check
 the proposal.
@@ -246,7 +246,7 @@ the proposal.
 #### Changes in ic-js
 
 You'll need to make a 1-line change in the `ic-js`
-[repositoy](https://github.com/dfinity/ic-js) to add the new NNS function to
+[repository](https://github.com/dfinity/ic-js) to add the new NNS function to
 the [NnsFunction
 enum](https://github.com/dfinity/ic-js/blame/main/packages/nns/src/enums/governance.enums.ts#:~:text=export%20enum%20NnsFunction%20%7B)
 in `packages/nns/src/enums/governance.enums.ts`. Use the name and number that

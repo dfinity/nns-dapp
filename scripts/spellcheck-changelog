@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Check spelling in the CHANGELOGs.
+
+	To configure the spell checker or add words to the custom dictionary, see:
+	`.config/spellcheck.md`
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+for file in CHANGELOG-*; do
+  unreleased="$(mktemp --suffix=.md)" # File with unreleased changelog entries.
+  sed -E '/^#+ *Proposal/q' "$file" >"$unreleased"
+  cargo spellcheck check "$unreleased" | awk -v tmp="$unreleased" -v orig="$file" '{gsub(tmp,orig,$0);print}'
+  rm "$unreleased"
+done

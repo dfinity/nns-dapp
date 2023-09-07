@@ -26,16 +26,16 @@
     <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
     {@const mainAccount = $icpAccountsStore.main}
 
-    <AccountCard hash account={mainAccount} token={ICPToken}
+    <AccountCard account={mainAccount} token={ICPToken}
       >{$i18n.accounts.main}</AccountCard
     >
     {#each $icpAccountsStore.subAccounts ?? [] as subAccount}
-      <AccountCard hash account={subAccount} token={ICPToken}
+      <AccountCard account={subAccount} token={ICPToken}
         >{subAccount.name}</AccountCard
       >
     {/each}
     {#each $icpAccountsStore.hardwareWallets ?? [] as walletAccount}
-      <AccountCard hash account={walletAccount} token={ICPToken}
+      <AccountCard account={walletAccount} token={ICPToken}
         >{walletAccount.name}</AccountCard
       >
     {/each}

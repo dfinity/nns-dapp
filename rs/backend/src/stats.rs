@@ -15,6 +15,7 @@ use ic_cdk::api::stable::stable64_size;
 const WASM_PAGE_SIZE: u64 = 65536;
 const GIBIBYTE: u64 = 1 << 30;
 
+/// Returns basic stats for frequent monitoring.
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
     // Collect values from various subcomponents
