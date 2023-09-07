@@ -12,7 +12,8 @@
   <div class="content">
     <PageBanner>
       <IconAccountsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment>
+      <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment
+      >
       <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
       <SignIn slot="actions" />
     </PageBanner>

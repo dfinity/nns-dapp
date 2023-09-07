@@ -9,7 +9,9 @@
   <div class="content">
     <PageBanner>
       <IconCanistersPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.auth_canisters.title}</svelte:fragment>
+      <svelte:fragment slot="title"
+        >{$i18n.auth_canisters.title}</svelte:fragment
+      >
       <p class="description" slot="description">{$i18n.auth_canisters.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
