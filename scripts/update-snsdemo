@@ -49,13 +49,8 @@ update_snapshot_references() {
 # Move to the root of the nns-dapp repository
 cd "$SOURCE_DIR/.."
 
-# Update the snsdemo commit in the workflows
-list_workflow_files | while read -r path; do
-  update_checkouts_in_file "$path"
-  update_snapshot_references "$path"
-done
-# ... and in the snapshot action
-commit="$SNSDEMO_COMMIT" yq -i '.inputs.snsdemo_ref.default |= (env(commit))' .github/actions/start_dfx_snapshot/action.yaml
+# Update the snsdemo commit in dfx.json
+jq --arg c "$SNSDEMO_COMMIT" '.defaults.build.config.SNSDEMO_COMMIT |= $c' dfx.json | sponge dfx.json
 
 # Update the IC commit to match snsdemo
 scripts/update_ic_commit --ic_commit "$IC_COMMIT"
