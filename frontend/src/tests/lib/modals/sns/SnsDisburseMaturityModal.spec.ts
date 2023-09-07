@@ -43,11 +43,9 @@ describe("SnsDisburseMaturityModal", () => {
         component: SnsDisburseMaturityModal,
         props,
       });
-      const po = DisburseMaturityModalPo.under(
+      return DisburseMaturityModalPo.under(
         new JestPageObjectElement(container)
       );
-      await po.waitFor();
-      return po;
     };
   beforeEach(() => {
     jest.resetAllMocks();
@@ -109,7 +107,7 @@ describe("SnsDisburseMaturityModal", () => {
     await po.setPercentage(10);
     await po.clickNextButton();
 
-    expect(await po.getConfirmAmount()).toBe("~0.10");
+    expect(await po.getConfirmAmount()).toBe("0.10");
   });
 
   it("should display selected tokens 95%-105%", async () => {
