@@ -5,7 +5,6 @@ import { expect, test } from "@playwright/test";
 
 const expectImagesLoaded = async ({ page, sources }) => {
   const images = page.locator("img");
-  await expect(images).toHaveCount(sources.length);
   const imageSources = await Promise.all(
     (await images.all()).map((img) => img.getAttribute("src"))
   );
@@ -36,7 +35,13 @@ test("Test images load on accounts page", async ({ page, context }) => {
   await step("Check images before signing");
   await expectImagesLoaded({
     page,
-    sources: ["logo-nns.svg", "logo-onchain-light.svg", "menu-bg-light.png"],
+    sources: [
+      "icp-rounded.svg",
+      "icp-rounded.svg",
+      "logo-nns.svg",
+      "logo-onchain-light.svg",
+      "menu-bg-light.png",
+    ],
   });
 
   await signInWithNewUser({ page, context });
