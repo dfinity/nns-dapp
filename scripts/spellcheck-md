@@ -36,7 +36,7 @@ filter() {
 EXIT_CODE=0
 readarray -t files < <(list_files | filter)
 for filename in "${files[@]}"; do
-  if test -s "$filename" ; then # The file is non-empty
+  if test -s "$filename"; then # The file is non-empty
     cargo spellcheck check "$filename" || EXIT_CODE=1
   fi
 done
