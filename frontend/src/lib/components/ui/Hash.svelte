@@ -30,13 +30,13 @@
 
 <style lang="scss">
   span {
+    align-items: center;
     display: inline-flex;
     gap: var(--padding-0_5x);
-    align-items: center;
 
     .copy {
-      display: inline-flex;
       align-items: center;
+      display: inline-flex;
       // Make sure the icon doesn't increase the line height.
       max-height: 0;
     }
