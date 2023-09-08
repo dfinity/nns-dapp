@@ -82,7 +82,6 @@
           text={neuron.fullNeuron.accountIdentifier}
           id="neuron-account"
           showCopy
-          flowLessCopy
         />
       </KeyValuePair>
     {/if}
