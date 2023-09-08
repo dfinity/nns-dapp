@@ -4,11 +4,19 @@
   import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { numberToE8s } from "$lib/utils/token.utils";
 
   export let formattedMaturity: string;
   export let percentage: number;
   export let buttonText: string;
   export let disabled = false;
+
+  let maturityToDisburse: bigint;
+  $: maturityToDisburse = numberToE8s(
+    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
+    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
+  );
 
   const dispatcher = createEventDispatcher();
   const selectPercentage = () => dispatcher("nnsSelectPercentage");
@@ -34,10 +42,16 @@
       bind:value={percentage}
     />
     <h5>
-      {formatPercentage(percentage / 100, {
-        minFraction: 0,
-        maxFraction: 0,
-      })}
+      <span class="description" data-tid="maturity-to-disburse"
+        >{formatMaturity(maturityToDisburse)}
+        {$i18n.neuron_detail.maturity}</span
+      >
+      <span data-tid="percentage-to-disburse"
+        >{formatPercentage(percentage / 100, {
+          minFraction: 0,
+          maxFraction: 0,
+        })}</span
+      >
     </h5>
   </div>
 
@@ -66,7 +80,7 @@
 
     h5 {
       margin-top: var(--padding);
-      text-align: center;
+      text-align: right;
     }
   }
 </style>
