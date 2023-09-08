@@ -6,6 +6,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
+  import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
 
   export let formattedMaturity: string;
   export let percentage: number;
@@ -13,7 +14,12 @@
   export let disabled = false;
 
   let maturityToDisburse: bigint;
-  $: maturityToDisburse = numberToE8s(
+  $: maturityToDisburse = maturityPercentageToE8s({
+    percentage,
+    total: Number(formattedMaturity),
+  });
+
+  numberToE8s(
     // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
     Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
   );

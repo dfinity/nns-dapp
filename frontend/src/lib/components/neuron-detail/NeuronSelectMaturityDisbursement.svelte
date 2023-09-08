@@ -9,6 +9,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
+  import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
 
   export let rootCanisterId: Principal;
   export let formattedMaturity: string;
@@ -25,10 +26,10 @@
     }) || percentage === 0;
 
   let maturityToDisburse: bigint;
-  $: maturityToDisburse = numberToE8s(
-    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
-  );
+  $: maturityToDisburse = maturityPercentageToE8s({
+    percentage,
+    total: Number(formattedMaturity),
+  });
 
   const dispatcher = createEventDispatcher();
 </script>

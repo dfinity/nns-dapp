@@ -12,7 +12,7 @@ import {
   type NeuronIneligibilityReason,
 } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -961,3 +961,15 @@ export const neuronDashboardUrl = ({
   `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
     neuron
   )}`;
+
+export const maturityPercentageToE8s = ({
+  total,
+  percentage,
+}: {
+  total: number;
+  percentage: number;
+}): bigint =>
+  numberToE8s(
+    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
+    Number(((percentage / 100) * Number(total)).toFixed(8))
+  );
