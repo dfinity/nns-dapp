@@ -24,6 +24,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Show the token selector also when not signed in.
 * Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
 * Make a histogram of account sizes, used to optimize the new account storage.
+* Use consistent positioning for the copy icon in the Hash component.
 
 #### Deprecated
 #### Removed
