@@ -157,6 +157,8 @@ export const secondsToTime = (seconds: number): string => {
 
 export const secondsToDays = (seconds: number): number =>
   Math.ceil(seconds / SECONDS_IN_DAY);
+export const secondsToDaysRoundedDown = (seconds: number): number =>
+  Math.floor(seconds / SECONDS_IN_DAY);
 export const daysToSeconds = (days: number): number => days * SECONDS_IN_DAY;
 
 export const nowInSeconds = (): number => Math.round(Date.now() / 1000);

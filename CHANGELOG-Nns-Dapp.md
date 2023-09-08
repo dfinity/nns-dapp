@@ -32,6 +32,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Fixed issues with SetDissolveDelay component.
+
 #### Security
 
 #### Not Published
