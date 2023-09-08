@@ -90,13 +90,4 @@
     gap: var(--padding-2x);
     margin: var(--padding-2x) 0 0;
   }
-
-  .percentage-container {
-    width: 100%;
-
-    h5 {
-      margin-top: var(--padding);
-      text-align: right;
-    }
-  }
 </style>
