@@ -39,7 +39,6 @@
   {neuronStake}
   minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
   maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
-  minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
 >

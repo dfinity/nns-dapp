@@ -1,4 +1,3 @@
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { InputRangePo } from "$tests/page-objects/InputRange.page-object";
 import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
@@ -20,6 +19,13 @@ export class SetDissolveDelayPo extends BasePageObject {
     return this.getButton("go-confirm-delay-button");
   }
 
+  getMinButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "min-button",
+    });
+  }
+
   getMaxButtonPo(): ButtonPo {
     return ButtonPo.under({
       element: this.root,
@@ -37,6 +43,10 @@ export class SetDissolveDelayPo extends BasePageObject {
 
   clickMax(): Promise<void> {
     return this.getMaxButtonPo().click();
+  }
+
+  clickMin(): Promise<void> {
+    return this.getMinButtonPo().click();
   }
 
   clickSkip() {
@@ -69,13 +79,10 @@ export class SetDissolveDelayPo extends BasePageObject {
   }
 
   async getSliderDays(): Promise<number> {
-    // We round up to be consistent with `secondsToDays` in `date.utils.ts`.
-    return Math.ceil(
-      (await this.getInputRangePo().getValue()) / SECONDS_IN_DAY
-    );
+    return this.getInputRangePo().getValue();
   }
 
   setSliderDays(days: number): Promise<void> {
-    return this.getInputRangePo().setValue(days * SECONDS_IN_DAY);
+    return this.getInputRangePo().setValue(days);
   }
 }

@@ -22,7 +22,6 @@ const defaultComponentProps = {
     token: ICPToken,
   }),
   delayInSeconds: 0,
-  minDelayInSeconds: 0,
   minProjectDelayInSeconds: SECONDS_IN_HALF_YEAR,
   maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
   calculateVotingPower: () => 0,
@@ -30,6 +29,9 @@ const defaultComponentProps = {
 };
 
 describe("SetDissolveDelay", () => {
+  const getDelayInSeconds = (component) =>
+    component.$$.ctx[component.$$.props["delayInSeconds"]];
+
   const renderComponent = (props = {}) => {
     const { container } = render(SetDissolveDelay, {
       props: {
@@ -46,10 +48,12 @@ describe("SetDissolveDelay", () => {
       const po = renderComponent({
         neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
         delayInSeconds: neuronDissolveDelaySeconds,
-        minDelayInSeconds: neuronDissolveDelaySeconds,
         maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
       });
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+      // Clicking Max is not even necessary because the displayed number of days
+      // already represents an increase in the number of seconds and is
+      // therefore already a valid input.
+      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
 
       await po.clickMax();
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
@@ -61,7 +65,6 @@ describe("SetDissolveDelay", () => {
     const po = renderComponent({
       neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
       delayInSeconds: neuronDissolveDelaySeconds,
-      minDelayInSeconds: neuronDissolveDelaySeconds,
     });
 
     expect(await po.getDays()).toBe(90);
@@ -74,7 +77,6 @@ describe("SetDissolveDelay", () => {
     const po = renderComponent({
       neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
       delayInSeconds: neuronDissolveDelaySeconds,
-      minDelayInSeconds: neuronDissolveDelaySeconds,
     });
 
     expect(await po.getDays()).toBe(91);
@@ -115,7 +117,6 @@ describe("SetDissolveDelay", () => {
         neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
         minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
         delayInSeconds: neuronDissolveDelaySeconds,
-        minDelayInSeconds: neuronDissolveDelaySeconds,
         maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
       });
 
@@ -130,6 +131,7 @@ describe("SetDissolveDelay", () => {
 
       await po.enterDays(neuronDays + 1);
       expect(await po.getErrorMessage()).toBe(null);
+      await new Promise((resolve) => setTimeout(resolve, 100));
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
     });
 
@@ -142,7 +144,6 @@ describe("SetDissolveDelay", () => {
         neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
         minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
         delayInSeconds: neuronDissolveDelaySeconds,
-        minDelayInSeconds: neuronDissolveDelaySeconds,
         maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
       });
 
@@ -186,7 +187,6 @@ describe("SetDissolveDelay", () => {
         neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
         minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
         delayInSeconds: neuronDissolveDelaySeconds,
-        minDelayInSeconds: neuronDissolveDelaySeconds,
         maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
       });
 
@@ -194,10 +194,9 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(null);
 
       await po.setSliderDays(neuronDays);
-      // Moving the slider doesn't update the error message.
-      // TODO: Fix this.
-      //expect(await po.getErrorMessage()).toBe(en.neurons.dissolve_delay_below_current);
-      expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_current
+      );
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
       await po.setSliderDays(neuronDays + 1);
@@ -214,7 +213,6 @@ describe("SetDissolveDelay", () => {
         neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
         minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
         delayInSeconds: neuronDissolveDelaySeconds,
-        minDelayInSeconds: neuronDissolveDelaySeconds,
         maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
       });
 
@@ -223,10 +221,9 @@ describe("SetDissolveDelay", () => {
 
       await po.setSliderDays(projectMinDays - 1);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
-      // Moving the slider doesn't update the error message.
-      // TODO: Fix this.
-      //expect(await po.getErrorMessage()).toBe(en.neurons.dissolve_delay_below_minimum);
-      expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_minimum
+      );
 
       await po.setSliderDays(projectMinDays);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
@@ -240,19 +237,13 @@ describe("SetDissolveDelay", () => {
     const po = renderComponent({
       neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
       delayInSeconds: neuronDissolveDelaySeconds,
-      minDelayInSeconds: neuronDissolveDelaySeconds,
     });
 
     expect(await po.getDays()).toBe(1001);
     expect(await po.getSliderDays()).toBe(1001);
 
     expect(await po.getErrorMessage()).toBe(null);
-    // 1001 days in seconds is greater than the current dissolve delay of 1000
-    // days plus 1 second, so setting 1001 days is allowed and the button should
-    // start out as enabled. But currently it doesn't.
-    // TODO: Fix this.
-    //expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
-    expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+    expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
 
     await po.enterDays(1002);
     expect(await po.getErrorMessage()).toBe(null);
@@ -265,14 +256,69 @@ describe("SetDissolveDelay", () => {
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
     await po.enterDays(1001);
-    // 1001 days is greater than 1000 days plus 1 second so setting 1001 days is
-    // allowed and the button is correctly enabled. But we incorrectly also show
-    // an error message.
-    // TODO: Fix this.
-    //expect(await po.getErrorMessage()).toBe(null);
-    expect(await po.getErrorMessage()).toBe(
-      en.neurons.dissolve_delay_below_current
-    );
+    expect(await po.getErrorMessage()).toBe(null);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
+  });
+
+  it("should update prop on text input", async () => {
+    const { container, component } = render(SetDissolveDelay, {
+      props: defaultComponentProps,
+    });
+    const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+
+    await po.enterDays(100);
+    expect(getDelayInSeconds(component)).toBe(100 * SECONDS_IN_DAY);
+
+    await po.enterDays(200);
+    expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
+  });
+
+  it("should update prop on slider input", async () => {
+    const { container, component } = render(SetDissolveDelay, {
+      props: defaultComponentProps,
+    });
+    const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+
+    await po.setSliderDays(100);
+    expect(getDelayInSeconds(component)).toBe(100 * SECONDS_IN_DAY);
+
+    await po.setSliderDays(200);
+    expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
+  });
+
+  it("should update prop, text and slider on Min/Max", async () => {
+    const minProjectDelayInDays = 50;
+    const maxDelayInDays = 500;
+    const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
+    const maxDelayInSeconds = maxDelayInDays * SECONDS_IN_DAY;
+
+    const { container, component } = render(SetDissolveDelay, {
+      props: {
+        ...defaultComponentProps,
+        delayInSeconds: 0,
+        minProjectDelayInSeconds,
+        maxDelayInSeconds,
+      },
+    });
+    const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+
+    expect(getDelayInSeconds(component)).toBe(0);
+
+    // Clicking "Min" can increase the delay to the minimum.
+    await po.clickMin();
+    expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
+    expect(await po.getSliderDays()).toBe(minProjectDelayInDays);
+
+    await po.clickMax();
+    expect(getDelayInSeconds(component)).toBe(maxDelayInSeconds);
+    expect(await po.getDays()).toBe(maxDelayInDays);
+    expect(await po.getSliderDays()).toBe(maxDelayInDays);
+
+    // Clicking "Min" can decrease the delay to the minimum.
+    await po.clickMin();
+    expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
+    expect(await po.getSliderDays()).toBe(minProjectDelayInDays);
   });
 });
