@@ -8,7 +8,6 @@
   export let id: string;
   export let text: string;
   export let showCopy = false;
-  // remove copy icon from the css flow
   export let className: string | undefined = undefined;
   export let splitLength: number | undefined = undefined;
 
@@ -38,6 +37,7 @@
     .copy {
       display: inline-flex;
       align-items: center;
+      // Make sure the icon doesn't increase the line height.
       max-height: 0;
     }
   }
