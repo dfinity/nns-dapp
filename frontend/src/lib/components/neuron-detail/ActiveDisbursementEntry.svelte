@@ -1,42 +1,65 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconClockNoFill } from "@dfinity/gix-components";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { IconClockNoFill, KeyValuePair } from "@dfinity/gix-components";
 
-  export let formattedTime: string;
-  export let formattedAccount: string;
-  export let formattedAmount: string;
+  export let dateTime: string;
+  export let destination: string;
+  export let amount: string;
 </script>
 
-<div class="disbursement" data-tid="active-disbursement-entry-component">
+<div class="container" data-tid="active-disbursement-entry-component">
   <span class="icon">
-    <IconClockNoFill size="24px" />
+    <IconClockNoFill size="20px" />
   </span>
-  <span class="description" data-tid="description">
-    {replacePlaceholders(
-      $i18n.neuron_detail.view_active_disbursements_entry_description,
-      {
-        $time: formattedTime,
-        $account: formattedAccount,
-      }
-    )}
-  </span>
-  <span class="value" data-tid="maturity">
-    {replacePlaceholders(
-      $i18n.neuron_detail.view_active_disbursements_maturity,
-      {
-        $maturity: formattedAmount,
-      }
-    )}
-  </span>
+  <div class="content" data-tid="description">
+    <KeyValuePair>
+      <span slot="key">Maturity disbursed</span>
+      <span slot="value" class="value" data-tid="maturity">{amount}</span>
+    </KeyValuePair>
+    <KeyValuePair>
+      <span slot="key" class="description" data-tid="destination"
+        >To: {destination}</span
+      >
+      <span slot="value" class="description timestamp" data-tid="timestamp"
+        >{dateTime}</span
+      >
+    </KeyValuePair>
+  </div>
 </div>
 
 <style lang="scss">
-  .disbursement {
-    display: grid;
-    grid-template-columns: var(--padding-4x) auto;
+  .container {
+    display: flex;
+    gap: var(--padding-1_5x);
+  }
+
+  .icon {
+    width: var(--padding-6x);
+    height: 100%;
+    aspect-ratio: 1/1;
+
+    display: flex;
+    justify-content: center;
     align-items: center;
+
+    border-radius: var(--border-radius);
+    background: var(--content-background);
+
+    color: var(--disable-contrast);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
     gap: var(--padding-0_5x);
+    flex-grow: 1;
+  }
+
+  .description {
+    font-size: var(--font-size-small);
+  }
+
+  .timestamp {
+    white-space: pre;
   }
 
   .value {
