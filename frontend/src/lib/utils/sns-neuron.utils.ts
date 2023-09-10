@@ -971,5 +971,6 @@ export const maturityPercentageToE8s = ({
 }): bigint =>
   numberToE8s(
     // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(((percentage / 100) * Number(total)).toFixed(8))
+    // due to `numberToE8s` validation of floating-point approximation issues of IEEE 754 (e.g. 0.1 + 0.2 = 0.30000000000000004)
+    Number(((percentage / 100) * total).toFixed(8))
   );
