@@ -40,7 +40,7 @@
     on:nnsSelectPercentage={() => dispatcher("nnsSelect")}
     on:nnsCancel={() => dispatcher("nnsClose")}
     bind:percentage
-    disabled={percentage === 0}
+    {disabled}
     {formattedMaturity}
   >
     <div class="container" slot="description">
