@@ -5,7 +5,6 @@
   import { createEventDispatcher } from "svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import { numberToE8s } from "$lib/utils/token.utils";
   import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
 
   export let formattedMaturity: string;
@@ -18,11 +17,6 @@
     percentage,
     total: Number(formattedMaturity),
   });
-
-  numberToE8s(
-    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
-  );
 
   const dispatcher = createEventDispatcher();
   const selectPercentage = () => dispatcher("nnsSelectPercentage");
@@ -78,7 +72,7 @@
 
 <style lang="scss">
   .label {
-    padding-top: var(--padding-3x);
+    margin: var(--padding-1_5x) 0 var(--padding);
   }
 
   .select-container {

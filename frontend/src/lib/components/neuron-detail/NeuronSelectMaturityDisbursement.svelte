@@ -6,7 +6,6 @@
   import type { Principal } from "@dfinity/principal";
   import AddressInput from "$lib/components/accounts/AddressInput.svelte";
   import { invalidAddress } from "$lib/utils/accounts.utils";
-  import { numberToE8s } from "$lib/utils/token.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronSelectPercentage from "$lib/components/neuron-detail/NeuronSelectPercentage.svelte";
   import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
@@ -88,6 +87,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    margin: var(--padding-2x) 0 0;
+    margin: var(--padding-2x) 0 var(--padding-3x);
   }
 </style>
