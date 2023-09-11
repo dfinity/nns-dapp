@@ -156,11 +156,14 @@
           </span>
         </KeyValuePair>
         <KeyValuePair>
-          <span slot="key" class="description"
+          <span slot="key" class="description destination-key"
             >{$i18n.neuron_detail
               .disburse_maturity_confirmation_destination}</span
           >
-          <span data-tid="confirm-destination" class="value" slot="value"
+          <span
+            data-tid="confirm-destination"
+            class="value destination-value"
+            slot="value"
             >{destinationAddress}
           </span>
         </KeyValuePair>
@@ -175,5 +178,13 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+  }
+
+  .destination-key {
+    white-space: nowrap;
+  }
+
+  .destination-value {
+    text-align: right;
   }
 </style>
