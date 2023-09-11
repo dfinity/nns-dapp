@@ -1,11 +1,32 @@
 <script lang="ts">
   import type { SnsNeuron } from "@dfinity/sns";
   import { i18n } from "$lib/stores/i18n";
-  import { Modal } from "@dfinity/gix-components";
+  import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
   import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
   import { createEventDispatcher } from "svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import type { Token } from "@dfinity/utils";
+  import { tokensStore } from "$lib/stores/tokens.store";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
 
   export let neuron: SnsNeuron;
+
+  let token: Token | undefined;
+  $: token = $tokensStore[$selectedUniverseIdStore.toText()]?.token;
+
+  let symbol: string;
+  $: symbol = token?.symbol ?? "";
+
+  let activeDisbursementsCount: number;
+  $: activeDisbursementsCount = neuron.disburse_maturity_in_progress.length;
+
+  // calculate the total maturity
+  let totalMaturity: bigint;
+  $: totalMaturity = neuron.disburse_maturity_in_progress.reduce(
+    (acc, disbursement) => acc + disbursement.amount_e8s,
+    BigInt(0)
+  );
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -13,13 +34,36 @@
 
 <Modal on:nnsClose testId="sns-active-disbursements-modal">
   <svelte:fragment slot="title"
-    >{$i18n.neuron_detail
-      .view_active_disbursements_modal_title}</svelte:fragment
+    >{activeDisbursementsCount}
+    {$i18n.neuron_detail.view_active_disbursements_modal_title}</svelte:fragment
   >
-  <div class="disbursements">
-    {#each neuron.disburse_maturity_in_progress as disbursement}
-      <SnsActiveDisbursementEntry {disbursement} />
-    {/each}
+
+  <div class="content">
+    <KeyValuePair>
+      <span slot="key" class="label"
+        >{$i18n.neuron_detail.view_active_disbursements_total}</span
+      >
+      <span class="value" slot="value" data-tid="total-maturity"
+        >{formatMaturity(totalMaturity)}</span
+      >
+    </KeyValuePair>
+
+    <div class="disbursements">
+      {#each neuron.disburse_maturity_in_progress as disbursement}
+        <SnsActiveDisbursementEntry {disbursement} />
+      {/each}
+    </div>
+
+    <span class="description">
+      <Html
+        text={replacePlaceholders(
+          $i18n.neuron_detail.active_maturity_disbursements_description,
+          {
+            $symbol: symbol,
+          }
+        )}
+      />
+    </span>
   </div>
 
   <div class="toolbar">
@@ -28,10 +72,20 @@
 </Modal>
 
 <style lang="scss">
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
+  }
+
   .disbursements {
     padding: var(--padding), 0;
     display: flex;
     flex-direction: column;
-    gap: var(--padding);
+    gap: var(--padding-2x);
+  }
+
+  .description {
+    font-size: var(--font-size-small);
   }
 </style>

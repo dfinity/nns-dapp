@@ -1,5 +1,5 @@
 name: Build and test
-# We use "push" events so that we have the actual commit. In "pull_request"
+# We use `push` events so that we have the actual commit. In `pull_request`
 # events we get a merge commit with main instead. The merge commit can be
 # useful to check that the code would pass tests once merged, but here it just
 # creates confusion and doesn't add anything since the branch must be up to
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
       - name: Skip build for testing
-        # Set to true and set a recent run_id below to reuse an existing build
+        # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
         if: false
         id: skip_build
@@ -117,6 +117,25 @@ jobs:
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+  test-test-account-api:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_test
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_test
+      - name: Start empty nns-dapp
+        # As long as the snapshot environment can be installed with no accounts, we can use that.
+        # The snapshot action also installs idl2json and jq; commands that we will need.
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+      - name: Check that test accounts can be created and read
+        run: ./scripts/nns-dapp/test-account.test
   test-rest:
     needs: build
     runs-on: ubuntu-20.04
@@ -162,8 +181,8 @@ jobs:
           echo "Check a few values:"
           for key in data-own-canister-id data-fetch-root-key data-identity-service-url ; do
             # Verify that the key is non-trivial:
-            # jq -e returns an error code if the value is missing
-            # grep ... fails if the value is implausibly short.
+            # `jq -e` returns an error code if the value is missing
+            # `grep ...` fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
       - name: Determine ic-wasm version
@@ -221,7 +240,7 @@ jobs:
         run: dfx stop
   network_independent_wasm:
     name: "Same wasms for mainnet and local"
-    # Note: The dockerfile structure SHOULD guarantee that the network is not used in any wasm build commands.
+    # Note: The dockerfile structure SHOULD guarantee that the network is not used in any Wasm build commands.
     #       As long as that holds, this test is not needed.
     needs: build
     runs-on: ubuntu-latest-m
@@ -325,7 +344,7 @@ jobs:
         run: dfx canister call sns_aggregator reconfigure '(opt record { update_interval_ms = 100; fast_interval_ms = 1_000_000_000; })'
       - name: Wait for the aggregator to get data
         run: sleep 120
-        # sleep time > 12 SnS & 2 block heights each + a few extra calls.
+        # sleep time > 12 SNS & 2 block heights each + a few extra calls.
         # TODO: The aggregator can be installed and populated in the saved state, so this sleep is not needed.
       - name: Get the latest data from the sns aggregator
         run: |
@@ -452,7 +471,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-downgrade-upgrade", "test-test-account-api"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

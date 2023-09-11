@@ -3,11 +3,11 @@ import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
+  isLoadingSnsProjectsStore,
   openSnsProposalsStore,
   snsProposalsStore,
   snsProposalsStoreIsLoading,
   snsQueryStore,
-  snsQueryStoreIsLoading,
   snsSummariesStore,
   snsSwapCommitmentsStore,
   type SnsQueryStoreData,
@@ -151,19 +151,6 @@ describe("sns.store", () => {
       expect(store).toBeUndefined();
     });
 
-    it("should set the store as loading state", () => {
-      const data = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
-        certified: true,
-      });
-
-      snsQueryStore.setData(data);
-      expect(get(snsQueryStoreIsLoading)).toBe(false);
-
-      snsQueryStore.reset();
-      expect(get(snsQueryStoreIsLoading)).toBe(true);
-    });
-
     it("should update the data", () => {
       const data = snsResponsesForLifecycle({
         lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Pending],
@@ -225,6 +212,48 @@ describe("sns.store", () => {
           (swap) => swap.rootCanisterId === rootCanisterId
         )
       ).toBeUndefined();
+    });
+  });
+
+  describe("isLoadingSnsProjectsStore", () => {
+    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
+      });
+
+      it("should not be loading if snsQueryStore is set but not snsAggregatorStore", () => {
+        snsQueryStore.reset();
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        expect(get(isLoadingSnsProjectsStore)).toBe(true);
+
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        });
+
+        snsQueryStore.setData(data);
+        expect(get(isLoadingSnsProjectsStore)).toBe(false);
+      });
+    });
+
+    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
+
+      it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        });
+
+        snsQueryStore.setData(data);
+        snsAggregatorStore.reset();
+        expect(get(isLoadingSnsProjectsStore)).toBe(true);
+
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        expect(get(isLoadingSnsProjectsStore)).toBe(false);
+      });
     });
   });
 

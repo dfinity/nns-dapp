@@ -9,4 +9,18 @@ export class TogglePo extends BasePageObject {
   toggle(): Promise<void> {
     return this.root.querySelector("label").click();
   }
+
+  async isEnabled(): Promise<boolean> {
+    return this.root.querySelector("input[type=checkbox]").isChecked();
+  }
+
+  async setEnabled(enabled = true): Promise<void> {
+    if ((await this.isEnabled()) !== enabled) {
+      await this.toggle();
+    }
+  }
+
+  setDisabled(): Promise<void> {
+    return this.setEnabled(false);
+  }
 }

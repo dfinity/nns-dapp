@@ -618,12 +618,12 @@ interface I18nNeuron_detail {
   maturity_last_distribution_info: string;
   stake_maturity: string;
   disburse_maturity: string;
+  view_active_disbursements_total: string;
   view_active_disbursements: string;
   view_active_disbursements_status: string;
   view_active_disbursements_modal_title: string;
-  view_active_disbursements_entry_description: string;
+  view_active_disbursements_to: string;
   view_active_disbursements_maturity: string;
-  disburse_maturity_to: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
@@ -661,6 +661,8 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_success: string;
+  active_maturity_disbursements_description: string;
+  active_maturity_disbursements_amount: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
   stake_maturity_confirmation: string;
@@ -733,6 +735,7 @@ interface I18nSns_project_detail {
   status_aborted: string;
   status_pending: string;
   status_unspecified: string;
+  status_finalizing: string;
   participate_swap_description: string;
   understand_agree: string;
   participate_success: string;

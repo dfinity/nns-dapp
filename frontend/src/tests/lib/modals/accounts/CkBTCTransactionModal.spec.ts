@@ -32,7 +32,7 @@ import {
   testTransferFormTokens,
   testTransferReviewTokens,
   testTransferTokens,
-} from "$tests/utils/transaction-modal.test.utils";
+} from "$tests/utils/transaction-modal.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";

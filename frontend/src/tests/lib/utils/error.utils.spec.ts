@@ -1,10 +1,12 @@
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   errorToString,
+  isMethodNotSupportedError,
   isPayloadSizeError,
   toToastError,
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
+import { UnsupportedMethodError } from "@dfinity/sns";
 
 class TestError extends Error {
   constructor(msg: string) {
@@ -89,6 +91,19 @@ describe("error-utils", () => {
       expect(isPayloadSizeError(new Error("test"))).toBe(false);
       expect(isPayloadSizeError(undefined)).toBe(false);
       expect(isPayloadSizeError({})).toBe(false);
+    });
+  });
+
+  describe("isMethodNotSupportedError", () => {
+    it("returns true for method is not supported", () => {
+      const err = new UnsupportedMethodError("get_auto_finalization_status");
+      expect(isMethodNotSupportedError(err)).toBe(true);
+    });
+
+    it("returns false for other errors and non errors", () => {
+      expect(isMethodNotSupportedError(new Error("another error"))).toBe(false);
+      expect(isMethodNotSupportedError(undefined)).toBe(false);
+      expect(isMethodNotSupportedError({})).toBe(false);
     });
   });
 });

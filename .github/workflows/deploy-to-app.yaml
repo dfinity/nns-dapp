@@ -3,7 +3,7 @@ name: Deploy to app
 on:
   schedule:
     # Run every Wednesday:
-    # Summer: 11am Zurich time
+    # Summer: 11 am Zurich time
     # Winter: noon Zurich time
     - cron: '0 10 * * 3'
   push:
@@ -45,23 +45,23 @@ jobs:
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
       - name: Set credentials
-        #        uses: aviate-labs/setup-dfx@v0.2.3
-        #with:
-        #  dfx-version: ${{ steps.tool_versions.outputs.dfx }}
-        #  dfx-disable-encryption: true
         run: |
           DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
+      - name: Determine snsdemo ref
+        id: snsdemo_ref
+        run: |
+          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+          echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          # Version from 2023-06-06 with dfx v0.14.1
-          ref: '0e61f618018db099a01b1686535fff8eff980d1c'
+          ref: ${{ steps.snsdemo_ref.outputs.ref }}
       - name: Set up SNS scripts
         run: |
           : Install more
@@ -98,7 +98,7 @@ jobs:
           set -x
           CANISTER_NAME="nns-dapp"
           scripts/nns-dapp/split-assets
-          # Note: inputs.mode is set if this workflow is run manually, using workflow_dispatch defined above.
+          # Note: inputs.mode is set if this workflow is run manually, using `workflow_dispatch` defined above.
           #       If the workflow is triggered in another way, the inputs are not defined so we need to specify a default again.
           ARGUMENT="$(cat "out/nns-dapp-arg-${DFX_NETWORK}.did")"
           dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --argument "$ARGUMENT" --wasm out/nns-dapp_noassets.wasm.gz
@@ -113,7 +113,7 @@ jobs:
           dfx canister install --mode "${{ inputs.mode || 'upgrade' }}" --yes --network "$DFX_NETWORK" "$CANISTER_NAME" --wasm out/sns_aggregator.wasm.gz
       - name: Canister info
         run: |
-          # How to add a github summary: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-adding-a-job-summary
+          # How to add a GitHub summary: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-adding-a-job-summary
           set -x
           {
             MODE="${{ inputs.mode || 'upgrade' }}"

@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      # We use buildx and its GitHub Actions caching support `type=gha`. For
+      # We use `buildx` and its GitHub Actions caching support `type=gha`. For
       # more information, see
       # https://github.com/docker/build-push-action/issues/539
       - name: Set up docker buildx

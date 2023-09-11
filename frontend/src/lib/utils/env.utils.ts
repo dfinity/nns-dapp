@@ -1,5 +1,5 @@
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { NNS_IC_ORG_ALTERNATIVE_ORIGIN } from "$lib/constants/origin.constants";
+import { NNS_IC_ORG_ALTERNATIVE_ORIGINS } from "$lib/constants/origin.constants";
 
 /**
  * To be use when Rollup fails to resolve import "$app/environment". This can happen because we manually define chunks and SvelteKit is not entirely resilient to bundler reordering.
@@ -18,7 +18,7 @@ export const isNnsAlternativeOrigin = (): boolean => {
     location: { origin },
   } = window;
 
-  return origin === NNS_IC_ORG_ALTERNATIVE_ORIGIN;
+  return NNS_IC_ORG_ALTERNATIVE_ORIGINS.includes(origin);
 };
 
 /**

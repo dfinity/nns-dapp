@@ -32,16 +32,4 @@ describe("IncreaseStakeButton", () => {
 
     expect(increaseStake).toBeCalledTimes(1);
   });
-
-  it("renders variant primary by default", async () => {
-    const po = await renderComponent({});
-    expect(await po.getVariant()).toBe("primary");
-  });
-
-  it("renders variant secondary if set", async () => {
-    const po = await renderComponent({
-      variant: "secondary",
-    });
-    expect(await po.getVariant()).toBe("secondary");
-  });
 });
