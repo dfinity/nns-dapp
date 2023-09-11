@@ -22,20 +22,21 @@ jobs:
           echo "Current snsdemo release: $current_release"
           latest_release=$(curl -sSL https://api.github.com/repos/dfinity/snsdemo/releases/latest | jq .tag_name -r)
           echo "Latest snsdemo release:  $latest_release"
-
-          if [ "$current_release" == "$latest_release" ]
-          then
-            echo "updated=0" >> "$GITHUB_OUTPUT"
-            echo "latest_release=$latest_release" >> "$GITHUB_OUTPUT"
-          else
-            echo "updated=1" >> "$GITHUB_OUTPUT"
-          fi
+          {
+            if [ "$current_release" == "$latest_release" ]
+            then
+              echo "updated=0"
+            else
+              echo "updated=1"
+              echo "release=$latest_release"
+            fi
+          } >> "$GITHUB_OUTPUT"
       - name: Get snsdemo repo
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-          ref: ${{ steps.update.outputs.latest_release }}
+          ref: ${{ steps.update.outputs.release }}
       - name: Update snsdemo
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
@@ -46,7 +47,7 @@ jobs:
           # Install sponge
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update
-          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.latest_release }}"
+          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.latest_release }}" --verbose
           echo "Changes:"
           git diff
           git config --global user.email "gix-bot@dfinity.org"
