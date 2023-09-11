@@ -34,6 +34,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
 
 #### Security
 
