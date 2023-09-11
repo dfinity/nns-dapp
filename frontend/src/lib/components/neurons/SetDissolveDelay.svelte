@@ -91,10 +91,11 @@
 
   const shouldUpdateBeDisabled = (delayInDays: number) => {
     const error = getInputError(delayInDays);
-    return (
-      nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
-    );
-  };
+    // It's allowed to set the dissolve delay below the project minimum but we
+    // still show a warning message to the user.
+    return nonNullish(error) && error !==
+        $i18n.neurons.dissolve_delay_below_minimum;
+  }
 
   const onRangeInput = () => {
     keepDelaysInBounds();
