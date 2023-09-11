@@ -10,14 +10,14 @@
   <span class="icon">
     <IconClockNoFill size="20px" />
   </span>
-  <div class="content" data-tid="description">
+  <div class="content description">
     <KeyValuePair>
       <span slot="key">Maturity disbursed</span>
       <span slot="value" class="value" data-tid="maturity">{amount}</span>
     </KeyValuePair>
     <KeyValuePair>
-      <span slot="key" class="description" data-tid="destination"
-        >To: {destination}</span
+      <span slot="key" class="description"
+        >To: <span data-tid="destination">{destination}</span></span
       >
       <span slot="value" class="description timestamp" data-tid="timestamp"
         >{dateTime}</span

@@ -14,8 +14,6 @@
     disbursement.timestamp_of_disbursement_seconds
   );
 
-  $: console.log(disbursement);
-
   let account: Account;
   $: account = fromDefinedNullable(disbursement.account_to_disburse_to);
 
