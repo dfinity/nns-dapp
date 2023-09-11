@@ -47,7 +47,7 @@ jobs:
           # Install sponge
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update
-          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.latest_release }}" --verbose
+          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.release }}" --verbose
           echo "Changes:"
           git diff
           git config --global user.email "gix-bot@dfinity.org"
