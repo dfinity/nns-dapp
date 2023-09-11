@@ -6,7 +6,7 @@ PATH="$SOURCE_DIR:$PATH"
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=d long=repo desc="The path to an snsdemo repo checked out at the desired release" variable=SNSDEMO_REPO
+clap.define short=d long=dir desc="The path to an snsdemo repo checked out at the desired release" variable=SNSDEMO_REPO
 clap.define short=r long=release desc="The release name" variable=SNSDEMO_RELEASE
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
