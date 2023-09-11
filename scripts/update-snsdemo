@@ -63,6 +63,6 @@ scripts/update_ic_commit --ic_commit "$IC_COMMIT"
 v="$DFX_VERSION" jq '.dfx |= env.v' dfx.json | sponge dfx.json
 
 echo "Updated:"
-echo " snsdemo commit to $SNSDEMO_COMMIT"
+echo " snsdemo commit to $SNSDEMO_RELEASE ($RELEASE_COMMIT)"
 echo " dfx version to $DFX_VERSION"
 echo " IC commit to $IC_COMMIT"
