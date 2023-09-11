@@ -16,6 +16,10 @@ export class NnsProposalListPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
+  getProposalCardPo(): ProposalCardPo {
+    return ProposalCardPo.under(this.root);
+  }
+
   getProposalCardPos(): Promise<ProposalCardPo[]> {
     return ProposalCardPo.allUnder(this.root);
   }
@@ -84,8 +88,10 @@ export class NnsProposalListPo extends BasePageObject {
   }
 
   async waitForContentLoaded(): Promise<void> {
-    await this.waitFor();
-    await this.getSkeletonCardPo().waitForAbsent();
+    await Promise.race([
+      this.getProposalCardPo().waitFor(),
+      this.waitFor("no-proposals-msg"),
+    ]);
   }
 
   async getVisibleProposalIds(proposerNeuronId: string): Promise<string[]> {

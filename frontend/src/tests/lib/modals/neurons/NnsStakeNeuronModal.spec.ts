@@ -234,7 +234,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
+      const FIVE_MONTHS = 30 * 5;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: FIVE_MONTHS },
@@ -325,7 +325,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },
@@ -483,7 +483,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },

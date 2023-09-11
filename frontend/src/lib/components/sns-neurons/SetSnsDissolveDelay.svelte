@@ -82,7 +82,6 @@
   {neuronDissolveDelaySeconds}
   {neuronStake}
   minProjectDelayInSeconds={minSnsDissolveDelaySeconds}
-  minDelayInSeconds={Number(neuronDissolveDelaySeconds)}
   maxDelayInSeconds={maxSnsDelayInSeconds}
   {calculateVotingPower}
   {minDissolveDelayDescription}

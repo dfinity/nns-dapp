@@ -40,7 +40,7 @@ export class InputWithErrorPo extends SimpleBasePageObject {
   }
 
   async getErrorMessage(): Promise<string | null> {
-    return this.root.byTestId("input-error-message").isPresent()
+    return (await this.root.byTestId("input-error-message").isPresent())
       ? (await this.getText("input-error-message")).trim()
       : null;
   }

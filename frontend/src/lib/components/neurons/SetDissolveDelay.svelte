@@ -1,24 +1,26 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
+  import {
+    daysToSeconds,
+    secondsToDays,
+    secondsToDaysRoundedDown,
+  } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { InputRange, Html } from "@dfinity/gix-components";
-  import { isDefined, valueSpan } from "$lib/utils/utils";
+  import { valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState } from "@dfinity/nns";
-  import type { TokenAmount } from "@dfinity/utils";
-  import { SECONDS_IN_DAY } from "$lib/constants/constants";
+  import { type TokenAmount, nonNullish } from "@dfinity/utils";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
   export let neuronStake: TokenAmount;
   export let delayInSeconds = 0;
-  export let minDelayInSeconds = 0;
   export let minProjectDelayInSeconds: number;
   export let maxDelayInSeconds = 0;
   // sns and nns calculates voting power differently
@@ -27,17 +29,20 @@
 
   const dispatch = createEventDispatcher();
 
-  let delayInDays = 0;
-  $: delayInSeconds, (() => (delayInDays = secondsToDays(delayInSeconds)))();
+  let delayInDays = secondsToDays(delayInSeconds);
+
+  $: delayInSeconds = daysToSeconds(delayInDays);
+
+  let neuronDelayInDays = secondsToDays(Number(neuronDissolveDelaySeconds));
 
   let minDelayInDays = 0;
-  $: minDelayInDays = secondsToDays(minDelayInSeconds);
+  $: minDelayInDays = secondsToDays(Number(neuronDissolveDelaySeconds) + 1);
 
   let minProjectDelayInDays = 0;
   $: minProjectDelayInDays = secondsToDays(minProjectDelayInSeconds);
 
   let maxDelayInDays = 0;
-  $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
+  $: maxDelayInDays = secondsToDaysRoundedDown(maxDelayInSeconds);
 
   let votingPower: number;
   $: votingPower = calculateVotingPower(delayInSeconds);
@@ -45,48 +50,50 @@
   let inputError: string | undefined;
 
   let disableUpdate: boolean;
-  $: disableUpdate =
-    delayInSeconds < minProjectDelayInSeconds ||
-    delayInSeconds <= minDelayInSeconds ||
-    delayInSeconds > maxDelayInSeconds;
+  $: disableUpdate = nonNullish(getInputError(delayInDays));
 
   const keepDelaysInBounds = () => {
-    if (delayInSeconds < minDelayInSeconds) {
-      delayInSeconds = minDelayInSeconds;
+    if (delayInDays < neuronDelayInDays) {
+      delayInDays = neuronDelayInDays;
     }
 
-    if (delayInSeconds > maxDelayInSeconds) {
-      delayInSeconds = maxDelayInSeconds;
-    }
-
-    // hide the error
-    inputError = undefined;
-  };
-  const setMin = () => {
-    delayInSeconds = Math.max(
-      minDelayInSeconds + SECONDS_IN_DAY,
-      minProjectDelayInSeconds
-    );
-    keepDelaysInBounds();
-  };
-  const setMax = () => {
-    delayInSeconds = maxDelayInSeconds;
-    keepDelaysInBounds();
-  };
-  const updateInputError = () => {
     if (delayInDays > maxDelayInDays) {
-      inputError = $i18n.neurons.dissolve_delay_above_maximum;
-    } else if (delayInDays < minProjectDelayInDays) {
-      inputError = $i18n.neurons.dissolve_delay_below_minimum;
-    } else if (delayInDays <= minDelayInDays) {
-      inputError = $i18n.neurons.dissolve_delay_below_current;
-    } else if (isDefined(inputError)) {
-      // clear the error
-      inputError = undefined;
+      delayInDays = maxDelayInDays;
     }
-
-    delayInSeconds = daysToSeconds(delayInDays);
   };
+
+  const setMin = () => {
+    delayInDays = Math.max(minDelayInDays, minProjectDelayInDays);
+    updateInputError();
+  };
+
+  const setMax = () => {
+    delayInDays = maxDelayInDays;
+    updateInputError();
+  };
+
+  const getInputError = (delayInDays: number) => {
+    if (delayInDays > maxDelayInDays) {
+      return $i18n.neurons.dissolve_delay_above_maximum;
+    }
+    if (delayInDays < minProjectDelayInDays) {
+      return $i18n.neurons.dissolve_delay_below_minimum;
+    }
+    if (delayInDays < minDelayInDays) {
+      return $i18n.neurons.dissolve_delay_below_current;
+    }
+    return undefined;
+  };
+
+  const updateInputError = () => {
+    inputError = getInputError(delayInDays);
+  };
+
+  const onRangeInput = () => {
+    keepDelaysInBounds();
+    updateInputError();
+  };
+
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
@@ -144,9 +151,9 @@
       <InputRange
         ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
         min={0}
-        max={maxDelayInSeconds}
-        bind:value={delayInSeconds}
-        handleInput={keepDelaysInBounds}
+        max={maxDelayInDays}
+        bind:value={delayInDays}
+        handleInput={onRangeInput}
       />
       <div class="details">
         <div>
