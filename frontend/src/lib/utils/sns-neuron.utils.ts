@@ -26,7 +26,6 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -962,8 +961,3 @@ export const neuronDashboardUrl = ({
   `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
     neuron
   )}`;
-
-export const getSnsActiveDisbursementTime = (
-  disbursement: DisburseMaturityInProgress
-): bigint =>
-  disbursement.timestamp_of_disbursement_seconds - BigInt(nowInSeconds());

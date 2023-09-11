@@ -18,11 +18,15 @@ export class ActiveDisbursementEntryPo extends BasePageObject {
     ).map((el) => new ActiveDisbursementEntryPo(el));
   }
 
-  getDescriptionText(): Promise<string> {
-    return this.getText("description");
+  getMaturity(): Promise<string> {
+    return this.getText("maturity");
   }
 
-  getMaturityText(): Promise<string> {
-    return this.getText("maturity");
+  getDestination(): Promise<string> {
+    return this.getText("destination");
+  }
+
+  getTimestamp(): Promise<string> {
+    return this.getText("timestamp");
   }
 }
