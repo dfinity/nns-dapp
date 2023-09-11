@@ -3,11 +3,12 @@
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
   import { type SnsNeuronId } from "@dfinity/sns";
-  import { addMaturity } from "$lib/api/sns-governance.api";
   import { getCurrentIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import Input from "$lib/components/ui/Input.svelte";
+  import { numberToE8s } from "$lib/utils/token.utils";
+  import { addMaturity } from "$lib/services/sns-neurons.services";
 
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;
@@ -22,32 +23,24 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 
   const onSubmit = async () => {
-    console.log(1);
-    console.log(2);
     if (invalidForm || inputValue === undefined) {
       toastsError({
         labelKey: "Invalid maturity input.",
       });
       return;
     }
-    console.log(3);
-    try {
-      const identity = await getCurrentIdentity();
-      startBusy({ initiator: "dev-add-sns-neuron-maturity" });
-      await addMaturity({
-        identity,
-        rootCanisterId,
-        neuronId,
-        amountE8s: BigInt(Math.round(inputValue)),
-      });
-      await reloadNeuron();
-      dispatcher("nnsClose");
-    } catch (err) {
-      console.error(err);
-      toastsError({ labelKey: "error.adding_maturity", err });
-    } finally {
-      stopBusy("dev-add-sns-neuron-maturity");
-    }
+
+    startBusy({ initiator: "dev-add-sns-neuron-maturity" });
+
+    await addMaturity({
+      rootCanisterId,
+      neuronId,
+      amountE8s: numberToE8s(inputValue),
+    });
+    await reloadNeuron();
+
+    dispatcher("nnsClose");
+    stopBusy("dev-add-sns-neuron-maturity");
   };
 </script>
 
