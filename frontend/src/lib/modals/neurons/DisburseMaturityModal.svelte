@@ -19,7 +19,7 @@
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+  import { formatToken } from "$lib/utils/token.utils";
   import NeuronSelectMaturityDisbursement from "$lib/components/neuron-detail/NeuronSelectMaturityDisbursement.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
