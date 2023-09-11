@@ -1,5 +1,6 @@
 <script lang="ts">
   import { IconClockNoFill, KeyValuePair } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
 
   export let dateTime: string;
   export let destination: string;
@@ -17,7 +18,9 @@
     </KeyValuePair>
     <KeyValuePair>
       <span slot="key" class="description"
-        >To: <span data-tid="destination">{destination}</span></span
+        >{$i18n.neuron_detail.view_active_disbursements_to}<span
+          data-tid="destination">{destination}</span
+        ></span
       >
       <span slot="value" class="description timestamp" data-tid="timestamp"
         >{dateTime}</span
