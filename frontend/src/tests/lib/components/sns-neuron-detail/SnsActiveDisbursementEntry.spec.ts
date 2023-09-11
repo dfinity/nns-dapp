@@ -3,7 +3,6 @@
  */
 
 import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
-import { secondsToDateTime } from "$lib/utils/date.utils";
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -51,8 +50,6 @@ describe("SnsActiveDisbursementEntry", () => {
 
     const po = renderComponent(testActiveDisbursement);
 
-    expect(await po.getTimestamp()).toEqual(
-      secondsToDateTime(disbursementTimestamp)
-    );
+    expect(await po.getTimestamp()).toEqual("Sep 6, 2023 11:33 AM");
   });
 });

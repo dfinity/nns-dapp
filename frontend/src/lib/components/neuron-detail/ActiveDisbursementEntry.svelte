@@ -13,7 +13,9 @@
   </span>
   <div class="content description">
     <KeyValuePair>
-      <span slot="key">Maturity disbursed</span>
+      <span slot="key"
+        >{$i18n.neuron_detail.active_maturity_disbursements_amount}</span
+      >
       <span slot="value" class="value" data-tid="maturity">{amount}</span>
     </KeyValuePair>
     <KeyValuePair>
