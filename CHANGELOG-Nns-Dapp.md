@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
 * Make a histogram of account sizes, used to optimize the new account storage.
 * Use consistent positioning for the copy icon in the Hash component.
+* Allow setting a dissolve delay that's shorter than what's required for voting power.
 
 #### Deprecated
 #### Removed
