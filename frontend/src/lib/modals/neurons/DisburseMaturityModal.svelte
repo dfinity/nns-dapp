@@ -20,9 +20,9 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { formatToken, numberToE8s } from "$lib/utils/token.utils";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import NeuronSelectMaturityDisbursement from "$lib/components/neuron-detail/NeuronSelectMaturityDisbursement.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
 
   export let rootCanisterId: Principal;
   export let formattedMaturity: string;
@@ -68,10 +68,11 @@
   }
 
   let maturityToDisburse = 0n;
-  $: maturityToDisburse = numberToE8s(
-    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    Number(((percentage / 100) * Number(formattedMaturity)).toFixed(8))
-  );
+  $: maturityToDisburse = maturityPercentageToE8s({
+    total: Number(formattedMaturity),
+    percentage,
+  });
+
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
@@ -121,8 +122,7 @@
       <Html
         text={$i18n.neuron_detail.disburse_maturity_confirmation_description}
       />
-      <Separator />
-      <div class="confirmation">
+      <div class="content">
         <KeyValuePair>
           <span slot="key" class="description"
             >{$i18n.neuron_detail
@@ -170,7 +170,8 @@
 </WizardModal>
 
 <style lang="scss">
-  .confirmation {
+  .content {
+    margin-top: var(--padding-3x);
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
