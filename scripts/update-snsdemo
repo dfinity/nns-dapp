@@ -6,7 +6,8 @@ PATH="$SOURCE_DIR:$PATH"
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=r long=snsdemo_repo desc="The path to an snsdemo repo at the desired commit" variable=SNSDEMO_REPO
+clap.define short=d long=repo desc="The path to an snsdemo repo checked out at the desired release" variable=SNSDEMO_REPO
+clap.define short=r long=release desc="The release name" variable=SNSDEMO_RELEASE
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -17,7 +18,18 @@ test -e "${SNSDEMO_REPO:-}" || {
   exit 1
 } >&2
 
-SNSDEMO_COMMIT="$(cd "$SNSDEMO_REPO" && git rev-parse HEAD)"
+# Check that the SNSDEMO repo is checked out at the correct release
+pushd "$SNSDEMO_REPO"
+HEAD_COMMIT="$(git rev-parse HEAD)"
+RELEASE_COMMIT="$(git rev-parse "tags/$SNSDEMO_RELEASE")"
+[[ "$HEAD_COMMIT" == "$RELEASE_COMMIT" ]] || {
+  echo "ERROR: The repo should be checked out at the release tag."
+  echo "SNSDEMO repo HEAD:      $HEAD_COMMIT"
+  echo "SNSDEMO release commit: $RELEASE_COMMIT"
+  exit 1
+} >&2
+popd
+
 DFX_VERSION="$(jq -r .dfx "$SNSDEMO_REPO/dfx.json")"
 IC_COMMIT="$(
   . "$SNSDEMO_REPO/bin/versions.bash"
@@ -25,32 +37,18 @@ IC_COMMIT="$(
 )"
 
 # Check that all values were found.
-for var in SNSDEMO_COMMIT DFX_VERSION IC_COMMIT; do
+for var in DFX_VERSION IC_COMMIT RELEASE_COMMIT; do
   test -n "${!var}" || {
     echo "ERROR: Could not find $var" >&2
     exit 1
   } >&2
 done
 
-list_workflow_files() {
-  git ls-files .github/workflows/ | grep -E '[.]ya?ml$'
-}
-
-update_checkouts_in_file() {
-  local filename="$1"
-  commit="${SNSDEMO_COMMIT}" yq -i '.jobs |= ([(. | to_entries | .[] | .value.steps[] |= with(select(.with.repository == "dfinity/snsdemo"); .with.ref=env(commit)))] | from_entries)' "$filename"
-}
-
-update_snapshot_references() {
-  local filename="$1"
-  commit="${SNSDEMO_COMMIT}" yq -i '.jobs |= ([(. | to_entries | .[] | .value.steps[] |= with(select(.with.snsdemo_ref); .with.snsdemo_ref=env(commit)))] | from_entries)' "$filename"
-}
-
 # Move to the root of the nns-dapp repository
 cd "$SOURCE_DIR/.."
 
 # Update the snsdemo commit in dfx.json
-jq --arg c "$SNSDEMO_COMMIT" '.defaults.build.config.SNSDEMO_COMMIT |= $c' dfx.json | sponge dfx.json
+jq --arg c "$SNSDEMO_RELEASE" '.defaults.build.config.SNSDEMO_RELEASE |= $c' dfx.json | sponge dfx.json
 
 # Update the IC commit to match snsdemo
 scripts/update_ic_commit --ic_commit "$IC_COMMIT"
