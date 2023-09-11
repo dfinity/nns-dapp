@@ -39,6 +39,7 @@ jobs:
       - name: Update snsdemo
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
+          set -x
           echo snsdemo needs an update
           # Install didc
           snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
