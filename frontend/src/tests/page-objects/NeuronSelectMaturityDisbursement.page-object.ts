@@ -1,5 +1,6 @@
 import { AddressInputPo } from "$tests/page-objects/AddressInput.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { NeuronSelectPercentagePo } from "$tests/page-objects/NeuronSelectPercentage.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
@@ -12,8 +13,12 @@ export class NeuronSelectMaturityDisbursementPo extends BasePageObject {
     );
   }
 
-  async getTotalMaturity(): Promise<string> {
-    return (await this.getText("total-maturity")).trim();
+  getNeuronSelectPercentagePo(): NeuronSelectPercentagePo {
+    return NeuronSelectPercentagePo.under(this.root);
+  }
+
+  getAvailableMaturity(): Promise<string> {
+    return this.getNeuronSelectPercentagePo().getAvailableMaturity();
   }
 
   getDestinationInput(): AddressInputPo {
@@ -27,15 +32,15 @@ export class NeuronSelectMaturityDisbursementPo extends BasePageObject {
   getNextButton(): ButtonPo {
     return ButtonPo.under({
       element: this.root,
-      testId: "next-button",
+      testId: "select-maturity-percentage-button",
     });
   }
 
-  async getMaturityToDisburse(): Promise<string> {
+  async getMaturityToDisburseText(): Promise<string> {
     return (await this.getText("maturity-to-disburse")).trim();
   }
 
-  async getPercentageToDisburse(): Promise<string> {
+  async getPercentageToDisburseText(): Promise<string> {
     return (await this.getText("percentage-to-disburse")).trim();
   }
 

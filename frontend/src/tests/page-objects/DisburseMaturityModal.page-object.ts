@@ -21,7 +21,7 @@ export class DisburseMaturityModalPo extends BasePageObject {
   }
 
   getTotalMaturity(): Promise<string> {
-    return this.getText("total-maturity");
+    return this.getNeuronSelectMaturityDisbursementPo().getAvailableMaturity();
   }
 
   getConfirmPercentage(): Promise<string> {
