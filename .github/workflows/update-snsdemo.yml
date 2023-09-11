@@ -15,36 +15,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Update to match the snsdemo repo
+        id: update
+        run: |
+          current_release="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+          echo "Current snsdemo release: $current_release"
+          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/snsdemo/releases/latest | jq .tag_name -r)
+          echo "Latest snsdemo release:  $latest_release"
+
+          if [ "$current_release" == "$latest_release" ]
+          then
+            echo "updated=0" >> "$GITHUB_OUTPUT"
+            echo "latest_release=$latest_release" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=1" >> "$GITHUB_OUTPUT"
+          fi
       - name: Get snsdemo repo
         uses: actions/checkout@v3
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
-      - name: Update to match the snsdemo repo
-        id: update
+          ref: ${{ steps.update.outputs.latest_release }}
+      - name: Update snsdemo
+        if: ${{ steps.update.outputs.updated == '1' }}
         run: |
-          current_commit="$(yq '.inputs.snsdemo_ref.default' .github/actions/start_dfx_snapshot/action.yaml)"
-          latest_commit="$(cd snsdemo && git rev-parse HEAD)"
-
-          if [ "$current_commit" == "$latest_commit" ]
-          then
-            echo "updated=0" >> "$GITHUB_OUTPUT"
-          else
-            echo snsdemo needs an update
-            # Install didc
-            snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-            # Install sponge
-            sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-            # Update
-            ./scripts/update-snsdemo ./snsdemo
-            echo "Changes:"
-            git diff
-            git config --global user.email "gix-bot@dfinity.org"
-            git config --global user.name "GIX bot"
-            git commit -a -m "Update snsdemo"
-            echo "updated=1" >> "$GITHUB_OUTPUT"
-          fi
-        # If the snsdemo repo was updated, create a PR.
+          echo snsdemo needs an update
+          # Install didc
+          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # Install sponge
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          # Update
+          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.latest_release }}"
+          echo "Changes:"
+          git diff
+          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.name "GIX bot"
+          git commit -a -m "Update snsdemo"
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
