@@ -215,7 +215,7 @@ describe("NnsStakeNeuronModal", () => {
       expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
     });
 
-    it("should have disabled button for dissolve less than six months", async () => {
+    it("should have enabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({
         component: NnsStakeNeuronModal,
       });
@@ -243,7 +243,7 @@ describe("NnsStakeNeuronModal", () => {
       const updateDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
       );
-      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
     });
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
