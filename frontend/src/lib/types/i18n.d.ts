@@ -615,7 +615,6 @@ interface I18nNeuron_detail {
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;
-  disburse_maturity: string;
   view_active_disbursements_total: string;
   view_active_disbursements: string;
   view_active_disbursements_status: string;
@@ -655,6 +654,7 @@ interface I18nNeuron_detail {
   stake_maturity_modal_title: string;
   disburse_maturity_modal_title: string;
   disburse_maturity_modal_description: string;
+  disburse_maturity: string;
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_success: string;
