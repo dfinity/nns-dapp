@@ -50,9 +50,9 @@ pub fn from_get_metadata_response(upstream: &GetMetadataResponse, root_canister_
         name: upstream.name.clone(),
         description: upstream.description.clone(),
         logo: match (upstream.logo.clone(), root_canister_id) {
-            (Some(_), Some(canister_id))  => Some(format!("/sns/root/{}/logo.png", canister_id.to_string())),
+            (Some(_), Some(canister_id)) => Some(format!("/sns/root/{}/logo.png", canister_id.to_string())),
             _ => None,
-        }
+        },
     }
 }
 
