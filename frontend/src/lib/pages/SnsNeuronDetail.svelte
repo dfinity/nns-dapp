@@ -197,6 +197,7 @@
             <SnsNeuronProposalsCard />
             <Separator spacing="none" />
             <SnsNeuronTestnetFunctionsCard />
+            <Separator spacing="none" />
             <SnsPermissionsCard />
           {/if}
         {/if}

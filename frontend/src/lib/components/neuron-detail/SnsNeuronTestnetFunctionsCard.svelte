@@ -1,6 +1,5 @@
 <script lang="ts">
   import CardInfo from "../ui/CardInfo.svelte";
-  import Separator from "../ui/Separator.svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 
   const openAddMaturityModal = async () => {
@@ -17,8 +16,6 @@
     >
   </div>
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {
