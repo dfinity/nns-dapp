@@ -82,4 +82,10 @@ runs:
         DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
     - name: Hash artefacts
       shell: bash
-      run: find out/ -type f | xargs sha256sum | awk 'BEGIN{print "===START_ARTEFACTS===\nsha256 size filename"}END{print "==END_ARTEFACTS=="}{"wc -c " $2 | getline size; print $1, size}' | column -t | tee out/filelist.txt
+      # Note:
+      # * sha256sum prints the hash of each file;
+      # * The `wc -c` in the awk code gets the size in bytes of each file;
+      # * The AWK code also adds a header and footer;
+      # * `column -t` formats the data as a table;
+      # * `tee` saves a copy of the printout in a file; that file will be included in releases.
+      run: find out/ -type f | xargs sha256sum | awk '{"wc -c " $2 | getline size; print $1, size}BEGIN{print "===START_ARTEFACTS===\nsha256 size filename"}END{print "==END_ARTEFACTS=="}' | column -t | tee out/filelist.txt
