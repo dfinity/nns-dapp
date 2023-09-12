@@ -44,13 +44,15 @@ pub struct SlowSnsData {
     pub lifecycle: Option<GetLifecycleResponse>,
 }
 
+/// Transforms the canister response GetMetadataResponse into the Aggregator data SlowMetadata.
+/// It substitutes the logo in base 64 by the path to the logo asset if present.
 pub fn from_get_metadata_response(upstream: &GetMetadataResponse, root_canister_id: Option<Principal>) -> SlowMetadata {
     SlowMetadata {
         url: upstream.url.clone(),
         name: upstream.name.clone(),
         description: upstream.description.clone(),
         logo: match (upstream.logo.clone(), root_canister_id) {
-            (Some(_), Some(canister_id)) => Some(format!("/sns/root/{}/logo.png", canister_id.to_string())),
+            (Some(_), Some(canister_id)) => Some(format!("/sns/root/{}/logo.png", canister_id.to_text())),
             _ => None,
         },
     }
