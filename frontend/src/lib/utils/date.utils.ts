@@ -20,12 +20,16 @@ const createLabel = (labelKey: LabelKey, amount: bigint): LabelInfo => ({
   amount: Number(amount),
 });
 
+// Returns how many days there are in the given number of years, adding a leap
+// day for every 4 years.
 const daysInYears = (years: bigint): bigint => {
   const leapDays = years / BigInt(4);
   return years * BigInt(DAYS_IN_NON_LEAP_YEAR) + leapDays;
 };
 
-const yearsInDays = (days: bigint): bigint => {
+// Returns how many full years, requiring a leap day for every 4 full years,
+// there are in the given number of days.
+const fullYearsInDays = (days: bigint): bigint => {
   let years = days / BigInt(DAYS_IN_NON_LEAP_YEAR);
   while (daysInYears(years) > days) {
     years--;
@@ -44,7 +48,7 @@ export const secondsToDuration = (seconds: bigint): string => {
   let days = hours / BigInt(HOURS_IN_DAY);
   hours -= days * BigInt(HOURS_IN_DAY);
 
-  const years = yearsInDays(days);
+  const years = fullYearsInDays(days);
   days -= daysInYears(years);
 
   const periods = [
