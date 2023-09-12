@@ -11,6 +11,10 @@ export class SnsActiveDisbursementsModalPo extends BasePageObject {
     );
   }
 
+  async getTotalMaturity(): Promise<number> {
+    return Number(await this.getText("total-maturity"));
+  }
+
   getActiveDisbursementEntryPos(): Promise<ActiveDisbursementEntryPo[]> {
     return ActiveDisbursementEntryPo.allUnder(this.root);
   }

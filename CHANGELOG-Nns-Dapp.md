@@ -12,28 +12,19 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
-
 #### Changed
 
-* Add a database abstraction layer, preparing for migration.
-* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
-* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
-* Made disburse neuron flow more consistent with other transaction flows.
-* New colors in NNS Dapp.
 * Show the token selector also when not signed in.
-* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
-* Make a histogram of account sizes, used to optimize the new account storage.
 * Use consistent positioning for the copy icon in the Hash component.
+* Allow setting a dissolve delay that's shorter than what's required for voting power.
 
 #### Deprecated
 #### Removed
 
-* Remove unused components after new neuron details page.
-
 #### Fixed
 
 * Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
 
 #### Security
 
@@ -50,7 +41,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Cron job to update `snsdemo` weekly.
 
 #### Changed
-* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
 * Specify the `snsdemo` version in `dfx.json`.
 
 #### Deprecated
@@ -59,6 +49,41 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 #### Security
+
+## Proposal 124486
+
+### Application
+
+#### Added
+
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
+
+#### Changed
+
+* Add a database abstraction layer, preparing for migration.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
+* New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
+
+#### Removed
+
+* Remove unused components after new neuron details page.
+
+### Operations
+
+#### Added
+
+* Add "Filter proposals by Votable only" e2e test.
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
+#### Changed
+
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
 
 ## Proposal 124328
 

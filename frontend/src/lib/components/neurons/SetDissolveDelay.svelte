@@ -50,7 +50,7 @@
   let inputError: string | undefined;
 
   let disableUpdate: boolean;
-  $: disableUpdate = nonNullish(getInputError(delayInDays));
+  $: disableUpdate = shouldUpdateBeDisabled(delayInDays);
 
   const keepDelaysInBounds = () => {
     if (delayInDays < neuronDelayInDays) {
@@ -76,17 +76,26 @@
     if (delayInDays > maxDelayInDays) {
       return $i18n.neurons.dissolve_delay_above_maximum;
     }
-    if (delayInDays < minProjectDelayInDays) {
-      return $i18n.neurons.dissolve_delay_below_minimum;
-    }
     if (delayInDays < minDelayInDays) {
       return $i18n.neurons.dissolve_delay_below_current;
+    }
+    if (delayInDays < minProjectDelayInDays) {
+      return $i18n.neurons.dissolve_delay_below_minimum;
     }
     return undefined;
   };
 
   const updateInputError = () => {
     inputError = getInputError(delayInDays);
+  };
+
+  const shouldUpdateBeDisabled = (delayInDays: number): boolean => {
+    const error = getInputError(delayInDays);
+    // It's allowed to set the dissolve delay below the project minimum but we
+    // still show a warning message to the user.
+    return (
+      nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
+    );
   };
 
   const onRangeInput = () => {
