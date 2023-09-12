@@ -1,8 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>SNS aggregator</title>
+
+    <!-- Juno's CDN -->
+    <link
+      href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css"
+      rel="stylesheet"
+    />
+
     <style>
       @font-face {
         font-family: CircularXX;
@@ -22,9 +29,6 @@
         --blue-bolt: #00bbf9;
         --verdigris: #56a3a6;
         --sea-green: #00f5d4;
-        --grey: #ccc;
-        --dark-grey: #333;
-        --light-grey: #f5f5f5;
 
         --padding-3x: calc(var(--padding) * 3);
         --padding-2x: calc(var(--padding) * 2);
@@ -35,7 +39,6 @@
         --border-size: calc(var(--padding) / 6);
         --border-radius: var(--padding);
         --border-radius-0_5x: calc(var(--padding) / 2);
-        --border-radius-0_25x: calc(var(--padding) / 4);
       }
 
       body {
@@ -56,8 +59,11 @@
       }
 
       a {
-        transition: color 0.15s ease-out, background 0.15s ease-out,
-          transform 0.15s ease-out, box-shadow 0.25s ease-out;
+        transition:
+          color 0.15s ease-out,
+          background 0.15s ease-out,
+          transform 0.15s ease-out,
+          box-shadow 0.25s ease-out;
       }
 
       main {
@@ -100,7 +106,7 @@
         width: 100%;
         justify-content: space-between;
         border-bottom: var(--border-size) solid black;
-        margin: 0 0 var(--padding-2x);
+        margin: 0;
       }
 
       h2 span {
@@ -158,6 +164,10 @@
         to {
           transform: rotate(359deg);
         }
+      }
+
+      .snses {
+        margin: var(--padding-2x) 0 0;
       }
 
       @media (min-width: 576px) {
@@ -313,24 +323,21 @@
         background: var(--verdigris);
       }
 
-      pre {
-        display: block;
-        padding: var(--padding-0_5x);
-        margin: 0 0 var(--padding-0_5x);
-        line-height: 1.4em;
-  
-        color: var(--dark-grey);
-        background-color: var(--light-grey);
-        border: 1px solid var(--grey);
-        border-radius: var(--border-radius-0_25x);
+      .code {
+        margin: 0 0 var(--padding-3x);
+        border: var(--padding-0_25x) dashed var(--hot-pink);
+        padding: var(--padding-0_25x);
+        border-radius: var(--border-radius);
+      }
 
-        word-break: break-all;
-        /* Reference: https://css-tricks.com/snippets/css/make-pre-text-wrap/ */
-        white-space: pre-wrap;       /* css-3 */
-        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-        white-space: -pre-wrap;      /* Opera 4-6 */
-        white-space: -o-pre-wrap;    /* Opera 7 */
-        word-wrap: break-word;       /* Internet Explorer 5.5+ */
+      pre[class*="language-javascript"] {
+        border-radius: var(--border-radius-0_5x);
+        padding: var(--padding);
+        margin: 0;
+      }
+
+      code[class*="language-javascript"] {
+        font-size: 11px;
       }
     </style>
   </head>
@@ -356,17 +363,23 @@
           </li>
           <li>The SNS logo is at: /v1/sns/root/$CANISTER_ID/logo.png</li>
         </ul>
-
-        <h3>Integration example from the browser:</h3>
-
-        <p>
-          The aggregator offers multiple endpoints to collect the paginated list of launched SNSes or an endpoint for the latest SNSes.
-        </p>
-        <pre>
-// Use `fetch` to get the response from the aggregator
-const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/0/slow.json");
-const snses = await response.json();</pre>
       </section>
+
+      <h2>
+        <span>Getting Started</span>
+      </h2>
+
+      <p>
+        This aggregator is designed for developers to access information about
+        SNS projects. It provides multiple endpoints for retrieving paginated
+        lists, as well as an endpoint for accessing the latest SNSes.
+      </p>
+
+      <div class="code">
+        <pre><code class="language-javascript">// Use `fetch` to get the response from the aggregator
+const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/0/slow.json");
+const snses = await response.json();</code></pre>
+      </div>
 
       <h2>
         <span>Recent SNSs</span>
@@ -470,5 +483,7 @@ const snses = await response.json();</pre>
 
       document.addEventListener("DOMContentLoaded", loadSnses, { once: true });
     </script>
+
+    <script src="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/prism.min.js"></script>
   </body>
 </html>
