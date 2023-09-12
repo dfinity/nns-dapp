@@ -34,13 +34,11 @@ describe("secondsToDuration", () => {
     return secondsToDuration(BigInt(seconds));
   };
 
-  // Most of these are wrong.
-  // TODO: Fix.
   it("should give year details", () => {
-    expect(renderSeconds({ nonLeapYears: 1 })).toBe("365 days");
-    expect(renderSeconds({ nonLeapYears: 1, seconds: 59 })).toBe("365 days");
+    expect(renderSeconds({ nonLeapYears: 1 })).toBe("1 year");
+    expect(renderSeconds({ nonLeapYears: 1, seconds: 59 })).toBe("1 year");
     expect(renderSeconds({ nonLeapYears: 1, minutes: 59 })).toBe(
-      "365 days, 59 minutes"
+      "1 year, 59 minutes"
     );
     expect(renderSeconds({ nonLeapYears: 1, hours: 23 })).toBe(
       "1 year, 23 hours"
@@ -48,24 +46,24 @@ describe("secondsToDuration", () => {
     expect(renderSeconds({ nonLeapYears: 1, days: 1, seconds: -1 })).toBe(
       "1 year, 23 hours"
     );
-    expect(renderSeconds({ nonLeapYears: 1, days: 1 })).toBe("1 year");
-    expect(renderSeconds({ nonLeapYears: 1, days: 2 })).toBe("1 year, 1 day");
+    expect(renderSeconds({ nonLeapYears: 1, days: 1 })).toBe("1 year, 1 day");
+    expect(renderSeconds({ nonLeapYears: 1, days: 2 })).toBe("1 year, 2 days");
     expect(renderSeconds({ nonLeapYears: 2, seconds: -1 })).toBe(
       "1 year, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 2 })).toBe("1 year, 364 days");
+    expect(renderSeconds({ nonLeapYears: 2 })).toBe("2 years");
     expect(renderSeconds({ nonLeapYears: 2, minutes: 59 })).toBe(
-      "1 year, 364 days"
+      "2 years, 59 minutes"
     );
     expect(renderSeconds({ nonLeapYears: 2, hours: 23 })).toBe(
       "2 years, 23 hours"
     );
-    expect(renderSeconds({ nonLeapYears: 2, days: 1 })).toBe("2 years");
-    expect(renderSeconds({ nonLeapYears: 2, days: 2 })).toBe("2 years, 1 day");
+    expect(renderSeconds({ nonLeapYears: 2, days: 1 })).toBe("2 years, 1 day");
+    expect(renderSeconds({ nonLeapYears: 2, days: 2 })).toBe("2 years, 2 days");
     expect(renderSeconds({ nonLeapYears: 3, seconds: -1 })).toBe(
       "2 years, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 3 })).toBe("2 years, 364 days");
+    expect(renderSeconds({ nonLeapYears: 3 })).toBe("3 years");
     // 4 actual years have a leap day so we add 1 day to 4 nonLeap years.
     expect(renderSeconds({ nonLeapYears: 4, days: 1, seconds: -1 })).toBe(
       "3 years, 365 days"
@@ -74,21 +72,15 @@ describe("secondsToDuration", () => {
     expect(renderSeconds({ nonLeapYears: 5, days: 1, seconds: -1 })).toBe(
       "4 years, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 5, days: 1 })).toBe(
-      "4 years, 365 days"
-    );
+    expect(renderSeconds({ nonLeapYears: 5, days: 1 })).toBe("5 years");
     expect(renderSeconds({ nonLeapYears: 6, days: 1, seconds: -1 })).toBe(
       "5 years, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 6, days: 1 })).toBe(
-      "5 years, 364 days"
-    );
+    expect(renderSeconds({ nonLeapYears: 6, days: 1 })).toBe("6 years");
     expect(renderSeconds({ nonLeapYears: 7, days: 1, seconds: -1 })).toBe(
       "6 years, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 7, days: 1 })).toBe(
-      "6 years, 364 days"
-    );
+    expect(renderSeconds({ nonLeapYears: 7, days: 1 })).toBe("7 years");
     // 4 actual years have 2 leap days so we add 2 days to 8 nonLeap years.
     expect(renderSeconds({ nonLeapYears: 8, days: 2, seconds: -1 })).toBe(
       "7 years, 365 days"
@@ -97,9 +89,7 @@ describe("secondsToDuration", () => {
     expect(renderSeconds({ nonLeapYears: 9, days: 2, seconds: -1 })).toBe(
       "8 years, 364 days"
     );
-    expect(renderSeconds({ nonLeapYears: 9, days: 2 })).toBe(
-      "8 years, 365 days"
-    );
+    expect(renderSeconds({ nonLeapYears: 9, days: 2 })).toBe("9 years");
   });
 
   it("should give day details", () => {
@@ -190,6 +180,15 @@ describe("daysToDuration", () => {
     expect(daysToDuration(8 * 365 + 1)).toBe("7 years, 365 days");
     expect(daysToDuration(8 * 365 + 2)).toBe("8 years");
     expect(daysToDuration(8 * 365 + 3)).toBe("8 years, 1 day");
+  });
+
+  it("should be consistent with secondsToDuration", () => {
+    for (let days = 1; days < 3000; days++) {
+      expect({ days, duration: daysToDuration(days) }).toEqual({
+        days,
+        duration: secondsToDuration(BigInt(days * SECONDS_IN_DAY)),
+      });
+    }
   });
 });
 
