@@ -11,6 +11,7 @@ export type SnsNeuronModalType =
   | "split-neuron"
   | "dev-add-permissions"
   | "dev-remove-permissions"
+  | "dev-add-maturity"
   | "auto-stake-maturity";
 
 export interface SnsNeuronModal {

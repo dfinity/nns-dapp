@@ -11,7 +11,11 @@ import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger";
 import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { SnsGovernanceCanister, type SnsNeuronId } from "@dfinity/sns";
+import {
+  SnsGovernanceCanister,
+  SnsGovernanceTestCanister,
+  type SnsNeuronId,
+} from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
@@ -229,4 +233,46 @@ export const makeSnsDummyProposals = async ({
   }
 
   logWithTimestamp(`Making dummy proposals call complete.`);
+};
+
+export const addMaturity = async ({
+  identity,
+  rootCanisterId,
+  neuronId,
+  amountE8s,
+}: {
+  identity: Identity;
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  amountE8s: bigint;
+}): Promise<void> => {
+  logWithTimestamp("Adding neuron maturity: call...");
+
+  assertTestnet();
+
+  const { canisterIds } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+
+  const { addMaturity } = SnsGovernanceTestCanister.create({
+    agent,
+    canisterId: canisterIds.governanceCanisterId,
+  });
+
+  await addMaturity({
+    id: neuronId,
+    amountE8s,
+  }).catch((error) => {
+    console.error("Error while adding maturity:");
+    console.error(error);
+    throw error;
+  });
+
+  logWithTimestamp("Adding neuron maturity: done");
 };
