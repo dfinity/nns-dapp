@@ -51,8 +51,8 @@ runs:
       id: snsdemo_ref
       shell: bash
       run: |
-        SNSDEMO_COMMIT="$(jq -r .defaults.build.config.SNSDEMO_COMMIT dfx.json)"
-        echo "ref=$SNSDEMO_COMMIT" >> "$GITHUB_OUTPUT"
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
       uses: actions/checkout@v3

@@ -54,7 +54,7 @@ jobs:
       - name: Determine snsdemo ref
         id: snsdemo_ref
         run: |
-          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_COMMIT dfx.json)"
+          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
           echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
         uses: actions/checkout@v3

@@ -12,6 +12,43 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+#### Changed
+
+* Show the token selector also when not signed in.
+* Use consistent positioning for the copy icon in the Hash component.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+* Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
+
+#### Security
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+#### Changed
+* Specify the `snsdemo` version in `dfx.json`.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 124486
+
+### Application
+
+#### Added
+
 * Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
 
 #### Changed
@@ -21,44 +58,27 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Change accounts storage heap structure from `HashMap` to `BTreeMap`.
 * Made disburse neuron flow more consistent with other transaction flows.
 * New colors in NNS Dapp.
-* Show the token selector also when not signed in.
 * Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
 * Make a histogram of account sizes, used to optimize the new account storage.
 * Use consistent positioning for the copy icon in the Hash component.
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
 
-#### Deprecated
 #### Removed
 
 * Remove unused components after new neuron details page.
 
-#### Fixed
-
-* Fixed issues with SetDissolveDelay component.
-
-#### Security
-
-#### Not Published
-
 ### Operations
 
 #### Added
-* Add "Filter proposals by Votable only" e2e test.
 
+* Add "Filter proposals by Votable only" e2e test.
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.
 * New "finalizing" status in SNS project detail page.
 
 #### Changed
+
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
-* Specify the `snsdemo` version in `dfx.json`.
-
-#### Deprecated
-#### Removed
-
-#### Fixed
-
-#### Security
 
 ## Proposal 124328
 

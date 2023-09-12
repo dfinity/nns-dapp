@@ -11,6 +11,17 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 
+const testActiveDisbursement: DisburseMaturityInProgress = {
+  timestamp_of_disbursement_seconds: 10000n,
+  amount_e8s: 100_000_000n,
+  account_to_disburse_to: [
+    {
+      owner: [mockPrincipal],
+      subaccount: [],
+    },
+  ],
+};
+
 describe("SnsActiveDisbursementsModal", () => {
   const renderComponent = async (neuron: SnsNeuron) => {
     const { container } = await renderModal({
@@ -24,17 +35,19 @@ describe("SnsActiveDisbursementsModal", () => {
     );
   };
 
-  it("should display ActiveDisbursementEntries", async () => {
-    const testActiveDisbursement: DisburseMaturityInProgress = {
-      timestamp_of_disbursement_seconds: 10000n,
-      amount_e8s: 1000000n,
-      account_to_disburse_to: [
-        {
-          owner: [mockPrincipal],
-          subaccount: [],
-        },
+  it("should display total disbursement maturity", async () => {
+    const po = await renderComponent({
+      ...mockSnsNeuron,
+      disburse_maturity_in_progress: [
+        testActiveDisbursement,
+        testActiveDisbursement,
       ],
-    };
+    });
+
+    expect(await po.getTotalMaturity()).toBe(2);
+  });
+
+  it("should display ActiveDisbursementEntries", async () => {
     const po = await renderComponent({
       ...mockSnsNeuron,
       disburse_maturity_in_progress: [
