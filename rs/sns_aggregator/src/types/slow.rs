@@ -1,5 +1,5 @@
 //! Slowly changing information about an SNS
-use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
+use crate::types::ic_sns_governance::ListNervousSystemFunctionsResponse;
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
     DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
@@ -8,7 +8,7 @@ use crate::types::ic_sns_swap::{
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
-use candid::{CandidType, Nat, Principal};
+use candid::{CandidType, Nat};
 use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 
@@ -44,27 +44,13 @@ pub struct SlowSnsData {
     pub lifecycle: Option<GetLifecycleResponse>,
 }
 
-/// Transforms the canister response GetMetadataResponse into the Aggregator data SlowMetadata.
-/// It substitutes the logo in base 64 by the path to the logo asset if present.
-pub fn from_get_metadata_response(upstream: &GetMetadataResponse, root_canister_id: Option<Principal>) -> SlowMetadata {
-    SlowMetadata {
-        url: upstream.url.clone(),
-        name: upstream.name.clone(),
-        description: upstream.description.clone(),
-        logo: match (upstream.logo.clone(), root_canister_id) {
-            (Some(_), Some(canister_id)) => Some(format!("/sns/root/{}/logo.png", canister_id.to_text())),
-            _ => None,
-        },
-    }
-}
-
 impl From<&UpstreamData> for SlowSnsData {
     fn from(upstream: &UpstreamData) -> Self {
         SlowSnsData {
             index: upstream.index,
             canister_ids: upstream.canister_ids.clone(),
             list_sns_canisters: upstream.list_sns_canisters.clone(),
-            meta: from_get_metadata_response(&upstream.meta, upstream.list_sns_canisters.root),
+            meta: SlowMetadata::from(upstream),
             parameters: upstream.parameters.clone(),
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
@@ -93,6 +79,20 @@ pub struct SlowMetadata {
     pub description: Option<String>,
     /// Relative path of the logo if present
     pub logo: Option<String>,
+}
+
+impl From<&UpstreamData> for SlowMetadata {
+    fn from(upstream: &UpstreamData) -> Self {
+        SlowMetadata {
+            url: upstream.meta.url.clone(),
+            name: upstream.meta.name.clone(),
+            description: upstream.meta.description.clone(),
+            logo: match (upstream.meta.logo.clone(), upstream.list_sns_canisters.root) {
+                (Some(_), Some(canister_id)) => Some(format!("/sns/root/{}/logo.png", canister_id.to_text())),
+                _ => None,
+            },
+        }
+    }
 }
 
 /// The only supported image format
