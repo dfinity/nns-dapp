@@ -200,6 +200,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
         39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
+        40 => identity::<UpdateElectedHostosVersions>(payload_bytes),
+        41 => identity::<UpdateNodesHostosVersion>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
