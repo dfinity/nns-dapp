@@ -8,7 +8,7 @@ use crate::types::ic_sns_swap::{
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
-use candid::{CandidType, Nat};
+use candid::{CandidType, Nat, Principal};
 use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
 
@@ -44,13 +44,25 @@ pub struct SlowSnsData {
     pub lifecycle: Option<GetLifecycleResponse>,
 }
 
+pub fn from_get_metadata_response(upstream: &GetMetadataResponse, root_canister_id: Option<Principal>) -> SlowMetadata {
+    SlowMetadata {
+        url: upstream.url.clone(),
+        name: upstream.name.clone(),
+        description: upstream.description.clone(),
+        logo: match (upstream.logo.clone(), root_canister_id) {
+            (Some(_), Some(canister_id))  => Some(format!("/sns/root/{}/logo.png", canister_id.to_string())),
+            _ => None,
+        }
+    }
+}
+
 impl From<&UpstreamData> for SlowSnsData {
     fn from(upstream: &UpstreamData) -> Self {
         SlowSnsData {
             index: upstream.index,
             canister_ids: upstream.canister_ids.clone(),
             list_sns_canisters: upstream.list_sns_canisters.clone(),
-            meta: SlowMetadata::from(&upstream.meta),
+            meta: from_get_metadata_response(&upstream.meta, upstream.list_sns_canisters.root),
             parameters: upstream.parameters.clone(),
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
@@ -77,16 +89,8 @@ pub struct SlowMetadata {
     /// Same as upstream.
     /// Note: The description can also be quite long and isn't needed for the initial view of all the SNSs
     pub description: Option<String>,
-}
-
-impl From<&GetMetadataResponse> for SlowMetadata {
-    fn from(upstream: &GetMetadataResponse) -> Self {
-        SlowMetadata {
-            url: upstream.url.clone(),
-            name: upstream.name.clone(),
-            description: upstream.description.clone(),
-        }
-    }
+    /// Relative path of the logo if present
+    pub logo: Option<String>,
 }
 
 /// The only supported image format
