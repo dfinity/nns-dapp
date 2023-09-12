@@ -36,12 +36,27 @@ describe("IncreaseDissolveDelayModal", () => {
   });
 
   it("should have the update delay button disabled by default", async () => {
-    const { container } = await renderIncreaseDelayModal(mockNeuron);
+    const { container } = await renderIncreaseDelayModal({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(365 * SECONDS_IN_DAY),
+    });
 
     const updateDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+  });
+
+  it("should have the update delay button enabled if the current delay is not a whole number of days", async () => {
+    const { container } = await renderIncreaseDelayModal({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(365.25 * SECONDS_IN_DAY),
+    });
+
+    const updateDelayButton = container.querySelector(
+      '[data-tid="go-confirm-delay-button"]'
+    );
+    expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should be able to change dissolve delay in the confirmation screen", async () => {
