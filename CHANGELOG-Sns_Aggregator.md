@@ -16,6 +16,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 ### Changed
 * Various minor style improvements: favicon, spacing, status "open" color and text clamp
+* New field `logo` in the `meta` data with the relative path to the logo asset.
 ### Fixed
 ### Security
 ### Not Published
