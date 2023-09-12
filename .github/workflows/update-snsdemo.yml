@@ -66,6 +66,20 @@ jobs:
           add-paths: .github/*/*ml
           delete-branch: true
           title: 'Update snsdemo commit'
+          body: |
+            # Motivation
+            We would like to keep the testing environment, provided by snsdemo, up to date.
+
+            # Changes
+            * Updated `snsdemo` version in `dfx.json`.
+            * Ensured that the `dfx` version and IC commit in `dfx.json` match `snsdemo`.
+            * Updated the NNS canister `.did` file imports and derived rust code.
+            * TODO: The code will probably NOT compile if there have been significant changes to the NNS-dapp APIs.
+              Please check the Rust code and make minimal changes to make the code compile.
+
+            # Tests
+              - [ ] Please check the API updates for any breaking changes that affect our code.
+              - [ ] Please check for new proposal types.
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
