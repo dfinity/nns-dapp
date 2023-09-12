@@ -205,8 +205,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         37 => transform::<InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable>(payload_bytes),
         38 => identity::<UpdateElectedReplicaVersionsPayload>(payload_bytes),
         39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
-        40 => identity::<UpdateElectedHostosVersions>(payload_bytes),
-        41 => identity::<UpdateNodesHostosVersion>(payload_bytes),
+        40 => identity::<UpdateElectedHostosVersionsPayload>(payload_bytes),
+        41 => identity::<UpdateNodesHostosVersionPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -632,6 +632,14 @@ mod def {
             }
         }
     }
+
+    // NNS function 40 - UpdateElectedHostosVersions
+    // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_elected_hostos_versions.rs#L88
+    pub type UpdateElectedHostosVersionsPayload = registry_canister::mutations::do_update_elected_hostos_versions::UpdateElectedHostosVersionsPayload;
+
+    // NNS function 41 - UpdateNodesHostosVersion
+    // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
+    pub type UpdateNodesHostosVersionPayload = registry_canister::mutations::do_update_nodes_hostos_version::UpdateNodesHostosVersionPayload;
 }
 
 #[cfg(test)]
