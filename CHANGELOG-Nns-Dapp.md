@@ -36,6 +36,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Specify the `snsdemo` version in `dfx.json`.
+* Make the file list stats accessible in logs and as a file in the release artefacts.
 
 #### Deprecated
 #### Removed
