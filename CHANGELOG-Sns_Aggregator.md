@@ -9,6 +9,10 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ## Unreleased
 
 ### Wasm changes
+
+* New field `logo` in the `meta` data with the relative path to the logo asset.
+* Add a getting started section in landing page.
+
 ### Operations
 
 ## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)

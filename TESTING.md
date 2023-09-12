@@ -23,17 +23,17 @@ On the other hand, check [accounts.utils.spec](./frontend/src/tests/lib/utils/ac
 
 ### Integration Tests
 
-Test in `src/tests/workfows` are considered more of integration tests. The main goal is to test whole workflows mocking only the api layer.
+Test in `src/tests/workfows` are considered more of integration tests. The main goal is to test whole workflows mocking only the API layer.
 
 For example in [CreateSubaccount.spec.ts](./frontend/src/tests/workflows/CreateSubaccount.spec.ts) it renders the Accounts page and performs the actions to create a subaccount.
 
 There are a few rules to consider a test as an integration test:
 
-- Mock **only** the api layer and authStore.
+- Mock **only** the API layer and authStore.
 - Set the stores to any value needed to check the flow you're testing.
 - No mocking of services, utils, stores, ...
 - Do not use CSS classes as selector.
-- Expect calls to the api layer.
+- Expect calls to the API layer.
 
 ### Mocks
 

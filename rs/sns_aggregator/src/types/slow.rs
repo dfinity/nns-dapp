@@ -1,5 +1,5 @@
 //! Slowly changing information about an SNS
-use crate::types::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
+use crate::types::ic_sns_governance::ListNervousSystemFunctionsResponse;
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
     DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
@@ -50,7 +50,7 @@ impl From<&UpstreamData> for SlowSnsData {
             index: upstream.index,
             canister_ids: upstream.canister_ids.clone(),
             list_sns_canisters: upstream.list_sns_canisters.clone(),
-            meta: SlowMetadata::from(&upstream.meta),
+            meta: SlowMetadata::from(upstream),
             parameters: upstream.parameters.clone(),
             swap_state: SlowSwapState::from(&upstream.swap_state),
             icrc1_metadata: upstream.icrc1_metadata.clone(),
@@ -77,14 +77,21 @@ pub struct SlowMetadata {
     /// Same as upstream.
     /// Note: The description can also be quite long and isn't needed for the initial view of all the SNSs
     pub description: Option<String>,
+    /// Relative path of the logo if present
+    pub logo: Option<String>,
 }
 
-impl From<&GetMetadataResponse> for SlowMetadata {
-    fn from(upstream: &GetMetadataResponse) -> Self {
+impl From<&UpstreamData> for SlowMetadata {
+    fn from(upstream: &UpstreamData) -> Self {
         SlowMetadata {
-            url: upstream.url.clone(),
-            name: upstream.name.clone(),
-            description: upstream.description.clone(),
+            url: upstream.meta.url.clone(),
+            name: upstream.meta.name.clone(),
+            description: upstream.meta.description.clone(),
+            // Logo URL example: https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png
+            logo: match (upstream.meta.logo.clone(), upstream.list_sns_canisters.root) {
+                (Some(_), Some(canister_id)) => Some(format!("/v1/sns/root/{}/logo.png", canister_id.to_text())),
+                _ => None,
+            },
         }
     }
 }

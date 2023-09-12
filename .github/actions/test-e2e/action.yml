@@ -32,7 +32,7 @@ runs:
       with:
         nns_dapp_wasm: 'nns-dapp.wasm.gz'
         sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
-        # Upgrade innstead of reinstall to keep the preloaded SNSes.
+        # Upgrade instead of reinstall to keep the preloaded SNSs.
         sns_aggregator_install_mode: 'upgrade'
     - name: Generate .env configuration for Playwright end-to-end tests
       shell: bash

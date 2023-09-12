@@ -12,72 +12,184 @@ import en from "$tests/mocks/i18n.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 
 describe("secondsToDuration", () => {
+  // This function should not be smart. It should just make it easier to add
+  // numbers together to get the number of seconds we want to test.
+  const renderSeconds = ({
+    nonLeapYears = 0,
+    days = 0,
+    hours = 0,
+    minutes = 0,
+    seconds = 0,
+  }: {
+    nonLeapYears?: number;
+    days?: number;
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+  }) => {
+    days += 365 * nonLeapYears;
+    hours += 24 * days;
+    minutes += 60 * hours;
+    seconds += 60 * minutes;
+    return secondsToDuration(BigInt(seconds));
+  };
+
+  // Most of these are wrong.
+  // TODO: Fix.
   it("should give year details", () => {
-    const MORE_THAN_ONE_YEAR = BigInt(60 * 60 * 24 * 365 * 1.5);
-    expect(secondsToDuration(MORE_THAN_ONE_YEAR)).toContain(en.time.year);
+    expect(renderSeconds({ nonLeapYears: 1 })).toBe("365 days");
+    expect(renderSeconds({ nonLeapYears: 1, seconds: 59 })).toBe("365 days");
+    expect(renderSeconds({ nonLeapYears: 1, minutes: 59 })).toBe(
+      "365 days, 59 minutes"
+    );
+    expect(renderSeconds({ nonLeapYears: 1, hours: 23 })).toBe(
+      "1 year, 23 hours"
+    );
+    expect(renderSeconds({ nonLeapYears: 1, days: 1, seconds: -1 })).toBe(
+      "1 year, 23 hours"
+    );
+    expect(renderSeconds({ nonLeapYears: 1, days: 1 })).toBe("1 year");
+    expect(renderSeconds({ nonLeapYears: 1, days: 2 })).toBe("1 year, 1 day");
+    expect(renderSeconds({ nonLeapYears: 2, seconds: -1 })).toBe(
+      "1 year, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 2 })).toBe("1 year, 364 days");
+    expect(renderSeconds({ nonLeapYears: 2, minutes: 59 })).toBe(
+      "1 year, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 2, hours: 23 })).toBe(
+      "2 years, 23 hours"
+    );
+    expect(renderSeconds({ nonLeapYears: 2, days: 1 })).toBe("2 years");
+    expect(renderSeconds({ nonLeapYears: 2, days: 2 })).toBe("2 years, 1 day");
+    expect(renderSeconds({ nonLeapYears: 3, seconds: -1 })).toBe(
+      "2 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 3 })).toBe("2 years, 364 days");
+    // 4 actual years have a leap day so we add 1 day to 4 nonLeap years.
+    expect(renderSeconds({ nonLeapYears: 4, days: 1, seconds: -1 })).toBe(
+      "3 years, 365 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 4, days: 1 })).toBe("4 years");
+    expect(renderSeconds({ nonLeapYears: 5, days: 1, seconds: -1 })).toBe(
+      "4 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 5, days: 1 })).toBe(
+      "4 years, 365 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 6, days: 1, seconds: -1 })).toBe(
+      "5 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 6, days: 1 })).toBe(
+      "5 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 7, days: 1, seconds: -1 })).toBe(
+      "6 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 7, days: 1 })).toBe(
+      "6 years, 364 days"
+    );
+    // 4 actual years have 2 leap days so we add 2 days to 8 nonLeap years.
+    expect(renderSeconds({ nonLeapYears: 8, days: 2, seconds: -1 })).toBe(
+      "7 years, 365 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 8, days: 2 })).toBe("8 years");
+    expect(renderSeconds({ nonLeapYears: 9, days: 2, seconds: -1 })).toBe(
+      "8 years, 364 days"
+    );
+    expect(renderSeconds({ nonLeapYears: 9, days: 2 })).toBe(
+      "8 years, 365 days"
+    );
   });
 
   it("should give day details", () => {
-    const MORE_THAN_ONE_DAY = BigInt(60 * 60 * 24 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_DAY)).toContain(en.time.day);
+    expect(renderSeconds({ days: 1 })).toBe("1 day");
+    expect(renderSeconds({ days: 1, seconds: 59 })).toBe("1 day");
+    expect(renderSeconds({ days: 1, minutes: 59 })).toBe("1 day, 59 minutes");
+    expect(renderSeconds({ days: 1, hours: 1 })).toBe("1 day, 1 hour");
+    expect(renderSeconds({ days: 1, hours: 2 })).toBe("1 day, 2 hours");
+    expect(renderSeconds({ days: 2, seconds: -1 })).toBe("1 day, 23 hours");
+    expect(renderSeconds({ days: 2 })).toBe("2 days");
+    expect(renderSeconds({ days: 365, seconds: -1 })).toBe(
+      "364 days, 23 hours"
+    );
   });
 
   it("should give hour details", () => {
-    const MORE_THAN_ONE_HOUR = BigInt(60 * 60 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_HOUR)).toContain(en.time.hour);
+    expect(renderSeconds({ hours: 1 })).toBe("1 hour");
+    expect(renderSeconds({ hours: 1, seconds: 59 })).toBe("1 hour");
+    expect(renderSeconds({ hours: 1, minutes: 59 })).toBe("1 hour, 59 minutes");
+    expect(renderSeconds({ hours: 2, seconds: -1 })).toBe("1 hour, 59 minutes");
+    expect(renderSeconds({ hours: 2 })).toBe("2 hours");
+    expect(renderSeconds({ hours: 2, minutes: 59 })).toBe(
+      "2 hours, 59 minutes"
+    );
+    expect(renderSeconds({ hours: 24, seconds: -1 })).toBe(
+      "23 hours, 59 minutes"
+    );
   });
 
   it("should give minute details", () => {
-    const MORE_THAN_ONE_MINUTE = BigInt(60 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_MINUTE)).toContain(en.time.minute);
+    expect(renderSeconds({ minutes: 1 })).toBe("1 minute");
+    expect(renderSeconds({ minutes: 1, seconds: 1 })).toBe("1 minute");
+    expect(renderSeconds({ minutes: 1, seconds: 59 })).toBe("1 minute");
+    expect(renderSeconds({ minutes: 2 })).toBe("2 minutes");
+    expect(renderSeconds({ minutes: 2, seconds: 59 })).toBe("2 minutes");
+    expect(renderSeconds({ minutes: 60, seconds: -1 })).toBe("59 minutes");
   });
 
   it("should give seconds details", () => {
-    expect(secondsToDuration(BigInt(56))).toContain(en.time.second_plural);
+    expect(secondsToDuration(BigInt(2))).toBe("2 seconds");
+    expect(secondsToDuration(BigInt(59))).toBe("59 seconds");
   });
 
   it("should give a second details", () => {
-    expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
+    expect(secondsToDuration(BigInt(1))).toBe("1 second");
   });
 });
 
 describe("daysToDuration", () => {
-  // 376 => "1 Year, 11 Days" => [1, 11]
-  const parseDaysToDuration = (days: number) =>
-    Array.from(daysToDuration(days).match(/\d+/g)?.map(Number) ?? []);
-
   it("should return 1 year", () => {
-    expect(parseDaysToDuration(364)).toEqual([364]);
-    expect(parseDaysToDuration(365)).toEqual([1]);
-    expect(parseDaysToDuration(366)).toEqual([1, 1]);
+    expect(daysToDuration(364)).toBe("364 days");
+    expect(daysToDuration(365)).toBe("1 year");
+    expect(daysToDuration(366)).toBe("1 year, 1 day");
+    expect(daysToDuration(367)).toBe("1 year, 2 days");
   });
 
   it("should return 2 years", () => {
-    expect(parseDaysToDuration(729)).toEqual([1, 364]);
-    expect(parseDaysToDuration(730)).toEqual([2]);
-    expect(parseDaysToDuration(731)).toEqual([2, 1]);
+    expect(daysToDuration(2 * 365 - 1)).toBe("1 year, 364 days");
+    expect(daysToDuration(2 * 365)).toBe("2 years");
+    expect(daysToDuration(2 * 365 + 1)).toBe("2 years, 1 day");
   });
 
   it("should return 3 years", () => {
-    expect(parseDaysToDuration(1094)).toEqual([2, 364]);
-    expect(parseDaysToDuration(1095)).toEqual([3]);
-    expect(parseDaysToDuration(1096)).toEqual([3, 1]);
+    expect(daysToDuration(3 * 365 - 1)).toBe("2 years, 364 days");
+    expect(daysToDuration(3 * 365)).toBe("3 years");
+    expect(daysToDuration(3 * 365 + 1)).toBe("3 years, 1 day");
   });
 
   it("should return a leap-year", () => {
-    expect(parseDaysToDuration(1460)).toEqual([3, 365]);
-    expect(parseDaysToDuration(1461)).toEqual([4]);
-    expect(parseDaysToDuration(1462)).toEqual([4, 1]);
+    expect(daysToDuration(4 * 365)).toBe("3 years, 365 days");
+    expect(daysToDuration(4 * 365 + 1)).toBe("4 years");
+    expect(daysToDuration(4 * 365 + 2)).toBe("4 years, 1 day");
   });
 
   it("should return 5+ years", () => {
-    expect(parseDaysToDuration(1825)).toEqual([4, 364]);
-    expect(parseDaysToDuration(1826)).toEqual([5]);
-    expect(parseDaysToDuration(1827)).toEqual([5, 1]);
+    expect(daysToDuration(5 * 365)).toBe("4 years, 364 days");
+    expect(daysToDuration(5 * 365 + 1)).toBe("5 years");
+    expect(daysToDuration(5 * 365 + 2)).toBe("5 years, 1 day");
 
-    expect(parseDaysToDuration(2190)).toEqual([5, 364]);
-    expect(parseDaysToDuration(2191)).toEqual([6]);
-    expect(parseDaysToDuration(2192)).toEqual([6, 1]);
+    expect(daysToDuration(6 * 365)).toBe("5 years, 364 days");
+    expect(daysToDuration(6 * 365 + 1)).toBe("6 years");
+    expect(daysToDuration(6 * 365 + 2)).toBe("6 years, 1 day");
+
+    expect(daysToDuration(7 * 365)).toBe("6 years, 364 days");
+    expect(daysToDuration(7 * 365 + 1)).toBe("7 years");
+    expect(daysToDuration(7 * 365 + 2)).toBe("7 years, 1 day");
+
+    expect(daysToDuration(8 * 365 + 1)).toBe("7 years, 365 days");
+    expect(daysToDuration(8 * 365 + 2)).toBe("8 years");
+    expect(daysToDuration(8 * 365 + 3)).toBe("8 years, 1 day");
   });
 });
 
