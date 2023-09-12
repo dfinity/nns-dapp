@@ -33,6 +33,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Get snsdemo repo
         uses: actions/checkout@v3
+        if: ${{ steps.update.outputs.updated == '1' }}
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
