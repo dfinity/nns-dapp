@@ -82,4 +82,4 @@ runs:
         DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
     - name: Hash artefacts
       shell: bash
-      run: find out/ -type f | xargs sha256sum | awk 'BEGIN{print "===START_ARTEFACTS===\nsha256 size filename"}END{print "==END_ARTEFACTS=="}{"wc -c " $2 | getline size; print $1, size}' | column -t
+      run: find out/ -type f | xargs sha256sum | awk 'BEGIN{print "===START_ARTEFACTS===\nsha256 size filename"}END{print "==END_ARTEFACTS=="}{"wc -c " $2 | getline size; print $1, size}' | column -t | tee out/filelist.txt
