@@ -42,6 +42,7 @@
   on:click
   {icon}
   testId="select-universe-card"
+  noPadding
 >
   <div class="container" class:selected>
     <UniverseLogo size="big" {universe} framed={true} />
@@ -67,11 +68,20 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
+    // Same as Card padding
+    // We want to padding in the container to use the hover effect on ALL the card surface.
+    padding: calc(var(--padding-2x) - var(--card-border-size));
 
     --value-color: var(--text-color);
 
     &:not(.selected) {
       --logo-framed-background: transparent;
+    }
+
+    &:hover,
+    &:focus,
+    &.selected {
+      --logo-framed-background: var(--input-border-color);
     }
   }
 
