@@ -163,7 +163,7 @@
       color: var(--positive-emphasis);
 
       &.send {
-        background: var(--card-background);
+        background: var(--background);
         color: var(--disable-contrast);
       }
     }

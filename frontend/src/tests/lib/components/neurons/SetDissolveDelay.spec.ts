@@ -151,7 +151,7 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(null);
 
       await po.enterDays(projectMinDays - 1);
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_minimum
       );
@@ -220,7 +220,7 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(null);
 
       await po.setSliderDays(projectMinDays - 1);
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_minimum
       );

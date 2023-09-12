@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Show the token selector also when not signed in.
 * Use consistent positioning for the copy icon in the Hash component.
+* Allow setting a dissolve delay that's shorter than what's required for voting power.
 
 #### Deprecated
 #### Removed
@@ -23,6 +24,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
+* Improve text color of total value locked's label.
 
 #### Security
 
