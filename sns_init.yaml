@@ -1,0 +1,91 @@
+name: Fast Token
+description: >
+  # SNS Description
+
+logo: logo.svg
+url: https://forum.dfinity.org/thread-where-this-sns-is-discussed
+
+Principals: []
+
+fallback_controller_principals:
+  - "rxwy6-4tozn-nflk5-ryeet-s4z23-l7rwx-sjsev-e4tip-z54by-edhip-dqe"
+  # - "6iljs-rcez3-wnejo-qmpzo-ur3d2-pglui-ls5cf-qf23r-msryw-ouk3s-tqe"
+  # - 75trl-i44vt-pc4qu-jkyl6-eenen-v3flw-xfcsg-juykl-latk5-izof7-cae # TODO: Bruce Wayne
+
+dapp_canisters:
+  []
+  # - qsgjb-riaaa-aaaaa-aaaga-cai # TODO: employees (canister)
+
+Token:
+  name: FASTTKN
+  symbol: FASTTKN
+  transaction_fee: 1 e8s
+  logo: logo.svg
+
+Proposals:
+  rejection_fee: 1 token
+  initial_voting_period: 4d
+  maximum_wait_for_quiet_deadline_extension: 1 day
+
+Neurons:
+  minimum_creation_stake: 10 e8s
+
+Voting:
+  minimum_dissolve_delay: 26 weeks
+
+  MaximumVotingPowerBonuses:
+    DissolveDelay:
+      duration: 8 years
+      bonus: 100%
+
+    Age:
+      duration: 4 years
+      bonus: 25%
+
+  RewardRate:
+    initial: 10%
+    final: 2.25%
+    transition_duration: 12 years
+
+Distribution:
+  Neurons:
+    - principal: 5zxxw-63ouu-faaaa-aaaap-4ai # TODO: Bruce Wayne
+      stake: 15 tokens
+      memo: 42
+      # TODO: Add support for non-integer numbers in duration strings?
+      dissolve_delay: 1 years
+      vesting_period: 1 year 1 second
+
+    - principal: uqf5l-jukmu-fqaaa-aaaap-4ai # TODO: Alfred Pennyworth
+      stake: 14.9 tokens
+      dissolve_delay: 52 weeks
+      vesting_period: 53 weeks
+
+  InitialBalances:
+    governance: 60 tokens
+    swap: 40 tokens
+
+  # Optional, but highly recommended. This is a literal
+  # checksum.
+  total: 129.9 tokens # 60 + 40 + 15 + 14.9
+
+Swap:
+  minimum_participants: 1
+
+  minimum_icp: 1 tokens
+  maximum_icp: 100 tokens
+
+  minimum_participant_icp: 1 tokens
+  maximum_participant_icp: 100 tokens
+
+  # confirmation_text: Hello, world?
+
+  # restricted_countries: []
+
+  VestingSchedule:
+    events: 3
+    interval: 17 days
+
+  duration: 7 days
+
+  neurons_fund_investment_icp: 0 tokens
