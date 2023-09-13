@@ -35,4 +35,8 @@ export class DisburseMaturityModalPo extends BasePageObject {
   setPercentage(percentage: number): Promise<void> {
     return this.getNeuronSelectPercentagePo().setPercentage(percentage);
   }
+
+  getAmountMaturityToDisburse(): Promise<string> {
+    return this.getNeuronSelectPercentagePo().getAmountMaturity();
+  }
 }
