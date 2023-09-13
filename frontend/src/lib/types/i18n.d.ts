@@ -75,6 +75,7 @@ interface I18nError {
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
+  add_maturity: string;
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
@@ -125,6 +126,7 @@ interface I18nError {
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
+  adding_maturity: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
@@ -632,6 +634,7 @@ interface I18nNeuron_detail {
   join_community_fund_success: string;
   leave_community_fund_success: string;
   dummy_proposal_success: string;
+  add_maturity_success: string;
   following_title: string;
   following_description: string;
   follow_neurons: string;
