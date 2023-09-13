@@ -393,6 +393,10 @@ export const snsSummariesStore = derived<
       swaps: data?.swaps ?? [],
     });
 
+    if (!enableSnsAggregatorStore) {
+      return snsQuerySummaries;
+    }
+
     const aggregatorSummaries =
       aggregatorData.data
         ?.map(convertDtoToSnsSummary)
@@ -425,9 +429,6 @@ export const snsSummariesStore = derived<
       console.warn(differentSummaries(aggregatorSummaries, snsQuerySummaries));
     }
 
-    if (!enableSnsAggregatorStore) {
-      return snsQuerySummaries;
-    }
     // The aggregator data is fetched on init.
     // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
     // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
