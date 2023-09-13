@@ -1,5 +1,6 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import { differentSummaries } from "$lib/utils/projects.utils";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import {
   convertDerivedStateResponseToDerivedState,
@@ -387,24 +388,50 @@ export const snsSummariesStore = derived<
     lifecycles,
     enableSnsAggregatorStore,
   ]) => {
-    if (!enableSnsAggregatorStore) {
-      return mapAndSortSnsQueryToSummaries({
-        metadata: data?.metadata ?? [],
-        swaps: data?.swaps ?? [],
-      });
-    }
-    // The aggregator data is fetched on init.
-    // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
-    // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
-    return (
+    const snsQuerySummaries = mapAndSortSnsQueryToSummaries({
+      metadata: data?.metadata ?? [],
+      swaps: data?.swaps ?? [],
+    });
+
+    const aggregatorSummaries =
       aggregatorData.data
         ?.map(convertDtoToSnsSummary)
         .map(overrideDerivedState(derivedStates))
         .map(overrideLifecycle(lifecycles))
         .filter((optionalSummary): optionalSummary is SnsSummary =>
           nonNullish(optionalSummary)
-        ) ?? []
-    );
+        ) ?? [];
+
+    // It might be that temporarily one store is not yet populated, while the other is.
+    // That's why we wait until both are populated to compare them.
+    if (
+      snsQuerySummaries.length > 0 &&
+      aggregatorSummaries.length > 0 &&
+      aggregatorSummaries.length !== snsQuerySummaries.length
+    ) {
+      console.warn(
+        `The aggregator and query data do not match. Aggregator data: ${aggregatorSummaries.length}, query data: ${snsQuerySummaries.length}.`
+      );
+    }
+
+    if (
+      snsQuerySummaries.length > 0 &&
+      aggregatorSummaries.length === snsQuerySummaries.length &&
+      differentSummaries(aggregatorSummaries, snsQuerySummaries).length > 0
+    ) {
+      console.warn(
+        "The aggregator and query data do not match. Check below and the debug store for more information."
+      );
+      console.warn(differentSummaries(aggregatorSummaries, snsQuerySummaries));
+    }
+
+    if (!enableSnsAggregatorStore) {
+      return snsQuerySummaries;
+    }
+    // The aggregator data is fetched on init.
+    // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
+    // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
+    return aggregatorSummaries;
   }
 );
 

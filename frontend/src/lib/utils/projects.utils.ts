@@ -15,6 +15,7 @@ import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
 import { formatToken } from "./token.utils";
+import { stringifyJson } from "./utils";
 
 export const filterProjectsStatus = ({
   swapLifecycle,
@@ -373,3 +374,21 @@ export const participateButtonStatus = ({
 
   return "enabled";
 };
+
+export const differentSummaries = (
+  summaries1: SnsSummary[],
+  summaries2: SnsSummary[]
+): SnsSummary[] =>
+  summaries1.filter((summary1) => {
+    const summary2 = summaries2.find(
+      ({ rootCanisterId }) =>
+        rootCanisterId.toText() === summary1.rootCanisterId.toText()
+    );
+    // We compare the inner fields because the order when stringifying it might be different
+    return (
+      stringifyJson(summary1.swap) !== stringifyJson(summary2?.swap) ||
+      stringifyJson(summary1.derived) !== stringifyJson(summary2?.derived) ||
+      stringifyJson(summary1.token) !== stringifyJson(summary2?.token) ||
+      stringifyJson(summary1.metadata) !== stringifyJson(summary2?.metadata)
+    );
+  });
