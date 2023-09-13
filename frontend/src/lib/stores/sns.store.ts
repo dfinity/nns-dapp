@@ -1,7 +1,10 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
-import { mapAndSortSnsQueryToSummaries } from "$lib/utils/sns.utils";
+import {
+  convertDerivedStateResponseToDerivedState,
+  mapAndSortSnsQueryToSummaries,
+} from "$lib/utils/sns.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
@@ -213,22 +216,13 @@ const initSnsQueryStore = (): SnsQueryStore => {
       derivedState: SnsGetDerivedStateResponse;
       rootCanisterId: string;
     }) {
-      const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
-      const buyer_total_icp_e8s = fromNullable(
-        derivedState.buyer_total_icp_e8s
-      );
-      // We don't update the store if any of the derived state mandatory fields is undefined.
-      if (
-        sns_tokens_per_icp === undefined ||
-        buyer_total_icp_e8s === undefined
-      ) {
+      const newDerivedState =
+        convertDerivedStateResponseToDerivedState(derivedState);
+      // Ignore updating the store if the mandatory fields are not present.
+      if (isNullish(newDerivedState)) {
         return;
       }
-      const newDerivedState: SnsSwapDerivedState = {
-        ...derivedState,
-        sns_tokens_per_icp,
-        buyer_total_icp_e8s,
-      };
+
       update((data: SnsQueryStoreData) => ({
         metadata: data?.metadata ?? [],
         swaps: (data?.swaps ?? []).map((swap) =>
