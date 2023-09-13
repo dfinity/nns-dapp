@@ -23,6 +23,7 @@ const createLabel = (labelKey: LabelKey, amount: bigint): LabelInfo => ({
 // Returns how many days there are in the given number of years, adding a leap
 // day for every 4 years.
 const daysInYears = (years: bigint): bigint => {
+  // Use integer division.
   const leapDays = years / BigInt(4);
   return years * BigInt(DAYS_IN_NON_LEAP_YEAR) + leapDays;
 };
@@ -30,6 +31,7 @@ const daysInYears = (years: bigint): bigint => {
 // Returns how many full years, requiring a leap day for every 4 full years,
 // there are in the given number of days.
 const fullYearsInDays = (days: bigint): bigint => {
+  // Use integer division.
   let years = days / BigInt(DAYS_IN_NON_LEAP_YEAR);
   while (daysInYears(years) > days) {
     years--;
