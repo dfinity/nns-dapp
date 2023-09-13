@@ -41,6 +41,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Specify the `snsdemo` version in `dfx.json`.
+* Make the file list stats accessible in logs and as a file in the release artefacts.
 * Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
 
 #### Deprecated
