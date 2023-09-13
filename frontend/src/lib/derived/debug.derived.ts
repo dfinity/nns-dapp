@@ -11,8 +11,10 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsQueryStore } from "$lib/stores/sns.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   voteRegistrationStore,
@@ -117,6 +119,8 @@ export const initDebugStore = () =>
       snsFunctionsStore,
       transactionsFeesStore,
       snsProposalStore,
+      snsAggregatorStore,
+      snsQueryStore,
     ],
     ([
       $busyStore,
@@ -144,6 +148,8 @@ export const initDebugStore = () =>
       $snsFunctionsStore,
       $transactionsFeesStore,
       $snsProposalStore,
+      $aggregatorStore,
+      $snsQueryStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -170,5 +176,7 @@ export const initDebugStore = () =>
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,
       transactionsFees: $transactionsFeesStore,
+      aggregatorStore: $aggregatorStore,
+      snsQueryStore: $snsQueryStore,
     })
   );
