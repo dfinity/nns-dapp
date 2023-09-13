@@ -34,4 +34,8 @@ export class NeuronSelectPercentagePo extends BasePageObject {
   setPercentage(percentage: number): Promise<void> {
     return this.getInputRangePo().setValue(percentage);
   }
+
+  getAmountMaturity(): Promise<string> {
+    return this.getText("amount-maturity");
+  }
 }

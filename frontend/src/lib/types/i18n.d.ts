@@ -690,6 +690,7 @@ interface I18nNeuron_detail {
   advanced_settings_title: string;
   neuron_account: string;
   dissolve_date: string;
+  amount_maturity: string;
   created: string;
 }
 
