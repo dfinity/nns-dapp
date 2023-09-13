@@ -389,6 +389,13 @@ export const differentSummaries = (
       stringifyJson(summary1.swap) !== stringifyJson(summary2?.swap) ||
       stringifyJson(summary1.derived) !== stringifyJson(summary2?.derived) ||
       stringifyJson(summary1.token) !== stringifyJson(summary2?.token) ||
-      stringifyJson(summary1.metadata) !== stringifyJson(summary2?.metadata)
+      stringifyJson(summary1.metadata) !== stringifyJson(summary2?.metadata) ||
+      summary1.governanceCanisterId.toText() !==
+        summary2?.governanceCanisterId.toText() ||
+      summary1.swapCanisterId.toText() !== summary2?.swapCanisterId.toText() ||
+      summary1.rootCanisterId.toText() !== summary2?.rootCanisterId.toText() ||
+      summary1.ledgerCanisterId.toText() !==
+        summary2?.ledgerCanisterId.toText() ||
+      summary1.indexCanisterId.toText() !== summary2?.indexCanisterId.toText()
     );
   });
