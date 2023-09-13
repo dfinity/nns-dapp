@@ -525,6 +525,32 @@ describe("sns.store", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
 
+      it("uses snsQueryStore as source of data", () => {
+        snsAggregatorStore.reset();
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open],
+          certified: true,
+        });
+        snsQueryStore.setData(data);
+
+        expect(get(snsSummariesStore)).toHaveLength(1);
+      });
+
+      it("does NOT use snsAggregator as source of data", () => {
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        snsQueryStore.reset();
+
+        expect(get(snsSummariesStore)).toHaveLength(0);
+      });
+    });
+
+    describe("flag ENABLE_SNS_AGGREGATOR_STORE is enabled", () => {
+      const rootCanisterId = rootCanisterIdMock;
+
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
+
       it("warns when snsAggregatorStore and snsQueryStore have different number of summaries", () => {
         expect(console.warn).not.toHaveBeenCalled();
         snsAggregatorStore.setData([aggregatorSnsMockDto]);
@@ -634,32 +660,6 @@ describe("sns.store", () => {
 
         get(snsSummariesStore);
         expect(console.warn).not.toHaveBeenCalled();
-      });
-
-      it("uses snsQueryStore as source of data", () => {
-        snsAggregatorStore.reset();
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
-
-        expect(get(snsSummariesStore)).toHaveLength(1);
-      });
-
-      it("does NOT use snsAggregator as source of data", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)).toHaveLength(0);
-      });
-    });
-
-    describe("flag ENABLE_SNS_AGGREGATOR_STORE is enabled", () => {
-      const rootCanisterId = rootCanisterIdMock;
-
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
       });
 
       it("does not snsQueryStore as source of data", () => {
