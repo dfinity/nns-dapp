@@ -218,7 +218,7 @@ const initSnsQueryStore = (): SnsQueryStore => {
     }) {
       const newDerivedState =
         convertDerivedStateResponseToDerivedState(derivedState);
-      // Ignore updating ths store if the mandatory fields are not present.
+      // Ignore updating the store if the mandatory fields are not present.
       if (isNullish(newDerivedState)) {
         return;
       }
