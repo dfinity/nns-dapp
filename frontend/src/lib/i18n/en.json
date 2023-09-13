@@ -71,6 +71,7 @@
     "fail": "fail",
     "join_community_fund": "Sorry, there was an error joining the neurons' fund. Please try again later.",
     "dummy_proposal": "There was an error creating the proposals. Check the console for more details.",
+    "add_maturity": "There was an error adding maturity. Check the console for more details.",
     "update_delay": "Sorry, there was an error updating the delay of the neuron",
     "unknown": "Sorry, there was an unexpected error. Please try again later.",
     "amount_not_valid": "Sorry, the amount is not valid",
@@ -121,6 +122,7 @@
     "transaction_data": "Sorry, there was an error with the transaction $txId.",
     "amount_not_enough_stake_sns_neuron": "Sorry, the amount is too small. You need a minimum of $amount $token to stake a $token neuron",
     "adding_permissions": "There was an error adding permissions.",
+    "adding_maturity": "There was an error adding maturity.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
     "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
@@ -609,6 +611,7 @@
     "join_community_fund_success": "Your neuron has successfully joined the neurons' fund.",
     "leave_community_fund_success": "Your neuron has successfully left the neurons' fund.",
     "dummy_proposal_success": "Dummy proposals created successfully",
+    "add_maturity_success": "Maturity successfully added",
     "following_title": "Following",
     "following_description": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
     "follow_neurons": "Follow Neurons",

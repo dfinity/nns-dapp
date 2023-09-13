@@ -27,6 +27,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fixed issues with SetDissolveDelay component.
 * Fix sent transaction icon background color dark theme.
 * Improve text color of total value locked's label.
+* Make duration rendering consistent.
 
 #### Security
 
@@ -38,6 +39,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Specify the `snsdemo` version in `dfx.json`.
+* Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
 
 #### Deprecated
 #### Removed
