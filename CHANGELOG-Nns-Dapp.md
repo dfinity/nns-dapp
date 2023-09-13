@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Add the amount of maturity related to a selected percentage.
+
 #### Changed
 
 * Show the token selector also when not signed in.
