@@ -34,7 +34,7 @@ impl AccountsDbS0Trait for MockS0DataStorage {
     }
 }
 
-/// Creates atoy account.  The contents do not need to be meaningful; do need to have size.
+/// Creates a toy account.  The contents do not need to be meaningful; do need to have size.
 fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
