@@ -12,11 +12,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Add the amount of maturity related to a selected percentage.
+
 #### Changed
 
 * Show the token selector also when not signed in.
 * Use consistent positioning for the copy icon in the Hash component.
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
+* Improve contrast of token selector's logo in light theme.
 
 #### Deprecated
 #### Removed
@@ -25,6 +28,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Fixed issues with SetDissolveDelay component.
 * Fix sent transaction icon background color dark theme.
+* Improve text color of total value locked's label.
+* Make duration rendering consistent.
 
 #### Security
 
@@ -37,6 +42,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 * Specify the `snsdemo` version in `dfx.json`.
 * Make the file list stats accessible in logs and as a file in the release artefacts.
+* Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
 
 #### Deprecated
 #### Removed

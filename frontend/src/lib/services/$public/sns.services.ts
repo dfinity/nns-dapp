@@ -19,6 +19,7 @@ import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
+import { convertDerivedStateResponseToDerivedState } from "$lib/utils/sns.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -77,7 +78,13 @@ export const loadSnsProjects = async (): Promise<void> => {
         ),
         indexCanisterId: Principal.fromText(sns.canister_ids.index_canister_id),
         swap: toNullable(sns.swap_state.swap),
-        derived: toNullable(sns.swap_state.derived),
+        // The endpoint `get_state` and `get_derived_state` return different fields and decimal precision.
+        // * `sns.swap_state` is the response from `get_state`
+        // * `sns.derived_state` is the response from `get_derived_state`
+        // We want to use the info in `derived_state` immediately instead of changing it afterwards to avoid having a partial different data in the snsQueryStore.
+        derived: toNullable(
+          convertDerivedStateResponseToDerivedState(sns.derived_state)
+        ),
       })),
     ];
     snsQueryStore.setData(snsQueryStoreData);
@@ -123,14 +130,6 @@ export const loadSnsProjects = async (): Promise<void> => {
           }),
           {} as TokensStoreData
         )
-    );
-    cachedSnses.forEach(
-      ({ canister_ids: { root_canister_id }, derived_state }) => {
-        snsQueryStore.updateDerivedState({
-          rootCanisterId: root_canister_id,
-          derivedState: derived_state,
-        });
-      }
     );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {

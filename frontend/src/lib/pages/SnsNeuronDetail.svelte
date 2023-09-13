@@ -40,6 +40,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import SnsNeuronTestnetFunctionsCard from "$lib/components/neuron-detail/SnsNeuronTestnetFunctionsCard.svelte";
 
   export let neuronId: string | null | undefined;
 
@@ -194,6 +195,8 @@
           {#if IS_TESTNET}
             <Separator spacing="none" />
             <SnsNeuronProposalsCard />
+            <Separator spacing="none" />
+            <SnsNeuronTestnetFunctionsCard />
             <Separator spacing="none" />
             <SnsPermissionsCard />
           {/if}

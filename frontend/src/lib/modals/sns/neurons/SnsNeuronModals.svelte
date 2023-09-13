@@ -33,6 +33,7 @@
   import AddPermissionsModal from "./AddPermissionsModal.svelte";
   import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
   import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
+  import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
 
   // Modal events
 
@@ -189,6 +190,15 @@
           {reloadNeuron}
           on:nnsClose={close}
           mode="remove"
+        />
+      {/if}
+
+      {#if type === "dev-add-maturity" && IS_TESTNET}
+        <AddMaturityModal
+          {rootCanisterId}
+          {neuronId}
+          {reloadNeuron}
+          on:nnsClose={close}
         />
       {/if}
     {/if}

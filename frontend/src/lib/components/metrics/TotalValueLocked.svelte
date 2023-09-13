@@ -74,7 +74,7 @@
       gap: var(--padding-0_5x);
 
       background: rgba(var(--focus-background-rgb), 0.8);
-      color: var(--text2-color);
+      color: var(--description-color);
 
       .total {
         color: var(--text-color);
