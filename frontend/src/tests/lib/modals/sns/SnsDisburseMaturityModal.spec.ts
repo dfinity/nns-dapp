@@ -40,6 +40,11 @@ describe("SnsDisburseMaturityModal", () => {
     authStore.setForTesting(mockIdentity);
   });
 
+  it("should display total maturity", async () => {
+    const po = await renderSnsDisburseMaturityModal();
+    expect(await po.getTotalMaturity()).toBe("1.00");
+  });
+
   it("should disable next button when 0 selected", async () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(0);
@@ -63,6 +68,16 @@ describe("SnsDisburseMaturityModal", () => {
 
     await po.clickNextButton();
     expect(await po.getText()).toContain(`13%`);
+  });
+
+  it("should display summary information in the last step", async () => {
+    const po = await renderSnsDisburseMaturityModal();
+    await po.setPercentage(50);
+    await po.clickNextButton();
+
+    expect(await po.getConfirmPercentage()).toBe("50%");
+    expect(await po.getConfirmTokens()).toBe("0.48-0.53 ICP");
+    expect(await po.getConfirmDestination()).toBe("Main");
   });
 
   it("should call disburse maturity api and reloadNeuron", async () => {
