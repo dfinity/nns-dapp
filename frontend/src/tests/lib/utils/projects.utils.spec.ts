@@ -6,6 +6,7 @@ import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
+  differentSummaries,
   durationTillSwapDeadline,
   durationTillSwapStart,
   filterActiveProjects,
@@ -1217,6 +1218,30 @@ describe("project-utils", () => {
           })
         ).toBe("enabled");
       });
+    });
+  });
+
+  describe("differentSummaries", () => {
+    it("should return empty array for the same summaries", () => {
+      expect(
+        differentSummaries([summaryUsRestricted], [summaryUsRestricted])
+      ).toHaveLength(0);
+    });
+
+    it("should return the different summaries", () => {
+      const sameButDifferent: SnsSummary = {
+        ...summaryNoRestricted,
+        token: {
+          ...summaryNoRestricted.token,
+          name: "not the same",
+        },
+      };
+      expect(
+        differentSummaries(
+          [summaryUsRestricted, sameButDifferent],
+          [summaryUsRestricted, summaryNoRestricted]
+        )
+      ).toEqual([sameButDifferent]);
     });
   });
 });
