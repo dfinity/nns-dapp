@@ -55,6 +55,7 @@ import {
   mapMergeableNeurons,
   mapNeuronIds,
   maturityLastDistribution,
+  maturityPercentageToE8s,
   minNeuronSplittable,
   neuronAge,
   neuronCanBeSplit,
@@ -2419,6 +2420,26 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false);
+    });
+  });
+
+  describe("maturityPercentageToE8s", () => {
+    it("calculates percents ", () => {
+      expect(
+        maturityPercentageToE8s({
+          total: 100,
+          percentage: 50,
+        })
+      ).toEqual(5_000_000_000n);
+    });
+
+    it("handles more than 8 decimals results", () => {
+      expect(
+        maturityPercentageToE8s({
+          total: 1.00001,
+          percentage: 1,
+        })
+      ).toEqual(1_000_010n);
     });
   });
 });

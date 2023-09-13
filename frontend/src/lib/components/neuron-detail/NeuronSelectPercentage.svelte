@@ -4,7 +4,7 @@
   import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { maturityPercentageToE8s } from "$lib/utils/sns-neuron.utils";
+  import { maturityPercentageToE8s } from "$lib/utils/neuron.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
