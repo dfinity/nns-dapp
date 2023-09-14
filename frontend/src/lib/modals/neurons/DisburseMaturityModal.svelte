@@ -12,8 +12,11 @@
     type WizardStep,
     KeyValuePair,
   } from "@dfinity/gix-components";
-  import { formatToken, numberToE8s } from "$lib/utils/token.utils";
-  import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { formatToken } from "$lib/utils/token.utils";
+  import {
+    formatMaturity,
+    maturityPercentageToE8s,
+  } from "$lib/utils/neuron.utils";
 
   export let formattedMaturity: string;
   export let tokenSymbol: string;
@@ -40,20 +43,6 @@
   const close = () => dispatcher("nnsClose");
 
   const goToConfirm = () => modal.next();
-
-  // TODO: Remove and use neuron util introduced in another PR
-  const maturityPercentageToE8s = ({
-    total,
-    percentage,
-  }: {
-    total: number;
-    percentage: number;
-  }): bigint =>
-    numberToE8s(
-      // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-      // due to `numberToE8s` validation of floating-point approximation issues of IEEE 754 (e.g. 0.1 + 0.2 = 0.30000000000000004)
-      Number(((percentage / 100) * total).toFixed(8))
-    );
 
   let maturityToDisburse = 0n;
   $: maturityToDisburse = maturityPercentageToE8s({
@@ -93,12 +82,10 @@
     >
       <div class="percentage-container" slot="description">
         <span class="description">
-          <Html
-            text={replacePlaceholders(
-              $i18n.neuron_detail.disburse_maturity_description_1,
-              { $symbol: tokenSymbol }
-            )}
-          />
+          {replacePlaceholders(
+            $i18n.neuron_detail.disburse_maturity_description_1,
+            { $symbol: tokenSymbol }
+          )}
         </span>
 
         <span class="description">
@@ -120,9 +107,7 @@
       on:nnsConfirm={disburseNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      <Html
-        text={$i18n.neuron_detail.disburse_maturity_confirmation_description}
-      />
+      {$i18n.neuron_detail.disburse_maturity_confirmation_description}
       <div class="confirm-container">
         <KeyValuePair>
           <span slot="key" class="description"
