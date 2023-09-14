@@ -41,18 +41,18 @@
 
   const goToConfirm = () => modal.next();
 
-  let maturityToDisburse: bigint;
-  $: maturityToDisburse =
+  let maturityToDisburseE8s: bigint;
+  $: maturityToDisburseE8s =
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: BigInt(Number(maturityToDisburse) * 0.95),
+    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 0.95)),
   });
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: BigInt(Number(maturityToDisburse) * 1.05),
+    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 1.05)),
   });
 </script>
 
@@ -122,7 +122,7 @@
             >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
           >
           <span data-tid="confirm-amount" class="value" slot="value"
-            >{formatMaturity(maturityToDisburse)}
+            >{formatMaturity(maturityToDisburseE8s)}
           </span>
         </KeyValuePair>
         <KeyValuePair>
