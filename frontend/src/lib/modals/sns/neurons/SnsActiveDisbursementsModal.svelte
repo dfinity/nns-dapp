@@ -9,6 +9,7 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
 
   export let neuron: SnsNeuron;
 
@@ -23,10 +24,7 @@
 
   // calculate the total maturity
   let totalMaturity: bigint;
-  $: totalMaturity = neuron.disburse_maturity_in_progress.reduce(
-    (acc, disbursement) => acc + disbursement.amount_e8s,
-    BigInt(0)
-  );
+  $: totalMaturity = totalDisbursingMaturity(neuron);
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
