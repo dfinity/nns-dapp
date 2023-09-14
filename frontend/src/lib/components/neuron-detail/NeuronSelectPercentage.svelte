@@ -4,20 +4,16 @@
   import { InputRange, KeyValuePair } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { maturityPercentageToE8s } from "$lib/utils/neuron.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
   export let percentage: number;
   export let buttonText: string;
   export let disabled = false;
 
-  let maturityE8s: bigint;
-  $: maturityE8s = maturityPercentageToE8s({
-    percentage,
-    total: Number(formattedMaturity),
-  });
+  let selectedMaturityE8s: bigint;
+  $: selectedMaturityE8s = (availableMaturityE8s * BigInt(percentage)) / 100n;
 
   const dispatcher = createEventDispatcher();
   const selectPercentage = () => dispatcher("nnsSelectPercentage");
@@ -29,7 +25,7 @@
       >{$i18n.neuron_detail.available_maturity}</span
     >
     <span class="value" slot="value" data-tid="available-maturity"
-      >{formattedMaturity}</span
+      >{formatMaturity(availableMaturityE8s)}</span
     >
   </KeyValuePair>
 
@@ -47,7 +43,7 @@
     <h5>
       <span class="description" data-tid="amount-maturity"
         >{replacePlaceholders($i18n.neuron_detail.amount_maturity, {
-          $amount: formatMaturity(maturityE8s),
+          $amount: formatMaturity(selectedMaturityE8s),
         })}</span
       >
       <span data-tid="percentage-to-disburse"

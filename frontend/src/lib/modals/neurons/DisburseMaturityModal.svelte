@@ -18,7 +18,7 @@
     maturityPercentageToE8s,
   } from "$lib/utils/neuron.utils";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
 
   const steps: WizardSteps = [
@@ -73,7 +73,7 @@
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {formattedMaturity}
+      {availableMaturityE8s}
       buttonText={$i18n.neuron_detail.disburse}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
