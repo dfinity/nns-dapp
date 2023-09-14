@@ -57,6 +57,6 @@ describe("SnsViewActiveDisbursementsItemAction", () => {
       disburse_maturity_in_progress: [disbursement1, disbursement2],
     });
 
-    expect(await po.getDisbursementCount()).toBe("3.00");
+    expect(await po.getDisbursementTotal()).toBe("3.00");
   });
 });

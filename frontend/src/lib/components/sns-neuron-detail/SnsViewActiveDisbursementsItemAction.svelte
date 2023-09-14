@@ -18,7 +18,7 @@
     testId="sns-view-active-disbursements-item-action-component"
   >
     <IconPace slot="icon" />
-    <span slot="title" data-tid="disbursement-count"
+    <span slot="title" data-tid="disbursement-total"
       >{formatMaturity(disbursingMaturity)}</span
     >
     <svelte:fragment slot="subtitle"
