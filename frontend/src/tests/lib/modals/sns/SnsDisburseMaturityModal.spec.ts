@@ -37,8 +37,8 @@ describe("SnsDisburseMaturityModal", () => {
   };
 
   beforeEach(() => {
-    authStore.setForTesting(mockIdentity);
     jest.clearAllMocks();
+    authStore.setForTesting(mockIdentity);
   });
 
   it("should display total maturity", async () => {
@@ -81,32 +81,36 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
-  const neuron1100maturity = createMockSnsNeuron({
-    id: [1],
-    maturity: 110_000_000_000n,
-  });
-  const neurons = [mockSnsNeuron, neuron1100maturity];
+  const disburse = async (neuron: SnsNeuron) => {
+    const po = await renderSnsDisburseMaturityModal(neuron);
+    await po.setPercentage(50);
+    await po.clickNextButton();
 
-  neurons.forEach((neuron) => {
-    it("should call disburse maturity api and reloadNeuron", async () => {
-      const po = await renderSnsDisburseMaturityModal(neuron);
-      await po.setPercentage(50);
-      await po.clickNextButton();
+    // precondition
+    expect(disburseMaturity).not.toBeCalled();
+    expect(reloadNeuron).not.toBeCalled();
 
-      // precondition
-      expect(disburseMaturity).not.toBeCalled();
-      expect(reloadNeuron).not.toBeCalled();
+    await po.clickConfirmButton();
 
-      await po.clickConfirmButton();
-
-      expect(disburseMaturity).toBeCalledTimes(1);
-      expect(disburseMaturity).toBeCalledWith({
-        neuronId: neuron.id,
-        rootCanisterId: mockPrincipal,
-        percentageToDisburse: 50,
-        identity: mockIdentity,
-      });
-      await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
+    expect(disburseMaturity).toBeCalledTimes(1);
+    expect(disburseMaturity).toBeCalledWith({
+      neuronId: neuron.id,
+      rootCanisterId: mockPrincipal,
+      percentageToDisburse: 50,
+      identity: mockIdentity,
     });
+    await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
+  };
+
+  it("should call disburse maturity api and reloadNeuron", async () => {
+    await disburse(mockSnsNeuron);
+  });
+
+  it("should disburse maturity when maturity is larger than 1,000", async () => {
+    const neuron1100maturity = createMockSnsNeuron({
+      id: [1],
+      maturity: 110_000_000_000n,
+    });
+    await disburse(neuron1100maturity);
   });
 });
