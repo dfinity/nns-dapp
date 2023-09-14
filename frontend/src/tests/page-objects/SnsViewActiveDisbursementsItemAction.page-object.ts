@@ -14,6 +14,6 @@ export class SnsViewActiveDisbursementsItemActionPo extends BasePageObject {
   }
 
   async getDisbursementTotal(): Promise<string> {
-    return (await this.root.byTestId("disbursement-count").getText()).trim();
+    return (await this.root.byTestId("disbursement-total").getText()).trim();
   }
 }
