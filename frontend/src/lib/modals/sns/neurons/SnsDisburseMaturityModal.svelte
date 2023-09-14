@@ -57,7 +57,7 @@
 </script>
 
 <DisburseMaturityModal
-  formattedMaturity={maturity}
+  availableMaturityE8s={neuron.maturity_e8s_equivalent}
   tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
   on:nnsClose

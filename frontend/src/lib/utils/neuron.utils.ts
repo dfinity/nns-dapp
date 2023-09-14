@@ -56,7 +56,7 @@ import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
 import { toNnsVote } from "./sns-proposals.utils";
-import { formatToken, numberToE8s } from "./token.utils";
+import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -954,16 +954,3 @@ export const maturityLastDistribution = ({
 
 export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
   `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;
-
-export const maturityPercentageToE8s = ({
-  total,
-  percentage,
-}: {
-  total: number;
-  percentage: number;
-}): bigint =>
-  numberToE8s(
-    // Use toFixed to avoid Token validation error "Number X has more than 8 decimals"
-    // due to `numberToE8s` validation of floating-point approximation issues of IEEE 754 (e.g. 0.1 + 0.2 = 0.30000000000000004)
-    Number(((percentage / 100) * total).toFixed(8))
-  );

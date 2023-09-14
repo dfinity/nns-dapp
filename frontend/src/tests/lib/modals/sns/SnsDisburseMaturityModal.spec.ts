@@ -37,6 +37,7 @@ describe("SnsDisburseMaturityModal", () => {
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     authStore.setForTesting(mockIdentity);
   });
 
@@ -80,8 +81,8 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
-  it("should call disburse maturity api and reloadNeuron", async () => {
-    const po = await renderSnsDisburseMaturityModal();
+  const disburse = async (neuron: SnsNeuron) => {
+    const po = await renderSnsDisburseMaturityModal(neuron);
     await po.setPercentage(50);
     await po.clickNextButton();
 
@@ -93,11 +94,23 @@ describe("SnsDisburseMaturityModal", () => {
 
     expect(disburseMaturity).toBeCalledTimes(1);
     expect(disburseMaturity).toBeCalledWith({
-      neuronId: mockSnsNeuron.id,
+      neuronId: neuron.id,
       rootCanisterId: mockPrincipal,
       percentageToDisburse: 50,
       identity: mockIdentity,
     });
     await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
+  };
+
+  it("should call disburse maturity api and reloadNeuron", async () => {
+    await disburse(mockSnsNeuron);
+  });
+
+  it("should disburse maturity when maturity is larger than 1,000", async () => {
+    const neuron1100maturity = createMockSnsNeuron({
+      id: [1],
+      maturity: 110_000_000_000n,
+    });
+    await disburse(neuron1100maturity);
   });
 });

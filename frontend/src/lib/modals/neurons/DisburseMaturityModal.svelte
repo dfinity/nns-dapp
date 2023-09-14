@@ -13,12 +13,9 @@
     KeyValuePair,
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
-  import {
-    formatMaturity,
-    maturityPercentageToE8s,
-  } from "$lib/utils/neuron.utils";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
 
   const steps: WizardSteps = [
@@ -44,19 +41,18 @@
 
   const goToConfirm = () => modal.next();
 
-  let maturityToDisburse = 0n;
-  $: maturityToDisburse = maturityPercentageToE8s({
-    total: Number(formattedMaturity),
-    percentage: percentageToDisburse,
-  });
+  let maturityToDisburseE8s: bigint;
+  $: maturityToDisburseE8s =
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: BigInt(Number(maturityToDisburse) * 0.95),
+    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 0.95)),
   });
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: BigInt(Number(maturityToDisburse) * 1.05),
+    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 1.05)),
   });
 </script>
 
@@ -73,7 +69,7 @@
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {formattedMaturity}
+      {availableMaturityE8s}
       buttonText={$i18n.neuron_detail.disburse}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
@@ -126,7 +122,7 @@
             >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
           >
           <span data-tid="confirm-amount" class="value" slot="value"
-            >{formatMaturity(maturityToDisburse)}
+            >{formatMaturity(maturityToDisburseE8s)}
           </span>
         </KeyValuePair>
         <KeyValuePair>
