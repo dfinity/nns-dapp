@@ -13,10 +13,7 @@
     KeyValuePair,
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
-  import {
-    formatMaturity,
-    maturityPercentageToE8s,
-  } from "$lib/utils/neuron.utils";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
@@ -44,11 +41,10 @@
 
   const goToConfirm = () => modal.next();
 
-  let maturityToDisburse = 0n;
-  $: maturityToDisburse = maturityPercentageToE8s({
-    total: Number(formattedMaturity),
-    percentage: percentageToDisburse,
-  });
+  let maturityToDisburse: bigint;
+  $: maturityToDisburse =
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
