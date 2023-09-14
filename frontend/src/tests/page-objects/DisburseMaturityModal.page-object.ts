@@ -39,4 +39,24 @@ export class DisburseMaturityModalPo extends BasePageObject {
   getAmountMaturityToDisburse(): Promise<string> {
     return this.getNeuronSelectPercentagePo().getAmountMaturity();
   }
+
+  getTotalMaturity(): Promise<string> {
+    return this.getNeuronSelectPercentagePo().getAvailableMaturity();
+  }
+
+  async getConfirmTokens(): Promise<string> {
+    return (
+      await this.getNeuronConfirmActionScreenPo().getText("confirm-tokens")
+    ).trim();
+  }
+
+  async getConfirmPercentage(): Promise<string> {
+    return (
+      await this.getNeuronConfirmActionScreenPo().getText("confirm-percentage")
+    ).trim();
+  }
+
+  getConfirmDestination(): Promise<string> {
+    return this.getNeuronConfirmActionScreenPo().getText("confirm-destination");
+  }
 }

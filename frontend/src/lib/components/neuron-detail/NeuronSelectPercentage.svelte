@@ -28,7 +28,9 @@
     <span slot="key" class="label"
       >{$i18n.neuron_detail.available_maturity}</span
     >
-    <span class="value" slot="value">{formattedMaturity}</span>
+    <span class="value" slot="value" data-tid="available-maturity"
+      >{formattedMaturity}</span
+    >
   </KeyValuePair>
 
   <slot name="description" />

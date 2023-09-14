@@ -38,4 +38,8 @@ export class NeuronSelectPercentagePo extends BasePageObject {
   getAmountMaturity(): Promise<string> {
     return this.getText("amount-maturity");
   }
+
+  getAvailableMaturity(): Promise<string> {
+    return this.getText("available-maturity");
+  }
 }
