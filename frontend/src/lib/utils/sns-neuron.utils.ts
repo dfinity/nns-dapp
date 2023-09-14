@@ -488,12 +488,11 @@ export const formattedMaturity = (
  * Format the sum of the maturity in a value (token "currency") way.
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
  */
-export const formattedTotalMaturity = (
-  neuron: SnsNeuron | null | undefined
-): string =>
+export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
   formatToken({
     value:
-      (neuron?.maturity_e8s_equivalent ?? BigInt(0)) +
+      neuron.maturity_e8s_equivalent +
+      totalDisbursingMaturity(neuron) +
       (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)),
   });
 
@@ -961,3 +960,11 @@ export const neuronDashboardUrl = ({
   `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
     neuron
   )}`;
+
+export const totalDisbursingMaturity = ({
+  disburse_maturity_in_progress,
+}: SnsNeuron): bigint =>
+  disburse_maturity_in_progress.reduce(
+    (acc, disbursement) => acc + disbursement.amount_e8s,
+    BigInt(0)
+  );

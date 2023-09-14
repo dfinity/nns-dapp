@@ -14,13 +14,27 @@ import {
   type SnsNervousSystemParameters,
   type SnsNeuron,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+import type {
+  DisburseMaturityInProgress,
+  NeuronPermission,
+} from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array, isNullish } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import { mockIdentity } from "./auth.store.mock";
+import { mockIdentity, mockPrincipal } from "./auth.store.mock";
 import { rootCanisterIdMock } from "./sns.api.mock";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
+
+export const mockActiveDisbursement: DisburseMaturityInProgress = {
+  timestamp_of_disbursement_seconds: 10000n,
+  amount_e8s: 1000000n,
+  account_to_disburse_to: [
+    {
+      owner: [mockPrincipal],
+      subaccount: [],
+    },
+  ],
+};
 
 export const createMockSnsNeuron = ({
   stake = BigInt(1_000_000_000),
@@ -38,6 +52,7 @@ export const createMockSnsNeuron = ({
   maturity = BigInt(100_000_000),
   createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
   sourceNnsNeuronId,
+  activeDisbursementsE8s = [],
 }: {
   stake?: bigint;
   id: number[];
@@ -56,6 +71,7 @@ export const createMockSnsNeuron = ({
   createdTimestampSeconds?: bigint;
   // Having a sourceNnsNeuronId makes the neuron a CF neuron.
   sourceNnsNeuronId?: NeuronId;
+  activeDisbursementsE8s?: bigint[];
 }): SnsNeuron => {
   return {
     id: [{ id: arrayOfNumberToUint8Array(id) }],
@@ -90,7 +106,10 @@ export const createMockSnsNeuron = ({
         : vesting
         ? [BigInt(SECONDS_IN_MONTH)]
         : [BigInt(SECONDS_IN_HOUR)],
-    disburse_maturity_in_progress: [],
+    disburse_maturity_in_progress: activeDisbursementsE8s.map((amountE8s) => ({
+      ...mockActiveDisbursement,
+      amount_e8s: amountE8s,
+    })),
   };
 };
 
