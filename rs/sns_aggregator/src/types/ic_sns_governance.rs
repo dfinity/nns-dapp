@@ -728,7 +728,7 @@ pub struct SetMode {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct set_mode_ret0 {}
+pub struct SetModeRet {}
 
 pub struct SERVICE(pub candid::Principal);
 impl SERVICE {
@@ -795,7 +795,7 @@ impl SERVICE {
     pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
         ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
     }
-    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(set_mode_ret0,)> {
+    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(SetModeRet,)> {
         ic_cdk::call(self.0, "set_mode", (arg0,)).await
     }
 }
