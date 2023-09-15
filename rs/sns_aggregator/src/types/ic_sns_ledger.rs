@@ -126,7 +126,7 @@ pub struct GetTransactionsRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_burn_inner {
+pub struct TransactionBurnInner {
     pub from: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
     pub created_at_time: Option<u64>,
@@ -153,7 +153,7 @@ pub struct Transaction_transfer_inner {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Transaction {
-    pub burn: Option<Transaction_burn_inner>,
+    pub burn: Option<TransactionBurnInner>,
     pub kind: String,
     pub mint: Option<Transaction_mint_inner>,
     pub timestamp: u64,
