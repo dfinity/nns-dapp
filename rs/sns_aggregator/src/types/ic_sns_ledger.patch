@@ -17,7 +17,7 @@ index 94a96401f..dd77268d5 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub struct InitArgsArchiveOptions {
-+pub struct InitArgs_archive_options {
++pub struct InitArgsArchiveOptions {
      pub num_blocks_to_archive: u64,
      pub trigger_threshold: u64,
      pub max_message_size_bytes: Option<u64>,
@@ -26,7 +26,7 @@ index 94a96401f..dd77268d5 100644
      pub initial_balances: Vec<(Account, u64)>,
      pub fee_collector_account: Option<Account>,
 -    pub archive_options: InitArgsArchiveOptions,
-+    pub archive_options: InitArgs_archive_options,
++    pub archive_options: InitArgsArchiveOptions,
      pub token_name: String,
  }
  

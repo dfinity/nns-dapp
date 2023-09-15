@@ -43,7 +43,7 @@ pub struct UpgradeArgs {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct InitArgs_archive_options {
+pub struct InitArgsArchiveOptions {
     pub num_blocks_to_archive: u64,
     pub trigger_threshold: u64,
     pub max_message_size_bytes: Option<u64>,
@@ -60,7 +60,7 @@ pub struct InitArgs {
     pub minting_account: Account,
     pub initial_balances: Vec<(Account, u64)>,
     pub fee_collector_account: Option<Account>,
-    pub archive_options: InitArgs_archive_options,
+    pub archive_options: InitArgsArchiveOptions,
     pub token_name: String,
 }
 
