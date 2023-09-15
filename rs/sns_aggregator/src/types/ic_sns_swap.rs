@@ -260,7 +260,7 @@ pub struct GetInitResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_lifecycle_arg0 {}
+pub struct GetLifecycleArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetLifecycleResponse {
@@ -514,7 +514,7 @@ impl SERVICE {
     pub async fn get_init(&self, arg0: get_init_arg0) -> CallResult<(GetInitResponse,)> {
         ic_cdk::call(self.0, "get_init", (arg0,)).await
     }
-    pub async fn get_lifecycle(&self, arg0: get_lifecycle_arg0) -> CallResult<(GetLifecycleResponse,)> {
+    pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> CallResult<(GetLifecycleResponse,)> {
         ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await
     }
     pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> CallResult<(GetOpenTicketResponse,)> {
