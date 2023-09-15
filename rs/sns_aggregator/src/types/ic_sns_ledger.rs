@@ -142,7 +142,7 @@ pub struct TransactionMintInner {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_transfer_inner {
+pub struct TransactionTransferInner {
     pub to: Account,
     pub fee: Option<candid::Nat>,
     pub from: Account,
@@ -157,7 +157,7 @@ pub struct Transaction {
     pub kind: String,
     pub mint: Option<TransactionMintInner>,
     pub timestamp: u64,
-    pub transfer: Option<Transaction_transfer_inner>,
+    pub transfer: Option<TransactionTransferInner>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

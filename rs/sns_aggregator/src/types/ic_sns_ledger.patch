@@ -38,7 +38,7 @@ index 94a96401f..90790e075 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub struct TransactionTransferInner {
-+pub struct Transaction_transfer_inner {
++pub struct TransactionTransferInner {
      pub to: Account,
      pub fee: Option<candid::Nat>,
      pub from: Account,
@@ -47,7 +47,7 @@ index 94a96401f..90790e075 100644
      pub mint: Option<TransactionMintInner>,
      pub timestamp: u64,
 -    pub transfer: Option<TransactionTransferInner>,
-+    pub transfer: Option<Transaction_transfer_inner>,
++    pub transfer: Option<TransactionTransferInner>,
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
