@@ -67,7 +67,7 @@ type GetLifecycleResponse = record {
   decentralization_sale_open_timestamp_seconds : opt nat64;
   lifecycle : opt int32;
 };
-type GetOpenTicketResponse = record { result : opt Result_1 };
+type GetOpenTicketResponse = record { result : opt Result1 };
 type GetSaleParametersResponse = record { params : opt Params };
 type GetStateResponse = record { swap : opt Swap; derived : opt DerivedState };
 type GovernanceError = record { error_message : text; error_type : int32 };
@@ -174,7 +174,7 @@ type RefreshBuyerTokensResponse = record {
 };
 type Response = record { governance_error : opt GovernanceError };
 type Result = variant { Ok : Ok; Err : Err };
-type Result_1 = variant { Ok : Ok_1; Err : Err_1 };
+type Result1 = variant { Ok : Ok_1; Err : Err_1 };
 type Result_2 = variant { Ok : Ok_1; Err : Err_2 };
 type SetDappControllersCallResult = record { possibility : opt Possibility };
 type SetDappControllersResponse = record { failed_updates : vec FailedUpdate };

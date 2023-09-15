@@ -500,7 +500,7 @@ pub struct ClaimSwapNeuronsResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct fail_stuck_upgrade_in_progress_arg0 {}
+pub struct FailStuckUpgradeInProgressArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct FailStuckUpgradeInProgressRet {}
@@ -734,7 +734,7 @@ impl SERVICE {
     }
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
-        arg0: fail_stuck_upgrade_in_progress_arg0,
+        arg0: FailStuckUpgradeInProgressArg,
     ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
         ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
     }
