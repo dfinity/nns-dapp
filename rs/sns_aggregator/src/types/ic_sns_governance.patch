@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 8a23bc900..21ba36828 100644
+index 8a23bc900..aefbadcc6 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -12,7 +12,7 @@ index 8a23bc900..21ba36828 100644
  // use ic_cdk::api::call::CallResult as Result;
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -501,10 +500,10 @@ pub struct ClaimSwapNeuronsResponse {
+@@ -501,7 +500,7 @@ pub struct ClaimSwapNeuronsResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -20,11 +20,7 @@ index 8a23bc900..21ba36828 100644
 +pub struct fail_stuck_upgrade_in_progress_arg0 {}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct FailStuckUpgradeInProgressRet {}
-+pub struct fail_stuck_upgrade_in_progress_ret0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetMaturityModulationArg {}
+ pub struct FailStuckUpgradeInProgressRet {}
 @@ -517,7 +516,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetMetadataArg {}
@@ -145,7 +141,7 @@ index 8a23bc900..21ba36828 100644
 -        arg0: FailStuckUpgradeInProgressArg,
 -    ) -> Result<(FailStuckUpgradeInProgressRet,)> {
 +        arg0: fail_stuck_upgrade_in_progress_arg0,
-+    ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
++    ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
          ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
      }
 -    pub async fn get_build_metadata(&self) -> Result<(String,)> {

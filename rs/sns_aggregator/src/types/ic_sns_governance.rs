@@ -503,7 +503,7 @@ pub struct ClaimSwapNeuronsResponse {
 pub struct fail_stuck_upgrade_in_progress_arg0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct fail_stuck_upgrade_in_progress_ret0 {}
+pub struct FailStuckUpgradeInProgressRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetMaturityModulationArg {}
@@ -735,7 +735,7 @@ impl SERVICE {
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
         arg0: fail_stuck_upgrade_in_progress_arg0,
-    ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
+    ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
         ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
