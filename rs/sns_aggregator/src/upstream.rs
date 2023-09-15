@@ -107,7 +107,8 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = get_swap_state(swap_canister_id)
-        .await.map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
+        .await
+        .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
         .unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
@@ -201,13 +202,14 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
 /// Gets the state of the swap.
 ///
-/// Note: This API is deprecated but must not be removed until the UI is updated.
+/// Note: This API is deprecated but must not be removed until the NNS-dapp UI is updated.
 pub async fn get_swap_state(swap_canister_id: Principal) -> Result<GetStateResponse, (RejectionCode, String)> {
     ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
         .await
         .map(|response: (_,)| response.0)
 }
 
+/// Gets the derived state of the swap canister; this is a small subset of the state with headline values such as number of participants.
 pub async fn get_derived_state(
     swap_canister_id: Principal,
 ) -> Result<GetDerivedStateResponse, (RejectionCode, String)> {
