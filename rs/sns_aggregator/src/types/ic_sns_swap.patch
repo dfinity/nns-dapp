@@ -54,7 +54,7 @@ index 1d3d0ca6f..71e8455df 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub enum Possibility1 {
-+pub enum Possibility_1 {
++pub enum Possibility1 {
      Ok(Response),
      Err(CanisterCallError),
  }
@@ -62,7 +62,7 @@ index 1d3d0ca6f..71e8455df 100644
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SettleCommunityFundParticipationResult {
 -    pub possibility: Option<Possibility1>,
-+    pub possibility: Option<Possibility_1>,
++    pub possibility: Option<Possibility1>,
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
