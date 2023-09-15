@@ -291,14 +291,14 @@ pub struct Ok1 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Err_1 {
+pub struct Err1 {
     pub error_type: Option<i32>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Result1 {
     Ok(Ok1),
-    Err(Err_1),
+    Err(Err1),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
