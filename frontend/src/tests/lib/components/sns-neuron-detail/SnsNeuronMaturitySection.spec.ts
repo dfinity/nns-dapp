@@ -16,6 +16,7 @@ describe("SnsNeuronMaturitySection", () => {
     id: [1],
     stakedMaturity: 100_000_000n,
     maturity: 214_000_000n,
+    activeDisbursementsE8s: [200_000_000n],
   });
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(NeuronContextActionsTest, {
@@ -35,7 +36,7 @@ describe("SnsNeuronMaturitySection", () => {
   it("should render total maturity", async () => {
     const po = renderComponent(mockNeuron);
 
-    expect(await po.getTotalMaturity()).toBe("3.14");
+    expect(await po.getTotalMaturity()).toBe("5.14");
   });
 
   it("should render item actions", async () => {

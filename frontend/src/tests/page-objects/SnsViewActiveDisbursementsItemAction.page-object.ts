@@ -13,10 +13,7 @@ export class SnsViewActiveDisbursementsItemActionPo extends BasePageObject {
     );
   }
 
-  async getDisbursementCount(): Promise<number> {
-    return Number.parseInt(
-      (await this.root.byTestId("disbursement-count").getText()).trim(),
-      10
-    );
+  async getDisbursementTotal(): Promise<string> {
+    return (await this.root.byTestId("disbursement-total").getText()).trim();
   }
 }
