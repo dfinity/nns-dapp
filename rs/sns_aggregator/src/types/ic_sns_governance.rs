@@ -514,7 +514,7 @@ pub struct GetMaturityModulationResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_metadata_arg0 {}
+pub struct GetMetadataArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct GetMetadataResponse {
@@ -750,7 +750,7 @@ impl SERVICE {
     ) -> CallResult<(GetMaturityModulationResponse,)> {
         ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
     }
-    pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<(GetMetadataResponse,)> {
+    pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
     pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
