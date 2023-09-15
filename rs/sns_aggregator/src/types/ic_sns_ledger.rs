@@ -134,7 +134,7 @@ pub struct TransactionBurnInner {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_mint_inner {
+pub struct TransactionMintInner {
     pub to: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
     pub created_at_time: Option<u64>,
@@ -155,7 +155,7 @@ pub struct Transaction_transfer_inner {
 pub struct Transaction {
     pub burn: Option<TransactionBurnInner>,
     pub kind: String,
-    pub mint: Option<Transaction_mint_inner>,
+    pub mint: Option<TransactionMintInner>,
     pub timestamp: u64,
     pub transfer: Option<Transaction_transfer_inner>,
 }
