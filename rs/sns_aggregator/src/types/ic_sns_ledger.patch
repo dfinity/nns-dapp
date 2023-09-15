@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 94a96401f..585484b6e 100644
+index 4a838dd16..be57b827d 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -54,63 +54,47 @@ index 94a96401f..585484b6e 100644
  pub struct GetTransactionsResponse {
      pub first_index: TxIndex,
      pub log_length: candid::Nat,
-@@ -222,45 +217,45 @@ pub enum TransferResult {
-     Err(TransferError),
- }
- 
--pub struct Service(pub candid::Principal);
--impl Service {
--    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> Result<(GetBlocksResponse,)> {
-+pub struct SERVICE(pub candid::Principal);
-+impl SERVICE {
-+    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
-         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
-     }
--    pub async fn get_data_certificate(&self) -> Result<(DataCertificate,)> {
-+    pub async fn get_data_certificate(&self) -> CallResult<(DataCertificate,)> {
-         ic_cdk::call(self.0, "get_data_certificate", ()).await
-     }
--    pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> Result<(GetTransactionsResponse,)> {
-+    pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
+@@ -233,34 +228,34 @@ impl Service {
+     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
          ic_cdk::call(self.0, "get_transactions", (arg0,)).await
      }
--    pub async fn icrc_1_balance_of(&self, arg0: Account) -> Result<(Tokens,)> {
+-    pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
 +    pub async fn icrc1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
          ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
      }
--    pub async fn icrc_1_decimals(&self) -> Result<(u8,)> {
+-    pub async fn icrc_1_decimals(&self) -> CallResult<(u8,)> {
 +    pub async fn icrc1_decimals(&self) -> CallResult<(u8,)> {
          ic_cdk::call(self.0, "icrc1_decimals", ()).await
      }
--    pub async fn icrc_1_fee(&self) -> Result<(Tokens,)> {
+-    pub async fn icrc_1_fee(&self) -> CallResult<(Tokens,)> {
 +    pub async fn icrc1_fee(&self) -> CallResult<(Tokens,)> {
          ic_cdk::call(self.0, "icrc1_fee", ()).await
      }
--    pub async fn icrc_1_metadata(&self) -> Result<(Vec<(String, MetadataValue)>,)> {
+-    pub async fn icrc_1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
 +    pub async fn icrc1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
          ic_cdk::call(self.0, "icrc1_metadata", ()).await
      }
--    pub async fn icrc_1_minting_account(&self) -> Result<(Option<Account>,)> {
+-    pub async fn icrc_1_minting_account(&self) -> CallResult<(Option<Account>,)> {
 +    pub async fn icrc1_minting_account(&self) -> CallResult<(Option<Account>,)> {
          ic_cdk::call(self.0, "icrc1_minting_account", ()).await
      }
--    pub async fn icrc_1_name(&self) -> Result<(String,)> {
+-    pub async fn icrc_1_name(&self) -> CallResult<(String,)> {
 +    pub async fn icrc1_name(&self) -> CallResult<(String,)> {
          ic_cdk::call(self.0, "icrc1_name", ()).await
      }
--    pub async fn icrc_1_supported_standards(&self) -> Result<(Vec<Icrc1SupportedStandardsRetItem>,)> {
+-    pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
 +    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
          ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
      }
--    pub async fn icrc_1_symbol(&self) -> Result<(String,)> {
+-    pub async fn icrc_1_symbol(&self) -> CallResult<(String,)> {
 +    pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
          ic_cdk::call(self.0, "icrc1_symbol", ()).await
      }
--    pub async fn icrc_1_total_supply(&self) -> Result<(Tokens,)> {
+-    pub async fn icrc_1_total_supply(&self) -> CallResult<(Tokens,)> {
 +    pub async fn icrc1_total_supply(&self) -> CallResult<(Tokens,)> {
          ic_cdk::call(self.0, "icrc1_total_supply", ()).await
      }
--    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> Result<(TransferResult,)> {
+-    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
 +    pub async fn icrc1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
          ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
      }

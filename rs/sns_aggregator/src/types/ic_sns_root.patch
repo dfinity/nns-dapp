@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index cb295e4f0..2812d8c93 100644
+index fb7781c97..fde95c0c5 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -21,56 +21,3 @@ index cb295e4f0..2812d8c93 100644
  pub struct ListSnsCanistersResponse {
      pub root: Option<candid::Principal>,
      pub swap: Option<candid::Principal>,
-@@ -183,39 +182,42 @@ pub struct SetDappControllersResponse {
-     pub failed_updates: Vec<FailedUpdate>,
- }
- 
--pub struct Service(pub candid::Principal);
--impl Service {
--    pub async fn canister_status(&self, arg0: CanisterIdRecord) -> Result<(CanisterStatusResult,)> {
-+pub struct SERVICE(pub candid::Principal);
-+impl SERVICE {
-+    pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
-         ic_cdk::call(self.0, "canister_status", (arg0,)).await
-     }
--    pub async fn change_canister(&self, arg0: ChangeCanisterProposal) -> Result<()> {
-+    pub async fn change_canister(&self, arg0: ChangeCanisterProposal) -> CallResult<()> {
-         ic_cdk::call(self.0, "change_canister", (arg0,)).await
-     }
--    pub async fn get_build_metadata(&self) -> Result<(String,)> {
-+    pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
-         ic_cdk::call(self.0, "get_build_metadata", ()).await
-     }
-     pub async fn get_sns_canisters_summary(
-         &self,
-         arg0: GetSnsCanistersSummaryRequest,
--    ) -> Result<(GetSnsCanistersSummaryResponse,)> {
-+    ) -> CallResult<(GetSnsCanistersSummaryResponse,)> {
-         ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
-     }
--    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> Result<(ListSnsCanistersResponse,)> {
-+    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
-         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
-     }
-     pub async fn register_dapp_canister(
-         &self,
-         arg0: RegisterDappCanisterRequest,
--    ) -> Result<(RegisterDappCanisterRet,)> {
-+    ) -> CallResult<(RegisterDappCanisterRet,)> {
-         ic_cdk::call(self.0, "register_dapp_canister", (arg0,)).await
-     }
-     pub async fn register_dapp_canisters(
-         &self,
-         arg0: RegisterDappCanistersRequest,
--    ) -> Result<(RegisterDappCanistersRet,)> {
-+    ) -> CallResult<(RegisterDappCanistersRet,)> {
-         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
-     }
--    pub async fn set_dapp_controllers(&self, arg0: SetDappControllersRequest) -> Result<(SetDappControllersResponse,)> {
-+    pub async fn set_dapp_controllers(
-+        &self,
-+        arg0: SetDappControllersRequest,
-+    ) -> CallResult<(SetDappControllersResponse,)> {
-         ic_cdk::call(self.0, "set_dapp_controllers", (arg0,)).await
-     }
- }

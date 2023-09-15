@@ -491,8 +491,8 @@ pub struct RefreshBuyerTokensResponse {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RestoreDappControllersArg {}
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {
         ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
     }

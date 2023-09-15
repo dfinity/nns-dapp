@@ -730,8 +730,8 @@ pub struct SetMode {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetModeRet {}
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
         ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
     }

@@ -182,8 +182,8 @@ pub struct SetDappControllersResponse {
     pub failed_updates: Vec<FailedUpdate>,
 }
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await
     }

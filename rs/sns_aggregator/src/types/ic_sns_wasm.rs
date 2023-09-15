@@ -298,8 +298,8 @@ pub struct UpdateSnsSubnetListResponse {
     pub error: Option<SnsWasmError>,
 }
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
         ic_cdk::call(self.0, "add_wasm", (arg0,)).await
     }

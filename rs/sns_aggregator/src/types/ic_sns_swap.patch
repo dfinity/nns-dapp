@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..0e5acdb3d 100644
+index 5c59c978f..8b154508d 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -79,106 +79,15 @@ index 1d3d0ca6f..0e5acdb3d 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -492,75 +491,81 @@ pub struct RefreshBuyerTokensResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct RestoreDappControllersArg {}
- 
--pub struct Service(pub candid::Principal);
--impl Service {
--    pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> Result<(ErrorRefundIcpResponse,)> {
-+pub struct SERVICE(pub candid::Principal);
-+impl SERVICE {
-+    pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {
-         ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
-     }
--    pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> Result<(FinalizeSwapResponse,)> {
-+    pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> CallResult<(FinalizeSwapResponse,)> {
-         ic_cdk::call(self.0, "finalize_swap", (arg0,)).await
-     }
--    pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> Result<(GetBuyerStateResponse,)> {
-+    pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> CallResult<(GetBuyerStateResponse,)> {
-         ic_cdk::call(self.0, "get_buyer_state", (arg0,)).await
-     }
--    pub async fn get_buyers_total(&self, arg0: GetBuyersTotalArg) -> Result<(GetBuyersTotalResponse,)> {
-+    pub async fn get_buyers_total(&self, arg0: GetBuyersTotalArg) -> CallResult<(GetBuyersTotalResponse,)> {
-         ic_cdk::call(self.0, "get_buyers_total", (arg0,)).await
-     }
--    pub async fn get_canister_status(&self, arg0: GetCanisterStatusArg) -> Result<(CanisterStatusResultV2,)> {
-+    pub async fn get_canister_status(&self, arg0: GetCanisterStatusArg) -> CallResult<(CanisterStatusResultV2,)> {
-         ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
-     }
--    pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> Result<(GetDerivedStateResponse,)> {
-+    pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> CallResult<(GetDerivedStateResponse,)> {
-         ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
-     }
--    pub async fn get_init(&self, arg0: GetInitArg) -> Result<(GetInitResponse,)> {
-+    pub async fn get_init(&self, arg0: GetInitArg) -> CallResult<(GetInitResponse,)> {
-         ic_cdk::call(self.0, "get_init", (arg0,)).await
-     }
--    pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> Result<(GetLifecycleResponse,)> {
-+    pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> CallResult<(GetLifecycleResponse,)> {
-         ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await
-     }
--    pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> Result<(GetOpenTicketResponse,)> {
-+    pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
+@@ -521,7 +520,10 @@ impl Service {
+     pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
          ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
      }
--    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> Result<(GetSaleParametersResponse,)> {
+-    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> CallResult<(GetSaleParametersResponse,)> {
 +    pub async fn get_sale_parameters(
 +        &self,
 +        arg0: get_sale_parameters_arg0,
 +    ) -> CallResult<(GetSaleParametersResponse,)> {
          ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
      }
--    pub async fn get_state(&self, arg0: GetStateArg) -> Result<(GetStateResponse,)> {
-+    pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
-         ic_cdk::call(self.0, "get_state", (arg0,)).await
-     }
-     pub async fn list_community_fund_participants(
-         &self,
-         arg0: ListCommunityFundParticipantsRequest,
--    ) -> Result<(NeuronsFundParticipants,)> {
-+    ) -> CallResult<(NeuronsFundParticipants,)> {
-         ic_cdk::call(self.0, "list_community_fund_participants", (arg0,)).await
-     }
-     pub async fn list_direct_participants(
-         &self,
-         arg0: ListDirectParticipantsRequest,
--    ) -> Result<(ListDirectParticipantsResponse,)> {
-+    ) -> CallResult<(ListDirectParticipantsResponse,)> {
-         ic_cdk::call(self.0, "list_direct_participants", (arg0,)).await
-     }
-     pub async fn list_sns_neuron_recipes(
-         &self,
-         arg0: ListSnsNeuronRecipesRequest,
--    ) -> Result<(ListSnsNeuronRecipesResponse,)> {
-+    ) -> CallResult<(ListSnsNeuronRecipesResponse,)> {
-         ic_cdk::call(self.0, "list_sns_neuron_recipes", (arg0,)).await
-     }
--    pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> Result<(NewSaleTicketResponse,)> {
-+    pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<(NewSaleTicketResponse,)> {
-         ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
-     }
--    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> Result<(Ok1,)> {
-+    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok1,)> {
-         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
-     }
--    pub async fn open(&self, arg0: OpenRequest) -> Result<(OpenRet,)> {
-+    pub async fn open(&self, arg0: OpenRequest) -> CallResult<(OpenRet,)> {
-         ic_cdk::call(self.0, "open", (arg0,)).await
-     }
--    pub async fn refresh_buyer_tokens(&self, arg0: RefreshBuyerTokensRequest) -> Result<(RefreshBuyerTokensResponse,)> {
-+    pub async fn refresh_buyer_tokens(
-+        &self,
-+        arg0: RefreshBuyerTokensRequest,
-+    ) -> CallResult<(RefreshBuyerTokensResponse,)> {
-         ic_cdk::call(self.0, "refresh_buyer_tokens", (arg0,)).await
-     }
-     pub async fn restore_dapp_controllers(
-         &self,
-         arg0: RestoreDappControllersArg,
--    ) -> Result<(SetDappControllersCallResult,)> {
-+    ) -> CallResult<(SetDappControllersCallResult,)> {
-         ic_cdk::call(self.0, "restore_dapp_controllers", (arg0,)).await
-     }
- }
+     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
