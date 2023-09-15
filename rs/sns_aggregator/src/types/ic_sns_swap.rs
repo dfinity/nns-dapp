@@ -450,14 +450,14 @@ pub struct Err_2 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result_2 {
+pub enum Result2 {
     Ok(Ok_1),
     Err(Err_2),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NewSaleTicketResponse {
-    pub result: Option<Result_2>,
+    pub result: Option<Result2>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

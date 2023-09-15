@@ -135,7 +135,7 @@ type NewSaleTicketRequest = record {
   subaccount : opt vec nat8;
   amount_icp_e8s : nat64;
 };
-type NewSaleTicketResponse = record { result : opt Result_2 };
+type NewSaleTicketResponse = record { result : opt Result2 };
 type Ok = record { block_height : opt nat64 };
 type Ok_1 = record { ticket : opt Ticket };
 type OpenRequest = record {
@@ -175,7 +175,7 @@ type RefreshBuyerTokensResponse = record {
 type Response = record { governance_error : opt GovernanceError };
 type Result = variant { Ok : Ok; Err : Err };
 type Result1 = variant { Ok : Ok_1; Err : Err_1 };
-type Result_2 = variant { Ok : Ok_1; Err : Err_2 };
+type Result2 = variant { Ok : Ok_1; Err : Err_2 };
 type SetDappControllersCallResult = record { possibility : opt Possibility };
 type SetDappControllersResponse = record { failed_updates : vec FailedUpdate };
 type SetModeCallResult = record { possibility : opt Possibility_2 };

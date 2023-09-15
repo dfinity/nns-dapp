@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..9f21c5756 100644
+index 1d3d0ca6f..2c78f25e6 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -225,7 +225,7 @@ index 1d3d0ca6f..9f21c5756 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -447,25 +443,25 @@ pub struct InvalidUserAmount {
+@@ -447,7 +443,7 @@ pub struct InvalidUserAmount {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -234,21 +234,18 @@ index 1d3d0ca6f..9f21c5756 100644
      pub invalid_user_amount: Option<InvalidUserAmount>,
      pub existing_ticket: Option<Ticket>,
      pub error_type: i32,
- }
+@@ -455,8 +451,8 @@ pub struct Err2 {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub enum Result2 {
+ pub enum Result2 {
 -    Ok(Ok1),
 -    Err(Err2),
-+pub enum Result_2 {
 +    Ok(Ok_1),
 +    Err(Err_2),
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct NewSaleTicketResponse {
--    pub result: Option<Result2>,
-+    pub result: Option<Result_2>,
+@@ -465,7 +461,7 @@ pub struct NewSaleTicketResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
