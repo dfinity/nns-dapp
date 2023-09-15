@@ -602,7 +602,7 @@ pub struct GetRunningSnsVersionResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_sns_initialization_parameters_arg0 {}
+pub struct GetSnsInitializationParametersArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsInitializationParametersResponse {
@@ -779,7 +779,7 @@ impl SERVICE {
     }
     pub async fn get_sns_initialization_parameters(
         &self,
-        arg0: get_sns_initialization_parameters_arg0,
+        arg0: GetSnsInitializationParametersArg,
     ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
         ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
     }

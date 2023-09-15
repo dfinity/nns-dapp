@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 8a23bc900..3fb9c7671 100644
+index 8a23bc900..c132c15f9 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -21,15 +21,7 @@ index 8a23bc900..3fb9c7671 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -603,14 +602,14 @@ pub struct GetRunningSnsVersionResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetSnsInitializationParametersArg {}
-+pub struct get_sns_initialization_parameters_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetSnsInitializationParametersResponse {
+@@ -610,7 +609,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  
@@ -108,9 +100,8 @@ index 8a23bc900..3fb9c7671 100644
      }
      pub async fn get_sns_initialization_parameters(
          &self,
--        arg0: GetSnsInitializationParametersArg,
+         arg0: GetSnsInitializationParametersArg,
 -    ) -> Result<(GetSnsInitializationParametersResponse,)> {
-+        arg0: get_sns_initialization_parameters_arg0,
 +    ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
          ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
      }
