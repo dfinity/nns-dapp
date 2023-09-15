@@ -446,7 +446,7 @@ pub struct InvalidUserAmount {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Err_2 {
+pub struct Err2 {
     pub invalid_user_amount: Option<InvalidUserAmount>,
     pub existing_ticket: Option<Ticket>,
     pub error_type: i32,
@@ -455,7 +455,7 @@ pub struct Err_2 {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Result2 {
     Ok(Ok1),
-    Err(Err_2),
+    Err(Err2),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
