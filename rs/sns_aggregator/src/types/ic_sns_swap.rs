@@ -328,7 +328,7 @@ pub struct GetSaleParametersResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_state_arg0 {}
+pub struct GetStateArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronId {
@@ -526,7 +526,7 @@ impl SERVICE {
     ) -> CallResult<(GetSaleParametersResponse,)> {
         ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
     }
-    pub async fn get_state(&self, arg0: get_state_arg0) -> CallResult<(GetStateResponse,)> {
+    pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
         ic_cdk::call(self.0, "get_state", (arg0,)).await
     }
     pub async fn list_community_fund_participants(
