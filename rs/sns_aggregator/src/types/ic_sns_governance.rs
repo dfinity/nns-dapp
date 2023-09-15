@@ -701,7 +701,7 @@ pub struct DisburseResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Command_1 {
+pub enum Command1 {
     Error(GovernanceError),
     Split(SplitResponse),
     Follow(EmptyRecord),
@@ -719,7 +719,7 @@ pub enum Command_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ManageNeuronResponse {
-    pub command: Option<Command_1>,
+    pub command: Option<Command1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

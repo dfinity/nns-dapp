@@ -63,7 +63,7 @@ type Command = variant {
   MergeMaturity : MergeMaturity;
   Disburse : Disburse;
 };
-type Command_1 = variant {
+type Command1 = variant {
   Error : GovernanceError;
   Split : SplitResponse;
   Follow : record {};
@@ -222,7 +222,7 @@ type ListProposals = record {
 };
 type ListProposalsResponse = record { proposals : vec ProposalData };
 type ManageNeuron = record { subaccount : vec nat8; command : opt Command };
-type ManageNeuronResponse = record { command : opt Command_1 };
+type ManageNeuronResponse = record { command : opt Command1 };
 type ManageSnsMetadata = record {
   url : opt text;
   logo : opt text;
