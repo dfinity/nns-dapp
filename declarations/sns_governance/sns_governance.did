@@ -78,7 +78,7 @@ type Command_1 = variant {
   Disburse : DisburseResponse;
   AddNeuronPermission : record {};
 };
-type Command_2 = variant {
+type Command2 = variant {
   Split : Split;
   Follow : Follow;
   DisburseMaturity : DisburseMaturity;
@@ -287,7 +287,7 @@ type Neuron = record {
 };
 type NeuronId = record { id : vec nat8 };
 type NeuronInFlightCommand = record {
-  command : opt Command_2;
+  command : opt Command2;
   timestamp : nat64;
 };
 type NeuronParameters = record {
