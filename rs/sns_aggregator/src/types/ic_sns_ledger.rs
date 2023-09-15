@@ -167,7 +167,7 @@ pub struct TransactionRange {
 
 pub type QueryArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
-pub struct GetTransactionsResponse_archived_transactions_inner {
+pub struct GetTransactionsResponseArchivedTransactionsItem {
     pub callback: QueryArchiveFn,
     pub start: TxIndex,
     pub length: candid::Nat,
@@ -178,7 +178,7 @@ pub struct GetTransactionsResponse {
     pub first_index: TxIndex,
     pub log_length: candid::Nat,
     pub transactions: Vec<Transaction>,
-    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_inner>,
+    pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 }
 
 pub type Tokens = candid::Nat;
