@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..9af0c49b4 100644
+index 1d3d0ca6f..ee10e3231 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -58,31 +58,7 @@ index 1d3d0ca6f..9af0c49b4 100644
      Err(CanisterCallError),
  }
  
-@@ -253,7 +252,7 @@ pub struct GetDerivedStateResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetInitArg {}
-+pub struct GetInitArg {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetInitResponse {
-@@ -270,7 +269,7 @@ pub struct GetLifecycleResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetOpenTicketArg {}
-+pub struct GetOpenTicketArg {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct Icrc1Account {
-@@ -287,19 +286,19 @@ pub struct Ticket {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct Ok1 {
-+pub struct Ok_1 {
-     pub ticket: Option<Ticket>,
+@@ -292,14 +291,14 @@ pub struct Ok1 {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -93,9 +69,8 @@ index 1d3d0ca6f..9af0c49b4 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Result1 {
--    Ok(Ok1),
+     Ok(Ok1),
 -    Err(Err1),
-+    Ok(Ok_1),
 +    Err(Err_1),
  }
  
@@ -139,13 +114,11 @@ index 1d3d0ca6f..9af0c49b4 100644
      pub invalid_user_amount: Option<InvalidUserAmount>,
      pub existing_ticket: Option<Ticket>,
      pub error_type: i32,
-@@ -455,8 +454,8 @@ pub struct Err2 {
- 
+@@ -456,7 +455,7 @@ pub struct Err2 {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Result2 {
--    Ok(Ok1),
+     Ok(Ok1),
 -    Err(Err2),
-+    Ok(Ok_1),
 +    Err(Err_2),
  }
  
@@ -252,7 +225,7 @@ index 1d3d0ca6f..9af0c49b4 100644
          ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
      }
 -    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> Result<(Ok1,)> {
-+    pub async fn notify_payment_failure(&self, arg0: notify_payment_failure_arg0) -> CallResult<(Ok_1,)> {
++    pub async fn notify_payment_failure(&self, arg0: notify_payment_failure_arg0) -> CallResult<(Ok1,)> {
          ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
      }
 -    pub async fn open(&self, arg0: OpenRequest) -> Result<(OpenRet,)> {

@@ -286,7 +286,7 @@ pub struct Ticket {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Ok_1 {
+pub struct Ok1 {
     pub ticket: Option<Ticket>,
 }
 
@@ -297,7 +297,7 @@ pub struct Err_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Result1 {
-    Ok(Ok_1),
+    Ok(Ok1),
     Err(Err_1),
 }
 
@@ -454,7 +454,7 @@ pub struct Err_2 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum Result2 {
-    Ok(Ok_1),
+    Ok(Ok1),
     Err(Err_2),
 }
 
@@ -550,7 +550,7 @@ impl SERVICE {
     pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<(NewSaleTicketResponse,)> {
         ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
     }
-    pub async fn notify_payment_failure(&self, arg0: notify_payment_failure_arg0) -> CallResult<(Ok_1,)> {
+    pub async fn notify_payment_failure(&self, arg0: notify_payment_failure_arg0) -> CallResult<(Ok1,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
     }
     pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
