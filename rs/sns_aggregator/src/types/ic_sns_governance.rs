@@ -506,7 +506,7 @@ pub struct fail_stuck_upgrade_in_progress_arg0 {}
 pub struct fail_stuck_upgrade_in_progress_ret0 {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_maturity_modulation_arg0 {}
+pub struct GetMaturityModulationArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetMaturityModulationResponse {
@@ -746,7 +746,7 @@ impl SERVICE {
     }
     pub async fn get_maturity_modulation(
         &self,
-        arg0: get_maturity_modulation_arg0,
+        arg0: GetMaturityModulationArg,
     ) -> CallResult<(GetMaturityModulationResponse,)> {
         ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
     }
