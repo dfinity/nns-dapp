@@ -21,6 +21,13 @@ pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
 }
 
+impl AccountsDbAsProxy {
+    /// Migration countdown; when it reaches zero, the migration is complete.
+    pub fn migration_countdown(&self) -> u32 {
+        0
+    }
+}
+
 impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
