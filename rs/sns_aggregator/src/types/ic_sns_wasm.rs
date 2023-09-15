@@ -191,7 +191,7 @@ pub struct GetNextSnsVersionResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_sns_subnet_ids_arg0 {}
+pub struct GetSnsSubnetIdsArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsSubnetIdsResponse {
@@ -321,7 +321,7 @@ impl SERVICE {
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
     }
-    pub async fn get_sns_subnet_ids(&self, arg0: get_sns_subnet_ids_arg0) -> CallResult<(GetSnsSubnetIdsResponse,)> {
+    pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
         ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
     }
     pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
