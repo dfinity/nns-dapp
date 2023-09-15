@@ -464,7 +464,7 @@ pub struct NewSaleTicketResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct notify_payment_failure_arg0 {}
+pub struct NotifyPaymentFailureArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct OpenRequest {
@@ -550,7 +550,7 @@ impl SERVICE {
     pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<(NewSaleTicketResponse,)> {
         ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
     }
-    pub async fn notify_payment_failure(&self, arg0: notify_payment_failure_arg0) -> CallResult<(Ok1,)> {
+    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok1,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
     }
     pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
