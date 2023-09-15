@@ -117,7 +117,9 @@ wait_for_migration() {
   done
   {
     echo "ERROR: Migration did not complete within the expected time."
-    dfx canister call nns-dapp get_migration_status
+    echo "       For a migration to be considered complete, the migration_countdown should reach zero."
+    echo "       Here are the current stats:"
+    dfx canister call nns-dapp get_stats
     exit 1
   } >&2
 }
