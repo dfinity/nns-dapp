@@ -93,7 +93,7 @@ pub struct ErrorRefundIcpResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct finalize_swap_arg0 {}
+pub struct FinalizeSwapArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CanisterCallError {
@@ -496,7 +496,7 @@ impl SERVICE {
     pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {
         ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
     }
-    pub async fn finalize_swap(&self, arg0: finalize_swap_arg0) -> CallResult<(FinalizeSwapResponse,)> {
+    pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> CallResult<(FinalizeSwapResponse,)> {
         ic_cdk::call(self.0, "finalize_swap", (arg0,)).await
     }
     pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> CallResult<(GetBuyerStateResponse,)> {

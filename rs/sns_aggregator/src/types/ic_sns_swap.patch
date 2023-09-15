@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..b3105212f 100644
+index 1d3d0ca6f..71e8455df 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -49,15 +49,6 @@ index 1d3d0ca6f..b3105212f 100644
  pub struct Init {
      pub nns_proposal_id: Option<u64>,
      pub sns_root_canister_id: String,
-@@ -94,7 +93,7 @@ pub struct ErrorRefundIcpResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct FinalizeSwapArg {}
-+pub struct finalize_swap_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct CanisterCallError {
 @@ -136,25 +135,25 @@ pub struct Response {
  }
  
@@ -251,7 +242,7 @@ index 1d3d0ca6f..b3105212f 100644
          ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await
      }
 -    pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> Result<(FinalizeSwapResponse,)> {
-+    pub async fn finalize_swap(&self, arg0: finalize_swap_arg0) -> CallResult<(FinalizeSwapResponse,)> {
++    pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> CallResult<(FinalizeSwapResponse,)> {
          ic_cdk::call(self.0, "finalize_swap", (arg0,)).await
      }
 -    pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> Result<(GetBuyerStateResponse,)> {
