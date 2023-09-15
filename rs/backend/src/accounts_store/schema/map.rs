@@ -1,6 +1,6 @@
 //! An accounts DB implemented as a hash map.
 
-use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
+use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use std::collections::BTreeMap;
 use std::fmt;
 
@@ -28,6 +28,9 @@ impl AccountsDbTrait for AccountsDbAsMap {
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.values().cloned();
         Box::new(iterator)
+    }
+    fn schema_label(&self) -> SchemaLabel {
+        SchemaLabel::Map
     }
 }
 

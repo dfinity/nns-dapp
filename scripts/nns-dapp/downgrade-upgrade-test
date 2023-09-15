@@ -104,6 +104,24 @@ check_num_transactions() {
   fi
 }
 
+# Wait for the migration countdown to complete.
+wait_for_migration() {
+  local migration_countdown
+  for ((i = 0; i < 120; i++)); do
+    migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq .migration_countdown)"
+    echo "Migration countdown: $migration_countdown"
+    if ((migration_countdown == 0)); then
+      return
+    fi
+    sleep 1
+  done
+  {
+    echo "ERROR: Migration did not complete within the expected time."
+    dfx canister call nns-dapp get_migration_status
+    exit 1
+  } >&2
+}
+
 # Installs the current build of nns-dapp
 # TODO: Record upgrade time
 # TODO: Record upgrade cycles
@@ -116,6 +134,7 @@ upgrade_nnsdapp() {
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
+  wait_for_migration
   poststate="$(get_upgrade_invariants)"
   if [[ "$prestate" != "$poststate" ]]; then
     {

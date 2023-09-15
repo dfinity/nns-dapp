@@ -1077,6 +1077,8 @@ impl AccountsStore {
         stats.neurons_created_count = self.neuron_accounts.len() as u64;
         stats.neurons_topped_up_count = self.neurons_topped_up_count;
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
+        stats.schema = Some(self.accounts_db.schema_label() as u32);
+        stats.migration_countdown = Some(self.accounts_db.migration_countdown());
     }
 
     pub fn get_histogram(&self) -> AccountsStoreHistogram {
