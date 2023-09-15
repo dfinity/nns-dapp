@@ -228,34 +228,34 @@ impl Service {
     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
     }
-    pub async fn icrc1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
     }
-    pub async fn icrc1_decimals(&self) -> CallResult<(u8,)> {
+    pub async fn icrc_1_decimals(&self) -> CallResult<(u8,)> {
         ic_cdk::call(self.0, "icrc1_decimals", ()).await
     }
-    pub async fn icrc1_fee(&self) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_fee(&self) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_fee", ()).await
     }
-    pub async fn icrc1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
+    pub async fn icrc_1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
         ic_cdk::call(self.0, "icrc1_metadata", ()).await
     }
-    pub async fn icrc1_minting_account(&self) -> CallResult<(Option<Account>,)> {
+    pub async fn icrc_1_minting_account(&self) -> CallResult<(Option<Account>,)> {
         ic_cdk::call(self.0, "icrc1_minting_account", ()).await
     }
-    pub async fn icrc1_name(&self) -> CallResult<(String,)> {
+    pub async fn icrc_1_name(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_name", ()).await
     }
-    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
+    pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
     }
-    pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
+    pub async fn icrc_1_symbol(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_symbol", ()).await
     }
-    pub async fn icrc1_total_supply(&self) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_total_supply(&self) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_total_supply", ()).await
     }
-    pub async fn icrc1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
+    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
     }
 }
