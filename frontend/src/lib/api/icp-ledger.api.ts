@@ -62,8 +62,8 @@ export const sendICP = async ({
  *
  * @param {Object} params
  * @param {Identity} params.identity user identity
- * @param {string} params.to send ICP to destination address - an account identifier
- * @param {ICP} params.amount the amount to be transferred in ICP
+ * @param {IcrcAccount} params.to destination account
+ * @param {TokenAmount} params.amount the amount to be transferred in ICP
  * @param {number[] | undefined} params.fromSubAccount the optional subaccount that would be the source of the transaction
  * @param {bigint | undefined} params.createdAt the optional timestamp of the transaction. Used to avoid deduplication.
  */
