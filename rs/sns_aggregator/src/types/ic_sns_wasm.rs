@@ -36,14 +36,14 @@ pub struct SnsWasmError {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result {
+pub enum Result_ {
     Error(SnsWasmError),
     Hash(serde_bytes::ByteBuf),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmResponse {
-    pub result: Option<Result>,
+    pub result: Option<Result_>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

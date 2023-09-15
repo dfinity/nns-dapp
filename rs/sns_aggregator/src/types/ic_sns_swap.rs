@@ -82,14 +82,14 @@ pub struct Err {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result {
+pub enum Result_ {
     Ok(Ok),
     Err(Err),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ErrorRefundIcpResponse {
-    pub result: Option<Result>,
+    pub result: Option<Result_>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

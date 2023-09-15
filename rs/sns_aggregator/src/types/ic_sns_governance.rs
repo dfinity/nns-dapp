@@ -538,14 +538,14 @@ pub struct GetNeuron {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result {
+pub enum Result_ {
     Error(GovernanceError),
     Neuron(Neuron),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNeuronResponse {
-    pub result: Option<Result>,
+    pub result: Option<Result_>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
