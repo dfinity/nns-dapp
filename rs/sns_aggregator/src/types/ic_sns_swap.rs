@@ -293,14 +293,14 @@ pub struct Err_1 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result_1 {
+pub enum Result1 {
     Ok(Ok_1),
     Err(Err_1),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetOpenTicketResponse {
-    pub result: Option<Result_1>,
+    pub result: Option<Result1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

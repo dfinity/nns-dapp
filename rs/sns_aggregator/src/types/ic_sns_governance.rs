@@ -554,14 +554,14 @@ pub struct GetProposal {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result_1 {
+pub enum Result1 {
     Error(GovernanceError),
     Proposal(ProposalData),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetProposalResponse {
-    pub result: Option<Result_1>,
+    pub result: Option<Result1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
