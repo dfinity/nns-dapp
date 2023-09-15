@@ -88,6 +88,17 @@ pub trait AccountsDbTrait {
 
     /// Iterates over accounts in the data store.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
+
+    /// Gets the label of the storage schema.
+    fn schema_label(&self) -> SchemaLabel;
+}
+
+/// A label to identify the schema.
+///
+/// Note: The numeric representations of these labels are guaranteed to be stable.
+#[repr(u32)]
+pub enum SchemaLabel {
+    Map = 0,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.
