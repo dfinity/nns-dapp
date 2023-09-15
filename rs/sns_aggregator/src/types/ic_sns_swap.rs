@@ -209,7 +209,7 @@ pub struct GetBuyersTotalResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_canister_status_arg0 {}
+pub struct GetCanisterStatusArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterStatusType {
@@ -505,7 +505,7 @@ impl SERVICE {
     pub async fn get_buyers_total(&self, arg0: GetBuyersTotalArg) -> CallResult<(GetBuyersTotalResponse,)> {
         ic_cdk::call(self.0, "get_buyers_total", (arg0,)).await
     }
-    pub async fn get_canister_status(&self, arg0: get_canister_status_arg0) -> CallResult<(CanisterStatusResultV2,)> {
+    pub async fn get_canister_status(&self, arg0: GetCanisterStatusArg) -> CallResult<(CanisterStatusResultV2,)> {
         ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
     }
     pub async fn get_derived_state(&self, arg0: get_derived_state_arg0) -> CallResult<(GetDerivedStateResponse,)> {
