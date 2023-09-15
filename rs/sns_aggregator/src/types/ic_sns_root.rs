@@ -30,9 +30,12 @@ pub struct CanisterIdRecord {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterStatusType {
-    stopped,
-    stopping,
-    running,
+    #[serde(rename = "stopped")]
+    Stopped,
+    #[serde(rename = "stopping")]
+    Stopping,
+    #[serde(rename = "running")]
+    Running,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -51,9 +54,12 @@ pub struct CanisterStatusResult {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterInstallMode {
-    reinstall,
-    upgrade,
-    install,
+    #[serde(rename = "reinstall")]
+    Reinstall,
+    #[serde(rename = "upgrade")]
+    Upgrade,
+    #[serde(rename = "install")]
+    Install,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

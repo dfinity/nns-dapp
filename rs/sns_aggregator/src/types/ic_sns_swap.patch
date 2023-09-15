@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..55d0c684d 100644
+index 1d3d0ca6f..b3105212f 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -98,7 +98,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetBuyersTotalResponse {
-@@ -210,16 +209,13 @@ pub struct GetBuyersTotalResponse {
+@@ -210,7 +209,7 @@ pub struct GetBuyersTotalResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -107,19 +107,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum CanisterStatusType {
--    #[serde(rename = "stopped")]
--    Stopped,
--    #[serde(rename = "stopping")]
--    Stopping,
--    #[serde(rename = "running")]
--    Running,
-+    stopped,
-+    stopping,
-+    running,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -241,7 +237,7 @@ pub struct CanisterStatusResultV2 {
+@@ -241,7 +240,7 @@ pub struct CanisterStatusResultV2 {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -128,7 +116,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetDerivedStateResponse {
-@@ -253,7 +249,7 @@ pub struct GetDerivedStateResponse {
+@@ -253,7 +252,7 @@ pub struct GetDerivedStateResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -137,7 +125,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetInitResponse {
-@@ -261,7 +257,7 @@ pub struct GetInitResponse {
+@@ -261,7 +260,7 @@ pub struct GetInitResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -146,7 +134,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetLifecycleResponse {
-@@ -270,7 +266,7 @@ pub struct GetLifecycleResponse {
+@@ -270,7 +269,7 @@ pub struct GetLifecycleResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -155,7 +143,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct Icrc1Account {
-@@ -287,19 +283,19 @@ pub struct Ticket {
+@@ -287,19 +286,19 @@ pub struct Ticket {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -179,7 +167,7 @@ index 1d3d0ca6f..55d0c684d 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -308,9 +304,9 @@ pub struct GetOpenTicketResponse {
+@@ -308,9 +307,9 @@ pub struct GetOpenTicketResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -191,7 +179,7 @@ index 1d3d0ca6f..55d0c684d 100644
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -329,7 +325,7 @@ pub struct GetSaleParametersResponse {
+@@ -329,7 +328,7 @@ pub struct GetSaleParametersResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -200,7 +188,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct NeuronId {
-@@ -394,7 +390,7 @@ pub struct DerivedState {
+@@ -394,7 +393,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  
@@ -209,7 +197,7 @@ index 1d3d0ca6f..55d0c684d 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -447,7 +443,7 @@ pub struct InvalidUserAmount {
+@@ -447,7 +446,7 @@ pub struct InvalidUserAmount {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -218,7 +206,7 @@ index 1d3d0ca6f..55d0c684d 100644
      pub invalid_user_amount: Option<InvalidUserAmount>,
      pub existing_ticket: Option<Ticket>,
      pub error_type: i32,
-@@ -455,8 +451,8 @@ pub struct Err2 {
+@@ -455,8 +454,8 @@ pub struct Err2 {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Result2 {
@@ -229,7 +217,7 @@ index 1d3d0ca6f..55d0c684d 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -465,7 +461,7 @@ pub struct NewSaleTicketResponse {
+@@ -465,7 +464,7 @@ pub struct NewSaleTicketResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -238,7 +226,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct OpenRequest {
-@@ -475,7 +471,7 @@ pub struct OpenRequest {
+@@ -475,7 +474,7 @@ pub struct OpenRequest {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -247,7 +235,7 @@ index 1d3d0ca6f..55d0c684d 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct RefreshBuyerTokensRequest {
-@@ -490,77 +486,83 @@ pub struct RefreshBuyerTokensResponse {
+@@ -490,77 +489,83 @@ pub struct RefreshBuyerTokensResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

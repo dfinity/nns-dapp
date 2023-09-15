@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index cb295e4f0..2f942ab47 100644
+index cb295e4f0..33d538248 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -12,39 +12,7 @@ index cb295e4f0..2f942ab47 100644
  // use ic_cdk::api::call::CallResult as Result;
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -31,12 +30,9 @@ pub struct CanisterIdRecord {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum CanisterStatusType {
--    #[serde(rename = "stopped")]
--    Stopped,
--    #[serde(rename = "stopping")]
--    Stopping,
--    #[serde(rename = "running")]
--    Running,
-+    stopped,
-+    stopping,
-+    running,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -55,12 +51,9 @@ pub struct CanisterStatusResult {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum CanisterInstallMode {
--    #[serde(rename = "reinstall")]
--    Reinstall,
--    #[serde(rename = "upgrade")]
--    Upgrade,
--    #[serde(rename = "install")]
--    Install,
-+    reinstall,
-+    upgrade,
-+    install,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -131,9 +124,9 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -131,9 +130,9 @@ pub struct GetSnsCanistersSummaryResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -56,7 +24,7 @@ index cb295e4f0..2f942ab47 100644
  pub struct ListSnsCanistersResponse {
      pub root: Option<candid::Principal>,
      pub swap: Option<candid::Principal>,
-@@ -150,7 +143,7 @@ pub struct RegisterDappCanisterRequest {
+@@ -150,7 +149,7 @@ pub struct RegisterDappCanisterRequest {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -65,7 +33,7 @@ index cb295e4f0..2f942ab47 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct RegisterDappCanistersRequest {
-@@ -158,7 +151,7 @@ pub struct RegisterDappCanistersRequest {
+@@ -158,7 +157,7 @@ pub struct RegisterDappCanistersRequest {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -74,7 +42,7 @@ index cb295e4f0..2f942ab47 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct SetDappControllersRequest {
-@@ -183,39 +176,42 @@ pub struct SetDappControllersResponse {
+@@ -183,39 +182,42 @@ pub struct SetDappControllersResponse {
      pub failed_updates: Vec<FailedUpdate>,
  }
  
