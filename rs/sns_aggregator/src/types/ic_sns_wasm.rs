@@ -226,7 +226,7 @@ pub struct InsertUpgradePathEntriesResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct list_deployed_snses_arg0 {}
+pub struct ListDeployedSnsesArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct DeployedSns {
@@ -335,7 +335,7 @@ impl SERVICE {
     }
     pub async fn list_deployed_snses(
         &self,
-        arg0: list_deployed_snses_arg0,
+        arg0: ListDeployedSnsesArg,
     ) -> CallResult<(ListDeployedSnsesResponse,)> {
         ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
     }
