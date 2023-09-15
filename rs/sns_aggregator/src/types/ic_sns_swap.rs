@@ -252,7 +252,7 @@ pub struct GetDerivedStateResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_init_arg0 {}
+pub struct GetInitArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetInitResponse {
@@ -511,7 +511,7 @@ impl SERVICE {
     pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> CallResult<(GetDerivedStateResponse,)> {
         ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
     }
-    pub async fn get_init(&self, arg0: get_init_arg0) -> CallResult<(GetInitResponse,)> {
+    pub async fn get_init(&self, arg0: GetInitArg) -> CallResult<(GetInitResponse,)> {
         ic_cdk::call(self.0, "get_init", (arg0,)).await
     }
     pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> CallResult<(GetLifecycleResponse,)> {
