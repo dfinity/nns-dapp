@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..f725ffaac 100644
+index 1d3d0ca6f..33621d2ed 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -58,15 +58,6 @@ index 1d3d0ca6f..f725ffaac 100644
      Err(CanisterCallError),
  }
  
-@@ -241,7 +240,7 @@ pub struct CanisterStatusResultV2 {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetDerivedStateArg {}
-+pub struct get_derived_state_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetDerivedStateResponse {
 @@ -253,7 +252,7 @@ pub struct GetDerivedStateResponse {
  }
  
@@ -218,7 +209,7 @@ index 1d3d0ca6f..f725ffaac 100644
          ic_cdk::call(self.0, "get_canister_status", (arg0,)).await
      }
 -    pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> Result<(GetDerivedStateResponse,)> {
-+    pub async fn get_derived_state(&self, arg0: get_derived_state_arg0) -> CallResult<(GetDerivedStateResponse,)> {
++    pub async fn get_derived_state(&self, arg0: GetDerivedStateArg) -> CallResult<(GetDerivedStateResponse,)> {
          ic_cdk::call(self.0, "get_derived_state", (arg0,)).await
      }
 -    pub async fn get_init(&self, arg0: GetInitArg) -> Result<(GetInitResponse,)> {
