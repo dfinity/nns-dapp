@@ -54,6 +54,7 @@ import {
   snsNeuronsToIneligibleNeuronData,
   sortSnsNeuronsByCreatedTimestamp,
   subaccountToHexString,
+  totalDisbursingMaturity,
   vestingInSeconds,
   votableSnsNeurons,
   votedSnsNeuronDetails,
@@ -66,6 +67,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createMockSnsNeuron,
+  mockActiveDisbursement,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
@@ -1333,6 +1335,20 @@ describe("sns-neuron utils", () => {
       expect(formattedTotalMaturity(neuron)).toBe("4.00");
     });
 
+    it("includes disbursing maturity", () => {
+      const activeDisbursement = {
+        ...mockActiveDisbursement,
+        amount_e8s: 200_000_000n,
+      };
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: BigInt(200000000),
+        staked_maturity_e8s_equivalent: [BigInt(200000000)] as [] | [bigint],
+        disburse_maturity_in_progress: [activeDisbursement],
+      };
+      expect(formattedTotalMaturity(neuron)).toBe("6.00");
+    });
+
     it("returns 0 when maturity is 0", () => {
       const neuron = {
         ...mockSnsNeuron,
@@ -1340,11 +1356,6 @@ describe("sns-neuron utils", () => {
         staked_maturity_e8s_equivalent: [] as [] | [bigint],
       };
       expect(formattedTotalMaturity(neuron)).toBe("0");
-    });
-
-    it("returns 0 when no neuron provided", () => {
-      expect(formattedTotalMaturity(null)).toBe("0");
-      expect(formattedTotalMaturity(undefined)).toBe("0");
     });
   });
 
@@ -2428,6 +2439,24 @@ describe("sns-neuron utils", () => {
           vesting_period_seconds: [oneWeek],
         })
       ).toEqual(0n);
+    });
+  });
+
+  describe("totalDisbursingMaturity", () => {
+    it("returns the sum of the current disbursements", () => {
+      const neuron = createMockSnsNeuron({
+        id: [1],
+        activeDisbursementsE8s: [300_000_000n, 120_000_000n, 100_000_000n],
+      });
+      expect(totalDisbursingMaturity(neuron)).toBe(520000000n);
+    });
+
+    it("returns 0 if not active disbursements", () => {
+      const neuron = createMockSnsNeuron({
+        id: [1],
+        activeDisbursementsE8s: [],
+      });
+      expect(totalDisbursingMaturity(neuron)).toBe(0n);
     });
   });
 });

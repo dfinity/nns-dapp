@@ -623,6 +623,13 @@ interface I18nNeuron_detail {
   view_active_disbursements_modal_title: string;
   view_active_disbursements_to: string;
   view_active_disbursements_maturity: string;
+  disburse_maturity_description_1: string;
+  disburse_maturity_description_2: string;
+  disburse_maturity_amount: string;
+  disburse_maturity_confirmation_percentage: string;
+  disburse_maturity_confirmation_amount: string;
+  disburse_maturity_confirmation_tokens: string;
+  disburse_maturity_confirmation_destination: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
@@ -690,6 +697,7 @@ interface I18nNeuron_detail {
   advanced_settings_title: string;
   neuron_account: string;
   dissolve_date: string;
+  amount_maturity: string;
   created: string;
 }
 

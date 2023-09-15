@@ -13,7 +13,6 @@
   import { spawnNeuron } from "$lib/services/neurons.services";
   import { toastsShow } from "$lib/stores/toasts.store";
   import {
-    formattedMaturity,
     isEnoughMaturityToSpawn,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
@@ -98,7 +97,7 @@
   >
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      formattedMaturity={formattedMaturity(neuron)}
+      availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
       on:nnsCancel={close}
