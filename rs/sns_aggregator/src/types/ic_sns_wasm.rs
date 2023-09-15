@@ -162,7 +162,7 @@ pub struct DeployNewSnsResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_allowed_principals_arg0 {}
+pub struct GetAllowedPrincipalsArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetAllowedPrincipalsResponse {
@@ -308,7 +308,7 @@ impl SERVICE {
     }
     pub async fn get_allowed_principals(
         &self,
-        arg0: get_allowed_principals_arg0,
+        arg0: GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
     }
