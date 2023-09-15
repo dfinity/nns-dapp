@@ -89,35 +89,8 @@ export const secondsToDuration = (seconds: bigint): string => {
  *
  * @param days
  */
-export const daysToDuration = (days: number): string => {
-  const i18nObj = get(i18n);
-  const DAYS_IN_YEAR = SECONDS_IN_YEAR / SECONDS_IN_DAY;
-  // eg. 365 + yearRoundCompensation == 365.25 == 1 year
-  // (4 - leap-year)
-  const yearRoundCompensation = (Math.ceil(days / DAYS_IN_YEAR) % 4) * 0.25;
-  const compensation = yearRoundCompensation === 1 ? 0 : yearRoundCompensation;
-  // round years down
-  const yearCount = Math.floor((days + compensation) / DAYS_IN_YEAR);
-  // round days up (safer for dissolve delay)
-  const dayCount = Math.ceil(days - yearCount * DAYS_IN_YEAR);
-
-  const periods = [
-    createLabel("year", BigInt(yearCount)),
-    createLabel("day", BigInt(dayCount)),
-  ];
-
-  return periods
-    .filter(({ amount }) => amount > 0)
-    .map(
-      (labelInfo) =>
-        `${labelInfo.amount} ${
-          labelInfo.amount === 1
-            ? i18nObj.time[labelInfo.labelKey]
-            : i18nObj.time[`${labelInfo.labelKey}_plural`]
-        }`
-    )
-    .join(", ");
-};
+export const daysToDuration = (days: number): string =>
+  secondsToDuration(BigInt(days) * BigInt(SECONDS_IN_DAY));
 
 /**
  * Displays years, months and days.
