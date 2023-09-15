@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..67420dff7 100644
+index 1d3d0ca6f..674076d2a 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -49,24 +49,15 @@ index 1d3d0ca6f..67420dff7 100644
  pub struct Init {
      pub nns_proposal_id: Option<u64>,
      pub sns_root_canister_id: String,
-@@ -147,14 +146,14 @@ pub struct SettleCommunityFundParticipationResult {
- }
+@@ -148,7 +147,7 @@ pub struct SettleCommunityFundParticipationResult {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub enum Possibility2 {
+ pub enum Possibility2 {
 -    Ok(EmptyRecord),
-+pub enum Possibility_2 {
 +    Ok,
      Err(CanisterCallError),
  }
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct SetModeCallResult {
--    pub possibility: Option<Possibility2>,
-+    pub possibility: Option<Possibility_2>,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 @@ -202,7 +201,7 @@ pub struct GetBuyerStateResponse {
  }
  

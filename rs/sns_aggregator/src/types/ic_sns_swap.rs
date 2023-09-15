@@ -146,14 +146,14 @@ pub struct SettleCommunityFundParticipationResult {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Possibility_2 {
+pub enum Possibility2 {
     Ok,
     Err(CanisterCallError),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetModeCallResult {
-    pub possibility: Option<Possibility_2>,
+    pub possibility: Option<Possibility2>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
