@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index cb295e4f0..1d9b90b3e 100644
+index cb295e4f0..4f081848f 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -12,12 +12,9 @@ index cb295e4f0..1d9b90b3e 100644
  // use ic_cdk::api::call::CallResult as Result;
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -131,9 +130,9 @@ pub struct GetSnsCanistersSummaryResponse {
- }
- 
+@@ -133,7 +132,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct ListSnsCanistersArg {}
-+pub struct list_sns_canisters_arg0 {}
+ pub struct ListSnsCanistersArg {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
@@ -61,7 +58,7 @@ index cb295e4f0..1d9b90b3e 100644
          ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
      }
 -    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> Result<(ListSnsCanistersResponse,)> {
-+    pub async fn list_sns_canisters(&self, arg0: list_sns_canisters_arg0) -> CallResult<(ListSnsCanistersResponse,)> {
++    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
          ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
      }
      pub async fn register_dapp_canister(

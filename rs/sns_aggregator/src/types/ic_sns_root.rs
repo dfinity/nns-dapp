@@ -130,7 +130,7 @@ pub struct GetSnsCanistersSummaryResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct list_sns_canisters_arg0 {}
+pub struct ListSnsCanistersArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct ListSnsCanistersResponse {
@@ -199,7 +199,7 @@ impl SERVICE {
     ) -> CallResult<(GetSnsCanistersSummaryResponse,)> {
         ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
     }
-    pub async fn list_sns_canisters(&self, arg0: list_sns_canisters_arg0) -> CallResult<(ListSnsCanistersResponse,)> {
+    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
     }
     pub async fn register_dapp_canister(
