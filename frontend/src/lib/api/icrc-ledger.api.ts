@@ -92,7 +92,7 @@ export const icrcTransfer = async ({
   identity: Identity;
   canisterId: Principal;
 } & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
-  logWithTimestamp("Getting ckBTC transfer: call...");
+  logWithTimestamp("Making ICRC-1 transfer: call...");
 
   const {
     canister: { transfer: transferApi },
@@ -103,7 +103,7 @@ export const icrcTransfer = async ({
     transfer: transferApi,
   });
 
-  logWithTimestamp("Getting ckBTC transfer: done");
+  logWithTimestamp("Making ICRC-1 transfer: done");
 
   return blockIndex;
 };

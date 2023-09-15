@@ -1,15 +1,18 @@
 import { createAgent } from "$lib/api/agent.api";
+import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
+import type { IcrcAccount, IcrcBlockIndex } from "@dfinity/ledger";
 import type { BlockHeight } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
-import type { TokenAmount } from "@dfinity/utils";
+import { ICPToken, type TokenAmount } from "@dfinity/utils";
 
 /**
  * Transfer ICP between accounts.
@@ -39,6 +42,10 @@ export const sendICP = async ({
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
 
+  if (amount.token !== ICPToken) {
+    throw new Error("Token should be ICP");
+  }
+
   const response = await canister.transfer({
     to: AccountIdentifier.fromHex(to),
     amount: amount.toE8s(),
@@ -48,6 +55,47 @@ export const sendICP = async ({
   });
   logWithTimestamp(`Sending icp complete.`);
   return response;
+};
+
+/**
+ * Transfer ICP between accounts.
+ *
+ * @param {Object} params
+ * @param {Identity} params.identity user identity
+ * @param {string} params.to send ICP to destination address - an account identifier
+ * @param {ICP} params.amount the amount to be transferred in ICP
+ * @param {number[] | undefined} params.fromSubAccount the optional subaccount that would be the source of the transaction
+ * @param {bigint | undefined} params.createdAt the optional timestamp of the transaction. Used to avoid deduplication.
+ */
+export const sendIcpIcrc1 = async ({
+  identity,
+  to,
+  amount,
+  memo,
+  fromSubAccount,
+  createdAt,
+}: {
+  identity: Identity;
+  to: IcrcAccount;
+  amount: TokenAmount;
+  memo?: Uint8Array;
+  fromSubAccount?: SubAccountArray;
+  createdAt?: bigint;
+}): Promise<IcrcBlockIndex> => {
+  if (amount.token !== ICPToken) {
+    throw new Error("Token should be ICP");
+  }
+
+  return icrcTransfer({
+    identity,
+    to,
+    amount: amount.toE8s(),
+    memo,
+    fromSubAccount,
+    createdAt: createdAt ?? nowInBigIntNanoSeconds(),
+    fee: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+    canisterId: LEDGER_CANISTER_ID,
+  });
 };
 
 /**
