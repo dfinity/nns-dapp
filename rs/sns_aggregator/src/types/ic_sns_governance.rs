@@ -593,7 +593,7 @@ pub struct CanisterStatusResultV2 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_running_sns_version_arg0 {}
+pub struct GetRunningSnsVersionArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetRunningSnsVersionResponse {
@@ -773,7 +773,7 @@ impl SERVICE {
     }
     pub async fn get_running_sns_version(
         &self,
-        arg0: get_running_sns_version_arg0,
+        arg0: GetRunningSnsVersionArg,
     ) -> CallResult<(GetRunningSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
     }
