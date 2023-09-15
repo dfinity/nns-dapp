@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 8a23bc900..176daab9d 100644
+index 8a23bc900..1311bd60c 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -41,15 +41,6 @@ index 8a23bc900..176daab9d 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -526,7 +525,7 @@ pub struct GetMetadataResponse {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetModeArg {}
-+pub struct get_mode_arg0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct GetModeResponse {
 @@ -539,14 +538,14 @@ pub struct GetNeuron {
  }
  
@@ -185,7 +176,7 @@ index 8a23bc900..176daab9d 100644
          ic_cdk::call(self.0, "get_metadata", (arg0,)).await
      }
 -    pub async fn get_mode(&self, arg0: GetModeArg) -> Result<(GetModeResponse,)> {
-+    pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<(GetModeResponse,)> {
++    pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
          ic_cdk::call(self.0, "get_mode", (arg0,)).await
      }
 -    pub async fn get_nervous_system_parameters(&self, arg0: ()) -> Result<(NervousSystemParameters,)> {

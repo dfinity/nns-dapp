@@ -525,7 +525,7 @@ pub struct GetMetadataResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_mode_arg0 {}
+pub struct GetModeArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetModeResponse {
@@ -753,7 +753,7 @@ impl SERVICE {
     pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
-    pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<(GetModeResponse,)> {
+    pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await
     }
     pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<(NervousSystemParameters,)> {
