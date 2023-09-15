@@ -94,7 +94,7 @@ pub trait AccountsDbTrait {
 
 /// A label to identify the schema.
 ///
-/// Note: The numeric representtaions of these labels are guaranteed to be stable.
+/// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
 pub enum SchemaLabel {
     Map = 0,
