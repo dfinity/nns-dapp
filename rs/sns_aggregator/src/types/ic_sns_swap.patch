@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 1d3d0ca6f..45f10c57e 100644
+index 1d3d0ca6f..0e5acdb3d 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -79,12 +79,9 @@ index 1d3d0ca6f..45f10c57e 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -490,77 +489,83 @@ pub struct RefreshBuyerTokensResponse {
- }
- 
+@@ -492,75 +491,81 @@ pub struct RefreshBuyerTokensResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct RestoreDappControllersArg {}
-+pub struct restore_dapp_controllers_arg0 {}
+ pub struct RestoreDappControllersArg {}
  
 -pub struct Service(pub candid::Principal);
 -impl Service {
@@ -179,9 +176,8 @@ index 1d3d0ca6f..45f10c57e 100644
      }
      pub async fn restore_dapp_controllers(
          &self,
--        arg0: RestoreDappControllersArg,
+         arg0: RestoreDappControllersArg,
 -    ) -> Result<(SetDappControllersCallResult,)> {
-+        arg0: restore_dapp_controllers_arg0,
 +    ) -> CallResult<(SetDappControllersCallResult,)> {
          ic_cdk::call(self.0, "restore_dapp_controllers", (arg0,)).await
      }

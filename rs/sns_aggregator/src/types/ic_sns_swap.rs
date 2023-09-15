@@ -489,7 +489,7 @@ pub struct RefreshBuyerTokensResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct restore_dapp_controllers_arg0 {}
+pub struct RestoreDappControllersArg {}
 
 pub struct SERVICE(pub candid::Principal);
 impl SERVICE {
@@ -564,7 +564,7 @@ impl SERVICE {
     }
     pub async fn restore_dapp_controllers(
         &self,
-        arg0: restore_dapp_controllers_arg0,
+        arg0: RestoreDappControllersArg,
     ) -> CallResult<(SetDappControllersCallResult,)> {
         ic_cdk::call(self.0, "restore_dapp_controllers", (arg0,)).await
     }
