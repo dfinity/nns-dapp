@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 8a23bc900..7fe1a341c 100644
+index 8a23bc900..c17ea1c77 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -21,23 +21,7 @@ index 8a23bc900..7fe1a341c 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -567,12 +566,9 @@ pub struct GetProposalResponse {
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub enum CanisterStatusType {
--    #[serde(rename = "stopped")]
--    Stopped,
--    #[serde(rename = "stopping")]
--    Stopping,
--    #[serde(rename = "running")]
--    Running,
-+    stopped,
-+    stopping,
-+    running,
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -594,7 +590,7 @@ pub struct CanisterStatusResultV2 {
+@@ -594,7 +593,7 @@ pub struct CanisterStatusResultV2 {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -46,7 +30,7 @@ index 8a23bc900..7fe1a341c 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetRunningSnsVersionResponse {
-@@ -603,14 +599,14 @@ pub struct GetRunningSnsVersionResponse {
+@@ -603,14 +602,14 @@ pub struct GetRunningSnsVersionResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -63,7 +47,7 @@ index 8a23bc900..7fe1a341c 100644
  pub struct ListNervousSystemFunctionsResponse {
      pub reserved_ids: Vec<u64>,
      pub functions: Vec<NervousSystemFunction>,
-@@ -702,7 +698,7 @@ pub struct DisburseResponse {
+@@ -702,7 +701,7 @@ pub struct DisburseResponse {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -72,7 +56,7 @@ index 8a23bc900..7fe1a341c 100644
      Error(GovernanceError),
      Split(SplitResponse),
      Follow(EmptyRecord),
-@@ -720,7 +716,7 @@ pub enum Command1 {
+@@ -720,7 +719,7 @@ pub enum Command1 {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct ManageNeuronResponse {
@@ -81,7 +65,7 @@ index 8a23bc900..7fe1a341c 100644
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -729,74 +725,74 @@ pub struct SetMode {
+@@ -729,74 +728,74 @@ pub struct SetMode {
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

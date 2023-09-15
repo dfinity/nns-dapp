@@ -566,9 +566,12 @@ pub struct GetProposalResponse {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterStatusType {
-    stopped,
-    stopping,
-    running,
+    #[serde(rename = "stopped")]
+    Stopped,
+    #[serde(rename = "stopping")]
+    Stopping,
+    #[serde(rename = "running")]
+    Running,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
