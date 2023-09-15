@@ -63,7 +63,7 @@ type Command = variant {
   MergeMaturity : MergeMaturity;
   Disburse : Disburse;
 };
-type Command1 = variant {
+type Command_1 = variant {
   Error : GovernanceError;
   Split : SplitResponse;
   Follow : record {};
@@ -78,7 +78,7 @@ type Command1 = variant {
   Disburse : DisburseResponse;
   AddNeuronPermission : record {};
 };
-type Command2 = variant {
+type Command_2 = variant {
   Split : Split;
   Follow : Follow;
   DisburseMaturity : DisburseMaturity;
@@ -154,7 +154,7 @@ type GetModeResponse = record { mode : opt int32 };
 type GetNeuron = record { neuron_id : opt NeuronId };
 type GetNeuronResponse = record { result : opt Result };
 type GetProposal = record { proposal_id : opt ProposalId };
-type GetProposalResponse = record { result : opt Result1 };
+type GetProposalResponse = record { result : opt Result_1 };
 type GetRunningSnsVersionResponse = record {
   deployed_version : opt Version;
   pending_version : opt UpgradeInProgress;
@@ -222,7 +222,7 @@ type ListProposals = record {
 };
 type ListProposalsResponse = record { proposals : vec ProposalData };
 type ManageNeuron = record { subaccount : vec nat8; command : opt Command };
-type ManageNeuronResponse = record { command : opt Command1 };
+type ManageNeuronResponse = record { command : opt Command_1 };
 type ManageSnsMetadata = record {
   url : opt text;
   logo : opt text;
@@ -287,7 +287,7 @@ type Neuron = record {
 };
 type NeuronId = record { id : vec nat8 };
 type NeuronInFlightCommand = record {
-  command : opt Command2;
+  command : opt Command_2;
   timestamp : nat64;
 };
 type NeuronParameters = record {
@@ -346,7 +346,7 @@ type RemoveNeuronPermissions = record {
   principal_id : opt principal;
 };
 type Result = variant { Error : GovernanceError; Neuron : Neuron };
-type Result1 = variant { Error : GovernanceError; Proposal : ProposalData };
+type Result_1 = variant { Error : GovernanceError; Proposal : ProposalData };
 type RewardEvent = record {
   rounds_since_last_distribution : opt nat64;
   actual_timestamp_seconds : nat64;
