@@ -269,7 +269,7 @@ pub struct GetLifecycleResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_open_ticket_arg0 {}
+pub struct GetOpenTicketArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Icrc1Account {
@@ -517,7 +517,7 @@ impl SERVICE {
     pub async fn get_lifecycle(&self, arg0: GetLifecycleArg) -> CallResult<(GetLifecycleResponse,)> {
         ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await
     }
-    pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> CallResult<(GetOpenTicketResponse,)> {
+    pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
         ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
     }
     pub async fn get_sale_parameters(

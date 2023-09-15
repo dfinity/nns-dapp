@@ -72,7 +72,7 @@ index 1d3d0ca6f..9af0c49b4 100644
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 -pub struct GetOpenTicketArg {}
-+pub struct get_open_ticket_arg0 {}
++pub struct GetOpenTicketArg {}
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct Icrc1Account {
@@ -212,7 +212,7 @@ index 1d3d0ca6f..9af0c49b4 100644
          ic_cdk::call(self.0, "get_lifecycle", (arg0,)).await
      }
 -    pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> Result<(GetOpenTicketResponse,)> {
-+    pub async fn get_open_ticket(&self, arg0: get_open_ticket_arg0) -> CallResult<(GetOpenTicketResponse,)> {
++    pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
          ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
      }
 -    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> Result<(GetSaleParametersResponse,)> {
