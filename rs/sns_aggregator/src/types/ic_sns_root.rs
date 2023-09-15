@@ -157,7 +157,7 @@ pub struct RegisterDappCanistersRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct register_dapp_canisters_ret0 {}
+pub struct RegisterDappCanistersRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetDappControllersRequest {
@@ -211,7 +211,7 @@ impl SERVICE {
     pub async fn register_dapp_canisters(
         &self,
         arg0: RegisterDappCanistersRequest,
-    ) -> CallResult<(register_dapp_canisters_ret0,)> {
+    ) -> CallResult<(RegisterDappCanistersRet,)> {
         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
     }
     pub async fn set_dapp_controllers(
