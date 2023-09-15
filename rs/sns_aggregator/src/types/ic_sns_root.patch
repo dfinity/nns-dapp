@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index cb295e4f0..33d538248 100644
+index cb295e4f0..1d9b90b3e 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -24,15 +24,6 @@ index cb295e4f0..33d538248 100644
  pub struct ListSnsCanistersResponse {
      pub root: Option<candid::Principal>,
      pub swap: Option<candid::Principal>,
-@@ -150,7 +149,7 @@ pub struct RegisterDappCanisterRequest {
- }
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct RegisterDappCanisterRet {}
-+pub struct register_dapp_canister_ret0 {}
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
- pub struct RegisterDappCanistersRequest {
 @@ -158,7 +157,7 @@ pub struct RegisterDappCanistersRequest {
  }
  
@@ -77,7 +68,7 @@ index cb295e4f0..33d538248 100644
          &self,
          arg0: RegisterDappCanisterRequest,
 -    ) -> Result<(RegisterDappCanisterRet,)> {
-+    ) -> CallResult<(register_dapp_canister_ret0,)> {
++    ) -> CallResult<(RegisterDappCanisterRet,)> {
          ic_cdk::call(self.0, "register_dapp_canister", (arg0,)).await
      }
      pub async fn register_dapp_canisters(
