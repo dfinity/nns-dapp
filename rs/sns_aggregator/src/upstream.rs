@@ -11,6 +11,7 @@ use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 use crate::types::upstream::UpstreamData;
 use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
+use candid::Principal;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
@@ -105,10 +106,8 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... get_state"));
-    let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
-        .await
-        .map(|response: (_,)| response.0)
-        .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
+    let swap_state: GetStateResponse = get_swap_state(swap_canister_id)
+        .await.map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
         .unwrap_or_default();
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
@@ -157,17 +156,10 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             Ok(response) => Some(response),
         };
 
-    let derived_state_response: Option<GetDerivedStateResponse> =
-        match ic_cdk::api::call::call(swap_canister_id, "get_derived_state", (EmptyRecord {},))
-            .await
-            .map(|response: (_,)| response.0)
-        {
-            Err(err) => {
-                crate::state::log(format!("Failed to get derived state: {err:?}"));
-                None
-            }
-            Ok(response) => Some(response),
-        };
+    let derived_state_response: Option<GetDerivedStateResponse> = get_derived_state(swap_canister_id)
+        .await
+        .map_err(|err| crate::state::log(format!("Failed to get derived state: {err:?}")))
+        .ok();
 
     let lifecycle_response: Option<GetLifecycleResponse> =
         match ic_cdk::api::call::call(swap_canister_id, "get_lifecycle", (EmptyRecord {},))
@@ -205,4 +197,21 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .unwrap_or_default();
     crate::state::log(format!("Getting SNS index {index}... DONE"));
     Ok(())
+}
+
+/// Gets the state of the swap.
+///
+/// Note: This API is deprecated but must not be removed until the UI is updated.
+pub async fn get_swap_state(swap_canister_id: Principal) -> Result<GetStateResponse, (RejectionCode, String)> {
+    ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
+        .await
+        .map(|response: (_,)| response.0)
+}
+
+pub async fn get_derived_state(
+    swap_canister_id: Principal,
+) -> Result<GetDerivedStateResponse, (RejectionCode, String)> {
+    ic_cdk::api::call::call(swap_canister_id, "get_derived_state", (EmptyRecord {},))
+        .await
+        .map(|response: (_,)| response.0)
 }

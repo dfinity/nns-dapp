@@ -2,7 +2,8 @@
 use crate::{
     convert_canister_id,
     state::{State, STATE},
-    types::{upstream::SnsCache, upstream::SnsIndex, EmptyRecord, GetStateResponse},
+    types::{upstream::SnsCache, upstream::SnsIndex, GetStateResponse},
+    upstream::{get_derived_state, get_swap_state},
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
@@ -96,14 +97,11 @@ impl FastScheduler {
     }
     /// Gets data, updating the global state.
     async fn global_update(index: SnsIndex) {
-        crate::state::log(format!("Updating SNS index {index} swap state..."));
+        crate::state::log(format!("Updating SNS index {index} swap and derived state..."));
         let swap_canister_id = STATE.with(|state| convert_canister_id!(state.swap_canister_from_index(index)));
         let root_canister_id = STATE.with(|state| convert_canister_id!(state.root_canister_from_index(index)));
-        let swap_state: GetStateResponse = ic_cdk::api::call::call(swap_canister_id, "get_state", (EmptyRecord {},))
-            .await
-            .map(|response: (_,)| response.0)
-            .map_err(|err| crate::state::log(format!("Failed to get swap state: {err:?}")))
-            .unwrap_or_default();
+        let swap_state_maybe = get_swap_state(swap_canister_id).await;
+        let derived_state_maybe = get_derived_state(swap_canister_id).await;
         // Save the state
         STATE.with(|state| {
             state
@@ -114,7 +112,18 @@ impl FastScheduler {
                 .upstream_data
                 .entry(root_canister_id)
                 .and_modify(|entry| {
-                    entry.swap_state = swap_state;
+                    match derived_state_maybe {
+                        Ok(derived_state) => entry.derived_state = Some(derived_state),
+                        Err(err) => crate::state::log(format!(
+                            "Failed to get derived state; derived state is NOT updated: {err:?}"
+                        )),
+                    };
+                    match swap_state_maybe {
+                        Ok(swap_state) => entry.swap_state = swap_state,
+                        Err(err) => {
+                            crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err:?}"))
+                        }
+                    };
                 });
         });
         // Update affected assets
