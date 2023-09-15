@@ -183,7 +183,7 @@ pub struct GetTransactionsResponse {
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct icrc1_supported_standards_ret0_inner {
+pub struct Icrc1SupportedStandardsRetItem {
     pub url: String,
     pub name: String,
 }
@@ -246,7 +246,7 @@ impl SERVICE {
     pub async fn icrc1_name(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_name", ()).await
     }
-    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_inner>,)> {
+    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
     }
     pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
