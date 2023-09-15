@@ -3,24 +3,14 @@
  */
 
 import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  mockActiveDisbursement,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import { SnsViewActiveDisbursementsItemActionPo } from "$tests/page-objects/SnsViewActiveDisbursementsItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import { render } from "@testing-library/svelte";
-
-const testActiveDisbursement: DisburseMaturityInProgress = {
-  timestamp_of_disbursement_seconds: 10000n,
-  amount_e8s: 1000000n,
-  account_to_disburse_to: [
-    {
-      owner: [mockPrincipal],
-      subaccount: [],
-    },
-  ],
-};
 
 describe("SnsViewActiveDisbursementsItemAction", () => {
   const renderComponent = (neuron: SnsNeuron) => {
@@ -47,21 +37,26 @@ describe("SnsViewActiveDisbursementsItemAction", () => {
   it("should render components when disbursements available", async () => {
     const po = renderComponent({
       ...mockSnsNeuron,
-      disburse_maturity_in_progress: [testActiveDisbursement],
+      disburse_maturity_in_progress: [mockActiveDisbursement],
     });
 
     expect(await po.isPresent()).toBe(true);
   });
 
-  it("should render disbursement count", async () => {
+  it("should render disbursement amount", async () => {
+    const disbursement1 = {
+      ...mockActiveDisbursement,
+      amount_e8s: 100_000_000n,
+    };
+    const disbursement2 = {
+      ...mockActiveDisbursement,
+      amount_e8s: 200_000_000n,
+    };
     const po = renderComponent({
       ...mockSnsNeuron,
-      disburse_maturity_in_progress: [
-        testActiveDisbursement,
-        testActiveDisbursement,
-      ],
+      disburse_maturity_in_progress: [disbursement1, disbursement2],
     });
 
-    expect(await po.getDisbursementCount()).toBe(2);
+    expect(await po.getDisbursementTotal()).toBe("3.00");
   });
 });

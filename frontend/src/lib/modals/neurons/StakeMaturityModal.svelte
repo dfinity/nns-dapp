@@ -12,7 +12,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
 
   const steps: WizardSteps = [
     {
@@ -45,7 +45,7 @@
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {formattedMaturity}
+      {availableMaturityE8s}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}

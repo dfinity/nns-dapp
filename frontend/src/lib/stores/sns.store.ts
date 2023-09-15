@@ -1,7 +1,11 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import { differentSummaries } from "$lib/utils/projects.utils";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
-import { mapAndSortSnsQueryToSummaries } from "$lib/utils/sns.utils";
+import {
+  convertDerivedStateResponseToDerivedState,
+  mapAndSortSnsQueryToSummaries,
+} from "$lib/utils/sns.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
@@ -213,22 +217,13 @@ const initSnsQueryStore = (): SnsQueryStore => {
       derivedState: SnsGetDerivedStateResponse;
       rootCanisterId: string;
     }) {
-      const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
-      const buyer_total_icp_e8s = fromNullable(
-        derivedState.buyer_total_icp_e8s
-      );
-      // We don't update the store if any of the derived state mandatory fields is undefined.
-      if (
-        sns_tokens_per_icp === undefined ||
-        buyer_total_icp_e8s === undefined
-      ) {
+      const newDerivedState =
+        convertDerivedStateResponseToDerivedState(derivedState);
+      // Ignore updating the store if the mandatory fields are not present.
+      if (isNullish(newDerivedState)) {
         return;
       }
-      const newDerivedState: SnsSwapDerivedState = {
-        ...derivedState,
-        sns_tokens_per_icp,
-        buyer_total_icp_e8s,
-      };
+
       update((data: SnsQueryStoreData) => ({
         metadata: data?.metadata ?? [],
         swaps: (data?.swaps ?? []).map((swap) =>
@@ -393,24 +388,51 @@ export const snsSummariesStore = derived<
     lifecycles,
     enableSnsAggregatorStore,
   ]) => {
+    const snsQuerySummaries = mapAndSortSnsQueryToSummaries({
+      metadata: data?.metadata ?? [],
+      swaps: data?.swaps ?? [],
+    });
+
     if (!enableSnsAggregatorStore) {
-      return mapAndSortSnsQueryToSummaries({
-        metadata: data?.metadata ?? [],
-        swaps: data?.swaps ?? [],
-      });
+      return snsQuerySummaries;
     }
-    // The aggregator data is fetched on init.
-    // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
-    // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
-    return (
+
+    const aggregatorSummaries =
       aggregatorData.data
         ?.map(convertDtoToSnsSummary)
         .map(overrideDerivedState(derivedStates))
         .map(overrideLifecycle(lifecycles))
         .filter((optionalSummary): optionalSummary is SnsSummary =>
           nonNullish(optionalSummary)
-        ) ?? []
-    );
+        ) ?? [];
+
+    // It might be that temporarily one store is not yet populated, while the other is.
+    // That's why we wait until both are populated to compare them.
+    if (
+      snsQuerySummaries.length > 0 &&
+      aggregatorSummaries.length > 0 &&
+      aggregatorSummaries.length !== snsQuerySummaries.length
+    ) {
+      console.warn(
+        `The aggregator and query data do not match. Aggregator data: ${aggregatorSummaries.length}, query data: ${snsQuerySummaries.length}.`
+      );
+    }
+
+    if (
+      snsQuerySummaries.length > 0 &&
+      aggregatorSummaries.length === snsQuerySummaries.length &&
+      differentSummaries(aggregatorSummaries, snsQuerySummaries).length > 0
+    ) {
+      console.warn(
+        "The aggregator and query data do not match. Check below and the debug store for more information."
+      );
+      console.warn(differentSummaries(aggregatorSummaries, snsQuerySummaries));
+    }
+
+    // The aggregator data is fetched on init.
+    // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
+    // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
+    return aggregatorSummaries;
   }
 );
 
