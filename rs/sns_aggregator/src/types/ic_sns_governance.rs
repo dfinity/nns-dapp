@@ -379,7 +379,7 @@ pub struct Disburse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Command_2 {
+pub enum Command2 {
     Split(Split),
     Follow(Follow),
     DisburseMaturity(DisburseMaturity),
@@ -397,7 +397,7 @@ pub enum Command_2 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronInFlightCommand {
-    pub command: Option<Command_2>,
+    pub command: Option<Command2>,
     pub timestamp: u64,
 }
 
