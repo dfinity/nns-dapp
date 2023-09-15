@@ -333,10 +333,7 @@ impl Service {
     ) -> CallResult<(InsertUpgradePathEntriesResponse,)> {
         ic_cdk::call(self.0, "insert_upgrade_path_entries", (arg0,)).await
     }
-    pub async fn list_deployed_snses(
-        &self,
-        arg0: ListDeployedSnsesArg,
-    ) -> CallResult<(ListDeployedSnsesResponse,)> {
+    pub async fn list_deployed_snses(&self, arg0: ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
         ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
     }
     pub async fn list_upgrade_steps(&self, arg0: ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
