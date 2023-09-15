@@ -474,7 +474,7 @@ pub struct OpenRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct open_ret0 {}
+pub struct OpenRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RefreshBuyerTokensRequest {
@@ -553,7 +553,7 @@ impl SERVICE {
     pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok1,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
     }
-    pub async fn open(&self, arg0: OpenRequest) -> CallResult<(open_ret0,)> {
+    pub async fn open(&self, arg0: OpenRequest) -> CallResult<(OpenRet,)> {
         ic_cdk::call(self.0, "open", (arg0,)).await
     }
     pub async fn refresh_buyer_tokens(
