@@ -217,6 +217,7 @@ type Stats =
         performance_counts: vec PerformanceCount;
         stable_memory_size_bytes: opt nat64;
         wasm_memory_size_bytes: opt nat64;
+        schema: opt nat32;
     };
 
 type PerformanceCount =
