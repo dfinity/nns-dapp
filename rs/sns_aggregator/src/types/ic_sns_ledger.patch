@@ -1,8 +1,36 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 05042e186..dd77268d5 100644
+index 94a96401f..dd77268d5 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -95,23 +95,21 @@ pub struct BlockRange {
+@@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
+ use ic_cdk::api::call::CallResult;
+ // This is an experimental feature to generate Rust binding from Candid.
+ // You may want to manually adjust some of the types.
+-#![allow(dead_code, unused_imports)]
+-// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
++// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+ // use ic_cdk::api::call::CallResult as Result;
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -44,7 +43,7 @@ pub struct UpgradeArgs {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct InitArgsArchiveOptions {
++pub struct InitArgs_archive_options {
+     pub num_blocks_to_archive: u64,
+     pub trigger_threshold: u64,
+     pub max_message_size_bytes: Option<u64>,
+@@ -61,7 +60,7 @@ pub struct InitArgs {
+     pub minting_account: Account,
+     pub initial_balances: Vec<(Account, u64)>,
+     pub fee_collector_account: Option<Account>,
+-    pub archive_options: InitArgsArchiveOptions,
++    pub archive_options: InitArgs_archive_options,
+     pub token_name: String,
+ }
+ 
+@@ -96,23 +95,21 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -10,7 +38,7 @@ index 05042e186..dd77268d5 100644
 -    BlockRange,
 -  ) query);
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetBlocksResponse_archived_blocks_item {
+-pub struct GetBlocksResponseArchivedBlocksItem {
 +pub type QueryBlockArchiveFn = candid::Func;
 +#[derive(CandidType, Deserialize)]
 +pub struct GetBlocksResponse_archived_blocks_inner {
@@ -26,12 +54,54 @@ index 05042e186..dd77268d5 100644
      pub first_index: BlockIndex,
      pub blocks: Vec<Block>,
      pub chain_length: u64,
--    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_item>,
+-    pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 +    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_inner>,
  }
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -167,27 +165,25 @@ pub struct TransactionRange {
+@@ -129,7 +126,7 @@ pub struct GetTransactionsRequest {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct TransactionBurnInner {
++pub struct Transaction_burn_inner {
+     pub from: Account,
+     pub memo: Option<serde_bytes::ByteBuf>,
+     pub created_at_time: Option<u64>,
+@@ -137,7 +134,7 @@ pub struct TransactionBurnInner {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct TransactionMintInner {
++pub struct Transaction_mint_inner {
+     pub to: Account,
+     pub memo: Option<serde_bytes::ByteBuf>,
+     pub created_at_time: Option<u64>,
+@@ -145,7 +142,7 @@ pub struct TransactionMintInner {
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+-pub struct TransactionTransferInner {
++pub struct Transaction_transfer_inner {
+     pub to: Account,
+     pub fee: Option<candid::Nat>,
+     pub from: Account,
+@@ -156,11 +153,11 @@ pub struct TransactionTransferInner {
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ pub struct Transaction {
+-    pub burn: Option<TransactionBurnInner>,
++    pub burn: Option<Transaction_burn_inner>,
+     pub kind: String,
+-    pub mint: Option<TransactionMintInner>,
++    pub mint: Option<Transaction_mint_inner>,
+     pub timestamp: u64,
+-    pub transfer: Option<TransactionTransferInner>,
++    pub transfer: Option<Transaction_transfer_inner>,
+ }
+ 
+ #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -168,27 +165,25 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  
@@ -39,7 +109,7 @@ index 05042e186..dd77268d5 100644
 -    TransactionRange,
 -  ) query);
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetTransactionsResponse_archived_transactions_item {
+-pub struct GetTransactionsResponseArchivedTransactionsItem {
 +pub type QueryArchiveFn = candid::Func;
 +#[derive(CandidType, Deserialize)]
 +pub struct GetTransactionsResponse_archived_transactions_inner {
@@ -54,23 +124,75 @@ index 05042e186..dd77268d5 100644
      pub first_index: TxIndex,
      pub log_length: candid::Nat,
      pub transactions: Vec<Transaction>,
--    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_item>,
+-    pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 +    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_inner>,
  }
  
  pub type Tokens = candid::Nat;
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct icrc1_supported_standards_ret0_item {
+-pub struct Icrc1SupportedStandardsRetItem {
 +pub struct icrc1_supported_standards_ret0_inner {
      pub url: String,
      pub name: String,
  }
-@@ -250,7 +246,7 @@ impl SERVICE {
-     pub async fn icrc1_name(&self) -> CallResult<(String,)> {
+@@ -222,45 +217,45 @@ pub enum TransferResult {
+     Err(TransferError),
+ }
+ 
+-pub struct Service(pub candid::Principal);
+-impl Service {
+-    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> Result<(GetBlocksResponse,)> {
++pub struct SERVICE(pub candid::Principal);
++impl SERVICE {
++    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
+         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
+     }
+-    pub async fn get_data_certificate(&self) -> Result<(DataCertificate,)> {
++    pub async fn get_data_certificate(&self) -> CallResult<(DataCertificate,)> {
+         ic_cdk::call(self.0, "get_data_certificate", ()).await
+     }
+-    pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> Result<(GetTransactionsResponse,)> {
++    pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
+         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
+     }
+-    pub async fn icrc_1_balance_of(&self, arg0: Account) -> Result<(Tokens,)> {
++    pub async fn icrc1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
+         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
+     }
+-    pub async fn icrc_1_decimals(&self) -> Result<(u8,)> {
++    pub async fn icrc1_decimals(&self) -> CallResult<(u8,)> {
+         ic_cdk::call(self.0, "icrc1_decimals", ()).await
+     }
+-    pub async fn icrc_1_fee(&self) -> Result<(Tokens,)> {
++    pub async fn icrc1_fee(&self) -> CallResult<(Tokens,)> {
+         ic_cdk::call(self.0, "icrc1_fee", ()).await
+     }
+-    pub async fn icrc_1_metadata(&self) -> Result<(Vec<(String, MetadataValue)>,)> {
++    pub async fn icrc1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
+         ic_cdk::call(self.0, "icrc1_metadata", ()).await
+     }
+-    pub async fn icrc_1_minting_account(&self) -> Result<(Option<Account>,)> {
++    pub async fn icrc1_minting_account(&self) -> CallResult<(Option<Account>,)> {
+         ic_cdk::call(self.0, "icrc1_minting_account", ()).await
+     }
+-    pub async fn icrc_1_name(&self) -> Result<(String,)> {
++    pub async fn icrc1_name(&self) -> CallResult<(String,)> {
          ic_cdk::call(self.0, "icrc1_name", ()).await
      }
--    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_item>,)> {
+-    pub async fn icrc_1_supported_standards(&self) -> Result<(Vec<Icrc1SupportedStandardsRetItem>,)> {
 +    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_inner>,)> {
          ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
      }
-     pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
+-    pub async fn icrc_1_symbol(&self) -> Result<(String,)> {
++    pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
+         ic_cdk::call(self.0, "icrc1_symbol", ()).await
+     }
+-    pub async fn icrc_1_total_supply(&self) -> Result<(Tokens,)> {
++    pub async fn icrc1_total_supply(&self) -> CallResult<(Tokens,)> {
+         ic_cdk::call(self.0, "icrc1_total_supply", ()).await
+     }
+-    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> Result<(TransferResult,)> {
++    pub async fn icrc1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
+         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
+     }
+ }
