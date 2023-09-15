@@ -97,7 +97,7 @@ pub struct BlockRange {
 
 pub type QueryBlockArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
-pub struct GetBlocksResponse_archived_blocks_inner {
+pub struct GetBlocksResponseArchivedBlocksItem {
     pub callback: QueryBlockArchiveFn,
     pub start: BlockIndex,
     pub length: candid::Nat,
@@ -109,7 +109,7 @@ pub struct GetBlocksResponse {
     pub first_index: BlockIndex,
     pub blocks: Vec<Block>,
     pub chain_length: u64,
-    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_inner>,
+    pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
