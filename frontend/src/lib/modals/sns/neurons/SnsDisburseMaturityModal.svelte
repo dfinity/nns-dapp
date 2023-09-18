@@ -10,7 +10,6 @@
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { tokensStore } from "$lib/stores/tokens.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let neuron: SnsNeuron;
@@ -27,7 +26,7 @@
   );
 
   let token: IcrcTokenMetadata | undefined;
-  $: token = $tokensStore[$selectedUniverseIdStore.toText()]?.token;
+  $: token = $tokensStore[rootCanisterId.toText()]?.token;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
@@ -58,7 +57,7 @@
 
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
-  transactionFeeE8s={token?.fee}
+  minimumAmountE8s={token?.fee}
   tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
   on:nnsClose

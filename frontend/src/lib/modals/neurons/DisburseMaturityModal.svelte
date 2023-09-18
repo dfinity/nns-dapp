@@ -19,7 +19,7 @@
   export let tokenSymbol: string;
   // 99% of users will disburse more than the transaction fee.
   // We don't want a possible error fetching the fee to disrupt the whole flow.
-  export let transactionFeeE8s = 0n;
+  export let minimumAmountE8s = 0n;
 
   const steps: WizardSteps = [
     {
@@ -41,7 +41,7 @@
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
   let disableDisburse = false;
-  $: disableDisburse = selectedMaturityE8s < transactionFeeE8s;
+  $: disableDisburse = selectedMaturityE8s < minimumAmountE8s;
 
   // Show the text only if the selected percentage is greater than 0.
   let disabledText: string | undefined = undefined;
@@ -49,7 +49,7 @@
     disableDisburse && percentageToDisburse > 0
       ? replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_modal_disabled_tooltip,
-          { $amount: formatToken({ value: transactionFeeE8s }) }
+          { $amount: formatToken({ value: minimumAmountE8s }) }
         )
       : undefined;
 
