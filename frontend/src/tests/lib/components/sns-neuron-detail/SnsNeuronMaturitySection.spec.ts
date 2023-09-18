@@ -3,15 +3,14 @@
  */
 
 import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
-import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
 
 describe("SnsNeuronMaturitySection", () => {
+  const feeE8s = 10_000n;
   const mockNeuron = createMockSnsNeuron({
     id: [1],
     stakedMaturity: 100_000_000n,
@@ -19,12 +18,10 @@ describe("SnsNeuronMaturitySection", () => {
     activeDisbursementsE8s: [200_000_000n],
   });
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(NeuronContextActionsTest, {
+    const { container } = render(SnsNeuronMaturitySection, {
       props: {
         neuron,
-        passPropNeuron: true,
-        rootCanisterId: mockCanisterId,
-        testComponent: SnsNeuronMaturitySection,
+        feeE8s,
       },
     });
 

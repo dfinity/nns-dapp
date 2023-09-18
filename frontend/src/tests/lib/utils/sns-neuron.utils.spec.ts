@@ -28,7 +28,8 @@ import {
   getSnsNeuronStake,
   getSnsNeuronState,
   getSnsNeuronVote,
-  hasEnoughMaturityToStakeOrDisburse,
+  hasEnoughMaturityToDisburse,
+  hasEnoughMaturityToStake,
   hasEnoughStakeToSplit,
   hasPermissionToDisburse,
   hasPermissionToDisburseMaturity,
@@ -1361,11 +1362,16 @@ describe("sns-neuron utils", () => {
 
   describe("hasEnoughMaturityToStake", () => {
     it("should return true if staked maturity", () => {
-      const neuron = {
+      const neuron1 = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: BigInt(200000000),
       };
-      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBeTruthy();
+      expect(hasEnoughMaturityToStake(neuron1)).toBe(true);
+      const neuron2 = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: 1n,
+      };
+      expect(hasEnoughMaturityToStake(neuron2)).toBe(true);
     });
 
     it("should return false if no staked maturity", () => {
@@ -1374,12 +1380,39 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
 
-      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBe(false);
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasEnoughMaturityToStakeOrDisburse(null)).toBe(false);
-      expect(hasEnoughMaturityToStakeOrDisburse(undefined)).toBe(false);
+      expect(hasEnoughMaturityToStake(null)).toBe(false);
+      expect(hasEnoughMaturityToStake(undefined)).toBe(false);
+    });
+  });
+
+  describe("hasEnoughMaturityToDisburse", () => {
+    const feeE8s = 10_000n;
+    it("should return true if maturity is more than fee", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: feeE8s + 1n,
+      };
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
+    });
+
+    it("should return false if maturity less than fee", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: feeE8s - 1n,
+      };
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
+    });
+
+    it("should return true if maturity is same as fee", () => {
+      const neuron = {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: feeE8s,
+      };
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
     });
   });
 

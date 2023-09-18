@@ -29,10 +29,11 @@ describe("SnsAvailableMaturityItemAction", () => {
     maturity: 314000000n,
     permissions: [controllerPermissions],
   });
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsNeuron, feeE8s = 10_000n) => {
     const { container } = render(SnsAvailableMaturityItemAction, {
       props: {
         neuron,
+        feeE8s,
       },
     });
 
@@ -87,6 +88,18 @@ describe("SnsAvailableMaturityItemAction", () => {
     const po = renderComponent(controlledNeuron);
 
     expect(await po.hasDisburseMaturityButton()).toBe(true);
+  });
+
+  it("should render disabled disburse maturity button when maturity is less than fee", async () => {
+    const fee = 100_000_000n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: fee - 1n,
+      permissions: [controllerPermissions],
+    });
+    const po = renderComponent(neuron, fee);
+
+    expect(await po.getDisburseMaturityButtonPo().isDisabled()).toBe(true);
   });
 
   it("should not render stake maturity button if user has no disburse maturity permission", async () => {

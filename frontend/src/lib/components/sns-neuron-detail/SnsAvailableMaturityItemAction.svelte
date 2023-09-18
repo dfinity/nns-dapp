@@ -14,6 +14,7 @@
   import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: SnsNeuron;
+  export let feeE8s: bigint;
 
   let allowedToStakeMaturity: boolean;
   $: allowedToStakeMaturity = hasPermissionToStakeMaturity({
@@ -40,6 +41,6 @@
   {/if}
 
   {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}
-    <SnsDisburseMaturityButton {neuron} />
+    <SnsDisburseMaturityButton {neuron} {feeE8s} />
   {/if}
 </CommonItemAction>
