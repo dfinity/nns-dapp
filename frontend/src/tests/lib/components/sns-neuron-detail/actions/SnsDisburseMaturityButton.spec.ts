@@ -38,7 +38,7 @@ describe("SnsDisburseMaturityButton", () => {
     expect(await po.isDisabled()).toBe(false);
   });
 
-  it("should be disabled if no maturity to disburse", async () => {
+  it("should be disabled if less maturity than transaction fee", async () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
