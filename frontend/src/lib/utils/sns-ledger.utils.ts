@@ -1,4 +1,7 @@
-import { IcrcTransferError } from "@dfinity/ledger";
+import {
+  IcrcTransferError,
+  type IcrcTransferVariatError,
+} from "@dfinity/ledger";
 import { toToastError } from "./error.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 
@@ -14,7 +17,7 @@ export const ledgerErrorToToastError = ({
   substitutions?: I18nSubstitutions;
 } => {
   if (err instanceof IcrcTransferError) {
-    const error: IcrcTransferError = err;
+    const error: IcrcTransferError<IcrcTransferVariatError> = err;
     if ("GenericError" in error.errorType) {
       return {
         labelKey: "error.transaction_error",
