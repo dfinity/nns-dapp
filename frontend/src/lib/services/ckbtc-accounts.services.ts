@@ -90,7 +90,7 @@ export const ckBTCTransferTokens = async ({
     transfer: async (
       params: {
         identity: Identity;
-      } & Omit<IcrcTransferParams, "transfer">
+      } & IcrcTransferParams
     ) =>
       await icrcTransfer({
         ...params,
