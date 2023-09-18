@@ -9,7 +9,6 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   allSnsNeuronPermissions,
   createMockSnsNeuron,
@@ -19,7 +18,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
 
 describe("SnsAvailableMaturityItemAction", () => {
   const controllerPermissions = {
@@ -32,12 +30,9 @@ describe("SnsAvailableMaturityItemAction", () => {
     permissions: [controllerPermissions],
   });
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(NeuronContextActionsTest, {
+    const { container } = render(SnsAvailableMaturityItemAction, {
       props: {
         neuron,
-        passPropNeuron: true,
-        rootCanisterId: mockCanisterId,
-        testComponent: SnsAvailableMaturityItemAction,
       },
     });
 
