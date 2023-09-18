@@ -28,6 +28,11 @@
   let token: IcrcTokenMetadata | undefined;
   $: token = $tokensStore[rootCanisterId.toText()]?.token;
 
+  // 99% of users will disburse more than the transaction fee.
+  // We don't want a possible error fetching the fee to disrupt the whole flow.
+  let minimumAmountE8s = 0n;
+  $: minimumAmountE8s = token?.fee ?? 0n;
+
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
 
@@ -57,7 +62,7 @@
 
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
-  minimumAmountE8s={token?.fee}
+  {minimumAmountE8s}
   tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
   on:nnsClose

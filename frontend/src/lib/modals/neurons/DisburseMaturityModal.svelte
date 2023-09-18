@@ -17,9 +17,8 @@
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
-  // 99% of users will disburse more than the transaction fee.
-  // We don't want a possible error fetching the fee to disrupt the whole flow.
-  export let minimumAmountE8s = 0n;
+
+  export let minimumAmountE8s: bigint;
 
   const steps: WizardSteps = [
     {
