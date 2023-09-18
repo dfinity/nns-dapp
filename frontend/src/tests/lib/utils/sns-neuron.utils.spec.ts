@@ -1391,7 +1391,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: feeE8s + 1n,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBeTruthy();
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
     });
 
     it("should return false if no staked maturity", () => {
@@ -1399,7 +1399,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: feeE8s - 1n,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBeTruthy();
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
     });
   });
 
