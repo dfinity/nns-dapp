@@ -311,6 +311,32 @@ const anonymizeTransfer = async (
     amount: await anonymizeAmount(data.amount),
   };
 };
+type Approve = Transfer & {
+  expected_allowance: [] | [bigint];
+  expires_at: [] | [bigint];
+  spender: SnsAccountRaw;
+};
+type ApproveOpt = [] | [Approve];
+const anonymizeApprove = async (
+  transfer: ApproveOpt
+): Promise<{ [key in keyof Approve]: unknown } | undefined> => {
+  const data = fromNullable(transfer);
+  if (isNullish(data)) {
+    return undefined;
+  }
+
+  return {
+    to: await anonymizeSnsAccount(data.to),
+    from: await anonymizeSnsAccount(data.from),
+    spender: await anonymizeSnsAccount(data.spender),
+    fee: data.fee,
+    memo: data.memo,
+    created_at_time: data.created_at_time,
+    amount: await anonymizeAmount(data.amount),
+    expected_allowance: data.expected_allowance,
+    expires_at: data.expires_at,
+  };
+};
 
 const anonymizeSnsTransaction = async (
   tx: IcrcTransaction
@@ -321,6 +347,7 @@ const anonymizeSnsTransaction = async (
     burn: await anonymizeTransfer(tx.burn as TransferOpt),
     mint: await anonymizeTransfer(tx.mint as TransferOpt),
     transfer: await anonymizeTransfer(tx.transfer as TransferOpt),
+    approve: await anonymizeApprove(tx.approve as ApproveOpt),
   };
 };
 
