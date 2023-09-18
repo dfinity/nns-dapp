@@ -48,8 +48,8 @@
   $: disabledText =
     disableDisburse && percentageToDisburse > 0
       ? replacePlaceholders(
-          $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
-          { $fee: formatToken({ value: transactionFeeE8s }) }
+          $i18n.neuron_detail.disburse_maturity_modal_disabled_tooltip,
+          { $amount: formatToken({ value: transactionFeeE8s }) }
         )
       : undefined;
 

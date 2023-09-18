@@ -635,6 +635,7 @@ interface I18nNeuron_detail {
   spawn: string;
   stake_maturity_disabled_tooltip: string;
   disburse_maturity_disabled_tooltip: string;
+  disburse_maturity_modal_disabled_tooltip: string;
   stake_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
