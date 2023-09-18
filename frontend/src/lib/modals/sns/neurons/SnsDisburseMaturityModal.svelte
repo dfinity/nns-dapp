@@ -11,7 +11,6 @@
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { Token } from "@dfinity/utils";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
@@ -27,7 +26,7 @@
   );
 
   let token: Token | undefined;
-  $: token = $tokensStore[$selectedUniverseIdStore.toText()]?.token;
+  $: token = $tokensStore[rootCanisterId.toText()]?.token;
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
