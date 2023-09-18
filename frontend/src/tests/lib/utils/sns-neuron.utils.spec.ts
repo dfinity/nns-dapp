@@ -28,7 +28,7 @@ import {
   getSnsNeuronStake,
   getSnsNeuronState,
   getSnsNeuronVote,
-  hasEnoughMaturityToStakeOrDisburse,
+  hasEnoughMaturityToStake,
   hasEnoughStakeToSplit,
   hasPermissionToDisburse,
   hasPermissionToDisburseMaturity,
@@ -1365,7 +1365,7 @@ describe("sns-neuron utils", () => {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: BigInt(200000000),
       };
-      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBeTruthy();
+      expect(hasEnoughMaturityToStake(neuron)).toBeTruthy();
     });
 
     it("should return false if no staked maturity", () => {
@@ -1374,12 +1374,12 @@ describe("sns-neuron utils", () => {
         maturity_e8s_equivalent: BigInt(0),
       };
 
-      expect(hasEnoughMaturityToStakeOrDisburse(neuron)).toBe(false);
+      expect(hasEnoughMaturityToStake(neuron)).toBe(false);
     });
 
     it("should return false when no neuron provided", () => {
-      expect(hasEnoughMaturityToStakeOrDisburse(null)).toBe(false);
-      expect(hasEnoughMaturityToStakeOrDisburse(undefined)).toBe(false);
+      expect(hasEnoughMaturityToStake(null)).toBe(false);
+      expect(hasEnoughMaturityToStake(undefined)).toBe(false);
     });
   });
 
