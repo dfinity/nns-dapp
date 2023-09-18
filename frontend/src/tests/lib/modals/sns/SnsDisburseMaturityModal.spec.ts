@@ -5,12 +5,14 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -20,6 +22,7 @@ jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsDisburseMaturityModal", () => {
   const reloadNeuron = jest.fn();
+  const rootCanisterId = mockPrincipal;
 
   const renderSnsDisburseMaturityModal = async (
     neuron: SnsNeuron = mockSnsNeuron
@@ -29,7 +32,7 @@ describe("SnsDisburseMaturityModal", () => {
       props: {
         neuronId: neuron.id,
         neuron,
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         reloadNeuron,
       },
     });
@@ -39,6 +42,10 @@ describe("SnsDisburseMaturityModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     authStore.setForTesting(mockIdentity);
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: mockSnsToken,
+    });
   });
 
   it("should display total maturity", async () => {
@@ -77,8 +84,9 @@ describe("SnsDisburseMaturityModal", () => {
     await po.clickNextButton();
 
     expect(await po.getConfirmPercentage()).toBe("50%");
-    expect(await po.getConfirmTokens()).toBe("0.48-0.53 ICP");
+    expect(await po.getConfirmTokens()).toBe("0.48-0.53 TST");
     expect(await po.getConfirmDestination()).toBe("Main");
+    expect(await po.getTransactionFee()).toBe("0.0004 TST");
   });
 
   const disburse = async (neuron: SnsNeuron) => {

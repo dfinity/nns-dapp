@@ -630,6 +630,7 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_amount: string;
   disburse_maturity_confirmation_tokens: string;
   disburse_maturity_confirmation_destination: string;
+  disburse_maturity_confirmation_fee: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;

@@ -14,9 +14,12 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { TokenAmount } from "@dfinity/utils";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let availableMaturityE8s: bigint;
-  export let tokenSymbol: string;
+  export let token: IcrcTokenMetadata;
 
   const steps: WizardSteps = [
     {
@@ -80,7 +83,7 @@
         <span class="description">
           {replacePlaceholders(
             $i18n.neuron_detail.disburse_maturity_description_1,
-            { $symbol: tokenSymbol }
+            { $symbol: token.symbol }
           )}
         </span>
 
@@ -88,7 +91,7 @@
           <Html
             text={replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_description_2,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}
           />
         </span>
@@ -129,12 +132,12 @@
           <span slot="key" class="description"
             >{replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}</span
           >
           <span data-tid="confirm-tokens" class="value" slot="value"
             >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {tokenSymbol}
+            {token.symbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>
@@ -148,6 +151,16 @@
             slot="value"
             >{$i18n.accounts.main}
           </span>
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail.disburse_maturity_confirmation_fee}</span
+          >
+          <AmountDisplay
+            slot="value"
+            amount={TokenAmount.fromE8s({ amount: token.fee, token })}
+            singleLine
+          />
         </KeyValuePair>
       </div>
     </NeuronConfirmActionScreen>
