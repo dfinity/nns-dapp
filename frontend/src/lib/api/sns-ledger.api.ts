@@ -98,7 +98,7 @@ export const snsTransfer = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-} & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
+} & IcrcTransferParams): Promise<IcrcBlockIndex> => {
   logWithTimestamp("Getting Sns transfer: call...");
 
   const { transfer: transferApi } = await wrapper({

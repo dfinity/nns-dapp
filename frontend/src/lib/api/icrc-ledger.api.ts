@@ -81,7 +81,6 @@ export interface IcrcTransferParams {
   fromSubAccount?: SubAccountArray;
   createdAt?: bigint;
   fee: bigint;
-  transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
 }
 
 export const icrcTransfer = async ({
@@ -91,7 +90,7 @@ export const icrcTransfer = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-} & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
+} & IcrcTransferParams): Promise<IcrcBlockIndex> => {
   logWithTimestamp("Getting ckBTC transfer: call...");
 
   const {
@@ -122,7 +121,9 @@ export const executeIcrcTransfer = async ({
   createdAt,
   transfer: transferApi,
   ...rest
-}: IcrcTransferParams): Promise<IcrcBlockIndex> =>
+}: IcrcTransferParams & {
+  transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
+}): Promise<IcrcBlockIndex> =>
   transferApi({
     to: {
       owner,
