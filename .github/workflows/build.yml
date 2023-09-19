@@ -397,6 +397,8 @@ jobs:
           then ./scripts/sns/aggregator/downgrade-upgrade-test -w sns_aggregator_dev.wasm.gz --verbose
           else echo "Skipping test as there are no relevant code changes"
           fi
+      - name: Verify that fast data is updated fast
+        run: scripts/sns/aggregator/test-fast
       - name: Stop replica
         run: dfx stop
   assets:
