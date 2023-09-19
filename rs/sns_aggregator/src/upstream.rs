@@ -162,13 +162,10 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| crate::state::log(format!("Failed to get derived state: {err:?}")))
         .ok();
 
-    let lifecycle_response: Option<GetLifecycleResponse> = match get_lifecycle(swap_canister_id).await {
-        Err(err) => {
-            crate::state::log(format!("Failed to get lifecycle: {err:?}"));
-            None
-        }
-        Ok(response) => Some(response),
-    };
+    let lifecycle_response: Option<GetLifecycleResponse> = get_lifecycle(swap_canister_id)
+        .await
+        .map_err(|err| crate::state::log(format!("Failed to get lifecycle: {err:?}")))
+        .ok();
 
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
