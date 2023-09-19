@@ -29,7 +29,7 @@ describe("SnsDisburseMaturityButton", () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: fee + 10n,
+        maturity_e8s_equivalent: fee * 2n,
         staked_maturity_e8s_equivalent: [],
       },
       fee
@@ -50,7 +50,7 @@ describe("SnsDisburseMaturityButton", () => {
 
     expect(await po.isDisabled()).toBe(true);
     expect(await po.getTooltipText()).toBe(
-      "You do not have enough maturity to disburse. The minimum is: 0.0001."
+      "You do not have enough maturity to disburse. The minimum is: 0.00010526."
     );
   });
 

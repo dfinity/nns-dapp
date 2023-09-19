@@ -506,7 +506,7 @@ export const hasEnoughMaturityToStake = (
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
 
 /**
- * Is the maturity of the neuron bigger than the transaction fee?
+ * Is the maturity of the neuron bigger than the minimum amount to disburse?
  * @param {SnsNeuron} neuron
  * @param {bigint} feeE8s
  */
@@ -516,7 +516,8 @@ export const hasEnoughMaturityToDisburse = ({
 }: {
   feeE8s: bigint;
   neuron: SnsNeuron;
-}): boolean => maturity_e8s_equivalent >= feeE8s;
+}): boolean =>
+  maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(feeE8s);
 
 /**
  * Does the neuron has staked maturity?
