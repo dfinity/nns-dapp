@@ -311,8 +311,6 @@ jobs:
     steps:
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
-      - name: Install sponge
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@v3
         with:
