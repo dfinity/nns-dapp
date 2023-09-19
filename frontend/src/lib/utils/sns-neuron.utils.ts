@@ -1,3 +1,4 @@
+import { MATURITY_MODULATION_VARIANCE_PERCENTAGE } from "$lib/constants/neurons.constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -981,3 +982,11 @@ export const totalDisbursingMaturity = ({
     (acc, disbursement) => acc + disbursement.amount_e8s,
     BigInt(0)
   );
+
+/**
+ * The governance canister checks that the amount to disburse in the worst case (of the maturity modulation) is bigger than the transaction fee.
+ *
+ * Source: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/sns/governance/src/governance.rs?L1651
+ */
+export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
+  BigInt(Math.round(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));

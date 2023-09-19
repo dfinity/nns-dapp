@@ -12,9 +12,9 @@ import {
 import {
   AGE_MULTIPLIER,
   DISSOLVE_DELAY_MULTIPLIER,
+  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  SPAWN_VARIANCE_PERCENTAGE,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -499,7 +499,10 @@ export const isEnoughMaturityToSpawn = ({
   const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
-  return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;
+  return (
+    maturitySelected >=
+    MIN_NEURON_STAKE / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+  );
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>

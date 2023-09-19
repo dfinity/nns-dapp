@@ -5,7 +5,10 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import type { Principal } from "@dfinity/principal";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
-  import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
+  import {
+    formattedMaturity,
+    minimumAmountToDisburseMaturity,
+  } from "$lib/utils/sns-neuron.utils";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -28,10 +31,10 @@
   let token: IcrcTokenMetadata | undefined;
   $: token = $tokensStore[rootCanisterId.toText()]?.token;
 
-  // 99% of users will disburse more than the transaction fee.
-  // We don't want a possible error fetching the fee to disrupt the whole flow.
-  let minimumAmountE8s = 0n;
-  $: minimumAmountE8s = token?.fee ?? 0n;
+  let minimumAmountE8s: bigint;
+  // Token is loaded with all the projects from the aggregator.
+  // Therefore, if the user made it here, it's present.
+  $: minimumAmountE8s = minimumAmountToDisburseMaturity(token?.fee ?? 0n);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

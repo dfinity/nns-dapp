@@ -47,6 +47,7 @@ import {
   isUserHotkey,
   isVesting,
   minNeuronSplittable,
+  minimumAmountToDisburseMaturity,
   needsRefresh,
   neuronAge,
   nextMemo,
@@ -2490,6 +2491,16 @@ describe("sns-neuron utils", () => {
         activeDisbursementsE8s: [],
       });
       expect(totalDisbursingMaturity(neuron)).toBe(0n);
+    });
+  });
+
+  describe("minimumAmountToDisburseMaturity", () => {
+    it("returns worst case of maturity modulation", () => {
+      expect(minimumAmountToDisburseMaturity(10_000n)).toBe(10526n);
+    });
+
+    it("returns 0 if fee is 0", () => {
+      expect(minimumAmountToDisburseMaturity(0n)).toBe(0n);
     });
   });
 });
