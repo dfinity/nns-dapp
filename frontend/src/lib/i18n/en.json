@@ -646,7 +646,7 @@
     "disburse_maturity_confirmation_description": "This action is irreversible. Take a screenshot or record this information somewhere you can reference it. Consult with tax and legal advisors with further questions, and proceed at your own risk.",
     "disburse_maturity_success": "Maturity successfully disbursed.",
     "active_maturity_disbursements_description": "These disbursements are in progress and irreversible. After 7 days, new $symbol tokens will be minted and sent to the destination address. The quantity of new $symbol minted will depend on the maturity modulation function (see the <a href=\"https://wiki.internetcomputer.org/wiki/Maturity_modulation\" target=\"_blank\">wiki page</a>).",
-    "active_maturity_disbursements_amount": "Maturity disbursed",
+    "active_maturity_disbursements_amount": "Maturity disbursing",
     "stake_confirmation_modal_title": "Confirm Stake Maturity",
     "stake_maturity_modal_description": "Choose how much of the maturity available to stake into this neuron.",
     "stake_maturity_confirmation": "Are you sure you wish to stake $percentage of the maturity available?",
