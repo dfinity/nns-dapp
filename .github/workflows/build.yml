@@ -401,7 +401,9 @@ jobs:
           fi
       - name: Verify that fast data is updated fast
         run: |
-          snsdemo/bin/dfx-nns-import --network local
+          pushd snsdemo
+          bin/dfx-nns-import --network local
+          popd
           scripts/sns/aggregator/test-fast
       - name: Stop replica
         run: dfx stop
