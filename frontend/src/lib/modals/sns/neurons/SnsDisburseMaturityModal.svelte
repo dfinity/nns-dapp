@@ -5,13 +5,8 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import type { Principal } from "@dfinity/principal";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
-  import {
-    formattedMaturity,
-    minimumAmountToDisburseMaturity,
-  } from "$lib/utils/sns-neuron.utils";
+  import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
-  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
@@ -19,14 +14,6 @@
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
-
-  let maturity: string;
-  $: maturity = formattedMaturity(neuron);
-
-  let destinationAddress: string;
-  $: destinationAddress = shortenWithMiddleEllipsis(
-    $snsProjectMainAccountStore?.identifier ?? ""
-  );
 
   let token: IcrcTokenMetadata | undefined;
   $: token = $tokensStore[rootCanisterId.toText()]?.token;
