@@ -118,7 +118,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_swap.did",
+      "candid": "declarations/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
