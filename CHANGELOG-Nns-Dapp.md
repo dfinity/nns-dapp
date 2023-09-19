@@ -49,6 +49,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Fix build script by pinning cargo-binstall version.
+
 #### Security
 
 ## Proposal 124486
