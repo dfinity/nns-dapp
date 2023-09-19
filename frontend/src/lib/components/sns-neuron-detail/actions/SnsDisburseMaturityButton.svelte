@@ -21,7 +21,9 @@
     ? replacePlaceholders(
         $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
         {
-          $fee: formatToken({ value: minimumAmountToDisburseMaturity(feeE8s) }),
+          $amount: formatToken({
+            value: minimumAmountToDisburseMaturity(feeE8s),
+          }),
         }
       )
     : undefined;

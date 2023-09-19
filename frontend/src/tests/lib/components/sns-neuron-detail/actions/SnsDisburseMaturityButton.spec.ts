@@ -50,7 +50,7 @@ describe("SnsDisburseMaturityButton", () => {
 
     expect(await po.isDisabled()).toBe(true);
     expect(await po.getTooltipText()).toBe(
-      "You do not have enough maturity to disburse. The minimum is: 0.00010526."
+      "You do not have enough maturity to disburse. The minimum is: 0.00010527."
     );
   });
 

@@ -2496,7 +2496,7 @@ describe("sns-neuron utils", () => {
 
   describe("minimumAmountToDisburseMaturity", () => {
     it("returns worst case of maturity modulation", () => {
-      expect(minimumAmountToDisburseMaturity(10_000n)).toBe(10526n);
+      expect(minimumAmountToDisburseMaturity(10_000n)).toBe(10527n);
     });
 
     it("returns 0 if fee is 0", () => {

@@ -611,7 +611,7 @@
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
-    "disburse_maturity_disabled_tooltip": "You do not have enough maturity to disburse. The minimum is: $fee.",
+    "disburse_maturity_disabled_tooltip": "You do not have enough maturity to disburse. The minimum is: $amount.",
     "stake_maturity_tooltip": "Merge Maturity has been replaced by Stake Maturity. <a href=\"https://wiki.internetcomputer.org/wiki/NNS_neuron_operations_related_to_maturity\" rel=\"noopener noreferrer\" aria-label=\"Find more information about the new stake maturity\" target=\"_blank\">Learn more</a>.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
     "stop_dissolve_description": "Are you sure you want to stop the dissolve process?",

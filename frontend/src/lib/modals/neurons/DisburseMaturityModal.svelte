@@ -48,7 +48,7 @@
     disableDisburse && percentageToDisburse > 0
       ? replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
-          { $fee: formatToken({ value: minimumAmountE8s }) }
+          { $amount: formatToken({ value: minimumAmountE8s }) }
         )
       : undefined;
 

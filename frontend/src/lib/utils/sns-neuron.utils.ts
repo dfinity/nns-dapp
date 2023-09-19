@@ -990,4 +990,4 @@ export const totalDisbursingMaturity = ({
  * Source: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/sns/governance/src/governance.rs?L1651
  */
 export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
-  BigInt(Math.round(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));
+  BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));
