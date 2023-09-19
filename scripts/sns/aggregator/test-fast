@@ -5,7 +5,10 @@ PATH="$SOURCE_DIR:$PATH"
 print_help() {
   cat <<-EOF
 
-	Tests that SNSs with open sales are updated promptly.
+	Tests that SNSs with open sales have teh following fields updated promptly:
+	- buyer_total_icp_e8s
+	- direct_participant_count
+	- lifecycle
 	EOF
 }
 
