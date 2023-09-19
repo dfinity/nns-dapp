@@ -65,6 +65,26 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.isNextButtonDisabled()).toBe(false);
   });
 
+  it("should disable next button if amount of maturity is less than transaction fee", async () => {
+    const fee = 100_000_000n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: fee * 2n,
+    });
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        fee,
+        ...mockSnsToken,
+      },
+    });
+    // Maturity is 2x the fee, so 10% of maturity is not enough to cover the fee
+    const percentage = 10;
+    const po = await renderSnsDisburseMaturityModal(neuron);
+    await po.setPercentage(percentage);
+    expect(await po.isNextButtonDisabled()).toBe(false);
+  });
+
   it("should display selected percentage and total maturity", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],

@@ -47,6 +47,7 @@ import {
   isUserHotkey,
   isVesting,
   minNeuronSplittable,
+  minimumAmountToDisburseMaturity,
   needsRefresh,
   neuronAge,
   nextMemo,
@@ -1391,10 +1392,10 @@ describe("sns-neuron utils", () => {
 
   describe("hasEnoughMaturityToDisburse", () => {
     const feeE8s = 10_000n;
-    it("should return true if maturity is more than fee", () => {
+    it("should return true if maturity is more than fee in worst modulation scenario", () => {
       const neuron = {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: feeE8s + 1n,
+        maturity_e8s_equivalent: 10526n + 1n,
       };
       expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
     });
@@ -1407,12 +1408,12 @@ describe("sns-neuron utils", () => {
       expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
     });
 
-    it("should return true if maturity is same as fee", () => {
+    it("should return false if maturity is same as fee", () => {
       const neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: feeE8s,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
+      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
     });
   });
 
@@ -2490,6 +2491,16 @@ describe("sns-neuron utils", () => {
         activeDisbursementsE8s: [],
       });
       expect(totalDisbursingMaturity(neuron)).toBe(0n);
+    });
+  });
+
+  describe("minimumAmountToDisburseMaturity", () => {
+    it("returns worst case of maturity modulation", () => {
+      expect(minimumAmountToDisburseMaturity(10_000n)).toBe(10527n);
+    });
+
+    it("returns 0 if fee is 0", () => {
+      expect(minimumAmountToDisburseMaturity(0n)).toBe(0n);
     });
   });
 });

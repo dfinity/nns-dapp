@@ -3,7 +3,7 @@
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import {
     MIN_NEURON_STAKE,
-    SPAWN_VARIANCE_PERCENTAGE,
+    MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
@@ -49,17 +49,22 @@
         $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
         {
           $amount: formatNumber(
-            MIN_NEURON_STAKE / E8S_PER_ICP / SPAWN_VARIANCE_PERCENTAGE,
+            MIN_NEURON_STAKE /
+              E8S_PER_ICP /
+              MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             { minFraction: 4, maxFraction: 4 }
           ),
           $min: formatNumber(MIN_NEURON_STAKE / E8S_PER_ICP, {
             minFraction: 0,
             maxFraction: 0,
           }),
-          $varibility: formatPercentage(SPAWN_VARIANCE_PERCENTAGE, {
-            minFraction: 0,
-            maxFraction: 0,
-          }),
+          $variability: formatPercentage(
+            MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+            {
+              minFraction: 0,
+              maxFraction: 0,
+            }
+          ),
         }
       )}
     >

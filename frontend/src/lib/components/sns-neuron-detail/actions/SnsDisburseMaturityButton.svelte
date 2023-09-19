@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { hasEnoughMaturityToDisburse } from "$lib/utils/sns-neuron.utils";
+  import {
+    hasEnoughMaturityToDisburse,
+    minimumAmountToDisburseMaturity,
+  } from "$lib/utils/sns-neuron.utils";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
@@ -17,7 +20,11 @@
   $: disabledText = !enoughMaturity
     ? replacePlaceholders(
         $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
-        { $fee: formatToken({ value: feeE8s }) }
+        {
+          $amount: formatToken({
+            value: minimumAmountToDisburseMaturity(feeE8s),
+          }),
+        }
       )
     : undefined;
 
