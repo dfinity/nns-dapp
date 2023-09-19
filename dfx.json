@@ -3,7 +3,7 @@
   "canisters": {
     "nns-governance": {
       "type": "custom",
-      "candid": "declarations/nns_governance/proposals.did",
+      "candid": "target/ic/governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
