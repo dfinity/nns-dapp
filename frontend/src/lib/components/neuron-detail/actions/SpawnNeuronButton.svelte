@@ -58,7 +58,7 @@
             minFraction: 0,
             maxFraction: 0,
           }),
-          $varibility: formatPercentage(
+          $variability: formatPercentage(
             MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             {
               minFraction: 0,
