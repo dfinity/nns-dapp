@@ -10,7 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Wasm changes
 
-* In fast updates, update `derived_state` as well as the now deprecated `swap_state`.
+* In fast updates, update `derived_state` and `lifecycle` as well as the now deprecated `swap_state`.
 * New field `logo` in the `meta` data with the relative path to the logo asset.
 * Add a getting started section in landing page.
 
