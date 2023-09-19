@@ -402,7 +402,10 @@ jobs:
       - name: Verify that fast data is updated fast
         run: |
           pushd snsdemo
+          # Set canister IDs
           bin/dfx-nns-import --network local
+          # Install tools such as quill
+          bin/dfx-sns-demo-install
           popd
           scripts/sns/aggregator/test-fast
       - name: Stop replica
