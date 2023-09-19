@@ -3,7 +3,7 @@ use crate::{
     convert_canister_id,
     state::{State, STATE},
     types::{upstream::SnsCache, upstream::SnsIndex, GetStateResponse},
-    upstream::{get_derived_state, get_swap_state},
+    upstream::{get_derived_state, get_lifecycle, get_swap_state},
 };
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
@@ -102,6 +102,7 @@ impl FastScheduler {
         let root_canister_id = STATE.with(|state| convert_canister_id!(state.root_canister_from_index(index)));
         let swap_state_maybe = get_swap_state(swap_canister_id).await;
         let derived_state_maybe = get_derived_state(swap_canister_id).await;
+        let lifecycle_maybe = get_lifecycle(swap_canister_id).await;
         // Save the state
         STATE.with(|state| {
             state
@@ -124,6 +125,12 @@ impl FastScheduler {
                             crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err:?}"))
                         }
                     };
+                    match lifecycle_maybe {
+                        Ok(lifecycle) => entry.lifecycle = Some(lifecycle),
+                        Err(err) => crate::state::log(format!(
+                            "Failed to get SNS lifecycle; lifecycle is NOT updated: {err:?}"
+                        )),
+                    }
                 });
         });
         // Update affected assets

@@ -162,17 +162,13 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| crate::state::log(format!("Failed to get derived state: {err:?}")))
         .ok();
 
-    let lifecycle_response: Option<GetLifecycleResponse> =
-        match ic_cdk::api::call::call(swap_canister_id, "get_lifecycle", (EmptyRecord {},))
-            .await
-            .map(|response: (_,)| response.0)
-        {
-            Err(err) => {
-                crate::state::log(format!("Failed to get lifecycle: {err:?}"));
-                None
-            }
-            Ok(response) => Some(response),
-        };
+    let lifecycle_response: Option<GetLifecycleResponse> = match get_lifecycle(swap_canister_id).await {
+        Err(err) => {
+            crate::state::log(format!("Failed to get lifecycle: {err:?}"));
+            None
+        }
+        Ok(response) => Some(response),
+    };
 
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
@@ -214,6 +210,13 @@ pub async fn get_derived_state(
     swap_canister_id: Principal,
 ) -> Result<GetDerivedStateResponse, (RejectionCode, String)> {
     ic_cdk::api::call::call(swap_canister_id, "get_derived_state", (EmptyRecord {},))
+        .await
+        .map(|response: (_,)| response.0)
+}
+
+/// Gets the current lifecycle of an SNS.
+pub async fn get_lifecycle(swap_canister_id: Principal) -> Result<GetLifecycleResponse, (RejectionCode, String)> {
+    ic_cdk::api::call::call(swap_canister_id, "get_lifecycle", (EmptyRecord {},))
         .await
         .map(|response: (_,)| response.0)
 }
