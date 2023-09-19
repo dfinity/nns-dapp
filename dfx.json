@@ -9,6 +9,7 @@
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "__default": "rrkah-fqaaa-aaaaa-aaaaq-cai"
         }
       }
@@ -21,6 +22,7 @@
       "remote": {
         "id": {
           "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "local": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "__default": "ryjl3-tyaaa-aaaaa-aaaba-cai"
         }
       }
@@ -31,6 +33,7 @@
       "remote": {
         "id": {
           "mainnet": "rkp4c-7iaaa-aaaaa-aaaca-cai",
+          "local": "rkp4c-7iaaa-aaaaa-aaaca-cai",
           "__default": "rkp4c-7iaaa-aaaaa-aaaca-cai"
         }
       },
@@ -78,6 +81,7 @@
       "remote": {
         "id": {
           "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai",
+          "local": "qaa6y-5yaaa-aaaaa-aaafa-cai",
           "__default": "qaa6y-5yaaa-aaaaa-aaafa-cai"
         }
       }
