@@ -82,8 +82,4 @@
     flex-direction: column;
     gap: var(--padding-2x);
   }
-
-  .description {
-    font-size: var(--font-size-small);
-  }
 </style>
