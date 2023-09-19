@@ -5,7 +5,7 @@
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsStakeMaturityButton", () => {
@@ -14,7 +14,7 @@ describe("SnsStakeMaturityButton", () => {
   });
 
   it("should open stake maturity modal", async () => {
-    const { getByTestId } = render(SnsNeuronContextTest, {
+    const { queryByTestId, getByTestId } = render(SnsNeuronContextTest, {
       props: {
         neuron: {
           ...mockSnsNeuron,
@@ -26,11 +26,15 @@ describe("SnsStakeMaturityButton", () => {
       },
     });
 
-    fireEvent.click(getByTestId("stake-maturity-button") as HTMLButtonElement);
+    expect(
+      queryByTestId("stake-maturity-modal-component")
+    ).not.toBeInTheDocument();
 
-    await waitFor(() =>
-      expect(getByTestId("stake-maturity-modal-component")).toBeInTheDocument()
+    await fireEvent.click(
+      getByTestId("stake-maturity-button") as HTMLButtonElement
     );
+
+    expect(queryByTestId("stake-maturity-modal-component")).toBeInTheDocument();
   });
 
   it("should be disabled if no maturity to stake", async () => {
