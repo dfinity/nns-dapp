@@ -30,6 +30,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix sent transaction icon background color dark theme.
 * Improve text color of total value locked's label.
 * Make duration rendering consistent.
+* Improve Tooltip location when container hides part of it.
 
 #### Security
 
