@@ -64,18 +64,14 @@
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
   // +/- 5%
-  let predictedMinE8s: bigint;
-  $: predictedMinE8s = BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95));
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: predictedMinE8s,
+    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
     roundingMode: "floor",
   });
-  let predictedMaxE8s: bigint;
-  $: predictedMaxE8s = BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05));
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: predictedMaxE8s,
+    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
     roundingMode: "ceil",
   });
 </script>

@@ -2,7 +2,6 @@ import { NeuronConfirmActionScreenPo } from "$tests/page-objects/NeuronConfirmAc
 import { NeuronSelectPercentagePo } from "$tests/page-objects/NeuronSelectPercentage.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipPo } from "./Tooltip.page-object";
 
 export class DisburseMaturityModalPo extends BasePageObject {
   private static readonly TID = "disburse-maturity-modal-component";
@@ -59,9 +58,5 @@ export class DisburseMaturityModalPo extends BasePageObject {
 
   getConfirmDestination(): Promise<string> {
     return this.getNeuronConfirmActionScreenPo().getText("confirm-destination");
-  }
-
-  getTooltipPo(): TooltipPo {
-    return TooltipPo.under(this.root);
   }
 }
