@@ -1,4 +1,4 @@
-//! Data storage schema `S1`: Accounts data is stored in a StableBTreeMap,
+//! Data storage schema `S1`: Accounts data is stored in a `StableBTreeMap`,
 //! other data is on the heap and serialized in `pre_upgrade` hooks.
 //!
 //! ## Pagination
@@ -9,7 +9,7 @@
 //! get page 1 as well and so on until we have the full serialization.
 //!
 //! ## Testing
-//! The StableBTreeMap can be simulated with a normal BTreeMap with fixed size byte arrays as
+//! The `StableBTreeMap` can be simulated with a normal `BTreeMap` with fixed size byte arrays as
 //! values.
 
 use crate::accounts_store::Account;
@@ -139,6 +139,8 @@ pub trait AccountsDbS1Trait {
 }
 
 /// Key for account data in a stable `BTreeMap`.
+///
+/// This structure deals with the low level representation of the key as bytes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct AccountStorageKey {
     // TODO: Consider changing this to Cow<'a, [u8]>.
@@ -163,7 +165,7 @@ impl BoundedStorable for AccountStorageKey {
     const IS_FIXED_SIZE: bool = true;
 }
 impl AccountStorageKey {
-    /// The number of bytes in a page
+    /// The number of bytes in a key.
     const SIZE: u32 = 34;
     /// Location of the page number in the key bytes.
     const PAGE_NUM_OFFSET: usize = 0;
@@ -200,10 +202,11 @@ impl AccountStorageKey {
 }
 
 /// A page of account data; a single account is stored on one or more pages.
+///
+/// This structure deals with the low level representation of the account data as bytes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[allow(dead_code)]
 pub struct AccountStoragePage {
-    /// TODO: See whether this can be variable length.  Stable structures would have to support this.
     bytes: [u8; AccountStoragePage::SIZE as usize],
 }
 impl Storable for AccountStoragePage {
