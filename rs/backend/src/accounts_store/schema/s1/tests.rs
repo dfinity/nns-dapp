@@ -1,4 +1,4 @@
-//! Tests for the S1 schema data storage.
+//! Tests for the `S1` schema data storage.
 use super::{Account, AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
 use crate::accounts_store::NamedCanister;
 use ic_base_types::{CanisterId, PrincipalId};

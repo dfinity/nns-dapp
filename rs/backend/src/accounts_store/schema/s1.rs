@@ -1,12 +1,12 @@
-//! Data storage schema S1: Accounts data is stored in stable structures,
-//! other data is on the heap and serialized in pre_upgrade hooks.
+//! Data storage schema `S1`: Accounts data is stored in stable structures,
+//! other data is on the heap and serialized in `pre_upgrade` hooks.
 //!
 //! ## Pagination
-//! Stable structures BTreeMaps currently support only fixed size data structures.
+//! Stable structures `BTreeMaps` currently support only fixed size data structures.
 //! Variable size data structures may come at some time but until then, we need to work around this
 //! limitation.  We do so by splitting the serialized data across fixed size pages and keying
-//! the stable BTree with the account number and page number.  We look up page 0, if it is full, we
-//! get page1 as well and so on until we have the full serialization.
+//! the stable `BTree` with the account number and page number.  We look up page 0, if it is full, we
+//! get n as well and so on until we have the full serialization.
 
 use crate::accounts_store::Account;
 use dfn_candid::Candid;
@@ -19,7 +19,7 @@ use std::convert::TryInto;
 mod tests;
 
 pub trait AccountsDbS1Trait {
-    /// Every account  is serialized and stored in betwen 0 and 256 pages.
+    /// Every account  is serialized and stored in between 0 and 256 pages.
     const MAX_PAGES_PER_ACCOUNT: usize = (u8::MAX as usize) + 1;
 
     // Low level methods to get and set pages.
@@ -134,7 +134,7 @@ pub trait AccountsDbS1Trait {
     fn s1_accounts_len(&self) -> u64;
 }
 
-/// Key for account data in a stable BTreeMap.
+/// Key for account data in a stable `BTreeMap`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct AccountStorageKey {
     // TODO: Consider changing this to Cow<'a, [u8]>.
@@ -168,7 +168,7 @@ impl AccountStorageKey {
     /// Location of the account identifier in the key bytes.
     const ACCOUNT_IDENTIFIER_OFFSET: usize = 2;
 
-    /// Accounts are currently keyed by Vec[u8]; we continue this tradition, although it is tempting to use AccountIdentifier instead.
+    /// Accounts are currently keyed by `Vec<u8>`; we continue this tradition, although it is tempting to use `AccountIdentifier` instead.
     #[allow(dead_code)]
     pub fn new(page_num: u8, account_identifier: &[u8]) -> Self {
         let account_identifier_len = account_identifier.len() as u8;
