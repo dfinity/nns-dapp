@@ -29,16 +29,20 @@ pub trait AccountsDbS1Trait {
     // Low level methods to get and set pages.
     /// Gets a page of memory.
     fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+
     /// Inserts a page of memory.
     fn s1_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage>;
+    
     /// Checks whether a page of memory exists.
     fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
+    
     /// Removes a page of memory.
     fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+    
     /// Checks whether to get the next page.
     /// - If the very last page is full, getting the next page will return None. That is expected.
     fn s1_is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
@@ -52,8 +56,10 @@ pub trait AccountsDbS1Trait {
     }
 
     // High level methods to get and set accounts.
-    // Note: Rust does not support traits on traits.  Imagine, when you read the following, that they implement the AccountsDbTrait.
-    //       In reality, both traits are implemented for the AccountsStore struct.
+    //
+    // Note: These assist in implementing the AccountsDbTrait.
+
+    /// Equivalent of `AccountsDbTrait::get_account(..)`
     fn s1_get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
         let mut have_account = false;
@@ -80,6 +86,8 @@ pub trait AccountsDbS1Trait {
             None
         }
     }
+
+    /// Equivalent of `AccountsDbTrait::with_account(..)`
     fn s1_with_account<F, T>(&mut self, account_key: &[u8], f: F) -> Option<T>
     where
         // The closure takes an account as an argument.  It may return any type.
@@ -93,6 +101,8 @@ pub trait AccountsDbS1Trait {
             None
         }
     }
+
+    /// Equivalent of `AccountsDbTrait::insert_account(..)`
     fn s1_insert_account(&mut self, account_key: &[u8], account: Account) {
         // Serilaize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);
@@ -103,9 +113,8 @@ pub trait AccountsDbS1Trait {
                 Self::MAX_PAGES_PER_ACCOUNT
             );
         }
-        // Temporary store for pages that are replaced by new data.
-        let mut last_removed_page = None;
-        // Insert the new pages, and make sure that all old pages are removed.
+        // Insert the new pages, overwriting any existing data.  If previously there were more pages, delete the now unused pages.
+        let mut last_removed_page = None;  // Temporary store for pages that are replaced by new data.
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {
@@ -120,10 +129,14 @@ pub trait AccountsDbS1Trait {
             }
         }
     }
+
+    /// Equivalent of `AccountsDbTrait::contains_account(..)`
     fn s1_contains_account(&self, account_key: &[u8]) -> bool {
         let account_storage_key = AccountStorageKey::new(0, account_key);
         self.s1_contains_account_page(&account_storage_key)
     }
+
+    /// Equivalent of `AccountsDbTrait::remove_account(..)`
     fn s1_remove_account(&mut self, account_key: &[u8]) {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         let mut last_page = None;
@@ -187,10 +200,13 @@ impl AccountStorageKey {
     }
 
     /// Gets the key to the next page.
+    ///
+    /// # Panics
+    /// - If the page limit is exceeded.
     #[allow(dead_code)]
     pub fn next(&self) -> Self {
         let mut ans = self.bytes;
-        ans[Self::PAGE_NUM_OFFSET] += 1;
+        ans[Self::PAGE_NUM_OFFSET] += 1; // Panics if the page number wraps.
         Self { bytes: ans }
     }
 
