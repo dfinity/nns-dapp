@@ -18,14 +18,16 @@
 
   let disabledText: string | undefined = undefined;
   $: disabledText = !enoughMaturity
-    ? replacePlaceholders(
-        $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
-        {
-          $amount: formatToken({
-            value: minimumAmountToDisburseMaturity(feeE8s),
-          }),
-        }
-      )
+    ? neuron.maturity_e8s_equivalent === 0n
+      ? $i18n.neuron_detail.disburse_maturity_disabled_tooltip_zero
+      : replacePlaceholders(
+          $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
+          {
+            $amount: formatToken({
+              value: minimumAmountToDisburseMaturity(feeE8s),
+            }),
+          }
+        )
     : undefined;
 
   const showModal = () => openSnsNeuronModal({ type: "disburse-maturity" });
