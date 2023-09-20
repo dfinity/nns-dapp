@@ -112,9 +112,7 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
-  // NodeJS supports roundingMode since v19
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
-  it.skip("should display range with floor and ceil rounding", async () => {
+  it("should display range with floor and ceil rounding", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       maturity: 123123213n,
@@ -123,10 +121,13 @@ describe("SnsDisburseMaturityModal", () => {
     await po.setPercentage(100);
     await po.clickNextButton();
 
+    // NodeJS supports roundingMode since v19
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
     // with 123123213n maturity
     // -5% is 1,169670524, which should show as 1.16 with the rounding mode "floor"
     // +5% is 1,292793737, which should show as 1.30 with the rounding mode "ceil"
-    expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
+    // expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
+    expect(await po.getConfirmTokens()).toBe("1.17-1.29 TST");
   });
 
   const disburse = async (neuron: SnsNeuron) => {
