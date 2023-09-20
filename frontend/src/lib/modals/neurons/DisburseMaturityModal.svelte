@@ -70,12 +70,14 @@
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
     value: predictedMinE8s,
+    roundingMode: "floor",
   });
   let predictedMaxE8s: bigint;
   $: predictedMaxE8s = BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05));
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
     value: predictedMaxE8s,
+    roundingMode: "ceil",
   });
 </script>
 
