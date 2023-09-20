@@ -78,3 +78,12 @@ fn test_account_storage() {
     assert!(!storage.s1_contains_account(&account_key));
     assert_eq!(storage.s1_get_account(&account_key), None);
 }
+
+/// We assume that new account identifiers are 32 bytes long.
+///
+/// Note: Old-style account identifiers were 28 bytes long.
+#[test]
+fn account_identifier_has_32_bytes() {
+    let account_identifier = icp_ledger::AccountIdentifier::from(ic_base_types::PrincipalId::new_user_test_id(99));
+    assert_eq!(account_identifier.to_vec().len(), 32);
+}

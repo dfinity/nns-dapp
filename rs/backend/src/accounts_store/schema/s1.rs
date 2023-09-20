@@ -264,12 +264,3 @@ impl AccountStoragePage {
         u16::from_le_bytes(len_bytes) as usize
     }
 }
-
-/// We assume that new account identifiers are 32 bytes long.
-///
-/// Note: Old-style account identifiers were 28 bytes long.
-#[test]
-fn account_identifier_has_32_bytes() {
-    let account_identifier = icp_ledger::AccountIdentifier::from(ic_base_types::PrincipalId::new_user_test_id(99));
-    assert_eq!(account_identifier.to_vec().len(), 32);
-}
