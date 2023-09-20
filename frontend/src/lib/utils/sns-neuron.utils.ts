@@ -1,3 +1,4 @@
+import { MATURITY_MODULATION_VARIANCE_PERCENTAGE } from "$lib/constants/neurons.constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -500,9 +501,23 @@ export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
  * Is the maturity of the neuron bigger than zero - i.e. has the neuron staked maturity?
  * @param {SnsNeuron} neuron
  */
-export const hasEnoughMaturityToStakeOrDisburse = (
+export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
+
+/**
+ * Is the maturity of the neuron bigger than the minimum amount to disburse?
+ * @param {SnsNeuron} neuron
+ * @param {bigint} feeE8s
+ */
+export const hasEnoughMaturityToDisburse = ({
+  neuron: { maturity_e8s_equivalent },
+  feeE8s,
+}: {
+  feeE8s: bigint;
+  neuron: SnsNeuron;
+}): boolean =>
+  maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(feeE8s);
 
 /**
  * Does the neuron has staked maturity?
@@ -968,3 +983,11 @@ export const totalDisbursingMaturity = ({
     (acc, disbursement) => acc + disbursement.amount_e8s,
     BigInt(0)
   );
+
+/**
+ * The governance canister checks that the amount to disburse in the worst case (of the maturity modulation) is bigger than the transaction fee.
+ *
+ * Source: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/sns/governance/src/governance.rs?L1651
+ */
+export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
+  BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));

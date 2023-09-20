@@ -14,39 +14,38 @@ export const ledgerErrorToToastError = ({
   substitutions?: I18nSubstitutions;
 } => {
   if (err instanceof IcrcTransferError) {
-    const error: IcrcTransferError = err;
-    if ("GenericError" in error.errorType) {
+    if ("GenericError" in err.errorType) {
       return {
         labelKey: "error.transaction_error",
-        err: new Error(error.errorType.GenericError.message),
+        err: new Error(err.errorType.GenericError.message),
       };
     }
-    if ("TemporarilyUnavailable" in error.errorType) {
+    if ("TemporarilyUnavailable" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_temporarily_unavailable",
       };
     }
-    if ("Duplicate" in error.errorType) {
+    if ("Duplicate" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_duplicate",
       };
     }
-    if ("BadFee" in error.errorType) {
+    if ("BadFee" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_bad_fee",
       };
     }
-    if ("CreatedInFuture" in error.errorType) {
+    if ("CreatedInFuture" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_created_future",
       };
     }
-    if ("TooOld" in error.errorType) {
+    if ("TooOld" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_too_old",
       };
     }
-    if ("InsufficientFunds" in error.errorType) {
+    if ("InsufficientFunds" in err.errorType) {
       return {
         labelKey: "error__sns.ledger_insufficient_funds",
       };

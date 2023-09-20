@@ -179,7 +179,10 @@
             {token}
           />
           <Separator spacing="none" />
-          <SnsNeuronMaturitySection neuron={$selectedSnsNeuronStore.neuron} />
+          <SnsNeuronMaturitySection
+            neuron={$selectedSnsNeuronStore.neuron}
+            feeE8s={transactionFee}
+          />
           <Separator spacing="none" />
           <SnsNeuronAdvancedSection
             neuron={$selectedSnsNeuronStore.neuron}

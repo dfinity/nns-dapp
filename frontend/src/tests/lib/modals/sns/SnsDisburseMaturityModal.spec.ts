@@ -5,12 +5,14 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -20,6 +22,7 @@ jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsDisburseMaturityModal", () => {
   const reloadNeuron = jest.fn();
+  const rootCanisterId = mockPrincipal;
 
   const renderSnsDisburseMaturityModal = async (
     neuron: SnsNeuron = mockSnsNeuron
@@ -29,7 +32,7 @@ describe("SnsDisburseMaturityModal", () => {
       props: {
         neuronId: neuron.id,
         neuron,
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         reloadNeuron,
       },
     });
@@ -39,6 +42,10 @@ describe("SnsDisburseMaturityModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     authStore.setForTesting(mockIdentity);
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: mockSnsToken,
+    });
   });
 
   it("should display total maturity", async () => {
@@ -55,6 +62,26 @@ describe("SnsDisburseMaturityModal", () => {
   it("should enable next button when not 0 selected", async () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(1);
+    expect(await po.isNextButtonDisabled()).toBe(false);
+  });
+
+  it("should disable next button if amount of maturity is less than transaction fee", async () => {
+    const fee = 100_000_000n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: fee * 2n,
+    });
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        fee,
+        ...mockSnsToken,
+      },
+    });
+    // Maturity is 2x the fee, so 10% of maturity is not enough to cover the fee
+    const percentage = 10;
+    const po = await renderSnsDisburseMaturityModal(neuron);
+    await po.setPercentage(percentage);
     expect(await po.isNextButtonDisabled()).toBe(false);
   });
 
@@ -77,7 +104,7 @@ describe("SnsDisburseMaturityModal", () => {
     await po.clickNextButton();
 
     expect(await po.getConfirmPercentage()).toBe("50%");
-    expect(await po.getConfirmTokens()).toBe("0.48-0.53 ICP");
+    expect(await po.getConfirmTokens()).toBe("0.48-0.53 TST");
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
