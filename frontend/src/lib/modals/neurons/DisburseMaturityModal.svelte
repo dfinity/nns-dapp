@@ -14,6 +14,7 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
@@ -64,13 +65,17 @@
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
   // +/- 5%
+  let predictedMinE8s: bigint;
+  $: predictedMinE8s = BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95));
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 0.95)),
+    value: predictedMinE8s,
   });
+  let predictedMaxE8s: bigint;
+  $: predictedMaxE8s = BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05));
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 1.05)),
+    value: predictedMaxE8s,
   });
 </script>
 
@@ -151,9 +156,22 @@
               { $symbol: tokenSymbol }
             )}</span
           >
-          <span data-tid="confirm-tokens" class="value" slot="value"
-            >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {tokenSymbol}
+          <span class="value" slot="value"
+            ><Tooltip
+              id="disburse-range"
+              text={`${formatToken({
+                value: predictedMinE8s,
+                detailed: true,
+              })}-${formatToken({
+                value: predictedMaxE8s,
+                detailed: true,
+              })} ${tokenSymbol}`}
+            >
+              <span data-tid="confirm-tokens">
+                {predictedMinimumTokens}-{predictedMaximumTokens}
+                {tokenSymbol}
+              </span>
+            </Tooltip>
           </span>
         </KeyValuePair>
         <KeyValuePair>

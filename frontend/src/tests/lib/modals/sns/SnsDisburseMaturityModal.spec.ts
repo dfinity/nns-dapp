@@ -99,12 +99,19 @@ describe("SnsDisburseMaturityModal", () => {
   });
 
   it("should display summary information in the last step", async () => {
-    const po = await renderSnsDisburseMaturityModal();
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: 1_233_123_112n,
+    });
+    const po = await renderSnsDisburseMaturityModal(neuron);
     await po.setPercentage(50);
     await po.clickNextButton();
 
     expect(await po.getConfirmPercentage()).toBe("50%");
-    expect(await po.getConfirmTokens()).toBe("0.48-0.53 TST");
+    expect(await po.getConfirmTokens()).toBe("5.86-6.47 TST");
+    expect(await po.getConfirmTokensDetailed()).toBe(
+      "5.85733478-6.47389634 TST"
+    );
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
