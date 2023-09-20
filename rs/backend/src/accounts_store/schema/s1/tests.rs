@@ -59,6 +59,19 @@ fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     account
 }
 
+/// Creates a large account that should be spread over multiple memory pages.
+fn large_account(account_index: u64) -> Account {
+  toy_account(account_index, 255)
+}
+
+#[test]
+fn large_account_uses_several_pages() {
+  let yo = large_account(1);
+  let num_pages = AccountStoragePage::pages_from_account(&yo).len();
+  assert!(num_pages > 1, "A large test account should use several pages of memory but has only: {}", num_pages);
+  assert!(num_pages <= MockS1DataStorage::MAX_PAGES_PER_ACCOUNT, "A large test account should not exceed the maximum number of pages: {}", num_pages);
+}
+
 #[test]
 fn test_account_storage() {
     let mut storage = MockS1DataStorage {
