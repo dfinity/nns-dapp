@@ -54,6 +54,22 @@ describe("SnsDisburseMaturityButton", () => {
     );
   });
 
+  it("should be disabled if no maturity", async () => {
+    const po = renderComponent(
+      {
+        ...mockSnsNeuron,
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [],
+      },
+      fee
+    );
+
+    expect(await po.isDisabled()).toBe(true);
+    expect(await po.getTooltipText()).toBe(
+      "Currently, you do not have any maturity available to disburse."
+    );
+  });
+
   it("should open disburse maturity modal", async () => {
     // TODO: TBD
   });
