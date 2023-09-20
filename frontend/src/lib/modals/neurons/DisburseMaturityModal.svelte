@@ -66,11 +66,13 @@
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 0.95)),
+    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
+    roundingMode: "floor",
   });
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 1.05)),
+    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
+    roundingMode: "ceil",
   });
 </script>
 
