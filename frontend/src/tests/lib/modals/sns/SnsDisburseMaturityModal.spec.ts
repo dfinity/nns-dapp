@@ -101,14 +101,14 @@ describe("SnsDisburseMaturityModal", () => {
   it("should display summary information in the last step", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
-      maturity: 1_233_123_112n,
+      maturity: 1_000_000_000n,
     });
     const po = await renderSnsDisburseMaturityModal(neuron);
     await po.setPercentage(50);
     await po.clickNextButton();
 
     expect(await po.getConfirmPercentage()).toBe("50%");
-    expect(await po.getConfirmTokens()).toBe("5.86-6.47 TST");
+    expect(await po.getConfirmTokens()).toBe("4.75-5.25 TST");
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
@@ -123,6 +123,9 @@ describe("SnsDisburseMaturityModal", () => {
     await po.setPercentage(100);
     await po.clickNextButton();
 
+    // with 123123213n maturity
+    // -5% is 1,169670524, which should show as 1.16 with the rounding mode "floor"
+    // +5% is 1,292793737, which should show as 1.30 with the rounding mode "ceil"
     expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
   });
 
