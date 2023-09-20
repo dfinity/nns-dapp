@@ -109,9 +109,6 @@ describe("SnsDisburseMaturityModal", () => {
 
     expect(await po.getConfirmPercentage()).toBe("50%");
     expect(await po.getConfirmTokens()).toBe("5.86-6.47 TST");
-    expect(await po.getConfirmTokensDetailed()).toBe(
-      "5.85733478-6.47389634 TST"
-    );
     expect(await po.getConfirmDestination()).toBe("Main");
   });
 
@@ -126,10 +123,7 @@ describe("SnsDisburseMaturityModal", () => {
     await po.setPercentage(100);
     await po.clickNextButton();
 
-    expect(await po.getConfirmTokens()).toBe("1.17-1.29 TST");
-    expect(await po.getConfirmTokensDetailed()).toBe(
-      "5.85733478-6.47389634 TST"
-    );
+    expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
   });
 
   const disburse = async (neuron: SnsNeuron) => {

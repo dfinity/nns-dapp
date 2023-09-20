@@ -14,7 +14,6 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
@@ -158,22 +157,9 @@
               { $symbol: tokenSymbol }
             )}</span
           >
-          <span class="value" slot="value"
-            ><Tooltip
-              id="disburse-range"
-              text={`${formatToken({
-                value: predictedMinE8s,
-                detailed: true,
-              })}-${formatToken({
-                value: predictedMaxE8s,
-                detailed: true,
-              })} ${tokenSymbol}`}
-            >
-              <span data-tid="confirm-tokens">
-                {predictedMinimumTokens}-{predictedMaximumTokens}
-                {tokenSymbol}
-              </span>
-            </Tooltip>
+          <span data-tid="confirm-tokens" class="value" slot="value"
+            >{predictedMinimumTokens}-{predictedMaximumTokens}
+            {tokenSymbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>

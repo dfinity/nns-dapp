@@ -64,8 +64,4 @@ export class DisburseMaturityModalPo extends BasePageObject {
   getTooltipPo(): TooltipPo {
     return TooltipPo.under(this.root);
   }
-
-  getConfirmTokensDetailed(): Promise<string> {
-    return this.getTooltipPo().getText();
-  }
 }
