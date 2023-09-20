@@ -1,4 +1,4 @@
-//! Data storage schema `S1`: Accounts data is stored in stable structures,
+//! Data storage schema `S1`: Accounts data is stored in a StableBTreeMap,
 //! other data is on the heap and serialized in `pre_upgrade` hooks.
 //!
 //! ## Pagination
@@ -6,7 +6,11 @@
 //! Variable size data structures may come at some time but until then, we need to work around this
 //! limitation.  We do so by splitting the serialized data across fixed size pages and keying
 //! the stable `BTree` with the account number and page number.  We look up page 0, if it is full, we
-//! get n as well and so on until we have the full serialization.
+//! get page 1 as well and so on until we have the full serialization.
+//!
+//! ## Testing
+//! The StableBTreeMap can be simulated with a normal BTreeMap with fixed size byte arrays as
+//! values.
 
 use crate::accounts_store::Account;
 use dfn_candid::Candid;
