@@ -3,6 +3,7 @@ use crate::accounts_store::Account;
 
 pub mod map;
 pub mod proxy;
+pub mod s1;
 #[cfg(test)]
 mod tests;
 
