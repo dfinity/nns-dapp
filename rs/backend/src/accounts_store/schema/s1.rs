@@ -23,8 +23,8 @@ use std::convert::TryInto;
 mod tests;
 
 pub trait AccountsDbS1Trait {
-    /// Every account  is serialized and stored in between 0 and 256 pages.
-    const MAX_PAGES_PER_ACCOUNT: usize = (u8::MAX as usize) + 1;
+    /// Every account is serialized and stored in between 1 and 2**16 pages.
+    const MAX_PAGES_PER_ACCOUNT: usize = (u16::MAX as usize) + 1;
 
     // Low level methods to get and set pages.
     /// Gets a page of memory.
@@ -64,7 +64,7 @@ pub trait AccountsDbS1Trait {
         let mut bytes = Vec::new();
         let mut have_account = false;
         for page_num in 0..Self::MAX_PAGES_PER_ACCOUNT {
-            let account_storage_key = AccountStorageKey::new(page_num as u8, account_key);
+            let account_storage_key = AccountStorageKey::new(page_num as u16, account_key);
             if let Some(page) = self.s1_get_account_page(&account_storage_key) {
                 have_account = true;
                 let len = page.len();
@@ -116,7 +116,7 @@ pub trait AccountsDbS1Trait {
         // Insert the new pages, overwriting any existing data.  If previously there were more pages, delete the now unused pages.
         let mut last_removed_page = None; // Temporary store for pages that are replaced by new data.
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
-            let account_storage_key = AccountStorageKey::new(index as u8, account_key);
+            let account_storage_key = AccountStorageKey::new(index as u16, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {
                 last_removed_page = self.s1_insert_account_page(account_storage_key, *page_to_insert);
             } else {
@@ -141,7 +141,7 @@ pub trait AccountsDbS1Trait {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         let mut last_page = None;
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
-            let account_storage_key = AccountStorageKey::new(index as u8, account_key);
+            let account_storage_key = AccountStorageKey::new(index as u16, account_key);
             last_page = self.s1_remove_account_page(&account_storage_key);
             if Self::s1_is_last_page(&last_page) {
                 break;
@@ -157,7 +157,7 @@ pub trait AccountsDbS1Trait {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct AccountStorageKey {
     // TODO: Consider changing this to Cow<'a, [u8]>.
-    bytes: [u8; AccountStorageKey::SIZE as usize],
+    bytes: [u8; AccountStorageKey::SIZE],
 }
 impl Storable for AccountStorageKey {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
@@ -174,25 +174,32 @@ impl Storable for AccountStorageKey {
     }
 }
 impl BoundedStorable for AccountStorageKey {
-    const MAX_SIZE: u32 = Self::SIZE;
+    const MAX_SIZE: u32 = Self::SIZE as u32;
     const IS_FIXED_SIZE: bool = true;
 }
 impl AccountStorageKey {
-    /// The number of bytes in a key.
-    const SIZE: u32 = 34;
     /// Location of the page number in the key bytes.
     const PAGE_NUM_OFFSET: usize = 0;
+    /// The number of bytes used to store the page num.
+    const PAGE_NUM_BYTES: usize = 2;
     /// Location of the account identifier length in the key bytes.
-    const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = 1;
+    const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES;
+    /// The number of bytes used to store the identifier length.
+    const ACCOUNT_IDENTIFIER_LEN_BYTES: usize = 1;
     /// Location of the account identifier in the key bytes.
-    const ACCOUNT_IDENTIFIER_OFFSET: usize = 2;
+    const ACCOUNT_IDENTIFIER_OFFSET: usize = Self::ACCOUNT_IDENTIFIER_LEN_OFFSET + Self::ACCOUNT_IDENTIFIER_LEN_BYTES;
+    /// The maximum number of bytes for an account identifier.
+    const ACCOUNT_IDENTIFIER_MAX_BYTES: usize = 32;
+    /// The number of bytes in a key.
+    const SIZE: usize = Self::ACCOUNT_IDENTIFIER_OFFSET + Self::ACCOUNT_IDENTIFIER_MAX_BYTES;
 
     /// Accounts are currently keyed by `Vec<u8>`; we continue this tradition, although it is tempting to use `AccountIdentifier` instead.
     #[allow(dead_code)]
-    pub fn new(page_num: u8, account_identifier: &[u8]) -> Self {
+    pub fn new(page_num: u16, account_identifier: &[u8]) -> Self {
         let account_identifier_len = account_identifier.len() as u8;
         let mut ans = [0u8; Self::MAX_SIZE as usize];
-        ans[Self::PAGE_NUM_OFFSET] = page_num;
+        ans[Self::PAGE_NUM_OFFSET..Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES]
+            .copy_from_slice(&page_num.to_le_bytes());
         ans[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] = account_identifier_len;
         ans[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier.len()]
             .copy_from_slice(account_identifier);

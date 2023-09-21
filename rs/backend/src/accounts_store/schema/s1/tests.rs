@@ -111,5 +111,8 @@ fn test_account_storage() {
 #[test]
 fn account_identifier_has_32_bytes() {
     let account_identifier = icp_ledger::AccountIdentifier::from(ic_base_types::PrincipalId::new_user_test_id(99));
-    assert_eq!(account_identifier.to_vec().len(), 32);
+    assert_eq!(
+        account_identifier.to_vec().len(),
+        AccountStorageKey::ACCOUNT_IDENTIFIER_MAX_BYTES
+    );
 }
