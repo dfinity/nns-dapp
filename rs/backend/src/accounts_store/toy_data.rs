@@ -14,12 +14,20 @@ const NEURONS_PER_ACCOUNT: f32 = 0.3;
 const TRANSACTIONS_PER_ACCOUNT: f32 = 3.0;
 
 /// A specification for how large a toy account should be.
+///
+/// Note: The keys correspond to those in the `AccountsStoreHistogram`.
 #[derive(Default)]
 pub struct ToyAccountSize {
+    /// The number of sub-accounts
     pub sub_accounts: usize,
+    /// The number of canisters
     pub canisters: usize,
+    /// The number of transaction indices for the main account; transactions are stored outside the
+    /// account.
     pub default_account_transactions: usize,
+    /// The number of transactions per sub-account.
     pub sub_account_transactions: usize,
+    /// The number of hardware wallets.
     pub hardware_wallets: usize,
 }
 
@@ -44,9 +52,9 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         let sub_account_name = format!("sub_account_{account_index}_{sub_account_index}");
         let sub_account = convert_byte_to_sub_account(sub_account_index);
         let sub_account_identifier = AccountIdentifier::new(principal, Some(sub_account));
-        let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+        let mut named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+        named_sub_account.transactions = (0..size.sub_account_transactions as u64).collect();
         account.sub_accounts.insert(sub_account_index, named_sub_account);
-        // TODO: Add sub-account transactions.
     }
     // Attaches canisters to the account.
     for canister_index in 0..size.canisters {
@@ -58,9 +66,9 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         account.canisters.push(canister);
     }
     for transaction_index in 0..size.default_account_transactions as u64 {
-        // Warning: This is in no way semantically meaningful or correct.  It is just data to fill up memory and exercise upgrades.
-        // Note: Normally a transaction would be added to the list of transactions and here we
-        // would have the index of that transaction.  In this toy data, the index is
+        // Note: Normally a transaction would be added to the list of transactions in the accounts
+        // store and the index of that transaction would be stored in the account itself.  Given
+        // that we are creating a standalong account, without an account store, the index is
         // meaningless.
         account.default_account_transactions.push(transaction_index);
     }

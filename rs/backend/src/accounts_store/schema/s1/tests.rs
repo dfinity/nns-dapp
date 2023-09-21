@@ -1,10 +1,7 @@
 //! Tests for the `S1` schema data storage.
 use super::{Account, AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
-use crate::accounts_store::NamedCanister;
-use ic_base_types::{CanisterId, PrincipalId};
-use icp_ledger::AccountIdentifier;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
 struct MockS1DataStorage {
     accounts_storage: BTreeMap<AccountStorageKey, AccountStoragePage>,
