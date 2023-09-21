@@ -6,11 +6,14 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { nonNullish } from "@dfinity/utils";
+  import Tooltip from "../ui/Tooltip.svelte";
 
   export let availableMaturityE8s: bigint;
   export let percentage: number;
   export let buttonText: string;
   export let disabled = false;
+  export let disabledText: string | undefined = undefined;
 
   let selectedMaturityE8s: bigint;
   $: selectedMaturityE8s = (availableMaturityE8s * BigInt(percentage)) / 100n;
@@ -59,14 +62,27 @@
     <button class="secondary" on:click={() => dispatcher("nnsCancel")}>
       {$i18n.core.cancel}
     </button>
-    <button
-      data-tid="select-maturity-percentage-button"
-      class="primary"
-      on:click={selectPercentage}
-      {disabled}
-    >
-      {buttonText}
-    </button>
+    {#if nonNullish(disabledText)}
+      <Tooltip id="disabled-disburse-button-modal" text={disabledText}>
+        <button
+          data-tid="select-maturity-percentage-button"
+          class="primary"
+          on:click={selectPercentage}
+          {disabled}
+        >
+          {buttonText}
+        </button>
+      </Tooltip>
+    {:else}
+      <button
+        data-tid="select-maturity-percentage-button"
+        class="primary"
+        on:click={selectPercentage}
+        {disabled}
+      >
+        {buttonText}
+      </button>
+    {/if}
   </div>
 </TestIdWrapper>
 

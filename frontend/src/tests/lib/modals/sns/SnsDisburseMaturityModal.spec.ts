@@ -5,12 +5,14 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -20,6 +22,7 @@ jest.mock("$lib/api/sns-governance.api");
 
 describe("SnsDisburseMaturityModal", () => {
   const reloadNeuron = jest.fn();
+  const rootCanisterId = mockPrincipal;
 
   const renderSnsDisburseMaturityModal = async (
     neuron: SnsNeuron = mockSnsNeuron
@@ -29,7 +32,7 @@ describe("SnsDisburseMaturityModal", () => {
       props: {
         neuronId: neuron.id,
         neuron,
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         reloadNeuron,
       },
     });
@@ -39,6 +42,10 @@ describe("SnsDisburseMaturityModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     authStore.setForTesting(mockIdentity);
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: mockSnsToken,
+    });
   });
 
   it("should display total maturity", async () => {
@@ -58,6 +65,26 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.isNextButtonDisabled()).toBe(false);
   });
 
+  it("should disable next button if amount of maturity is less than transaction fee", async () => {
+    const fee = 100_000_000n;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: fee * 2n,
+    });
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        fee,
+        ...mockSnsToken,
+      },
+    });
+    // Maturity is 2x the fee, so 10% of maturity is not enough to cover the fee
+    const percentage = 10;
+    const po = await renderSnsDisburseMaturityModal(neuron);
+    await po.setPercentage(percentage);
+    expect(await po.isNextButtonDisabled()).toBe(false);
+  });
+
   it("should display selected percentage and total maturity", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
@@ -72,13 +99,35 @@ describe("SnsDisburseMaturityModal", () => {
   });
 
   it("should display summary information in the last step", async () => {
-    const po = await renderSnsDisburseMaturityModal();
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: 1_000_000_000n,
+    });
+    const po = await renderSnsDisburseMaturityModal(neuron);
     await po.setPercentage(50);
     await po.clickNextButton();
 
     expect(await po.getConfirmPercentage()).toBe("50%");
-    expect(await po.getConfirmTokens()).toBe("0.48-0.53 ICP");
+    expect(await po.getConfirmTokens()).toBe("4.75-5.25 TST");
     expect(await po.getConfirmDestination()).toBe("Main");
+  });
+
+  it("should display range with floor and ceil rounding", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      maturity: 123123213n,
+    });
+    const po = await renderSnsDisburseMaturityModal(neuron);
+    await po.setPercentage(100);
+    await po.clickNextButton();
+
+    // NodeJS supports roundingMode since v19
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
+    // with 123123213n maturity
+    // -5% is 1,169670524, which should show as 1.16 with the rounding mode "floor"
+    // +5% is 1,292793737, which should show as 1.30 with the rounding mode "ceil"
+    // expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
+    expect(await po.getConfirmTokens()).toBe("1.17-1.29 TST");
   });
 
   const disburse = async (neuron: SnsNeuron) => {

@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Add the amount of maturity related to a selected percentage.
+* Disburse maturity of sns neurons.
 
 #### Changed
 
@@ -20,6 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use consistent positioning for the copy icon in the Hash component.
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
 * Improve contrast of token selector's logo in light theme.
+* Remove the "Project" leading word in the SNS Project card.
 
 #### Deprecated
 #### Removed
@@ -30,6 +32,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Fix sent transaction icon background color dark theme.
 * Improve text color of total value locked's label.
 * Make duration rendering consistent.
+* Improve Tooltip location when container hides part of it.
 
 #### Security
 
@@ -48,6 +51,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 #### Fixed
+
+* Fix build script by pinning cargo-binstall version.
 
 #### Security
 

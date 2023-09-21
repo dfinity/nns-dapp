@@ -37,7 +37,7 @@ export const transferTokens = async ({
   transfer: (
     params: {
       identity: Identity;
-    } & Omit<IcrcTransferParams, "transfer">
+    } & IcrcTransferParams
   ) => Promise<IcrcBlockIndex>;
   reloadAccounts: () => Promise<void>;
   reloadTransactions: () => Promise<void>;

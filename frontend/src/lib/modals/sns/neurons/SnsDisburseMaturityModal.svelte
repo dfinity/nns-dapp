@@ -5,29 +5,23 @@
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import type { Principal } from "@dfinity/principal";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
-  import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
+  import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
-  import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { tokensStore } from "$lib/stores/tokens.store";
-  import type { Token } from "@dfinity/utils";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let neuron: SnsNeuron;
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
-  let maturity: string;
-  $: maturity = formattedMaturity(neuron);
+  let token: IcrcTokenMetadata | undefined;
+  $: token = $tokensStore[rootCanisterId.toText()]?.token;
 
-  let destinationAddress: string;
-  $: destinationAddress = shortenWithMiddleEllipsis(
-    $snsProjectMainAccountStore?.identifier ?? ""
-  );
-
-  let token: Token | undefined;
-  $: token = $tokensStore[$selectedUniverseIdStore.toText()]?.token;
+  let minimumAmountE8s: bigint;
+  // Token is loaded with all the projects from the aggregator.
+  // Therefore, if the user made it here, it's present.
+  $: minimumAmountE8s = minimumAmountToDisburseMaturity(token?.fee ?? 0n);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
@@ -58,6 +52,7 @@
 
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
+  {minimumAmountE8s}
   tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
   on:nnsClose

@@ -8,6 +8,7 @@
   import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
 
   export let neuron: SnsNeuron;
+  export let feeE8s: bigint;
 </script>
 
 <Section testId="sns-neuron-maturity-section-component">
@@ -20,7 +21,7 @@
   </p>
   <ul class="content">
     <SnsStakedMaturityItemAction {neuron} />
-    <SnsAvailableMaturityItemAction {neuron} />
+    <SnsAvailableMaturityItemAction {neuron} {feeE8s} />
     <SnsViewActiveDisbursementsItemAction {neuron} />
   </ul>
 </Section>

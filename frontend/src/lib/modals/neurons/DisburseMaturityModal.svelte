@@ -18,6 +18,8 @@
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
 
+  export let minimumAmountE8s: bigint;
+
   const steps: WizardSteps = [
     {
       name: "SelectPercentage",
@@ -33,6 +35,22 @@
   let modal: WizardModal;
 
   let percentageToDisburse = 0;
+  let selectedMaturityE8s: bigint;
+  $: selectedMaturityE8s =
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+
+  let disableDisburse = false;
+  $: disableDisburse = selectedMaturityE8s < minimumAmountE8s;
+
+  // Show the text only if the selected percentage is greater than 0.
+  let disabledText: string | undefined = undefined;
+  $: disabledText =
+    disableDisburse && percentageToDisburse > 0
+      ? replacePlaceholders(
+          $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
+          { $amount: formatToken({ value: minimumAmountE8s }) }
+        )
+      : undefined;
 
   const dispatcher = createEventDispatcher();
   const disburseNeuronMaturity = () =>
@@ -48,11 +66,13 @@
   // +/- 5%
   let predictedMinimumTokens: string;
   $: predictedMinimumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 0.95)),
+    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
+    roundingMode: "floor",
   });
   let predictedMaximumTokens: string;
   $: predictedMaximumTokens = formatToken({
-    value: BigInt(Math.round(Number(maturityToDisburseE8s) * 1.05)),
+    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
+    roundingMode: "ceil",
   });
 </script>
 
@@ -74,7 +94,8 @@
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
       bind:percentage={percentageToDisburse}
-      disabled={percentageToDisburse === 0}
+      disabled={disableDisburse}
+      {disabledText}
     >
       <div class="percentage-container" slot="description">
         <span class="description">
