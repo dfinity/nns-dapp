@@ -411,13 +411,53 @@ export const stakeNeuron = async ({
 
   const createdAt = nowInBigIntNanoSeconds();
   const response = await canister.stakeNeuron({
-    stake: stake,
+    stake,
     principal: controller,
     fromSubAccount,
     ledgerCanister,
     createdAt,
   });
   logWithTimestamp(`Staking Neuron complete.`);
+  return response;
+};
+
+export type ApiStakeNeuronIcrc1Params = ApiCallParams & {
+  stake: bigint;
+  controller: Principal;
+  ledgerCanisterIdentity: Identity;
+  fromSubAccount?: Uint8Array;
+};
+
+/**
+ * Uses governance and ledger canisters to create a neuron
+ */
+export const stakeNeuronIcrc1 = async ({
+  stake,
+  controller,
+  ledgerCanisterIdentity,
+  identity,
+  fromSubAccount,
+}: ApiStakeNeuronIcrc1Params): Promise<NeuronId> => {
+  // Ledger HW app currently (2023-09-21) doesn't support staking with ICRC-1
+  // but it should be supported in the future so we keep the code similar to the
+  // non-ICRC-1 flow above.
+  logWithTimestamp(`Staking Neuron ICRC-1 call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  // The use case of staking from Hardware wallet uses a different agent for governance and ledger canister.
+  const { canister: ledgerCanister } = await getLedgerCanister({
+    identity: ledgerCanisterIdentity,
+  });
+
+  const createdAt = nowInBigIntNanoSeconds();
+  const response = await canister.stakeNeuronIcrc1({
+    stake,
+    principal: controller,
+    fromSubAccount,
+    ledgerCanister,
+    createdAt,
+  });
+  logWithTimestamp(`Staking Neuron ICRC-1 complete.`);
   return response;
 };
 
