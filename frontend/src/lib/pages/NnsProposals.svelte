@@ -128,6 +128,11 @@
     debounceFindProposals?.();
   };
 
+  // Neurons and proposals are loaded at the same time. But once neurons are
+  // loaded, proposals are loaded again. So it's possible that the component
+  // goes back into loading state immediately after proposals are loaded.
+  // TODO: Fix NnsProposals to load proposals only once and remove the
+  // work-around from NnsProposalList.page-object.ts
   $: $definedNeuronsStore, applyFilter($proposalsFiltersStore);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();
