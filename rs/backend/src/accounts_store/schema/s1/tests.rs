@@ -46,7 +46,7 @@ fn large_account(account_index: u64) -> Account {
         sub_accounts: 255,
         canisters: 511,
         default_account_transactions: 8191,
-        sub_account_transactions: 16383,
+        sub_account_transactions: 16383 / 255, // TODO: The histogram does not give the total number of transactions across sub-accounts.
         hardware_wallets: 63,
     };
     toy_account(account_index, size)
@@ -70,6 +70,17 @@ fn large_account_uses_several_pages() {
     assert!(
         num_pages <= MockS1DataStorage::MAX_PAGES_PER_ACCOUNT,
         "A large test account should not exceed the maximum number of pages: {}",
+        num_pages
+    );
+}
+
+#[test]
+fn tiny_account_uses_one_page() {
+    let yo = tiny_account(1);
+    let num_pages = AccountStoragePage::pages_from_account(&yo).len();
+    assert_eq!(
+        1, num_pages,
+        "A large test account should use several pages of memory but has only: {}",
         num_pages
     );
 }
