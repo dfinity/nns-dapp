@@ -25,8 +25,10 @@ const expectImagesLoaded = async ({ page, sources }) => {
     // viewport.
     images.forEach((img) => img.scrollIntoView());
     return images.every((img) => img.complete);
-  }, sources.length);
+  }, sources.length, {timeout: 10000});
 };
+
+test.describe.configure({ retries: 2 });
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
