@@ -97,6 +97,8 @@ pub trait AccountsDbTrait {
 /// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
 pub enum SchemaLabel {
+    /// Data is stored on the heap in a BTreeMap and serialized to stable memory on upgrade.
+    /// Implemented by: [`map::AccountsDbAsMap`]
     Map = 0,
 }
 
