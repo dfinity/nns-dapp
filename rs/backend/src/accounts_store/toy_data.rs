@@ -16,7 +16,7 @@ const TRANSACTIONS_PER_ACCOUNT: f32 = 3.0;
 /// A specification for how large a toy account should be.
 ///
 /// Note: The keys correspond to those in the `AccountsStoreHistogram`.
-#[derive(Default)]
+#[derive(Default, Debug, Copy, Clone, Eq, PartialEq)]
 pub struct ToyAccountSize {
     /// The number of sub-accounts
     pub sub_accounts: usize,
@@ -31,10 +31,42 @@ pub struct ToyAccountSize {
     pub hardware_wallets: usize,
 }
 
+impl From<&Account> for ToyAccountSize {
+    fn from(account: &Account) -> Self {
+        let sub_accounts = account.sub_accounts.len();
+        let canisters = account.canisters.len();
+        let default_account_transactions = account.default_account_transactions.len();
+        // Average number of transactions per sub-account, rounded down.  When creating a toy
+        // account, all sub-accounts have the same number of transactions however that can change.
+        let total_sub_account_transactions: usize = account
+            .sub_accounts
+            .values()
+            .map(|sub_account| sub_account.transactions.len())
+            .sum();
+        let sub_account_transactions: usize = if sub_accounts == 0 {
+            0
+        } else {
+            total_sub_account_transactions / sub_accounts
+        };
+        let hardware_wallets = account.hardware_wallet_accounts.len();
+        ToyAccountSize {
+            sub_accounts,
+            canisters,
+            default_account_transactions,
+            sub_account_transactions,
+            hardware_wallets,
+        }
+    }
+}
+
 /// Creates a toy account data structure.
 ///
 /// Warning: The meaning of the data in the account is in no way coherent or semantically
 /// correct.
+//
+// TODO: Delete the `toy_account()` function in rs/backend/src/accounts_store/schema/tests.rs and
+// use this instead.
+#[allow(dead_code)]
 pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
@@ -76,7 +108,7 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         let principal = PrincipalId::new_user_test_id(account_index + hardware_wallet_index + 999); // Toy hardware wallet principal.
         let hardware_wallet = NamedHardwareWalletAccount {
             name: format!("hw_wallet_{account_index}_{hardware_wallet_index}"),
-            principal: principal,
+            principal,
             transactions: Vec::new(),
         };
         account.hardware_wallet_accounts.push(hardware_wallet);
@@ -86,8 +118,26 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     account
 }
 
+#[test]
+fn toy_account_should_have_the_requested_size() {
+    let requested_size = ToyAccountSize {
+        sub_accounts: 1,
+        canisters: 2,
+        default_account_transactions: 3,
+        sub_account_transactions: 4,
+        hardware_wallets: 5,
+    };
+    let account = toy_account(9, requested_size);
+    let actual_size = ToyAccountSize::from(&account);
+    assert_eq!(requested_size, actual_size);
+}
+
 impl AccountsStore {
     /// Creates the given number of toy accounts, with linked sub-accounts, hardware wallets, pending transactions, and canisters.
+    ///
+    /// Note: The acccount is created with `AccountsStore` API calls, so the `AccountsStore` should
+    /// be internally consistent, however the data is not expected to be consistent with other
+    /// canisters.  For example, account IDs can be complete nonsense compared with ledger data.
     ///
     /// # Returns
     /// - The index of the first account created by this call.  The account indices are `first...first+num_accounts-1`.
