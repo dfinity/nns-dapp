@@ -14,6 +14,7 @@ import {
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
@@ -138,6 +139,7 @@ describe("neurons-services", () => {
   const neurons = [sameControlledNeuron, controlledNeuron];
 
   const spyStakeNeuron = jest.spyOn(api, "stakeNeuron");
+  const spyStakeNeuronIcrc1 = jest.spyOn(api, "stakeNeuronIcrc1");
   const spyGetNeuron = jest.spyOn(api, "queryNeuron");
   const spyIncreaseDissolveDelay = jest.spyOn(api, "increaseDissolveDelay");
   const spyJoinCommunityFund = jest.spyOn(api, "joinCommunityFund");
@@ -165,8 +167,12 @@ describe("neurons-services", () => {
     resetAccountIdentity();
     toastsStore.reset();
     resetNeuronsApiService();
+    overrideFeatureFlagsStore.reset();
 
     spyStakeNeuron.mockImplementation(() =>
+      Promise.resolve(mockNeuron.neuronId)
+    );
+    spyStakeNeuronIcrc1.mockImplementation(() =>
       Promise.resolve(mockNeuron.neuronId)
     );
     spyGetNeuron.mockResolvedValue(mockNeuron);
@@ -199,6 +205,10 @@ describe("neurons-services", () => {
 
   describe("stake new neuron", () => {
     describe("with ENABLE_STAKE_NEURON_ICRC1 disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_STAKE_NEURON_ICRC1", false);
+      });
+
       it("should stake a neuron from main account", async () => {
         expect(spyStakeNeuron).not.toBeCalled();
         const newNeuronId = await stakeNeuron({
@@ -215,6 +225,7 @@ describe("neurons-services", () => {
         });
         expect(spyStakeNeuron).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it("should stake and load a neuron from subaccount", async () => {
@@ -233,6 +244,7 @@ describe("neurons-services", () => {
         });
         expect(spyStakeNeuron).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it("should stake neuron from hardware wallet", async () => {
@@ -257,6 +269,7 @@ describe("neurons-services", () => {
         });
         expect(spyStakeNeuron).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it(`stakeNeuron return undefined if amount less than ${
@@ -274,6 +287,7 @@ describe("neurons-services", () => {
         expect(response).toBeUndefined();
         expectToastError(en.error.amount_not_enough_stake_neuron);
         expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it("stake neuron should return undefined if amount not valid", async () => {
@@ -289,6 +303,7 @@ describe("neurons-services", () => {
         expect(response).toBeUndefined();
         expectToastError("Invalid number NaN");
         expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it("stake neuron should return undefined if not enough funds in account", async () => {
@@ -309,6 +324,7 @@ describe("neurons-services", () => {
         expect(response).toBeUndefined();
         expectToastError(en.error.insufficient_funds);
         expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it("should not stake neuron if no identity", async () => {
@@ -322,44 +338,51 @@ describe("neurons-services", () => {
         expect(response).toBeUndefined();
         expectToastError("Cannot read properties of null");
         expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
     });
-      
+
     describe("with ENABLE_STAKE_NEURON_ICRC1 enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_STAKE_NEURON_ICRC1", true);
+      });
+
       it("should stake a neuron from main account", async () => {
-        expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         const newNeuronId = await stakeNeuron({
           amount: 10,
           account: mockMainAccount,
         });
 
-        expect(spyStakeNeuron).toBeCalledWith({
+        expect(spyStakeNeuronIcrc1).toBeCalledWith({
           controller: mockIdentity.getPrincipal(),
           fromSubAccount: undefined,
           identity: mockIdentity,
           ledgerCanisterIdentity: mockIdentity,
           stake: BigInt(10 * E8S_PER_ICP),
         });
-        expect(spyStakeNeuron).toBeCalledTimes(1);
+        expect(spyStakeNeuronIcrc1).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuron).not.toBeCalled();
       });
 
       it("should stake and load a neuron from subaccount", async () => {
-        expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         const newNeuronId = await stakeNeuron({
           amount: 10,
           account: mockSubAccount,
         });
 
-        expect(spyStakeNeuron).toBeCalledWith({
+        expect(spyStakeNeuronIcrc1).toBeCalledWith({
           controller: mockIdentity.getPrincipal(),
-          fromSubAccount: mockSubAccount.subAccount,
+          fromSubAccount: new Uint8Array(mockSubAccount.subAccount),
           identity: mockIdentity,
           ledgerCanisterIdentity: mockIdentity,
           stake: BigInt(10 * E8S_PER_ICP),
         });
-        expect(spyStakeNeuron).toBeCalledTimes(1);
+        expect(spyStakeNeuronIcrc1).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuron).not.toBeCalled();
       });
 
       it("should stake neuron from hardware wallet", async () => {
@@ -368,13 +391,15 @@ describe("neurons-services", () => {
         } as unknown as Identity;
         setAccountIdentity(mockHardkwareWalletIdentity);
 
-        expect(spyStakeNeuron).not.toBeCalled();
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
 
         const newNeuronId = await stakeNeuron({
           amount: 10,
           account: mockHardwareWalletAccount,
         });
 
+        // HW doesn't support ICRC-1 staking yet so we expect the non-ICRC1
+        // function to be called.
         expect(spyStakeNeuron).toBeCalledWith({
           controller: mockHardwareWalletAccount.principal,
           identity: new AnonymousIdentity(),
@@ -384,6 +409,7 @@ describe("neurons-services", () => {
         });
         expect(spyStakeNeuron).toBeCalledTimes(1);
         expect(newNeuronId).toEqual(mockNeuron.neuronId);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
 
       it(`stakeNeuron return undefined if amount less than ${
@@ -400,6 +426,7 @@ describe("neurons-services", () => {
 
         expect(response).toBeUndefined();
         expectToastError(en.error.amount_not_enough_stake_neuron);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         expect(spyStakeNeuron).not.toBeCalled();
       });
 
@@ -415,6 +442,7 @@ describe("neurons-services", () => {
 
         expect(response).toBeUndefined();
         expectToastError("Invalid number NaN");
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         expect(spyStakeNeuron).not.toBeCalled();
       });
 
@@ -435,6 +463,7 @@ describe("neurons-services", () => {
 
         expect(response).toBeUndefined();
         expectToastError(en.error.insufficient_funds);
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         expect(spyStakeNeuron).not.toBeCalled();
       });
 
@@ -448,6 +477,7 @@ describe("neurons-services", () => {
 
         expect(response).toBeUndefined();
         expectToastError("Cannot read properties of null");
+        expect(spyStakeNeuronIcrc1).not.toBeCalled();
         expect(spyStakeNeuron).not.toBeCalled();
       });
     });

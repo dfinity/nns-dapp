@@ -38,6 +38,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
 ### Operations
 
 #### Added
