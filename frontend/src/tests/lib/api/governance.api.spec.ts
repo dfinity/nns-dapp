@@ -19,6 +19,7 @@ import {
   splitNeuron,
   stakeMaturity,
   stakeNeuron,
+  stakeNeuronIcrc1,
   startDissolving,
   stopDissolving,
 } from "$lib/api/governance.api";
@@ -62,14 +63,59 @@ describe("neurons-api", () => {
       .spyOn(LedgerCanister, "create")
       .mockImplementation(() => mock<LedgerCanister>());
 
+    expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();
+
+    const stake = BigInt(20_000_000);
+    const controller = mockIdentity.getPrincipal();
+    const fromSubAccount = [2, 3, 4];
+
     await stakeNeuron({
-      stake: BigInt(20_000_000),
-      controller: mockIdentity.getPrincipal(),
+      stake,
+      controller,
       ledgerCanisterIdentity: mockIdentity,
       identity: mockIdentity,
+      fromSubAccount,
     });
 
-    expect(mockGovernanceCanister.stakeNeuron).toBeCalled();
+    expect(mockGovernanceCanister.stakeNeuron).toBeCalledTimes(1);
+    expect(mockGovernanceCanister.stakeNeuron).toBeCalledWith(
+      expect.objectContaining({
+        stake,
+        principal: controller,
+        fromSubAccount,
+      })
+    );
+  });
+
+  it("stakeNeuronIcrc1 creates a new neuron", async () => {
+    jest
+      .spyOn(LedgerCanister, "create")
+      .mockImplementation(() => mock<LedgerCanister>());
+
+    expect(mockGovernanceCanister.stakeNeuronIcrc1).not.toBeCalled();
+
+    const stake = BigInt(20_000_000);
+    const controller = mockIdentity.getPrincipal();
+    const fromSubAccount = new Uint8Array([5, 6, 7]);
+
+    await stakeNeuronIcrc1({
+      stake,
+      controller,
+      ledgerCanisterIdentity: mockIdentity,
+      identity: mockIdentity,
+      fromSubAccount,
+    });
+
+    expect(mockGovernanceCanister.stakeNeuronIcrc1).toBeCalledTimes(1);
+    expect(mockGovernanceCanister.stakeNeuronIcrc1).toBeCalledWith(
+      expect.objectContaining({
+        stake,
+        principal: controller,
+        fromSubAccount,
+      })
+    );
+
+    expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();
   });
 
   it("queryNeurons fetches neurons", async () => {
