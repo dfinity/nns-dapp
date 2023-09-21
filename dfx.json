@@ -628,7 +628,8 @@
           "ENABLE_INSTANT_UNLOCK": false,
           "ENABLE_SNS_AGGREGATOR_STORE": false,
           "ENABLE_DISBURSE_MATURITY": true,
-          "ENABLE_STAKE_NEURON_ICRC1": false
+          "ENABLE_STAKE_NEURON_ICRC1": false,
+          "ENABLE_SWAP_ICRC1": false
         }
       }
     },
