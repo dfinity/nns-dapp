@@ -34,8 +34,18 @@ impl AccountsDbS1Trait for MockS1DataStorage {
     }
 }
 
+/// A specification for how large a toy account should be.
+#[derive(Default)]
+struct ToyAccountSize {
+  sub_accounts: usize,
+  canisters: usize,
+  default_account_transactions: usize,
+  sub_account_transactions: usize,
+  hardware_wallets: usize,
+}
+
 /// Creates a toy account.  The contents do not need to be meaningful; do need to have size.
-fn toy_account(account_index: u64, num_canisters: u64) -> Account {
+fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
     let mut account = Account {
@@ -47,8 +57,8 @@ fn toy_account(account_index: u64, num_canisters: u64) -> Account {
         canisters: Vec::new(),
     };
     // Attaches canisters to the account.
-    for canister_index in 0..num_canisters {
-        let canister_id = CanisterId::from(canister_index);
+    for canister_index in 0..size.canisters {
+        let canister_id = CanisterId::from(canister_index as u64);
         let canister = NamedCanister {
             name: format!("canister_{account_index}_{canister_index}"),
             canister_id,
@@ -60,8 +70,29 @@ fn toy_account(account_index: u64, num_canisters: u64) -> Account {
 }
 
 /// Creates a large account that should be spread over multiple memory pages.
+///
+/// Note: In production we have histograms that can help us estimate the maximum size that we need
+/// to support.
+/// - sub-accounts: 255
+/// - canisters: 511
+/// - default account transactions: 8191
+/// - sub-account transactions: 16383
+/// - hardware wallets: 63
 fn large_account(account_index: u64) -> Account {
-  toy_account(account_index, 255)
+    let size = ToyAccountSize{
+        sub_accounts: 255,
+        canisters: 511,
+        default_account_transactions: 8191,
+        sub_account_transactions: 16383,
+        hardware_wallets: 63,
+    };
+  toy_account(account_index, size)
+}
+
+/// Creates a tiny account with minimal activity.
+fn tiny_account(account_index: u64) -> Account {
+    let size = ToyAccountSize::default();
+  toy_account(account_index, size)
 }
 
 #[test]
@@ -78,12 +109,12 @@ fn test_account_storage() {
         accounts_storage: BTreeMap::new(),
     };
     let account_key = vec![1, 2, 3];
-    let account = toy_account(1, 5);
+    let account = tiny_account(1);
     // TODO: Check that this spans several pages.
     storage.s1_insert_account(&account_key, account.clone());
     assert!(storage.s1_contains_account(&account_key));
     assert_eq!(storage.s1_get_account(&account_key), Some(account.clone()));
-    let updated_account = toy_account(1, 1000);
+    let updated_account = large_account(1);
     storage.s1_insert_account(&account_key, updated_account.clone());
     assert!(storage.s1_contains_account(&account_key));
     assert_eq!(storage.s1_get_account(&account_key), Some(updated_account.clone()));
