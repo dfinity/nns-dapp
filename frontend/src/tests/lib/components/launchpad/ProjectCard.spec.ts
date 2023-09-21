@@ -44,18 +44,18 @@ describe("ProjectCard", () => {
       );
     });
 
-    it("should render a title", () => {
-      const { getByText } = render(ProjectCard, {
+    it("should render a title", async () => {
+      const { container } = render(ProjectCard, {
         props: {
           project: mockSnsFullProject,
         },
       });
 
-      expect(
-        getByText(
-          `${en.sns_project.project} ${mockSnsFullProject.summary.metadata.name}`
-        )
-      ).toBeInTheDocument();
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+
+      expect(await po.getProjectName()).toBe(
+        mockSnsFullProject.summary.metadata.name
+      );
     });
 
     it("should render a description", () => {

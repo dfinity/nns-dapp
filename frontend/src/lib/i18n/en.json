@@ -691,9 +691,6 @@
     "project_logo": "project logo",
     "no_proposals": "There are no decentralisation swap proposals open at the moment."
   },
-  "sns_project": {
-    "project": "Project"
-  },
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",

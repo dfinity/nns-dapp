@@ -35,7 +35,7 @@ test("Test SNS participation", async ({ page, context }) => {
   const projectDetail = appPo.getProjectDetailPo();
   await projectDetail.waitForContentLoaded();
   const projectName = await projectDetail.getProjectName();
-  expect(`Project ${projectName}`).toBe(snsProjectName);
+  expect(projectName).toBe(snsProjectName);
   expect(await projectDetail.getTokenSymbol()).not.toBe("");
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
 
