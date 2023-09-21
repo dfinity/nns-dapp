@@ -36,13 +36,13 @@ pub trait AccountsDbS1Trait {
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage>;
-    
+
     /// Checks whether a page of memory exists.
     fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
-    
+
     /// Removes a page of memory.
     fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
-    
+
     /// Checks whether to get the next page.
     /// - If the very last page is full, getting the next page will return None. That is expected.
     fn s1_is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
@@ -114,7 +114,7 @@ pub trait AccountsDbS1Trait {
             );
         }
         // Insert the new pages, overwriting any existing data.  If previously there were more pages, delete the now unused pages.
-        let mut last_removed_page = None;  // Temporary store for pages that are replaced by new data.
+        let mut last_removed_page = None; // Temporary store for pages that are replaced by new data.
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u8, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {

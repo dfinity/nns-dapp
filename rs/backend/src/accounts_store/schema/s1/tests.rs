@@ -1,5 +1,6 @@
 //! Tests for the `S1` schema data storage.
 use super::{Account, AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
+use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::accounts_store::NamedCanister;
 use ic_base_types::{CanisterId, PrincipalId};
 use icp_ledger::AccountIdentifier;
@@ -34,41 +35,6 @@ impl AccountsDbS1Trait for MockS1DataStorage {
     }
 }
 
-/// A specification for how large a toy account should be.
-#[derive(Default)]
-struct ToyAccountSize {
-  sub_accounts: usize,
-  canisters: usize,
-  default_account_transactions: usize,
-  sub_account_transactions: usize,
-  hardware_wallets: usize,
-}
-
-/// Creates a toy account.  The contents do not need to be meaningful; do need to have size.
-fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
-    let principal = PrincipalId::new_user_test_id(account_index);
-    let account_identifier = AccountIdentifier::from(principal);
-    let mut account = Account {
-        principal: Some(principal),
-        account_identifier,
-        default_account_transactions: Vec::new(),
-        sub_accounts: HashMap::new(),
-        hardware_wallet_accounts: Vec::new(),
-        canisters: Vec::new(),
-    };
-    // Attaches canisters to the account.
-    for canister_index in 0..size.canisters {
-        let canister_id = CanisterId::from(canister_index as u64);
-        let canister = NamedCanister {
-            name: format!("canister_{account_index}_{canister_index}"),
-            canister_id,
-        };
-        account.canisters.push(canister);
-    }
-    // FIN
-    account
-}
-
 /// Creates a large account that should be spread over multiple memory pages.
 ///
 /// Note: In production we have histograms that can help us estimate the maximum size that we need
@@ -79,28 +45,36 @@ fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
 /// - sub-account transactions: 16383
 /// - hardware wallets: 63
 fn large_account(account_index: u64) -> Account {
-    let size = ToyAccountSize{
+    let size = ToyAccountSize {
         sub_accounts: 255,
         canisters: 511,
         default_account_transactions: 8191,
         sub_account_transactions: 16383,
         hardware_wallets: 63,
     };
-  toy_account(account_index, size)
+    toy_account(account_index, size)
 }
 
 /// Creates a tiny account with minimal activity.
 fn tiny_account(account_index: u64) -> Account {
     let size = ToyAccountSize::default();
-  toy_account(account_index, size)
+    toy_account(account_index, size)
 }
 
 #[test]
 fn large_account_uses_several_pages() {
-  let yo = large_account(1);
-  let num_pages = AccountStoragePage::pages_from_account(&yo).len();
-  assert!(num_pages > 1, "A large test account should use several pages of memory but has only: {}", num_pages);
-  assert!(num_pages <= MockS1DataStorage::MAX_PAGES_PER_ACCOUNT, "A large test account should not exceed the maximum number of pages: {}", num_pages);
+    let yo = large_account(1);
+    let num_pages = AccountStoragePage::pages_from_account(&yo).len();
+    assert!(
+        num_pages > 1,
+        "A large test account should use several pages of memory but has only: {}",
+        num_pages
+    );
+    assert!(
+        num_pages <= MockS1DataStorage::MAX_PAGES_PER_ACCOUNT,
+        "A large test account should not exceed the maximum number of pages: {}",
+        num_pages
+    );
 }
 
 #[test]
