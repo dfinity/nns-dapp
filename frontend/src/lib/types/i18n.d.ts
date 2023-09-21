@@ -716,10 +716,6 @@ interface I18nSns_launchpad {
   no_proposals: string;
 }
 
-interface I18nSns_project {
-  project: string;
-}
-
 interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
@@ -1279,7 +1275,6 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
-  sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
