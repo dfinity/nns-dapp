@@ -143,6 +143,30 @@ describe("ProjectCommitment", () => {
     );
   });
 
+  describe("when neurons fund participation is not available", () => {
+    beforeEach(() => {
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "isNeuronsFundParticipationPresent")
+        .mockImplementation(() => false);
+    });
+
+    it("should not render detailed participation if neurons fund participation is available", () => {
+      const { queryByTestId } = renderContextCmp({
+        summary,
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ProjectCommitment,
+      });
+
+      expect(
+        queryByTestId("sns-project-current-nf-commitment")
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId("sns-project-current-direct-commitment")
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe("when neurons fund participation is available", () => {
     const directCommitment = 20000000000n;
     beforeEach(() => {
