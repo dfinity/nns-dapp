@@ -14,10 +14,7 @@
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
-  import {
-    getNeuronsFundParticipation,
-    isNeuronsFundParticipationPresent,
-  } from "$lib/getters/sns-summary";
+  import { getNeuronsFundParticipation } from "$lib/getters/sns-summary";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
