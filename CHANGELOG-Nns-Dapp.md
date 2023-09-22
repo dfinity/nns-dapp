@@ -33,6 +33,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve text color of total value locked's label.
 * Make duration rendering consistent.
 * Improve Tooltip location when container hides part of it.
+* Fix CSS on canister cards to show tooltip and name correctly.
 
 #### Security
 
