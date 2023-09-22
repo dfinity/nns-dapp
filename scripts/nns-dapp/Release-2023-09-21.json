@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Start time",
+    "value": "2023-09-21 13:29:25"
+  },
+  {
+    "name": "git fetch --tags --force",
+    "value": "Done"
+  },
+  {
+    "name": "Release SOP script is newest version",
+    "value": "yes"
+  },
+  {
+    "name": "git checkout -b Release-2023-09-21 origin/main",
+    "value": "Done"
+  },
+  {
+    "name": "Release branch",
+    "value": "Release-2023-09-21"
+  },
+  {
+    "name": "Current branch",
+    "value": "Release-2023-09-21"
+  },
+  {
+    "name": "git push origin Release-2023-09-21",
+    "value": "Done"
+  },
+  {
+    "name": "Release branch URL",
+    "value": "https://github.com/dfinity/nns-dapp/tree/Release-2023-09-21"
+  },
+  {
+    "name": "git tag -f release-candidate",
+    "value": "Done"
+  },
+  {
+    "name": "Release commit",
+    "value": "05982aef608988cd2f88855723560203d288cc38"
+  },
+  {
+    "name": "tags/release-candidate commit",
+    "value": "05982aef608988cd2f88855723560203d288cc38"
+  },
+  {
+    "name": "git push origin -f tags/release-candidate",
+    "value": "Done"
+  },
+  {
+    "name": "Security test: npm audit",
+    "value": "found 0 vulnerabilities"
+  },
+  {
+    "name": "Expected npm audit",
+    "value": "found 0 vulnerabilities"
+  },
+  {
+    "name": "Security test: cargo audit",
+    "value": "RUSTSEC-2020-0071,RUSTSEC-2020-0159"
+  },
+  {
+    "name": "Expected cargo audit",
+    "value": "RUSTSEC-2020-0071,RUSTSEC-2020-0159"
+  },
+  {
+    "name": "Security test: no HTML in templates",
+    "value": "Checked"
+  },
+  {
+    "name": "./scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/max/dfn/nns-dapp/branches/release/release/ci --wasm-filename nns-dapp.wasm.gz",
+    "value": "Done"
+  },
+  {
+    "name": "CI NNS-dapp WASM hash",
+    "value": "8ef466f9312b1a70e0ad8902bbe1fb8f1d8d92a477ade18848a4dc3af4d818cd"
+  },
+  {
+    "name": "Local WASM hash",
+    "value": "8ef466f9312b1a70e0ad8902bbe1fb8f1d8d92a477ade18848a4dc3af4d818cd"
+  },
+  {
+    "name": "scripts/canister_ids --remove --network staging --canister nns-dapp",
+    "value": "Done"
+  },
+  {
+    "name": "dfx identity",
+    "value": "snsdemo8: gddaq-g3l6b-2355x-gj3pl-gq5r4-qimfz-5k4vo-hfwn7-l6nq6-3t72u-tae"
+  },
+  {
+    "name": "dfx canister create nns-dapp --network staging --no-wallet",
+    "value": "Done"
+  },
+  {
+    "name": "NNS-dapp staging canister ID",
+    "value": "g6bsd-7qaaa-aaaaa-aad4q-cai"
+  },
+  {
+    "name": "Current NNS-dapp staging canister ID",
+    "value": "g6bsd-7qaaa-aaaaa-aad4q-cai"
+  },
+  {
+    "name": "DFX_NETWORK=staging ./config.sh",
+    "value": "Done"
+  },
+  {
+    "name": "dfx canister install nns-dapp --argument $'(opt record{\\n  args = vec {\\n    record{ 0=\"API_HOST\"; 1=\"https://nnsdapp.dfinity.network\" };\\n    record{ 0=\"CKBTC_INDEX_CANISTER_ID\"; 1=\"tqtu6-byaaa-aaaaa-aaana-cai\" };\\n    record{ 0=\"CKBTC_LEDGER_CANISTER_ID\"; 1=\"st75y-vaaaa-aaaaa-aaalq-cai\" };\\n    record{ 0=\"CKBTC_MINTER_CANISTER_ID\"; 1=\"t6rzw-2iaaa-aaaaa-aaama-cai\" };\\n    record{ 0=\"CYCLES_MINTING_CANISTER_ID\"; 1=\"rkp4c-7iaaa-aaaaa-aaaca-cai\" };\\n    record{ 0=\"DFX_NETWORK\"; 1=\"staging\" };\\n    record{ 0=\"FEATURE_FLAGS\"; 1=\"{\\\\\"ENABLE_CKBTC\\\\\":true,\\\\\"ENABLE_CKTESTBTC\\\\\":false,\\\\\"ENABLE_DISBURSE_MATURITY\\\\\":true,\\\\\"ENABLE_ICP_ICRC\\\\\":false,\\\\\"ENABLE_INSTANT_UNLOCK\\\\\":false,\\\\\"ENABLE_SNS_AGGREGATOR_STORE\\\\\":false,\\\\\"ENABLE_STAKE_NEURON_ICRC1\\\\\":false}\" };\\n    record{ 0=\"FETCH_ROOT_KEY\"; 1=\"true\" };\\n    record{ 0=\"GOVERNANCE_CANISTER_ID\"; 1=\"rrkah-fqaaa-aaaaa-aaaaq-cai\" };\\n    record{ 0=\"HOST\"; 1=\"https://nnsdapp.dfinity.network\" };\\n    record{ 0=\"IDENTITY_SERVICE_URL\"; 1=\"https://wqmuk-5qaaa-aaaaa-aaaqq-cai.nnsdapp.dfinity.network\" };\\n    record{ 0=\"LEDGER_CANISTER_ID\"; 1=\"ryjl3-tyaaa-aaaaa-aaaba-cai\" };\\n    record{ 0=\"OWN_CANISTER_ID\"; 1=\"g6bsd-7qaaa-aaaaa-aad4q-cai\" };\\n    record{ 0=\"ROBOTS\"; 1=\"<meta name=\\\\\"robots\\\\\" content=\\\\\"noindex, nofollow\\\\\" />\" };\\n    record{ 0=\"SNS_AGGREGATOR_URL\"; 1=\"https://f4up4-paaaa-aaaaa-aadxq-cai.nnsdapp.dfinity.network\" };\\n    record{ 0=\"STATIC_HOST\"; 1=\"https://nnsdapp.dfinity.network\" };\\n    record{ 0=\"TVL_CANISTER_ID\"; 1=\"\" };\\n    record{ 0=\"WASM_CANISTER_ID\"; 1=\"qaa6y-5yaaa-aaaaa-aaafa-cai\" };\\n  };\\n})' --network staging --wasm ./release/ci/nns-dapp.wasm.gz",
+    "value": "Done"
+  },
+  {
+    "name": "Staging URL",
+    "value": "https://g6bsd-7qaaa-aaaaa-aad4q-cai.nnsdapp.dfinity.network/"
+  },
+  {
+    "name": "Staging WASM hash",
+    "value": "8ef466f9312b1a70e0ad8902bbe1fb8f1d8d92a477ade18848a4dc3af4d818cd"
+  },
+  {
+    "name": "Post on Slack",
+    "value": "https://dfinity.slack.com/archives/C03HZERHBT3/p1695296436771079?thread_ts=1695286168.490069&cid=C03HZERHBT3"
+  }
+]
