@@ -59,7 +59,7 @@ pub trait AccountsDbS1Trait {
     //
     // Note: These assist in implementing the AccountsDbTrait.
 
-    /// Equivalent of `AccountsDbTrait::get_account(..)`
+    /// Equivalent of [`super::AccountsDbTrait::db_get_account`].
     fn s1_get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
         let mut have_account = false;
@@ -87,22 +87,7 @@ pub trait AccountsDbS1Trait {
         }
     }
 
-    /// Equivalent of `AccountsDbTrait::with_account(..)`
-    fn s1_with_account<F, T>(&mut self, account_key: &[u8], f: F) -> Option<T>
-    where
-        // The closure takes an account as an argument.  It may return any type.
-        F: Fn(&mut Account) -> T,
-    {
-        if let Some(mut account) = self.s1_get_account(account_key) {
-            let ans = f(&mut account);
-            self.s1_insert_account(account_key, account);
-            Some(ans)
-        } else {
-            None
-        }
-    }
-
-    /// Equivalent of `AccountsDbTrait::insert_account(..)`
+    /// Equivalent of [`super::AccountsDbTrait::db_insert_account`].
     fn s1_insert_account(&mut self, account_key: &[u8], account: Account) {
         // Serilaize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);
@@ -130,13 +115,13 @@ pub trait AccountsDbS1Trait {
         }
     }
 
-    /// Equivalent of `AccountsDbTrait::contains_account(..)`
+    /// Equivalent of [`super::AccountsDbTrait::db_contains_account`].
     fn s1_contains_account(&self, account_key: &[u8]) -> bool {
         let account_storage_key = AccountStorageKey::new(0, account_key);
         self.s1_contains_account_page(&account_storage_key)
     }
 
-    /// Equivalent of `AccountsDbTrait::remove_account(..)`
+    /// Equivalent of [`super::AccountsDbTrait::db_remove_account`].
     fn s1_remove_account(&mut self, account_key: &[u8]) {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         let mut last_page = None;
