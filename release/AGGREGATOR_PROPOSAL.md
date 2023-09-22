@@ -25,7 +25,7 @@ Wasm sha256 hash: `c0861ecbaef42ddabdfa3084f24df7ebae548c9eecb7ea03d6c1b08f284a7
 ```
 
 ## Forum
-Please see the forum post here: FORUM_LINK
+Please see the forum post here: https://forum.dfinity.org/t/proposal-124787-to-upgrade-nns-dapp/23231
 
 ## Wasm Verification
 
