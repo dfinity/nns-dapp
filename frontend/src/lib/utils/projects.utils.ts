@@ -1,6 +1,9 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import { getDeniedCountries } from "$lib/getters/sns-summary";
+import {
+  getDeniedCountries,
+  getNeuronsFundParticipation,
+} from "$lib/getters/sns-summary";
 import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
@@ -399,3 +402,34 @@ export const differentSummaries = (
       summary1.indexCanisterId.toText() !== summary2?.indexCanisterId.toText()
     );
   });
+
+export type FullProjectCommitmentSplit = {
+  totalCommitmentE8s: bigint;
+  directCommitmentE8s: bigint;
+  nfCommitmentE8s: bigint;
+};
+export type ProjectCommitmentSplit =
+  | { totalCommitmentE8s: bigint }
+  | FullProjectCommitmentSplit;
+
+export const isFullProjectCommitmentSplit = (
+  commitment: ProjectCommitmentSplit
+): commitment is FullProjectCommitmentSplit =>
+  "directCommitmentE8s" in commitment && "nfCommitmentE8s" in commitment;
+
+export const getProjectCommitmentSplit = (
+  summary: SnsSummary
+): ProjectCommitmentSplit => {
+  const nfCommitmentE8s = getNeuronsFundParticipation(summary);
+  if (nonNullish(nfCommitmentE8s)) {
+    return {
+      totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+      directCommitmentE8s:
+        summary.derived.buyer_total_icp_e8s - nfCommitmentE8s,
+      nfCommitmentE8s,
+    };
+  }
+  return {
+    totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+  };
+};
