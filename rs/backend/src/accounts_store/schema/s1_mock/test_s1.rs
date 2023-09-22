@@ -5,40 +5,6 @@ use std::collections::BTreeMap;
 use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::tests::test_accounts_db;
 
-#[derive(Default)]
-struct MockS1DataStorage {
-    accounts_storage: BTreeMap<AccountStorageKey, AccountStoragePage>,
-}
-
-impl AccountsDbS1Trait for MockS1DataStorage {
-    fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
-        self.accounts_storage.get(account_storage_key).cloned()
-    }
-    fn s1_insert_account_page(
-        &mut self,
-        account_storage_key: AccountStorageKey,
-        account: AccountStoragePage,
-    ) -> Option<AccountStoragePage> {
-        self.accounts_storage.insert(account_storage_key, account)
-    }
-    fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool {
-        self.accounts_storage.contains_key(account_storage_key)
-    }
-    fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
-        self.accounts_storage.remove(account_storage_key)
-    }
-    fn s1_accounts_len(&self) -> u64 {
-        self.accounts_storage
-            .iter()
-            .filter(|(key, _)| key.page_num() == 0)
-            .count() as u64
-    }
-}
-
-// Verifies that [`MockS1DataStorage`] implements the [`AccountsDbTrait`] properly.
-test_accounts_db!(MockS1DataStorage::default());
-
-
 /// Creates a large account that should be spread over multiple memory pages.
 ///
 /// Note: In production we have histograms that can help us estimate the maximum size that we need

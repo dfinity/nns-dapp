@@ -19,10 +19,9 @@ use on_wire::{FromWire, IntoWire};
 use std::borrow::Cow;
 use std::convert::TryInto;
 
-#[cfg(test)]
-mod tests;
-
 pub trait AccountsDbS1Trait {
+    // TODO: Add a small cache to limit the cost of getting and parsing data to once per API call.
+
     /// Every account is serialized and stored in between 1 and 2**16 pages.
     const MAX_PAGES_PER_ACCOUNT: usize = (u16::MAX as usize) + 1;
 

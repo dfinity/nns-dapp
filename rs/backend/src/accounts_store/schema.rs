@@ -4,6 +4,7 @@ use crate::accounts_store::Account;
 pub mod map;
 pub mod proxy;
 pub mod s1;
+pub mod s1_mock;
 #[cfg(test)]
 mod tests;
 
