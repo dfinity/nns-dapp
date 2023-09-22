@@ -15,3 +15,8 @@ export const getConditionsToAccept = (
 export const getNeuronsFundParticipation = (
   _summary: SnsSummary
 ): bigint | undefined => undefined;
+
+// TODO: https://dfinity.atlassian.net/browse/GIX-1909 check if nf participation field is present
+export const isNeuronsFundParticipationPresent = (
+  _summary: SnsSummary
+): boolean => false;

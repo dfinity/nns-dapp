@@ -14,7 +14,10 @@
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
-  import { getNeuronsFundParticipation } from "$lib/getters/sns-summary";
+  import {
+    getNeuronsFundParticipation,
+    isNeuronsFundParticipationPresent,
+  } from "$lib/getters/sns-summary";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -40,6 +43,15 @@
     token: ICPToken,
   });
 
+  let directCommitmentE8s: bigint;
+  $: directCommitmentE8s = buyersTotalCommitment - neuronsFundCommitmentE8s;
+
+  let directCommitmentIcp: TokenAmount;
+  $: directCommitmentIcp = TokenAmount.fromE8s({
+    amount: directCommitmentE8s,
+    token: ICPToken,
+  });
+
   let saleBuyerCount: number | undefined;
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
@@ -47,8 +59,18 @@
     derivedState: summary.derived,
   });
 
-  let neuronsFundParticipation: bigint;
-  $: neuronsFundParticipation = getNeuronsFundParticipation(summary) ?? 0n;
+  let neuronsFundCommitmentE8s: bigint;
+  $: neuronsFundCommitmentE8s = getNeuronsFundParticipation(summary) ?? 0n;
+
+  let neuronsFundCommitmentIcp: TokenAmount;
+  $: neuronsFundCommitmentIcp = TokenAmount.fromE8s({
+    amount: neuronsFundCommitmentE8s,
+    token: ICPToken,
+  });
+
+  let isNeuronsFundCommitmentAvailable: boolean;
+  $: isNeuronsFundCommitmentAvailable =
+    isNeuronsFundParticipationPresent(summary);
 </script>
 
 {#if nonNullish(saleBuyerCount)}
@@ -66,11 +88,35 @@
 
   <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
+<!-- Even if the Neurons' Fund participation is 0, we want to show it. -->
+<!-- Yet, we only want to show it in those swaps that the field is available. -->
+{#if isNeuronsFundCommitmentAvailable}
+  <KeyValuePair testId="sns-project-current-nf-commitment">
+    <span slot="key" class="detail-data">
+      {$i18n.sns_project_detail.current_nf_commitment}
+    </span>
+
+    <AmountDisplay slot="value" amount={neuronsFundCommitmentIcp} singleLine />
+  </KeyValuePair>
+  <KeyValuePair testId="sns-project-current-direct-commitment">
+    <span slot="key" class="detail-data">
+      {$i18n.sns_project_detail.current_direct_commitment}
+    </span>
+
+    <AmountDisplay slot="value" amount={directCommitmentIcp} singleLine />
+  </KeyValuePair>
+{/if}
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar
-    directParticipation={buyersTotalCommitment - neuronsFundParticipation}
-    nfParticipation={neuronsFundParticipation}
+    directParticipation={directCommitmentE8s}
+    nfParticipation={neuronsFundCommitmentE8s}
     max={max_icp_e8s}
     minimumIndicator={min_icp_e8s}
   />
 </div>
+
+<style lang="scss">
+  .detail-data {
+    padding-left: var(--padding-2x);
+  }
+</style>

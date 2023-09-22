@@ -142,4 +142,72 @@ describe("ProjectCommitment", () => {
       Number(directCommitment + nfCommitment)
     );
   });
+
+  describe("when neurons fund participation is available", () => {
+    const directCommitment = 20000000000n;
+    beforeEach(() => {
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "isNeuronsFundParticipationPresent")
+        .mockImplementation(() => true);
+    });
+
+    it("should render detailed participation if neurons fund participation is available", () => {
+      const nfCommitment = 10000000000n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+
+      const { queryByTestId } = renderContextCmp({
+        summary: {
+          ...summary,
+          derived: {
+            ...summary.derived,
+            buyer_total_icp_e8s: directCommitment + nfCommitment,
+          },
+        },
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ProjectCommitment,
+      });
+
+      expect(
+        queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+      ).toBe("Neurons' Fund Commitment 100.00 ICP");
+      expect(
+        queryByTestId(
+          "sns-project-current-direct-commitment"
+        ).textContent.trim()
+      ).toBe("Direct Commitment 200.00 ICP");
+    });
+
+    it("should render detailed participation if neurons fund participation is available even with NF participation as 0", () => {
+      const nfCommitment = 0n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+
+      const { queryByTestId } = renderContextCmp({
+        summary: {
+          ...summary,
+          derived: {
+            ...summary.derived,
+            buyer_total_icp_e8s: directCommitment + nfCommitment,
+          },
+        },
+        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+        Component: ProjectCommitment,
+      });
+
+      expect(
+        queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+      ).toBe("Neurons' Fund Commitment 0 ICP");
+      expect(
+        queryByTestId(
+          "sns-project-current-direct-commitment"
+        ).textContent.trim()
+      ).toBe("Direct Commitment 200.00 ICP");
+    });
+  });
 });
