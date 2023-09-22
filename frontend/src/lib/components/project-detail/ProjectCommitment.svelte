@@ -70,8 +70,6 @@
 
   <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
-<!-- Even if the Neurons' Fund participation is 0, we want to show it. -->
-<!-- Yet, we only want to show it in those swaps that the field is available. -->
 {#if isFullProjectCommitmentSplit(projectCommitments)}
   <KeyValuePair testId="sns-project-current-nf-commitment">
     <span slot="key" class="detail-data">
