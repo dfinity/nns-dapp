@@ -14,6 +14,9 @@ import { mock } from "jest-mock-extended";
 
 describe("icp-ledger.api", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
+
     jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -30,9 +33,6 @@ describe("icp-ledger.api", () => {
     const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.clearAllTimers();
-
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
       jest.useFakeTimers().setSystemTime(now);
@@ -128,9 +128,6 @@ describe("icp-ledger.api", () => {
     const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.clearAllTimers();
-
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.icrc1Transfer.mockResolvedValue(BigInt(0));
       jest.useFakeTimers().setSystemTime(now);
