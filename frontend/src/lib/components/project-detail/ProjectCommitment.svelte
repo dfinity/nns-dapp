@@ -43,15 +43,6 @@
     token: ICPToken,
   });
 
-  let directCommitmentE8s: bigint;
-  $: directCommitmentE8s = buyersTotalCommitment - neuronsFundCommitmentE8s;
-
-  let directCommitmentIcp: TokenAmount;
-  $: directCommitmentIcp = TokenAmount.fromE8s({
-    amount: directCommitmentE8s,
-    token: ICPToken,
-  });
-
   let saleBuyerCount: number | undefined;
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
@@ -59,18 +50,27 @@
     derivedState: summary.derived,
   });
 
-  let neuronsFundCommitmentE8s: bigint;
-  $: neuronsFundCommitmentE8s = getNeuronsFundParticipation(summary) ?? 0n;
+  let neuronsFundCommitmentE8s: bigint | undefined;
+  $: neuronsFundCommitmentE8s = getNeuronsFundParticipation(summary);
 
   let neuronsFundCommitmentIcp: TokenAmount;
   $: neuronsFundCommitmentIcp = TokenAmount.fromE8s({
-    amount: neuronsFundCommitmentE8s,
+    amount: neuronsFundCommitmentE8s ?? 0n,
     token: ICPToken,
   });
 
   let isNeuronsFundCommitmentAvailable: boolean;
-  $: isNeuronsFundCommitmentAvailable =
-    isNeuronsFundParticipationPresent(summary);
+  $: isNeuronsFundCommitmentAvailable = nonNullish(neuronsFundCommitmentE8s);
+
+  let directCommitmentE8s: bigint;
+  $: directCommitmentE8s =
+    buyersTotalCommitment - (neuronsFundCommitmentE8s ?? 0n);
+
+  let directCommitmentIcp: TokenAmount;
+  $: directCommitmentIcp = TokenAmount.fromE8s({
+    amount: directCommitmentE8s,
+    token: ICPToken,
+  });
 </script>
 
 {#if nonNullish(saleBuyerCount)}
@@ -109,7 +109,7 @@
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar
     directParticipation={directCommitmentE8s}
-    nfParticipation={neuronsFundCommitmentE8s}
+    nfParticipation={neuronsFundCommitmentE8s ?? 0n}
     max={max_icp_e8s}
     minimumIndicator={min_icp_e8s}
   />

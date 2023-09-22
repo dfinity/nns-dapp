@@ -143,95 +143,78 @@ describe("ProjectCommitment", () => {
     );
   });
 
-  describe("when neurons fund participation is not available", () => {
-    beforeEach(() => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "isNeuronsFundParticipationPresent")
-        .mockImplementation(() => false);
+  it("should not render detailed participation if neurons fund participation is not available", () => {
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => undefined);
+    const { queryByTestId } = renderContextCmp({
+      summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
     });
 
-    it("should not render detailed participation if neurons fund participation is available", () => {
-      const { queryByTestId } = renderContextCmp({
-        summary,
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ProjectCommitment,
-      });
-
-      expect(
-        queryByTestId("sns-project-current-nf-commitment")
-      ).not.toBeInTheDocument();
-      expect(
-        queryByTestId("sns-project-current-direct-commitment")
-      ).not.toBeInTheDocument();
-    });
+    expect(
+      queryByTestId("sns-project-current-nf-commitment")
+    ).not.toBeInTheDocument();
+    expect(
+      queryByTestId("sns-project-current-direct-commitment")
+    ).not.toBeInTheDocument();
   });
 
-  describe("when neurons fund participation is available", () => {
+  it("should render detailed participation if neurons fund participation is available", () => {
     const directCommitment = 20000000000n;
-    beforeEach(() => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "isNeuronsFundParticipationPresent")
-        .mockImplementation(() => true);
-    });
+    const nfCommitment = 10000000000n;
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => nfCommitment);
 
-    it("should render detailed participation if neurons fund participation is available", () => {
-      const nfCommitment = 10000000000n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
-
-      const { queryByTestId } = renderContextCmp({
-        summary: {
-          ...summary,
-          derived: {
-            ...summary.derived,
-            buyer_total_icp_e8s: directCommitment + nfCommitment,
-          },
+    const { queryByTestId } = renderContextCmp({
+      summary: {
+        ...summary,
+        derived: {
+          ...summary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
         },
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ProjectCommitment,
-      });
-
-      expect(
-        queryByTestId("sns-project-current-nf-commitment").textContent.trim()
-      ).toBe("Neurons' Fund Commitment 100.00 ICP");
-      expect(
-        queryByTestId(
-          "sns-project-current-direct-commitment"
-        ).textContent.trim()
-      ).toBe("Direct Commitment 200.00 ICP");
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
     });
 
-    it("should render detailed participation if neurons fund participation is available even with NF participation as 0", () => {
-      const nfCommitment = 0n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
+    expect(
+      queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+    ).toBe("Neurons' Fund Commitment 100.00 ICP");
+    expect(
+      queryByTestId("sns-project-current-direct-commitment").textContent.trim()
+    ).toBe("Direct Commitment 200.00 ICP");
+  });
 
-      const { queryByTestId } = renderContextCmp({
-        summary: {
-          ...summary,
-          derived: {
-            ...summary.derived,
-            buyer_total_icp_e8s: directCommitment + nfCommitment,
-          },
+  it("should render detailed participation if neurons fund participation is available even with NF participation as 0", () => {
+    const directCommitment = 20000000000n;
+    const nfCommitment = 0n;
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => nfCommitment);
+
+    const { queryByTestId } = renderContextCmp({
+      summary: {
+        ...summary,
+        derived: {
+          ...summary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
         },
-        swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
-        Component: ProjectCommitment,
-      });
-
-      expect(
-        queryByTestId("sns-project-current-nf-commitment").textContent.trim()
-      ).toBe("Neurons' Fund Commitment 0 ICP");
-      expect(
-        queryByTestId(
-          "sns-project-current-direct-commitment"
-        ).textContent.trim()
-      ).toBe("Direct Commitment 200.00 ICP");
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
     });
+
+    expect(
+      queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+    ).toBe("Neurons' Fund Commitment 0 ICP");
+    expect(
+      queryByTestId("sns-project-current-direct-commitment").textContent.trim()
+    ).toBe("Direct Commitment 200.00 ICP");
   });
 });
