@@ -10,30 +10,29 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummarySwap } from "$lib/types/sns";
-  import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
+  import type { SnsParams } from "@dfinity/sns";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
+  import { getNeuronsFundParticipation } from "$lib/getters/sns-summary";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swap: SnsSummarySwap;
-  let derived: SnsSwapDerivedState;
+  let summary: SnsSummary;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
+  $: summary = $projectDetailStore.summary as SnsSummary;
 
   let params: SnsParams;
-  $: ({ params } = swap);
+  $: ({ params } = summary.swap);
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
   $: ({ min_icp_e8s, max_icp_e8s } = params);
 
   let buyersTotalCommitment: bigint;
-  $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
+  $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = summary.derived);
 
   let buyersTotalCommitmentIcp: TokenAmount;
   $: buyersTotalCommitmentIcp = TokenAmount.fromE8s({
@@ -45,8 +44,11 @@
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
     swapMetrics: $snsSwapMetricsStore,
-    derivedState: derived,
+    derivedState: summary.derived,
   });
+
+  let neuronsFundParticipation: bigint;
+  $: neuronsFundParticipation = getNeuronsFundParticipation(summary) ?? 0n;
 </script>
 
 {#if nonNullish(saleBuyerCount)}
@@ -66,7 +68,8 @@
 </KeyValuePair>
 <div data-tid="sns-project-commitment-progress">
   <CommitmentProgressBar
-    value={buyersTotalCommitment}
+    directParticipation={buyersTotalCommitment - neuronsFundParticipation}
+    nfParticipation={neuronsFundParticipation}
     max={max_icp_e8s}
     minimumIndicator={min_icp_e8s}
   />
