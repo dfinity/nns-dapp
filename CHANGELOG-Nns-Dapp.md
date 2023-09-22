@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
 * Improve contrast of token selector's logo in light theme.
 * Remove the "Project" leading word in the SNS Project card.
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 
 #### Deprecated
 #### Removed
