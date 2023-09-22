@@ -7,7 +7,8 @@ import { render } from "@testing-library/svelte";
 
 describe("CommitmentProgressBar", () => {
   const props = {
-    value: BigInt(1327),
+    directParticipation: 1327n,
+    nfParticipation: 0n,
     max: BigInt(3000),
     minimumIndicator: BigInt(1500),
   };
@@ -25,7 +26,8 @@ describe("CommitmentProgressBar", () => {
   it("should not display minimum indicators if not provided", async () => {
     const { queryByTestId } = render(CommitmentProgressBar, {
       props: {
-        value: props.value,
+        directParticipation: props.directParticipation,
+        nfParticipation: props.nfParticipation,
         max: props.max,
       },
     });
@@ -40,5 +42,18 @@ describe("CommitmentProgressBar", () => {
     expect(
       queryByTestId("commitment-min-indicator-value")?.textContent.trim()
     ).toEqual(`${Number(props.minimumIndicator) / 100000000} ICP`);
+  });
+
+  it("should display the value adding NF and direct commitments", async () => {
+    const nfParticipation = 1000n;
+    const { container } = render(CommitmentProgressBar, {
+      props: {
+        ...props,
+        nfParticipation,
+      },
+    });
+    expect(container.querySelector("progress").value).toBe(
+      Number(props.directParticipation + nfParticipation)
+    );
   });
 });
