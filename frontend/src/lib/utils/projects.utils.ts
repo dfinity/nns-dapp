@@ -415,8 +415,7 @@ export type ProjectCommitmentSplit =
 export const isFullProjectCommitmentSplit = (
   commitment: ProjectCommitmentSplit
 ): commitment is FullProjectCommitmentSplit =>
-  nonNullish((commitment as FullProjectCommitmentSplit).directCommitmentE8s) &&
-  nonNullish((commitment as FullProjectCommitmentSplit).nfCommitmentE8s);
+  "directCommitmentE8s" in commitment && "nfCommitmentE8s" in commitment;
 
 export const getProjectCommitmentSplit = (
   summary: SnsSummary
