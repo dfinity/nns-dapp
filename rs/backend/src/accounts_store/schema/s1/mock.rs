@@ -5,6 +5,21 @@ use std::collections::BTreeMap;
 #[cfg(test)]
 mod test_s1;
 
+#[cfg(test)]
+mod test_db {
+    //! Tests for the [`MockS1DataStorage`] implementation of the [`AccountsDbTrait`].
+    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
+    use super::MockS1DataStorage;
+
+    test_accounts_db!(MockS1DataStorage::default());
+
+    #[test]
+    fn map_conversions_should_work() {
+        assert_map_conversions_work::<AccountsDbAsMap>();
+    }
+}
+
+
 #[derive(Default)]
 struct MockS1DataStorage {
     accounts_storage: BTreeMap<AccountStorageKey, AccountStoragePage>,
