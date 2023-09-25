@@ -14,6 +14,7 @@
   import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: SnsNeuron;
+  export let feeE8s: bigint;
 
   let allowedToStakeMaturity: boolean;
   $: allowedToStakeMaturity = hasPermissionToStakeMaturity({
@@ -36,10 +37,10 @@
     >{$i18n.neuron_detail.available_description}</svelte:fragment
   >
   {#if allowedToStakeMaturity}
-    <SnsStakeMaturityButton />
+    <SnsStakeMaturityButton {neuron} />
   {/if}
 
   {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}
-    <SnsDisburseMaturityButton />
+    <SnsDisburseMaturityButton {neuron} {feeE8s} />
   {/if}
 </CommonItemAction>

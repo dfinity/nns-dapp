@@ -3,7 +3,7 @@
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
 
-use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait};
+use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -19,6 +19,13 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
+}
+
+impl AccountsDbAsProxy {
+    /// Migration countdown; when it reaches zero, the migration is complete.
+    pub fn migration_countdown(&self) -> u32 {
+        0
+    }
 }
 
 impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
@@ -50,6 +57,9 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.map.values()
+    }
+    fn schema_label(&self) -> SchemaLabel {
+        self.map.schema_label()
     }
 }
 

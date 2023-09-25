@@ -10,30 +10,36 @@
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import type { SnsSummarySwap } from "$lib/types/sns";
-  import type { SnsSwapDerivedState, SnsParams } from "@dfinity/sns";
+  import type { SnsParams } from "@dfinity/sns";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
+  import {
+    getProjectCommitmentSplit,
+    isFullProjectCommitmentSplit,
+    type ProjectCommitmentSplit,
+  } from "$lib/utils/projects.utils";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
   );
 
-  let swap: SnsSummarySwap;
-  let derived: SnsSwapDerivedState;
+  let summary: SnsSummary;
   // type safety validation is done in ProjectStatusSection component
-  $: ({ swap, derived } = $projectDetailStore.summary as SnsSummary);
+  $: summary = $projectDetailStore.summary as SnsSummary;
 
   let params: SnsParams;
-  $: ({ params } = swap);
+  $: ({ params } = summary.swap);
 
   let min_icp_e8s: bigint;
   let max_icp_e8s: bigint;
   $: ({ min_icp_e8s, max_icp_e8s } = params);
 
+  let projectCommitments: ProjectCommitmentSplit;
+  $: projectCommitments = getProjectCommitmentSplit(summary);
+
   let buyersTotalCommitment: bigint;
-  $: ({ buyer_total_icp_e8s: buyersTotalCommitment } = derived);
+  $: buyersTotalCommitment = projectCommitments.totalCommitmentE8s;
 
   let buyersTotalCommitmentIcp: TokenAmount;
   $: buyersTotalCommitmentIcp = TokenAmount.fromE8s({
@@ -45,7 +51,7 @@
   $: saleBuyerCount = swapSaleBuyerCount({
     rootCanisterId: $projectDetailStore?.summary?.rootCanisterId,
     swapMetrics: $snsSwapMetricsStore,
-    derivedState: derived,
+    derivedState: summary.derived,
   });
 </script>
 
@@ -64,10 +70,57 @@
 
   <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
 </KeyValuePair>
-<div data-tid="sns-project-commitment-progress">
-  <CommitmentProgressBar
-    value={buyersTotalCommitment}
-    max={max_icp_e8s}
-    minimumIndicator={min_icp_e8s}
-  />
-</div>
+{#if isFullProjectCommitmentSplit(projectCommitments)}
+  <KeyValuePair testId="sns-project-current-nf-commitment">
+    <span slot="key" class="detail-data">
+      {$i18n.sns_project_detail.current_nf_commitment}
+    </span>
+
+    <AmountDisplay
+      slot="value"
+      amount={TokenAmount.fromE8s({
+        amount: projectCommitments.nfCommitmentE8s,
+        token: ICPToken,
+      })}
+      singleLine
+    />
+  </KeyValuePair>
+  <KeyValuePair testId="sns-project-current-direct-commitment">
+    <span slot="key" class="detail-data">
+      {$i18n.sns_project_detail.current_direct_commitment}
+    </span>
+
+    <AmountDisplay
+      slot="value"
+      amount={TokenAmount.fromE8s({
+        amount: projectCommitments.directCommitmentE8s,
+        token: ICPToken,
+      })}
+      singleLine
+    />
+  </KeyValuePair>
+  <div data-tid="sns-project-commitment-progress">
+    <CommitmentProgressBar
+      directParticipation={projectCommitments.directCommitmentE8s}
+      nfParticipation={projectCommitments.nfCommitmentE8s}
+      max={max_icp_e8s}
+      minimumIndicator={min_icp_e8s}
+    />
+  </div>
+{:else}
+  <!-- We show the progress bar with only directParticipation if NF participation is not present -->
+  <div data-tid="sns-project-commitment-progress">
+    <CommitmentProgressBar
+      directParticipation={projectCommitments.totalCommitmentE8s}
+      nfParticipation={0n}
+      max={max_icp_e8s}
+      minimumIndicator={min_icp_e8s}
+    />
+  </div>
+{/if}
+
+<style lang="scss">
+  .detail-data {
+    padding-left: var(--padding-2x);
+  }
+</style>

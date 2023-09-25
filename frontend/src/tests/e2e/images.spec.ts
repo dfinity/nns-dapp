@@ -16,17 +16,23 @@ const expectImagesLoaded = async ({ page, sources }) => {
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
 
-  await page.waitForFunction((expectedImageCount) => {
-    const images = Array.from(document.querySelectorAll("img"));
-    if (images.length !== expectedImageCount) {
-      return false;
-    }
-    // The browser might decide not to load images that are outside the
-    // viewport.
-    images.forEach((img) => img.scrollIntoView());
-    return images.every((img) => img.complete);
-  }, sources.length);
+  await page.waitForFunction(
+    (expectedImageCount) => {
+      const images = Array.from(document.querySelectorAll("img"));
+      if (images.length !== expectedImageCount) {
+        return false;
+      }
+      // The browser might decide not to load images that are outside the
+      // viewport.
+      images.forEach((img) => img.scrollIntoView());
+      return images.every((img) => img.complete);
+    },
+    sources.length,
+    { timeout: 10000 }
+  );
 };
+
+test.describe.configure({ retries: 2 });
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");

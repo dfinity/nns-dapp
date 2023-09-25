@@ -43,7 +43,7 @@ pub struct UpgradeArgs {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct InitArgs_archive_options {
+pub struct InitArgsArchiveOptions {
     pub num_blocks_to_archive: u64,
     pub trigger_threshold: u64,
     pub max_message_size_bytes: Option<u64>,
@@ -60,7 +60,7 @@ pub struct InitArgs {
     pub minting_account: Account,
     pub initial_balances: Vec<(Account, u64)>,
     pub fee_collector_account: Option<Account>,
-    pub archive_options: InitArgs_archive_options,
+    pub archive_options: InitArgsArchiveOptions,
     pub token_name: String,
 }
 
@@ -97,7 +97,7 @@ pub struct BlockRange {
 
 pub type QueryBlockArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
-pub struct GetBlocksResponse_archived_blocks_inner {
+pub struct GetBlocksResponseArchivedBlocksItem {
     pub callback: QueryBlockArchiveFn,
     pub start: BlockIndex,
     pub length: candid::Nat,
@@ -109,7 +109,7 @@ pub struct GetBlocksResponse {
     pub first_index: BlockIndex,
     pub blocks: Vec<Block>,
     pub chain_length: u64,
-    pub archived_blocks: Vec<GetBlocksResponse_archived_blocks_inner>,
+    pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -126,7 +126,7 @@ pub struct GetTransactionsRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_burn_inner {
+pub struct TransactionBurnInner {
     pub from: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
     pub created_at_time: Option<u64>,
@@ -134,7 +134,7 @@ pub struct Transaction_burn_inner {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_mint_inner {
+pub struct TransactionMintInner {
     pub to: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
     pub created_at_time: Option<u64>,
@@ -142,7 +142,7 @@ pub struct Transaction_mint_inner {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Transaction_transfer_inner {
+pub struct TransactionTransferInner {
     pub to: Account,
     pub fee: Option<candid::Nat>,
     pub from: Account,
@@ -153,11 +153,11 @@ pub struct Transaction_transfer_inner {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Transaction {
-    pub burn: Option<Transaction_burn_inner>,
+    pub burn: Option<TransactionBurnInner>,
     pub kind: String,
-    pub mint: Option<Transaction_mint_inner>,
+    pub mint: Option<TransactionMintInner>,
     pub timestamp: u64,
-    pub transfer: Option<Transaction_transfer_inner>,
+    pub transfer: Option<TransactionTransferInner>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -167,7 +167,7 @@ pub struct TransactionRange {
 
 pub type QueryArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
-pub struct GetTransactionsResponse_archived_transactions_inner {
+pub struct GetTransactionsResponseArchivedTransactionsItem {
     pub callback: QueryArchiveFn,
     pub start: TxIndex,
     pub length: candid::Nat,
@@ -178,12 +178,12 @@ pub struct GetTransactionsResponse {
     pub first_index: TxIndex,
     pub log_length: candid::Nat,
     pub transactions: Vec<Transaction>,
-    pub archived_transactions: Vec<GetTransactionsResponse_archived_transactions_inner>,
+    pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 }
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct icrc1_supported_standards_ret0_inner {
+pub struct Icrc1SupportedStandardsRetItem {
     pub url: String,
     pub name: String,
 }
@@ -217,8 +217,8 @@ pub enum TransferResult {
     Err(TransferError),
 }
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
     }
@@ -228,34 +228,34 @@ impl SERVICE {
     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
     }
-    pub async fn icrc1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
     }
-    pub async fn icrc1_decimals(&self) -> CallResult<(u8,)> {
+    pub async fn icrc_1_decimals(&self) -> CallResult<(u8,)> {
         ic_cdk::call(self.0, "icrc1_decimals", ()).await
     }
-    pub async fn icrc1_fee(&self) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_fee(&self) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_fee", ()).await
     }
-    pub async fn icrc1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
+    pub async fn icrc_1_metadata(&self) -> CallResult<(Vec<(String, MetadataValue)>,)> {
         ic_cdk::call(self.0, "icrc1_metadata", ()).await
     }
-    pub async fn icrc1_minting_account(&self) -> CallResult<(Option<Account>,)> {
+    pub async fn icrc_1_minting_account(&self) -> CallResult<(Option<Account>,)> {
         ic_cdk::call(self.0, "icrc1_minting_account", ()).await
     }
-    pub async fn icrc1_name(&self) -> CallResult<(String,)> {
+    pub async fn icrc_1_name(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_name", ()).await
     }
-    pub async fn icrc1_supported_standards(&self) -> CallResult<(Vec<icrc1_supported_standards_ret0_inner>,)> {
+    pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
     }
-    pub async fn icrc1_symbol(&self) -> CallResult<(String,)> {
+    pub async fn icrc_1_symbol(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_symbol", ()).await
     }
-    pub async fn icrc1_total_supply(&self) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_total_supply(&self) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_total_supply", ()).await
     }
-    pub async fn icrc1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
+    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
     }
 }

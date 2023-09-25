@@ -1,6 +1,7 @@
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
+  convertDerivedStateResponseToDerivedState,
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
@@ -14,6 +15,7 @@ import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-stat
 import {
   createBuyersState,
   mockDerived,
+  mockDerivedResponse,
   mockQueryMetadata,
   mockQueryMetadataResponse,
   mockQuerySwap,
@@ -27,7 +29,10 @@ import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
+import type {
+  SnsGetAutoFinalizationStatusResponse,
+  SnsGetDerivedStateResponse,
+} from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {
@@ -459,6 +464,37 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       };
 
       expect(isSnsFinalizing(finalizingResponse)).toBe(false);
+    });
+  });
+
+  describe("convertDerivedStateResponseToDerivedState", () => {
+    it("returns derived state type", () => {
+      expect(
+        convertDerivedStateResponseToDerivedState(mockDerivedResponse)
+      ).toEqual({
+        buyer_total_icp_e8s: BigInt(100 * 100000000),
+        sns_tokens_per_icp: 1,
+        cf_participant_count: [BigInt(100)],
+        direct_participant_count: [BigInt(300)],
+        cf_neuron_count: [BigInt(200)],
+      });
+    });
+
+    it("returns undefined if any of the mandatory fields is missing", () => {
+      const missingBuyerTotalIcpE8s: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        buyer_total_icp_e8s: [],
+      };
+      const missingSnsPerIcp: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        sns_tokens_per_icp: [],
+      };
+      expect(
+        convertDerivedStateResponseToDerivedState(missingBuyerTotalIcpE8s)
+      ).toBeUndefined();
+      expect(
+        convertDerivedStateResponseToDerivedState(missingSnsPerIcp)
+      ).toBeUndefined();
     });
   });
 });

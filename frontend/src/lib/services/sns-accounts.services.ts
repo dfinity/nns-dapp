@@ -88,7 +88,7 @@ export const snsTransferTokens = async ({
     transfer: async (
       params: {
         identity: Identity;
-      } & Omit<IcrcTransferParams, "transfer">
+      } & IcrcTransferParams
     ) =>
       await snsTransfer({
         ...params,
