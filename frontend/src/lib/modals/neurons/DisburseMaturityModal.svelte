@@ -20,6 +20,8 @@
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import { TransactionNetwork } from "$lib/types/transaction";
+  import { getAccountByRootCanister } from "$lib/utils/accounts.utils";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
@@ -109,6 +111,17 @@
 
     selectedDestinationAddress = identifier;
   };
+
+  // Note: This doesn't support subaccount names. Yet, we don't have subaccounts for SNS, nor are we planning to add in the near future.
+  let destinationAddressName: string | undefined = undefined;
+  $: destinationAddressName =
+    getAccountByRootCanister({
+      identifier: selectedDestinationAddress,
+      rootCanisterId,
+      universesAccounts: $universesAccountsStore,
+    })?.type === "main"
+      ? $i18n.accounts.main
+      : selectedDestinationAddress;
 </script>
 
 <QrWizardModal
@@ -211,7 +224,7 @@
             data-tid="confirm-destination"
             class="value destination-value"
             slot="value"
-            >{$i18n.accounts.main}
+            >{destinationAddressName}
           </span>
         </KeyValuePair>
       </div>
