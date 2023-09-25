@@ -90,7 +90,7 @@ describe("CommitmentProgressBar", () => {
       directParticipation: 300_000_000n,
       nfParticipation: 0n,
     });
-    expect(await po.getNFCommitmentE8s()).toEqual(0);
+    expect(await po.getNFCommitmentE8s()).toEqual(0n);
     expect(await po.getDirectCommitmentE8s()).toEqual(300_000_000n);
     expect(await po.getProgressBarTotalCommitmentE8s()).toEqual(300_000_000n);
   });
