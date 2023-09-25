@@ -14,7 +14,7 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import QrWizardModal from "../transaction/QrWizardModal.svelte";
+  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
@@ -28,7 +28,7 @@
   export let rootCanisterId: Principal;
   export let token: Token;
   export let minimumAmountE8s: bigint;
-  // Using `undefined` allows only ICRC accounts.
+  // Using `undefined` allows only ICRC
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   const steps: WizardSteps = [
