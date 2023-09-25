@@ -3,6 +3,7 @@
  */
 
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { formatToken } from "$lib/utils/token.utils";
@@ -15,9 +16,16 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
+// TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+jest.mock("$lib/getters/sns-summary.ts");
+
 describe("ProjectCommitment", () => {
   const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
   const saleBuyerCount = 1_000_000;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it("should render min and max commitment", () => {
     const { queryByTestId } = renderContextCmp({
@@ -108,5 +116,105 @@ describe("ProjectCommitment", () => {
         `${formatToken({ value: summary.derived.buyer_total_icp_e8s })} ICP`
       )
     ).toBeTruthy();
+  });
+
+  it("should render a progress bar with total participation adding NF and direct commitments", () => {
+    const directCommitment = 20000000000n;
+    const nfCommitment = 10000000000n;
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => nfCommitment);
+
+    const { container } = renderContextCmp({
+      summary: {
+        ...summary,
+        derived: {
+          ...summary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
+    });
+
+    expect(container.querySelector("progress").value).toBe(
+      Number(directCommitment + nfCommitment)
+    );
+  });
+
+  it("should not render detailed participation if neurons fund participation is not available", () => {
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => undefined);
+    const { queryByTestId } = renderContextCmp({
+      summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
+    });
+
+    expect(
+      queryByTestId("sns-project-current-nf-commitment")
+    ).not.toBeInTheDocument();
+    expect(
+      queryByTestId("sns-project-current-direct-commitment")
+    ).not.toBeInTheDocument();
+  });
+
+  it("should render detailed participation if neurons fund participation is available", () => {
+    const directCommitment = 20000000000n;
+    const nfCommitment = 10000000000n;
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => nfCommitment);
+
+    const { queryByTestId } = renderContextCmp({
+      summary: {
+        ...summary,
+        derived: {
+          ...summary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
+    });
+
+    expect(
+      queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+    ).toBe("Neurons' Fund Commitment 100.00 ICP");
+    expect(
+      queryByTestId("sns-project-current-direct-commitment").textContent.trim()
+    ).toBe("Direct Commitment 200.00 ICP");
+  });
+
+  it("should render detailed participation if neurons fund participation is available even with NF participation as 0", () => {
+    const directCommitment = 20000000000n;
+    const nfCommitment = 0n;
+    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+    jest
+      .spyOn(summaryGetters, "getNeuronsFundParticipation")
+      .mockImplementation(() => nfCommitment);
+
+    const { queryByTestId } = renderContextCmp({
+      summary: {
+        ...summary,
+        derived: {
+          ...summary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      },
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectCommitment,
+    });
+
+    expect(
+      queryByTestId("sns-project-current-nf-commitment").textContent.trim()
+    ).toBe("Neurons' Fund Commitment 0 ICP");
+    expect(
+      queryByTestId("sns-project-current-direct-commitment").textContent.trim()
+    ).toBe("Direct Commitment 200.00 ICP");
   });
 });

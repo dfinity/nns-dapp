@@ -10,7 +10,6 @@ import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
@@ -824,7 +823,7 @@ describe("icp-accounts.services", () => {
 
     it("should transfer ICP using an Icrc destination address", async () => {
       const spy = jest
-        .spyOn(icrcLedgerApi, "icrcTransfer")
+        .spyOn(ledgerApi, "sendIcpIcrc1")
         .mockResolvedValue(BigInt(1));
 
       await transferICP({
@@ -840,9 +839,7 @@ describe("icp-accounts.services", () => {
         amount: TokenAmount.fromNumber({
           amount: transferICPParams.amount,
           token: ICPToken,
-        }).toE8s(),
-        canisterId: LEDGER_CANISTER_ID,
-        createdAt: expect.any(BigInt),
+        }),
         fee: feeE8s,
         fromSubAccount: undefined,
         identity: mockIdentity,

@@ -61,6 +61,7 @@ import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
+  nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -776,19 +777,26 @@ export const disburseMaturity = async ({
   neuronId,
   rootCanisterId,
   percentageToDisburse,
+  toAccountAddress,
 }: {
   neuronId: SnsNeuronId;
   rootCanisterId: Principal;
   percentageToDisburse: number;
+  toAccountAddress?: string;
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
+
+    const toAccount = nonNullish(toAccountAddress)
+      ? decodeIcrcAccount(toAccountAddress)
+      : undefined;
 
     await disburseMaturityApi({
       neuronId,
       rootCanisterId,
       percentageToDisburse,
       identity,
+      toAccount,
     });
 
     return { success: true };
