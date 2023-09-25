@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Add the amount of maturity related to a selected percentage.
 * Disburse maturity of sns neurons.
+* Select destination when disbursing maturity.
 
 #### Changed
 
