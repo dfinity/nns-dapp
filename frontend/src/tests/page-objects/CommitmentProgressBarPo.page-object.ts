@@ -26,9 +26,12 @@ export class CommitmentProgressBarPo extends BasePageObject {
     return (await this.getText("commitment-max-indicator-value")).trim();
   }
 
-  getProgressBarValue(): Promise<string> {
+  async getProgressBarTotalCommitmentE8s(): Promise<bigint> {
     // The `value` property has the value of the max value but the `value` attribute has the value of the progress.
-    return this.root.querySelector("progress").getAttribute("value");
+    const valueString = await this.root
+      .querySelector("progress")
+      .getAttribute("value");
+    return BigInt(valueString);
   }
 
   /**
@@ -36,7 +39,7 @@ export class CommitmentProgressBarPo extends BasePageObject {
    *
    * Example of inline-style: "--progress-bar-background: linear-gradient(to right, var(--positive-emphasis) 0% 25%, var(--warning-emphasis) 25% 100%);"
    */
-  async getNFCommitmentPercentage(): Promise<number> {
+  async getNFCommitmentE8s(): Promise<bigint> {
     const inlineStyleRegex =
       /--progress-bar-background: linear-gradient\(to right, var\(.*\) 0% (\d+(?:\.\d+)?)%, var\(.*\) (\d+(?:\.\d+)?)% 100%\);/g;
 
@@ -47,7 +50,7 @@ export class CommitmentProgressBarPo extends BasePageObject {
     const matches = inlineStyleRegex.exec(inlineStyle);
 
     if (matches === null) {
-      throw new Error("Invalid inline style");
+      throw new Error(`Invalid inline style: ${inlineStyle}`);
     }
 
     const [_inlineStyle, firstPercentage, secondPercentage] = matches;
@@ -58,10 +61,16 @@ export class CommitmentProgressBarPo extends BasePageObject {
       );
     }
 
-    return Number(firstPercentage);
+    const totalCommitment = Number(
+      await this.getProgressBarTotalCommitmentE8s()
+    );
+    const nfPercentage = Number(firstPercentage);
+
+    return BigInt(Math.round((totalCommitment * nfPercentage) / 100));
   }
 
-  async getDirectCommitmentPercentage(): Promise<number> {
-    return 100 - (await this.getNFCommitmentPercentage());
+  async getDirectCommitmentE8s(): Promise<bigint> {
+    const totalCommitment = await this.getProgressBarTotalCommitmentE8s();
+    return BigInt(totalCommitment - (await this.getNFCommitmentE8s()));
   }
 }

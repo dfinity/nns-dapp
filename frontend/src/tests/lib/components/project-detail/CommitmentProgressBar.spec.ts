@@ -31,7 +31,7 @@ describe("CommitmentProgressBar", () => {
       directParticipation: 150_000_000n,
       nfParticipation: 0n,
     });
-    expect(await po.getProgressBarValue()).toBe("150000000");
+    expect(await po.getProgressBarTotalCommitmentE8s()).toBe(150000000n);
   });
 
   it("should render sume of direct and NF participation value in progress bar", async () => {
@@ -40,7 +40,7 @@ describe("CommitmentProgressBar", () => {
       directParticipation: 300_000_000n,
       nfParticipation: 150_000_000n,
     });
-    expect(await po.getProgressBarValue()).toBe("450000000");
+    expect(await po.getProgressBarTotalCommitmentE8s()).toBe(450000000n);
   });
 
   it("should display maximum and minimum indicators", async () => {
@@ -90,8 +90,9 @@ describe("CommitmentProgressBar", () => {
       directParticipation: 300_000_000n,
       nfParticipation: 0n,
     });
-    expect(await po.getNFCommitmentPercentage()).toEqual(0);
-    expect(await po.getDirectCommitmentPercentage()).toEqual(100);
+    expect(await po.getNFCommitmentE8s()).toEqual(0);
+    expect(await po.getDirectCommitmentE8s()).toEqual(300_000_000n);
+    expect(await po.getProgressBarTotalCommitmentE8s()).toEqual(300_000_000n);
   });
 
   it("should display NF and direct commitments", async () => {
@@ -100,7 +101,7 @@ describe("CommitmentProgressBar", () => {
       directParticipation: 300_000_000n,
       nfParticipation: 100_000_000n,
     });
-    expect(await po.getNFCommitmentPercentage()).toEqual(25);
-    expect(await po.getDirectCommitmentPercentage()).toEqual(75);
+    expect(await po.getNFCommitmentE8s()).toEqual(100_000_000n);
+    expect(await po.getDirectCommitmentE8s()).toEqual(300_000_000n);
   });
 });
