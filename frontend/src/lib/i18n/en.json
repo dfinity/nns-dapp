@@ -700,6 +700,8 @@
     "max_commitment": "Maximum Commitment",
     "min_participants": "Minimum Participants",
     "current_overall_commitment": "Current Overall Commitment",
+    "current_nf_commitment": "Neurons' Fund Commitment",
+    "current_direct_commitment": "Direct Commitment",
     "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",

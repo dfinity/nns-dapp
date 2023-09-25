@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
 * Improve contrast of token selector's logo in light theme.
 * Remove the "Project" leading word in the SNS Project card.
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 
 #### Deprecated
 #### Removed
@@ -38,11 +39,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
 ### Operations
 
 #### Added
 
 #### Changed
+* Fix the rust-update action.
 * Specify the `snsdemo` version in `dfx.json`.
 * Make the file list stats accessible in logs and as a file in the release artefacts.
 * Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
