@@ -1210,6 +1210,8 @@ interface I18nNns_functions {
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
   BitcoinSetConfig: string;
+  UpdateElectedHostosVersions: string;
+  UpdateNodesHostosVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -1253,6 +1255,8 @@ interface I18nNns_functions_description {
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
   BitcoinSetConfig: string;
+  UpdateElectedHostosVersions: string;
+  UpdateNodesHostosVersion: string;
 }
 
 interface I18n {
