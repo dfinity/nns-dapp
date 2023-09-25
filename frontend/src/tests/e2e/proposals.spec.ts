@@ -186,7 +186,7 @@ test("Test neuron voting", async ({ page, context }) => {
   // Votes result
   expect(
     await nnsProposalPo.getVotesResultPo().getAdoptVotingPower()
-  ).toBeGreaterThanOrEqual(0);
+  ).toBeGreaterThan(0);
   expect(await nnsProposalPo.getVotesResultPo().getRejectVotingPower()).toBe(0);
 
   // Summary
