@@ -57,6 +57,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Fixed
 
 * Fix build script by pinning cargo-binstall version.
+* Don't set any upstream when creating the release branch in release-sop.
 
 #### Security
 
