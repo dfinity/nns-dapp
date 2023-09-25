@@ -5,17 +5,21 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { decodeIcrcAccount } from "@dfinity/ledger";
 import type { SnsNeuron } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
 jest.mock("$lib/api/sns-governance.api");
@@ -45,6 +49,11 @@ describe("SnsDisburseMaturityModal", () => {
     tokensStore.setToken({
       canisterId: rootCanisterId,
       token: mockSnsToken,
+    });
+    snsAccountsStore.setAccounts({
+      rootCanisterId,
+      accounts: [mockSnsMainAccount],
+      certified: true,
     });
   });
 
@@ -130,8 +139,12 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmTokens()).toBe("1.17-1.29 TST");
   });
 
-  const disburse = async (neuron: SnsNeuron) => {
+  const disburse = async (neuron: SnsNeuron, accountAddress?: string) => {
     const po = await renderSnsDisburseMaturityModal(neuron);
+    if (nonNullish(accountAddress)) {
+      const destinationPo = po.getSelectDestinationAddressPo();
+      await destinationPo.enterAddress(accountAddress);
+    }
     await po.setPercentage(50);
     await po.clickNextButton();
 
@@ -147,8 +160,15 @@ describe("SnsDisburseMaturityModal", () => {
       rootCanisterId: mockPrincipal,
       percentageToDisburse: 50,
       identity: mockIdentity,
+      toAccount: decodeIcrcAccount(
+        nonNullish(accountAddress)
+          ? accountAddress
+          : mockSnsMainAccount.identifier
+      ),
     });
     await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
+
+    return po;
   };
 
   it("should call disburse maturity api and reloadNeuron", async () => {
@@ -161,5 +181,12 @@ describe("SnsDisburseMaturityModal", () => {
       maturity: 110_000_000_000n,
     });
     await disburse(neuron1100maturity);
+  });
+
+  it("should disburse maturity to an SNS account", async () => {
+    const accountAddress = principal(1).toText();
+    const po = await disburse(mockSnsNeuron, accountAddress);
+
+    expect(await po.getConfirmDestination()).toBe(accountAddress);
   });
 });
