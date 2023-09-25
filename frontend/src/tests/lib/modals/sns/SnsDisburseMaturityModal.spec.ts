@@ -107,6 +107,19 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getText()).toContain(`13%`);
   });
 
+  it("should show error if account is not ICRC", async () => {
+    const po = await renderSnsDisburseMaturityModal(mockSnsNeuron);
+    const destinationPo = po.getSelectDestinationAddressPo();
+    // This is a valid ICP address, but not valid ICRC address.
+    await destinationPo.enterAddress(
+      "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f"
+    );
+    await destinationPo.blurInput();
+    expect(await destinationPo.getErrorMessage()).toBe(
+      "Please enter a valid address."
+    );
+  });
+
   it("should display summary information in the last step", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],

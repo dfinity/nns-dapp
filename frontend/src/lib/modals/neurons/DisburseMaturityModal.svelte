@@ -19,7 +19,7 @@
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
-  import { TransactionNetwork } from "$lib/types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
   import { getAccountByRootCanister } from "$lib/utils/accounts.utils";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
@@ -28,6 +28,8 @@
   export let rootCanisterId: Principal;
   export let token: Token;
   export let minimumAmountE8s: bigint;
+  // Using `undefined` allows only ICRC accounts.
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   const steps: WizardSteps = [
     {
@@ -167,7 +169,7 @@
           {rootCanisterId}
           bind:selectedDestinationAddress
           bind:showManualAddress
-          selectedNetwork={TransactionNetwork.ICP}
+          {selectedNetwork}
           on:nnsOpenQRCodeReader={goQRCode}
         />
       </div>
