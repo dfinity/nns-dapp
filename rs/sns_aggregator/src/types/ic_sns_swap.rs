@@ -317,7 +317,7 @@ pub struct GetOpenTicketResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_sale_parameters_arg0 {}
+pub struct GetSaleParametersArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct Params {
@@ -537,10 +537,7 @@ impl Service {
     pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
         ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
     }
-    pub async fn get_sale_parameters(
-        &self,
-        arg0: get_sale_parameters_arg0,
-    ) -> CallResult<(GetSaleParametersResponse,)> {
+    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> CallResult<(GetSaleParametersResponse,)> {
         ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
     }
     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
