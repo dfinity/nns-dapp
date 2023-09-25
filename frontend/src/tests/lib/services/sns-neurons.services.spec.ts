@@ -765,6 +765,11 @@ describe("sns-neurons-services", () => {
     const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
     const identity = mockIdentity;
     const percentageToDisburse = 75;
+    const ownerText =
+      "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae";
+    const owner = Principal.fromText(ownerText);
+    const subaccount = new Uint8Array(32).fill(0);
+    subaccount[31] = 1;
     let spyOnDisburseMaturity: jest.SpyInstance;
 
     beforeEach(() => {
@@ -774,6 +779,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call api.disburseMaturity with account destinatoin", async () => {
+      expect(spyOnDisburseMaturity).not.toBeCalled();
       const { success } = await disburseMaturity({
         neuronId,
         rootCanisterId,
@@ -791,14 +797,9 @@ describe("sns-neurons-services", () => {
     });
 
     it("should decode the destination address to an ICRC account", async () => {
-      const ownerText =
-        "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae";
-      const owner = Principal.fromText(ownerText);
-      const subaccount = Uint8Array.from([...Array(32)].map((_, i) => i + 1));
-      const subaccountHex =
-        "102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20";
-      const checksum = "dfxgiyy";
-      const destinationAddress = `${ownerText}-${checksum}.${subaccountHex}`;
+      const checksum = "6cc627i";
+      const destinationAddress = `${ownerText}-${checksum}.1`;
+      expect(spyOnDisburseMaturity).not.toBeCalled();
       await disburseMaturity({
         rootCanisterId,
         neuronId: mockSnsNeuron.id[0],
@@ -816,6 +817,24 @@ describe("sns-neurons-services", () => {
           owner,
           subaccount,
         },
+      });
+    });
+
+    it("should not call api and show toast error if address can't be decoded", async () => {
+      const wrongChecksum = "wrong";
+      const destinationAddress = `${ownerText}-${wrongChecksum}.1`;
+      expect(spyOnDisburseMaturity).not.toBeCalled();
+      await disburseMaturity({
+        rootCanisterId,
+        neuronId: mockSnsNeuron.id[0],
+        percentageToDisburse: 33,
+        toAccountAddress: destinationAddress,
+      });
+
+      expect(spyOnDisburseMaturity).not.toBeCalled();
+      expect(toastsError).toBeCalledWith({
+        err: new Error("Invalid account. Invalid checksum."),
+        labelKey: "error__sns.sns_disburse_maturity",
       });
     });
   });

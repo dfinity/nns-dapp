@@ -405,6 +405,7 @@ describe("sns-api", () => {
 
   describe("disburseMaturity", () => {
     it("should disburse maturity", async () => {
+      expect(disburseMaturitySpy).not.toBeCalled();
       const res = await disburseMaturity({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
@@ -428,6 +429,8 @@ describe("sns-api", () => {
         owner,
         subaccount: undefined,
       };
+
+      expect(disburseMaturitySpy).not.toBeCalled();
       await disburseMaturity({
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
