@@ -177,6 +177,16 @@ pub struct FinalizeSwapResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetAutoFinalizationStatusArg {}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct GetAutoFinalizationStatusResponse {
+    pub auto_finalize_swap_response: Option<FinalizeSwapResponse>,
+    pub has_auto_finalize_been_attempted: Option<bool>,
+    pub is_auto_finalize_enabled: Option<bool>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetBuyerStateRequest {
     pub principal_id: Option<candid::Principal>,
 }
@@ -369,6 +379,7 @@ pub struct SnsNeuronRecipe {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Swap {
+    pub auto_finalize_swap_response: Option<FinalizeSwapResponse>,
     pub neuron_recipes: Vec<SnsNeuronRecipe>,
     pub next_ticket_id: Option<u64>,
     pub decentralization_sale_open_timestamp_seconds: Option<u64>,
@@ -498,6 +509,12 @@ impl Service {
     }
     pub async fn finalize_swap(&self, arg0: FinalizeSwapArg) -> CallResult<(FinalizeSwapResponse,)> {
         ic_cdk::call(self.0, "finalize_swap", (arg0,)).await
+    }
+    pub async fn get_auto_finalization_status(
+        &self,
+        arg0: GetAutoFinalizationStatusArg,
+    ) -> CallResult<(GetAutoFinalizationStatusResponse,)> {
+        ic_cdk::call(self.0, "get_auto_finalization_status", (arg0,)).await
     }
     pub async fn get_buyer_state(&self, arg0: GetBuyerStateRequest) -> CallResult<(GetBuyerStateResponse,)> {
         ic_cdk::call(self.0, "get_buyer_state", (arg0,)).await
