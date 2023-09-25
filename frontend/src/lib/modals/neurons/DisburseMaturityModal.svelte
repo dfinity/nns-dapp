@@ -10,10 +10,15 @@
     WizardModal,
     type WizardSteps,
     type WizardStep,
+    KeyValuePair,
   } from "@dfinity/gix-components";
+  import { formatToken } from "$lib/utils/token.utils";
+  import { formatMaturity } from "$lib/utils/neuron.utils";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
+
+  export let minimumAmountE8s: bigint;
 
   const steps: WizardSteps = [
     {
@@ -30,6 +35,22 @@
   let modal: WizardModal;
 
   let percentageToDisburse = 0;
+  let selectedMaturityE8s: bigint;
+  $: selectedMaturityE8s =
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+
+  let disableDisburse = false;
+  $: disableDisburse = selectedMaturityE8s < minimumAmountE8s;
+
+  // Show the text only if the selected percentage is greater than 0.
+  let disabledText: string | undefined = undefined;
+  $: disabledText =
+    disableDisburse && percentageToDisburse > 0
+      ? replacePlaceholders(
+          $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
+          { $amount: formatToken({ value: minimumAmountE8s }) }
+        )
+      : undefined;
 
   const dispatcher = createEventDispatcher();
   const disburseNeuronMaturity = () =>
@@ -37,6 +58,22 @@
   const close = () => dispatcher("nnsClose");
 
   const goToConfirm = () => modal.next();
+
+  let maturityToDisburseE8s: bigint;
+  $: maturityToDisburseE8s =
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+
+  // +/- 5%
+  let predictedMinimumTokens: string;
+  $: predictedMinimumTokens = formatToken({
+    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
+    roundingMode: "floor",
+  });
+  let predictedMaximumTokens: string;
+  $: predictedMaximumTokens = formatToken({
+    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
+    roundingMode: "ceil",
+  });
 </script>
 
 <WizardModal
@@ -52,20 +89,34 @@
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {formattedMaturity}
+      {availableMaturityE8s}
       buttonText={$i18n.neuron_detail.disburse}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
       bind:percentage={percentageToDisburse}
-      disabled={percentageToDisburse === 0}
+      disabled={disableDisburse}
+      {disabledText}
     >
-      <svelte:fragment slot="text">
-        <Html
-          text={replacePlaceholders(
-            $i18n.neuron_detail.disburse_maturity_modal_description,
+      <div class="percentage-container" slot="description">
+        <span class="description">
+          {replacePlaceholders(
+            $i18n.neuron_detail.disburse_maturity_description_1,
             { $symbol: tokenSymbol }
           )}
-        />
+        </span>
+
+        <span class="description">
+          <Html
+            text={replacePlaceholders(
+              $i18n.neuron_detail.disburse_maturity_description_2,
+              { $symbol: tokenSymbol }
+            )}
+          />
+        </span>
+      </div>
+
+      <svelte:fragment slot="text">
+        {$i18n.neuron_detail.disburse_maturity_amount}
       </svelte:fragment>
     </NeuronSelectPercentage>
   {:else if currentStep?.name === "ConfirmDisburseMaturity"}
@@ -73,17 +124,74 @@
       on:nnsConfirm={disburseNeuronMaturity}
       on:nnsCancel={modal.back}
     >
-      <Html
-        text={replacePlaceholders(
-          $i18n.neuron_detail.disburse_maturity_confirmation_description,
-          {
-            $percentage: formatPercentage(percentageToDisburse / 100, {
+      {$i18n.neuron_detail.disburse_maturity_confirmation_description}
+      <div class="confirm-container">
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail
+              .disburse_maturity_confirmation_percentage}</span
+          >
+          <span class="value" slot="value" data-tid="confirm-percentage"
+            >{formatPercentage(percentageToDisburse / 100, {
               minFraction: 0,
               maxFraction: 0,
-            }),
-          }
-        )}
-      />
+            })}</span
+          >
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
+          >
+          <span data-tid="confirm-amount" class="value" slot="value"
+            >{formatMaturity(maturityToDisburseE8s)}
+          </span>
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description"
+            >{replacePlaceholders(
+              $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
+              { $symbol: tokenSymbol }
+            )}</span
+          >
+          <span data-tid="confirm-tokens" class="value" slot="value"
+            >{predictedMinimumTokens}-{predictedMaximumTokens}
+            {tokenSymbol}
+          </span>
+        </KeyValuePair>
+        <KeyValuePair>
+          <span slot="key" class="description destination-key"
+            >{$i18n.neuron_detail
+              .disburse_maturity_confirmation_destination}</span
+          >
+          <span
+            data-tid="confirm-destination"
+            class="value destination-value"
+            slot="value"
+            >{$i18n.accounts.main}
+          </span>
+        </KeyValuePair>
+      </div>
     </NeuronConfirmActionScreen>
   {/if}
 </WizardModal>
+
+<style lang="scss">
+  .percentage-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+    margin: var(--padding-2x) 0 var(--padding-3x);
+  }
+
+  .confirm-container {
+    margin-top: var(--padding-3x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+
+  .destination-key {
+    // To not break "To address:" line.
+    white-space: nowrap;
+  }
+</style>

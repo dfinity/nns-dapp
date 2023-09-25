@@ -33,6 +33,7 @@
   import AddPermissionsModal from "./AddPermissionsModal.svelte";
   import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
   import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
+  import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
 
   // Modal events
 
@@ -89,108 +90,111 @@
     <AddSnsHotkeyModal on:nnsClose={close} />
   {/if}
 
-  {#if nonNullish(rootCanisterId) && nonNullish(token)}
-    {#if type === "increase-dissolve-delay"}
-      <IncreaseSnsDissolveDelayModal
-        {rootCanisterId}
-        {neuron}
-        {token}
-        {reloadNeuron}
-        on:nnsClose={close}
-      />
-    {/if}
+  {#if type === "increase-dissolve-delay" && nonNullish(rootCanisterId) && nonNullish(token)}
+    <IncreaseSnsDissolveDelayModal
+      {rootCanisterId}
+      {neuron}
+      {token}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
+  {/if}
 
-    {#if type === "disburse"}
-      <DisburseSnsNeuronModal
-        {rootCanisterId}
-        {neuron}
-        {reloadNeuron}
-        on:nnsClose={close}
-      />
-    {/if}
+  {#if type === "disburse" && nonNullish(rootCanisterId)}
+    <DisburseSnsNeuronModal
+      {rootCanisterId}
+      {neuron}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
+  {/if}
 
-    {#if type === "follow"}
-      <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
-    {/if}
+  {#if type === "follow" && nonNullish(rootCanisterId)}
+    <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
+  {/if}
 
-    {#if nonNullish(neuronId)}
-      {#if type === "stake-maturity"}
-        <SnsStakeMaturityModal
-          {reloadNeuron}
-          on:nnsClose={close}
-          {neuronId}
-          {neuron}
-          {rootCanisterId}
-        />
-      {/if}
+  {#if type === "stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <SnsStakeMaturityModal
+      {reloadNeuron}
+      on:nnsClose={close}
+      {neuronId}
+      {neuron}
+      {rootCanisterId}
+    />
+  {/if}
 
-      {#if type === "disburse-maturity"}
-        <SnsDisburseMaturityModal
-          {reloadNeuron}
-          on:nnsClose={close}
-          {neuronId}
-          {neuron}
-          {rootCanisterId}
-        />
-      {/if}
+  {#if type === "disburse-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <SnsDisburseMaturityModal
+      {reloadNeuron}
+      on:nnsClose={close}
+      {neuronId}
+      {neuron}
+      {rootCanisterId}
+    />
+  {/if}
 
-      {#if type === "view-active-disbursements"}
-        <SnsActiveDisbursementsModal on:nnsClose={close} {neuron} />
-      {/if}
+  {#if type === "view-active-disbursements"}
+    <SnsActiveDisbursementsModal on:nnsClose={close} {neuron} />
+  {/if}
 
-      {#if type === "auto-stake-maturity"}
-        <SnsAutoStakeMaturityModal
-          {reloadNeuron}
-          on:nnsClose={close}
-          {neuronId}
-          {neuron}
-          {rootCanisterId}
-        />
-      {/if}
+  {#if type === "auto-stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <SnsAutoStakeMaturityModal
+      {reloadNeuron}
+      on:nnsClose={close}
+      {neuronId}
+      {neuron}
+      {rootCanisterId}
+    />
+  {/if}
 
-      {#if nonNullish(parameters) && nonNullish(transactionFee)}
-        {#if type === "split-neuron"}
-          <SplitSnsNeuronModal
-            {rootCanisterId}
-            {neuron}
-            {token}
-            {parameters}
-            {transactionFee}
-            {reloadNeuron}
-            on:nnsClose={close}
-          />
-        {/if}
-      {/if}
+  {#if type === "split-neuron" && nonNullish(rootCanisterId) && nonNullish(neuronId) && nonNullish(token) && nonNullish(parameters) && nonNullish(transactionFee)}
+    <SplitSnsNeuronModal
+      {rootCanisterId}
+      {neuron}
+      {token}
+      {parameters}
+      {transactionFee}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
+  {/if}
 
-      {#if type === "increase-stake"}
-        <SnsIncreaseStakeNeuronModal
-          {rootCanisterId}
-          {token}
-          {neuronId}
-          {reloadNeuron}
-          on:nnsClose={close}
-        />
-      {/if}
+  {#if type === "increase-stake" && nonNullish(rootCanisterId) && nonNullish(token) && nonNullish(neuronId)}
+    <SnsIncreaseStakeNeuronModal
+      {rootCanisterId}
+      {token}
+      {neuronId}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
+  {/if}
 
-      {#if type === "dev-add-permissions" && IS_TESTNET}
-        <AddPermissionsModal
-          {rootCanisterId}
-          {neuronId}
-          {reloadNeuron}
-          on:nnsClose={close}
-          mode="add"
-        />
-      {/if}
+  {#if type === "dev-add-permissions" && IS_TESTNET && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <AddPermissionsModal
+      {rootCanisterId}
+      {neuronId}
+      {reloadNeuron}
+      on:nnsClose={close}
+      mode="add"
+    />
+  {/if}
 
-      {#if type === "dev-remove-permissions" && IS_TESTNET}
-        <AddPermissionsModal
-          {rootCanisterId}
-          {neuronId}
-          {reloadNeuron}
-          on:nnsClose={close}
-          mode="remove"
-        />
-      {/if}
-    {/if}
+  {#if type === "dev-remove-permissions" && IS_TESTNET && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <AddPermissionsModal
+      {rootCanisterId}
+      {neuronId}
+      {reloadNeuron}
+      on:nnsClose={close}
+      mode="remove"
+    />
+  {/if}
+
+  {#if type === "dev-add-maturity" && IS_TESTNET && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+    <AddMaturityModal
+      {rootCanisterId}
+      {neuronId}
+      {reloadNeuron}
+      on:nnsClose={close}
+    />
   {/if}
 {/if}

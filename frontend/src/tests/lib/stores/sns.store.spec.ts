@@ -13,7 +13,11 @@ import {
   type SnsQueryStoreData,
 } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import type { QuerySnsSwapState } from "$lib/types/sns.query";
+import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import {
+  convertDtoData,
+  convertDtoToSnsSummary,
+} from "$lib/utils/sns-aggregator-converters.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   aggregatorSnsMockDto,
@@ -28,6 +32,7 @@ import {
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProposalStatus } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
@@ -35,10 +40,12 @@ import {
   type SnsSwap,
   type SnsSwapDerivedState,
 } from "@dfinity/sns";
+import { fromNullable, toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     snsQueryStore.reset();
     snsAggregatorStore.reset();
     snsDerivedStateStore.reset();
@@ -514,6 +521,7 @@ describe("sns.store", () => {
   describe("snsSummariesStore", () => {
     describe("flag ENABLE_SNS_AGGREGATOR_STORE not enabled", () => {
       beforeEach(() => {
+        jest.spyOn(console, "warn").mockImplementation(() => undefined);
         overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
       });
 
@@ -541,6 +549,117 @@ describe("sns.store", () => {
 
       beforeEach(() => {
         overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      });
+
+      it("warns when snsAggregatorStore and snsQueryStore have different number of summaries", () => {
+        expect(console.warn).not.toHaveBeenCalled();
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        const data = snsResponsesForLifecycle({
+          lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
+          certified: true,
+        });
+        snsQueryStore.setData(data);
+
+        get(snsSummariesStore);
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith(
+          "The aggregator and query data do not match. Aggregator data: 1, query data: 2."
+        );
+      });
+
+      it("warns when snsAggregatorStore and snsQueryStore return different summary data for the same SNS project", () => {
+        expect(console.warn).not.toHaveBeenCalled();
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        const cachedSnses = convertDtoData([aggregatorSnsMockDto]);
+        const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
+          cachedSnses.map((sns) => ({
+            rootCanisterId: sns.canister_ids.root_canister_id,
+            certified: true,
+            metadata: sns.meta,
+            token: sns.icrc1_metadata,
+          })),
+          cachedSnses.map((sns) => ({
+            rootCanisterId: sns.canister_ids.root_canister_id,
+            certified: true,
+            swapCanisterId: Principal.fromText(
+              sns.canister_ids.swap_canister_id
+            ),
+            governanceCanisterId: Principal.fromText(
+              sns.canister_ids.governance_canister_id
+            ),
+            ledgerCanisterId: Principal.fromText(
+              sns.canister_ids.ledger_canister_id
+            ),
+            indexCanisterId: Principal.fromText(
+              sns.canister_ids.index_canister_id
+            ),
+            swap: toNullable(sns.swap_state.swap),
+            derived: toNullable({
+              // THIS IS DIFFERENT
+              sns_tokens_per_icp: 0,
+              buyer_total_icp_e8s:
+                fromNullable(sns.derived_state.buyer_total_icp_e8s) ?? 0n,
+              cf_participant_count: sns.derived_state.cf_participant_count,
+              direct_participant_count:
+                sns.derived_state.direct_participant_count,
+              cf_neuron_count: sns.derived_state.cf_neuron_count,
+            }),
+          })),
+        ];
+        snsQueryStore.setData(snsQueryStoreData);
+
+        const expectedSummary = convertDtoToSnsSummary(aggregatorSnsMockDto);
+
+        get(snsSummariesStore);
+        expect(console.warn).toHaveBeenCalledTimes(2);
+        expect(console.warn).toHaveBeenCalledWith(
+          "The aggregator and query data do not match. Check below and the debug store for more information."
+        );
+        expect(console.warn).toHaveBeenCalledWith([expectedSummary]);
+      });
+
+      it("doesn't warn anything if snsQueryStore and snsAggregator return the same summary", () => {
+        snsAggregatorStore.setData([aggregatorSnsMockDto]);
+        const cachedSnses = convertDtoData([aggregatorSnsMockDto]);
+        const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
+          cachedSnses.map((sns) => ({
+            rootCanisterId: sns.canister_ids.root_canister_id,
+            certified: true,
+            metadata: sns.meta,
+            token: sns.icrc1_metadata,
+          })),
+          cachedSnses.map((sns) => ({
+            rootCanisterId: sns.canister_ids.root_canister_id,
+            certified: true,
+            swapCanisterId: Principal.fromText(
+              sns.canister_ids.swap_canister_id
+            ),
+            governanceCanisterId: Principal.fromText(
+              sns.canister_ids.governance_canister_id
+            ),
+            ledgerCanisterId: Principal.fromText(
+              sns.canister_ids.ledger_canister_id
+            ),
+            indexCanisterId: Principal.fromText(
+              sns.canister_ids.index_canister_id
+            ),
+            swap: toNullable(sns.swap_state.swap),
+            derived: toNullable({
+              sns_tokens_per_icp:
+                fromNullable(sns.derived_state.sns_tokens_per_icp) ?? 0,
+              buyer_total_icp_e8s:
+                fromNullable(sns.derived_state.buyer_total_icp_e8s) ?? 0n,
+              cf_participant_count: sns.derived_state.cf_participant_count,
+              direct_participant_count:
+                sns.derived_state.direct_participant_count,
+              cf_neuron_count: sns.derived_state.cf_neuron_count,
+            }),
+          })),
+        ];
+        snsQueryStore.setData(snsQueryStoreData);
+
+        get(snsSummariesStore);
+        expect(console.warn).not.toHaveBeenCalled();
       });
 
       it("does not snsQueryStore as source of data", () => {

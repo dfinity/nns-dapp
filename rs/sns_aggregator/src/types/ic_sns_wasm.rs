@@ -36,14 +36,14 @@ pub struct SnsWasmError {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result {
+pub enum Result_ {
     Error(SnsWasmError),
     Hash(serde_bytes::ByteBuf),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct AddWasmResponse {
-    pub result: Option<Result>,
+    pub result: Option<Result_>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -162,7 +162,7 @@ pub struct DeployNewSnsResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_allowed_principals_arg0 {}
+pub struct GetAllowedPrincipalsArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetAllowedPrincipalsResponse {
@@ -191,7 +191,7 @@ pub struct GetNextSnsVersionResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_sns_subnet_ids_arg0 {}
+pub struct GetSnsSubnetIdsArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsSubnetIdsResponse {
@@ -226,7 +226,7 @@ pub struct InsertUpgradePathEntriesResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct list_deployed_snses_arg0 {}
+pub struct ListDeployedSnsesArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct DeployedSns {
@@ -298,8 +298,8 @@ pub struct UpdateSnsSubnetListResponse {
     pub error: Option<SnsWasmError>,
 }
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
         ic_cdk::call(self.0, "add_wasm", (arg0,)).await
     }
@@ -308,7 +308,7 @@ impl SERVICE {
     }
     pub async fn get_allowed_principals(
         &self,
-        arg0: get_allowed_principals_arg0,
+        arg0: GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
     }
@@ -321,7 +321,7 @@ impl SERVICE {
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
     }
-    pub async fn get_sns_subnet_ids(&self, arg0: get_sns_subnet_ids_arg0) -> CallResult<(GetSnsSubnetIdsResponse,)> {
+    pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
         ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
     }
     pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
@@ -333,10 +333,7 @@ impl SERVICE {
     ) -> CallResult<(InsertUpgradePathEntriesResponse,)> {
         ic_cdk::call(self.0, "insert_upgrade_path_entries", (arg0,)).await
     }
-    pub async fn list_deployed_snses(
-        &self,
-        arg0: list_deployed_snses_arg0,
-    ) -> CallResult<(ListDeployedSnsesResponse,)> {
+    pub async fn list_deployed_snses(&self, arg0: ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
         ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
     }
     pub async fn list_upgrade_steps(&self, arg0: ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
