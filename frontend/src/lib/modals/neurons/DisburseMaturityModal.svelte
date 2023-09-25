@@ -14,10 +14,17 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import QrWizardModal from "../transaction/QrWizardModal.svelte";
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import type { Principal } from "@dfinity/principal";
+  import { assertNonNullish, type Token } from "@dfinity/utils";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import { TransactionNetwork } from "$lib/types/transaction";
 
   export let availableMaturityE8s: bigint;
   export let tokenSymbol: string;
-
+  export let rootCanisterId: Principal;
+  export let token: Token;
   export let minimumAmountE8s: bigint;
 
   const steps: WizardSteps = [
@@ -53,8 +60,12 @@
       : undefined;
 
   const dispatcher = createEventDispatcher();
-  const disburseNeuronMaturity = () =>
-    dispatcher("nnsDisburseMaturity", { percentageToDisburse });
+  const disburseNeuronMaturity = () => {
+    dispatcher("nnsDisburseMaturity", {
+      percentageToDisburse,
+      destinationAddress: selectedDestinationAddress,
+    });
+  };
   const close = () => dispatcher("nnsClose");
 
   const goToConfirm = () => modal.next();
@@ -74,14 +85,39 @@
     value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
     roundingMode: "ceil",
   });
+
+  let selectedDestinationAddress: string | undefined = undefined;
+  // By default, show the dropdown in SelectDestinationAddress
+  let showManualAddress = false;
+
+  let scanQrCode: ({
+    requiredToken,
+  }: {
+    requiredToken: Token;
+  }) => Promise<QrResponse>;
+
+  const goQRCode = async () => {
+    const { result, identifier } = await scanQrCode({
+      requiredToken: token,
+    });
+
+    if (result !== "success") {
+      return;
+    }
+    // When result === "success", identifier is always defined.
+    assertNonNullish(identifier);
+
+    selectedDestinationAddress = identifier;
+  };
 </script>
 
-<WizardModal
+<QrWizardModal
   testId="disburse-maturity-modal-component"
   {steps}
   bind:currentStep
   on:nnsClose
-  bind:this={modal}
+  bind:scanQrCode
+  bind:modal
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
@@ -113,6 +149,14 @@
             )}
           />
         </span>
+
+        <SelectDestinationAddress
+          {rootCanisterId}
+          bind:selectedDestinationAddress
+          bind:showManualAddress
+          selectedNetwork={TransactionNetwork.ICP}
+          on:nnsOpenQRCodeReader={goQRCode}
+        />
       </div>
 
       <svelte:fragment slot="text">
@@ -173,7 +217,7 @@
       </div>
     </NeuronConfirmActionScreen>
   {/if}
-</WizardModal>
+</QrWizardModal>
 
 <style lang="scss">
   .percentage-container {
