@@ -27,7 +27,7 @@ export class CommitmentProgressBarPo extends BasePageObject {
   }
 
   getProgressBarValue(): Promise<string> {
-    // Getting the `value` directly isn't working, we get the max value instead.
+    // The `value` property has the value of the max value but the `value` attribute has the value of the progress.
     return this.root.querySelector("progress").getAttribute("value");
   }
 
