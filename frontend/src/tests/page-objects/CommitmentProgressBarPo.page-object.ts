@@ -36,21 +36,32 @@ export class CommitmentProgressBarPo extends BasePageObject {
    *
    * Example of inline-style: "--progress-bar-background: linear-gradient(to right, var(--positive-emphasis) 0% 25%, var(--warning-emphasis) 25% 100%);"
    */
-  async getProgressBarSegments(): Promise<string[][]> {
+  async getNFCommitmentPercentage(): Promise<number> {
+    const inlineStyleRegex =
+      /--progress-bar-background: linear-gradient\(to right, var\(.*\) 0% (\d+(?:\.\d+)?)%, var\(.*\) (\d+(?:\.\d+)?)% 100%\);/g;
+
     const inlineStyle = await this.root
       .querySelector("progress")
       .getAttribute("style");
-    const percentageRegex = /\d+(\.\d+)?%/g;
-    return (
-      inlineStyle
-        // We assume that there is only a single css variable `linear-gradient` in the style.
-        .split(",")
-        // Remove everything before the `to right` part.
-        .slice(1)
-        // Match and extract the percentages of each segment.
-        .map<string[]>((segment) =>
-          Array.from(segment.matchAll(percentageRegex)).map(([match]) => match)
-        )
-    );
+
+    const matches = inlineStyleRegex.exec(inlineStyle);
+
+    if (matches === null) {
+      throw new Error("Invalid inline style");
+    }
+
+    const [_inlineStyle, firstPercentage, secondPercentage] = matches;
+
+    if (firstPercentage !== secondPercentage) {
+      throw new Error(
+        `The first and second percentage should be the same: ${firstPercentage} !== ${secondPercentage}`
+      );
+    }
+
+    return Number(firstPercentage);
+  }
+
+  async getDirectCommitmentPercentage(): Promise<number> {
+    return 100 - (await this.getNFCommitmentPercentage());
   }
 }

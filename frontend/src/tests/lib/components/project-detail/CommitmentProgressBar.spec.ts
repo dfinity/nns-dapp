@@ -84,15 +84,23 @@ describe("CommitmentProgressBar", () => {
     );
   });
 
+  it("should display only direct commitment if no NF commitment", async () => {
+    const po = renderComponent({
+      ...props,
+      directParticipation: 300_000_000n,
+      nfParticipation: 0n,
+    });
+    expect(await po.getNFCommitmentPercentage()).toEqual(0);
+    expect(await po.getDirectCommitmentPercentage()).toEqual(100);
+  });
+
   it("should display NF and direct commitments", async () => {
     const po = renderComponent({
       ...props,
       directParticipation: 300_000_000n,
       nfParticipation: 100_000_000n,
     });
-    expect(await po.getProgressBarSegments()).toEqual([
-      ["0%", "25%"],
-      ["25%", "100%"],
-    ]);
+    expect(await po.getNFCommitmentPercentage()).toEqual(25);
+    expect(await po.getDirectCommitmentPercentage()).toEqual(75);
   });
 });
