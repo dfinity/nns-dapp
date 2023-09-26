@@ -47,7 +47,9 @@ if ! "$SCRIPT"; then
 fi
 git checkout CHANGELOG-Nns-Dapp.md
 
-sed '199i* changed on line 199\n' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
+sed '199i\
+* changed on line 199\
+' CHANGELOG-Nns-Dapp.md | sponge CHANGELOG-Nns-Dapp.md
 if "$SCRIPT"; then
   echo "Should have failed with change on line 199." >&2
   exit 1
