@@ -1,0 +1,12 @@
+name: 'Installs binstall'
+description: |
+  Installs `cargo binstall` at the version specified in dfx.json
+runs:
+  using: "composite"
+  steps:
+    - name: Install binstall
+      shell: bash
+      run: |
+        BINSTALL_VERSION="$(jq -r .defaults.build.config.BINSTALL_VERSION dfx.json)"
+        curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v${BINSTALL_VERSION}/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
+        ./cargo-binstall -y --force "cargo-binstall@$BINSTALL_VERSION"
