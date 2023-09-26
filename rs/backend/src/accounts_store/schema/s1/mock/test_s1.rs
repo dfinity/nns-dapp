@@ -1,8 +1,6 @@
 //! Tests for the [`MockS1DataStorage`] implementation of the [`AccountsDbS1Trait`].
 use super::super::{AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
 use super::MockS1DataStorage;
-use crate::accounts_store::schema::map::AccountsDbAsMap;
-use crate::accounts_store::schema::tests::test_accounts_db;
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::accounts_store::Account;
 use std::collections::BTreeMap;
