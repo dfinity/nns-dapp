@@ -17,6 +17,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Set ENABLE_SNS_AGGREGATOR_STORE true for production.
 
 #### Deprecated
 #### Removed
