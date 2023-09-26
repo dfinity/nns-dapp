@@ -20,11 +20,13 @@
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
   import type { TransactionNetwork } from "$lib/types/transaction";
-  import { getAccountByRootCanister } from "$lib/utils/accounts.utils";
+  import {
+    getAccountByRootCanister,
+    invalidAddress,
+  } from "$lib/utils/accounts.utils";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let availableMaturityE8s: bigint;
-  export let tokenSymbol: string;
   export let rootCanisterId: Principal;
   export let token: Token;
   export let minimumAmountE8s: bigint;
@@ -50,13 +52,21 @@
   $: selectedMaturityE8s =
     (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
 
-  let disableDisburse = false;
-  $: disableDisburse = selectedMaturityE8s < minimumAmountE8s;
+  let notEnoughMaturitySelected = false;
+  $: notEnoughMaturitySelected = selectedMaturityE8s < minimumAmountE8s;
+
+  let disabled = false;
+  $: disabled =
+    invalidAddress({
+      address: selectedDestinationAddress,
+      network: undefined,
+      rootCanisterId,
+    }) || notEnoughMaturitySelected;
 
   // Show the text only if the selected percentage is greater than 0.
   let disabledText: string | undefined = undefined;
   $: disabledText =
-    disableDisburse && percentageToDisburse > 0
+    notEnoughMaturitySelected && percentageToDisburse > 0
       ? replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
           { $amount: formatToken({ value: minimumAmountE8s }) }
@@ -145,14 +155,14 @@
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}
       bind:percentage={percentageToDisburse}
-      disabled={disableDisburse}
+      {disabled}
       {disabledText}
     >
       <div class="percentage-container" slot="description">
         <span class="description">
           {replacePlaceholders(
             $i18n.neuron_detail.disburse_maturity_description_1,
-            { $symbol: tokenSymbol }
+            { $symbol: token.symbol }
           )}
         </span>
 
@@ -160,7 +170,7 @@
           <Html
             text={replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_description_2,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}
           />
         </span>
@@ -209,12 +219,12 @@
           <span slot="key" class="description"
             >{replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}</span
           >
           <span data-tid="confirm-tokens" class="value" slot="value"
             >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {tokenSymbol}
+            {token.symbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>

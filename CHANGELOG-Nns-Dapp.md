@@ -12,10 +12,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Select destination when disbursing maturity.
+
 #### Changed
 
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 * Allow `get_histogram` (an unstable API) only as a query call.
+* Set ENABLE_SNS_AGGREGATOR_STORE true for production.
 
 #### Deprecated
 #### Removed
@@ -33,6 +36,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 #### Changed
+
+* Specify the version of `binstall` in `dfx.json`.
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
 
 #### Deprecated
@@ -43,7 +49,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Security
 
 ## Proposal 124787
-124788
 
 ### Application
 
@@ -51,7 +56,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Add the amount of maturity related to a selected percentage.
 * Disburse maturity of sns neurons.
-* Select destination when disbursing maturity.
 
 #### Changed
 
