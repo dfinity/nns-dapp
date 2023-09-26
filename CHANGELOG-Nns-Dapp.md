@@ -34,6 +34,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 #### Changed
+
+* Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
 
