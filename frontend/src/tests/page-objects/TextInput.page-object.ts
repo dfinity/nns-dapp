@@ -39,4 +39,8 @@ export class TextInputPo extends SimpleBasePageObject {
   async isRequired(): Promise<boolean> {
     return (await this.root.getAttribute("required")) !== null;
   }
+
+  async blur(): Promise<void> {
+    return this.root.blur();
+  }
 }
