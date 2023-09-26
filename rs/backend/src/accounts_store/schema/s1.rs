@@ -2,8 +2,15 @@
 //! other data is on the heap and serialized in `pre_upgrade` hooks.
 //!
 //! ## Pagination
-//! Stable structures `BTreeMaps` currently support only fixed size data structures.
-//! Variable size data structures may come at some time but until then, we need to work around this
+//! Stable structures `BTreeMaps` currently support only fixed size data structures.  There are
+//! "variable" sized structures but they are just fixed size data structures with a length field.
+//!
+//! Our largest accounts appear to consume about 4MiB of memory when serialized, or smallest well
+//! under 1KiB.  Using fixed size structures large enough to accommodate the largest accounts 
+//! would be tremendously wasteful for the vast majority of small accounts.  So wasteful, that we
+//! would not have nearly enough space to store all accounts.
+//!
+//! True variable size data structures may come at some time but until then, we need to work around this
 //! limitation.  We do so by splitting the serialized data across fixed size pages and keying
 //! the stable `BTree` with the account number and page number.  We look up page 0, if it is full, we
 //! get page 1 as well and so on until we have the full serialization.
@@ -176,21 +183,37 @@ impl BoundedStorable for AccountStorageKey {
 }
 impl AccountStorageKey {
     /// Location of the page number in the key bytes.
+    ///
+    /// Note: When an account is serialized, it is split into pages and the pages are stored in a
+    /// BTreeMap.  The first page for that account has page number 0, the second 1 and so on.  The
+    /// `PAGE_NUM` field referred to here is where the page number appears in the lookup key.
     const PAGE_NUM_OFFSET: usize = 0;
     /// The number of bytes used to store the page num.
+    ///
+    /// Note: The largest accounts currently serialize to about 4MiB.  Pages are 1KiB, so the
+    /// largest accounts will have about 4096 pages.  By giving ourselves 2 bytes, we can store the
+    /// page number as a u16 which suffices for the large accounts.  For most accounts, one page suffices.
     const PAGE_NUM_BYTES: usize = 2;
+
     /// Location of the account identifier length in the key bytes.
+    ///
+    /// Note: Account identifiers typically consume 32 bytes, however some are shorter.
     const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES;
     /// The number of bytes used to store the identifier length.
     const ACCOUNT_IDENTIFIER_LEN_BYTES: usize = 1;
+
     /// Location of the account identifier in the key bytes.
     const ACCOUNT_IDENTIFIER_OFFSET: usize = Self::ACCOUNT_IDENTIFIER_LEN_OFFSET + Self::ACCOUNT_IDENTIFIER_LEN_BYTES;
     /// The maximum number of bytes for an account identifier.
     const ACCOUNT_IDENTIFIER_MAX_BYTES: usize = 32;
-    /// The number of bytes in a key.
+
+    /// The total number of bytes in a key.
     const SIZE: usize = Self::ACCOUNT_IDENTIFIER_OFFSET + Self::ACCOUNT_IDENTIFIER_MAX_BYTES;
 
-    /// Accounts are currently keyed by `Vec<u8>`; we continue this tradition, although it is tempting to use `AccountIdentifier` instead.
+    /// Creates the key to look up the Nth page of a given account.
+    ///
+    /// Account identifiers have historically been provided as `Vec<u8>`.  We continue this tradition,
+    /// although it is tempting to use `AccountIdentifier` instead.
     pub fn new(page_num: u16, account_identifier: &[u8]) -> Self {
         let account_identifier_len = account_identifier.len() as u8;
         let mut ans = [0u8; Self::MAX_SIZE as usize];
@@ -219,6 +242,7 @@ impl AccountStorageKey {
 /// This structure deals with the low level representation of the account data as bytes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct AccountStoragePage {
+    /// Fixed size byte representation of an account.
     bytes: [u8; AccountStoragePage::SIZE as usize],
 }
 impl Storable for AccountStoragePage {
@@ -230,7 +254,7 @@ impl Storable for AccountStoragePage {
             bytes: bytes
                 .into_owned()
                 .try_into()
-                .map_err(|err| format!("Attempt to create AccountStorageKey from bytes of wrong length: {err:?}"))
+                .map_err(|err| format!("Attempt to create AccountStoragePage from bytes of wrong length: {err:?}"))
                 .unwrap(),
         }
     }
