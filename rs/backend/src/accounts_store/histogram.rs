@@ -31,10 +31,16 @@ pub struct AccountsStoreHistogram {
     ///
     /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     sub_account_transactions: BTreeMap<u32, u64>,
+    /// The total number of subaccount transactions for a given main account.
+    total_sub_account_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of hardware wallets per account.
     ///
     /// Note: The buckets are logarithmic, as with `default_account_transactions`.
     hardware_wallet_accounts: BTreeMap<u32, u64>,
+    /// The number of transactions per hardware wallet.
+    hardware_wallet_transactions: BTreeMap<u32, u64>,
+    /// The total number of hardware wallet transactions for a given main account.
+    total_hardware_wallet_transactions: BTreeMap<u32, u64>,
     /// A histogram of the number of canisters per account.
     ///
     /// Note: The buckets are logarithmic, as with `default_account_transactions`.
@@ -59,9 +65,31 @@ impl AccountsStoreHistogram {
     pub fn sub_account_transactions(&mut self, count: usize) -> &mut u64 {
         self.sub_account_transactions.entry(log2_bucket(count)).or_insert(0)
     }
+    /// The bucket for a the total number of sub-account transactions in a given main account.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn total_sub_account_transactions(&mut self, count: usize) -> &mut u64 {
+        self.total_sub_account_transactions
+            .entry(log2_bucket(count))
+            .or_insert(0)
+    }
     /// The bucket for a given number of hardware wallets.
     pub fn hardware_wallet_accounts(&mut self, count: usize) -> &mut u64 {
         self.hardware_wallet_accounts.entry(log2_bucket(count)).or_insert(0)
+    }
+    /// The bucket for a given number of hardware wallet transactions.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn hardware_wallet_transactions(&mut self, count: usize) -> &mut u64 {
+        self.hardware_wallet_transactions.entry(log2_bucket(count)).or_insert(0)
+    }
+    /// The bucket for a the total number of sub-account transactions in a given main account.
+    ///
+    /// Note: The bucket is logarithmic base 2.
+    pub fn total_hardware_wallet_transactions(&mut self, count: usize) -> &mut u64 {
+        self.total_hardware_wallet_transactions
+            .entry(log2_bucket(count))
+            .or_insert(0)
     }
     /// The bucket for a given number of canisters.
     ///
