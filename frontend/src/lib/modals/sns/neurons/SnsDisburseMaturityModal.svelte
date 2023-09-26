@@ -58,7 +58,6 @@
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
   {minimumAmountE8s}
-  tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
   {rootCanisterId}
   {token}
