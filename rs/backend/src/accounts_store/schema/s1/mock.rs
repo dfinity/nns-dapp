@@ -1,5 +1,6 @@
 //! Tests for the `S1` schema data storage.
 use super::{AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
+use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::Account;
 use crate::accounts_store::AccountsDbTrait;
 use std::collections::BTreeMap;
@@ -70,5 +71,10 @@ impl AccountsDbTrait for MockS1DataStorage {
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.s1_values()
+    }
+    /// Note: We use the label for the stable memory version, even though this is a mock
+    /// implementation that doesn't persist data in any way.
+    fn schema_label(&self) -> SchemaLabel {
+        SchemaLabel::StableAccountsS1
     }
 }

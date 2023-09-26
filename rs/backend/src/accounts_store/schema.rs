@@ -98,9 +98,14 @@ pub trait AccountsDbTrait {
 /// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
 pub enum SchemaLabel {
-    /// Data is stored on the heap in a BTreeMap and serialized to stable memory on upgrade.
+    /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
     Map = 0,
+    /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
+    /// data, mostly consisting of transactions, is serialized into a single large blob in the
+    /// `pre_upgrade` hook.
+    #[cfg(test)]
+    StableAccountsS1 = 1,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.
