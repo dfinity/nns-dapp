@@ -42,7 +42,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Security
 
 ## Proposal 124787
-124788
 
 ### Application
 
