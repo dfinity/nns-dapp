@@ -40,9 +40,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Install spellcheck
         run: |
+          cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell
-          cargo install cargo-spellcheck
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
+          cargo binstall cargo-spellcheck
       - name: Spellcheck Rust
         run: cargo spellcheck
   cargo-tests:
