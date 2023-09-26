@@ -114,10 +114,18 @@ impl Add<&Account> for AccountsStoreHistogram {
         self.accounts_count += 1;
         *self.default_account_transactions(rhs.default_account_transactions.len()) += 1;
         *self.sub_accounts(rhs.sub_accounts.len()) += 1;
-        rhs.sub_accounts.values().for_each(|sub_account| {
+        let total_sub_account_transactions = rhs.sub_accounts.values().fold(0, |total, sub_account| {
             *self.sub_account_transactions(sub_account.transactions.len()) += 1;
+            total + sub_account.transactions.len()
         });
+        *self.total_sub_account_transactions(total_sub_account_transactions) += 1;
         *self.hardware_wallet_accounts(rhs.hardware_wallet_accounts.len()) += 1;
+        let total_hardware_wallet_transactions =
+            rhs.hardware_wallet_accounts.iter().fold(0, |total, hardware_wallet| {
+                *self.hardware_wallet_transactions(hardware_wallet.transactions.len()) += 1;
+                total + hardware_wallet.transactions.len()
+            });
+        *self.total_hardware_wallet_transactions(total_hardware_wallet_transactions) += 1;
         *self.canisters(rhs.canisters.len()) += 1;
         self
     }

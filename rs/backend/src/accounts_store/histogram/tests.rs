@@ -79,10 +79,10 @@ mod should_increment_correct_bucket {
     should_increment_correct_bucket!(sub_accounts);
     should_increment_correct_bucket!(sub_account_transactions);
     should_increment_correct_bucket!(total_sub_account_transactions);
-    
+
     should_increment_correct_bucket!(hardware_wallet_accounts);
     should_increment_correct_bucket!(hardware_wallet_transactions);
     should_increment_correct_bucket!(total_hardware_wallet_transactions);
-    
+
     should_increment_correct_bucket!(canisters);
 }
