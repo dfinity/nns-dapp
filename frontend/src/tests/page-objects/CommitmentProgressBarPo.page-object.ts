@@ -26,7 +26,7 @@ export class CommitmentProgressBarPo extends BasePageObject {
     return (await this.getText("commitment-max-indicator-value")).trim();
   }
 
-  async getProgressBarTotalCommitmentE8s(): Promise<bigint> {
+  async getTotalCommitmentE8s(): Promise<bigint> {
     // The `value` property has the value of the max value but the `value` attribute has the value of the progress.
     const valueString = await this.root
       .querySelector("progress")
@@ -61,16 +61,14 @@ export class CommitmentProgressBarPo extends BasePageObject {
       );
     }
 
-    const totalCommitment = Number(
-      await this.getProgressBarTotalCommitmentE8s()
-    );
+    const totalCommitment = Number(await this.getTotalCommitmentE8s());
     const nfPercentage = Number(firstPercentage);
 
     return BigInt(Math.round((totalCommitment * nfPercentage) / 100));
   }
 
   async getDirectCommitmentE8s(): Promise<bigint> {
-    const totalCommitment = await this.getProgressBarTotalCommitmentE8s();
+    const totalCommitment = await this.getTotalCommitmentE8s();
     return BigInt(totalCommitment - (await this.getNFCommitmentE8s()));
   }
 }
