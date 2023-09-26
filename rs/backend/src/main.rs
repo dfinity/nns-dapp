@@ -289,7 +289,7 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
     // The API is intended for ad-hoc analysis only and may be discontinued at any time.
     // - Other canisters should not rely on the method being available.
     // - Users should make query calls.
-    let is_query_call = ic_cdk::api::data_certificate().is_none();
+    let is_query_call = ic_cdk::api::data_certificate().is_some();
     if !is_query_call {
         dfn_core::api::trap_with("Sorry, the histogram is available only as a query call.");
     }
