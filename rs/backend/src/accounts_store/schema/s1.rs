@@ -191,7 +191,6 @@ impl AccountStorageKey {
     const SIZE: usize = Self::ACCOUNT_IDENTIFIER_OFFSET + Self::ACCOUNT_IDENTIFIER_MAX_BYTES;
 
     /// Accounts are currently keyed by `Vec<u8>`; we continue this tradition, although it is tempting to use `AccountIdentifier` instead.
-    #[allow(dead_code)]
     pub fn new(page_num: u16, account_identifier: &[u8]) -> Self {
         let account_identifier_len = account_identifier.len() as u8;
         let mut ans = [0u8; Self::MAX_SIZE as usize];
@@ -203,26 +202,13 @@ impl AccountStorageKey {
         Self { bytes: ans }
     }
 
-    /// Gets the key to the next page.
-    ///
-    /// # Panics
-    /// - If the page limit is exceeded.
-    #[allow(dead_code)]
-    pub fn next(&self) -> Self {
-        let mut ans = self.bytes;
-        ans[Self::PAGE_NUM_OFFSET] += 1; // Panics if the page number wraps.
-        Self { bytes: ans }
-    }
-
     /// Gets the account identifier as bytes.
-    #[allow(dead_code)]
     pub fn account_identifier_bytes(&self) -> Vec<u8> {
         let account_identifier_len = self.bytes[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] as usize;
         self.bytes[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier_len].to_vec()
     }
 
     /// Gets the page number.
-    #[allow(dead_code)]
     pub fn page_num(&self) -> u8 {
         self.bytes[Self::PAGE_NUM_OFFSET]
     }
@@ -232,7 +218,6 @@ impl AccountStorageKey {
 ///
 /// This structure deals with the low level representation of the account data as bytes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[allow(dead_code)]
 pub struct AccountStoragePage {
     bytes: [u8; AccountStoragePage::SIZE as usize],
 }
@@ -266,7 +251,6 @@ impl AccountStoragePage {
     /// The maximum length of the payload.
     pub const MAX_PAYLOAD_LEN: usize = Self::SIZE as usize - Self::PAYLOAD_OFFSET;
 
-    #[allow(dead_code)]
     fn new(chunk: &[u8]) -> Self {
         if chunk.len() > Self::MAX_PAYLOAD_LEN {
             panic!("Attempt to create AccountStoragePage from chunk of length {}, which is longer than the maximum payload length of {}.", chunk.len(), Self::MAX_PAYLOAD_LEN);
@@ -277,7 +261,6 @@ impl AccountStoragePage {
         page[Self::PAYLOAD_OFFSET..Self::PAYLOAD_OFFSET + chunk.len()].copy_from_slice(chunk);
         Self { bytes: page }
     }
-    #[allow(dead_code)]
     fn pages_from_account(account: &Account) -> Vec<Self> {
         let account_serialized = Candid((account,)).into_bytes().unwrap();
         account_serialized
@@ -286,7 +269,6 @@ impl AccountStoragePage {
             .collect::<Vec<_>>()
     }
     /// The payload length.
-    #[allow(dead_code)]
     fn len(&self) -> usize {
         let len_bytes = self.bytes[Self::LEN_OFFSET..Self::LEN_OFFSET + Self::LEN_LEN]
             .try_into()
