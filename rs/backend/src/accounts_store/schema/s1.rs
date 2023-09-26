@@ -19,6 +19,9 @@ use on_wire::{FromWire, IntoWire};
 use std::borrow::Cow;
 use std::convert::TryInto;
 
+#[cfg(test)]
+mod mock;
+
 pub trait AccountsDbS1Trait {
     // TODO: Add a small cache to limit the cost of getting and parsing data to once per API call.
 
@@ -132,7 +135,17 @@ pub trait AccountsDbS1Trait {
             }
         }
     }
+
+    /// Equivalent of [`super::AccountsDbTrait::db_accounts_len`].
     fn s1_accounts_len(&self) -> u64;
+
+    /// Equivalent of [`super::AccountsDbTrait::values`].
+    fn s1_values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        Box::new(self.s1_keys().filter_map(|key| self.s1_get_account(&key)))
+    }
+
+    /// Iterates over account identifiers, represented as bytes.
+    fn s1_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_>;
 }
 
 /// Key for account data in a stable `BTreeMap`.
@@ -199,6 +212,12 @@ impl AccountStorageKey {
         let mut ans = self.bytes;
         ans[Self::PAGE_NUM_OFFSET] += 1; // Panics if the page number wraps.
         Self { bytes: ans }
+    }
+
+    /// Gets the account identifier as bytes.
+    pub fn account_identifier_bytes(&self) -> Vec<u8> {
+        let account_identifier_len = self.bytes[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] as usize;
+        self.bytes[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier_len].to_vec()
     }
 
     /// Gets the page number.
