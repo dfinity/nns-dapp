@@ -43,6 +43,7 @@ jobs:
           cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell
+          rustup target add x86_64-unknown-linux-musl
           curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
           cargo binstall --force --no-confirm cargo-spellcheck
       - name: Spellcheck Rust
