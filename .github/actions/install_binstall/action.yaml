@@ -1,7 +1,6 @@
 name: 'Installs binstall'
 description: |
   Installs `cargo binstall` at the version specified in dfx.json
-inputs:
 runs:
   using: "composite"
   steps:

@@ -639,7 +639,7 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-	"BINSTALL_VERSION": "1.3.0",
+        "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-05",
         "SNSDEMO_RELEASE": "release-2023-07-07",
         "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
