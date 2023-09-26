@@ -343,7 +343,6 @@ record "Start time" date +"%Y-%m-%d %H:%M:%S"
 confirm_cmd git fetch --tags --force
 record "Release SOP script is newest version" is_release_sop_script_newest_version
 confirm_cmd git checkout -b "$BRANCH_NAME" --no-track origin/main
-confirm_cmd git push -u origin "$BRANCH_NAME:$BRANCH_NAME"
 record "Release branch" echo "$BRANCH_NAME"
 verify "Release branch" "Current branch" echo "$BRANCH_NAME"
 confirm_cmd git push origin "$BRANCH_NAME"
