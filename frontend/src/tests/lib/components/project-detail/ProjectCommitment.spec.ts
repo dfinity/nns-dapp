@@ -104,7 +104,7 @@ describe("ProjectCommitment", () => {
     });
     const po = renderComponent(summary);
     const progressBarPo = po.getCommitmentProgressBarPo();
-    expect(await progressBarPo.getProgressBarTotalCommitmentE8s()).toBe(
+    expect(await progressBarPo.getTotalCommitmentE8s()).toBe(
       directCommitment + nfCommitment
     );
   });
