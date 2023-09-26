@@ -1,4 +1,9 @@
-//! Tests for the `S1` schema data storage.
+//! Mock implementation of the `S1` schema data storage.
+//!
+//! This implementation stores the accounts in a normal `BTreeMap`
+//! and does not persist data across upgrades.  The implementation is
+//! suitable for unit tests that do not require persistence.
+
 use super::{AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::Account;
