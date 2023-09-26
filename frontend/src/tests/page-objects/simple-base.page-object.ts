@@ -35,8 +35,4 @@ export class SimpleBasePageObject {
   getText(tid: string | undefined = undefined): Promise<string> {
     return this.getElement(tid).getText();
   }
-
-  async blur(): Promise<void> {
-    return this.root.blur();
-  }
 }

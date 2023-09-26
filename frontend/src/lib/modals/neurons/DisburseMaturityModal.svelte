@@ -24,7 +24,6 @@
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let availableMaturityE8s: bigint;
-  export let tokenSymbol: string;
   export let rootCanisterId: Principal;
   export let token: Token;
   export let minimumAmountE8s: bigint;
@@ -152,7 +151,7 @@
         <span class="description">
           {replacePlaceholders(
             $i18n.neuron_detail.disburse_maturity_description_1,
-            { $symbol: tokenSymbol }
+            { $symbol: token.symbol }
           )}
         </span>
 
@@ -160,7 +159,7 @@
           <Html
             text={replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_description_2,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}
           />
         </span>
@@ -209,12 +208,12 @@
           <span slot="key" class="description"
             >{replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}</span
           >
           <span data-tid="confirm-tokens" class="value" slot="value"
             >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {tokenSymbol}
+            {token.symbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>

@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Select destination when disbursing maturity.
+
 #### Changed
 
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
@@ -34,6 +36,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Check spelling in Rust documentation as part of CI.
 
 #### Changed
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
 
 #### Deprecated
@@ -44,7 +47,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Security
 
 ## Proposal 124787
-124788
 
 ### Application
 
@@ -52,7 +54,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Add the amount of maturity related to a selected percentage.
 * Disburse maturity of sns neurons.
-* Select destination when disbursing maturity.
 
 #### Changed
 
