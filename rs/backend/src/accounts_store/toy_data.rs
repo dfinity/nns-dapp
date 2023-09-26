@@ -1,11 +1,16 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    convert_byte_to_sub_account, schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore,
-    AttachCanisterRequest, CanisterId, Memo, NamedCanister, NamedHardwareWalletAccount, NamedSubAccount, NeuronDetails,
-    NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
+    schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo,
+    NeuronDetails, NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction,
+    TransactionType,
 };
+
+#[cfg(test)]
 use std::collections::HashMap;
+
+#[cfg(test)]
+use crate::accounts_store::{convert_byte_to_sub_account, NamedCanister, NamedHardwareWalletAccount, NamedSubAccount};
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
 const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
@@ -66,7 +71,7 @@ impl From<&Account> for ToyAccountSize {
 //
 // TODO: Delete the `toy_account()` function in rs/backend/src/accounts_store/schema/tests.rs and
 // use this instead.
-#[allow(dead_code)]
+#[cfg(test)]
 pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
