@@ -110,7 +110,13 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         account.default_account_transactions.push(transaction_index);
     }
     for hardware_wallet_index in 0..size.hardware_wallets as u64 {
-        let principal = PrincipalId::new_user_test_id(account_index + hardware_wallet_index + 999); // Toy hardware wallet principal.
+        // Note: The principal is currently unused but in case it is used in future tests we make a
+        // modest attempt to avoid collisions by:
+        //
+        // * Avoiding small numbers, as they may appear in other tests.
+        // * Avoiding collisions between principals generated in this way; a user will need a
+        //   million hardware wallets before we can have a collision.
+        let principal = PrincipalId::new_user_test_id(account_index * 1_000_000 + hardware_wallet_index + 100_000); // Toy hardware wallet principal.
         let hardware_wallet = NamedHardwareWalletAccount {
             name: format!("hw_wallet_{account_index}_{hardware_wallet_index}"),
             principal,
