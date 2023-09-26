@@ -15,6 +15,10 @@
 //! the stable `BTree` with the account number and page number.  We look up page 0, if it is full, we
 //! get page 1 as well and so on until we have the full serialization.
 //!
+//! Update: Unbounded stable structures are [in beta](https://docs.rs/ic-stable-structures/0.6.0-beta.1/ic_stable_structures/storable/enum.Bound.html#variant.Unbounded).
+//! Throwing account data straight into a brand new data structure is perhaps unwise but we can
+//! migrate once it is stable and well tested.
+//!
 //! ## Testing
 //! The `StableBTreeMap` can be simulated with a normal `BTreeMap` with fixed size byte arrays as
 //! values.
