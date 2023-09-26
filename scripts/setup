@@ -168,7 +168,10 @@ install_rust() {
 }
 
 install_binstall() {
-  curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+  local BINSTALL_VERSION
+  BINSTALL_VERSION="$(jq -r .defaults.build.config.BINSTALL_VERSION dfx.json)"
+  curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v${BINSTALL_VERSION}/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
+  ./cargo-binstall -y --force "cargo-binstall@$BINSTALL_VERSION"
 }
 
 install_xz_darwin() {

@@ -12,6 +12,49 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Select destination when disbursing maturity.
+
+#### Changed
+
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Allow `get_histogram` (an unstable API) only as a query call.
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+#### Not Published
+
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
+### Operations
+
+#### Added
+
+#### Changed
+
+* Fix the `release-sop` command that set `origin/main` as the upstream.
+* Specify the version of `binstall` in `dfx.json`.
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
+* Fix the rust-update action.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+## Proposal 124787
+
+### Application
+
+#### Added
+
 * Add the amount of maturity related to a selected percentage.
 * Disburse maturity of sns neurons.
 
@@ -21,9 +64,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use consistent positioning for the copy icon in the Hash component.
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
 * Improve contrast of token selector's logo in light theme.
-
-#### Deprecated
-#### Removed
+* Remove the "Project" leading word in the SNS Project card.
 
 #### Fixed
 
@@ -33,27 +74,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Make duration rendering consistent.
 * Improve Tooltip location when container hides part of it.
 
-#### Security
-
-#### Not Published
-
 ### Operations
 
-#### Added
-
 #### Changed
+
 * Specify the `snsdemo` version in `dfx.json`.
 * Make the file list stats accessible in logs and as a file in the release artefacts.
 * Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
 
-#### Deprecated
-#### Removed
-
 #### Fixed
 
 * Fix build script by pinning cargo-binstall version.
-
-#### Security
 
 ## Proposal 124486
 

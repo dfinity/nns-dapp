@@ -78,7 +78,7 @@ sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$CHANGELOG"
   grep -v '^[-* ] ' "$CHANGELOG" | sed -E 's@^\+([-* ] )@* @'
 
   # Get proposal number from tags applied to same commit as prod tag
-  PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep 'proposal-[0-9]\+' | cut -d- -f2)"}"
+  PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep -E '^proposal-[0-9]+$' | cut -d- -f2)"}"
   PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-XXXXXX}"
 
   # Append the tail of the old changelog with entries before the release was cut.

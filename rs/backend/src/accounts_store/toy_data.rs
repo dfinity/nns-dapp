@@ -1,11 +1,16 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    convert_byte_to_sub_account, schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore,
-    AttachCanisterRequest, CanisterId, Memo, NamedCanister, NamedHardwareWalletAccount, NamedSubAccount, NeuronDetails,
-    NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction, TransactionType,
+    schema::AccountsDbTrait, Account, AccountIdentifier, AccountsStore, AttachCanisterRequest, CanisterId, Memo,
+    NeuronDetails, NeuronId, Operation, PrincipalId, RegisterHardwareWalletRequest, TimeStamp, Tokens, Transaction,
+    TransactionType,
 };
+
+#[cfg(test)]
 use std::collections::HashMap;
+
+#[cfg(test)]
+use crate::accounts_store::{convert_byte_to_sub_account, NamedCanister, NamedHardwareWalletAccount, NamedSubAccount};
 
 const MAX_SUB_ACCOUNTS_PER_ACCOUNT: u64 = 3; // Toy accounts have between 0 and this many subaccounts.
 const MAX_HARDWARE_WALLETS_PER_ACCOUNT: u64 = 1; // Toy accounts have between 0 and this many hardware wallets.
@@ -66,7 +71,7 @@ impl From<&Account> for ToyAccountSize {
 //
 // TODO: Delete the `toy_account()` function in rs/backend/src/accounts_store/schema/tests.rs and
 // use this instead.
-#[allow(dead_code)]
+#[cfg(test)]
 pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
     let principal = PrincipalId::new_user_test_id(account_index);
     let account_identifier = AccountIdentifier::from(principal);
@@ -105,7 +110,13 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         account.default_account_transactions.push(transaction_index);
     }
     for hardware_wallet_index in 0..size.hardware_wallets as u64 {
-        let principal = PrincipalId::new_user_test_id(account_index + hardware_wallet_index + 999); // Toy hardware wallet principal.
+        // Note: The principal is currently unused but in case it is used in future tests we make a
+        // modest attempt to avoid collisions by:
+        //
+        // * Avoiding small numbers, as they may appear in other tests.
+        // * Avoiding collisions between principals generated in this way; a user will need a
+        //   million hardware wallets before we can have a collision.
+        let principal = PrincipalId::new_user_test_id(account_index * 1_000_000 + hardware_wallet_index + 100_000); // Toy hardware wallet principal.
         let hardware_wallet = NamedHardwareWalletAccount {
             name: format!("hw_wallet_{account_index}_{hardware_wallet_index}"),
             principal,

@@ -7,9 +7,11 @@ import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger";
 import type { BlockHeight } from "@dfinity/nns";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
 import type { TokenAmount } from "@dfinity/utils";
+import { toNullable } from "@dfinity/utils";
 
 /**
  * Transfer ICP between accounts.
@@ -47,6 +49,52 @@ export const sendICP = async ({
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),
   });
   logWithTimestamp(`Sending icp complete.`);
+  return response;
+};
+
+/**
+ * Transfer ICP between accounts.
+ *
+ * @param {Object} params
+ * @param {Identity} params.identity user identity
+ * @param {IcrcAccount} params.to destination account
+ * @param {TokenAmount} params.amount the amount to be transferred in ICP
+ * @param {bigint | undefined} params.fee the transaction fee in E8s
+ * @param {Uint8Array | undefined} params.fromSubAccount the optional subaccount that would be the source of the transaction
+ * @param {bigint | undefined} params.createdAt the optional timestamp of the transaction. Used to avoid deduplication.
+ */
+export const sendIcpIcrc1 = async ({
+  identity,
+  to,
+  amount,
+  fee,
+  memo,
+  fromSubAccount,
+  createdAt,
+}: {
+  identity: Identity;
+  to: IcrcAccount;
+  amount: TokenAmount;
+  fee?: bigint;
+  memo?: Uint8Array;
+  fromSubAccount?: Uint8Array;
+  createdAt?: bigint;
+}): Promise<BlockHeight> => {
+  logWithTimestamp(`Sending ICRC-1 icp call...`);
+  const { canister } = await ledgerCanister({ identity });
+
+  const response = await canister.icrc1Transfer({
+    to: {
+      owner: to.owner,
+      subaccount: toNullable(to.subaccount),
+    },
+    amount: amount.toE8s(),
+    fee,
+    fromSubAccount,
+    memo,
+    createdAt: createdAt ?? nowInBigIntNanoSeconds(),
+  });
+  logWithTimestamp(`Sending ICRC-1 icp complete.`);
   return response;
 };
 

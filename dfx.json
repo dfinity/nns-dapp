@@ -626,9 +626,10 @@
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
           "ENABLE_INSTANT_UNLOCK": false,
-          "ENABLE_SNS_AGGREGATOR_STORE": false,
+          "ENABLE_SNS_AGGREGATOR_STORE": true,
           "ENABLE_DISBURSE_MATURITY": true,
-          "ENABLE_STAKE_NEURON_ICRC1": false
+          "ENABLE_STAKE_NEURON_ICRC1": false,
+          "ENABLE_SWAP_ICRC1": false
         }
       }
     },
@@ -638,6 +639,7 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
+        "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-05",
         "SNSDEMO_RELEASE": "release-2023-07-07",
         "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"

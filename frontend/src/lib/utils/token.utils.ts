@@ -14,6 +14,18 @@ const countDecimals = (value: number): number => {
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
 };
 
+// Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
+type RoundMode =
+  | "ceil"
+  | "floor"
+  | "expand"
+  | "trunc"
+  | "halfCeil"
+  | "halfFloor"
+  | "halfExpand"
+  | "halfTrunc"
+  | "halfEven";
+
 /**
  * Jira L2-666:
  * - If ICP is zero then 0 should be displayed - i.e. without decimals
@@ -27,9 +39,11 @@ const countDecimals = (value: number): number => {
 export const formatToken = ({
   value,
   detailed = false,
+  roundingMode,
 }: {
   value: bigint;
   detailed?: boolean | "height_decimals";
+  roundingMode?: RoundMode;
 }): string => {
   if (value === BigInt(0)) {
     return "0";
@@ -52,6 +66,11 @@ export const formatToken = ({
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
+    // "roundingMode" not present in `NumberFormatOptions`.
+    // But it's supported by most modern browsers: https://caniuse.com/mdn-javascript_builtins_intl_numberformat_numberformat_options_roundingmode_parameter
+    // eslint-disable-next-line
+    // @ts-ignore
+    roundingMode,
   })
     .format(converted)
     .replace(/,/g, "'");

@@ -1,5 +1,6 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -12,6 +13,7 @@ import {
   filterActiveProjects,
   filterCommittedProjects,
   filterProjectsStatus,
+  getProjectCommitmentSplit,
   hasUserParticipatedToSwap,
   participateButtonStatus,
   projectRemainingAmount,
@@ -41,6 +43,10 @@ describe("project-utils", () => {
   const summaryNoRestricted: SnsSummary = createSummary({
     lifecycle: SnsSwapLifecycle.Open,
     restrictedCountries: [],
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   describe("filter", () => {
@@ -1242,6 +1248,69 @@ describe("project-utils", () => {
           [summaryUsRestricted, summaryNoRestricted]
         )
       ).toEqual([sameButDifferent]);
+    });
+  });
+
+  describe("getProjectCommitmentSplit", () => {
+    const defaultSummary = summaryForLifecycle(SnsSwapLifecycle.Open);
+
+    it("returns the commitments split if NF participation is present", () => {
+      const directCommitment = 20000000000n;
+      const nfCommitment = 10000000000n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 30000000000n,
+        directCommitmentE8s: 20000000000n,
+        nfCommitmentE8s: 10000000000n,
+      });
+    });
+
+    it("returns the commitments split if NF participation is present even when 0", () => {
+      const directCommitment = 20000000000n;
+      const nfCommitment = 0n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 20000000000n,
+        directCommitmentE8s: 20000000000n,
+        nfCommitmentE8s: 0n,
+      });
+    });
+
+    it("returns only the full commitmentif NF participation is not present", () => {
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => undefined);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: 20000000000n,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 20000000000n,
+      });
     });
   });
 });

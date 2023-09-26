@@ -988,6 +988,41 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("stakeNeuronIcrc1", () => {
+    const params = {
+      identity: mockIdentity,
+      stake: BigInt(10_000_000),
+      controller: mockPrincipal,
+      ledgerCanisterIdentity: mockIdentity,
+      fromSubaccount: new Uint8Array(),
+    };
+
+    it("should call stakeNeuronIcrc1 api", async () => {
+      jest.spyOn(api, "stakeNeuronIcrc1").mockResolvedValueOnce(neuronId);
+      expect(await governanceApiService.stakeNeuronIcrc1(params)).toEqual(
+        neuronId
+      );
+      expect(api.stakeNeuronIcrc1).toHaveBeenCalledWith(params);
+      expect(api.stakeNeuronIcrc1).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.stakeNeuronIcrc1,
+        apiServiceFunc: governanceApiService.stakeNeuronIcrc1,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.stakeNeuronIcrc1,
+        apiServiceFunc: governanceApiService.stakeNeuronIcrc1,
+        params,
+      });
+    });
+  });
+
   describe("startDissolving", () => {
     const params = {
       neuronId,

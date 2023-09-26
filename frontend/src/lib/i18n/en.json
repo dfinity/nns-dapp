@@ -691,9 +691,6 @@
     "project_logo": "project logo",
     "no_proposals": "There are no decentralisation swap proposals open at the moment."
   },
-  "sns_project": {
-    "project": "Project"
-  },
   "sns_project_detail": {
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
@@ -703,6 +700,8 @@
     "max_commitment": "Maximum Commitment",
     "min_participants": "Minimum Participants",
     "current_overall_commitment": "Current Overall Commitment",
+    "current_nf_commitment": "Neurons' Fund Commitment",
+    "current_direct_commitment": "Direct Commitment",
     "current_sale_buyer_count": "Current Total Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
     "max_commitment_goal": "Maximum Commitment Goal",

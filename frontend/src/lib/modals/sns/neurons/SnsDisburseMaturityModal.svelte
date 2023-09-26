@@ -15,8 +15,9 @@
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
-  let token: IcrcTokenMetadata | undefined;
-  $: token = $tokensStore[rootCanisterId.toText()]?.token;
+  let token: IcrcTokenMetadata;
+  // Modal can't appear without the token being loaded.
+  $: token = $tokensStore[rootCanisterId.toText()]?.token as IcrcTokenMetadata;
 
   let minimumAmountE8s: bigint;
   // Token is loaded with all the projects from the aggregator.
@@ -27,14 +28,18 @@
   const close = () => dispatcher("nnsClose");
 
   const disburseMaturity = async ({
-    detail: { percentageToDisburse },
-  }: CustomEvent<{ percentageToDisburse: number }>) => {
+    detail: { percentageToDisburse, destinationAddress },
+  }: CustomEvent<{
+    percentageToDisburse: number;
+    destinationAddress: string;
+  }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
     const { success } = await disburseMaturityService({
       neuronId,
       percentageToDisburse,
       rootCanisterId,
+      toAccountAddress: destinationAddress,
     });
 
     await reloadNeuron();
@@ -53,7 +58,8 @@
 <DisburseMaturityModal
   availableMaturityE8s={neuron.maturity_e8s_equivalent}
   {minimumAmountE8s}
-  tokenSymbol={token?.symbol ?? ""}
   on:nnsDisburseMaturity={disburseMaturity}
+  {rootCanisterId}
+  {token}
   on:nnsClose
 />
