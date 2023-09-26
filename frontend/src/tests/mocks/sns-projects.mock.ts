@@ -299,6 +299,9 @@ export const createSummary = ({
   minParticipantCommitment = 100_000_000n,
   maxParticipantCommitment = 5_000_000_000n,
   swapDueTimestampSeconds = 1630444800n,
+  minTotalCommitment,
+  maxTotalCommitment,
+  currentTotalCommitment,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
@@ -309,6 +312,9 @@ export const createSummary = ({
   minParticipantCommitment?: bigint;
   maxParticipantCommitment?: bigint;
   swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -325,10 +331,14 @@ export const createSummary = ({
     min_participant_icp_e8s: minParticipantCommitment,
     max_participant_icp_e8s: maxParticipantCommitment,
     swap_due_timestamp_seconds: swapDueTimestampSeconds,
+    min_icp_e8s: minTotalCommitment ?? mockSnsParams.min_icp_e8s,
+    max_icp_e8s: maxTotalCommitment ?? mockSnsParams.max_icp_e8s,
   };
   const derived: SnsSwapDerivedState = {
     ...mockDerived,
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
+    buyer_total_icp_e8s:
+      currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
   };
   const summary = summaryForLifecycle(lifecycle);
   return {
