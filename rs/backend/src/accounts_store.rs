@@ -8,7 +8,7 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_crypto_sha::Sha256;
+use ic_crypto_sha2::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;

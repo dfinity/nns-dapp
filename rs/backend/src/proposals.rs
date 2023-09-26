@@ -213,7 +213,7 @@ mod def {
     use crate::proposals::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
-    use ic_crypto_sha::Sha256;
+    use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
     use ic_nervous_system_common::MethodAuthzChange;
     use ic_sns_wasm::pb::v1::{SnsUpgrade, SnsVersion};
