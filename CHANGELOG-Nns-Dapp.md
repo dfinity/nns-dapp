@@ -31,6 +31,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Check spelling in Rust documentation as part of CI.
+
 #### Changed
 * Fix the rust-update action.
 
