@@ -170,4 +170,9 @@ export class JestPageObjectElement implements PageObjectElement {
       return false;
     }
   }
+
+  async blur(): Promise<void> {
+    await this.waitFor();
+    await fireEvent.blur(this.element);
+  }
 }

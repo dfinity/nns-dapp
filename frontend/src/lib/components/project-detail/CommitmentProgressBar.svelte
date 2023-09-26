@@ -29,8 +29,11 @@
   ];
 </script>
 
-<!-- TODO: Remove value={0} after https://github.com/dfinity/gix-components/pull/298 is merged -->
-<ProgressBar max={Number(max)} value={0} {segments}>
+<ProgressBar
+  max={Number(max)}
+  {segments}
+  testId="commitment-progress-bar-component"
+>
   <div class="info" slot="top">
     <p class="right">
       <span>

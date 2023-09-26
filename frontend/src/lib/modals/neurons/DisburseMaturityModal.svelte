@@ -14,11 +14,21 @@
   } from "@dfinity/gix-components";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
+  import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
+  import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import type { Principal } from "@dfinity/principal";
+  import { assertNonNullish, type Token } from "@dfinity/utils";
+  import type { QrResponse } from "$lib/types/qr-wizard-modal";
+  import type { TransactionNetwork } from "$lib/types/transaction";
+  import { getAccountByRootCanister } from "$lib/utils/accounts.utils";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 
   export let availableMaturityE8s: bigint;
-  export let tokenSymbol: string;
-
+  export let rootCanisterId: Principal;
+  export let token: Token;
   export let minimumAmountE8s: bigint;
+  // Using `undefined` allows only ICRC
+  export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   const steps: WizardSteps = [
     {
@@ -53,8 +63,12 @@
       : undefined;
 
   const dispatcher = createEventDispatcher();
-  const disburseNeuronMaturity = () =>
-    dispatcher("nnsDisburseMaturity", { percentageToDisburse });
+  const disburseNeuronMaturity = () => {
+    dispatcher("nnsDisburseMaturity", {
+      percentageToDisburse,
+      destinationAddress: selectedDestinationAddress,
+    });
+  };
   const close = () => dispatcher("nnsClose");
 
   const goToConfirm = () => modal.next();
@@ -74,14 +88,50 @@
     value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
     roundingMode: "ceil",
   });
+
+  let selectedDestinationAddress: string | undefined = undefined;
+  // By default, show the dropdown in SelectDestinationAddress
+  let showManualAddress = false;
+
+  let scanQrCode: ({
+    requiredToken,
+  }: {
+    requiredToken: Token;
+  }) => Promise<QrResponse>;
+
+  const goQRCode = async () => {
+    const { result, identifier } = await scanQrCode({
+      requiredToken: token,
+    });
+
+    if (result !== "success") {
+      return;
+    }
+    // When result === "success", identifier is always defined.
+    assertNonNullish(identifier);
+
+    selectedDestinationAddress = identifier;
+  };
+
+  // Note: This doesn't support subaccount names. Yet, we don't have subaccounts for SNS, nor are we planning to add in the near future.
+  let destinationAddressName: string | undefined = undefined;
+  $: destinationAddressName =
+    getAccountByRootCanister({
+      identifier: selectedDestinationAddress,
+      rootCanisterId,
+      universesAccounts: $universesAccountsStore,
+    })?.type === "main"
+      ? $i18n.accounts.main
+      : selectedDestinationAddress;
 </script>
 
-<WizardModal
+<QrWizardModal
   testId="disburse-maturity-modal-component"
   {steps}
   bind:currentStep
   on:nnsClose
-  bind:this={modal}
+  bind:scanQrCode
+  bind:modal
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
@@ -101,7 +151,7 @@
         <span class="description">
           {replacePlaceholders(
             $i18n.neuron_detail.disburse_maturity_description_1,
-            { $symbol: tokenSymbol }
+            { $symbol: token.symbol }
           )}
         </span>
 
@@ -109,10 +159,18 @@
           <Html
             text={replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_description_2,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}
           />
         </span>
+
+        <SelectDestinationAddress
+          {rootCanisterId}
+          bind:selectedDestinationAddress
+          bind:showManualAddress
+          {selectedNetwork}
+          on:nnsOpenQRCodeReader={goQRCode}
+        />
       </div>
 
       <svelte:fragment slot="text">
@@ -150,12 +208,12 @@
           <span slot="key" class="description"
             >{replacePlaceholders(
               $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
-              { $symbol: tokenSymbol }
+              { $symbol: token.symbol }
             )}</span
           >
           <span data-tid="confirm-tokens" class="value" slot="value"
             >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {tokenSymbol}
+            {token.symbol}
           </span>
         </KeyValuePair>
         <KeyValuePair>
@@ -167,13 +225,13 @@
             data-tid="confirm-destination"
             class="value destination-value"
             slot="value"
-            >{$i18n.accounts.main}
+            >{destinationAddressName}
           </span>
         </KeyValuePair>
       </div>
     </NeuronConfirmActionScreen>
   {/if}
-</WizardModal>
+</QrWizardModal>
 
 <style lang="scss">
   .percentage-container {
