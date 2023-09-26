@@ -6,7 +6,7 @@
 //! "variable" sized structures but they are just fixed size data structures with a length field.
 //!
 //! Our largest accounts appear to consume about 4MiB of memory when serialized, or smallest well
-//! under 1KiB.  Using fixed size structures large enough to accommodate the largest accounts 
+//! under 1KiB.  Using fixed size structures large enough to accommodate the largest accounts
 //! would be tremendously wasteful for the vast majority of small accounts.  So wasteful, that we
 //! would not have nearly enough space to store all accounts.
 //!
