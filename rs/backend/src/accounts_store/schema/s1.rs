@@ -215,6 +215,7 @@ impl AccountStorageKey {
     }
 
     /// Gets the account identifier as bytes.
+    #[allow(dead_code)]
     pub fn account_identifier_bytes(&self) -> Vec<u8> {
         let account_identifier_len = self.bytes[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] as usize;
         self.bytes[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier_len].to_vec()
