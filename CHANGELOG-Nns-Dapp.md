@@ -17,6 +17,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Set ENABLE_SNS_AGGREGATOR_STORE true for production.
 
 #### Deprecated
 #### Removed
@@ -35,6 +36,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 * Fix the `release-sop` command that set `origin/main` as the upstream.
+
+* Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
 
