@@ -286,6 +286,9 @@ pub fn get_histogram() {
 }
 
 pub fn get_histogram_impl() -> AccountsStoreHistogram {
+    if ic_cdk::api::data_certificate().is_some() {
+        dfn_core::api::trap_with("Sorry, the histogram is available only as a query call.");
+    }
     STATE.with(|state| {
         let accounts_store = state.accounts_store.borrow();
         accounts_store.get_histogram()
