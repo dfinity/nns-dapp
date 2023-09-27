@@ -40,11 +40,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Update the snsdemo commit & automate further updates.
 * Fix the `release-sop` command that set `origin/main` as the upstream.
 * Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
+* Update the snsdemo commit & automate further updates.
+* Cron job to update `snsdemo` weekly.
+
 
 #### Deprecated
 #### Removed
@@ -120,7 +122,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
 * A dictionary for spell-checking.
 * New "finalizing" status in SNS project detail page.
-* Cron job to update `snsdemo` weekly.
 
 #### Changed
 
