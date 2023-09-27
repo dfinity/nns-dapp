@@ -33,6 +33,11 @@ pub enum ChangeFeeCollector {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct FeatureFlags {
+    pub icrc2: bool,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpgradeArgs {
     pub token_symbol: Option<String>,
     pub transfer_fee: Option<u64>,
@@ -40,6 +45,7 @@ pub struct UpgradeArgs {
     pub change_fee_collector: Option<ChangeFeeCollector>,
     pub max_memo_length: Option<u16>,
     pub token_name: Option<String>,
+    pub feature_flags: Option<FeatureFlags>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -54,14 +60,17 @@ pub struct InitArgsArchiveOptions {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InitArgs {
+    pub decimals: Option<u8>,
     pub token_symbol: String,
-    pub transfer_fee: u64,
+    pub transfer_fee: candid::Nat,
     pub metadata: Vec<(String, MetadataValue)>,
     pub minting_account: Account,
-    pub initial_balances: Vec<(Account, u64)>,
+    pub initial_balances: Vec<(Account, candid::Nat)>,
     pub fee_collector_account: Option<Account>,
     pub archive_options: InitArgsArchiveOptions,
+    pub max_memo_length: Option<u16>,
     pub token_name: String,
+    pub feature_flags: Option<FeatureFlags>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -217,6 +226,79 @@ pub enum TransferResult {
     Err(TransferError),
 }
 
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct AllowanceArgs {
+    pub account: Account,
+    pub spender: Account,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Allowance {
+    pub allowance: Tokens,
+    pub expires_at: Option<Timestamp>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct ApproveArgs {
+    pub fee: Option<Tokens>,
+    pub memo: Option<serde_bytes::ByteBuf>,
+    pub from_subaccount: Option<Subaccount>,
+    pub created_at_time: Option<Timestamp>,
+    pub amount: Tokens,
+    pub expected_allowance: Option<Tokens>,
+    pub expires_at: Option<Timestamp>,
+    pub spender: Account,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum ApproveError {
+    GenericError { message: String, error_code: candid::Nat },
+    TemporarilyUnavailable,
+    Duplicate { duplicate_of: BlockIndex },
+    BadFee { expected_fee: Tokens },
+    AllowanceChanged { current_allowance: Tokens },
+    CreatedInFuture { ledger_time: u64 },
+    TooOld,
+    Expired { ledger_time: u64 },
+    InsufficientFunds { balance: Tokens },
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum ApproveResult {
+    Ok(BlockIndex),
+    Err(ApproveError),
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct TransferFromArgs {
+    pub to: Account,
+    pub fee: Option<Tokens>,
+    pub spender_subaccount: Option<Subaccount>,
+    pub from: Account,
+    pub memo: Option<serde_bytes::ByteBuf>,
+    pub created_at_time: Option<Timestamp>,
+    pub amount: Tokens,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum TransferFromError {
+    GenericError { message: String, error_code: candid::Nat },
+    TemporarilyUnavailable,
+    InsufficientAllowance { allowance: Tokens },
+    BadBurn { min_burn_amount: Tokens },
+    Duplicate { duplicate_of: BlockIndex },
+    BadFee { expected_fee: Tokens },
+    CreatedInFuture { ledger_time: u64 },
+    TooOld,
+    InsufficientFunds { balance: Tokens },
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub enum TransferFromResult {
+    Ok(BlockIndex),
+    Err(TransferFromError),
+}
+
 pub struct Service(pub candid::Principal);
 impl Service {
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
@@ -257,5 +339,14 @@ impl Service {
     }
     pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
+    }
+    pub async fn icrc_2_allowance(&self, arg0: AllowanceArgs) -> CallResult<(Allowance,)> {
+        ic_cdk::call(self.0, "icrc2_allowance", (arg0,)).await
+    }
+    pub async fn icrc_2_approve(&self, arg0: ApproveArgs) -> CallResult<(ApproveResult,)> {
+        ic_cdk::call(self.0, "icrc2_approve", (arg0,)).await
+    }
+    pub async fn icrc_2_transfer_from(&self, arg0: TransferFromArgs) -> CallResult<(TransferFromResult,)> {
+        ic_cdk::call(self.0, "icrc2_transfer_from", (arg0,)).await
     }
 }
