@@ -316,6 +316,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Unbork mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+            brew install jq
+            brew install coreutils
+            brew install gzip
+            echo "/usr/local/bin" >> $GITHUB_PATH
+            echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          fi
       - run: scripts/nns-dapp/split-changelog.test
   past-changelog:
     name: Test that no new change log entries are added to past releases.
