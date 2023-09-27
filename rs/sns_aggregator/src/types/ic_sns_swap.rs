@@ -27,7 +27,7 @@ pub struct LinearScalingCoefficient {
     pub to_direct_participation_icp_e8s: Option<u64>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debugi, PartialEq)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
@@ -40,7 +40,7 @@ pub struct CfNeuron {
     pub amount_icp_e8s: u64,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debugi, PartialEq)]
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct CfParticipant {
     pub hotkey_principal: String,
     pub cf_neurons: Vec<CfNeuron>,
