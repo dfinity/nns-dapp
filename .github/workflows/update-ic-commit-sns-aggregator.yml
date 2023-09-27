@@ -22,6 +22,7 @@ jobs:
           # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Get IC repo
+        uses: actions/checkout@v3
         with:
           repository: 'dfinity/ic'
           path: 'ic'
