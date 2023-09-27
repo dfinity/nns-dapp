@@ -8,13 +8,30 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// #![allow(dead_code, unused_imports)]
+// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
 pub struct NeuronBasketConstructionParameters {
     pub dissolve_delay_interval_seconds: u64,
     pub count: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct LinearScalingCoefficient {
+    pub slope_numerator: Option<u64>,
+    pub intercept_icp_e8s: Option<u64>,
+    pub from_direct_participation_icp_e8s: Option<u64>,
+    pub slope_denominator: Option<u64>,
+    pub to_direct_participation_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+pub struct NeuronsFundParticipationConstraints {
+    pub coefficient_intervals: Vec<LinearScalingCoefficient>,
+    pub max_neurons_fund_participation_icp_e8s: Option<u64>,
+    pub min_direct_participation_threshold_icp_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
@@ -57,6 +74,7 @@ pub struct Init {
     pub transaction_fee_e8s: Option<u64>,
     pub icp_ledger_canister_id: String,
     pub sns_ledger_canister_id: String,
+    pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
     pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub should_auto_finalize: Option<bool>,
     pub max_participant_icp_e8s: Option<u64>,
@@ -257,6 +275,8 @@ pub struct GetDerivedStateResponse {
     pub sns_tokens_per_icp: Option<f64>,
     pub buyer_total_icp_e8s: Option<u64>,
     pub cf_participant_count: Option<u64>,
+    pub neurons_fund_participation_icp_e8s: Option<u64>,
+    pub direct_participation_icp_e8s: Option<u64>,
     pub direct_participant_count: Option<u64>,
     pub cf_neuron_count: Option<u64>,
 }
@@ -387,7 +407,9 @@ pub struct Swap {
     pub cf_participants: Vec<CfParticipant>,
     pub init: Option<Init>,
     pub already_tried_to_auto_finalize: Option<bool>,
+    pub neurons_fund_participation_icp_e8s: Option<u64>,
     pub purge_old_tickets_last_completion_timestamp_nanoseconds: Option<u64>,
+    pub direct_participation_icp_e8s: Option<u64>,
     pub lifecycle: i32,
     pub purge_old_tickets_next_principal: Option<serde_bytes::ByteBuf>,
     pub buyers: Vec<(String, BuyerState)>,
@@ -400,6 +422,8 @@ pub struct DerivedState {
     pub sns_tokens_per_icp: f32,
     pub buyer_total_icp_e8s: u64,
     pub cf_participant_count: Option<u64>,
+    pub neurons_fund_participation_icp_e8s: Option<u64>,
+    pub direct_participation_icp_e8s: Option<u64>,
     pub direct_participant_count: Option<u64>,
     pub cf_neuron_count: Option<u64>,
 }
