@@ -21,7 +21,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
 * Use custom button label for disburse maturity flow.
 * Improve spacings in the page headings.
-* Set ENABLE_SNS_AGGREGATOR_STORE true for production.
 * Improve the skeletons while loading in the neuron details page.
 
 #### Deprecated
