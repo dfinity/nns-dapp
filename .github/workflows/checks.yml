@@ -180,18 +180,9 @@ jobs:
         run: scripts/mk_nns_patch.test
   config-check:
     name: Config is as expected
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - name: Install bash if on Mac
-        run: |
-          if command -v brew ; then
-            brew install bash
-          fi
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Install cargo binstall
