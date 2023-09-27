@@ -21,9 +21,7 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-
   .title {
-    @include card.title;
+    width: 100%;
   }
 </style>
