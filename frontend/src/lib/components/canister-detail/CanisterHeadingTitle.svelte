@@ -35,11 +35,12 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .skeleton {
-    width: 90%;
+  h1 {
+    margin: 0;
+  }
 
-    @include media.min-width(small) {
-      width: 40%;
-    }
+  .skeleton {
+    width: 300px;
+    max-width: 90%;
   }
 </style>

@@ -11,9 +11,11 @@
 <div class="container" data-tid={testId}>
   <div class="title-wrapper">
     <slot name="title" />
-    <h4 class="description">
-      <slot name="subtitle" />
-    </h4>
+    {#if hasSubtitle}
+      <h4 class="description">
+        <slot name="subtitle" />
+      </h4>
+    {/if}
   </div>
   {#if hasTags}
     <div class="tags">
