@@ -8,6 +8,7 @@
   import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import ReceiveAddressShare from "$lib/components/accounts/ReceiveAddressShare.svelte";
 
   export let universeId: UniverseCanisterId;
   export let account: Account | undefined;
@@ -62,10 +63,12 @@
   {#if modalRendered}
     <div class="toolbar">
       {#if qrCodeRendered}
+        <ReceiveAddressShare address={account?.identifier} />
+
         <button
           class="primary"
           on:click={reloadAccountAndClose}
-          data-tid="reload-receive-account">{$i18n.core.finish}</button
+          data-tid="reload-receive-account">{$i18n.core.close}</button
         >
       {/if}
     </div>
@@ -73,7 +76,9 @@
 </Modal>
 
 <style lang="scss">
-  button.primary {
-    width: 100%;
+  div.toolbar {
+    button.primary {
+      flex: 1;
+    }
   }
 </style>
