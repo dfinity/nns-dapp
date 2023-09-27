@@ -40,6 +40,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the snsdemo commit & automate further updates.
 * Fix the `release-sop` command that set `origin/main` as the upstream.
 * Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
@@ -63,7 +64,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Update the snsdemo commit & automate further updates.
 * Show the token selector also when not signed in.
 * Use consistent positioning for the copy icon in the Hash component.
 * Allow setting a dissolve delay that's shorter than what's required for voting power.
