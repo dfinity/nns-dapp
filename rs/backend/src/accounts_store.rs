@@ -10,7 +10,6 @@ use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
-use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
@@ -1731,7 +1730,7 @@ pub enum TransferResult {
     Approve {
         from: AccountIdentifier,
         spender: AccountIdentifier,
-        allowance: SignedTokens,
+        allowance: Tokens,
         expires_at: Option<TimeStamp>,
         fee: Tokens,
     },
