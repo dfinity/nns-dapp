@@ -134,12 +134,6 @@ struct Transaction {
 }
 
 #[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum TransactionToBeProcessed {
-    StakeNeuron(PrincipalId, Memo),
-    TopUpNeuron(PrincipalId, Memo),
-}
-
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct CreateCanisterArgs {
     pub controller: PrincipalId,
     pub amount: Tokens,
