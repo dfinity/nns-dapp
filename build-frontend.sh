@@ -12,7 +12,7 @@ test -e frontend/.env || {
 ###################
 # frontend # (output: frontend/public/)
 ###################
-(cd "$TOPLEVEL/frontend" && npm ci && npm run build --node-options="--max-old-space-size=4096")
+(cd "$TOPLEVEL/frontend" && npm ci && npm run build --node-options="--max-old-space-size=8192")
 
 #################
 # assets.tar.xz #
