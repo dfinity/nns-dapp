@@ -635,7 +635,7 @@
     },
     "build": {
       "config": {
-        "NODE_VERSION": "18.14.2",
+        "NODE_VERSION": "18.18.0",
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
