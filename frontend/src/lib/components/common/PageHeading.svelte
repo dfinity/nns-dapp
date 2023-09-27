@@ -3,6 +3,9 @@
 
   let hasTags: boolean;
   $: hasTags = $$slots.tags !== undefined;
+
+  let hasSubtitle: boolean;
+  $: hasSubtitle = $$slots.subtitle !== undefined;
 </script>
 
 <div class="container" data-tid={testId}>
