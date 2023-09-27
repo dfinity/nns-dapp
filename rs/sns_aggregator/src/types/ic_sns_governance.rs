@@ -677,6 +677,7 @@ pub struct SplitResponse {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DisburseMaturityResponse {
     pub amount_disbursed_e8s: u64,
+    pub amount_deducted_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

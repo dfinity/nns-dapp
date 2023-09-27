@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 4e561b8ed..fe3abdc5a 100644
+index 669fc07db..ccc18f128 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -105,17 +105,15 @@ pub struct BlockRange {
+@@ -110,17 +110,15 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -23,7 +23,7 @@ index 4e561b8ed..fe3abdc5a 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -177,17 +175,15 @@ pub struct TransactionRange {
+@@ -198,17 +196,15 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  

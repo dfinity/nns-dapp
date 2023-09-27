@@ -64,6 +64,22 @@ pub struct DappCanisters {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct LinearScalingCoefficient {
+    pub slope_numerator: Option<u64>,
+    pub intercept_icp_e8s: Option<u64>,
+    pub from_direct_participation_icp_e8s: Option<u64>,
+    pub slope_denominator: Option<u64>,
+    pub to_direct_participation_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronsFundParticipationConstraints {
+    pub coefficient_intervals: Vec<LinearScalingCoefficient>,
+    pub max_neurons_fund_participation_icp_e8s: Option<u64>,
+    pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct CfNeuron {
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
@@ -155,6 +171,7 @@ pub struct SnsInitPayload {
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
     pub dapp_canisters: Option<DappCanisters>,
+    pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
     pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,

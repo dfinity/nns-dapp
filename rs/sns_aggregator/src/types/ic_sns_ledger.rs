@@ -41,8 +41,10 @@ pub struct FeatureFlags {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct UpgradeArgs {
     pub token_symbol: Option<String>,
-    pub transfer_fee: Option<u64>,
+    pub transfer_fee: Option<candid::Nat>,
     pub metadata: Option<Vec<(String, MetadataValue)>>,
+    pub maximum_number_of_accounts: Option<u64>,
+    pub accounts_overflow_trim_quantity: Option<u64>,
     pub change_fee_collector: Option<ChangeFeeCollector>,
     pub max_memo_length: Option<u16>,
     pub token_name: Option<String>,
@@ -52,6 +54,7 @@ pub struct UpgradeArgs {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct InitArgsArchiveOptions {
     pub num_blocks_to_archive: u64,
+    pub max_transactions_per_response: Option<u64>,
     pub trigger_threshold: u64,
     pub max_message_size_bytes: Option<u64>,
     pub cycles_for_archive_creation: Option<u64>,
@@ -67,6 +70,8 @@ pub struct InitArgs {
     pub metadata: Vec<(String, MetadataValue)>,
     pub minting_account: Account,
     pub initial_balances: Vec<(Account, candid::Nat)>,
+    pub maximum_number_of_accounts: Option<u64>,
+    pub accounts_overflow_trim_quantity: Option<u64>,
     pub fee_collector_account: Option<Account>,
     pub archive_options: InitArgsArchiveOptions,
     pub max_memo_length: Option<u16>,
@@ -135,39 +140,55 @@ pub struct GetTransactionsRequest {
     pub length: candid::Nat,
 }
 
+pub type Timestamp = u64;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct TransactionBurnInner {
+pub struct Burn {
     pub from: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
-    pub created_at_time: Option<u64>,
+    pub created_at_time: Option<Timestamp>,
     pub amount: candid::Nat,
+    pub spender: Option<Account>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct TransactionMintInner {
+pub struct Mint {
     pub to: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
-    pub created_at_time: Option<u64>,
+    pub created_at_time: Option<Timestamp>,
     pub amount: candid::Nat,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct TransactionTransferInner {
+pub struct Approve {
+    pub fee: Option<candid::Nat>,
+    pub from: Account,
+    pub memo: Option<serde_bytes::ByteBuf>,
+    pub created_at_time: Option<Timestamp>,
+    pub amount: candid::Nat,
+    pub expected_allowance: Option<candid::Nat>,
+    pub expires_at: Option<Timestamp>,
+    pub spender: Account,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct Transfer {
     pub to: Account,
     pub fee: Option<candid::Nat>,
     pub from: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
-    pub created_at_time: Option<u64>,
+    pub created_at_time: Option<Timestamp>,
     pub amount: candid::Nat,
+    pub spender: Option<Account>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Transaction {
-    pub burn: Option<TransactionBurnInner>,
+    pub burn: Option<Burn>,
     pub kind: String,
-    pub mint: Option<TransactionMintInner>,
-    pub timestamp: u64,
-    pub transfer: Option<TransactionTransferInner>,
+    pub mint: Option<Mint>,
+    pub approve: Option<Approve>,
+    pub timestamp: Timestamp,
+    pub transfer: Option<Transfer>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -193,12 +214,11 @@ pub struct GetTransactionsResponse {
 
 pub type Tokens = candid::Nat;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct Icrc1SupportedStandardsRetItem {
+pub struct StandardRecord {
     pub url: String,
     pub name: String,
 }
 
-pub type Timestamp = u64;
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct TransferArg {
     pub to: Account,
@@ -216,7 +236,7 @@ pub enum TransferError {
     BadBurn { min_burn_amount: Tokens },
     Duplicate { duplicate_of: BlockIndex },
     BadFee { expected_fee: Tokens },
-    CreatedInFuture { ledger_time: u64 },
+    CreatedInFuture { ledger_time: Timestamp },
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
@@ -235,18 +255,18 @@ pub struct AllowanceArgs {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Allowance {
-    pub allowance: Tokens,
+    pub allowance: candid::Nat,
     pub expires_at: Option<Timestamp>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ApproveArgs {
-    pub fee: Option<Tokens>,
+    pub fee: Option<candid::Nat>,
     pub memo: Option<serde_bytes::ByteBuf>,
-    pub from_subaccount: Option<Subaccount>,
+    pub from_subaccount: Option<serde_bytes::ByteBuf>,
     pub created_at_time: Option<Timestamp>,
-    pub amount: Tokens,
-    pub expected_allowance: Option<Tokens>,
+    pub amount: candid::Nat,
+    pub expected_allowance: Option<candid::Nat>,
     pub expires_at: Option<Timestamp>,
     pub spender: Account,
 }
@@ -256,12 +276,12 @@ pub enum ApproveError {
     GenericError { message: String, error_code: candid::Nat },
     TemporarilyUnavailable,
     Duplicate { duplicate_of: BlockIndex },
-    BadFee { expected_fee: Tokens },
-    AllowanceChanged { current_allowance: Tokens },
-    CreatedInFuture { ledger_time: u64 },
+    BadFee { expected_fee: candid::Nat },
+    AllowanceChanged { current_allowance: candid::Nat },
+    CreatedInFuture { ledger_time: Timestamp },
     TooOld,
-    Expired { ledger_time: u64 },
-    InsufficientFunds { balance: Tokens },
+    Expired { ledger_time: Timestamp },
+    InsufficientFunds { balance: candid::Nat },
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -289,7 +309,7 @@ pub enum TransferFromError {
     BadBurn { min_burn_amount: Tokens },
     Duplicate { duplicate_of: BlockIndex },
     BadFee { expected_fee: Tokens },
-    CreatedInFuture { ledger_time: u64 },
+    CreatedInFuture { ledger_time: Timestamp },
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
@@ -329,7 +349,7 @@ impl Service {
     pub async fn icrc_1_name(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "icrc1_name", ()).await
     }
-    pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<Icrc1SupportedStandardsRetItem>,)> {
+    pub async fn icrc_1_supported_standards(&self) -> CallResult<(Vec<StandardRecord>,)> {
         ic_cdk::call(self.0, "icrc1_supported_standards", ()).await
     }
     pub async fn icrc_1_symbol(&self) -> CallResult<(String,)> {
