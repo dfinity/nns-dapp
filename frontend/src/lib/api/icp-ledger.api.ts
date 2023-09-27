@@ -52,6 +52,11 @@ export const sendICP = async ({
   return response;
 };
 
+// WARNING: When using the ICRC-1 interface of the ICP ledger canister, there is
+// no relationship between the memo and the icrc1Memo of a transaction. The
+// ICRC-1 interface simply cannot set the memo field and the non-ICRC-1
+// interface cannot set the icrc1Memo field, even though the icrc1Memo field is
+// called just "memo" in canister method params.
 /**
  * Transfer ICP between accounts.
  *
@@ -68,7 +73,7 @@ export const sendIcpIcrc1 = async ({
   to,
   amount,
   fee,
-  memo,
+  icrc1Memo,
   fromSubAccount,
   createdAt,
 }: {
@@ -76,7 +81,7 @@ export const sendIcpIcrc1 = async ({
   to: IcrcAccount;
   amount: TokenAmount;
   fee?: bigint;
-  memo?: Uint8Array;
+  icrc1Memo?: Uint8Array;
   fromSubAccount?: Uint8Array;
   createdAt?: bigint;
 }): Promise<BlockHeight> => {
@@ -91,7 +96,7 @@ export const sendIcpIcrc1 = async ({
     amount: amount.toE8s(),
     fee,
     fromSubAccount,
-    memo,
+    icrc1Memo,
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),
   });
   logWithTimestamp(`Sending ICRC-1 icp complete.`);

@@ -195,39 +195,39 @@ describe("icp-ledger.api", () => {
       });
     });
 
-    it("should call ledger to send ICP with memo", async () => {
-      const memo = Uint8Array.from([4, 4, 5, 5]);
+    it("should call ledger to send ICP with icrc1Memo", async () => {
+      const icrc1Memo = Uint8Array.from([4, 4, 5, 5]);
       await sendIcpIcrc1({
         identity: mockIdentity,
         to: { owner },
         amount,
-        memo,
+        icrc1Memo,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: { owner, subaccount: [] },
         amount: amount.toE8s(),
-        memo,
+        icrc1Memo,
         createdAt: nowInBigIntNanoSeconds,
         fromSubAccount: undefined,
       });
     });
 
     it("should call ledger to send ICP with createdAt", async () => {
-      const memo = Uint8Array.from([4, 4, 5, 5]);
+      const icrc1Memo = Uint8Array.from([4, 4, 5, 5]);
       const createdAt = BigInt(123456);
       await sendIcpIcrc1({
         identity: mockIdentity,
         to: { owner },
         amount,
-        memo,
+        icrc1Memo,
         createdAt,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: { owner, subaccount: [] },
         amount: amount.toE8s(),
-        memo,
+        icrc1Memo,
         createdAt,
         fromSubAccount: undefined,
       });
@@ -244,7 +244,7 @@ describe("icp-ledger.api", () => {
       expect(spyTransfer).toHaveBeenCalledWith({
         to: { owner, subaccount: [subaccount] },
         amount: amount.toE8s(),
-        memo: undefined,
+        icrc1Memo: undefined,
         createdAt: nowInBigIntNanoSeconds,
         fromSubAccount: undefined,
       });
