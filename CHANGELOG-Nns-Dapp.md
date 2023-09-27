@@ -21,6 +21,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
 * Use custom button label for disburse maturity flow.
 * Improve spacings in the page headings.
+* Improve the skeletons while loading in the neuron details page.
 
 #### Deprecated
 #### Removed
@@ -44,6 +45,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Fix the `release-sop` command that set `origin/main` as the upstream.
 * Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
