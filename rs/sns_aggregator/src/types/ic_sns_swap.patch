@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 5c59c978f..8b154508d 100644
+index 01f34ea55..b12040289 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
 @@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
@@ -58,19 +58,16 @@ index 5c59c978f..8b154508d 100644
      Err(CanisterCallError),
  }
  
-@@ -308,9 +307,9 @@ pub struct GetOpenTicketResponse {
- }
- 
+@@ -320,7 +319,7 @@ pub struct GetOpenTicketResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetSaleParametersArg {}
-+pub struct get_sale_parameters_arg0 {}
+ pub struct GetSaleParametersArg {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -394,7 +393,7 @@ pub struct DerivedState {
+@@ -405,7 +404,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  
@@ -79,15 +76,3 @@ index 5c59c978f..8b154508d 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -521,7 +520,10 @@ impl Service {
-     pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
-         ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
-     }
--    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> CallResult<(GetSaleParametersResponse,)> {
-+    pub async fn get_sale_parameters(
-+        &self,
-+        arg0: get_sale_parameters_arg0,
-+    ) -> CallResult<(GetSaleParametersResponse,)> {
-         ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
-     }
-     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {

@@ -19,6 +19,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 * Allow `get_histogram` (an unstable API) only as a query call.
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Use custom button label for disburse maturity flow.
+* Improve spacings in the page headings.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 
 #### Deprecated
@@ -30,6 +32,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Security
 
+* Rename `memo` on the ICRC-1 interface of the ICP ledger API to `icrc1Memo` and add a warning about the `memo` and `icrc1Memo` being unrelated.
+
 #### Not Published
 
 * Use ICRC-1 transfer when staking a neuron, behind a feature flag.
@@ -37,6 +41,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+* Run several script tests on macos as well as ubuntu.
 
 #### Changed
 
@@ -44,6 +49,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
+* Update the snsdemo commit & automate further updates.
+* Cron job to update `snsdemo` weekly.
+
 
 #### Deprecated
 #### Removed
