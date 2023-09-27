@@ -6,8 +6,6 @@ on:
     branches:
       # Run when the development branch for this workflow is updated.
       - update-ic-commit-sns-aggregator
-      # TODO: Remove
-      - feat_LM_split-ci-jobs
 jobs:
   update-ic-commit:
     runs-on: ubuntu-latest
