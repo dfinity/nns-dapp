@@ -6,10 +6,12 @@
 </script>
 
 <div class="container" data-tid={testId}>
-  <slot name="title" />
-  <h4 class="description">
-    <slot name="subtitle" />
-  </h4>
+  <div class="title-wrapper">
+    <slot name="title" />
+    <h4 class="description">
+      <slot name="subtitle" />
+    </h4>
+  </div>
   {#if hasTags}
     <div class="tags">
       <slot name="tags" />
@@ -21,11 +23,19 @@
   .container {
     display: flex;
     flex-direction: column;
-    gap: var(--padding-1_5x);
+    gap: var(--padding-2x);
     justify-content: center;
     align-items: center;
 
     width: 100%;
+
+    .title-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-1_5x);
+      justify-content: center;
+      align-items: center;
+    }
 
     h4 {
       margin: 0;
