@@ -32,6 +32,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+* Run several script tests on macos as well as ubuntu.
 
 #### Changed
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
