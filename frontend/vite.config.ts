@@ -19,7 +19,13 @@ const config: UserConfig = {
         manualChunks: (id) => {
           const folder = dirname(id);
 
-          const lazy = ["@dfinity/nns-proto", "html5-qrcode", "qr-creator"];
+          const lazy = [
+            "@dfinity/nns-proto",
+            "html5-qrcode",
+            "qr-creator",
+            "@ledgerhq",
+            "@zondax/ledger-icp",
+          ];
 
           if (
             ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
