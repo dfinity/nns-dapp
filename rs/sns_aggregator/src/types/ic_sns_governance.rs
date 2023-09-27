@@ -8,7 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-#![allow(dead_code, unused_imports)]
+// #![allow(dead_code, unused_imports)]
 // use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 

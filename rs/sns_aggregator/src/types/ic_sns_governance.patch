@@ -1,7 +1,16 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index ec134ae76..7102d174a 100644
+index ec134ae76..ee951741f 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
+@@ -8,7 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
+ use ic_cdk::api::call::CallResult;
+ // This is an experimental feature to generate Rust binding from Candid.
+ // You may want to manually adjust some of the types.
+-#![allow(dead_code, unused_imports)]
++// #![allow(dead_code, unused_imports)]
+ // use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
+ // use ic_cdk::api::call::CallResult as Result;
+ 
 @@ -517,7 +517,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub struct GetMetadataArg {}
