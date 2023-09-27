@@ -50,4 +50,12 @@ export class SelectDestinationAddressPo extends BasePageObject {
     await this.enableTextInput();
     await this.getAddressInputPo().enterAddress(address);
   }
+
+  async getErrorMessage(): Promise<string> {
+    return this.getAddressInputPo().getErrorMessage();
+  }
+
+  blurInput(): Promise<void> {
+    return this.getAddressInputPo().blur();
+  }
 }

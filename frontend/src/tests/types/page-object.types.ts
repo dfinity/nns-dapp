@@ -34,4 +34,5 @@ export interface PageObjectElement {
   selectOption(option: string): Promise<void>;
   getValue(): Promise<string>;
   isVisible(): Promise<boolean>;
+  blur(): Promise<void>;
 }
