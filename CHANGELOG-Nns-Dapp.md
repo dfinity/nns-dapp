@@ -25,6 +25,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Security
 
+* Rename `memo` on the ICRC-1 interface of the ICP ledger API to `icrc1Memo` and add a warning about the `memo` and `icrc1Memo` being unrelated.
+
 #### Not Published
 
 * Use ICRC-1 transfer when staking a neuron, behind a feature flag.
