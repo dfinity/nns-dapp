@@ -75,6 +75,7 @@ function clap.define() {
 		clap_flag_match="${clap_flag_match}#NL#TB#TB${long}${short:+|${short}})#NL#TB#TB#TB${variable}=(); for ((i=0; i<nargs; i++)); do ${variable}+=( \"\$1\" ); shift 1; done;;"
 	fi
 	if [ "${default:-}" != "" ]; then
+    echo "dskloetx '${clap_defaults}',  '${variable}', '${default}'" >&2
 		clap_defaults="${clap_defaults}#NL${variable}=${default@Q}"
 	fi
 	clap_arguments_string="${clap_arguments_string}${shortname:-}"
