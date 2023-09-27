@@ -51,15 +51,28 @@ export const renderer = (marked: Marked): Renderer => {
   return renderer;
 };
 
+export const escapeHtml = (html: string): string =>
+  html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 /**
- * Uses markedjs
+ * Uses markedjs.
+ * Escape raw HTML tags by default (<script> -> &lt;script&gt;)
  * @see {@link https://github.com/markedjs/marked}
  */
-export const markdownToHTML = async (text: string): Promise<string> => {
+export const markdownToHTML = async ({
+  text,
+  escapeRawHtmlTags = true,
+}: {
+  text: string;
+  escapeRawHtmlTags?: boolean;
+}): Promise<string> => {
+  if (escapeRawHtmlTags)
+    text = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+
   const url = "/assets/libs/marked.min.js";
   // The dynamic import cannot be analyzed by Vite. As it is intended, we use the /* @vite-ignore */ comment inside the import() call to suppress this warning.
   const { marked }: { marked: Marked } = await import(/* @vite-ignore */ url);
-  return marked(text, {
+  return marked(escapeRawHtmlTags ? escapeHtml(text) : text, {
     renderer: renderer(marked),
   });
 };
