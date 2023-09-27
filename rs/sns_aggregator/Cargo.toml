@@ -18,9 +18,9 @@ ic-cdk = { version="0.9.2" }
 ic-cdk-macros = { version="0.6.10" }
 ic-cdk-timers = "0.3.0"
 ic-certified-map = { git = "https://github.com/dfinity/cdk-rs", rev = "58791941b72471e09e3d9e733f2a3d4d54e52b5a" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "d14361f9939baaeb899106b874851ad4a0ce928b" }
-ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "d14361f9939baaeb899106b874851ad4a0ce928b" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "d14361f9939baaeb899106b874851ad4a0ce928b" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-05-18_23-01" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-05-18_23-01" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-05-18_23-01" }
 lazy_static = "1.4.0"
 serde = "1.0.126"
 serde_cbor = "0.11.2"
