@@ -44,6 +44,10 @@ pub trait AccountsDbS1Trait {
     fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
     /// Inserts a page of memory.
+    ///
+    /// # Returns
+    /// - If the database did not have this key present, `None` is returned.
+    /// - If the database did have this key present, the page is updated, and the old page is returned.
     fn s1_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
@@ -54,6 +58,9 @@ pub trait AccountsDbS1Trait {
     fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
 
     /// Removes a page of memory.
+    ///
+    /// # Returns
+    /// - The page that was removed from the database, if it was present, else `None`.
     fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
     /// Checks whether to get the next page.
@@ -102,7 +109,7 @@ pub trait AccountsDbS1Trait {
 
     /// Equivalent of [`super::AccountsDbTrait::db_insert_account`].
     fn s1_insert_account(&mut self, account_key: &[u8], account: Account) {
-        // Serilaize the account into one or more pages.
+        // Serialize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);
         if pages_to_insert.len() > Self::MAX_PAGES_PER_ACCOUNT {
             panic!(
@@ -137,10 +144,9 @@ pub trait AccountsDbS1Trait {
     /// Equivalent of [`super::AccountsDbTrait::db_remove_account`].
     fn s1_remove_account(&mut self, account_key: &[u8]) {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
-        let mut last_page = None;
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u16, account_key);
-            last_page = self.s1_remove_account_page(&account_storage_key);
+            let last_page = self.s1_remove_account_page(&account_storage_key);
             if Self::s1_is_last_page(&last_page) {
                 break;
             }

@@ -53,7 +53,7 @@ fn tiny_account_uses_one_page() {
     let num_pages = AccountStoragePage::pages_from_account(&yo).len();
     assert_eq!(
         1, num_pages,
-        "A large test account should use several pages of memory but has only: {}",
+        "A small account should fit into one page of memory: {}",
         num_pages
     );
 }
@@ -65,7 +65,6 @@ fn test_account_storage() {
     };
     let account_key = vec![1, 2, 3];
     let account = tiny_account(1);
-    // TODO: Check that this spans several pages.
     storage.s1_insert_account(&account_key, account.clone());
     assert!(storage.s1_contains_account(&account_key));
     assert_eq!(storage.s1_get_account(&account_key), Some(account.clone()));
