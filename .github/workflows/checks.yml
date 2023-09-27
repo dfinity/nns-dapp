@@ -125,7 +125,7 @@ jobs:
       - name: Check didc
         run: command -v didc
       - name: Run the ic_commit code generator
-        run: ./scripts/update_ic_commit --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
+        run: ./scripts/set-ic-commit-update-agg-types --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT dfx.json)"
       - name: Verify that there are no code changes
         run: |
           if git diff | grep . ; then

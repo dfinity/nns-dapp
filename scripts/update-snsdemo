@@ -57,7 +57,7 @@ cd "$SOURCE_DIR/.."
 jq --arg c "$SNSDEMO_RELEASE" '.defaults.build.config.SNSDEMO_RELEASE |= $c' dfx.json | sponge dfx.json
 
 # Update the IC commit to match snsdemo
-scripts/update_ic_commit --ic_commit "$IC_COMMIT"
+scripts/set-ic-commit-update-agg-types --ic_commit "$IC_COMMIT"
 
 # Update dfx to match snsdemo
 v="$DFX_VERSION" jq '.dfx |= env.v' dfx.json | sponge dfx.json

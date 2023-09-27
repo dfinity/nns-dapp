@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=d long=dir desc="The path to an snsdemo repo checked out at the desired release" variable=IC_REPO
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Check that the snsdemo repository directory exists
+IC_REPO="${IC_REPO:-${1:-}}"
+test -e "${IC_REPO:-}" || {
+  echo "ERROR: Please supply the path to the snsdemo repository with e.g. --dir ../some/path/" >&2
+  exit 1
+} >&2
+
+# Check that the SNSDEMO repo is checked out at the correct release
+pushd "$IC_REPO"
+IC_COMMIT="$(git rev-parse HEAD)"
+
+# Check that all values were found.
+for var in IC_COMMIT; do
+  test -n "${!var}" || {
+    echo "ERROR: Could not find $var" >&2
+    exit 1
+  } >&2
+done
+
+# Move to the root of the nns-dapp repository
+cd "$SOURCE_DIR/.."
+
+# Update the IC commit to match snsdemo
+scripts/set-ic-commit-update-agg-types --ic_commit "$IC_COMMIT"
+
+echo "Updated:"
+echo " IC commit to $IC_COMMIT"

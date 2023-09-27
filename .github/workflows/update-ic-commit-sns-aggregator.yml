@@ -1,0 +1,63 @@
+# A GitHub Actions workflow that updates the types of the SNS aggregator on demand
+name: Update IC commit for SNS Aggregator types
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      # Run when the development branch for this workflow is updated.
+      - update-ic-commit-sns-aggregator
+      # TODO: Remove
+      - feat_LM_split-ci-jobs
+jobs:
+  update-ic-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Get IC repo
+        with:
+          repository: 'dfinity/ic'
+          path: 'ic'
+      - name: Update IC commit and SNS Aggregator types
+        run: |
+          set -x
+          # Install sponge
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          # Update
+          ./scripts/update-ic-commit --dir ./ic --verbose
+          echo "Changes:"
+          git diff
+          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.name "GIX bot"
+          git commit -a -m "Update IC Commit"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          commit-message: Update IC Commit
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-ic-update
+          add-paths: .github/*/*ml
+          delete-branch: true
+          title: 'Update IC commit'
+          body: |
+            # Motivation
+            We would like to update the types in the SNS Aggregator.
+
+            # Changes
+
+            * Candid files in the `declarations` directory.
+            * Update types and patches in `rs/sns_aggregator/src/types`.
+            * TODO: The code will probably NOT compile if there have been significant changes to the NNS-dapp APIs.
+              Please check the Rust code and make minimal changes to make the code compile.
+
+            # Tests
+              - [ ] Please check the API updates for any breaking changes that affect our code.
