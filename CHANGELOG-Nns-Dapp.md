@@ -19,6 +19,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 * Allow `get_histogram` (an unstable API) only as a query call.
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 
 #### Deprecated
 #### Removed
