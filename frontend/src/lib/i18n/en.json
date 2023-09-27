@@ -607,6 +607,7 @@
     "disburse_maturity_confirmation_amount": "Maturity Disbursed (Number)",
     "disburse_maturity_confirmation_tokens": "Estimated newly minted $symbol",
     "disburse_maturity_confirmation_destination": "To Account:",
+    "disburse_maturity_edit": "Edit Disbursement",
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
