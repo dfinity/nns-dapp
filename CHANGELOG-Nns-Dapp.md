@@ -20,6 +20,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Allow `get_histogram` (an unstable API) only as a query call.
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
 * Use custom button label for disburse maturity flow.
+* Improve spacings in the page headings.
 
 #### Deprecated
 #### Removed
