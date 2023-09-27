@@ -9,7 +9,7 @@
     "build:post-process": "npm run build:csp",
     "i18n": "node --experimental-json-modules scripts/i18n.types.js",
     "dev": "npm run i18n && vite dev",
-    "build": "set NODE_OPTIONS=--max-old-space-size=8192 && npm run i18n && tsc --noEmit && vite build && npm run build:post-process",
+    "build": "npm run i18n && tsc --noEmit && vite build && npm run build:post-process",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json && npm run lint",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
