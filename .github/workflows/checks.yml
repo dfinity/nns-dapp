@@ -111,11 +111,7 @@ jobs:
           ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install didc
@@ -139,11 +135,7 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -171,11 +163,7 @@ jobs:
           ./scripts/nns-dapp/release-check
   sns-aggregator-patches:
     name: SNS aggregator patches
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Install didc
@@ -282,10 +270,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install bash if on Mac
+      - name: Install bash and sha256sum if on Mac
         run: |
           if command -v brew ; then
             brew install bash
+            brew install coreutils
           fi
       - name: Download NNS-dapp CI wasm
         run: |
@@ -317,6 +306,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install bash if on Mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+          fi
       - run: scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
