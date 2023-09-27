@@ -469,6 +469,7 @@ interface I18nCanister_detail {
   rename_canister: string;
   rename_canister_title: string;
   rename_canister_placeholder: string;
+  balance_unavailable: string;
   status_stopped: string;
   status_stopping: string;
   status_running: string;

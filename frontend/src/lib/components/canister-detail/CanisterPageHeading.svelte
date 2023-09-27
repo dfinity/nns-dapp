@@ -8,13 +8,13 @@
 
   export let canisterDetails: CanisterDetails | undefined;
   export let canister: CanisterInfo;
-  export let controller: boolean | undefined;
+  export let isController: boolean | undefined;
 </script>
 
 <!-- We can't set conditional slots. -->
 {#if canister.name.length === 0}
   <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle slot="title" {canisterDetails} {controller} />
+    <CanisterHeadingTitle slot="title" {canisterDetails} {isController} />
     <svelte:fragment slot="tags">
       <UnlinkCanisterButton canisterId={canister.canister_id} />
       <RenameCanisterButton />
@@ -22,8 +22,8 @@
   </PageHeading>
 {:else}
   <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle slot="title" {canisterDetails} {controller} />
-    <span slot="subtitle" data-tid="canister-name">
+    <CanisterHeadingTitle slot="title" {canisterDetails} {isController} />
+    <span slot="subtitle" data-tid="subtitle">
       {canister.name}
     </span>
     <svelte:fragment slot="tags">

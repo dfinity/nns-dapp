@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
 
-  export let canister: CanisterDetails;
+  export let canister: CanisterInfo;
 </script>
 
 <PageHeader testId="canister-page-header-component">
