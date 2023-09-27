@@ -111,7 +111,11 @@ jobs:
           ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install didc
@@ -135,7 +139,11 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -163,7 +171,11 @@ jobs:
           ./scripts/nns-dapp/release-check
   sns-aggregator-patches:
     name: SNS aggregator patches
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install didc
@@ -180,7 +192,11 @@ jobs:
         run: scripts/mk_nns_patch.test
   config-check:
     name: Config is as expected
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install dfx
@@ -228,7 +244,11 @@ jobs:
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
   minor-version-bump-works:
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Install yq
@@ -254,7 +274,11 @@ jobs:
           } >&2
           # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Download NNS-dapp CI wasm
@@ -265,19 +289,31 @@ jobs:
       GH_TOKEN: ${{ github.token }}
   canister-ids-tool:
     name: Test canister_ids tool
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - run: scripts/canister_ids.test
   release-sop:
     name: Test release-sop script
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - run: scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - run: scripts/nns-dapp/split-changelog.test
