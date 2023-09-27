@@ -68,6 +68,24 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.isNextButtonDisabled()).toBe(true);
   });
 
+  it("should disable next button when destination address is not selected", async () => {
+    const po = await renderSnsDisburseMaturityModal();
+    await po.setPercentage(10);
+    const destinationPo = po.getSelectDestinationAddressPo();
+    await destinationPo.enterAddress("");
+    await destinationPo.blurInput();
+    expect(await po.isNextButtonDisabled()).toBe(true);
+  });
+
+  it("should disable next button when destination address is valid", async () => {
+    const po = await renderSnsDisburseMaturityModal();
+    await po.setPercentage(10);
+    const destinationPo = po.getSelectDestinationAddressPo();
+    await destinationPo.enterAddress("INVALID_ADDRESS");
+    await destinationPo.blurInput();
+    expect(await po.isNextButtonDisabled()).toBe(true);
+  });
+
   it("should enable next button when not 0 selected", async () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(1);

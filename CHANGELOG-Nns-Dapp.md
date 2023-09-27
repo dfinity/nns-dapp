@@ -17,11 +17,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Changed
 
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Allow `get_histogram` (an unstable API) only as a query call.
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Use custom button label for disburse maturity flow.
 
 #### Deprecated
 #### Removed
 
 #### Fixed
+
+* Fix CSS on canister cards to show tooltip and name correctly.
 
 #### Security
 
@@ -35,6 +40,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Run several script tests on macos as well as ubuntu.
 
 #### Changed
+
+* Fix the `release-sop` command that set `origin/main` as the upstream.
+* Specify the version of `binstall` in `dfx.json`.
 * Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
 * Fix the rust-update action.
 
