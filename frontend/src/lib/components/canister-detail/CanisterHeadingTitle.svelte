@@ -41,7 +41,8 @@
 
   .skeleton {
     // This is a width for the skeleton that looks good on desktop and mobile.
-    width: 300px;
-    max-width: 90%;
+    // Based on $breakpoint-xsmall: 320px;
+    width: 320px;
+    max-width: calc(100% - var(--padding-2x));
   }
 </style>
