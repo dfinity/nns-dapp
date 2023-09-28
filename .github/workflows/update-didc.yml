@@ -5,9 +5,6 @@ on:
   schedule:
     # check for new `didc` releases daily at 7:30
     - cron: '30 7 * * *'
-  push:
-    branches:
-      - doc-didc-update
   workflow_dispatch:
 jobs:
   didc-update:
@@ -23,8 +20,7 @@ jobs:
           current_didc_release=$(jq -r '.defaults.build.config.DIDC_VERSION' dfx.json)
           echo "current didc release '$current_didc_release'"
 
-          #latest_didc_release=$(curl -sSL https://api.github.com/repos/dfinity/candid/releases/latest | jq .tag_name -r)
-          latest_didc_release="DO.NOT.MERGE"
+          latest_didc_release=$(curl -sSL https://api.github.com/repos/dfinity/candid/releases/latest | jq .tag_name -r)
           echo "latest didc release '$latest_didc_release'"
 
           if [ "$current_didc_release" != "$latest_didc_release" ]
