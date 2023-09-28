@@ -1737,8 +1737,8 @@ pub enum TransferResult {
     },
 }
 
-/// ICRC1 uses `icrc1_tokens::SignedTokens` which can have both positive and negative value.
-/// ICRC2 has only unsigned `Tokens`, so we cast the unsigned type to the signed type.
+/// `ICRC1` uses `icrc1_tokens::SignedTokens` which can have both positive and negative value.
+/// `ICRC2` has only unsigned `Tokens`, so we cast the unsigned type to the signed type.
 fn icrc1_signed_tokens_from_icrc2_tokens(tokens: Tokens) -> icrc1_tokens::SignedTokens {
     icrc1_tokens::SignedTokens::Plus(icrc1_ledger::Tokens::from_e8s(tokens.get_e8s()))
 }
