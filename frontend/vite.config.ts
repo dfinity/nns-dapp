@@ -1,7 +1,7 @@
 import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
-import { basename, dirname } from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 
@@ -19,44 +19,17 @@ const config: UserConfig = {
         manualChunks: (id) => {
           const folder = dirname(id);
 
-          // Buffer polyfill is used by various libraries (agent-js, QR code, ledger etc.). That's why we create a specific chunk.
-          if (
-            basename(folder) === "buffer" &&
-            folder.match(/node_modules/g)?.length === 1
-          ) {
-            return "buffer";
-          }
+          const lazy = [
+            "@dfinity/nns-proto",
+            "html5-qrcode",
+            "qr-creator",
+            "@ledgerhq",
+            "@zondax/ledger-icp",
+          ];
 
           if (
-            ["html5-qrcode", "qr-creator"].find((lib) =>
-              folder.includes(lib)
-            ) !== undefined &&
-            folder.includes("node_modules")
-          ) {
-            return "qr";
-          }
-
-          if (
-            ["@ledgerhq", "@zondax/ledger-icp"].find((lib) =>
-              folder.includes(lib)
-            ) !== undefined &&
-            folder.includes("node_modules")
-          ) {
-            return "ledger-hw";
-          }
-
-          // The protobuf files are required only when the hardware wallet is used
-          if (
-            ["@dfinity/nns-proto"].find((lib) => folder.includes(lib)) !==
-              undefined &&
-            folder.includes("node_modules")
-          ) {
-            return "nns-proto";
-          }
-
-          if (
-            ["@sveltejs", "svelte", "@dfinity/gix-components"].find((lib) =>
-              folder.includes(lib)
+            ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
+              (lib) => folder.includes(lib)
             ) === undefined &&
             folder.includes("node_modules")
           ) {
@@ -64,30 +37,13 @@ const config: UserConfig = {
           }
 
           if (
-            [
-              "frontend/src/lib/api",
-              "frontend/src/lib/api-services",
-              "frontend/src/lib/canisters",
-              "frontend/src/lib/constants",
-              "frontend/src/lib/derived",
-              "frontend/src/lib/getters",
-              "frontend/src/lib/identities",
-              "frontend/src/lib/keys",
-              "frontend/src/lib/proxy",
-              "frontend/src/lib/services",
-              "frontend/src/lib/stores",
-              "frontend/src/lib/types",
-              "frontend/src/lib/utils",
-              "frontend/src/lib/worker-api",
-              "frontend/src/lib/worker-services",
-              "frontend/src/lib/worker-stores",
-              "frontend/src/lib/worker-types",
-              "frontend/src/lib/worker-utils",
-              "frontend/src/lib/workers",
-            ].find((module) => folder.includes(module)) !== undefined
+            lazy.find((lib) => folder.includes(lib)) !== undefined &&
+            folder.includes("node_modules")
           ) {
-            return "dapp";
+            return "lazy";
           }
+
+          return "index";
         },
       },
       // Polyfill Buffer for production build. The hardware wallet needs Buffer.

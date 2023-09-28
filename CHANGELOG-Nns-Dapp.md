@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Use custom button label for disburse maturity flow.
 * Improve spacings in the page headings.
 * Improve the skeletons while loading in the neuron details page.
+* Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 
 #### Deprecated
 #### Removed
