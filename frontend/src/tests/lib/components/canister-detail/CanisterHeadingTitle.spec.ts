@@ -11,11 +11,11 @@ import { render } from "@testing-library/svelte";
 
 describe("CanisterHeadingTitle", () => {
   const renderComponent = (
-    canisterDetails: CanisterDetails | undefined,
+    details: CanisterDetails | undefined,
     isController: boolean | undefined
   ) => {
     const { container } = render(CanisterHeadingTitle, {
-      props: { canisterDetails, isController },
+      props: { details, isController },
     });
 
     return CanisterHeadingTitlePo.under(new JestPageObjectElement(container));
