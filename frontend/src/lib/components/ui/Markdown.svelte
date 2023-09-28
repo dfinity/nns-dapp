@@ -8,7 +8,7 @@
   let error = false;
   const transform = async (text: string) => {
     try {
-      html = await markdownToHTML({ text });
+      html = await markdownToHTML(text);
     } catch (err) {
       console.error(err);
       error = true;

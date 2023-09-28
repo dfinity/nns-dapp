@@ -1,3 +1,4 @@
+import { isNullish } from "@dfinity/utils";
 import type { marked as markedTypes, Renderer } from "marked";
 
 type Marked = typeof markedTypes;
@@ -42,37 +43,57 @@ export const imageToLinkRenderer = (
   }${titleProp ?? ""}>${text}</a>`;
 };
 
-export const renderer = (marked: Marked): Renderer => {
+export const escapeHtml = (html: string): string =>
+  html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/**
+ * Escape <img> tags or convert them to links
+ */
+const transformImg = (img: string): string => {
+  const src = img.match(/src="([^"]+)"/)?.[1];
+  const alt = img.match(/alt="([^"]+)"/)?.[1] || "img";
+  const title = img.match(/title="([^"]+)"/)?.[1];
+  const shouldEscape = isNullish(src) || src.startsWith("data:image");
+  const imageHtml = shouldEscape
+    ? escapeHtml(img)
+    : imageToLinkRenderer(src, title, alt);
+
+  return imageHtml;
+};
+
+/** Avoid <img> tags; instead, apply the same logic as for markdown images by either escaping them or converting them to links. */
+export const htmlRenderer = (html: string): string =>
+  /<img\s+[^>]*>/gi.test(html) ? transformImg(html) : html;
+
+/**
+ * Marked.js renderer for proposal summary.
+ * Customized renderers
+ * - targetBlankLinkRenderer
+ * - imageToLinkRenderer
+ * - htmlRenderer
+ *
+ * @param marked
+ */
+const proposalSummaryRenderer = (marked: Marked): Renderer => {
   const renderer = new marked.Renderer();
-  // custom link renderer
+
   renderer.link = targetBlankLinkRenderer;
   renderer.image = imageToLinkRenderer;
+  renderer.html = htmlRenderer;
 
   return renderer;
 };
-
-export const escapeHtml = (html: string): string =>
-  html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /**
  * Uses markedjs.
  * Escape raw HTML tags by default (<script> -> &lt;script&gt;)
  * @see {@link https://github.com/markedjs/marked}
  */
-export const markdownToHTML = async ({
-  text,
-  escapeRawHtmlTags = true,
-}: {
-  text: string;
-  escapeRawHtmlTags?: boolean;
-}): Promise<string> => {
-  if (escapeRawHtmlTags)
-    text = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-
+export const markdownToHTML = async (text: string): Promise<string> => {
   const url = "/assets/libs/marked.min.js";
   // The dynamic import cannot be analyzed by Vite. As it is intended, we use the /* @vite-ignore */ comment inside the import() call to suppress this warning.
   const { marked }: { marked: Marked } = await import(/* @vite-ignore */ url);
-  return marked(escapeRawHtmlTags ? escapeHtml(text) : text, {
-    renderer: renderer(marked),
+  return marked(text, {
+    renderer: proposalSummaryRenderer(marked),
   });
 };
