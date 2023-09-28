@@ -37,7 +37,6 @@
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
   import RenameCanisterButton from "$lib/components/canister-detail/RenameCanisterButton.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import CanisterPageHeader from "$lib/components/canister-detail/CanisterPageHeader.svelte";
 
   // BEGIN: loading and navigation
 
@@ -191,7 +190,6 @@
     <main class="legacy">
       <section>
         {#if canisterInfo !== undefined}
-          <CanisterPageHeader canister={canisterInfo} />
           <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
           <CanisterCardSubTitle canister={canisterInfo} />
           <div class="actions">
