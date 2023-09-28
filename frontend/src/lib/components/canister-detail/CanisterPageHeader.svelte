@@ -10,13 +10,9 @@
 
 <PageHeader testId="canister-page-header-component">
   <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
-  <span
-    slot="end"
-    class="description header-end"
-    data-tid="canister-id-element"
-  >
+  <div slot="end" class="description header-end" data-tid="canister-id-element">
     <IdentifierHash identifier={canister.canister_id.toText()} />
-  </span>
+  </div>
 </PageHeader>
 
 <style lang="scss">

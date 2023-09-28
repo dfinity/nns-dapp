@@ -14,7 +14,11 @@
 <!-- We can't set conditional slots. -->
 {#if canister.name.length === 0}
   <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle slot="title" {canisterDetails} {isController} />
+    <CanisterHeadingTitle
+      slot="title"
+      details={canisterDetails}
+      {isController}
+    />
     <svelte:fragment slot="tags">
       <UnlinkCanisterButton canisterId={canister.canister_id} />
       <RenameCanisterButton />
@@ -22,7 +26,11 @@
   </PageHeading>
 {:else}
   <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle slot="title" {canisterDetails} {isController} />
+    <CanisterHeadingTitle
+      slot="title"
+      details={canisterDetails}
+      {isController}
+    />
     <span slot="subtitle" data-tid="subtitle">
       {canister.name}
     </span>

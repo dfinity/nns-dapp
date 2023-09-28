@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { nonNullish } from "@dfinity/utils";
+
   export let testId: string | undefined = undefined;
 
   let hasTags: boolean;
   $: hasTags = $$slots.tags !== undefined;
 
   let hasSubtitle: boolean;
-  $: hasSubtitle = $$slots.subtitle !== undefined;
+  $: hasSubtitle = nonNullish($$slots.subtitle);
 </script>
 
 <div class="container" data-tid={testId}>

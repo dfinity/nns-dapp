@@ -1,20 +1,20 @@
 <script lang="ts">
   import { TokenAmount, nonNullish } from "@dfinity/utils";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
-  export let canisterDetails: CanisterDetails | undefined;
+  export let details: CanisterDetails | undefined;
   export let isController: boolean | undefined;
 </script>
 
 <TestIdWrapper testId="canister-heading-title-component">
-  {#if nonNullish(canisterDetails)}
+  {#if nonNullish(details)}
     <AmountDisplay
       amount={TokenAmount.fromE8s({
-        amount: canisterDetails.cycles,
+        amount: details.cycles,
         token: { name: "cycles", symbol: $i18n.canisters.t_cycles },
       })}
       size="huge"
@@ -40,6 +40,7 @@
   }
 
   .skeleton {
+    // This is a width for the skeleton that looks good on desktop and mobile.
     width: 300px;
     max-width: 90%;
   }
