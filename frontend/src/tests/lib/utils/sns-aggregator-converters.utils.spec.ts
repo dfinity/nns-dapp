@@ -323,6 +323,7 @@ describe("sns aggregator converters utils", () => {
               swap_due_timestamp_seconds: [],
               swap_start_timestamp_seconds: [],
               transaction_fee_e8s: [100000n],
+              neurons_fund_participation_constraints: [],
             },
           ],
           lifecycle: 2,
@@ -347,6 +348,8 @@ describe("sns aggregator converters utils", () => {
           },
           purge_old_tickets_last_completion_timestamp_nanoseconds: [],
           purge_old_tickets_next_principal: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         derived: {
           buyer_total_icp_e8s: 50669291278205n,
@@ -354,6 +357,8 @@ describe("sns aggregator converters utils", () => {
           cf_participant_count: [145n],
           direct_participant_count: [224n],
           sns_tokens_per_icp: 222.02796936035156,
+          neurons_fund_participation_icp_e8s: [],
+          direct_participation_icp_e8s: [],
         },
       });
     });

@@ -477,6 +477,8 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         cf_participant_count: [BigInt(100)],
         direct_participant_count: [BigInt(300)],
         cf_neuron_count: [BigInt(200)],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
       });
     });
 

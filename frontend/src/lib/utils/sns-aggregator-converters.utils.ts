@@ -228,8 +228,8 @@ const convertSwap = ({
       : [],
   init: convertSwapInitParams(init),
   params: isNullish(params) ? [] : [convertSwapParams(params)],
-  neurons_fund_participation_icp_e8s: [],
   direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 });
 
 const convertDerived = ({
@@ -250,8 +250,8 @@ const convertDerived = ({
   cf_neuron_count: nonNullish(cf_neuron_count)
     ? toNullable(BigInt(cf_neuron_count))
     : [],
-  neurons_fund_participation_icp_e8s: [],
   direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 });
 
 const convertDerivedToResponse = ({

@@ -34,6 +34,8 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
     next_ticket_id: [],
     purge_old_tickets_last_completion_timestamp_nanoseconds: [],
     purge_old_tickets_next_principal: [],
+    direct_participation_icp_e8s: [],
+    neurons_fund_participation_icp_e8s: [],
   },
 ];
 
