@@ -1,16 +1,23 @@
 <script lang="ts">
+  import { nonNullish } from "@dfinity/utils";
+
   export let testId: string | undefined = undefined;
 
   let hasTags: boolean;
   $: hasTags = $$slots.tags !== undefined;
+
+  let hasSubtitle: boolean;
+  $: hasSubtitle = nonNullish($$slots.subtitle);
 </script>
 
 <div class="container" data-tid={testId}>
   <div class="title-wrapper">
     <slot name="title" />
-    <h4 class="description">
-      <slot name="subtitle" />
-    </h4>
+    {#if hasSubtitle}
+      <h4 class="description">
+        <slot name="subtitle" />
+      </h4>
+    {/if}
   </div>
   {#if hasTags}
     <div class="tags">
