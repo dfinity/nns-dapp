@@ -334,6 +334,8 @@ describe("sns.store", () => {
         cf_participant_count: [10n],
         direct_participant_count: [100n],
         cf_neuron_count: [11n],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
       };
 
       const initStore = get(snsQueryStore);
@@ -381,6 +383,8 @@ describe("sns.store", () => {
         cf_participant_count: [],
         direct_participant_count: [],
         cf_neuron_count: [],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
       };
 
       const initStore = get(snsQueryStore);
@@ -419,6 +423,8 @@ describe("sns.store", () => {
         cf_participant_count: [],
         direct_participant_count: [],
         cf_neuron_count: [],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
       };
 
       const initStore = get(snsQueryStore);
@@ -603,6 +609,8 @@ describe("sns.store", () => {
               direct_participant_count:
                 sns.derived_state.direct_participant_count,
               cf_neuron_count: sns.derived_state.cf_neuron_count,
+              direct_participation_icp_e8s: [],
+              neurons_fund_participation_icp_e8s: [],
             }),
           })),
         ];
@@ -653,6 +661,10 @@ describe("sns.store", () => {
               direct_participant_count:
                 sns.derived_state.direct_participant_count,
               cf_neuron_count: sns.derived_state.cf_neuron_count,
+              direct_participation_icp_e8s:
+                sns.derived_state.direct_participation_icp_e8s,
+              neurons_fund_participation_icp_e8s:
+                sns.derived_state.direct_participation_icp_e8s,
             }),
           })),
         ];

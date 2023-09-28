@@ -172,6 +172,7 @@ const convertSwapInitParams = (
           init.fallback_controller_principal_ids,
         nns_governance_canister_id: init.nns_governance_canister_id,
         icp_ledger_canister_id: init.icp_ledger_canister_id,
+        neurons_fund_participation_constraints: [],
       })
     : [];
 
@@ -227,6 +228,8 @@ const convertSwap = ({
       : [],
   init: convertSwapInitParams(init),
   params: isNullish(params) ? [] : [convertSwapParams(params)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 });
 
 const convertDerived = ({
@@ -247,6 +250,8 @@ const convertDerived = ({
   cf_neuron_count: nonNullish(cf_neuron_count)
     ? toNullable(BigInt(cf_neuron_count))
     : [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 });
 
 const convertDerivedToResponse = ({
@@ -269,6 +274,8 @@ const convertDerivedToResponse = ({
   cf_neuron_count: nonNullish(cf_neuron_count)
     ? toNullable(BigInt(cf_neuron_count))
     : [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 });
 
 const convertIcrc1Metadata = (
