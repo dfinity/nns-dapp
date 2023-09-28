@@ -14,6 +14,7 @@ use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
+use icrc1_ledger::tokens as icrc1_tokens;
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
@@ -812,7 +813,7 @@ impl AccountsStore {
                         } => TransferResult::Approve {
                             from,
                             spender,
-                            allowance,
+                            allowance: icrc1_signed_tokens_from_icrc2_tokens(allowance),
                             expires_at,
                             fee,
                         },
@@ -1730,10 +1731,16 @@ pub enum TransferResult {
     Approve {
         from: AccountIdentifier,
         spender: AccountIdentifier,
-        allowance: Tokens,
+        allowance: icrc1_tokens::SignedTokens,
         expires_at: Option<TimeStamp>,
         fee: Tokens,
     },
+}
+
+/// ICRC1 uses `icrc1_tokens::SignedTokens` which can have both positive and negative value.
+/// ICRC2 has only unsigned `Tokens`, so we cast the unsigned type to the signed type.
+fn icrc1_signed_tokens_from_icrc2_tokens(tokens: Tokens) -> icrc1_tokens::SignedTokens {
+    icrc1_tokens::SignedTokens::Plus(icrc1_ledger::Tokens::from_e8s(tokens.get_e8s()))
 }
 
 #[cfg(test)]
