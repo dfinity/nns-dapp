@@ -640,7 +640,7 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2023-09-27",
+        "DIDC_VERSION": "DO.NOT.MERGE",
         "SNSDEMO_RELEASE": "release-2023-09-27",
         "IC_COMMIT": "96184d42331028a46fe3265583792f8c5f807cf8"
       },
