@@ -53,7 +53,7 @@ jobs:
             A newer version of `didc` is available.
 
             # Changes
-            ## Changes made by a bot
+            ## Changes made by a bot triggered by ${{ github.actor }}
             - Update the version of `didc` specified in `dfx.json`.
 
             ## Changes made by a human (delete if inapplicable)
