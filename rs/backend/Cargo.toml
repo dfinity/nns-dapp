@@ -48,7 +48,7 @@ ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
-icrc1-ledger = { package = "ic-ledger-core", git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+original-ledger = { package = "ic-ledger-core", git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 idl2json = "0.8.7"
