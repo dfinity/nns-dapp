@@ -1,4 +1,4 @@
-use crate::proposals::def::*;
+use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
@@ -13,6 +13,8 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
+
+mod canisters;
 
 type Json = String;
 
@@ -209,8 +211,8 @@ fn debug<T: Debug>(value: T) -> String {
 }
 
 mod def {
-    use crate::proposals::canister_arg_types;
-    use crate::proposals::{decode_arg, Json};
+    use crate::canister_arg_types;
+    use crate::{decode_arg, Json};
     use candid::CandidType;
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha::Sha256;
