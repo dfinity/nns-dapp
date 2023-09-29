@@ -23,6 +23,10 @@ export class CanisterPageHeadingPo extends BasePageObject {
     return this.getCanisterHeadingTitlePo().getTitle();
   }
 
+  hasSubtitle(): Promise<boolean> {
+    return this.root.byTestId("subtitle").isPresent();
+  }
+
   getSubtitle(): Promise<string | null> {
     return this.root.byTestId("subtitle").getText();
   }
