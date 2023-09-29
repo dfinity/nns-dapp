@@ -150,7 +150,7 @@ checklist_add() {
   temp_file="$CHECKLIST_FILE.tmp"
   jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' "$CHECKLIST_FILE" >"$temp_file"
   mv "$temp_file" "$CHECKLIST_FILE"
-  echo "$name: $value"
+  echo -e "$name: \033[32m$value\033[0m"
 }
 
 # This script is designed to be run multiple times. Steps that have been
@@ -202,7 +202,7 @@ record() {
   shift
   value="$(checklist_get "$label")"
   if [ "$value" ]; then
-    echo "$label: Was already: $value"
+    echo -e "$label: Was already: \033[35m$value\033[0m"
     return
   fi
   if ! value="$(execute "$@")"; then
