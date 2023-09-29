@@ -46,7 +46,7 @@ execute() {
     "$@"
     return
   fi
-  if [ "$1" = "echo" ]; then
+  if [[ "$1" == "echo" || "$1" == "get_build_hash" ]]; then
     "$@"
     return
   fi
@@ -215,10 +215,12 @@ confirm_manual() {
     echo
     echo "When you've done that ☝️  confirm by entering 'y':"
   ) >&2
-  read -r input
-  if [[ ${input:-} != "y" ]]; then
-    echo "Aborting." >&2
-    exit 1
+  if ! [ "${MOCK_JSON:-}" ]; then
+    read -r input
+    if [[ ${input:-} != "y" ]]; then
+      echo "Aborting." >&2
+      exit 1
+    fi
   fi
   checklist_add "$label" "Done"
 }
