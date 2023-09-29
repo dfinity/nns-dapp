@@ -53,6 +53,8 @@ idl2json = "0.8.7"
 flate2 = "1.0.25"
 regex = "1.7.1"
 
+proposals ={ path = "../proposals" }
+
 [dev-dependencies]
 maplit = "1.0.2"
 anyhow = "1.0.68"
