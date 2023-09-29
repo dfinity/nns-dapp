@@ -12,20 +12,20 @@ serde_bytes = "0.11.5"
 serde_json = "1.0.81"
 hex = "0.4.3"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="b1693619e3d4dbc00d8c79e9b6886e1db48b21f7" }
-ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
 
 idl2json = "0.8.7"
 
