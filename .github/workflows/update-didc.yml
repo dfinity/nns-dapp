@@ -48,6 +48,20 @@ jobs:
           branch: bot-didc-update
           delete-branch: true
           title: 'Update didc release'
+          body: |
+            # Motivation
+            A newer version of `didc` is available.
+
+            # Changes
+            ## Changes made by a bot triggered by ${{ github.actor }}
+            - Update the version of `didc` specified in `dfx.json`.
+
+            ## Changes made by a human (delete if inapplicable)
+
+            # Tests
+            - CI contains tests that detect most breaking changes in `didc`.
+            - [ ] Please check [the didc release notes](https://github.com/dfinity/candid/releases) (if any).
+            - [ ] Please check [the didc git history](https://github.com/dfinity/candid/commits/master/tools/didc) (if reasonably short and understandable).
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure

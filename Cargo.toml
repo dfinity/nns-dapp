@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "rs/backend",
+    "rs/proposals",
     "rs/sns_aggregator"
 ]
 resolver = "2"

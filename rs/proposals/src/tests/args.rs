@@ -1,5 +1,5 @@
 //! Tests for the argument parsing code.
-use crate::proposals::decode_arg;
+use crate::decode_arg;
 use anyhow::Context;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{IDLArgs, IDLProg};

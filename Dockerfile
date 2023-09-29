@@ -69,8 +69,9 @@ COPY rust-toolchain.toml .
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
+COPY rs/proposals/Cargo.toml rs/proposals/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
+RUN mkdir -p rs/backend/src/bin rs/proposals/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/proposals/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
@@ -128,6 +129,7 @@ RUN ./build-frontend.sh
 FROM builder AS build_nnsdapp
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
+COPY ./rs/proposals /build/rs/proposals
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
@@ -148,7 +150,7 @@ WORKDIR /build
 # So we update the timestamps of the root code files.
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
-RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs rs/proposals/src/lib.rs
 RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 ARG COMMIT
