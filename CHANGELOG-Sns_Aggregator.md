@@ -8,9 +8,13 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ## Unreleased
 
-### Wasm changes
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
 
-### Operations
 
 ## [Proposal 124788](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124788)
 
@@ -19,19 +23,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 * In fast updates, update `derived_state` and `lifecycle` as well as the now deprecated `swap_state`.
 * New field `logo` in the `meta` data with the relative path to the logo asset.
 * Add a getting started section in landing page.
-
-### Operations
-
-## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)
-
-### Added
-### Changed
 * Various minor style improvements: favicon, spacing, status "open" color and text clamp
-### Fixed
-### Security
-### Not Published
-### Removed
-### Deprecated
 
 ## [Proposal 124250](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124250)
 
@@ -43,10 +35,6 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Fixed
 * Update the path to the `nns-sns-wasm` .did file.
 * Update the index.html when it has changed.
-### Security
-### Not Published
-### Removed
-### Deprecated
 
 ## [Proposal 123719](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123719)
 
