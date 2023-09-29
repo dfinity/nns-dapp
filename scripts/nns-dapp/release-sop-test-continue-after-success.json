@@ -80,10 +80,6 @@
     "NNS-dapp staging canister ID: Was already: \u001b[35mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
     "Current NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
     "DFX_NETWORK=staging ./config.sh: Was already done. Skipping.",
-    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: Was already done. Skipping.",
-    "Staging URL: Was already: \u001b[35mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/\u001b[0m",
-    "Staging WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "Post on Slack: Was already: \u001b[35mhttps://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509\u001b[0m"
     "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm /home/runner/work/nns-dapp/release/ci/nns-dapp.wasm.gz: Was already done. Skipping.",
     "Staging URL: Was already: \u001b[35mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/\u001b[0m",
     "Staging WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
@@ -100,7 +96,6 @@
     "Built NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
     "cat: /home/runner/work/nns-dapp/release/PROPOSAL.md: No such file or directory",
     "Review proposal: Was already done. Skipping.",
-    "scripts/nns-dapp/release-sop: line 393: /home/runner/work/nns-dapp/release/nns-dapp-arg-mainnet.did: No such file or directory",
     "Review feature flags: Was already done. Skipping.",
     "CI mainnet args hash: Was already: \u001b[35m869aabef4d2f757645692a11bd845b90284f8e942890c4b1fb74f751785fa2f2\u001b[0m",
     "Built mainnet args hash: 869aabef4d2f757645692a11bd845b90284f8e942890c4b1fb74f751785fa2f2",

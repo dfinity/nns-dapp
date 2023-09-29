@@ -392,7 +392,9 @@ review_proposal() {
 }
 
 review_feature_flags() {
-  idl2json <"$TOP_DIR/release/nns-dapp-arg-mainnet.did" | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
+  if ! [ "${MOCK_JSON:-}" ]; then
+    idl2json <"$TOP_DIR/release/nns-dapp-arg-mainnet.did" | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
+  fi
   echo
   echo "Review the feature flags above ☝️  ."
 }
