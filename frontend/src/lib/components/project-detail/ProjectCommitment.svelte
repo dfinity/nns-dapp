@@ -66,7 +66,7 @@
         >{saleBuyerCount}</span
       >
     </KeyValuePair>
-  {#if isFullProjectCommitmentSplit(projectCommitments)}
+  {/if}
   <KeyValuePair testId="sns-project-current-commitment">
     <span slot="key">
       {$i18n.sns_project_detail.current_overall_commitment}
@@ -74,7 +74,7 @@
 
     <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
   </KeyValuePair>
-  {#if "nfCommitmentE8s" in projectCommitments && projectCommitments.nfCommitmentE8s > 0n}
+  {#if isFullProjectCommitmentSplit(projectCommitments)}
     <KeyValuePair testId="sns-project-current-nf-commitment">
       <span slot="key" class="detail-data">
         {$i18n.sns_project_detail.current_nf_commitment}
