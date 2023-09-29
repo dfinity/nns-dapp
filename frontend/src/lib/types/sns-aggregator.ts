@@ -95,11 +95,11 @@ export type CachedSwapParamsDto = {
   sale_delay_seconds?: number;
 };
 
-export interface CachedLinearScalingCoefficient {
+interface CachedLinearScalingCoefficient {
   slope_numerator?: number | null;
+  slope_denominator?: number | null;
   intercept_icp_e8s?: number | null;
   from_direct_participation_icp_e8s?: number | null;
-  slope_denominator?: number | null;
   to_direct_participation_icp_e8s?: number | null;
 }
 

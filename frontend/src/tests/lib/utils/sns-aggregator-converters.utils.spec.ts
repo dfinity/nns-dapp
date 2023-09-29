@@ -401,7 +401,7 @@ describe("sns aggregator converters utils", () => {
     });
 
     it("converts fields related to NF participation", () => {
-      const aggregatorNewNeuronsFundFields: CachedSnsDto = {
+      const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
         ...mockData,
         swap_state: {
           ...mockData.swap_state,
@@ -440,7 +440,9 @@ describe("sns aggregator converters utils", () => {
       };
 
       const summaryMockData = convertDtoToSnsSummary(mockData);
-      expect(convertDtoToSnsSummary(aggregatorNewNeuronsFundFields)).toEqual({
+      expect(
+        convertDtoToSnsSummary(aggregatorNFAndDirectParticipationFields)
+      ).toEqual({
         ...summaryMockData,
         swap: {
           ...summaryMockData.swap,
