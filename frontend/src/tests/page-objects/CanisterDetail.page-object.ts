@@ -31,11 +31,11 @@ export class CanisterDetailPo extends BasePageObject {
     return CanisterPageHeadingPo.under(this.root);
   }
 
-  async getCanisterTitle(): Promise<string> {
+  async getTitle(): Promise<string> {
     return this.getCanisterPageHeading().getTitle();
   }
 
-  async getCanisterSubtitle(): Promise<string> {
+  async getSubtitle(): Promise<string> {
     return this.getCanisterPageHeading().getSubtitle();
   }
 

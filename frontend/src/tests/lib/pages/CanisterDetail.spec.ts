@@ -104,7 +104,7 @@ describe("CanisterDetail", () => {
 
     it("should render canister name as subtitle", async () => {
       const po = await renderComponent();
-      expect(await po.getCanisterSubtitle()).toBe(canisterName);
+      expect(await po.getSubtitle()).toBe(canisterName);
     });
 
     it("should render canister id", async () => {
@@ -134,7 +134,7 @@ describe("CanisterDetail", () => {
         cycles: 100_000_000n,
       });
       const po = await renderComponent();
-      expect(await po.getCanisterTitle()).toBe("1.00 T Cycles");
+      expect(await po.getTitle()).toBe("1.00 T Cycles");
     });
   });
 
@@ -163,7 +163,7 @@ describe("CanisterDetail", () => {
 
     it("should render 'Balance unavailable' as title", async () => {
       const po = await renderComponent();
-      expect(await po.getCanisterTitle()).toBe("Balance unavailable");
+      expect(await po.getTitle()).toBe("Balance unavailable");
     });
   });
 
@@ -198,7 +198,7 @@ describe("CanisterDetail", () => {
 
       await runResolvedPromises();
 
-      expect(await po.getCanisterSubtitle()).toBe(oldName);
+      expect(await po.getSubtitle()).toBe(oldName);
 
       await po.clickRename();
       await po.getRenameCanisterModalPo().isPresent();
@@ -206,7 +206,7 @@ describe("CanisterDetail", () => {
 
       await runResolvedPromises();
 
-      expect(await po.getCanisterSubtitle()).toBe(newName);
+      expect(await po.getSubtitle()).toBe(newName);
       expect(canisterApi.renameCanister).toHaveBeenCalledTimes(1);
       expect(canisterApi.renameCanister).toHaveBeenCalledWith({
         canisterId,
