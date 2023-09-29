@@ -371,7 +371,7 @@ verify_build() {
     echo "When it finishes successfully, enter the lines with file hashes here 👇 and then press ENTER followed by Ctrl+D"
     echo
   ) >&2
-  cat 
+  cat
 }
 
 get_build_hash() {
@@ -390,7 +390,7 @@ review_proposal() {
 }
 
 review_feature_flags() {
-  idl2json < "$TOP_DIR/release/nns-dapp-arg-mainnet.did" | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
+  idl2json <"$TOP_DIR/release/nns-dapp-arg-mainnet.did" | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
   echo
   echo "Review the feature flags above ☝️  ."
 }

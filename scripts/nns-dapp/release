@@ -149,7 +149,7 @@ echo
 
 read -rp "Execute? (y/N) " COMMAND_OK
 if [[ "$COMMAND_OK" = [yY] ]]; then
-  if [[ "${PROPOSAL_ID_FILE:-}" ]]; then 
+  if [[ "${PROPOSAL_ID_FILE:-}" ]]; then
     # The ic-admin command writes 1 line to stderr with the following format:
     # submit_proposal for Upgrade NNS Canister: qoctq-giaaa-aaaaa-aaaea-cai to wasm with hash: 35315f0a44a16b1221a295ba253d018ed824e18cb1d2458c7933fe588efb45f4 response: Ok(proposal 213)
     # We want to parse the proposal ID out of that. First we redirect stderr to
@@ -157,8 +157,8 @@ if [[ "$COMMAND_OK" = [yY] ]]; then
     # file, then we direct it back to stderr.
     (
       "${@}" 2>&1 1>&3 |
-      sed -E 's/.*\(proposal (.*)\)/\1/' |
-      tee "$PROPOSAL_ID_FILE"
+        sed -E 's/.*\(proposal (.*)\)/\1/' |
+        tee "$PROPOSAL_ID_FILE"
     ) 3>&1 >&2
   else
     "${@}"
