@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
 * Separate proposals backend into a separate crate.
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 * Allow `get_histogram` (an unstable API) only as a query call.
