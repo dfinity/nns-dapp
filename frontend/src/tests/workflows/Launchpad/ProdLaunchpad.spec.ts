@@ -10,8 +10,8 @@ import { toastsStore } from "@dfinity/gix-components";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import Launchpad from "./LaunchpadWithLayout.svelte";
-import snsPage0 from "./sns-agg-page-0.json";
-import snsPage1 from "./sns-agg-page-1.json";
+import snsPage0 from "./sns-agg-page-0-2023-09-29-1545.json";
+import snsPage1 from "./sns-agg-page-1-2023-09-29-1545.json";
 
 jest.mock("$lib/api/proposals.api");
 
