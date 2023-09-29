@@ -128,8 +128,8 @@ TOP_DIR=$(execute git rev-parse --show-toplevel)
 execute cd "$TOP_DIR"
 
 GREEN_COLOR="\033[32m"
-RESET_COLOR="\033[0m"
 MAGENTA_COLOR="\033[35m"
+RESET_COLOR="\033[0m"
 
 checklist_get() {
   local name
