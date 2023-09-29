@@ -46,6 +46,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Set explicit reviewers for bot-generated PRs.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Fix the `release-sop` command that set `origin/main` as the upstream.
 * Specify the version of `binstall` in `dfx.json`.
