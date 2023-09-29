@@ -239,23 +239,4 @@
   .error-message {
     margin: 0;
   }
-
-  .loader-title {
-    width: 100%;
-    margin-top: var(--padding);
-    margin-bottom: var(--padding-2x);
-
-    @include media.min-width(medium) {
-      width: 50%;
-    }
-  }
-
-  .loader-subtitle {
-    width: 100%;
-    margin-bottom: var(--padding-3x);
-
-    @include media.min-width(medium) {
-      width: 35%;
-    }
-  }
 </style>
