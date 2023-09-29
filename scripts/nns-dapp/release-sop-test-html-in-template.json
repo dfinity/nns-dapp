@@ -67,7 +67,7 @@
       "command": "no_html_in_templates",
       "stdout": "Found @html",
       "stderr": "",
-      "exitCode": 0
+      "exitCode": 1
     }
   ],
   "expectedOutput": [
@@ -108,14 +108,7 @@
     "Expected npm audit: found 0 vulnerabilities",
     "Security test: cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
     "Expected cargo audit: RUSTSEC-2020-0071,RUSTSEC-2020-0159",
-    "Security test: no HTML in templates: Found @html",
-    "👇 Press enter to run the following command:",
-    "",
-    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz",
-    "",
-    "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Done",
-    "No mock behavior for: scripts/nns-dapp/get-hash-from-ci-log --commit tags/release-candidate",
-    "CI NNS-dapp WASM hash: Failed"
+    "Security test: no HTML in templates: Failed"
   ],
   "expectedExitCode": 1
 }
