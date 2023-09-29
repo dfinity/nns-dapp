@@ -412,6 +412,11 @@ export type ProjectCommitmentSplit =
   | { totalCommitmentE8s: bigint }
   | FullProjectCommitmentSplit;
 
+export const isFullProjectCommitmentSplit = (
+  commitment: ProjectCommitmentSplit
+): commitment is FullProjectCommitmentSplit =>
+  "directCommitmentE8s" in commitment && "nfCommitmentE8s" in commitment;
+
 export const getProjectCommitmentSplit = (
   summary: SnsSummary
 ): ProjectCommitmentSplit => {

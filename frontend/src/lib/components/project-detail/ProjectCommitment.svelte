@@ -16,6 +16,7 @@
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
   import {
     getProjectCommitmentSplit,
+    isFullProjectCommitmentSplit,
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
@@ -65,7 +66,7 @@
         >{saleBuyerCount}</span
       >
     </KeyValuePair>
-  {/if}
+  {#if isFullProjectCommitmentSplit(projectCommitments)}
   <KeyValuePair testId="sns-project-current-commitment">
     <span slot="key">
       {$i18n.sns_project_detail.current_overall_commitment}
