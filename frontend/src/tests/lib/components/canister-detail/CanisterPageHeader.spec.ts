@@ -10,7 +10,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
-describe("CanisterHeadingTitle", () => {
+describe("CanisterPageHeader", () => {
   const renderComponent = (canister: CanisterInfo) => {
     const { container } = render(CanisterPageHeader, {
       props: { canister },

@@ -454,7 +454,6 @@
     "rename_canister": "Rename Canister",
     "rename_canister_title": "Enter New Canister Name",
     "rename_canister_placeholder": "Canister Name",
-    "balance_unavailable": "Balance unavailable",
     "status_stopped": "Stopped",
     "status_stopping": "Stopping",
     "status_running": "Running"

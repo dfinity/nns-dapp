@@ -56,8 +56,8 @@ execute() {
     echo "No mock behavior for: $cmd" >&2
     exit 1
   fi
-  stdout="$(echo "$entry" | jq -r .stdout | tr -d '\n')"
-  stderr="$(echo "$entry" | jq -r .stderr | tr -d '\n')"
+  stdout="$(echo "$entry" | jq -r .stdout)"
+  stderr="$(echo "$entry" | jq -r .stderr)"
   echo -n "$stdout"
   echo -n "$stderr" >&2
   exitCode="$(echo "$entry" | jq -r .exitCode)"
