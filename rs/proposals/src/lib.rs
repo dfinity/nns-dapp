@@ -1,7 +1,7 @@
 use crate::canisters::governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
-use candid::{CandidType, Deserialize, IDLArgs, Principal};
+use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::IDENTITY_CANISTER_ID;
 use idl2json::candid_types::internal_candid_type_to_idl_type;
