@@ -75,7 +75,7 @@
   </KeyValuePair>
   {#if "nfCommitmentE8s" in projectCommitments && projectCommitments.nfCommitmentE8s > 0n}
     <KeyValuePair testId="sns-project-current-nf-commitment">
-      <span slot="key" class="detail-data">
+      <span slot="key" class="detail-data neurons-fund">
         {$i18n.sns_project_detail.current_nf_commitment}
       </span>
 
@@ -89,7 +89,7 @@
       />
     </KeyValuePair>
     <KeyValuePair testId="sns-project-current-direct-commitment">
-      <span slot="key" class="detail-data">
+      <span slot="key" class="detail-data direct">
         {$i18n.sns_project_detail.current_direct_commitment}
       </span>
 
@@ -125,6 +125,30 @@
 
 <style lang="scss">
   .detail-data {
-    padding-left: var(--padding-2x);
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    // This is the dot with the participation color next to the label
+    &::before {
+      content: "";
+      display: block;
+      width: var(--padding);
+      height: var(--padding);
+      background: var(--primary);
+      border-radius: var(--padding);
+    }
+
+    &.neurons-fund {
+      &::before {
+        background: var(--warning-emphasis);
+      }
+    }
+
+    &.direct {
+      &::before {
+        background: var(--primary);
+      }
+    }
   }
 </style>
