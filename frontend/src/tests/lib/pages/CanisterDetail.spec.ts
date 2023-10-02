@@ -17,6 +17,7 @@ import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 jest.mock("$lib/api/canisters.api");
@@ -143,15 +144,15 @@ describe("CanisterDetail", () => {
       jest
         .spyOn(canisterApi, "queryCanisterDetails")
         .mockRejectedValue(new UserNotTheControllerError());
+    });
+
+    it("should not render controllers card if user is not the controller", async () => {
       jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: "",
         },
       ]);
-    });
-
-    it("should not render controllers card if user is not the controller", async () => {
       const { queryByTestId } = render(CanisterDetail, props);
 
       await runResolvedPromises();
@@ -161,9 +162,28 @@ describe("CanisterDetail", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should render 'Balance unavailable' as title", async () => {
+    it("should render canister id as title if canister has no name", async () => {
+      const canisterIdText = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: Principal.fromText(canisterIdText),
+          name: "",
+        },
+      ]);
       const po = await renderComponent();
-      expect(await po.getTitle()).toBe("Balance unavailable");
+      expect(await po.getTitle()).toBe(canisterIdText);
+    });
+
+    it("should render canister id as title", async () => {
+      const canisterName = "canister name";
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: canisterName,
+        },
+      ]);
+      const po = await renderComponent();
+      expect(await po.getTitle()).toBe(canisterName);
     });
   });
 

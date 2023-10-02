@@ -2,11 +2,13 @@
   import { TokenAmount, nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+  import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let details: CanisterDetails | undefined;
+  export let canister: CanisterInfo;
   export let isController: boolean | undefined;
 </script>
 
@@ -23,7 +25,11 @@
     <!-- Only when we have loaded the data and we know whether the user is the controller -->
   {:else if isController === false}
     <h1 data-tid="caniter-title-balance-unavailable">
-      {$i18n.canister_detail.balance_unavailable}
+      {#if canister.name.length === 0}
+        {canister.canister_id.toText()}
+      {:else}
+        {canister.name}
+      {/if}
     </h1>
   {:else}
     <div data-tid="skeleton" class="skeleton">
@@ -37,6 +43,8 @@
 
   h1 {
     margin: 0;
+    // Needed if the canister id is very long for mobile and uses multiple lines.
+    text-align: center;
   }
 
   .skeleton {

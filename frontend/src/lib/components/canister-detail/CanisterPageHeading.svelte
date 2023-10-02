@@ -12,11 +12,12 @@
 </script>
 
 <!-- We can't set conditional slots. -->
-{#if canister.name.length === 0}
+{#if canister.name.length === 0 || !isController}
   <PageHeading testId="canister-page-heading-component">
     <CanisterHeadingTitle
       slot="title"
       details={canisterDetails}
+      {canister}
       {isController}
     />
     <svelte:fragment slot="tags">
@@ -29,6 +30,7 @@
     <CanisterHeadingTitle
       slot="title"
       details={canisterDetails}
+      {canister}
       {isController}
     />
     <span slot="subtitle" data-tid="subtitle">
