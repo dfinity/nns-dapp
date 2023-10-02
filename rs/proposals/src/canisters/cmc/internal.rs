@@ -4,14 +4,12 @@ use candid::{self, CandidType, Deserialize, Principal, Encode, Decode};
 use serde::Serialize;
 
 use ic_base_types::SubnetId;
-use ic_base_types::PrincipalId;
-
 
 /// From: rs/nns/cmc/src/lib.rs
 /// Argument taken by the set_authorized_subnetwork_list endpoint
 #[derive(Serialize, Deserialize, CandidType, Clone, Hash, Debug, PartialEq, Eq)]
 pub struct SetAuthorizedSubnetworkListArgs {
-    pub who: Option<PrincipalId>,
+    pub who: Option<Principal>,
     pub subnets: Vec<SubnetId>,
 }
 

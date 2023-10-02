@@ -1,0 +1,5 @@
+- make pub
+- rm {} in enum variants
+- Some types are not in the .did file
+
+- Add Serialize to (?almost) everything
