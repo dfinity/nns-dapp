@@ -380,7 +380,7 @@ mod def {
 
     // NNS function 14 - SetAuthorizedSubnetworkList
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168
-    pub type SetAuthorizedSubnetworkListArgs = crate::canisters::cmc::internal::SetAuthorizedSubnetworkListArgs;
+    pub type SetAuthorizedSubnetworkListArgs = crate::canisters::nns_cmc::internal::SetAuthorizedSubnetworkListArgs;
 
     // NNS function 15 - SetFirewallConfig
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
@@ -500,12 +500,12 @@ mod def {
     // NNS function 32 - UpdateSubnetType
     // Updates the available subnet types in the cycles minting canister.
     // https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179
-    pub type UpdateSubnetTypeArgs = crate::canisters::cmc::internal::UpdateSubnetTypeArgs;
+    pub type UpdateSubnetTypeArgs = crate::canisters::nns_cmc::internal::UpdateSubnetTypeArgs;
 
     // NNS function 33 - ChangeSubnetTypeAssignment
     // Changes the assignment of subnets to subnet types in the cycles minting canister.
     // https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
-    pub type ChangeSubnetTypeAssignmentArgs = crate::canisters::cmc::internal::ChangeSubnetTypeAssignmentArgs;
+    pub type ChangeSubnetTypeAssignmentArgs = crate::canisters::nns_cmc::internal::ChangeSubnetTypeAssignmentArgs;
 
     // Use a serde field attribute to custom serialize the Nat candid type.
     fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
