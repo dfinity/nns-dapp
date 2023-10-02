@@ -14,6 +14,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
 * Separate proposals backend into a separate crate.
 * Improve spacings in the page headings.
