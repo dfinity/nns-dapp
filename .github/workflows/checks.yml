@@ -220,9 +220,9 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      # TODO: Fix so that it doesn't rely on mainnet?
-      # - name: Test getting proposal args
-      #   run: scripts/dfx-nns-proposal-args.test
+        # TODO: Fix so that it doesn't rely on mainnet?
+        # - name: Test getting proposal args
+        #   run: scripts/dfx-nns-proposal-args.test
   docker-build-cli-flags:
     runs-on: ubuntu-20.04
     steps:
