@@ -1,9 +1,9 @@
+use crate::canisters::governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs, Principal};
 use ic_base_types::CanisterId;
 use ic_nns_constants::IDENTITY_CANISTER_ID;
-use crate::canisters::governance::api::{Action, ProposalInfo};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
@@ -211,13 +211,13 @@ fn debug<T: Debug>(value: T) -> String {
 
 mod def {
     use crate::canister_arg_types;
+    use crate::canisters::sns_wasm::api::{SnsUpgrade, SnsVersion};
     use crate::{decode_arg, Json};
     use candid::{CandidType, Principal};
-    use ic_base_types::{CanisterId};
+    use ic_base_types::CanisterId;
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
     use ic_nervous_system_common::MethodAuthzChange;
-    use crate::canisters::sns_wasm::api::{SnsUpgrade, SnsVersion};
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;

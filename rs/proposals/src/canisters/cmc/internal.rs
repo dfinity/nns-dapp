@@ -1,6 +1,6 @@
 //! CMC types exposed outside the canister but NOT mentioned in the CMC .did file.
 //! From: rs/nns/cmc/src/lib.rs
-use candid::{self, CandidType, Deserialize, Principal, Encode, Decode};
+use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 use serde::Serialize;
 
 use ic_base_types::SubnetId;

@@ -1,4 +1,3 @@
-
 // TODO: Rename as nns_cmc.
 
 /// The API derived from the .did file

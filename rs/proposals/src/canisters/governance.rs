@@ -1,8 +1,8 @@
 // TODO: Rename as nns_governance
 
+use api::ProposalInfo;
 use dfn_candid::candid;
 use ic_nns_constants::GOVERNANCE_CANISTER_ID;
-use api::ProposalInfo;
 
 pub mod api;
 pub mod internal;
