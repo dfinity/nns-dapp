@@ -45,7 +45,6 @@ NOT_MOCKED_COMMANDS=(
   echo
   get_build_hash
   review_proposal
-  review_feature_flags
 )
 
 execute() {
