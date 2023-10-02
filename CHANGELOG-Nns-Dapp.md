@@ -36,6 +36,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 * Run several script tests on macos as well as ubuntu.
+* Extend the release SOP script up to submitting the proposal.
 
 #### Changed
 
