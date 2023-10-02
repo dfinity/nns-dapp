@@ -47,6 +47,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Deprecated
 #### Removed
 
+* Comment and skip dfx-nns-proposal-args.test.
+
 #### Fixed
 
 #### Security
