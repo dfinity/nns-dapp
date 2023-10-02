@@ -40,7 +40,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_DISBURSE_MATURITY: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
-      ENABLE_PROPOSAL_REDESIGN: true,
+      ENABLE_FULL_WIDTH_PROPOSAL: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
