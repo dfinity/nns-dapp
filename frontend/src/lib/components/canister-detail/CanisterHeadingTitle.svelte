@@ -6,7 +6,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let details: CanisterDetails | undefined;
   export let canister: CanisterInfo;
@@ -27,7 +26,7 @@
   {:else if isController === false}
     <h1 data-tid="caniter-title-balance-unavailable">
       {#if canister.name.length === 0}
-        {shortenWithMiddleEllipsis(canister.canister_id.toText())}
+        {canister.canister_id.toText()}
       {:else}
         {canister.name}
       {/if}
@@ -44,6 +43,8 @@
 
   h1 {
     margin: 0;
+    // Needed if the canister id is very long for mobile and uses multiple lines.
+    text-align: center;
   }
 
   .skeleton {

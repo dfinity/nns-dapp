@@ -46,13 +46,14 @@ describe("CanisterHeadingTitle", () => {
   });
 
   it("renders canister id if user is not the controller and name is not present", async () => {
+    const canisterIdText = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     const canister = {
       ...mockCanister,
       name: "",
-      canister_id: Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
+      canister_id: Principal.fromText(canisterIdText),
     };
     const po = renderComponent(undefined, false, canister);
-    expect(await po.getTitle()).toBe("ryjl3-t...aba-cai");
+    expect(await po.getTitle()).toBe(canisterIdText);
   });
 
   it("renders cycles balance if defined", async () => {
