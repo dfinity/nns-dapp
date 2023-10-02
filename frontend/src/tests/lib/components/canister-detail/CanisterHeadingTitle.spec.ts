@@ -3,19 +3,22 @@
  */
 
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
+import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterHeadingTitle from "$lib/components/canister-detail/CanisterHeadingTitle.svelte";
-import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
+import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import { CanisterHeadingTitlePo } from "$tests/page-objects/CanisterHeadingTitle.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 describe("CanisterHeadingTitle", () => {
   const renderComponent = (
     details: CanisterDetails | undefined,
-    isController: boolean | undefined
+    isController: boolean | undefined,
+    canister: CanisterInfo = mockCanister
   ) => {
     const { container } = render(CanisterHeadingTitle, {
-      props: { details, isController },
+      props: { details, isController, canister },
     });
 
     return CanisterHeadingTitlePo.under(new JestPageObjectElement(container));
@@ -32,9 +35,25 @@ describe("CanisterHeadingTitle", () => {
     expect(await po.hasSkeleton()).toBe(true);
   });
 
-  it("renders unavailable balance if user is not the controller", async () => {
-    const po = renderComponent(undefined, false);
-    expect(await po.getTitle()).toBe("Balance unavailable");
+  it("renders canister name if user is not the controller and name is present", async () => {
+    const canisterName = "My Canister";
+    const canister = {
+      ...mockCanister,
+      name: canisterName,
+    };
+    const po = renderComponent(undefined, false, canister);
+    expect(await po.getTitle()).toBe(canisterName);
+  });
+
+  it("renders canister id if user is not the controller and name is not present", async () => {
+    const canisterIdText = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    const canister = {
+      ...mockCanister,
+      name: "",
+      canister_id: Principal.fromText(canisterIdText),
+    };
+    const po = renderComponent(undefined, false, canister);
+    expect(await po.getTitle()).toBe(canisterIdText);
   });
 
   it("renders cycles balance if defined", async () => {
