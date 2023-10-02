@@ -46,14 +46,25 @@ describe("CanisterHeadingTitle", () => {
     expect(await po.getTitle()).toBe("3.14 T Cycles");
   });
 
-  it("renders the canister name as subtitle if present", async () => {
+  it("renders the canister name as subtitle if present and user is the controller", async () => {
     const name = "My Canister";
     const canisterInfo = {
       ...mockCanister,
       name,
     };
-    const po = renderComponent(canisterInfo, undefined, undefined);
+    const po = renderComponent(canisterInfo, undefined, true);
     expect(await po.getSubtitle()).toBe(name);
+  });
+
+  it("renders the canister name in title and no subtitle if user is not the controller", async () => {
+    const name = "My Canister";
+    const canisterInfo = {
+      ...mockCanister,
+      name,
+    };
+    const po = renderComponent(canisterInfo, undefined, false);
+    expect(await po.getTitle()).toBe(name);
+    expect(await po.hasSubtitle()).toBe(false);
   });
 
   it("dispatches unlink canister modal event when unlink button is clicked", async () => {

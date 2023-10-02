@@ -143,15 +143,15 @@ describe("CanisterDetail", () => {
       jest
         .spyOn(canisterApi, "queryCanisterDetails")
         .mockRejectedValue(new UserNotTheControllerError());
+    });
+
+    it("should not render controllers card if user is not the controller", async () => {
       jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: "",
         },
       ]);
-    });
-
-    it("should not render controllers card if user is not the controller", async () => {
       const { queryByTestId } = render(CanisterDetail, props);
 
       await runResolvedPromises();
@@ -161,9 +161,27 @@ describe("CanisterDetail", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("should render 'Balance unavailable' as title", async () => {
+    it("should render canister id as title if canister has no name", async () => {
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: "",
+        },
+      ]);
       const po = await renderComponent();
-      expect(await po.getTitle()).toBe("Balance unavailable");
+      expect(await po.getTitle()).toBe("ryjl3-t...aba-cai");
+    });
+
+    it("should render canister id as title", async () => {
+      const canisterName = "canister name";
+      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+        {
+          canister_id: canisterId,
+          name: canisterName,
+        },
+      ]);
+      const po = await renderComponent();
+      expect(await po.getTitle()).toBe(canisterName);
     });
   });
 
