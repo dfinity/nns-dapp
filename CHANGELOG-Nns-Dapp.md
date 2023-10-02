@@ -43,6 +43,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Update the snsdemo commit & automate further updates.
 * Cron job to update `snsdemo` weekly.
+* Update data for the Launchpad Prod test.
 
 #### Deprecated
 #### Removed
