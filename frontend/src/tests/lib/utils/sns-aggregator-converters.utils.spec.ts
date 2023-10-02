@@ -323,6 +323,7 @@ describe("sns aggregator converters utils", () => {
               swap_due_timestamp_seconds: [],
               swap_start_timestamp_seconds: [],
               transaction_fee_e8s: [100000n],
+              neurons_fund_participation_constraints: [],
             },
           ],
           lifecycle: 2,
@@ -347,6 +348,8 @@ describe("sns aggregator converters utils", () => {
           },
           purge_old_tickets_last_completion_timestamp_nanoseconds: [],
           purge_old_tickets_next_principal: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         derived: {
           buyer_total_icp_e8s: 50669291278205n,
@@ -354,6 +357,8 @@ describe("sns aggregator converters utils", () => {
           cf_participant_count: [145n],
           direct_participant_count: [224n],
           sns_tokens_per_icp: 222.02796936035156,
+          neurons_fund_participation_icp_e8s: [],
+          direct_participation_icp_e8s: [],
         },
       });
     });
@@ -393,6 +398,83 @@ describe("sns aggregator converters utils", () => {
       expect(
         convertDtoToSnsSummary(aggregatorMissingSwapParams)
       ).toBeUndefined();
+    });
+
+    it("converts fields related to NF participation", () => {
+      const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
+        ...mockData,
+        swap_state: {
+          ...mockData.swap_state,
+          swap: {
+            ...mockData.swap_state.swap,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+            init: {
+              ...mockData.swap_state.swap.init,
+              neurons_fund_participation_constraints: {
+                coefficient_intervals: [
+                  {
+                    slope_numerator: 2,
+                    intercept_icp_e8s: 5000000000,
+                    from_direct_participation_icp_e8s: 1000000000,
+                    slope_denominator: 3,
+                    to_direct_participation_icp_e8s: 2000000000,
+                  },
+                ],
+                max_neurons_fund_participation_icp_e8s: 300000000000,
+                min_direct_participation_threshold_icp_e8s: 10000000000,
+              },
+            },
+          },
+          derived: {
+            ...mockData.swap_state.derived,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+          },
+        },
+        derived_state: {
+          ...mockData.derived_state,
+          direct_participation_icp_e8s: 300000000000000,
+          neurons_fund_participation_icp_e8s: 100000000000000,
+        },
+      };
+
+      const summaryMockData = convertDtoToSnsSummary(mockData);
+      expect(
+        convertDtoToSnsSummary(aggregatorNFAndDirectParticipationFields)
+      ).toEqual({
+        ...summaryMockData,
+        swap: {
+          ...summaryMockData.swap,
+          init: [
+            {
+              ...summaryMockData.swap.init[0],
+              neurons_fund_participation_constraints: [
+                {
+                  coefficient_intervals: [
+                    {
+                      slope_numerator: [2n],
+                      intercept_icp_e8s: [5000000000n],
+                      from_direct_participation_icp_e8s: [1000000000n],
+                      slope_denominator: [3n],
+                      to_direct_participation_icp_e8s: [2000000000n],
+                    },
+                  ],
+                  max_neurons_fund_participation_icp_e8s: [300000000000n],
+                  min_direct_participation_threshold_icp_e8s: [10000000000n],
+                },
+              ],
+            },
+          ],
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+        derived: {
+          ...summaryMockData.derived,
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+      });
     });
   });
 

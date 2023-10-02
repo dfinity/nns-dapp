@@ -125,6 +125,8 @@ describe("sns-services", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         };
         const responses = snsResponsesFor([
           {
@@ -170,6 +172,8 @@ describe("sns-services", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         };
         const spy = jest
           .spyOn(api, "querySnsDerivedState")
@@ -200,6 +204,8 @@ describe("sns-services", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         };
         const responses = snsResponsesFor([
           {
@@ -264,6 +270,8 @@ describe("sns-services", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         };
         const responses = snsResponsesFor([
           {
@@ -340,6 +348,8 @@ describe("sns-services", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         };
         const responses = snsResponsesFor([
           {

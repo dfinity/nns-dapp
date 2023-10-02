@@ -1,0 +1,3366 @@
+[
+  {
+    "index": 10,
+    "canister_ids": {
+      "root_canister_id": "x4kx5-ziaaa-aaaaq-aabeq-cai",
+      "governance_canister_id": "xvj4b-paaaa-aaaaq-aabfa-cai",
+      "index_canister_id": "xaonm-oiaaa-aaaaq-aabgq-cai",
+      "swap_canister_id": "xhply-dqaaa-aaaaq-aabga-cai",
+      "ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "x4kx5-ziaaa-aaaaq-aabeq-cai",
+      "swap": "xhply-dqaaa-aaaaq-aabga-cai",
+      "ledger": "xsi2v-cyaaa-aaaaq-aabfq-cai",
+      "index": "xaonm-oiaaa-aaaaq-aabgq-cai",
+      "governance": "xvj4b-paaaa-aaaaq-aabfa-cai",
+      "dapps": [
+        "gdtip-xiaaa-aaaah-qdbnq-cai",
+        "gwuzc-waaaa-aaaah-qdboa-cai",
+        "grv7w-3yaaa-aaaah-qdboq-cai",
+        "g7xs6-aiaaa-aaaah-qdbpq-cai",
+        "ddmi3-laaaa-aaaah-qdbqa-cai"
+      ],
+      "archives": ["uq5hk-siaaa-aaaaq-aaboq-cai"]
+    },
+    "meta": {
+      "url": "https://modclub.app",
+      "name": "Modclub",
+      "description": "Modclub is a decentralized crowdwork platform built on the IC that aims to support dApps by handing resource-intensive tasks such as moderation, user verification and data labeling.",
+      "logo": "/v1/sns/root/x4kx5-ziaaa-aaaaq-aabeq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1694553093582,
+          "name": "commit_proposed_batch",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
+              "target_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_proposal_id": null,
+          "sns_root_canister_id": "x4kx5-ziaaa-aaaaq-aabeq-cai",
+          "min_participant_icp_e8s": null,
+          "neuron_basket_construction_parameters": null,
+          "fallback_controller_principal_ids": [
+            "d2qpe-l63sh-47jxj-2764e-pa6i7-qocm4-icuie-nt2lb-yiwwk-bmq7z-pqe",
+            "3v3rk-jx25f-dl43p-osgkw-6dm7b-wguwy-kjcun-lyo3w-lsuev-kcdnp-7qe",
+            "upgqi-bms4w-gza6f-xgl4l-b7plh-xyyjx-ahmcn-ocnv6-cfio4-53j6g-4ae"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 3600000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": null,
+          "swap_due_timestamp_seconds": null,
+          "min_participants": null,
+          "sns_token_e8s": null,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 10000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai",
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": null,
+          "sns_governance_canister_id": "xvj4b-paaaa-aaaaq-aabfa-cai",
+          "restricted_countries": { "iso_codes": ["US"] },
+          "min_icp_e8s": null
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000278,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7889400,
+            "count": 5
+          },
+          "max_icp_e8s": 125000000000000,
+          "swap_due_timestamp_seconds": 1692985959,
+          "min_participants": 300,
+          "sns_token_e8s": 22500000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 15000000000000,
+          "min_icp_e8s": 65000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124033,
+        "decentralization_sale_open_timestamp_seconds": 1692358083
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 65463447851118,
+        "sns_tokens_per_icp": 343.70325
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Modclub" }],
+      ["icrc1:symbol", { "Text": "MOD" }],
+      ["icrc1:fee", { "Nat": [10000] }]
+    ],
+    "icrc1_fee": [10000],
+    "icrc1_total_supply": 98000003562739984,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000278,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7889400,
+          "count": 5
+        },
+        "max_icp_e8s": 125000000000000,
+        "swap_due_timestamp_seconds": 1692985959,
+        "min_participants": 300,
+        "sns_token_e8s": 22500000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 15000000000000,
+        "min_icp_e8s": 65000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": null,
+        "sns_root_canister_id": "x4kx5-ziaaa-aaaaq-aabeq-cai",
+        "min_participant_icp_e8s": null,
+        "neuron_basket_construction_parameters": null,
+        "fallback_controller_principal_ids": [
+          "d2qpe-l63sh-47jxj-2764e-pa6i7-qocm4-icuie-nt2lb-yiwwk-bmq7z-pqe",
+          "3v3rk-jx25f-dl43p-osgkw-6dm7b-wguwy-kjcun-lyo3w-lsuev-kcdnp-7qe",
+          "upgqi-bms4w-gza6f-xgl4l-b7plh-xyyjx-ahmcn-ocnv6-cfio4-53j6g-4ae"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 3600000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": null,
+        "swap_due_timestamp_seconds": null,
+        "min_participants": null,
+        "sns_token_e8s": null,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 10000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai",
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": null,
+        "sns_governance_canister_id": "xvj4b-paaaa-aaaaq-aabfa-cai",
+        "restricted_countries": { "iso_codes": ["US"] },
+        "min_icp_e8s": null
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 343.7032470703125,
+      "buyer_total_icp_e8s": 65463447851118,
+      "cf_participant_count": 149,
+      "direct_participant_count": 351,
+      "cf_neuron_count": 187
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1692358083,
+      "lifecycle": 3
+    }
+  },
+  {
+    "index": 11,
+    "canister_ids": {
+      "root_canister_id": "xjngq-yaaaa-aaaaq-aabha-cai",
+      "governance_canister_id": "xomae-vyaaa-aaaaq-aabhq-cai",
+      "index_canister_id": "v5tde-5aaaa-aaaaq-aabja-cai",
+      "swap_canister_id": "vuqiy-liaaa-aaaaq-aabiq-cai",
+      "ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai"
+    },
+    "list_sns_canisters": {
+      "root": "xjngq-yaaaa-aaaaq-aabha-cai",
+      "swap": "vuqiy-liaaa-aaaaq-aabiq-cai",
+      "ledger": "vtrom-gqaaa-aaaaq-aabia-cai",
+      "index": "v5tde-5aaaa-aaaaq-aabja-cai",
+      "governance": "xomae-vyaaa-aaaaq-aabhq-cai",
+      "dapps": [
+        "6rvbl-uqaaa-aaaal-ab24a-cai",
+        "7p3gx-jaaaa-aaaal-acbda-cai",
+        "awcae-maaaa-aaaam-abmyq-cai",
+        "5hr3g-hqaaa-aaaap-abbxa-cai",
+        "jozll-yaaaa-aaaap-abf5q-cai",
+        "j362g-ziaaa-aaaap-abf6a-cai",
+        "j474s-uqaaa-aaaap-abf6q-cai",
+        "jv4xo-cyaaa-aaaap-abf7a-cai",
+        "js5r2-paaaa-aaaap-abf7q-cai"
+      ],
+      "archives": ["r6akw-vqaaa-aaaaq-aabsa-cai"]
+    },
+    "meta": {
+      "url": "https://boomdao.xyz/",
+      "name": "BOOM DAO",
+      "description": "BOOM DAO is an all-in-one web3 game platform and protocol running 100% on-chain on the Internet Computer",
+      "logo": "/v1/sns/root/xjngq-yaaaa-aaaaq-aabha-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1000,
+          "name": "SNS Asset canister function take_ownership",
+          "description": "Add a new custom SNS function to the asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "awcae-maaaa-aaaam-abmyq-cai",
+              "target_canister_id": "awcae-maaaa-aaaam-abmyq-cai",
+              "validator_method_name": "validate_take_ownership",
+              "target_method_name": "take_ownership"
+            }
+          }
+        },
+        {
+          "id": 1001,
+          "name": "SNS Asset canister function grant_permission",
+          "description": "Add a new custom SNS function to the asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "awcae-maaaa-aaaam-abmyq-cai",
+              "target_canister_id": "awcae-maaaa-aaaam-abmyq-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_proposal_id": null,
+          "sns_root_canister_id": "xjngq-yaaaa-aaaaq-aabha-cai",
+          "min_participant_icp_e8s": null,
+          "neuron_basket_construction_parameters": null,
+          "fallback_controller_principal_ids": [
+            "2ot7t-idkzt-murdg-in2md-bmj2w-urej7-ft6wa-i4bd3-zglmv-pf42b-zqe"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 500000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": null,
+          "swap_due_timestamp_seconds": null,
+          "min_participants": null,
+          "sns_token_e8s": null,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai",
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": null,
+          "sns_governance_canister_id": "xomae-vyaaa-aaaaq-aabhq-cai",
+          "restricted_countries": null,
+          "min_icp_e8s": null
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7776000,
+            "count": 5
+          },
+          "max_icp_e8s": 80000000000000,
+          "swap_due_timestamp_seconds": 1694800800,
+          "min_participants": 300,
+          "sns_token_e8s": 40000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 7500000000000,
+          "min_icp_e8s": 40000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124292,
+        "decentralization_sale_open_timestamp_seconds": 1693715783
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 40898495383898,
+        "sns_tokens_per_icp": 978.03107
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "BoomDAO" }],
+      ["icrc1:symbol", { "Text": "BOOM" }],
+      ["icrc1:fee", { "Nat": [100000] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 99999997620400000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7776000,
+          "count": 5
+        },
+        "max_icp_e8s": 80000000000000,
+        "swap_due_timestamp_seconds": 1694800800,
+        "min_participants": 300,
+        "sns_token_e8s": 40000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 7500000000000,
+        "min_icp_e8s": 40000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": null,
+        "sns_root_canister_id": "xjngq-yaaaa-aaaaq-aabha-cai",
+        "min_participant_icp_e8s": null,
+        "neuron_basket_construction_parameters": null,
+        "fallback_controller_principal_ids": [
+          "2ot7t-idkzt-murdg-in2md-bmj2w-urej7-ft6wa-i4bd3-zglmv-pf42b-zqe"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 500000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": null,
+        "swap_due_timestamp_seconds": null,
+        "min_participants": null,
+        "sns_token_e8s": null,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai",
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": null,
+        "sns_governance_canister_id": "xomae-vyaaa-aaaaq-aabhq-cai",
+        "restricted_countries": null,
+        "min_icp_e8s": null
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 978.0310668945312,
+      "buyer_total_icp_e8s": 40898495383898,
+      "cf_participant_count": 111,
+      "direct_participant_count": 731,
+      "cf_neuron_count": 145
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1693715783,
+      "lifecycle": 3
+    }
+  },
+  {
+    "index": 12,
+    "canister_ids": {
+      "root_canister_id": "v2sfq-qyaaa-aaaaq-aabjq-cai",
+      "governance_canister_id": "vpvu5-rqaaa-aaaaq-aabka-cai",
+      "index_canister_id": "vgw7b-hyaaa-aaaaq-aablq-cai",
+      "swap_canister_id": "vbxzv-kaaaa-aaaaq-aabla-cai",
+      "ledger_canister_id": "viusj-4iaaa-aaaaq-aabkq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "v2sfq-qyaaa-aaaaq-aabjq-cai",
+      "swap": "vbxzv-kaaaa-aaaaq-aabla-cai",
+      "ledger": "viusj-4iaaa-aaaaq-aabkq-cai",
+      "index": "vgw7b-hyaaa-aaaaq-aablq-cai",
+      "governance": "vpvu5-rqaaa-aaaaq-aabka-cai",
+      "dapps": [],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://seers.social",
+      "name": "Seers",
+      "description": "A web3 social network governed by the people for the people",
+      "logo": "/v1/sns/root/v2sfq-qyaaa-aaaaq-aabjq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 4,
+        "init": {
+          "nns_proposal_id": null,
+          "sns_root_canister_id": "v2sfq-qyaaa-aaaaq-aabjq-cai",
+          "min_participant_icp_e8s": null,
+          "neuron_basket_construction_parameters": null,
+          "fallback_controller_principal_ids": [
+            "j4wxw-qghlk-j3w4z-4bmmj-gb2yj-3og4h-qdtut-mbqaz-b7ohp-tpqiq-2qe"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 400000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": null,
+          "swap_due_timestamp_seconds": null,
+          "min_participants": null,
+          "sns_token_e8s": null,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "viusj-4iaaa-aaaaq-aabkq-cai",
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": null,
+          "sns_governance_canister_id": "vpvu5-rqaaa-aaaaq-aabka-cai",
+          "restricted_countries": null,
+          "min_icp_e8s": null
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 15778800,
+            "count": 5
+          },
+          "max_icp_e8s": 100000000000000,
+          "swap_due_timestamp_seconds": 1693780942,
+          "min_participants": 100,
+          "sns_token_e8s": 2500000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 15000000000000,
+          "min_icp_e8s": 50000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124258,
+        "decentralization_sale_open_timestamp_seconds": 1692911985
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 35193656954346,
+        "sns_tokens_per_icp": 71.03553
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "SEER" }],
+      ["icrc1:symbol", { "Text": "SEER" }],
+      ["icrc1:fee", { "Nat": [100000] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 10000021600000000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 15778800,
+          "count": 5
+        },
+        "max_icp_e8s": 100000000000000,
+        "swap_due_timestamp_seconds": 1693780942,
+        "min_participants": 100,
+        "sns_token_e8s": 2500000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 15000000000000,
+        "min_icp_e8s": 50000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": null,
+        "sns_root_canister_id": "v2sfq-qyaaa-aaaaq-aabjq-cai",
+        "min_participant_icp_e8s": null,
+        "neuron_basket_construction_parameters": null,
+        "fallback_controller_principal_ids": [
+          "j4wxw-qghlk-j3w4z-4bmmj-gb2yj-3og4h-qdtut-mbqaz-b7ohp-tpqiq-2qe"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 400000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": null,
+        "swap_due_timestamp_seconds": null,
+        "min_participants": null,
+        "sns_token_e8s": null,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "viusj-4iaaa-aaaaq-aabkq-cai",
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": null,
+        "sns_governance_canister_id": "vpvu5-rqaaa-aaaaq-aabka-cai",
+        "restricted_countries": null,
+        "min_icp_e8s": null
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 71.03553009033203,
+      "buyer_total_icp_e8s": 35193656954346,
+      "cf_participant_count": 119,
+      "direct_participant_count": 248,
+      "cf_neuron_count": 149
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1692911985,
+      "lifecycle": 4
+    }
+  },
+  {
+    "index": 13,
+    "canister_ids": {
+      "root_canister_id": "uly3p-iqaaa-aaaaq-aabma-cai",
+      "governance_canister_id": "umz53-fiaaa-aaaaq-aabmq-cai",
+      "index_canister_id": "ux4b6-7qaaa-aaaaq-aaboa-cai",
+      "swap_canister_id": "uc3qt-6yaaa-aaaaq-aabnq-cai",
+      "ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai"
+    },
+    "list_sns_canisters": {
+      "root": "uly3p-iqaaa-aaaaq-aabma-cai",
+      "swap": "uc3qt-6yaaa-aaaaq-aabnq-cai",
+      "ledger": "uf2wh-taaaa-aaaaq-aabna-cai",
+      "index": "ux4b6-7qaaa-aaaaq-aaboa-cai",
+      "governance": "umz53-fiaaa-aaaaq-aabmq-cai",
+      "dapps": [
+        "7xnbj-wqaaa-aaaap-aa4ea-cai",
+        "5escj-6iaaa-aaaap-aa4kq-cai",
+        "443xk-qiaaa-aaaap-aa4oq-cai",
+        "4sz2c-lyaaa-aaaap-aa4pq-cai",
+        "zjdgt-niaaa-aaaap-aa4qq-cai",
+        "zhbl3-wyaaa-aaaap-aa4rq-cai"
+      ],
+      "archives": ["uz6mw-eaaaa-aaaaq-aabpa-cai"]
+    },
+    "meta": {
+      "url": "https://catalyze.one",
+      "name": "Catalyze",
+      "description": "Catalyze is a one-stop social-fi application for organising your Web3 experience",
+      "logo": "/v1/sns/root/uly3p-iqaaa-aaaaq-aabma-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_proposal_id": null,
+          "sns_root_canister_id": "uly3p-iqaaa-aaaaq-aabma-cai",
+          "min_participant_icp_e8s": null,
+          "neuron_basket_construction_parameters": null,
+          "fallback_controller_principal_ids": [
+            "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",
+            "efaeg-aiaaa-aaaap-aan6a-cai"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 400000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": null,
+          "swap_due_timestamp_seconds": null,
+          "min_participants": null,
+          "sns_token_e8s": null,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai",
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": null,
+          "sns_governance_canister_id": "umz53-fiaaa-aaaaq-aabmq-cai",
+          "restricted_countries": null,
+          "min_icp_e8s": null
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 5259486,
+            "count": 7
+          },
+          "max_icp_e8s": 130000000000000,
+          "swap_due_timestamp_seconds": 1694207982,
+          "min_participants": 125,
+          "sns_token_e8s": 11250000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 15000000000000,
+          "min_icp_e8s": 60000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124264,
+        "decentralization_sale_open_timestamp_seconds": 1693223081
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 60200554902099,
+        "sns_tokens_per_icp": 186.87535
+      }
+    },
+    "icrc1_metadata": [
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "CatalyzeDAO" }],
+      ["icrc1:symbol", { "Text": "CAT" }],
+      ["icrc1:fee", { "Nat": [100000] }],
+      ["icrc1:max_memo_length", { "Nat": [32] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 49999999176900000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 5259486,
+          "count": 7
+        },
+        "max_icp_e8s": 130000000000000,
+        "swap_due_timestamp_seconds": 1694207982,
+        "min_participants": 125,
+        "sns_token_e8s": 11250000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 15000000000000,
+        "min_icp_e8s": 60000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": null,
+        "sns_root_canister_id": "uly3p-iqaaa-aaaaq-aabma-cai",
+        "min_participant_icp_e8s": null,
+        "neuron_basket_construction_parameters": null,
+        "fallback_controller_principal_ids": [
+          "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",
+          "efaeg-aiaaa-aaaap-aan6a-cai"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 400000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": null,
+        "swap_due_timestamp_seconds": null,
+        "min_participants": null,
+        "sns_token_e8s": null,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai",
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": null,
+        "sns_governance_canister_id": "umz53-fiaaa-aaaaq-aabmq-cai",
+        "restricted_countries": null,
+        "min_icp_e8s": null
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 186.87535095214844,
+      "buyer_total_icp_e8s": 60200554902099,
+      "cf_participant_count": 165,
+      "direct_participant_count": 344,
+      "cf_neuron_count": 206
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1693223081,
+      "lifecycle": 3
+    }
+  },
+  {
+    "index": 14,
+    "canister_ids": {
+      "root_canister_id": "u67kc-jyaaa-aaaaq-aabpq-cai",
+      "governance_canister_id": "rceqh-cqaaa-aaaaq-aabqa-cai",
+      "index_canister_id": "rlh33-uyaaa-aaaaq-aabrq-cai",
+      "swap_canister_id": "rmg5p-zaaaa-aaaaq-aabra-cai",
+      "ledger_canister_id": "rffwt-piaaa-aaaaq-aabqq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "u67kc-jyaaa-aaaaq-aabpq-cai",
+      "swap": "rmg5p-zaaaa-aaaaq-aabra-cai",
+      "ledger": "rffwt-piaaa-aaaaq-aabqq-cai",
+      "index": "rlh33-uyaaa-aaaaq-aabrq-cai",
+      "governance": "rceqh-cqaaa-aaaaq-aabqa-cai",
+      "dapps": ["oulla-fyaaa-aaaag-qa6fa-cai", "otknu-iaaaa-aaaag-qa6fq-cai"],
+      "archives": ["qupim-xaaaa-aaaaq-aabva-cai"]
+    },
+    "meta": {
+      "url": "https://icx.one",
+      "name": "ICX ",
+      "description": "A web3 social network governed by the people for the people",
+      "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_proposal_id": 124483,
+          "sns_root_canister_id": "u67kc-jyaaa-aaaaq-aabpq-cai",
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 5
+          },
+          "fallback_controller_principal_ids": [
+            "j4wxw-qghlk-j3w4z-4bmmj-gb2yj-3og4h-qdtut-mbqaz-b7ohp-tpqiq-2qe"
+          ],
+          "max_icp_e8s": 15000000000000,
+          "neuron_minimum_stake_e8s": 400000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": 1694606400,
+          "swap_due_timestamp_seconds": 1695816000,
+          "min_participants": 100,
+          "sns_token_e8s": 1600000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "rffwt-piaaa-aaaaq-aabqq-cai",
+          "neurons_fund_participants": {
+            "cf_participants": [
+              {
+                "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13566927722377877263,
+                    "amount_icp_e8s": 130468975
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 12334166125915503973,
+                    "amount_icp_e8s": 197982278
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15011532945690832154,
+                    "amount_icp_e8s": 154282197
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "4qwmx-2gpwj-gzp7n-pp7if-zmlky-wwi72-blvhr-en56l-hudfc-4tqp3-zqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 3699891520180225407,
+                    "amount_icp_e8s": 105305157
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13026850397162484915,
+                    "amount_icp_e8s": 145693109
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 17975038099807255103,
+                    "amount_icp_e8s": 1171302892
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7938858946561142142,
+                    "amount_icp_e8s": 1222631620
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 2504480713879988761,
+                    "amount_icp_e8s": 150128501782
+                  },
+                  {
+                    "nns_neuron_id": 2878461234890176851,
+                    "amount_icp_e8s": 150128616220
+                  },
+                  {
+                    "nns_neuron_id": 3363957719032828613,
+                    "amount_icp_e8s": 150128521042
+                  },
+                  {
+                    "nns_neuron_id": 3928908328151602646,
+                    "amount_icp_e8s": 150595256742
+                  },
+                  {
+                    "nns_neuron_id": 9901651796743559254,
+                    "amount_icp_e8s": 150656886820
+                  },
+                  {
+                    "nns_neuron_id": 11071803212533249048,
+                    "amount_icp_e8s": 150128650551
+                  },
+                  {
+                    "nns_neuron_id": 12976690934798136360,
+                    "amount_icp_e8s": 150128597799
+                  },
+                  {
+                    "nns_neuron_id": 13153673844000452857,
+                    "amount_icp_e8s": 150130337319
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8049406915244894829,
+                    "amount_icp_e8s": 1425225386
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 11083087099833898385,
+                    "amount_icp_e8s": 106987558
+                  },
+                  {
+                    "nns_neuron_id": 15956582264088936912,
+                    "amount_icp_e8s": 651610678
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 11784998591443649619,
+                    "amount_icp_e8s": 104825662
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "d6pn6-d32kv-lbaoo-kcxxn-rgljj-6nbot-sunrr-jrstf-m3nua-qrral-qae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 9778540899787257535,
+                    "amount_icp_e8s": 820447910
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 14761547506790227126,
+                    "amount_icp_e8s": 415849540
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13563066032962698908,
+                    "amount_icp_e8s": 384790604
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15150883666369388939,
+                    "amount_icp_e8s": 1691231934
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13483663432099512731,
+                    "amount_icp_e8s": 272026681
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 11467699673977592853,
+                    "amount_icp_e8s": 423566766
+                  },
+                  {
+                    "nns_neuron_id": 16774420619260833717,
+                    "amount_icp_e8s": 233891037
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1242658343111789314,
+                    "amount_icp_e8s": 144281049797
+                  },
+                  {
+                    "nns_neuron_id": 4897496680725431147,
+                    "amount_icp_e8s": 144281002269
+                  },
+                  {
+                    "nns_neuron_id": 6910740987914009099,
+                    "amount_icp_e8s": 144281083094
+                  },
+                  {
+                    "nns_neuron_id": 7932924058197672739,
+                    "amount_icp_e8s": 144281017575
+                  },
+                  {
+                    "nns_neuron_id": 10758769332711885965,
+                    "amount_icp_e8s": 144281975203
+                  },
+                  {
+                    "nns_neuron_id": 11516097501595611453,
+                    "amount_icp_e8s": 144280206291
+                  },
+                  {
+                    "nns_neuron_id": 14046564505849618283,
+                    "amount_icp_e8s": 144281946471
+                  },
+                  {
+                    "nns_neuron_id": 16300745642354040055,
+                    "amount_icp_e8s": 144280187226
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 5944070935127277981,
+                    "amount_icp_e8s": 135137836
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 16055835907877356803,
+                    "amount_icp_e8s": 166058527
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "k24kl-ozdhe-47ebv-3ikez-yh5kb-c57ou-lsuwf-ldrib-h2jfu-mqjnp-2qe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 3035116862528258081,
+                    "amount_icp_e8s": 184743409
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 16063193423312541416,
+                    "amount_icp_e8s": 231186834
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1160176308921370712,
+                    "amount_icp_e8s": 133120680
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15870086969632063753,
+                    "amount_icp_e8s": 1923749235878
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7840257629152633478,
+                    "amount_icp_e8s": 534171912
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 5504697524318486221,
+                    "amount_icp_e8s": 139261979
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 10656995968046604522,
+                    "amount_icp_e8s": 992536243
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15232784191673766676,
+                    "amount_icp_e8s": 947023568
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7672559291963315980,
+                    "amount_icp_e8s": 166500874
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 2065739200102969000,
+                    "amount_icp_e8s": 165095420
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8789748484325811754,
+                    "amount_icp_e8s": 135367766
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8769572786406258318,
+                    "amount_icp_e8s": 1697020317936
+                  }
+                ]
+              }
+            ]
+          },
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 5000000000000,
+          "sns_governance_canister_id": "rceqh-cqaaa-aaaaq-aabqa-cai",
+          "restricted_countries": { "iso_codes": ["US"] },
+          "min_icp_e8s": 10000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 5
+          },
+          "max_icp_e8s": 15000000000000,
+          "swap_due_timestamp_seconds": 1695816000,
+          "min_participants": 100,
+          "sns_token_e8s": 1600000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 5000000000000,
+          "min_icp_e8s": 10000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124483,
+        "decentralization_sale_open_timestamp_seconds": 1694606400
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 15000000000000,
+        "sns_tokens_per_icp": 106.666664
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,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"
+        }
+      ],
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "IC-X" }],
+      ["icrc1:symbol", { "Text": "ICX" }],
+      ["icrc1:fee", { "Nat": [100000] }],
+      ["icrc1:max_memo_length", { "Nat": [32] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 10000021315500000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 5
+        },
+        "max_icp_e8s": 15000000000000,
+        "swap_due_timestamp_seconds": 1695816000,
+        "min_participants": 100,
+        "sns_token_e8s": 1600000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 5000000000000,
+        "min_icp_e8s": 10000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 124483,
+        "sns_root_canister_id": "u67kc-jyaaa-aaaaq-aabpq-cai",
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 5
+        },
+        "fallback_controller_principal_ids": [
+          "j4wxw-qghlk-j3w4z-4bmmj-gb2yj-3og4h-qdtut-mbqaz-b7ohp-tpqiq-2qe"
+        ],
+        "max_icp_e8s": 15000000000000,
+        "neuron_minimum_stake_e8s": 400000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": 1694606400,
+        "swap_due_timestamp_seconds": 1695816000,
+        "min_participants": 100,
+        "sns_token_e8s": 1600000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "rffwt-piaaa-aaaaq-aabqq-cai",
+        "neurons_fund_participants": {
+          "cf_participants": [
+            {
+              "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13566927722377877263,
+                  "amount_icp_e8s": 130468975
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 12334166125915503973,
+                  "amount_icp_e8s": 197982278
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15011532945690832154,
+                  "amount_icp_e8s": 154282197
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "4qwmx-2gpwj-gzp7n-pp7if-zmlky-wwi72-blvhr-en56l-hudfc-4tqp3-zqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 3699891520180225407,
+                  "amount_icp_e8s": 105305157
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13026850397162484915,
+                  "amount_icp_e8s": 145693109
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 17975038099807255103,
+                  "amount_icp_e8s": 1171302892
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7938858946561142142,
+                  "amount_icp_e8s": 1222631620
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 2504480713879988761,
+                  "amount_icp_e8s": 150128501782
+                },
+                {
+                  "nns_neuron_id": 2878461234890176851,
+                  "amount_icp_e8s": 150128616220
+                },
+                {
+                  "nns_neuron_id": 3363957719032828613,
+                  "amount_icp_e8s": 150128521042
+                },
+                {
+                  "nns_neuron_id": 3928908328151602646,
+                  "amount_icp_e8s": 150595256742
+                },
+                {
+                  "nns_neuron_id": 9901651796743559254,
+                  "amount_icp_e8s": 150656886820
+                },
+                {
+                  "nns_neuron_id": 11071803212533249048,
+                  "amount_icp_e8s": 150128650551
+                },
+                {
+                  "nns_neuron_id": 12976690934798136360,
+                  "amount_icp_e8s": 150128597799
+                },
+                {
+                  "nns_neuron_id": 13153673844000452857,
+                  "amount_icp_e8s": 150130337319
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8049406915244894829,
+                  "amount_icp_e8s": 1425225386
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 11083087099833898385,
+                  "amount_icp_e8s": 106987558
+                },
+                {
+                  "nns_neuron_id": 15956582264088936912,
+                  "amount_icp_e8s": 651610678
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 11784998591443649619,
+                  "amount_icp_e8s": 104825662
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "d6pn6-d32kv-lbaoo-kcxxn-rgljj-6nbot-sunrr-jrstf-m3nua-qrral-qae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 9778540899787257535,
+                  "amount_icp_e8s": 820447910
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 14761547506790227126,
+                  "amount_icp_e8s": 415849540
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13563066032962698908,
+                  "amount_icp_e8s": 384790604
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15150883666369388939,
+                  "amount_icp_e8s": 1691231934
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13483663432099512731,
+                  "amount_icp_e8s": 272026681
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 11467699673977592853,
+                  "amount_icp_e8s": 423566766
+                },
+                {
+                  "nns_neuron_id": 16774420619260833717,
+                  "amount_icp_e8s": 233891037
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1242658343111789314,
+                  "amount_icp_e8s": 144281049797
+                },
+                {
+                  "nns_neuron_id": 4897496680725431147,
+                  "amount_icp_e8s": 144281002269
+                },
+                {
+                  "nns_neuron_id": 6910740987914009099,
+                  "amount_icp_e8s": 144281083094
+                },
+                {
+                  "nns_neuron_id": 7932924058197672739,
+                  "amount_icp_e8s": 144281017575
+                },
+                {
+                  "nns_neuron_id": 10758769332711885965,
+                  "amount_icp_e8s": 144281975203
+                },
+                {
+                  "nns_neuron_id": 11516097501595611453,
+                  "amount_icp_e8s": 144280206291
+                },
+                {
+                  "nns_neuron_id": 14046564505849618283,
+                  "amount_icp_e8s": 144281946471
+                },
+                {
+                  "nns_neuron_id": 16300745642354040055,
+                  "amount_icp_e8s": 144280187226
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 5944070935127277981,
+                  "amount_icp_e8s": 135137836
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 16055835907877356803,
+                  "amount_icp_e8s": 166058527
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "k24kl-ozdhe-47ebv-3ikez-yh5kb-c57ou-lsuwf-ldrib-h2jfu-mqjnp-2qe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 3035116862528258081,
+                  "amount_icp_e8s": 184743409
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 16063193423312541416,
+                  "amount_icp_e8s": 231186834
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1160176308921370712,
+                  "amount_icp_e8s": 133120680
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15870086969632063753,
+                  "amount_icp_e8s": 1923749235878
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7840257629152633478,
+                  "amount_icp_e8s": 534171912
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 5504697524318486221,
+                  "amount_icp_e8s": 139261979
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 10656995968046604522,
+                  "amount_icp_e8s": 992536243
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15232784191673766676,
+                  "amount_icp_e8s": 947023568
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7672559291963315980,
+                  "amount_icp_e8s": 166500874
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 2065739200102969000,
+                  "amount_icp_e8s": 165095420
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8789748484325811754,
+                  "amount_icp_e8s": 135367766
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8769572786406258318,
+                  "amount_icp_e8s": 1697020317936
+                }
+              ]
+            }
+          ]
+        },
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 5000000000000,
+        "sns_governance_canister_id": "rceqh-cqaaa-aaaaq-aabqa-cai",
+        "restricted_countries": { "iso_codes": ["US"] },
+        "min_icp_e8s": 10000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 106.66666412353516,
+      "buyer_total_icp_e8s": 15000000000000,
+      "cf_participant_count": 32,
+      "direct_participant_count": 359,
+      "cf_neuron_count": 48
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1694606400,
+      "lifecycle": 3
+    }
+  },
+  {
+    "index": 15,
+    "canister_ids": {
+      "root_canister_id": "rzbmc-yiaaa-aaaaq-aabsq-cai",
+      "governance_canister_id": "rqch6-oaaaa-aaaaq-aabta-cai",
+      "index_canister_id": "q5mdq-biaaa-aaaaq-aabuq-cai",
+      "swap_canister_id": "q2nfe-mqaaa-aaaaq-aabua-cai",
+      "ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "rzbmc-yiaaa-aaaaq-aabsq-cai",
+      "swap": "q2nfe-mqaaa-aaaaq-aabua-cai",
+      "ledger": "rxdbk-dyaaa-aaaaq-aabtq-cai",
+      "index": "q5mdq-biaaa-aaaaq-aabuq-cai",
+      "governance": "rqch6-oaaaa-aaaaq-aabta-cai",
+      "dapps": [
+        "rtqeo-eyaaa-aaaaf-qaana-cai",
+        "y2pkg-ciaaa-aaaaf-qagbq-cai",
+        "322sd-3iaaa-aaaaf-qakgq-cai",
+        "r5sjg-7iaaa-aaaaf-qaama-cai",
+        "kc4mb-myaaa-aaaaf-qajpq-cai",
+        "4m3sz-lqaaa-aaaaf-qagza-cai",
+        "exwqn-uaaaa-aaaaf-qaeaa-cai",
+        "353ux-wqaaa-aaaaf-qakga-cai",
+        "dgwwd-jaaaa-aaaaf-qai7a-cai",
+        "kq23y-aiaaa-aaaaf-qajmq-cai"
+      ],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://nuance.xyz",
+      "name": "Nuance",
+      "description": "Nuance is the world's first publishing platform built entirely on-chain. In the same way DeFi has taken the middleman out of finance Nuance does the same for the written word.\n",
+      "logo": "/v1/sns/root/rzbmc-yiaaa-aaaaq-aabsq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 2,
+        "init": {
+          "nns_proposal_id": 124514,
+          "sns_root_canister_id": "rzbmc-yiaaa-aaaaq-aabsq-cai",
+          "min_participant_icp_e8s": 1000000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 13150080,
+            "count": 5
+          },
+          "fallback_controller_principal_ids": [
+            "keqno-ecosc-a47cf-rk2ui-5ehla-noflk-jj4it-h6nku-smno2-fucgs-cae",
+            "wvhee-rnvlo-p6u4o-6fm55-jmxlu-yy2yt-dx47v-rxswo-u7kuk-dofj5-aae",
+            "3v3rk-jx25f-dl43p-osgkw-6dm7b-wguwy-kjcun-lyo3w-lsuev-kcdnp-7qe"
+          ],
+          "max_icp_e8s": 30000000000000,
+          "neuron_minimum_stake_e8s": 19900000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": 1695078000,
+          "swap_due_timestamp_seconds": 1696287600,
+          "min_participants": 50,
+          "sns_token_e8s": 3000000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
+          "neurons_fund_participants": {
+            "cf_participants": [
+              {
+                "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 17975038099807255103,
+                    "amount_icp_e8s": 2029808825
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7938858946561142142,
+                    "amount_icp_e8s": 2063009462
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 2504480713879988761,
+                    "amount_icp_e8s": 249387966609
+                  },
+                  {
+                    "nns_neuron_id": 2878461234890176851,
+                    "amount_icp_e8s": 249388156587
+                  },
+                  {
+                    "nns_neuron_id": 3363957719032828613,
+                    "amount_icp_e8s": 249387998581
+                  },
+                  {
+                    "nns_neuron_id": 3928908328151602646,
+                    "amount_icp_e8s": 250156674052
+                  },
+                  {
+                    "nns_neuron_id": 9901651796743559254,
+                    "amount_icp_e8s": 250258085637
+                  },
+                  {
+                    "nns_neuron_id": 11071803212533249048,
+                    "amount_icp_e8s": 249388213580
+                  },
+                  {
+                    "nns_neuron_id": 12976690934798136360,
+                    "amount_icp_e8s": 249388126005
+                  },
+                  {
+                    "nns_neuron_id": 13153673844000452857,
+                    "amount_icp_e8s": 249390989377
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8049406915244894829,
+                    "amount_icp_e8s": 2388776587
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15956582264088936912,
+                    "amount_icp_e8s": 1088347146
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15150883666369388939,
+                    "amount_icp_e8s": 2858269506
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1242658343111789314,
+                    "amount_icp_e8s": 239758758749
+                  },
+                  {
+                    "nns_neuron_id": 4897496680725431147,
+                    "amount_icp_e8s": 239758679820
+                  },
+                  {
+                    "nns_neuron_id": 6910740987914009099,
+                    "amount_icp_e8s": 239758814044
+                  },
+                  {
+                    "nns_neuron_id": 7932924058197672739,
+                    "amount_icp_e8s": 239758705238
+                  },
+                  {
+                    "nns_neuron_id": 10758769332711885965,
+                    "amount_icp_e8s": 239760283771
+                  },
+                  {
+                    "nns_neuron_id": 11516097501595611453,
+                    "amount_icp_e8s": 239757369734
+                  },
+                  {
+                    "nns_neuron_id": 14046564505849618283,
+                    "amount_icp_e8s": 239760236057
+                  },
+                  {
+                    "nns_neuron_id": 16300745642354040055,
+                    "amount_icp_e8s": 239757338073
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15870086969632063753,
+                    "amount_icp_e8s": 3212619049127
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 10656995968046604522,
+                    "amount_icp_e8s": 1675015379
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15232784191673766676,
+                    "amount_icp_e8s": 1678801180
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8769572786406258318,
+                    "amount_icp_e8s": 2834538351801
+                  }
+                ]
+              }
+            ]
+          },
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 5000000000000,
+          "sns_governance_canister_id": "rqch6-oaaaa-aaaaq-aabta-cai",
+          "restricted_countries": { "iso_codes": ["US"] },
+          "min_icp_e8s": 25000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 1000000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 13150080,
+            "count": 5
+          },
+          "max_icp_e8s": 30000000000000,
+          "swap_due_timestamp_seconds": 1696287600,
+          "min_participants": 50,
+          "sns_token_e8s": 3000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 5000000000000,
+          "min_icp_e8s": 25000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124514,
+        "decentralization_sale_open_timestamp_seconds": 1695078000
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 25079465387942,
+        "sns_tokens_per_icp": 119.619774
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,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"
+        }
+      ],
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Nuance" }],
+      ["icrc1:symbol", { "Text": "NUA" }],
+      ["icrc1:fee", { "Nat": [100000] }],
+      ["icrc1:max_memo_length", { "Nat": [32] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 10000000000000000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 1000000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 13150080,
+          "count": 5
+        },
+        "max_icp_e8s": 30000000000000,
+        "swap_due_timestamp_seconds": 1696287600,
+        "min_participants": 50,
+        "sns_token_e8s": 3000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 5000000000000,
+        "min_icp_e8s": 25000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 124514,
+        "sns_root_canister_id": "rzbmc-yiaaa-aaaaq-aabsq-cai",
+        "min_participant_icp_e8s": 1000000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 13150080,
+          "count": 5
+        },
+        "fallback_controller_principal_ids": [
+          "keqno-ecosc-a47cf-rk2ui-5ehla-noflk-jj4it-h6nku-smno2-fucgs-cae",
+          "wvhee-rnvlo-p6u4o-6fm55-jmxlu-yy2yt-dx47v-rxswo-u7kuk-dofj5-aae",
+          "3v3rk-jx25f-dl43p-osgkw-6dm7b-wguwy-kjcun-lyo3w-lsuev-kcdnp-7qe"
+        ],
+        "max_icp_e8s": 30000000000000,
+        "neuron_minimum_stake_e8s": 19900000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": 1695078000,
+        "swap_due_timestamp_seconds": 1696287600,
+        "min_participants": 50,
+        "sns_token_e8s": 3000000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
+        "neurons_fund_participants": {
+          "cf_participants": [
+            {
+              "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 17975038099807255103,
+                  "amount_icp_e8s": 2029808825
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7938858946561142142,
+                  "amount_icp_e8s": 2063009462
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 2504480713879988761,
+                  "amount_icp_e8s": 249387966609
+                },
+                {
+                  "nns_neuron_id": 2878461234890176851,
+                  "amount_icp_e8s": 249388156587
+                },
+                {
+                  "nns_neuron_id": 3363957719032828613,
+                  "amount_icp_e8s": 249387998581
+                },
+                {
+                  "nns_neuron_id": 3928908328151602646,
+                  "amount_icp_e8s": 250156674052
+                },
+                {
+                  "nns_neuron_id": 9901651796743559254,
+                  "amount_icp_e8s": 250258085637
+                },
+                {
+                  "nns_neuron_id": 11071803212533249048,
+                  "amount_icp_e8s": 249388213580
+                },
+                {
+                  "nns_neuron_id": 12976690934798136360,
+                  "amount_icp_e8s": 249388126005
+                },
+                {
+                  "nns_neuron_id": 13153673844000452857,
+                  "amount_icp_e8s": 249390989377
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8049406915244894829,
+                  "amount_icp_e8s": 2388776587
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15956582264088936912,
+                  "amount_icp_e8s": 1088347146
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15150883666369388939,
+                  "amount_icp_e8s": 2858269506
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1242658343111789314,
+                  "amount_icp_e8s": 239758758749
+                },
+                {
+                  "nns_neuron_id": 4897496680725431147,
+                  "amount_icp_e8s": 239758679820
+                },
+                {
+                  "nns_neuron_id": 6910740987914009099,
+                  "amount_icp_e8s": 239758814044
+                },
+                {
+                  "nns_neuron_id": 7932924058197672739,
+                  "amount_icp_e8s": 239758705238
+                },
+                {
+                  "nns_neuron_id": 10758769332711885965,
+                  "amount_icp_e8s": 239760283771
+                },
+                {
+                  "nns_neuron_id": 11516097501595611453,
+                  "amount_icp_e8s": 239757369734
+                },
+                {
+                  "nns_neuron_id": 14046564505849618283,
+                  "amount_icp_e8s": 239760236057
+                },
+                {
+                  "nns_neuron_id": 16300745642354040055,
+                  "amount_icp_e8s": 239757338073
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15870086969632063753,
+                  "amount_icp_e8s": 3212619049127
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 10656995968046604522,
+                  "amount_icp_e8s": 1675015379
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15232784191673766676,
+                  "amount_icp_e8s": 1678801180
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8769572786406258318,
+                  "amount_icp_e8s": 2834538351801
+                }
+              ]
+            }
+          ]
+        },
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 5000000000000,
+        "sns_governance_canister_id": "rqch6-oaaaa-aaaaq-aabta-cai",
+        "restricted_countries": { "iso_codes": ["US"] },
+        "min_icp_e8s": 25000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 119.6197738647461,
+      "buyer_total_icp_e8s": 25079465387942,
+      "cf_participant_count": 11,
+      "direct_participant_count": 223,
+      "cf_neuron_count": 25
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1695078000,
+      "lifecycle": 2
+    }
+  },
+  {
+    "index": 16,
+    "canister_ids": {
+      "root_canister_id": "qtooy-2yaaa-aaaaq-aabvq-cai",
+      "governance_canister_id": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+      "index_canister_id": "qpkuj-nyaaa-aaaaq-aabxq-cai",
+      "swap_canister_id": "qils5-aaaaa-aaaaq-aabxa-cai",
+      "ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "qtooy-2yaaa-aaaaq-aabvq-cai",
+      "swap": "qils5-aaaaa-aaaaq-aabxa-cai",
+      "ledger": "qbizb-wiaaa-aaaaq-aabwq-cai",
+      "index": "qpkuj-nyaaa-aaaaq-aabxq-cai",
+      "governance": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+      "dapps": [
+        "3xwpq-ziaaa-aaaah-qcn4a-cai",
+        "eukbz-7iaaa-aaaah-ac5tq-cai",
+        "fxgi7-lqaaa-aaaah-ac5va-cai",
+        "utozz-siaaa-aaaam-qaaxq-cai",
+        "aanaa-xaaaa-aaaah-aaeiq-cai",
+        "lfzsk-7qaaa-aaaah-adk2q-cai"
+      ],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://app.sonic.ooo",
+      "name": "SONIC",
+      "description": "The Open Defi Suite on Internet Computer Blockchain governed by the people for the people.\n",
+      "logo": "/v1/sns/root/qtooy-2yaaa-aaaaq-aabvq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All Topics",
+          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": { "NativeNervousSystemFunction": {} }
+        }
+      ]
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 2,
+        "init": {
+          "nns_proposal_id": 124808,
+          "sns_root_canister_id": "qtooy-2yaaa-aaaaq-aabvq-cai",
+          "min_participant_icp_e8s": 500000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7776000,
+            "count": 5
+          },
+          "fallback_controller_principal_ids": [
+            "vfk4j-pkwtu-uj3kn-apwsz-g2gm4-vmrl5-tgwbs-43c6u-mlw4d-uysvm-gae"
+          ],
+          "max_icp_e8s": 120000000000000,
+          "neuron_minimum_stake_e8s": 500000000,
+          "confirmation_text": null,
+          "swap_start_timestamp_seconds": 1695981600,
+          "swap_due_timestamp_seconds": 1696845600,
+          "min_participants": 200,
+          "sns_token_e8s": 2625000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai",
+          "neurons_fund_participants": {
+            "cf_participants": [
+              {
+                "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13566927722377877263,
+                    "amount_icp_e8s": 678401468
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 12334166125915503973,
+                    "amount_icp_e8s": 1026322751
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15011532945690832154,
+                    "amount_icp_e8s": 825989532
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13026850397162484915,
+                    "amount_icp_e8s": 736381749
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "afxjy-xzged-ttm2u-5rjp7-exday-s6uly-ea4pc-xkiok-tjzva-23isp-vae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1059431847253236918,
+                    "amount_icp_e8s": 14742301374
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 17975038099807255103,
+                    "amount_icp_e8s": 5819935709
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7938858946561142142,
+                    "amount_icp_e8s": 5608487065
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 2504480713879988761,
+                    "amount_icp_e8s": 655639705080
+                  },
+                  {
+                    "nns_neuron_id": 2878461234890176851,
+                    "amount_icp_e8s": 655640203792
+                  },
+                  {
+                    "nns_neuron_id": 3363957719032828613,
+                    "amount_icp_e8s": 655639789009
+                  },
+                  {
+                    "nns_neuron_id": 3928908328151602646,
+                    "amount_icp_e8s": 657621255989
+                  },
+                  {
+                    "nns_neuron_id": 9901651796743559254,
+                    "amount_icp_e8s": 657882145870
+                  },
+                  {
+                    "nns_neuron_id": 11071803212533249048,
+                    "amount_icp_e8s": 655640353405
+                  },
+                  {
+                    "nns_neuron_id": 12976690934798136360,
+                    "amount_icp_e8s": 655640123512
+                  },
+                  {
+                    "nns_neuron_id": 13153673844000452857,
+                    "amount_icp_e8s": 655647495810
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8049406915244894829,
+                    "amount_icp_e8s": 6405509050
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15956582264088936912,
+                    "amount_icp_e8s": 2894169754
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 11784998591443649619,
+                    "amount_icp_e8s": 508988365
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 14761547506790227126,
+                    "amount_icp_e8s": 1894038355
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13563066032962698908,
+                    "amount_icp_e8s": 1747240537
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15150883666369388939,
+                    "amount_icp_e8s": 7796694626
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 13483663432099512731,
+                    "amount_icp_e8s": 1350859072
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 11467699673977592853,
+                    "amount_icp_e8s": 2086142217
+                  },
+                  {
+                    "nns_neuron_id": 12436218258772393802,
+                    "amount_icp_e8s": 1118914700
+                  },
+                  {
+                    "nns_neuron_id": 16774420619260833717,
+                    "amount_icp_e8s": 1154691234
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1242658343111789314,
+                    "amount_icp_e8s": 630824205369
+                  },
+                  {
+                    "nns_neuron_id": 4897496680725431147,
+                    "amount_icp_e8s": 630823998010
+                  },
+                  {
+                    "nns_neuron_id": 6910740987914009099,
+                    "amount_icp_e8s": 630824350638
+                  },
+                  {
+                    "nns_neuron_id": 7932924058197672739,
+                    "amount_icp_e8s": 630824064787
+                  },
+                  {
+                    "nns_neuron_id": 10758769332711885965,
+                    "amount_icp_e8s": 630828142220
+                  },
+                  {
+                    "nns_neuron_id": 11516097501595611453,
+                    "amount_icp_e8s": 630820625835
+                  },
+                  {
+                    "nns_neuron_id": 14046564505849618283,
+                    "amount_icp_e8s": 630828016866
+                  },
+                  {
+                    "nns_neuron_id": 16300745642354040055,
+                    "amount_icp_e8s": 630820542656
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 5944070935127277981,
+                    "amount_icp_e8s": 783930346
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 16055835907877356803,
+                    "amount_icp_e8s": 833243381
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 16063193423312541416,
+                    "amount_icp_e8s": 1092832611
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 1160176308921370712,
+                    "amount_icp_e8s": 614739173
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15870086969632063753,
+                    "amount_icp_e8s": 8540180530428
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7840257629152633478,
+                    "amount_icp_e8s": 2586624467
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "np6j7-gcacf-ssqio-rlb4m-aeewg-ryus3-md2ng-h4qje-mr7h6-pqhnh-tqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8130034458097217294,
+                    "amount_icp_e8s": 631146625
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 5504697524318486221,
+                    "amount_icp_e8s": 612199575
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 10656995968046604522,
+                    "amount_icp_e8s": 4555165100
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 15232784191673766676,
+                    "amount_icp_e8s": 5046412712
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 7672559291963315980,
+                    "amount_icp_e8s": 762251987
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 2065739200102969000,
+                    "amount_icp_e8s": 764277805
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8789748484325811754,
+                    "amount_icp_e8s": 633434227
+                  }
+                ]
+              },
+              {
+                "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+                "cf_neurons": [
+                  {
+                    "nns_neuron_id": 8769572786406258318,
+                    "amount_icp_e8s": 7543845187356
+                  }
+                ]
+              }
+            ]
+          },
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 15000000000000,
+          "sns_governance_canister_id": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+          "restricted_countries": {
+            "iso_codes": ["US", "KP", "CU", "SD", "SY", "IR", "VE"]
+          },
+          "min_icp_e8s": 50000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 500000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7776000,
+            "count": 5
+          },
+          "max_icp_e8s": 120000000000000,
+          "swap_due_timestamp_seconds": 1696845600,
+          "min_participants": 200,
+          "sns_token_e8s": 2625000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 15000000000000,
+          "min_icp_e8s": 50000000000000
+        },
+        "open_sns_token_swap_proposal_id": 124808,
+        "decentralization_sale_open_timestamp_seconds": 1695981600
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 37055812660973,
+        "sns_tokens_per_icp": 70.83909
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIYAAACGCAYAAAAYefKRAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFyGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0NDg4LCAyMDIwLzA3LzEwLTIyOjA2OjUzICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjIuMCAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDIzLTA5LTE5VDE2OjIzOjEyKzA1OjMwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIzLTA5LTE5VDE2OjIzOjEyKzA1OjMwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyMy0wOS0xOVQxNjoyMzoxMiswNTozMCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0ZjFlNDkyNi04OWQyLTk4NDQtYWEwNi01MTljOTllNmEwYzMiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpiZjgxZDRlNi1kMmI5LTM2NDctOWM3NC03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"
+        }
+      ],
+      ["icrc1:decimals", { "Nat": [8] }],
+      ["icrc1:name", { "Text": "Sonic" }],
+      ["icrc1:symbol", { "Text": "SONIC" }],
+      ["icrc1:fee", { "Nat": [100000] }],
+      ["icrc1:max_memo_length", { "Nat": [32] }]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 12500000000000000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 500000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7776000,
+          "count": 5
+        },
+        "max_icp_e8s": 120000000000000,
+        "swap_due_timestamp_seconds": 1696845600,
+        "min_participants": 200,
+        "sns_token_e8s": 2625000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 15000000000000,
+        "min_icp_e8s": 50000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 124808,
+        "sns_root_canister_id": "qtooy-2yaaa-aaaaq-aabvq-cai",
+        "min_participant_icp_e8s": 500000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7776000,
+          "count": 5
+        },
+        "fallback_controller_principal_ids": [
+          "vfk4j-pkwtu-uj3kn-apwsz-g2gm4-vmrl5-tgwbs-43c6u-mlw4d-uysvm-gae"
+        ],
+        "max_icp_e8s": 120000000000000,
+        "neuron_minimum_stake_e8s": 500000000,
+        "confirmation_text": null,
+        "swap_start_timestamp_seconds": 1695981600,
+        "swap_due_timestamp_seconds": 1696845600,
+        "min_participants": 200,
+        "sns_token_e8s": 2625000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai",
+        "neurons_fund_participants": {
+          "cf_participants": [
+            {
+              "hotkey_principal": "2rixd-sr6c5-hkwej-ukpj6-2o4ov-ijyy7-n752j-4sf4o-4htzv-r7jzs-sqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13566927722377877263,
+                  "amount_icp_e8s": 678401468
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "2xnq2-d3onx-x6irj-qz2ag-w52bi-iett5-uk5jp-gvoeo-frbf5-2hrtv-cqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 12334166125915503973,
+                  "amount_icp_e8s": 1026322751
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "3ty73-ykirl-b5ia4-dllwd-mc7gn-kd6zf-pvvtw-ddt3u-onf2r-m54ce-lqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15011532945690832154,
+                  "amount_icp_e8s": 825989532
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "6vopw-owdui-i5ff3-xjeki-dc5on-3htcs-skgck-jetkh-4v7sn-2qud2-pae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13026850397162484915,
+                  "amount_icp_e8s": 736381749
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "afxjy-xzged-ttm2u-5rjp7-exday-s6uly-ea4pc-xkiok-tjzva-23isp-vae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1059431847253236918,
+                  "amount_icp_e8s": 14742301374
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "amatj-baend-pdd4b-tantp-b3heu-uvusn-abmj5-hkhf2-xlvfm-jy6xp-uae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 17975038099807255103,
+                  "amount_icp_e8s": 5819935709
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bgmtq-s5ra3-l4ftn-zmi5f-wg2o4-zolb4-pyyez-hyttd-7rvuw-r3gyl-4ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7938858946561142142,
+                  "amount_icp_e8s": 5608487065
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "bqjsc-ygbpe-gtqrs-nq3mf-d4iot-n2m7r-cfld2-iynvs-ls5qf-ffu2w-vqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 2504480713879988761,
+                  "amount_icp_e8s": 655639705080
+                },
+                {
+                  "nns_neuron_id": 2878461234890176851,
+                  "amount_icp_e8s": 655640203792
+                },
+                {
+                  "nns_neuron_id": 3363957719032828613,
+                  "amount_icp_e8s": 655639789009
+                },
+                {
+                  "nns_neuron_id": 3928908328151602646,
+                  "amount_icp_e8s": 657621255989
+                },
+                {
+                  "nns_neuron_id": 9901651796743559254,
+                  "amount_icp_e8s": 657882145870
+                },
+                {
+                  "nns_neuron_id": 11071803212533249048,
+                  "amount_icp_e8s": 655640353405
+                },
+                {
+                  "nns_neuron_id": 12976690934798136360,
+                  "amount_icp_e8s": 655640123512
+                },
+                {
+                  "nns_neuron_id": 13153673844000452857,
+                  "amount_icp_e8s": 655647495810
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "byfqe-a6vvd-vxehg-k5hi3-ij3v3-7n6qv-smmxm-v3vg7-mye6g-thgrs-kae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8049406915244894829,
+                  "amount_icp_e8s": 6405509050
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "c4dgi-zb67y-vgmq3-gpm55-szzjo-mc3kt-jjov3-yytoy-ltq6t-ptyyv-lqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15956582264088936912,
+                  "amount_icp_e8s": 2894169754
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "d6bux-wmarh-t3eee-dsp2z-kvh6t-pimjq-s7gll-lzjtc-663t5-it7h5-yae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 11784998591443649619,
+                  "amount_icp_e8s": 508988365
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "dhusf-pil4u-7e7v4-whsae-gy4tv-dcfob-gxz6m-gq7k5-pxen3-qsu5s-eqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 14761547506790227126,
+                  "amount_icp_e8s": 1894038355
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "dk77b-z5q54-cqk3s-rrxa5-byor2-udjpq-5sgko-bcxsu-7kmiq-vlosx-sae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13563066032962698908,
+                  "amount_icp_e8s": 1747240537
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "etynm-5engo-23sxo-jlss2-7jnkl-zxqv2-3s3s7-w7kpt-uaqnb-ckg6m-rae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15150883666369388939,
+                  "amount_icp_e8s": 7796694626
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "gmk4q-vviqd-2vtq3-qmkcv-lbji5-pg2ca-g4rnn-r5cid-7rvm6-yxurj-pqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 13483663432099512731,
+                  "amount_icp_e8s": 1350859072
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "hqfya-v75jf-zapzr-v6bs4-pfvzf-kstkc-wepop-qfyl3-wv3vt-4nftn-oae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 11467699673977592853,
+                  "amount_icp_e8s": 2086142217
+                },
+                {
+                  "nns_neuron_id": 12436218258772393802,
+                  "amount_icp_e8s": 1118914700
+                },
+                {
+                  "nns_neuron_id": 16774420619260833717,
+                  "amount_icp_e8s": 1154691234
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "hrpgd-p2dys-gd5tb-krk4d-nswtt-un5h3-x6btw-j4sdm-wvscw-o2yej-iqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1242658343111789314,
+                  "amount_icp_e8s": 630824205369
+                },
+                {
+                  "nns_neuron_id": 4897496680725431147,
+                  "amount_icp_e8s": 630823998010
+                },
+                {
+                  "nns_neuron_id": 6910740987914009099,
+                  "amount_icp_e8s": 630824350638
+                },
+                {
+                  "nns_neuron_id": 7932924058197672739,
+                  "amount_icp_e8s": 630824064787
+                },
+                {
+                  "nns_neuron_id": 10758769332711885965,
+                  "amount_icp_e8s": 630828142220
+                },
+                {
+                  "nns_neuron_id": 11516097501595611453,
+                  "amount_icp_e8s": 630820625835
+                },
+                {
+                  "nns_neuron_id": 14046564505849618283,
+                  "amount_icp_e8s": 630828016866
+                },
+                {
+                  "nns_neuron_id": 16300745642354040055,
+                  "amount_icp_e8s": 630820542656
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "j2tnr-f5tmm-afnyl-762n7-o272x-ji2xi-bcpld-ihimy-fw52d-2zqov-xae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 5944070935127277981,
+                  "amount_icp_e8s": 783930346
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "jaeq4-2jsak-axs4w-c5vft-vcmuz-zk2jr-tivwj-qquon-yctzw-ffrje-yqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 16055835907877356803,
+                  "amount_icp_e8s": 833243381
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "kiwgh-ukhca-7rr2l-vxvrx-23mn5-a24pn-b42ly-f55n3-wm5e2-xnoiz-aqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 16063193423312541416,
+                  "amount_icp_e8s": 1092832611
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "l6etj-xc4xh-wf3gz-r773b-s2oha-xscp7-bbo5g-grv2t-whvr7-cwmvm-mqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 1160176308921370712,
+                  "amount_icp_e8s": 614739173
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "lsyd6-e7avj-lnf7q-fqga7-nb3x4-gum2h-fajff-4urd5-gve2l-tppm2-7ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15870086969632063753,
+                  "amount_icp_e8s": 8540180530428
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "lvsje-wfazq-xzrha-quuz7-quwur-67jl7-nbb7v-5llqf-vclab-slswv-rae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7840257629152633478,
+                  "amount_icp_e8s": 2586624467
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "np6j7-gcacf-ssqio-rlb4m-aeewg-ryus3-md2ng-h4qje-mr7h6-pqhnh-tqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8130034458097217294,
+                  "amount_icp_e8s": 631146625
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "pqght-cm7pc-q3h4w-7raxx-5z6fx-smio3-m3mz6-2bydy-7ldor-6maon-eae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 5504697524318486221,
+                  "amount_icp_e8s": 612199575
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "s7zrw-ihhhp-bi7cu-lz5uz-lkltf-ctuzp-jcgbn-dldjd-h6lkv-4cp4h-nae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 10656995968046604522,
+                  "amount_icp_e8s": 4555165100
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "tax4q-3y6oa-ykj5u-wg6um-6uwiy-nrfvt-gzfsg-vh4vl-nvzfn-jybcc-mqe",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 15232784191673766676,
+                  "amount_icp_e8s": 5046412712
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "tip3a-m7ftw-edteu-2rcbe-6bxwf-hrogu-fpi3f-arlmu-277wl-trfst-sae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 7672559291963315980,
+                  "amount_icp_e8s": 762251987
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "vflfz-xlfyj-fxenl-yb7wy-jatmr-szhkp-4fsam-ov3o4-2mihb-emnbi-5ae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 2065739200102969000,
+                  "amount_icp_e8s": 764277805
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "xpytn-tb72l-zar2h-umv3j-wpiyz-aoc3g-gxn7s-n4wcr-oap4c-sm6yf-bae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8789748484325811754,
+                  "amount_icp_e8s": 633434227
+                }
+              ]
+            },
+            {
+              "hotkey_principal": "yjjc4-kc4ge-io5mm-m5kye-pcm2v-qwgci-yn7zh-tyj6w-ur33e-ncsmx-xae",
+              "cf_neurons": [
+                {
+                  "nns_neuron_id": 8769572786406258318,
+                  "amount_icp_e8s": 7543845187356
+                }
+              ]
+            }
+          ]
+        },
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 15000000000000,
+        "sns_governance_canister_id": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+        "restricted_countries": {
+          "iso_codes": ["US", "KP", "CU", "SD", "SY", "IR", "VE"]
+        },
+        "min_icp_e8s": 50000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 70.8390884399414,
+      "buyer_total_icp_e8s": 37055812660973,
+      "cf_participant_count": 31,
+      "direct_participant_count": 114,
+      "cf_neuron_count": 47
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1695981600,
+      "lifecycle": 2
+    }
+  }
+]

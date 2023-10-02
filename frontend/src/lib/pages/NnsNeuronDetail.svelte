@@ -37,6 +37,8 @@
   import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
+  import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
+  import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -162,7 +164,8 @@
           {/if}
           <NeuronVotingHistoryCard {neuron} />
         {:else}
-          <SkeletonCard noMargin size="large" cardType="info" />
+          <SkeletonHeader />
+          <SkeletonHeading />
           <Separator spacing="none" />
           <SkeletonCard noMargin cardType="info" />
           <Separator spacing="none" />

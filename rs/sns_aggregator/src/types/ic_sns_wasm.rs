@@ -8,7 +8,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// #![allow(dead_code, unused_imports)]
+// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -47,6 +48,12 @@ pub struct AddWasmResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronBasketConstructionParameters {
+    pub dissolve_delay_interval_seconds: u64,
+    pub count: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct Canister {
     pub id: Option<candid::Principal>,
 }
@@ -54,6 +61,39 @@ pub struct Canister {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DappCanisters {
     pub canisters: Vec<Canister>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct LinearScalingCoefficient {
+    pub slope_numerator: Option<u64>,
+    pub intercept_icp_e8s: Option<u64>,
+    pub from_direct_participation_icp_e8s: Option<u64>,
+    pub slope_denominator: Option<u64>,
+    pub to_direct_participation_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronsFundParticipationConstraints {
+    pub coefficient_intervals: Vec<LinearScalingCoefficient>,
+    pub max_neurons_fund_participation_icp_e8s: Option<u64>,
+    pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct CfNeuron {
+    pub nns_neuron_id: u64,
+    pub amount_icp_e8s: u64,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct CfParticipant {
+    pub hotkey_principal: String,
+    pub cf_neurons: Vec<CfNeuron>,
+}
+
+#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+pub struct NeuronsFundParticipants {
+    pub participants: Vec<CfParticipant>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -109,27 +149,39 @@ pub struct SnsInitPayload {
     pub url: Option<String>,
     pub max_dissolve_delay_seconds: Option<u64>,
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
+    pub nns_proposal_id: Option<u64>,
+    pub min_participant_icp_e8s: Option<u64>,
+    pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
     pub token_symbol: Option<String>,
     pub final_reward_rate_basis_points: Option<u64>,
+    pub max_icp_e8s: Option<u64>,
     pub neuron_minimum_stake_e8s: Option<u64>,
     pub confirmation_text: Option<String>,
     pub logo: Option<String>,
     pub name: Option<String>,
+    pub swap_start_timestamp_seconds: Option<u64>,
+    pub swap_due_timestamp_seconds: Option<u64>,
     pub initial_voting_period_seconds: Option<u64>,
     pub neuron_minimum_dissolve_delay_to_vote_seconds: Option<u64>,
     pub description: Option<String>,
     pub max_neuron_age_seconds_for_age_bonus: Option<u64>,
+    pub min_participants: Option<u64>,
     pub initial_reward_rate_basis_points: Option<u64>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub transaction_fee_e8s: Option<u64>,
     pub dapp_canisters: Option<DappCanisters>,
+    pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
+    pub neurons_fund_participants: Option<NeuronsFundParticipants>,
     pub max_age_bonus_percentage: Option<u64>,
     pub initial_token_distribution: Option<InitialTokenDistribution>,
     pub reward_rate_transition_duration_seconds: Option<u64>,
+    pub token_logo: Option<String>,
     pub token_name: Option<String>,
+    pub max_participant_icp_e8s: Option<u64>,
     pub proposal_reject_cost_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
+    pub min_icp_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]

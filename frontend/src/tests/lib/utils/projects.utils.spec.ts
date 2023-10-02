@@ -477,6 +477,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -507,6 +509,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -544,6 +548,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -577,6 +583,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -613,6 +621,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -642,6 +652,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -782,6 +794,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -819,6 +833,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -862,6 +878,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -975,6 +993,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -1003,6 +1023,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
