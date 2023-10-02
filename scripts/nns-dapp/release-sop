@@ -127,6 +127,10 @@ fi
 TOP_DIR=$(execute git rev-parse --show-toplevel)
 execute cd "$TOP_DIR"
 
+GREEN_COLOR="\033[32m"
+MAGENTA_COLOR="\033[35m"
+RESET_COLOR="\033[0m"
+
 checklist_get() {
   local name
   name="$1"
@@ -150,7 +154,7 @@ checklist_add() {
   temp_file="$CHECKLIST_FILE.tmp"
   jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' "$CHECKLIST_FILE" >"$temp_file"
   mv "$temp_file" "$CHECKLIST_FILE"
-  echo "$name: $value"
+  echo -e "$name: ${GREEN_COLOR}$value${RESET_COLOR}"
 }
 
 # This script is designed to be run multiple times. Steps that have been
@@ -202,7 +206,7 @@ record() {
   shift
   value="$(checklist_get "$label")"
   if [ "$value" ]; then
-    echo "$label: Was already: $value"
+    echo -e "$label: Was already: ${MAGENTA_COLOR}$value${RESET_COLOR}"
     return
   fi
   if ! value="$(execute "$@")"; then

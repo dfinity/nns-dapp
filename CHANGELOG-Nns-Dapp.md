@@ -17,6 +17,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
+* Separate proposals backend into a separate crate.
 * Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
 * Allow `get_histogram` (an unstable API) only as a query call.
 * Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
@@ -24,6 +26,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve spacings in the page headings.
 * Improve the skeletons while loading in the neuron details page.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
+* New header UI in the canister detail page.
 
 #### Deprecated
 #### Removed
@@ -47,6 +50,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Fix the `release-sop` command that set `origin/main` as the upstream.
 * Specify the version of `binstall` in `dfx.json`.
