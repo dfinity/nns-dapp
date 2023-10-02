@@ -210,7 +210,7 @@ confirm_cmd() {
 }
 
 confirm_manual() {
-  local label message input
+  local label value input
   label="$1"
   shift
   value="$(checklist_get "$label")"
