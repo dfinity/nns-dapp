@@ -17,9 +17,16 @@ filter_has_canister_did() {
   done
 }
 
+# Gets the canister name from an SNS Aggregator type path.
+#
+# E.g. rs/sns_aggregator/src/types/ic_sns_governance.rs -> sns_governance
+canister_name_from_aggregator_type_path() {
+  sed -nr 's@.*/ic_(.*).rs$@\1@g;ta;b;:a;p'
+}
+
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 # shellcheck disable=SC2012
-ALL_CANISTERS="$(ls "$GIT_ROOT/declarations" | filter_has_canister_did)"
+ALL_CANISTERS="$(ls rs/sns_aggregator/src/types/ic_*.rs | canister_name_from_aggregator_type_path | filter_has_canister_did)"
 
 ##########################
 # Hjelpe meg!
