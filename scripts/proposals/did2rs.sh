@@ -30,7 +30,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
 clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
 clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
-clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default="Serialize, Clone, Debug"
+clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default=""
 clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
