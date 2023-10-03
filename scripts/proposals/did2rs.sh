@@ -101,6 +101,8 @@ cd "$GIT_ROOT"
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 	    # Replace invalid {} with (EmptyRecord)
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
+	    # Discard the service
+	    /pub struct Service/,$d
 	    ' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"

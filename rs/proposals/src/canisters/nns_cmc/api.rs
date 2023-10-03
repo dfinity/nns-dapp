@@ -109,24 +109,3 @@ pub enum NotifyTopUpResult {
     Ok(Cycles),
     Err(NotifyError),
 }
-
-pub struct Service(pub Principal);
-impl Service {
-    pub async fn get_icp_xdr_conversion_rate(&self) -> Result<(IcpXdrConversionRateResponse,)> {
-        ic_cdk::call(self.0, "get_icp_xdr_conversion_rate", ()).await
-    }
-    pub async fn get_principals_authorized_to_create_canisters_to_subnets(
-        &self,
-    ) -> Result<(PrincipalsAuthorizedToCreateCanistersToSubnetsResponse,)> {
-        ic_cdk::call(self.0, "get_principals_authorized_to_create_canisters_to_subnets", ()).await
-    }
-    pub async fn get_subnet_types_to_subnets(&self) -> Result<(SubnetTypesToSubnetsResponse,)> {
-        ic_cdk::call(self.0, "get_subnet_types_to_subnets", ()).await
-    }
-    pub async fn notify_create_canister(&self, arg0: NotifyCreateCanisterArg) -> Result<(NotifyCreateCanisterResult,)> {
-        ic_cdk::call(self.0, "notify_create_canister", (arg0,)).await
-    }
-    pub async fn notify_top_up(&self, arg0: NotifyTopUpArg) -> Result<(NotifyTopUpResult,)> {
-        ic_cdk::call(self.0, "notify_top_up", (arg0,)).await
-    }
-}
