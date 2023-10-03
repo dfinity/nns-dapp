@@ -83,8 +83,9 @@ cd "$GIT_ROOT"
   #   - It makes almost all the types and fields private, which is not very helpful.
   #
   # sed:
-  #   - adds additional traits after Deserialize
-  #   - Makes structures and their fields "pub"
+  #   - Comments out the header provided by didc; we provide our own and the two conflict.
+  #   - Makes structures and their fields "pub", so that they can be used.
+  #   - Adds additional traits after "Deserialize".
   #   - Makes API call response types "CallResult".  The alternative convention is to have:
   #       use ic_cdk::api::call::CallResult as Result;
   #     at the top of the rust file but that is both confusing for Rust developers and conflicts
@@ -92,6 +93,7 @@ cd "$GIT_ROOT"
   #   - didc creates invalid Rust enum entries of the form: `StopDissolving{},`
   #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
   #     where "EmptyRecord" is defined as the name suggests.
+  #   - Deprecated: Uses `candid::Principal` instead of `Principal`.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -102,12 +104,23 @@ cd "$GIT_ROOT"
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
-    sed -E 's/^(struct|enum|type) /pub &/;
-            s@^use .*@// &@;
-            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+    sed -E '# Comment out the header lines: "use" and "#!"
+            s@^(#!|use )@// &@;
+
+	    # Make types and fields public:
+            s/^(struct|enum|type) /pub &/;
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
+
+	    # Add traits
+            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+
+	    # In the service, return CallResult instead of Result.
 	    /impl Service/,${s/-> Result/-> CallResult/g};
+
+	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
+
+	    # Use candid::Principal instead of raw Principal
 	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021
