@@ -36,7 +36,6 @@
           <span>
             {$i18n.sns_project_detail.min_commitment_goal}
           </span>
-          <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
           <span data-tid="commitment-min-indicator-value">
             <AmountDisplay
               amount={TokenAmount.fromE8s({
