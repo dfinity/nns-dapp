@@ -46,6 +46,7 @@ export interface FeatureFlags<T> {
   ENABLE_DISBURSE_MATURITY: T;
   ENABLE_STAKE_NEURON_ICRC1: T;
   ENABLE_SWAP_ICRC1: T;
+  ENABLE_FULL_WIDTH_PROPOSAL: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;

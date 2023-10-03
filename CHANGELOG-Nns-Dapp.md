@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
+
 #### Changed
 
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
