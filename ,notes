@@ -3,3 +3,10 @@
 - Some types are not in the .did file
 
 - Add Serialize to (?almost) everything
+
+
+Plan:
+- Limit to just the canisters that matter.
+  - Find out which canisters
+  - Automate them
+  - Present findings
