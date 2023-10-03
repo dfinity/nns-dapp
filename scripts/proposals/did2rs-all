@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euxo pipefail
-scripts/proposals/did2rs.sh -d ./declarations/sns_wasm/sns_wasm.did -o ./rs/proposals/src/canisters/sns_wasm/api.rs -t "Serialize"
-scripts/proposals/did2rs.sh -d ./declarations/nns_cmc/cmc.did -o ./rs/proposals/src/canisters/nns_cmc/api.rs -t "Serialize"
+scripts/proposals/did2rs.sh -d ./declarations/sns_wasm/sns_wasm.did -o ./rs/proposals/src/canisters/sns_wasm/api.rs -t "Serialize" -h scripts/proposals/did2rs.header
+scripts/proposals/did2rs.sh -d ./declarations/nns_cmc/cmc.did -o ./rs/proposals/src/canisters/nns_cmc/api.rs -t "Serialize" -h scripts/proposals/did2rs.header

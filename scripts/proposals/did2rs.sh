@@ -40,6 +40,7 @@ clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAM
 clap.define short=d long=did desc="The did path" variable=DID_PATH
 clap.define short=o long=out desc="The path to the output rust file.  Default: rs/sns_aggregator/src/types/ic_\${CANISTER_NAME}.rs" variable=RUST_PATH
 clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default="Serialize, Clone, Debug"
+clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -74,16 +75,8 @@ cd "$GIT_ROOT"
   #   - Types and fields may be unused or not exactly as clippy might wish.  Tough.
   #
   # We import traits that we apply to the Rust types.
-  cat <<-EOF
-	#![allow(clippy::all)]
-	#![allow(clippy::missing_docs_in_private_items)]
-	#![allow(non_camel_case_types)]
-	#![allow(dead_code, unused_imports)]
-	use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
-	use ic_cdk::api::call::CallResult as Result;
-	use serde::Serialize;
-
-	EOF
+  cat "$HEADER"
+  echo
   # didc converts the .did to Rust, with the following limitations:
   #   - It applies the canidid Deserialize trait to all the types but not other traits that we need.
   #   - It makes almost all the types and fields private, which is not very helpful.
