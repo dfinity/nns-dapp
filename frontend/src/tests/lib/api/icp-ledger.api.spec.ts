@@ -8,7 +8,7 @@ import {
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 

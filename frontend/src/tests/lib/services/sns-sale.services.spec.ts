@@ -62,8 +62,8 @@ import {
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
-  type SnsWasmCanisterOptions,
-} from "@dfinity/nns";
+} from "@dfinity/ledger-icp";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,

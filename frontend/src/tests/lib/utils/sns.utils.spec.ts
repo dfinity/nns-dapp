@@ -26,8 +26,8 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,

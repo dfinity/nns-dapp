@@ -26,7 +26,11 @@ import {
 } from "$tests/mocks/canisters.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
-import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  LedgerCanister,
+  SubAccount,
+} from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 
