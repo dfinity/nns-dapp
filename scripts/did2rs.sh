@@ -11,11 +11,6 @@ print_help() {
 	Compiles a did file to Rust and applies any saved manual changes.
 
 	Usage: $(basename "$0") <CANISTER_NAME>
-	takes inputs:
-	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
-	creates:
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
 
 	Hint: To create a patchfile:
 	  - Customise the built rust file to your heart's content.
@@ -34,6 +29,9 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
 clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
+clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
+clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default=""
+clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -44,8 +42,8 @@ CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
 CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
-PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
+RUST_PATH="${RUST_PATH:-/dev/stdout}"
+PATCH_PATH="${RUST_PATH%.rs}.patch"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
@@ -68,16 +66,8 @@ cd "$GIT_ROOT"
   #   - Types and fields may be unused or not exactly as clippy might wish.  Tough.
   #
   # We import traits that we apply to the Rust types.
-  cat <<-EOF
-	#![allow(clippy::all)]
-	#![allow(unused_imports)]
-	#![allow(clippy::missing_docs_in_private_items)]
-	#![allow(non_camel_case_types)]
-	#![allow(dead_code)]
-
-	use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
-	use ic_cdk::api::call::CallResult;
-	EOF
+  cat "$HEADER"
+  echo
   # didc converts the .did to Rust, with the following limitations:
   #   - It applies the canidid Deserialize trait to all the types but not other traits that we need.
   #   - It makes almost all the types and fields private, which is not very helpful.
@@ -104,7 +94,7 @@ cd "$GIT_ROOT"
     rustfmt --edition 2021 |
     sed -E 's/^(struct|enum|type) /pub &/;
             s@^use .*@// &@;
-            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+            s/([{( ]Deserialize)([,})])/\1'"${TRAITS:+,}${TRAITS:-}"'\2/;
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 	    /impl Service/,${s/-> Result/-> CallResult/g};
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};

@@ -60,7 +60,7 @@ PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
 cd "$GIT_ROOT"
 
 rm -f "${PATCH_PATH}"
-scripts/did2rs.sh "$CANISTER_NAME"
+scripts/sns/aggregator/did2rs "$CANISTER_NAME"
 git -c core.abbrev=9 diff -R "${RUST_PATH}" >"${PATCH_PATH}"
 if test -s "${PATCH_PATH}"; then
   git add "${PATCH_PATH}"
