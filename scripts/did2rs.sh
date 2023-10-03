@@ -104,8 +104,9 @@ cd "$GIT_ROOT"
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
-    sed -E '# Comment out the header lines: "use" and "#!"
-            s@^(#!|use )@// &@;
+    sed -E '
+            # Comment out the header lines: "use" Leave "//!" and "#!" for now.
+            s@^use .*@// &@;
 
 	    # Make types and fields public:
             s/^(struct|enum|type) /pub &/;
