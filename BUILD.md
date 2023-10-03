@@ -27,7 +27,7 @@ environment. The following steps _should_ build the official Wasm image.
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
 - [Docker buildx](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
 - [Rosetta]() allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
-  - Install rosetta:
+  - Install Rosetta:
     ```sh
     softwareupdate --install-rosetta
     ```
@@ -96,14 +96,14 @@ TODO: When we make a proposal, we should have a corresponding release that voter
 
 ### Build flavors
 
-The build creates several different `nns-dapp` and `sns_aggregator` wasms. These builds target specific use cases:
+The build creates several different `nns-dapp` and `sns_aggregator` Wasms. These builds target specific use cases:
 
 | Flavor     | Description                                                                                                                                                                                                                                            |     |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-: |
 | Production | This is the production build deployed to https://nns.ic0.app                                                                                                                                                                                           |
 | Dev        | This is a build for testing integration with third party canisters. If you wish to include `nns-dapp` or the `sns_aggregator` in your CI, this build is designed to make your testing easy and convenient.                                             |
 | Test       | This is a build for testing internal functionality. If you are changing `nns-dapp` or `sns_aggregator` functionality and need to access or modify the internal state of the nns-dapp to test, this is the build for you.                               |
-| Noassets   | This is a build of the nns-dapp that does not include web assets. This reduces the size of the wasm, which may be convenient in some test scenarios. Note that web assets can be uploaded to the nns-dapp after deployment by the canister controller. |
+| Noassets   | This is a build of the nns-dapp that does not include web assets. This reduces the size of the Wasm, which may be convenient in some test scenarios. Note that web assets can be uploaded to the nns-dapp after deployment by the canister controller. |
 
 TODO: Document how to make the `sns_aggregator` collect data quickly.
 

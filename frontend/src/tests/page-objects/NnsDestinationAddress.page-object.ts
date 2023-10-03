@@ -1,4 +1,4 @@
-import { NnsSelectAccountPo } from "$tests/page-objects/NnsSelectAccount.page-object";
+import { SelectDestinationAddressPo } from "$tests/page-objects/SelectDestinationAddress.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -11,11 +11,19 @@ export class NnsDestinationAddressPo extends BasePageObject {
     );
   }
 
-  getNnsSelectAccountPo(): NnsSelectAccountPo {
-    return NnsSelectAccountPo.under(this.root);
+  getSelectDestinationAddressPo(): SelectDestinationAddressPo {
+    return SelectDestinationAddressPo.under(this.root);
   }
 
-  selectMainAccount(): Promise<void> {
-    return this.getNnsSelectAccountPo().selectMainAccount();
+  enterAddress(address: string): Promise<void> {
+    return this.getSelectDestinationAddressPo().enterAddress(address);
+  }
+
+  clickContinue(): Promise<void> {
+    return this.click("address-submit-button");
+  }
+
+  getOptions(): Promise<string[]> {
+    return this.getSelectDestinationAddressPo().getOptions();
   }
 }

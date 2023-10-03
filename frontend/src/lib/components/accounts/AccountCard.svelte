@@ -2,7 +2,6 @@
   import type { Account } from "$lib/types/account";
   import { Card } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import Identifier from "$lib/components/ui/Identifier.svelte";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import AccountBadge from "./AccountBadge.svelte";
   import { nonNullish } from "@dfinity/utils";
@@ -11,7 +10,6 @@
   import { pageStore } from "$lib/derived/page.derived";
 
   export let account: Account;
-  export let hash = false;
   export let token: Token | undefined;
   export let role: "button" | "link" = "link";
 
@@ -49,11 +47,7 @@
     />
   {/if}
 
-  {#if hash}
-    <IdentifierHash {identifier} />
-  {:else}
-    <Identifier {identifier} />
-  {/if}
+  <IdentifierHash {identifier} />
 </Card>
 
 <style lang="scss">

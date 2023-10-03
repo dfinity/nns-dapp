@@ -8,10 +8,10 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("DisburseMaturityButton", () => {
-  const renderComponent = (enoughMaturity) => {
+  const renderComponent = (disabledText) => {
     const { container } = render(DisburseMaturityButton, {
       props: {
-        enoughMaturity,
+        disabledText,
       },
     });
     return DisburseMaturityButtonPo.under(new JestPageObjectElement(container));
@@ -22,19 +22,19 @@ describe("DisburseMaturityButton", () => {
   });
 
   it("renders disburse maturity cta", async () => {
-    const po = renderComponent(true);
+    const po = renderComponent(undefined);
 
     expect(await po.isPresent()).toBe(true);
   });
 
   it("should be enabled", async () => {
-    const po = renderComponent(true);
+    const po = renderComponent(undefined);
 
     expect(await po.isDisabled()).toBe(false);
   });
 
   it("should be disabled", async () => {
-    const po = renderComponent(false);
+    const po = renderComponent("Disabled Text");
 
     expect(await po.isDisabled()).toBe(true);
   });

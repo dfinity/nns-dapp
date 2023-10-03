@@ -3,9 +3,6 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
-  import NnsNeuronMaturityCard from "$lib/components/neuron-detail/NnsNeuronMaturityCard.svelte";
-  import NnsNeuronMetaInfoCard from "$lib/components/neuron-detail/NnsNeuronMetaInfoCard.svelte";
-  import NnsNeuronInfoStake from "$lib/components/neuron-detail/NnsNeuronInfoStake.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -16,7 +13,6 @@
     isSpawning,
     neuronVoting,
   } from "$lib/utils/neuron.utils";
-  import NeuronJoinFundCard from "$lib/components/neuron-detail/NeuronJoinFundCard.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { i18n } from "$lib/stores/i18n";
@@ -32,17 +28,17 @@
   import { onMount, setContext } from "svelte";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import NnsNeuronProposalsCard from "$lib/components/neuron-detail/NnsNeuronProposalsCard.svelte";
-  import Summary from "$lib/components/summary/Summary.svelte";
   import { listNeurons } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { isForceCallStrategy } from "$lib/utils/env.utils";
-  import { ENABLE_NEURON_SETTINGS } from "$lib/stores/feature-flags.store";
   import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
   import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
   import NnsNeuronMaturitySection from "$lib/components/neuron-detail/NnsNeuronMaturitySection.svelte";
   import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
+  import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
+  import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -149,39 +145,33 @@
     <main class="legacy">
       <section data-tid="neuron-detail">
         {#if neuron && !inVotingProcess}
-          {#if $ENABLE_NEURON_SETTINGS}
-            <div class="section-wrapper">
-              <NnsNeuronPageHeader {neuron} />
-              <NnsNeuronPageHeading {neuron} />
-              <Separator spacing="none" />
-              <NnsNeuronVotingPowerSection {neuron} />
-              <Separator spacing="none" />
-              <NnsNeuronMaturitySection {neuron} />
-              <Separator spacing="none" />
-              <NnsNeuronAdvancedSection {neuron} />
-              <Separator spacing="none" />
-            </div>
-          {:else}
-            <Summary displayUniverse={false} />
-
-            <NnsNeuronMetaInfoCard {neuron} />
-            <NnsNeuronInfoStake {neuron} />
-            <NnsNeuronMaturityCard {neuron} />
-            <NeuronJoinFundCard {neuron} />
-          {/if}
+          <NnsNeuronPageHeader {neuron} />
+          <NnsNeuronPageHeading {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronVotingPowerSection {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronMaturitySection {neuron} />
+          <Separator spacing="none" />
+          <NnsNeuronAdvancedSection {neuron} />
+          <Separator spacing="none" />
           <NeuronFollowingCard {neuron} />
-
+          <Separator spacing="none" />
+          <NnsNeuronHotkeysCard {neuron} />
+          <Separator spacing="none" />
           {#if IS_TESTNET}
             <NnsNeuronProposalsCard {neuron} />
+            <Separator spacing="none" />
           {/if}
-
-          <NnsNeuronHotkeysCard {neuron} />
           <NeuronVotingHistoryCard {neuron} />
         {:else}
-          <SkeletonCard size="large" cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
-          <SkeletonCard cardType="info" separator />
+          <SkeletonHeader />
+          <SkeletonHeading />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
+          <Separator spacing="none" />
+          <SkeletonCard noMargin cardType="info" />
         {/if}
       </section>
     </main>
@@ -191,7 +181,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .section-wrapper {
+  section {
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);

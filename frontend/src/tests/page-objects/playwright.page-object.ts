@@ -80,7 +80,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
-  isChecked(): Promise<boolean | null> {
+  isChecked(): Promise<boolean> {
     return this.locator.isChecked();
   }
 
@@ -113,6 +113,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async isVisible(): Promise<boolean> {
+    throw new Error("Not implement");
+  }
+
+  async blur(): Promise<void> {
     throw new Error("Not implement");
   }
 }

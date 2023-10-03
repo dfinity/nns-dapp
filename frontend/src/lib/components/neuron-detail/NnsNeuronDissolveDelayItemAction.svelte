@@ -68,6 +68,6 @@
     {/if}</svelte:fragment
   >
   {#if isControllable}
-    <IncreaseDissolveDelayButton variant="secondary" />
+    <IncreaseDissolveDelayButton />
   {/if}
 </CommonItemAction>

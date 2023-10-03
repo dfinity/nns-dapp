@@ -1,6 +1,6 @@
 //! Library for <https://nns.ic0.app>
 //!
-//! Note: The types are accessed by the nns-dapp directly from main.rs, not via this library.
+//! Note: The types are accessed by the nns-dapp directly from `main.rs`, not via this library.
 //!
 //! Note: This library is for utilities and tools that need access to the types.
 pub mod accounts_store;

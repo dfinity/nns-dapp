@@ -1,6 +1,5 @@
 <script lang="ts">
   import CardInfo from "../ui/CardInfo.svelte";
-  import Separator from "../ui/Separator.svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
   import TagsList from "../ui/TagsList.svelte";
@@ -26,7 +25,7 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<CardInfo>
+<CardInfo noMargin>
   <h3 slot="start">Permissions TESTNET ONLY</h3>
 
   {#each neuron?.permissions || [] as permission}
@@ -53,8 +52,6 @@
     >
   </div>
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {

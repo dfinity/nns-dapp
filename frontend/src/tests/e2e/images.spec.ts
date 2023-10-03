@@ -5,7 +5,6 @@ import { expect, test } from "@playwright/test";
 
 const expectImagesLoaded = async ({ page, sources }) => {
   const images = page.locator("img");
-  await expect(images).toHaveCount(sources.length);
   const imageSources = await Promise.all(
     (await images.all()).map((img) => img.getAttribute("src"))
   );
@@ -17,17 +16,23 @@ const expectImagesLoaded = async ({ page, sources }) => {
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
 
-  await page.waitForFunction((expectedImageCount) => {
-    const images = Array.from(document.querySelectorAll("img"));
-    if (images.length !== expectedImageCount) {
-      return false;
-    }
-    // The browser might decide not to load images that are outside the
-    // viewport.
-    images.forEach((img) => img.scrollIntoView());
-    return images.every((img) => img.complete);
-  }, sources.length);
+  await page.waitForFunction(
+    (expectedImageCount) => {
+      const images = Array.from(document.querySelectorAll("img"));
+      if (images.length !== expectedImageCount) {
+        return false;
+      }
+      // The browser might decide not to load images that are outside the
+      // viewport.
+      images.forEach((img) => img.scrollIntoView());
+      return images.every((img) => img.complete);
+    },
+    sources.length,
+    { timeout: 10000 }
+  );
 };
+
+test.describe.configure({ retries: 2 });
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
@@ -36,7 +41,13 @@ test("Test images load on accounts page", async ({ page, context }) => {
   await step("Check images before signing");
   await expectImagesLoaded({
     page,
-    sources: ["logo-nns.svg", "logo-onchain-light.svg", "menu-bg-light.png"],
+    sources: [
+      "icp-rounded.svg",
+      "icp-rounded.svg",
+      "logo-nns.svg",
+      "logo-onchain-light.svg",
+      "menu-bg-light.png",
+    ],
   });
 
   await signInWithNewUser({ page, context });

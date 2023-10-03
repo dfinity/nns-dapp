@@ -19,7 +19,7 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/nns";
-import { SnsGovernanceError } from "@dfinity/sns";
+import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, nonNullish } from "@dfinity/utils";
 import { translate, type I18nSubstitutions } from "./i18n.utils";
 
@@ -164,3 +164,6 @@ export const isPayloadSizeError = (err: unknown): boolean => {
   }
   return false;
 };
+
+export const isMethodNotSupportedError = (err: unknown): boolean =>
+  err instanceof UnsupportedMethodError;

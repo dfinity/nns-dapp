@@ -1,16 +1,19 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
+  differentSummaries,
   durationTillSwapDeadline,
   durationTillSwapStart,
   filterActiveProjects,
   filterCommittedProjects,
   filterProjectsStatus,
+  getProjectCommitmentSplit,
   hasUserParticipatedToSwap,
   participateButtonStatus,
   projectRemainingAmount,
@@ -40,6 +43,10 @@ describe("project-utils", () => {
   const summaryNoRestricted: SnsSummary = createSummary({
     lifecycle: SnsSwapLifecycle.Open,
     restrictedCountries: [],
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   describe("filter", () => {
@@ -470,6 +477,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -500,6 +509,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -537,6 +548,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -570,6 +583,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
@@ -606,6 +621,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -635,6 +652,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -775,6 +794,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -812,6 +833,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -855,6 +878,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -968,6 +993,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -996,6 +1023,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -1216,6 +1245,93 @@ describe("project-utils", () => {
             ticket: null,
           })
         ).toBe("enabled");
+      });
+    });
+  });
+
+  describe("differentSummaries", () => {
+    it("should return empty array for the same summaries", () => {
+      expect(
+        differentSummaries([summaryUsRestricted], [summaryUsRestricted])
+      ).toHaveLength(0);
+    });
+
+    it("should return the different summaries", () => {
+      const sameButDifferent: SnsSummary = {
+        ...summaryNoRestricted,
+        token: {
+          ...summaryNoRestricted.token,
+          name: "not the same",
+        },
+      };
+      expect(
+        differentSummaries(
+          [summaryUsRestricted, sameButDifferent],
+          [summaryUsRestricted, summaryNoRestricted]
+        )
+      ).toEqual([sameButDifferent]);
+    });
+  });
+
+  describe("getProjectCommitmentSplit", () => {
+    const defaultSummary = summaryForLifecycle(SnsSwapLifecycle.Open);
+
+    it("returns the commitments split if NF participation is present", () => {
+      const directCommitment = 20000000000n;
+      const nfCommitment = 10000000000n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 30000000000n,
+        directCommitmentE8s: 20000000000n,
+        nfCommitmentE8s: 10000000000n,
+      });
+    });
+
+    it("returns the commitments split if NF participation is present even when 0", () => {
+      const directCommitment = 20000000000n;
+      const nfCommitment = 0n;
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: directCommitment + nfCommitment,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 20000000000n,
+        directCommitmentE8s: 20000000000n,
+        nfCommitmentE8s: 0n,
+      });
+    });
+
+    it("returns only the full commitmentif NF participation is not present", () => {
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => undefined);
+      const summary = {
+        ...defaultSummary,
+        derived: {
+          ...defaultSummary.derived,
+          buyer_total_icp_e8s: 20000000000n,
+        },
+      };
+      expect(getProjectCommitmentSplit(summary)).toEqual({
+        totalCommitmentE8s: 20000000000n,
       });
     });
   });

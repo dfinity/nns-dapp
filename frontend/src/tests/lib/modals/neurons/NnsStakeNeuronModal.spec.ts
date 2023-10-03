@@ -215,7 +215,7 @@ describe("NnsStakeNeuronModal", () => {
       expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
     });
 
-    it("should have disabled button for dissolve less than six months", async () => {
+    it("should have enabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({
         component: NnsStakeNeuronModal,
       });
@@ -234,7 +234,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
+      const FIVE_MONTHS = 30 * 5;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: FIVE_MONTHS },
@@ -243,7 +243,7 @@ describe("NnsStakeNeuronModal", () => {
       const updateDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
       );
-      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
     });
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
@@ -325,7 +325,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },
@@ -483,7 +483,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },

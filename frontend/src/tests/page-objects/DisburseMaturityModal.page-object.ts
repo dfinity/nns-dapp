@@ -2,6 +2,7 @@ import { NeuronConfirmActionScreenPo } from "$tests/page-objects/NeuronConfirmAc
 import { NeuronSelectPercentagePo } from "$tests/page-objects/NeuronSelectPercentage.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SelectDestinationAddressPo } from "./SelectDestinationAddress.page-object";
 
 export class DisburseMaturityModalPo extends BasePageObject {
   private static readonly TID = "disburse-maturity-modal-component";
@@ -34,5 +35,33 @@ export class DisburseMaturityModalPo extends BasePageObject {
 
   setPercentage(percentage: number): Promise<void> {
     return this.getNeuronSelectPercentagePo().setPercentage(percentage);
+  }
+
+  getAmountMaturityToDisburse(): Promise<string> {
+    return this.getNeuronSelectPercentagePo().getAmountMaturity();
+  }
+
+  getTotalMaturity(): Promise<string> {
+    return this.getNeuronSelectPercentagePo().getAvailableMaturity();
+  }
+
+  async getConfirmTokens(): Promise<string> {
+    return (
+      await this.getNeuronConfirmActionScreenPo().getText("confirm-tokens")
+    ).trim();
+  }
+
+  async getConfirmPercentage(): Promise<string> {
+    return (
+      await this.getNeuronConfirmActionScreenPo().getText("confirm-percentage")
+    ).trim();
+  }
+
+  getConfirmDestination(): Promise<string> {
+    return this.getNeuronConfirmActionScreenPo().getText("confirm-destination");
+  }
+
+  getSelectDestinationAddressPo(): SelectDestinationAddressPo {
+    return SelectDestinationAddressPo.under(this.root);
   }
 }

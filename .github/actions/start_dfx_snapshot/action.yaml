@@ -4,14 +4,13 @@ description: |
   Optionally installs nns-dapp and sns_aggregator.
 inputs:
   snsdemo_ref:
-    description: "The commit at which to use the snsdemo scripts"
+    description: "The git ref at which to use the snsdemo scripts.  Defaults to the release tag in dfx.json"
     required: false
-    # Version from 2023-06-06 with dfx v 0.14.1
-    default: "0e61f618018db099a01b1686535fff8eff980d1c"
+    default: ""
   snapshot_url:
-    description: "The URL of the snapshot to download and install"
+    description: "The URL of the snapshot to download and install.  Defaults to the URL of the release tag in dfx.json."
     required: false
-    default: "https://github.com/dfinity/snsdemo/releases/download/release-2023-07-07/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+    default: ""
   nns_dapp_wasm:
     description: "The name of the nns-dapp wasm to install"
     required: false
@@ -29,26 +28,41 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Determine snsdemo ref
+      id: snsdemo_ref
+      shell: bash
+      run: |
+        SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
+        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
+    - name: Determine snsdemo snapshot URL
+      id: snsdemo_snapshot
+      shell: bash
+      run: |
+        URL="${{ inputs.snapshot_url }}"
+        test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-22.04.tar.xz"
+        echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       uses: actions/checkout@v3
       with:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
-        ref: ${{ inputs.snsdemo_ref }}
+        ref: ${{ steps.snsdemo_ref.outputs.ref }}
     - name: Add snsdemo scripts to the path
       shell: bash
       run: |
         echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+    - name: Install cargo binstall
+      uses: ./.github/actions/install_binstall
     - name: Install SNS script dependencies
       shell: bash
       run: |
         dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
         cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
     - name: Get test environment
       shell: bash
       run: |
-        curl -fL --retry 5 ${{ inputs.snapshot_url }} > state.tar.xz
+        curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         dfx-snapshot-restore --snapshot state.tar.xz --verbose
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck

@@ -1,5 +1,5 @@
 {
-  "dfx": "0.14.1",
+  "dfx": "0.14.4",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -86,7 +86,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_governance.did",
+      "candid": "declarations/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
@@ -94,7 +94,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-ledger.did",
+      "candid": "declarations/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
@@ -118,7 +118,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_swap.did",
+      "candid": "declarations/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
@@ -126,7 +126,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_root.did",
+      "candid": "declarations/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     },
@@ -625,10 +625,11 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_NEURON_SETTINGS": true,
           "ENABLE_INSTANT_UNLOCK": false,
-          "ENABLE_SNS_AGGREGATOR_STORE": false,
-          "ENABLE_DISBURSE_MATURITY": false
+          "ENABLE_SNS_AGGREGATOR_STORE": true,
+          "ENABLE_DISBURSE_MATURITY": true,
+          "ENABLE_STAKE_NEURON_ICRC1": false,
+          "ENABLE_SWAP_ICRC1": false
         }
       }
     },
@@ -638,8 +639,10 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2023-07-25",
-        "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
+        "BINSTALL_VERSION": "1.3.0",
+        "DIDC_VERSION": "2023-09-27",
+        "SNSDEMO_RELEASE": "release-2023-09-27",
+        "IC_COMMIT": "96184d42331028a46fe3265583792f8c5f807cf8"
       },
       "packtool": ""
     }

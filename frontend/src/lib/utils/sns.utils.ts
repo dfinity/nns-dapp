@@ -17,11 +17,14 @@ import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
+  SnsGetAutoFinalizationStatusResponse,
+  SnsGetDerivedStateResponse,
   SnsGetMetadataResponse,
   SnsParams,
   SnsSwap,
   SnsSwapDerivedState,
 } from "@dfinity/sns";
+import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import { isPngAsset } from "./utils";
 
@@ -293,4 +296,38 @@ export const parseSnsSwapSaleBuyerCount = (
       ?.split(/\s/)?.[1]
   );
   return isNaN(value) ? undefined : value;
+};
+
+/**
+ * An SNS is in finalization state if:
+ *
+ * 1. `has_auto_finalize_been_attempted` is true
+ * 2. `auto_finalize_swap_response` is empty
+ */
+export const isSnsFinalizing = (
+  finalizationStatus: SnsGetAutoFinalizationStatusResponse
+): boolean => {
+  const { has_auto_finalize_been_attempted, auto_finalize_swap_response } =
+    finalizationStatus;
+
+  return (
+    Boolean(fromNullable(has_auto_finalize_been_attempted)) &&
+    isNullish(fromNullable(auto_finalize_swap_response))
+  );
+};
+
+export const convertDerivedStateResponseToDerivedState = (
+  derivedState: SnsGetDerivedStateResponse
+): DerivedState | undefined => {
+  const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
+  const buyer_total_icp_e8s = fromNullable(derivedState.buyer_total_icp_e8s);
+  // This is not expected, but in case it happens, we want to fail fast.
+  if (sns_tokens_per_icp === undefined || buyer_total_icp_e8s === undefined) {
+    return;
+  }
+  return {
+    ...derivedState,
+    sns_tokens_per_icp,
+    buyer_total_icp_e8s,
+  };
 };

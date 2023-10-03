@@ -12,12 +12,164 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+#### Changed
+
+* Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
+* Separate proposals backend into a separate crate.
+* Improve spacings in the page headings.
+* Improve the skeletons while loading in the neuron details page.
+* Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
+* New header UI in the canister detail page.
+
+#### Deprecated
+#### Removed
+
+#### Fixed
+
+#### Security
+
+* Rename `memo` on the ICRC-1 interface of the ICP ledger API to `icrc1Memo` and add a warning about the `memo` and `icrc1Memo` being unrelated.
+
+#### Not Published
+
+### Operations
+
+#### Added
+* Run several script tests on macos as well as ubuntu.
+* Extend the release SOP script up to submitting the proposal.
+
+#### Changed
+
+* Populate the PR description of the `didc` updater.
+* Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
+* Update the snsdemo commit & automate further updates.
+* Cron job to update `snsdemo` weekly.
+* Update data for the Launchpad Prod test.
+
+#### Deprecated
+#### Removed
+
+* Comment and skip dfx-nns-proposal-args.test.
+
+#### Fixed
+
+#### Security
+
+## Proposal 124855
+
+### Application
+
+#### Added
+
+* Select destination when disbursing maturity.
+
+#### Changed
+
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Allow `get_histogram` (an unstable API) only as a query call.
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Use custom button label for disburse maturity flow.
+
+#### Fixed
+
+* Fix CSS on canister cards to show tooltip and name correctly.
+
+#### Not Published
+
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
+### Operations
+
+#### Changed
+
+* Fix the `release-sop` command that set `origin/main` as the upstream.
+* Specify the version of `binstall` in `dfx.json`.
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
+* Fix the rust-update action.
+
+## Proposal 124787
+
+### Application
+
+#### Added
+
+* Add the amount of maturity related to a selected percentage.
 * Disburse maturity of sns neurons.
 
 #### Changed
 
-#### Deprecated
+* Show the token selector also when not signed in.
+* Use consistent positioning for the copy icon in the Hash component.
+* Allow setting a dissolve delay that's shorter than what's required for voting power.
+* Improve contrast of token selector's logo in light theme.
+* Remove the "Project" leading word in the SNS Project card.
+
+#### Fixed
+
+* Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
+* Improve text color of total value locked's label.
+* Make duration rendering consistent.
+* Improve Tooltip location when container hides part of it.
+
+### Operations
+
+#### Changed
+
+* Specify the `snsdemo` version in `dfx.json`.
+* Make the file list stats accessible in logs and as a file in the release artefacts.
+* Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
+
+#### Fixed
+
+* Fix build script by pinning cargo-binstall version.
+
+## Proposal 124486
+
+### Application
+
+#### Added
+
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
+
+#### Changed
+
+* Add a database abstraction layer, preparing for migration.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
+* New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
+
 #### Removed
+
+* Remove unused components after new neuron details page.
+
+### Operations
+
+#### Added
+
+* Add "Filter proposals by Votable only" e2e test.
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
+#### Changed
+
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+
+## Proposal 124328
+
+### Application
+
+#### Changed
+
+* Bigger icon and description first on Sns project page.
+
+#### Removed
+
+* Remove ENABLE_NEURON_SETTINGS feature flag.
 
 #### Fixed
 
@@ -26,21 +178,22 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Security
 
+* Update dependency of @adobe/css-tools because of https://github.com/advisories/GHSA-hpx4-r86g-5jrg
+
 #### Not Published
+
+* Disburse maturity of sns neurons.
 
 ### Operations
 
 #### Added
 
+- Add a command to increment the package versions.
+
 #### Changed
+
+- Use the upstream notification action directly, rather than using a local copy.
 - Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
-
-#### Deprecated
-#### Removed
-
-#### Fixed
-
-#### Security
 
 ## Proposal 124280
 

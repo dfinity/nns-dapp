@@ -124,6 +124,7 @@ export const mockInit: SnsSwapInit = {
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
+  neurons_fund_participation_constraints: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -158,6 +159,8 @@ export const mockQuerySwap: SnsSwap = {
   next_ticket_id: [],
   purge_old_tickets_last_completion_timestamp_nanoseconds: [],
   purge_old_tickets_next_principal: [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
@@ -166,6 +169,8 @@ export const mockDerived: SnsSwapDerivedState = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerivedResponse: SnsGetDerivedStateResponse = {
@@ -174,6 +179,8 @@ export const mockDerivedResponse: SnsGetDerivedStateResponse = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {
@@ -299,6 +306,9 @@ export const createSummary = ({
   minParticipantCommitment = 100_000_000n,
   maxParticipantCommitment = 5_000_000_000n,
   swapDueTimestampSeconds = 1630444800n,
+  minTotalCommitment,
+  maxTotalCommitment,
+  currentTotalCommitment,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
@@ -309,6 +319,9 @@ export const createSummary = ({
   minParticipantCommitment?: bigint;
   maxParticipantCommitment?: bigint;
   swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -325,10 +338,14 @@ export const createSummary = ({
     min_participant_icp_e8s: minParticipantCommitment,
     max_participant_icp_e8s: maxParticipantCommitment,
     swap_due_timestamp_seconds: swapDueTimestampSeconds,
+    min_icp_e8s: minTotalCommitment ?? mockSnsParams.min_icp_e8s,
+    max_icp_e8s: maxTotalCommitment ?? mockSnsParams.max_icp_e8s,
   };
   const derived: SnsSwapDerivedState = {
     ...mockDerived,
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
+    buyer_total_icp_e8s:
+      currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
   };
   const summary = summaryForLifecycle(lifecycle);
   return {
@@ -361,22 +378,6 @@ export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.SYMBOL, { Text: mockSnsToken.symbol }],
   [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
 ];
-
-export const createQueryMetadataResponse = ({
-  name,
-  symbol,
-}: Partial<
-  Pick<IcrcTokenMetadata, "name" | "symbol">
->): IcrcTokenMetadataResponse =>
-  mockQueryTokenResponse.map(([key, value]) => {
-    if (key === IcrcMetadataResponseEntries.NAME) {
-      return [key, { Text: name }];
-    }
-    if (key === IcrcMetadataResponseEntries.SYMBOL) {
-      return [key, { Text: symbol }];
-    }
-    return [key, value];
-  });
 
 export const mockQueryMetadata: QuerySnsMetadata = {
   rootCanisterId: principal(0).toText(),

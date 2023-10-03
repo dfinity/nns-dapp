@@ -8,8 +8,8 @@ import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.d
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import {
   mockSnsMainAccount,
@@ -18,15 +18,15 @@ import {
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSnsToken,
   mockTokenStore,
 } from "$tests/mocks/sns-projects.mock";
 import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
-import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { SelectUniverseDropdownPo } from "$tests/page-objects/SelectUniverseDropdown.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
   jest
@@ -48,26 +48,29 @@ describe("SelectUniverseDropdown", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     snsAccountsStore.reset();
+    resetIdentity();
 
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
   });
 
-  it("should render a universe card with a role button", () => {
-    const { getByTestId } = render(SelectUniverseDropdown);
+  const renderComponent = () => {
+    const { container } = render(SelectUniverseDropdown);
+    return SelectUniverseDropdownPo.under(new JestPageObjectElement(container));
+  };
 
-    const card = getByTestId("select-universe-card");
-    expect(card).not.toBeNull();
-    expect(card.getAttribute("role")).toEqual("button");
+  it("should render a universe card with a role button", async () => {
+    const po = renderComponent();
+
+    expect(await po.getSelectUniverseCardPo().isPresent()).toBe(true);
+    expect(await po.getSelectUniverseCardPo().isButton()).toBe(true);
   });
 
   it("should render logo of universe", async () => {
-    const { getByTestId } = render(SelectUniverseDropdown);
-    await waitFor(() =>
-      expect(getByTestId("logo")?.getAttribute("src")).toEqual(
-        mockSnsFullProject.summary.metadata.logo
-      )
+    const po = renderComponent();
+    expect(await po.getSelectUniverseCardPo().getLogoSource()).toBe(
+      mockSnsFullProject.summary.metadata.logo
     );
   });
 
@@ -79,15 +82,29 @@ describe("SelectUniverseDropdown", () => {
       });
     });
 
-    it("should render a skeleton on load balance", () => {
-      const { container } = render(SelectUniverseDropdown);
-      expect(container.querySelector(".skeleton")).not.toBeNull();
+    it("should render a skeleton on load balance", async () => {
+      const po = renderComponent();
+      expect(
+        await po
+          .getSelectUniverseCardPo()
+          .getUniverseAccountsBalancePo()
+          .isLoading()
+      ).toBe(true);
     });
   });
 
   describe("balance", () => {
     beforeEach(() => {
-      const accounts = [mockSnsMainAccount, mockSnsSubAccount];
+      const accounts = [
+        {
+          ...mockSnsMainAccount,
+          balanceE8s: 100_000_000n,
+        },
+        {
+          ...mockSnsSubAccount,
+          balanceE8s: 23_000_000n,
+        },
+      ];
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
       snsAccountsStore.setAccounts({
@@ -103,21 +120,44 @@ describe("SelectUniverseDropdown", () => {
     });
 
     it("should render total balance of the project", async () => {
-      const { getByTestId } = render(SelectUniverseDropdown);
+      const po = renderComponent();
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(true);
+      // Expect 1.00 + 0.23
       expect(
-        getByTestId("token-value-label")?.textContent.trim() ?? ""
-      ).toEqual(
-        `${formatToken({
-          value: mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s,
-        })} ${mockSnsToken.symbol}`
-      );
+        (
+          await po
+            .getSelectUniverseCardPo()
+            .getUniverseAccountsBalancePo()
+            .getText()
+        ).trim()
+      ).toBe("1.23 TST");
+    });
+
+    it("should not render balance when not signed in", async () => {
+      setNoIdentity();
+
+      const po = renderComponent();
+      // Expect 1.00 + 0.23
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(false);
+    });
+
+    it("should not render balance when not on accounts tab", async () => {
+      page.mock({
+        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        routeId: AppPath.Neurons,
+      });
+
+      const po = renderComponent();
+      // Expect 1.00 + 0.23
+      expect(await po.getSelectUniverseCardPo().hasBalance()).toBe(false);
     });
   });
 
   it("should open modal", async () => {
-    const { getByTestId } = render(SelectUniverseDropdown);
+    const po = renderComponent();
 
-    await fireEvent.click(getByTestId("select-universe-card") as HTMLElement);
-    expect(getByTestId("select-universe-modal")).toBeInTheDocument();
+    expect(await po.getSelectUniverseListPo().isPresent()).toBe(false);
+    await po.getSelectUniverseCardPo().click();
+    expect(await po.getSelectUniverseListPo().isPresent()).toBe(true);
   });
 });

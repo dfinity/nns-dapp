@@ -38,6 +38,7 @@ RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
+RUN jq -r '.defaults.build.config.BINSTALL_VERSION' dfx.json > config/binstall_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -68,14 +69,16 @@ COPY rust-toolchain.toml .
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
+COPY rs/proposals/Cargo.toml rs/proposals/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
+RUN mkdir -p rs/backend/src/bin rs/proposals/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/proposals/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
-RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v$(cat config/binstall_version)/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
+RUN ./cargo-binstall -y --force "cargo-binstall@$(cat config/binstall_version)"
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
@@ -126,6 +129,7 @@ RUN ./build-frontend.sh
 FROM builder AS build_nnsdapp
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
+COPY ./rs/proposals /build/rs/proposals
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
@@ -146,7 +150,7 @@ WORKDIR /build
 # So we update the timestamps of the root code files.
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
-RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs rs/proposals/src/lib.rs
 RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
 ARG COMMIT

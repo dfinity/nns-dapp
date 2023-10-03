@@ -1,7 +1,6 @@
 <script lang="ts">
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { i18n } from "$lib/stores/i18n";
-  import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
   import type { Principal } from "@dfinity/principal";
@@ -13,6 +12,8 @@
   import { nonNullish } from "@dfinity/utils";
   import ProposalSystemInfoEntry from "../proposal-detail/ProposalSystemInfoEntry.svelte";
   import SnsProposerEntry from "./SnsProposerEntry.svelte";
+  import type { Readable } from "svelte/store";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 
   export let proposal: SnsProposalData;
   export let rootCanisterId: Principal;
@@ -31,9 +32,8 @@
   let failed_timestamp_seconds: bigint;
   let proposer: SnsNeuronId | undefined;
 
-  let nsFunctions: SnsNervousSystemFunction[];
-  $: nsFunctions =
-    $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions || [];
+  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: functionsStore = createSnsNsFunctionsProjectStore(rootCanisterId);
 
   $: ({
     type,
@@ -47,7 +47,10 @@
     executed_timestamp_seconds,
     failed_timestamp_seconds,
     proposer,
-  } = mapProposalInfo({ proposalData: proposal, nsFunctions }));
+  } = mapProposalInfo({
+    proposalData: proposal,
+    nsFunctions: $functionsStore,
+  }));
 </script>
 
 <div

@@ -2,22 +2,21 @@
   import { i18n } from "$lib/stores/i18n";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { isNullish } from "@dfinity/utils";
 
-  export let enoughMaturity: boolean;
+  // If the button is disabled, this will be the tooltip text.
+  export let disabledText: string | undefined = undefined;
 </script>
 
 <TestIdWrapper testId="disburse-maturity-button-component">
-  {#if enoughMaturity}
+  {#if isNullish(disabledText)}
     <button class="secondary" on:click
-      >{$i18n.neuron_detail.disburse_maturity_to}</button
+      >{$i18n.neuron_detail.disburse_maturity}</button
     >
   {:else}
-    <Tooltip
-      id="stake-maturity-tooltip"
-      text={$i18n.neuron_detail.disburse_maturity_disabled_tooltip}
-    >
+    <Tooltip id="stake-maturity-tooltip" text={disabledText}>
       <button class="secondary" disabled
-        >{$i18n.neuron_detail.disburse_maturity_to}</button
+        >{$i18n.neuron_detail.disburse_maturity}</button
       >
     </Tooltip>
   {/if}

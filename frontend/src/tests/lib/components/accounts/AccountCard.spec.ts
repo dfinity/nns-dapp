@@ -31,10 +31,7 @@ describe("AccountCard", () => {
 
   it("should render a hashed account identifier", () => {
     const { getByText } = render(AccountCard, {
-      props: {
-        ...props,
-        hash: true,
-      },
+      props,
     });
 
     expect(

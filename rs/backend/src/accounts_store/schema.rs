@@ -1,6 +1,8 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
+pub mod map;
+pub mod proxy;
 #[cfg(test)]
 mod tests;
 
@@ -9,20 +11,26 @@ mod tests;
 /// # Example
 ///
 /// ```
-/// let mut mock = MockAccountsDb::default();
+/// use nns_dapp::accounts_store::schema::map::AccountsDbAsMap;
+/// use nns_dapp::accounts_store::Account;
+/// use icp_ledger::{AccountIdentifier};
+/// use ic_base_types::{CanisterId, PrincipalId};
+/// use crate::nns_dapp::accounts_store::schema::AccountsDbTrait;
+///
+/// let mut mock = AccountsDbAsMap::default();
 /// let caller = PrincipalId::new_user_test_id(1); // Typically a user making an API call.
-/// let account_identifier = AccountIdentifier::from(caller).to_vec();
+/// let account_identifier = AccountIdentifier::from(caller);
 /// let new_account = Account::new(caller, account_identifier);
-/// mock.db_insert_account.insert(account_identifier.to_vec(), new_account);
+/// mock.db_insert_account(&account_identifier.to_vec(), new_account.clone());
 /// assert!(mock.db_contains_account(&account_identifier.to_vec()));
 /// assert_eq!(mock.db_accounts_len(), 1);
-/// assert_eq!(mock.db_get_account(&account_identifier.to_vec()), Some(new_account));
+/// assert_eq!(mock.db_get_account(&account_identifier.to_vec()), Some(new_account.clone()));
 /// mock.db_remove_account(&account_identifier.to_vec());
 /// assert!(!mock.db_contains_account(&account_identifier.to_vec()));
 /// assert_eq!(mock.db_accounts_len(), 0);
 /// ```
 ///
-/// Note: The key is &[u8] for historical reasons.  It _may_ be possible
+/// Note: The key is `&[u8]` for historical reasons.  It _may_ be possible
 /// to change this to `AccountIdentifier`.
 pub trait AccountsDbTrait {
     // Basic CRUD
@@ -54,8 +62,8 @@ pub trait AccountsDbTrait {
     /// time.  As such, protection against concurrent access is not a priority.
     ///
     /// # Arguments
-    /// - `account_key` = the account lookup key, typically `account_identifier.to_vec()`.
-    /// - `f` = a function that takes a mutable reference to the account as an argument and returns
+    /// - `account_key`: the account lookup key, typically `account_identifier.to_vec()`.
+    /// - `f`: a function that takes a mutable reference to the account as an argument and returns
     ///   a result.
     ///
     /// # Returns
@@ -76,4 +84,28 @@ pub trait AccountsDbTrait {
             None
         }
     }
+
+    /// Iterates over accounts in the data store.
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
+
+    /// Gets the label of the storage schema.
+    fn schema_label(&self) -> SchemaLabel;
+}
+
+/// A label to identify the schema.
+///
+/// Note: The numeric representations of these labels are guaranteed to be stable.
+#[repr(u32)]
+pub enum SchemaLabel {
+    /// Data is stored on the heap in a BTreeMap and serialized to stable memory on upgrade.
+    /// Implemented by: [`map::AccountsDbAsMap`]
+    Map = 0,
+}
+
+/// A trait for data stores that support `BTreeMap` for account storage.
+pub trait AccountsDbBTreeMapTrait {
+    /// Creates a database from a map of accounts.
+    fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;
+    /// Provides the accounts as a map.
+    fn as_map(&self) -> &std::collections::BTreeMap<Vec<u8>, Account>;
 }

@@ -9,19 +9,4 @@ export class IncreaseStakeButtonPo extends BasePageObject {
       element.byTestId(IncreaseStakeButtonPo.TID)
     );
   }
-
-  async getVariant(): Promise<string> {
-    const allowedVariants = ["primary", "secondary"];
-    const classes = (await this.root.getClasses()).filter((c) =>
-      allowedVariants.includes(c)
-    );
-    if (classes.length !== 1) {
-      throw new Error(
-        `Expected one of ${allowedVariants.join(", ")} but got ${classes.join(
-          ", "
-        )}`
-      );
-    }
-    return classes[0];
-  }
 }

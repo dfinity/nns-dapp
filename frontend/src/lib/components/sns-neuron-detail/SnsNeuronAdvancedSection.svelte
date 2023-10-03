@@ -55,7 +55,6 @@
         testId="neuron-id"
         text={getSnsNeuronIdAsHexString(neuron)}
         showCopy
-        flowLessCopy
         id="neuron-id"
       />
     </KeyValuePair>
@@ -88,7 +87,6 @@
           text={encodeIcrcAccount(neuronAccount)}
           id="neuron-account"
           showCopy
-          flowLessCopy
         />
       </KeyValuePair>
     {/if}

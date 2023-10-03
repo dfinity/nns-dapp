@@ -82,7 +82,6 @@
           text={neuron.fullNeuron.accountIdentifier}
           id="neuron-account"
           showCopy
-          flowLessCopy
         />
       </KeyValuePair>
     {/if}
@@ -113,7 +112,7 @@
       <JoinCommunityFundCheckbox {neuron} />
     {/if}
     {#if isControllable}
-      <SplitNnsNeuronButton {neuron} variant="secondary" />
+      <SplitNnsNeuronButton {neuron} />
     {/if}
   </div>
 </Section>

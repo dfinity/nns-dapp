@@ -75,6 +75,7 @@ interface I18nError {
   fail: string;
   join_community_fund: string;
   dummy_proposal: string;
+  add_maturity: string;
   update_delay: string;
   unknown: string;
   amount_not_valid: string;
@@ -125,6 +126,7 @@ interface I18nError {
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
+  adding_maturity: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
@@ -615,24 +617,33 @@ interface I18nNeuron_detail {
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;
-  disburse_maturity: string;
+  view_active_disbursements_total: string;
   view_active_disbursements: string;
   view_active_disbursements_status: string;
   view_active_disbursements_modal_title: string;
-  view_active_disbursements_entry_description: string;
+  view_active_disbursements_to: string;
   view_active_disbursements_maturity: string;
-  disburse_maturity_to: string;
+  disburse_maturity_description_1: string;
+  disburse_maturity_description_2: string;
+  disburse_maturity_amount: string;
+  disburse_maturity_confirmation_percentage: string;
+  disburse_maturity_confirmation_amount: string;
+  disburse_maturity_confirmation_tokens: string;
+  disburse_maturity_confirmation_destination: string;
+  disburse_maturity_edit: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
   stake_maturity_disabled_tooltip: string;
-  disburse_maturity_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip_zero: string;
+  disburse_maturity_disabled_tooltip_non_zero: string;
   stake_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
   leave_community_fund_success: string;
   dummy_proposal_success: string;
+  add_maturity_success: string;
   following_title: string;
   following_description: string;
   follow_neurons: string;
@@ -659,6 +670,8 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_success: string;
+  active_maturity_disbursements_description: string;
+  active_maturity_disbursements_amount: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
   stake_maturity_confirmation: string;
@@ -686,6 +699,7 @@ interface I18nNeuron_detail {
   advanced_settings_title: string;
   neuron_account: string;
   dissolve_date: string;
+  amount_maturity: string;
   created: string;
 }
 
@@ -703,10 +717,6 @@ interface I18nSns_launchpad {
   no_proposals: string;
 }
 
-interface I18nSns_project {
-  project: string;
-}
-
 interface I18nSns_project_detail {
   token_name: string;
   token_symbol: string;
@@ -716,6 +726,8 @@ interface I18nSns_project_detail {
   max_commitment: string;
   min_participants: string;
   current_overall_commitment: string;
+  current_nf_commitment: string;
+  current_direct_commitment: string;
   current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
@@ -731,6 +743,7 @@ interface I18nSns_project_detail {
   status_aborted: string;
   status_pending: string;
   status_unspecified: string;
+  status_finalizing: string;
   participate_swap_description: string;
   understand_agree: string;
   participate_success: string;
@@ -1265,7 +1278,6 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
-  sns_project: I18nSns_project;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
