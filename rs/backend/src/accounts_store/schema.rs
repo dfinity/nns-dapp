@@ -1,10 +1,10 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
-pub mod map;
-pub mod proxy;
 #[cfg(test)]
 pub mod accounts_in_stable_memory;
+pub mod map;
+pub mod proxy;
 #[cfg(test)]
 mod tests;
 
