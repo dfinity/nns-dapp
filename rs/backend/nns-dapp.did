@@ -234,7 +234,10 @@ type Histogram =
         default_account_transactions: vec record { nat32; nat64};
         sub_accounts: vec record { nat32; nat64};
         sub_account_transactions: vec record { nat32; nat64};
+        total_sub_account_transactions: vec record { nat32; nat64};
         hardware_wallet_accounts: vec record { nat32; nat64};
+        hardware_wallet_transactions: vec record { nat32; nat64};
+        total_hardware_wallet_transactions: vec record { nat32; nat64};
         canisters: vec record { nat32; nat64};
     };
 
