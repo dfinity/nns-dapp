@@ -69,7 +69,9 @@
       }
     },
     "nns-sns-wasm": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
@@ -81,43 +83,57 @@
       }
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_archive": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-archive.did",
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
     },
     "sns_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-index.did",
       "wasm": "target/ic/ic-icrc1-index.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     },
     "sns_aggregator": {
-      "build": ["./build-sns-aggregator.sh"],
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm.gz",
       "type": "custom",
@@ -129,7 +145,9 @@
       }
     },
     "ckbtc_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_ledger.did",
       "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
@@ -141,7 +159,9 @@
       }
     },
     "ckbtc_minter": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_minter.did",
       "wasm": "target/ic/ckbtc_minter.wasm",
       "type": "custom",
@@ -153,7 +173,9 @@
       }
     },
     "ckbtc_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_index.did",
       "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
@@ -165,7 +187,9 @@
       }
     },
     "tvl": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "type": "custom",
       "candid": "TODO-deploy-tvl-testnet",
       "wasm": "TODO-deploy-tvl-testnet",
@@ -188,7 +212,9 @@
           "ENABLE_CKTESTBTC": false
         }
       },
-      "providers": ["https://icp-api.io/"],
+      "providers": [
+        "https://icp-api.io/"
+      ],
       "type": "persistent"
     },
     "app": {
@@ -201,7 +227,9 @@
           "ENABLE_CKTESTBTC": false
         }
       },
-      "providers": ["https://icp-api.io/"],
+      "providers": [
+        "https://icp-api.io/"
+      ],
       "type": "persistent"
     },
     "staging": {
@@ -212,33 +240,45 @@
           "ENABLE_CKTESTBTC": false
         }
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "testnet": {
       "config": {
         "HOST": "https://nnsdapp.testnet.dfinity.network"
       },
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "nnsdapp": {
-      "providers": ["http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+      ],
       "type": "persistent"
     },
     "small14": {
       "type": "persistent"
     },
     "small13": {
-      "providers": ["http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c6ff:fe29:bfba]:8080"
+      ],
       "type": "persistent"
     },
     "small12": {
-      "providers": ["http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:54ff:fef3:eb8]:8080"
+      ],
       "type": "persistent"
     },
     "small11": {
-      "providers": ["http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:eeff:feae:ab37]:8080"
+      ],
       "type": "persistent"
     },
     "large02": {
@@ -255,11 +295,15 @@
       "type": "persistent"
     },
     "small09": {
-      "providers": ["http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:d0ff:fe7c:bd3f]:8080"
+      ],
       "type": "persistent"
     },
     "small06": {
-      "providers": ["http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:caff:fed1:b2e7]:8080"
+      ],
       "type": "persistent"
     },
     "local": {
@@ -490,39 +534,57 @@
       "type": "persistent"
     },
     "small01": {
-      "providers": ["http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c9ff:fe17:cc3a]:8080"
+      ],
       "type": "persistent"
     },
     "small02": {
-      "providers": ["http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:6aff:feed:6c6a]:8080"
+      ],
       "type": "persistent"
     },
     "small03": {
-      "providers": ["http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:45ff:fe8b:20f1]:8080"
+      ],
       "type": "persistent"
     },
     "small04": {
-      "providers": ["http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:3cff:fe45:6c61]:8080"
+      ],
       "type": "persistent"
     },
     "small05": {
-      "providers": ["http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:e6ff:fe0f:1a73]:8080"
+      ],
       "type": "persistent"
     },
     "small07": {
-      "providers": ["http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:fbff:fe8d:cb73]:8080"
+      ],
       "type": "persistent"
     },
     "small08": {
-      "providers": ["http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:c3ff:fe84:757]:8080"
+      ],
       "type": "persistent"
     },
     "small10": {
-      "providers": ["http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:18ff:fe0e:13f6]:8080"
+      ],
       "type": "persistent"
     },
     "small15": {
-      "providers": ["http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"],
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:59ff:feca:510b]:8080"
+      ],
       "type": "persistent"
     },
     "benchmarklarge": {
