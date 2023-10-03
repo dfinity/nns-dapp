@@ -3,8 +3,11 @@ import {
   getTransactions,
   renameSubAccount as renameSubAccountApi,
 } from "$lib/api/accounts.api";
-import { queryAccountBalance, sendICP } from "$lib/api/icp-ledger.api";
-import { icrcTransfer } from "$lib/api/icrc-ledger.api";
+import {
+  queryAccountBalance,
+  sendICP,
+  sendIcpIcrc1,
+} from "$lib/api/icp-ledger.api";
 import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type {
@@ -17,7 +20,6 @@ import {
   SYNC_ACCOUNTS_RETRY_MAX_ATTEMPTS,
   SYNC_ACCOUNTS_RETRY_SECONDS,
 } from "$lib/constants/accounts.constants";
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
@@ -45,7 +47,6 @@ import {
   invalidIcrcAddress,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
-import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   isForceCallStrategy,
   notForceCallStrategy,
@@ -316,13 +317,11 @@ export const transferICP = async ({
     const feeE8s = get(mainTransactionFeeE8sStore);
 
     await (validIcrcAddress
-      ? icrcTransfer({
+      ? sendIcpIcrc1({
           identity,
           to: decodeIcrcAccount(to),
-          fromSubAccount: subAccount,
-          amount: tokenAmount.toE8s(),
-          canisterId: LEDGER_CANISTER_ID,
-          createdAt: nowInBigIntNanoSeconds(),
+          fromSubAccount: subAccount && new Uint8Array(subAccount),
+          amount: tokenAmount,
           fee: feeE8s,
         })
       : sendICP({

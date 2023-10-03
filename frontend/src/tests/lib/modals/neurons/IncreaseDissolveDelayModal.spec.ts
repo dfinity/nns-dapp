@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -36,12 +36,27 @@ describe("IncreaseDissolveDelayModal", () => {
   });
 
   it("should have the update delay button disabled by default", async () => {
-    const { container } = await renderIncreaseDelayModal(mockNeuron);
+    const { container } = await renderIncreaseDelayModal({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(365 * SECONDS_IN_DAY),
+    });
 
     const updateDelayButton = container.querySelector(
       '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+  });
+
+  it("should have the update delay button enabled if the current delay is not a whole number of days", async () => {
+    const { container } = await renderIncreaseDelayModal({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(365.25 * SECONDS_IN_DAY),
+    });
+
+    const updateDelayButton = container.querySelector(
+      '[data-tid="go-confirm-delay-button"]'
+    );
+    expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
   });
 
   it("should be able to change dissolve delay in the confirmation screen", async () => {
@@ -59,7 +74,7 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR * 2 },
+        target: { value: 365 * 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -86,10 +101,12 @@ describe("IncreaseDissolveDelayModal", () => {
   });
 
   it("should not be able to change dissolve delay below current value", async () => {
-    const currentNeuronDissoveDelay = SECONDS_IN_YEAR;
+    const currentNeuronDissoveDelayDays = 366;
     const editableNeuron = {
       ...mockNeuron,
-      dissolveDelaySeconds: BigInt(currentNeuronDissoveDelay),
+      dissolveDelaySeconds: BigInt(
+        currentNeuronDissoveDelayDays * SECONDS_IN_DAY
+      ),
     };
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
@@ -103,7 +120,7 @@ describe("IncreaseDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: currentNeuronDissoveDelay / 2 },
+        target: { value: currentNeuronDissoveDelayDays / 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -115,7 +132,7 @@ describe("IncreaseDissolveDelayModal", () => {
     );
     inputRange &&
       (await waitFor(() =>
-        expect(inputRange.value).toBe(String(currentNeuronDissoveDelay))
+        expect(inputRange.value).toBe(String(currentNeuronDissoveDelayDays))
       ));
   });
 });

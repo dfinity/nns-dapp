@@ -33,9 +33,9 @@
     class:tabular-num={detailed === "height_decimals"}
     >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
   >
-  <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
-
-  {#if copy}
+  <span class="label">{label !== undefined ? label : amount.token.symbol}</span
+  >{#if copy}
+    {" "}
     <Copy value={formatToken({ value: amount.toE8s(), detailed: true })} />
   {/if}
 </div>

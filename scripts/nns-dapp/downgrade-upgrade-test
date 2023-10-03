@@ -3,8 +3,6 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-PROD_WASM="nns-dapp-prod.wasm.gz" # TODO: Switch to a test build, when available for the prod tag.
-
 help_text() {
   cat <<-EOF
 	Tests:
@@ -17,6 +15,7 @@ help_text() {
 source "$SOURCE_DIR/../clap.bash"
 # Define options
 clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
+clap.define short=p long=prod desc="A test build of the production wasm" variable=PROD_WASM default=""
 clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="200000"
 clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
@@ -32,9 +31,16 @@ get_current_wasm() {
 }
 
 get_prod_wasm() {
-  # TODO: Use the test build once available for the prod release.
   # Note: Using the test build allows us to get arbitrary test accounts from the canister.
-  curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp.wasm.gz >"$PROD_WASM"
+  if test -n "${PROD_WASM:-}"; then
+    test -f "${PROD_WASM}" || {
+      echo "ERROR: The specified production wasm file does not exist at: '$PROD_WASM'"
+      exit 1
+    } >&2
+  else
+    PROD_WASM="$(mktemp nns-dapp-prod-XXXXXX --suffix .wasm.gz)"
+    curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz >"$PROD_WASM"
+  fi
 }
 
 # Gets the number of transactions; this list may be pruned so is not invariant.
@@ -47,13 +53,16 @@ get_upgrade_invariant_stats() {
 }
 # Gets some sample accounts
 sample_toy_accounts() {
-  echo "Sample accounts will be available once the production commit has a test wasm with get_toy_account()."
-  # seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({}: nat)" --query
+  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
+  echo "==== UPGRADE INVARIANT STATS ===="
   get_upgrade_invariant_stats
+  echo "==== END ===="
+  echo "==== SAMPLE INVARIANT STATS ===="
   sample_toy_accounts
+  echo "==== END ===="
 }
 
 # Verifies that the state is at least as large as expected.
@@ -95,6 +104,26 @@ check_num_transactions() {
   fi
 }
 
+# Wait for the migration countdown to complete.
+wait_for_migration() {
+  local migration_countdown
+  for ((i = 0; i < 120; i++)); do
+    migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
+    echo "Migration countdown: $migration_countdown"
+    if ((migration_countdown == 0)); then
+      return
+    fi
+    sleep 1
+  done
+  {
+    echo "ERROR: Migration did not complete within the expected time."
+    echo "       For a migration to be considered complete, the migration_countdown should reach zero."
+    echo "       Here are the current stats:"
+    dfx canister call nns-dapp get_stats
+    exit 1
+  } >&2
+}
+
 # Installs the current build of nns-dapp
 # TODO: Record upgrade time
 # TODO: Record upgrade cycles
@@ -107,6 +136,7 @@ upgrade_nnsdapp() {
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
+  wait_for_migration
   poststate="$(get_upgrade_invariants)"
   if [[ "$prestate" != "$poststate" ]]; then
     {

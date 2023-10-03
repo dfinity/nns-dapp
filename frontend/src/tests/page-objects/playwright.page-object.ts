@@ -115,4 +115,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async isVisible(): Promise<boolean> {
     throw new Error("Not implement");
   }
+
+  async blur(): Promise<void> {
+    throw new Error("Not implement");
+  }
 }

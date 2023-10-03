@@ -16,6 +16,10 @@ export class NnsProposalListPo extends BasePageObject {
     return SkeletonCardPo.under(this.root);
   }
 
+  getProposalCardPo(): ProposalCardPo {
+    return ProposalCardPo.under(this.root);
+  }
+
   getProposalCardPos(): Promise<ProposalCardPo[]> {
     return ProposalCardPo.allUnder(this.root);
   }
@@ -42,19 +46,31 @@ export class NnsProposalListPo extends BasePageObject {
     return Array.from(new Set(statuses));
   }
 
-  async getFirstProposalCardPoForProposer(
+  async getProposalCardPosForProposer(
     proposer: string
-  ): Promise<ProposalCardPo> {
+  ): Promise<ProposalCardPo[]> {
     const shortProposer = shortenWithMiddleEllipsis(
       proposer,
       PROPOSER_ID_DISPLAY_SPLIT_LENGTH
     );
     const allCards = await this.getProposalCardPos();
+    const proposerCards = [];
 
     for (const card of allCards) {
       if ((await card.getShortenedProposer()) === shortProposer) {
-        return card;
+        proposerCards.push(card);
       }
+    }
+
+    return proposerCards;
+  }
+
+  async getFirstProposalCardPoForProposer(
+    proposer: string
+  ): Promise<ProposalCardPo> {
+    const proposerCards = await this.getProposalCardPosForProposer(proposer);
+    if (proposerCards.length > 0) {
+      return proposerCards[0];
     }
 
     throw new Error(`No proposal card found for proposer ${proposer}`);
@@ -72,7 +88,22 @@ export class NnsProposalListPo extends BasePageObject {
   }
 
   async waitForContentLoaded(): Promise<void> {
-    await this.waitFor();
-    await this.getSkeletonCardPo().waitForAbsent();
+    this.getSkeletonCardPo().waitForAbsent();
+    // The NnsProposals component loads neurons and proposals at the same time.
+    // But once neurons are loaded, it loads proposals again. So it's possible
+    // that the component goes back into loading state immediately after
+    // proposals are loaded.
+    // TODO: Fix NnsProposals to load proposals only once and remove the 2 lines
+    // below.
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.getSkeletonCardPo().waitForAbsent();
+  }
+
+  async getVisibleProposalIds(proposerNeuronId: string): Promise<string[]> {
+    return Promise.all(
+      (await this.getProposalCardPosForProposer(proposerNeuronId)).map((card) =>
+        card.getProposalId()
+      )
+    );
   }
 }

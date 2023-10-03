@@ -1,6 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TooltipPo } from "./Tooltip.page-object";
 
 export class DisburseMaturityButtonPo extends BasePageObject {
   private static readonly TID = "disburse-maturity-button-component";
@@ -17,5 +18,9 @@ export class DisburseMaturityButtonPo extends BasePageObject {
 
   isDisabled(): Promise<boolean> {
     return this.getButton().isDisabled();
+  }
+
+  getTooltipText(): Promise<string> {
+    return TooltipPo.under(this.root).getText();
   }
 }

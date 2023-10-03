@@ -40,7 +40,7 @@
 </script>
 
 <StakeMaturityModal
-  formattedMaturity={maturity}
+  availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}
   on:nnsStakeMaturity={stakeNeuronMaturity}
   on:nnsClose
 />

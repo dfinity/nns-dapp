@@ -3,7 +3,7 @@
  */
 
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
@@ -96,16 +96,16 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   });
 
   it("should use current dissolve delay value when locked", async () => {
-    const dissolveDelaySeconds = 12345555n;
+    const dissolveDelayDays = 12345;
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
-      dissolveDelaySeconds,
+      dissolveDelaySeconds: BigInt(dissolveDelayDays * SECONDS_IN_DAY),
     });
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-      dissolveDelaySeconds.toString()
+      dissolveDelayDays.toString()
     );
   });
 
@@ -121,7 +121,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-      SECONDS_IN_YEAR.toString()
+      "366"
     );
   });
 
@@ -145,7 +145,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR * 2 },
+        target: { value: 365 * 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(

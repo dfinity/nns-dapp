@@ -46,14 +46,20 @@ runs:
         then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
         else have_snsdemo=false >> "$GITHUB_OUTPUT"
         fi
+    - name: Determine snsdemo ref
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+      id: snsdemo_ref
+      shell: bash
+      run: |
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
       uses: actions/checkout@v3
       with:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
-        # Version from 2023-06-06 with dfx v0.14.1
-        ref: '0e61f618018db099a01b1686535fff8eff980d1c'
+        ref: ${{ steps.snsdemo_ref.outputs.ref }}
     - name: Add SNS scripts to the path
       shell: bash
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -76,4 +82,10 @@ runs:
         DFX_NETWORK=local ./config.sh && cp nns-dapp-arg-local.did out && didc encode "$(cat out/nns-dapp-arg-local.did)" | xxd -r -p >out/nns-dapp-arg-local.bin
     - name: Hash artefacts
       shell: bash
-      run: find out/ -type f | xargs sha256sum
+      # Note:
+      # * sha256sum prints the hash of each file;
+      # * The `wc -c` in the awk code gets the size in bytes of each file;
+      # * The AWK code also adds a header and footer;
+      # * `column -t` formats the data as a table;
+      # * `tee` saves a copy of the printout in a file; that file will be included in releases.
+      run: find out/ -type f | xargs sha256sum | awk '{"wc -c " $2 | getline size; print $1, size}BEGIN{print "===START_ARTEFACTS===\nsha256 size filename"}END{print "==END_ARTEFACTS=="}' | column -t | tee out/filelist.txt

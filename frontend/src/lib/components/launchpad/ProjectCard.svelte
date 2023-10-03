@@ -24,9 +24,6 @@
     metadata: { logo, name, description },
   } = summary);
 
-  let title: string;
-  $: title = `${$i18n.sns_project.project} ${name}`;
-
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
@@ -45,7 +42,7 @@
 >
   <div class="title" slot="start">
     <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
-    <h3 data-tid="project-name">{title}</h3>
+    <h3 data-tid="project-name">{name}</h3>
   </div>
 
   <p class="value description">{description}</p>

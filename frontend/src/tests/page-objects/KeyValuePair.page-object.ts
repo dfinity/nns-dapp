@@ -16,7 +16,7 @@ export class KeyValuePairPo extends BasePageObject {
     return this.root.querySelector("dt").getText();
   }
 
-  async getValueText(): Promise<string> {
+  getValueText(): Promise<string | null> {
     return this.root.querySelector("dd").getText();
   }
 }

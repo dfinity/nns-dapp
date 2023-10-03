@@ -37,7 +37,7 @@ cat >"$test_index_html" <<-EOF
         data-ckbtc-minter-canister-id="t6rzw-2iaaa-aaaaa-aaama-cai"
         data-cycles-minting-canister-id="rkp4c-7iaaa-aaaaa-aaaca-cai"
         data-dfx-network="staging"
-        data-feature-flags="{&quot;ENABLE_CKBTC&quot;:true,&quot;ENABLE_CKTESTBTC&quot;:false,&quot;ENABLE_DISBURSE_MATURITY&quot;:false,&quot;ENABLE_ICP_ICRC&quot;:false,&quot;ENABLE_INSTANT_UNLOCK&quot;:false,&quot;ENABLE_NEURON_SETTINGS&quot;:true,&quot;ENABLE_SNS_AGGREGATOR_STORE&quot;:false}"
+        data-feature-flags="{&quot;ENABLE_CKBTC&quot;:true,&quot;ENABLE_CKTESTBTC&quot;:false,&quot;ENABLE_DISBURSE_MATURITY&quot;:true,&quot;ENABLE_ICP_ICRC&quot;:false,&quot;ENABLE_INSTANT_UNLOCK&quot;:false,&quot;ENABLE_NEURON_SETTINGS&quot;:true,&quot;ENABLE_SNS_AGGREGATOR_STORE&quot;:true}"
         data-fetch-root-key="true"
         data-governance-canister-id="rrkah-fqaaa-aaaaa-aaaaq-cai"
         data-host="https://nnsdapp.dfinity.network"

@@ -1,4 +1,5 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { InputRangePo } from "$tests/page-objects/InputRange.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -18,8 +19,8 @@ export class NeuronSelectPercentagePo extends BasePageObject {
     });
   }
 
-  getInputRange(): PageObjectElement {
-    return this.root.byTestId("input-range");
+  getInputRangePo(): InputRangePo {
+    return InputRangePo.under(this.root);
   }
 
   clickNextButton(): Promise<void> {
@@ -31,6 +32,14 @@ export class NeuronSelectPercentagePo extends BasePageObject {
   }
 
   setPercentage(percentage: number): Promise<void> {
-    return this.getInputRange().input(`${percentage}`);
+    return this.getInputRangePo().setValue(percentage);
+  }
+
+  getAmountMaturity(): Promise<string> {
+    return this.getText("amount-maturity");
+  }
+
+  getAvailableMaturity(): Promise<string> {
+    return this.getText("available-maturity");
   }
 }

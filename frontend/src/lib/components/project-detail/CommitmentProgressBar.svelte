@@ -2,10 +2,14 @@
   import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { ProgressBar } from "@dfinity/gix-components";
+  import {
+    ProgressBar,
+    type ProgressBarSegment,
+  } from "@dfinity/gix-components";
 
   export let max: bigint;
-  export let value: bigint;
+  export let directParticipation: bigint;
+  export let nfParticipation: bigint;
   export let minimumIndicator: bigint | undefined = undefined;
 
   let width: number | undefined;
@@ -14,9 +18,22 @@
     minimumIndicator !== undefined && width !== undefined
       ? (Number(minimumIndicator) / Number(max)) * width
       : undefined;
+
+  let segments: ProgressBarSegment[] = [];
+  $: segments = [
+    { value: Number(nfParticipation), color: "var(--positive-emphasis)" },
+    {
+      value: Number(directParticipation),
+      color: "var(--warning-emphasis)",
+    },
+  ];
 </script>
 
-<ProgressBar max={Number(max)} value={Number(value)} color="warning">
+<ProgressBar
+  max={Number(max)}
+  {segments}
+  testId="commitment-progress-bar-component"
+>
   <div class="info" slot="top">
     <p class="right">
       <span>

@@ -15,6 +15,7 @@ use ic_cdk::api::stable::stable64_size;
 const WASM_PAGE_SIZE: u64 = 65536;
 const GIBIBYTE: u64 = 1 << 30;
 
+/// Returns basic stats for frequent monitoring.
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
     // Collect values from various subcomponents
@@ -47,6 +48,8 @@ pub struct Stats {
     //       production, CI and snsdemo populate these fields.
     pub stable_memory_size_bytes: Option<u64>,
     pub wasm_memory_size_bytes: Option<u64>,
+    pub schema: Option<u32>,              // The numeric form of a SchemaLabel.
+    pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
@@ -95,6 +98,16 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "nns_dapp_wasm_memory_size_gib",
         gibibytes(wasm_memory_size_bytes()),
         "Amount of wasm memory used by this canister, in binary gigabytes",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_schema",
+        stats.schema.unwrap_or(0) as f64,
+        "The nns-dapp schema version",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_migration_countdown",
+        stats.migration_countdown.unwrap_or(0) as f64,
+        "When non-zero, a migration is in progress.",
     )?;
     Ok(())
 }

@@ -20,6 +20,21 @@ describe("NeuronConfirmActionScreen", () => {
     expect(element).toBeInTheDocument();
   });
 
+  it("should render custom edit button", () => {
+    const editLabel = "CUSTOM-EDIT-BUTTON";
+    const { getByText } = render(NeuronConfirmActionScreenTest, {
+      props: { editLabel },
+    });
+
+    expect(getByText(editLabel)).toBeInTheDocument();
+  });
+
+  it("should render default edit button label when not provided", () => {
+    const { getByText } = render(NeuronConfirmActionScreenTest);
+
+    expect(getByText("Edit percentage")).toBeInTheDocument();
+  });
+
   it("should trigger nnsConfirm event on click button", async () => {
     const spy = jest.fn();
     const { queryByTestId } = render(NeuronConfirmActionScreenTest, {

@@ -321,6 +321,7 @@ const anonymizeSnsTransaction = async (
     burn: await anonymizeTransfer(tx.burn as TransferOpt),
     mint: await anonymizeTransfer(tx.mint as TransferOpt),
     transfer: await anonymizeTransfer(tx.transfer as TransferOpt),
+    approve: await anonymizeTransfer(tx.approve as TransferOpt),
   };
 };
 
