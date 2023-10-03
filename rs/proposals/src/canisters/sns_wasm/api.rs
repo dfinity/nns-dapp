@@ -6,6 +6,9 @@ use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 use ic_cdk::api::call::CallResult as Result;
 use serde::Serialize;
 
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct EmptyRecord {}
+
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
