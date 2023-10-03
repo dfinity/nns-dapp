@@ -12,8 +12,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-* Select destination when disbursing maturity.
-* New feature flag "ENABLE_FULL_WIDTH_PROPOSAL".
+* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
 
 #### Changed
 
