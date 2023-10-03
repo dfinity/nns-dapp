@@ -101,7 +101,25 @@
     },
     {
       "command": "get_module_hash_from_network staging",
-      "stdout": "8888888888888888888888888888888888888888888888888888888888888888",
+      "stdout": "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "post_rc_on_slack",
+      "stdout": "https://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "scripts/nns-dapp/../canister_ids --export --network staging",
+      "stdout": "{ \"internet_identity\": { \"staging\": \"wqmuk-5qaaa-aaaaa-aaaqq-cai\" } }",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "command": "verify_build",
+      "stdout": "41ed48445882e6cff25f14c10ca1fb5c34b2df04c4c2b4d77a6244a0baa0e5ca  assets.tar.xz\n4444444444444444444444444444444444444444444444444444444444444444  nns-dapp.wasm.gz\nbf2a1d0abe03272358245d5fa25f5b24ba32aa8eb7fd0367e3e68e975a2771ff  sns_aggregator.wasm.gz\nd176b7f73b1622d7e9b38fab17aa81114cf09602dab519d37e30d81da870237f  nns-dapp-arg-mainnet.did\n869aabef4d2f757645692a11bd845b90284f8e942890c4b1fb74f751785fa2f2  nns-dapp-arg-mainnet.bin",
       "stderr": "",
       "exitCode": 0
     }
@@ -176,9 +194,31 @@
     "",
     "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
     "Staging URL: \u001b[32mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/\u001b[0m",
+    "Staging WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
+    "Post RC on Slack: \u001b[32mhttps://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509\u001b[0m",
+    "Update the 'Playground' bookmark on the #eng-nns-dapp Slack channel to point to the new release candidate.\\n\\nSlack channel: https://dfinity.slack.com/channels/eng-nns-dapp\\nNew Playground bookmark: https://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/",
+    "",
+    "When you've done that ☝️  confirm by entering 'y':",
+    "Update playground: \u001b[32mDone\u001b[0m",
+    "Canister IDs: \u001b[32m{ \"internet_identity\": { \"staging\": \"wqmuk-5qaaa-aaaaa-aaaqq-cai\" } }\u001b[0m",
+    "Build hashes: \u001b[32m41ed48445882e6cff25f14c10ca1fb5c34b2df04c4c2b4d77a6244a0baa0e5ca  assets.tar.xz",
+    "4444444444444444444444444444444444444444444444444444444444444444  nns-dapp.wasm.gz",
+    "bf2a1d0abe03272358245d5fa25f5b24ba32aa8eb7fd0367e3e68e975a2771ff  sns_aggregator.wasm.gz",
+    "d176b7f73b1622d7e9b38fab17aa81114cf09602dab519d37e30d81da870237f  nns-dapp-arg-mainnet.did",
+    "869aabef4d2f757645692a11bd845b90284f8e942890c4b1fb74f751785fa2f2  nns-dapp-arg-mainnet.bin\u001b[0m",
+    "👇 Press enter to run the following command:",
+    "",
+    "scripts/nns-dapp/release-template",
+    "",
+    "scripts/nns-dapp/release-template: \u001b[32mDone\u001b[0m",
+    "👇 Press enter to run the following command:",
+    "",
+    "scripts/nns-dapp/release-check",
+    "",
+    "scripts/nns-dapp/release-check: \u001b[32mDone\u001b[0m",
     "Values don't match!",
     "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "Staging WASM hash: 8888888888888888888888888888888888888888888888888888888888888888"
+    "Built NNS-dapp WASM hash: 4444444444444444444444444444444444444444444444444444444444444444"
   ],
   "expectedExitCode": 1
 }
