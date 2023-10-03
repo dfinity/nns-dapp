@@ -26,6 +26,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Change inconsistency in the name of an NNS topic.
+
 #### Security
 
 * Rename `memo` on the ICRC-1 interface of the ICP ledger API to `icrc1Memo` and add a warning about the `memo` and `icrc1Memo` being unrelated.
