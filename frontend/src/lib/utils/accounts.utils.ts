@@ -10,7 +10,7 @@ import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmountE8s } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { AccountIdentifier, SubAccount, checkAccountId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";

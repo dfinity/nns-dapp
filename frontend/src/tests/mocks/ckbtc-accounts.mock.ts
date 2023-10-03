@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { mockPrincipal } from "./auth.store.mock";
 
 export const mockCkBTCToken: IcrcTokenMetadata = {

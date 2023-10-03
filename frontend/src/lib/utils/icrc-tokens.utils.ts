@@ -2,7 +2,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { isNullish } from "@dfinity/utils";
 
 /**

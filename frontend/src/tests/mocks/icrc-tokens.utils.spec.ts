@@ -1,5 +1,5 @@
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { mockQueryTokenResponse } from "./sns-projects.mock";
 
 describe("icrc-tokens.utils", () => {

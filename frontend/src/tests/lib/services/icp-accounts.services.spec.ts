@@ -61,7 +61,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { AccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
