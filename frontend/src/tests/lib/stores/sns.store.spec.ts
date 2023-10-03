@@ -223,31 +223,7 @@ describe("sns.store", () => {
   });
 
   describe("isLoadingSnsProjectsStore", () => {
-    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
-      });
-
-      it("should not be loading if snsQueryStore is set but not snsAggregatorStore", () => {
-        snsQueryStore.reset();
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(isLoadingSnsProjectsStore)).toBe(true);
-
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-
-        snsQueryStore.setData(data);
-        expect(get(isLoadingSnsProjectsStore)).toBe(false);
-      });
-    });
-
     describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
-      });
-
       it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
         const data = snsResponsesForLifecycle({
           lifecycles: [SnsSwapLifecycle.Open],
@@ -525,37 +501,8 @@ describe("sns.store", () => {
   });
 
   describe("snsSummariesStore", () => {
-    describe("flag ENABLE_SNS_AGGREGATOR_STORE not enabled", () => {
-      beforeEach(() => {
-        jest.spyOn(console, "warn").mockImplementation(() => undefined);
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
-      });
-
-      it("uses snsQueryStore as source of data", () => {
-        snsAggregatorStore.reset();
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
-
-        expect(get(snsSummariesStore)).toHaveLength(1);
-      });
-
-      it("does NOT use snsAggregator as source of data", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)).toHaveLength(0);
-      });
-    });
-
     describe("flag ENABLE_SNS_AGGREGATOR_STORE is enabled", () => {
       const rootCanisterId = rootCanisterIdMock;
-
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
-      });
 
       it("warns when snsAggregatorStore and snsQueryStore have different number of summaries", () => {
         expect(console.warn).not.toHaveBeenCalled();

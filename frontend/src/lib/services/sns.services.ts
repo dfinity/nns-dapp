@@ -6,11 +6,9 @@ import {
 } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
-import { ENABLE_SNS_AGGREGATOR_STORE } from "$lib/stores/feature-flags.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import {
-  snsQueryStore,
   snsSummariesStore,
   snsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
@@ -165,10 +163,6 @@ export const loadSnsDerivedState = async ({
       }),
     onLoad: ({ response: derivedState, certified }) => {
       if (derivedState !== undefined) {
-        const useAggregatorStore = get(ENABLE_SNS_AGGREGATOR_STORE);
-        if (!useAggregatorStore) {
-          snsQueryStore.updateDerivedState({ derivedState, rootCanisterId });
-        }
         snsDerivedStateStore.setDerivedState({
           rootCanisterId: Principal.fromText(rootCanisterId),
           certified,
@@ -218,11 +212,6 @@ export const loadSnsLifecycle = async ({
         certified,
       }),
     onLoad: ({ response: lifecycleResponse, certified }) => {
-      const lifecycle = fromNullable(lifecycleResponse?.lifecycle ?? []);
-      const useAggregatorStore = get(ENABLE_SNS_AGGREGATOR_STORE);
-      if (nonNullish(lifecycle) && !useAggregatorStore) {
-        snsQueryStore.updateLifecycle({ lifecycle, rootCanisterId });
-      }
       if (nonNullish(lifecycleResponse)) {
         snsLifecycleStore.setData({
           rootCanisterId: Principal.from(rootCanisterId),

@@ -19,7 +19,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
-import { ENABLE_SNS_AGGREGATOR_STORE } from "./feature-flags.store";
 import {
   snsAggregatorStore,
   type SnsAggregatorStore,
@@ -278,14 +277,12 @@ const initSnsQueryStore = (): SnsQueryStore => {
 export const snsQueryStore = initSnsQueryStore();
 
 export const isLoadingSnsProjectsStore = derived<
-  [SnsQueryStore, SnsAggregatorStore, Readable<boolean>],
+  SnsAggregatorStore,
   boolean
 >(
-  [snsQueryStore, snsAggregatorStore, ENABLE_SNS_AGGREGATOR_STORE],
-  ([snsQueryStoreData, aggregatorData, aggregatorStoreEnabled]) =>
-    aggregatorStoreEnabled
-      ? isNullish(aggregatorData.data)
-      : isNullish(snsQueryStoreData)
+  snsAggregatorStore,
+  (aggregatorData) =>
+    isNullish(aggregatorData.data)
 );
 
 /**
@@ -366,72 +363,34 @@ const overrideLifecycle =
  */
 export const snsSummariesStore = derived<
   [
-    SnsQueryStore,
     SnsAggregatorStore,
     SnsDerivedStateStore,
     SnsLifecycleStore,
-    Readable<boolean>
   ],
   SnsSummary[]
 >(
   [
-    snsQueryStore,
     snsAggregatorStore,
     snsDerivedStateStore,
     snsLifecycleStore,
-    ENABLE_SNS_AGGREGATOR_STORE,
   ],
   ([
-    data,
     aggregatorData,
     derivedStates,
     lifecycles,
-    enableSnsAggregatorStore,
   ]) => {
-    const snsQuerySummaries = mapAndSortSnsQueryToSummaries({
-      metadata: data?.metadata ?? [],
-      swaps: data?.swaps ?? [],
-    });
-
-    if (!enableSnsAggregatorStore) {
-      return snsQuerySummaries;
-    }
-
+    // The aggregator data is fetched on init.
     const aggregatorSummaries =
       aggregatorData.data
         ?.map(convertDtoToSnsSummary)
+        // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
         .map(overrideDerivedState(derivedStates))
+        // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
         .map(overrideLifecycle(lifecycles))
         .filter((optionalSummary): optionalSummary is SnsSummary =>
           nonNullish(optionalSummary)
         ) ?? [];
 
-    // It might be that temporarily one store is not yet populated, while the other is.
-    // That's why we wait until both are populated to compare them.
-    if (
-      snsQuerySummaries.length > 0 &&
-      aggregatorSummaries.length > 0 &&
-      aggregatorSummaries.length !== snsQuerySummaries.length
-    ) {
-      console.warn(
-        `The aggregator and query data do not match. Aggregator data: ${aggregatorSummaries.length}, query data: ${snsQuerySummaries.length}.`
-      );
-    }
-
-    if (
-      snsQuerySummaries.length > 0 &&
-      aggregatorSummaries.length === snsQuerySummaries.length &&
-      differentSummaries(aggregatorSummaries, snsQuerySummaries).length > 0
-    ) {
-      console.warn(
-        "The aggregator and query data do not match. Check below and the debug store for more information."
-      );
-      console.warn(differentSummaries(aggregatorSummaries, snsQuerySummaries));
-    }
-
-    // The aggregator data is fetched on init.
-    // Derived state is fetched regularly in the background or after a participation. Therefore, we consider it as the latest data.
-    // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
     return aggregatorSummaries;
   }
 );
