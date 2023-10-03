@@ -26,7 +26,7 @@ import {
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { mock } from "jest-mock-extended";
 

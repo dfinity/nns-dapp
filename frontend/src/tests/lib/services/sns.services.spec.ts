@@ -25,7 +25,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,

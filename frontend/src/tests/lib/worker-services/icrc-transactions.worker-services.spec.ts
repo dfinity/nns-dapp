@@ -8,7 +8,7 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
+import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import mock from "jest-mock-extended/lib/Mock";
 
 describe("transactions.worker-services", () => {

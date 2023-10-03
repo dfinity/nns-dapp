@@ -47,7 +47,7 @@ import {
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {

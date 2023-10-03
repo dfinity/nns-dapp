@@ -5,7 +5,7 @@ import type {
   UniverseCanisterIdText,
 } from "$lib/types/universe";
 import { removeKeys } from "$lib/utils/utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";

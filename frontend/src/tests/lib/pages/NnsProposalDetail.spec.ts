@@ -24,7 +24,8 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 
