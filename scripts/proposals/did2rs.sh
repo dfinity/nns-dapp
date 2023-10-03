@@ -11,11 +11,6 @@ print_help() {
 	Compiles a did file to Rust and applies any saved manual changes.
 
 	Usage: $(basename "$0") <CANISTER_NAME>
-	takes inputs:
-	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
-	creates:
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
 
 	Hint: To create a patchfile:
 	  - Customise the built rust file to your heart's content.
@@ -28,16 +23,12 @@ print_help() {
 
 	EOF
 }
-[[ "${1:-}" != "--help" ]] || {
-  print_help
-  exit 0
-}
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
-clap.define short=d long=did desc="The did path" variable=DID_PATH
+clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
 clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
 clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default="Serialize, Clone, Debug"
 clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER
