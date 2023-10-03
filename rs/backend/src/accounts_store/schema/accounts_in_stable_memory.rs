@@ -228,7 +228,7 @@ impl AccountStorageKey {
         let account_identifier_len = account_identifier.len() as u8;
         let mut ans = [0u8; Self::MAX_SIZE as usize];
         ans[Self::PAGE_NUM_OFFSET..Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES]
-            .copy_from_slice(&page_num.to_le_bytes());
+            .copy_from_slice(&page_num.to_be_bytes());
         ans[Self::ACCOUNT_IDENTIFIER_LEN_OFFSET] = account_identifier_len;
         ans[Self::ACCOUNT_IDENTIFIER_OFFSET..Self::ACCOUNT_IDENTIFIER_OFFSET + account_identifier.len()]
             .copy_from_slice(account_identifier);
@@ -242,8 +242,12 @@ impl AccountStorageKey {
     }
 
     /// Gets the page number.
-    pub fn page_num(&self) -> u8 {
-        self.bytes[Self::PAGE_NUM_OFFSET]
+    pub fn page_num(&self) -> u16 {
+        u16::from_be_bytes(
+            self.bytes[Self::PAGE_NUM_OFFSET..Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES]
+                .try_into()
+                .expect("Code error: Num bytes does not match integer size."),
+        )
     }
 }
 
@@ -291,7 +295,7 @@ impl AccountStoragePage {
         }
         let page_len = chunk.len() as u16;
         let mut page = [0u8; Self::SIZE as usize];
-        page[Self::LEN_OFFSET..Self::LEN_OFFSET + Self::LEN_LEN].copy_from_slice(&page_len.to_le_bytes()[..]);
+        page[Self::LEN_OFFSET..Self::LEN_OFFSET + Self::LEN_LEN].copy_from_slice(&page_len.to_be_bytes()[..]);
         page[Self::PAYLOAD_OFFSET..Self::PAYLOAD_OFFSET + chunk.len()].copy_from_slice(chunk);
         Self { bytes: page }
     }
@@ -307,6 +311,6 @@ impl AccountStoragePage {
         let len_bytes = self.bytes[Self::LEN_OFFSET..Self::LEN_OFFSET + Self::LEN_LEN]
             .try_into()
             .unwrap();
-        u16::from_le_bytes(len_bytes) as usize
+        u16::from_be_bytes(len_bytes) as usize
     }
 }
