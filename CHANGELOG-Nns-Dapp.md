@@ -28,6 +28,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Deprecated
 #### Removed
 
+* Remove `ENABLE_DISBURSE_MATURITY` feature flag.
+
 #### Fixed
 
 * Change inconsistency in the name of an NNS topic.
