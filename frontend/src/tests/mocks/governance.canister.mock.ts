@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { LedgerCanister } from "@dfinity/ledger-icp";
 import type {
-  LedgerCanister,
   ListProposalsRequest,
   ListProposalsResponse,
   NeuronId,

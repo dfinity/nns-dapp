@@ -7,9 +7,10 @@ import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { HttpAgent, type Agent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
+import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { BlockHeight, E8s, NeuronId } from "@dfinity/nns";
+import type { E8s, NeuronId } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsGovernanceCanister,
