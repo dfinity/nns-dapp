@@ -37,7 +37,6 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_ICP_ICRC: false,
       ENABLE_INSTANT_UNLOCK: true,
       ENABLE_SNS_AGGREGATOR_STORE: true,
-      ENABLE_DISBURSE_MATURITY: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
       ENABLE_FULL_WIDTH_PROPOSAL: true,
