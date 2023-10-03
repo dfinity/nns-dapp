@@ -43,6 +43,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Run several script tests on macos as well as ubuntu.
 * Extend the release SOP script up to submitting the proposal.
 
+* Check spelling in Rust documentation as part of CI.
+
 #### Changed
 
 * Use `clap` argument parsing in `did2rs`.
