@@ -16,6 +16,7 @@
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import Separator from "../ui/Separator.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -64,10 +65,8 @@
     <div class="content content-cell-details">
       <ProjectCommitment />
 
+      <Separator spacing="none" />
       <ProjectTimeline />
-    </div>
-
-    <div class="actions content-cell-details">
       {#if nonNullish(myCommitmentIcp) && myCommitmentIcp.toE8s() > BigInt(0)}
         <div>
           <KeyValuePair testId="sns-user-commitment">
@@ -80,7 +79,10 @@
           </KeyValuePair>
         </div>
       {/if}
+      <Separator spacing="none" />
+    </div>
 
+    <div class="actions content-cell-details">
       <ParticipateButton />
     </div>
   </div>

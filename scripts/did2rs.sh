@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
 
 ##########################
 # Hjelpe meg!
@@ -26,20 +28,25 @@ print_help() {
 
 	EOF
 }
-[[ "${1:-}" != "--help" ]] || {
-  print_help
-  exit 0
-}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
+clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 ##########################
 # Get working dir and args
 ##########################
-CANISTER_NAME="$(basename "${1%.did}")"
+CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
+CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
 PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
-DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
 

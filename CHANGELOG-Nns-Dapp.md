@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
+
 #### Changed
 
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
@@ -41,8 +43,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Run several script tests on macos as well as ubuntu.
 * Extend the release SOP script up to submitting the proposal.
 
+* Check spelling in Rust documentation as part of CI.
+
 #### Changed
 
+* Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Update the snsdemo commit & automate further updates.
