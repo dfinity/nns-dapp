@@ -6,7 +6,6 @@
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import * as services from "$lib/services/sns.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -328,7 +327,6 @@ describe("sns-services", () => {
 
   describe("loadSnsLifecycle", () => {
     describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
-
       it("should call api to get lifecycle and load them in store", async () => {
         const newLifeCycle = SnsSwapLifecycle.Committed;
         const lifeCycleResponse: SnsGetLifecycleResponse = {

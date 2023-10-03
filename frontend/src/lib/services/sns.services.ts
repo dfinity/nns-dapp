@@ -26,7 +26,7 @@ import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
 } from "@dfinity/sns";
-import { fromNullable, nonNullish } from "@dfinity/utils";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";

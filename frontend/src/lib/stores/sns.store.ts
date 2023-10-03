@@ -1,11 +1,7 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
-import { differentSummaries } from "$lib/utils/projects.utils";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
-import {
-  convertDerivedStateResponseToDerivedState,
-  mapAndSortSnsQueryToSummaries,
-} from "$lib/utils/sns.utils";
+import { convertDerivedStateResponseToDerivedState } from "$lib/utils/sns.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
@@ -276,13 +272,9 @@ const initSnsQueryStore = (): SnsQueryStore => {
  */
 export const snsQueryStore = initSnsQueryStore();
 
-export const isLoadingSnsProjectsStore = derived<
-  SnsAggregatorStore,
-  boolean
->(
+export const isLoadingSnsProjectsStore = derived<SnsAggregatorStore, boolean>(
   snsAggregatorStore,
-  (aggregatorData) =>
-    isNullish(aggregatorData.data)
+  (aggregatorData) => isNullish(aggregatorData.data)
 );
 
 /**
@@ -362,23 +354,11 @@ const overrideLifecycle =
  * The response of the Snses about metadata and swap derived to data that can be used by NNS-dapp - i.e. it filters undefined and optional swap data, sort data for consistency
  */
 export const snsSummariesStore = derived<
-  [
-    SnsAggregatorStore,
-    SnsDerivedStateStore,
-    SnsLifecycleStore,
-  ],
+  [SnsAggregatorStore, SnsDerivedStateStore, SnsLifecycleStore],
   SnsSummary[]
 >(
-  [
-    snsAggregatorStore,
-    snsDerivedStateStore,
-    snsLifecycleStore,
-  ],
-  ([
-    aggregatorData,
-    derivedStates,
-    lifecycles,
-  ]) => {
+  [snsAggregatorStore, snsDerivedStateStore, snsLifecycleStore],
+  ([aggregatorData, derivedStates, lifecycles]) => {
     // The aggregator data is fetched on init.
     const aggregatorSummaries =
       aggregatorData.data
