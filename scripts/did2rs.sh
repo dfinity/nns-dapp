@@ -30,6 +30,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
 clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
 clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
+clap.define short=p long=patch desc="The path to the patch file, if any.  Default: {RUST_PATH} with the suffix .patch instead of .rs" variable=PATCH_PATH
 clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default=""
 clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER
 # Source the output file ----------------------------------------------------------
@@ -43,7 +44,7 @@ CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 RUST_PATH="${RUST_PATH:-/dev/stdout}"
-PATCH_PATH="${RUST_PATH%.rs}.patch"
+PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
