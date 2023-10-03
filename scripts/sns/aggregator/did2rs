@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
 print_help() {
   cat <<-EOF
 
@@ -16,7 +16,7 @@ print_help() {
 }
 
 # Source the clap.bash file ---------------------------------------------------
-source "$SOURCE_DIR/../../clap.bash"
+source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=canister desc="The canister for which the Rust types are to be derived" variable=CANISTER_NAME
 # Source the output file ----------------------------------------------------------
