@@ -33,7 +33,7 @@ use std::convert::TryInto;
 #[cfg(test)]
 mod mock;
 
-pub trait AccountsDbS1Trait {
+pub trait AccountsInStableMemoryTrait {
     // TODO: Add a small cache to limit the cost of getting and parsing data to once per API call.
 
     /// Every account is serialized and stored in between 1 and 2**16 pages.

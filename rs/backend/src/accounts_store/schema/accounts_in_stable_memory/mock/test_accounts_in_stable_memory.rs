@@ -1,5 +1,5 @@
-//! Tests for the [`MockS1DataStorage`] implementation of the [`AccountsDbS1Trait`].
-use super::super::{AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
+//! Tests for the [`MockS1DataStorage`] implementation of the [`AccountsInStableMemoryTrait`].
+use super::super::{AccountStorageKey, AccountStoragePage, AccountsInStableMemoryTrait};
 use super::MockS1DataStorage;
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::accounts_store::Account;

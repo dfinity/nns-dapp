@@ -4,14 +4,14 @@
 //! and does not persist data across upgrades.  The implementation is
 //! suitable for unit tests that do not require persistence.
 
-use super::{AccountStorageKey, AccountStoragePage, AccountsDbS1Trait};
+use super::{AccountStorageKey, AccountStoragePage, AccountsInStableMemoryTrait};
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::Account;
 use crate::accounts_store::AccountsDbTrait;
 use std::collections::BTreeMap;
 
 #[cfg(test)]
-mod test_s1;
+mod test_accounts_in_stable_memory;
 
 #[cfg(test)]
 mod test_db {
@@ -27,7 +27,7 @@ struct MockS1DataStorage {
     accounts_storage: BTreeMap<AccountStorageKey, AccountStoragePage>,
 }
 
-impl AccountsDbS1Trait for MockS1DataStorage {
+impl AccountsInStableMemoryTrait for MockS1DataStorage {
     fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.get(account_storage_key).cloned()
     }

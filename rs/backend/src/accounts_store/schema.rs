@@ -4,7 +4,7 @@ use crate::accounts_store::Account;
 pub mod map;
 pub mod proxy;
 #[cfg(test)]
-pub mod s1;
+pub mod accounts_in_stable_memory;
 #[cfg(test)]
 mod tests;
 
