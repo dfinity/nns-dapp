@@ -31,9 +31,8 @@ describe("CommitmentProgressBar", () => {
     expect(await po.getCommitmentE8s()).toBe(150000000n);
   });
 
-  it("should display maximum and minimum indicators", async () => {
+  it("should display minimum indicators", async () => {
     const po = renderComponent(props);
-    expect(await po.hasMaxCommitmentIndicator()).toBe(true);
     expect(await po.hasMinCommitmentIndicator()).toBe(true);
   });
 
