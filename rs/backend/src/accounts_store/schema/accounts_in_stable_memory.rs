@@ -192,23 +192,10 @@ impl BoundedStorable for AccountStorageKey {
     const IS_FIXED_SIZE: bool = true;
 }
 impl AccountStorageKey {
-    /// Location of the page number in the key bytes.
-    ///
-    /// Note: When an account is serialized, it is split into pages and the pages are stored in a
-    /// BTreeMap.  The first page for that account has page number 0, the second 1 and so on.  The
-    /// `PAGE_NUM` field referred to here is where the page number appears in the lookup key.
-    const PAGE_NUM_OFFSET: usize = 0;
-    /// The number of bytes used to store the page num.
-    ///
-    /// Note: The largest accounts currently serialize to about 4MiB.  Pages are 1KiB, so the
-    /// largest accounts will have about 4096 pages.  By giving ourselves 2 bytes, we can store the
-    /// page number as a u16 which suffices for the large accounts.  For most accounts, one page suffices.
-    const PAGE_NUM_BYTES: usize = 2;
-
     /// Location of the account identifier length in the key bytes.
     ///
     /// Note: Account identifiers typically consume 32 bytes, however some are shorter.
-    const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES;
+    const ACCOUNT_IDENTIFIER_LEN_OFFSET: usize = 0;
     /// The number of bytes used to store the identifier length.
     const ACCOUNT_IDENTIFIER_LEN_BYTES: usize = 1;
 
@@ -217,8 +204,21 @@ impl AccountStorageKey {
     /// The maximum number of bytes for an account identifier.
     const ACCOUNT_IDENTIFIER_MAX_BYTES: usize = 32;
 
+    /// Location of the page number in the key bytes.
+    ///
+    /// Note: When an account is serialized, it is split into pages and the pages are stored in a
+    /// BTreeMap.  The first page for that account has page number 0, the second 1 and so on.  The
+    /// `PAGE_NUM` field referred to here is where the page number appears in the lookup key.
+    const PAGE_NUM_OFFSET: usize = Self::ACCOUNT_IDENTIFIER_OFFSET + Self::ACCOUNT_IDENTIFIER_MAX_BYTES;
+    /// The number of bytes used to store the page num.
+    ///
+    /// Note: The largest accounts currently serialize to about 4MiB.  Pages are 1KiB, so the
+    /// largest accounts will have about 4096 pages.  By giving ourselves 2 bytes, we can store the
+    /// page number as a u16 which suffices for the large accounts.  For most accounts, one page suffices.
+    const PAGE_NUM_BYTES: usize = 2;
+
     /// The total number of bytes in a key.
-    const SIZE: usize = Self::ACCOUNT_IDENTIFIER_OFFSET + Self::ACCOUNT_IDENTIFIER_MAX_BYTES;
+    const SIZE: usize = Self::PAGE_NUM_OFFSET + Self::PAGE_NUM_BYTES;
 
     /// Creates the key to look up the Nth page of a given account.
     ///
