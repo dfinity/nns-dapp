@@ -105,8 +105,8 @@ cd "$GIT_ROOT"
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
     sed -E '
-            # Comment out the header "use" lines.  Leave "//!" and "#!" for now.
-            s@^use .*@// &@;
+            # Comment out the header "use", "//!" and "#!" lines.
+	    s@^(use |//!|#!)@// &@;
 
 	    # Make types and fields public:
             s/^(struct|enum|type) /pub &/;
