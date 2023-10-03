@@ -107,6 +107,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       cf_participant_count: [],
       direct_participant_count: [],
       cf_neuron_count: [],
+      neurons_fund_participation_icp_e8s: [],
+      direct_participation_icp_e8s: [],
     });
 
     jest

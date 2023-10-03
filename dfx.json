@@ -1,9 +1,9 @@
 {
-  "dfx": "0.14.1",
+  "dfx": "0.14.4",
   "canisters": {
     "nns-governance": {
       "type": "custom",
-      "candid": "target/ic/governance.did",
+      "candid": "declarations/nns_governance/nns_governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
       "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
@@ -640,9 +640,9 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2023-09-05",
-        "SNSDEMO_RELEASE": "release-2023-07-07",
-        "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
+        "DIDC_VERSION": "2023-09-27",
+        "SNSDEMO_RELEASE": "release-2023-09-27",
+        "IC_COMMIT": "96184d42331028a46fe3265583792f8c5f807cf8"
       },
       "packtool": ""
     }

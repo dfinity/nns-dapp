@@ -95,6 +95,20 @@ export type CachedSwapParamsDto = {
   sale_delay_seconds?: number;
 };
 
+interface CachedLinearScalingCoefficient {
+  slope_numerator?: number | null;
+  slope_denominator?: number | null;
+  intercept_icp_e8s?: number | null;
+  from_direct_participation_icp_e8s?: number | null;
+  to_direct_participation_icp_e8s?: number | null;
+}
+
+export type CachedNeuronsFundParticipationConstraints = {
+  coefficient_intervals: Array<CachedLinearScalingCoefficient>;
+  max_neurons_fund_participation_icp_e8s?: number | null;
+  min_direct_participation_threshold_icp_e8s?: number | null;
+};
+
 // TODO: update when the candid is updated with the new init params
 export type CachedSwapInitParamsDto = {
   // TODO: Recheck after next governance canister upgrade ~2023-08-14 (currently the aggregator returns null for next `null |` params)
@@ -135,6 +149,7 @@ export type CachedSwapInitParamsDto = {
   neuron_minimum_stake_e8s: number;
   confirmation_text?: string | undefined;
   restricted_countries?: CachedCountriesDto | undefined;
+  neurons_fund_participation_constraints?: CachedNeuronsFundParticipationConstraints | null;
 };
 
 export type CachedSnsSwapDto = {
@@ -144,6 +159,8 @@ export type CachedSnsSwapDto = {
   init: CachedSwapInitParamsDto | null;
   params: CachedSwapParamsDto | null;
   open_sns_token_swap_proposal_id: number | null;
+  direct_participation_icp_e8s?: number | undefined | null;
+  neurons_fund_participation_icp_e8s?: number | undefined | null;
 };
 
 export type CachedSnsSwapDerivedDto = {
@@ -152,6 +169,8 @@ export type CachedSnsSwapDerivedDto = {
   cf_participant_count?: number | undefined | null;
   direct_participant_count?: number | undefined | null;
   cf_neuron_count?: number | undefined | null;
+  direct_participation_icp_e8s?: number | undefined | null;
+  neurons_fund_participation_icp_e8s?: number | undefined | null;
 };
 
 type CachedSwapParamsResponseDto = {

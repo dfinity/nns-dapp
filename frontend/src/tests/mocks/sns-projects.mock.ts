@@ -124,6 +124,7 @@ export const mockInit: SnsSwapInit = {
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
+  neurons_fund_participation_constraints: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -158,6 +159,8 @@ export const mockQuerySwap: SnsSwap = {
   next_ticket_id: [],
   purge_old_tickets_last_completion_timestamp_nanoseconds: [],
   purge_old_tickets_next_principal: [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
@@ -166,6 +169,8 @@ export const mockDerived: SnsSwapDerivedState = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerivedResponse: SnsGetDerivedStateResponse = {
@@ -174,6 +179,8 @@ export const mockDerivedResponse: SnsGetDerivedStateResponse = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {
