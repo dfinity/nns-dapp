@@ -19,10 +19,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
 * Separate proposals backend into a separate crate.
-* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
-* Allow `get_histogram` (an unstable API) only as a query call.
-* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
-* Use custom button label for disburse maturity flow.
 * Improve spacings in the page headings.
 * Improve the skeletons while loading in the neuron details page.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
@@ -33,7 +29,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
-* Fix CSS on canister cards to show tooltip and name correctly.
+* Change inconsistency in the name of an NNS topic.
 
 #### Security
 
@@ -41,31 +37,60 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
-* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
-
 ### Operations
 
 #### Added
 * Run several script tests on macos as well as ubuntu.
+* Extend the release SOP script up to submitting the proposal.
 
 #### Changed
 
 * Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
-* Fix the `release-sop` command that set `origin/main` as the upstream.
-* Specify the version of `binstall` in `dfx.json`.
-* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
-* Fix the rust-update action.
 * Update the snsdemo commit & automate further updates.
 * Cron job to update `snsdemo` weekly.
-
+* Update data for the Launchpad Prod test.
 
 #### Deprecated
 #### Removed
 
+* Comment and skip dfx-nns-proposal-args.test.
+
 #### Fixed
 
 #### Security
+
+## Proposal 124855
+
+### Application
+
+#### Added
+
+* Select destination when disbursing maturity.
+
+#### Changed
+
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Allow `get_histogram` (an unstable API) only as a query call.
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Use custom button label for disburse maturity flow.
+
+#### Fixed
+
+* Fix CSS on canister cards to show tooltip and name correctly.
+
+#### Not Published
+
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
+### Operations
+
+#### Changed
+
+* Fix the `release-sop` command that set `origin/main` as the upstream.
+* Specify the version of `binstall` in `dfx.json`.
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
+* Fix the rust-update action.
 
 ## Proposal 124787
 
