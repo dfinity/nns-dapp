@@ -1,6 +1,6 @@
 import { getTransactions } from "$lib/api/icrc-index.api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 
 describe("icrc-index api", () => {
   const params = {

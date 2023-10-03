@@ -17,7 +17,7 @@ import {
   decodeIcrcAccount,
   type IcrcTransactionWithId,
   type IcrcTxId,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { jsonReplacer, nonNullish } from "@dfinity/utils";
 
 export type GetAccountsTransactionsResults = Omit<

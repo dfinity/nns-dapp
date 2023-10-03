@@ -20,7 +20,7 @@ import type {
   CachedSwapInitParamsDto,
   CachedSwapParamsDto,
 } from "$lib/types/sns-aggregator";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,

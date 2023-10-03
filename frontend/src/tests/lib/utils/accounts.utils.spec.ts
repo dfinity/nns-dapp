@@ -34,7 +34,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
   mockBTCAddressMainnet,

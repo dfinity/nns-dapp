@@ -10,7 +10,7 @@ import {
   createCanisterWorker,
   type CreateCanisterWorkerParams,
 } from "$lib/worker-utils/canister.worker-utils";
-import { IcrcIndexCanister } from "@dfinity/ledger";
+import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
 
 export const getIcrcTransactions = async ({

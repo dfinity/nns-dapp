@@ -1,4 +1,4 @@
-import { IcrcTransferError } from "@dfinity/ledger";
+import { IcrcTransferError } from "@dfinity/ledger-icrc";
 import { toToastError } from "./error.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 

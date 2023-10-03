@@ -32,8 +32,9 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import type { SvelteComponent } from "svelte";

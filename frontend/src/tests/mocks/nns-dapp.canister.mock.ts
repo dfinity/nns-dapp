@@ -4,7 +4,7 @@ import type {
   RegisterHardwareWalletRequest,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import {
   mockAccountDetails,
   mockMainAccount,

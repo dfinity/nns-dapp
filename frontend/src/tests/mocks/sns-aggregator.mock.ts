@@ -6,7 +6,7 @@ import type {
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { mockQueryTokenResponse } from "./sns-projects.mock";

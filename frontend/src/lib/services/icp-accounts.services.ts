@@ -59,7 +59,7 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
   TokenAmount,

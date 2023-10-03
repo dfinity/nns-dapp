@@ -10,7 +10,7 @@
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
-  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
+  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish, type Token } from "@dfinity/utils";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
