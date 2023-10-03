@@ -22,49 +22,49 @@
   color="warning"
   testId="commitment-progress-bar-component"
 >
-<div class="info" bind:clientWidth={width} slot="bottom">
-  {#if minimumIndicator !== undefined}
-    <div class="indicator-wrapper">
-      <span
-        class="min-indicator"
-        data-tid="commitment-min-indicator"
-        style={`left: calc(${minIndicatorPosition}px);`}
-      />
-    </div>
-    <div class="value-labels">
-      <p class="value-label value-label-min">
-        <span>
-          {$i18n.sns_project_detail.min_commitment_goal}
-        </span>
-        <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
-        <span data-tid="commitment-min-indicator-value">
-          <AmountDisplay
-            amount={TokenAmount.fromE8s({
-              amount: minimumIndicator,
-              token: ICPToken,
-            })}
-            singleLine
-          />
-        </span>
-      </p>
-      <p class="value-label value-label-max">
-        <span>
-          {$i18n.sns_project_detail.max_commitment_goal}
-        </span>
-        <span data-tid="commitment-max-indicator-value">
-          <AmountDisplay
-            amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
-            singleLine
-          />
-        </span>
-      </p>
-    </div>
-  {/if}
-</div>
+  <div class="info" bind:clientWidth={width} slot="bottom">
+    {#if minimumIndicator !== undefined}
+      <div class="indicator-wrapper">
+        <span
+          class="min-indicator"
+          data-tid="commitment-min-indicator"
+          style={`left: calc(${minIndicatorPosition}px);`}
+        />
+      </div>
+      <div class="value-labels">
+        <p class="value-label value-label-min">
+          <span>
+            {$i18n.sns_project_detail.min_commitment_goal}
+          </span>
+          <!-- TODO: Move with indicator https://dfinity.atlassian.net/browse/L2-768 -->
+          <span data-tid="commitment-min-indicator-value">
+            <AmountDisplay
+              amount={TokenAmount.fromE8s({
+                amount: minimumIndicator,
+                token: ICPToken,
+              })}
+              singleLine
+            />
+          </span>
+        </p>
+        <p class="value-label value-label-max">
+          <span>
+            {$i18n.sns_project_detail.max_commitment_goal}
+          </span>
+          <span data-tid="commitment-max-indicator-value">
+            <AmountDisplay
+              amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
+              singleLine
+            />
+          </span>
+        </p>
+      </div>
+    {/if}
+  </div>
 </ProgressBar>
 
 <style lang="scss">
-    p {
+  p {
     margin: 0;
   }
 
