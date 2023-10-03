@@ -37,6 +37,7 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
+clap.define short=d long=did desc="The did path" variable=DID_PATH
 clap.define short=o long=out desc="The path to the output rust file.  Default: rs/sns_aggregator/src/types/ic_\${CANISTER_NAME}.rs" variable=RUST_PATH
 clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default="Serialize, Clone, Debug"
 # Source the output file ----------------------------------------------------------
@@ -45,13 +46,13 @@ source "$(clap.build)"
 ##########################
 # Get working dir and args
 ##########################
-CANISTER_NAME="${CANISTER_NAME:-1}"
+CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
 CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 RUST_PATH="${RUST_PATH:-${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs}"
 PATCH_PATH="${RUST_PATH%.rs}.patch"
-DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
 
