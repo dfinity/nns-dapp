@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
 
 ##########################
 # Hjelpe meg!
@@ -26,10 +28,12 @@ print_help() {
 
 	EOF
 }
-[[ "${1:-}" != "--help" ]] || {
-  print_help
-  exit 0
-}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 ##########################
 # Get working dir and args
