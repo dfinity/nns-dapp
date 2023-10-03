@@ -3,6 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
   cat <<-EOF
+
 	Derives rust canister types used in the SNS aggregator.
 
 	Usage: $(basename "$0") <CANISTER_NAME>
@@ -11,7 +12,7 @@ print_help() {
 	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
 	creates:
 	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
-        EOF
+	EOF
 }
 
 # Source the clap.bash file ---------------------------------------------------
