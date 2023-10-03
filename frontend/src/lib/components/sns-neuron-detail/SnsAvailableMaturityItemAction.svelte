@@ -11,7 +11,6 @@
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
   import SnsDisburseMaturityButton from "./actions/SnsDisburseMaturityButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   export let neuron: SnsNeuron;
   export let feeE8s: bigint;
@@ -40,7 +39,7 @@
     <SnsStakeMaturityButton {neuron} />
   {/if}
 
-  {#if allowedToDisburseMaturity && $ENABLE_DISBURSE_MATURITY}
+  {#if allowedToDisburseMaturity}
     <SnsDisburseMaturityButton {neuron} {feeE8s} />
   {/if}
 </CommonItemAction>

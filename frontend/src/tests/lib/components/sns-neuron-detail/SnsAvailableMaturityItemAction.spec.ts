@@ -111,11 +111,4 @@ describe("SnsAvailableMaturityItemAction", () => {
 
     expect(await po.hasDisburseMaturityButton()).toBe(false);
   });
-
-  it("should not render stake maturity button when ENABLE_DISBURSE_MATURITY flag is not set", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", false);
-    const po = renderComponent(controlledNeuron);
-
-    expect(await po.hasDisburseMaturityButton()).toBe(false);
-  });
 });
