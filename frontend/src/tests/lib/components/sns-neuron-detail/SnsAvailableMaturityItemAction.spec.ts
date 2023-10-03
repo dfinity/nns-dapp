@@ -4,7 +4,6 @@
 
 import SnsAvailableMaturityItemAction from "$lib/components/sns-neuron-detail/SnsAvailableMaturityItemAction.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
