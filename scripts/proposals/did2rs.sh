@@ -85,9 +85,7 @@ cd "$GIT_ROOT"
   #     where "EmptyRecord" is defined as the name suggests.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
-  #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
-  #     in a form that the Candid macro cannot handle.  Using a named type works around the limit of the macro.
-  #   - We need a few but not all of the types to have the Default macro
+  #   - Derive traits for some but not all types.
   #   - Any corrections to the output of the sed script.  sed is not a Rust parser; the sed output
   #     is not guaranteed to be correct.
   # shellcheck disable=SC2016
