@@ -45,6 +45,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Update the snsdemo commit & automate further updates.
