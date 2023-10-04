@@ -48,6 +48,9 @@ RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
 PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
+# TODO: Provide this as an argument.
+TRAITS="Serialize, Clone, Debug"
+
 cd "$GIT_ROOT"
 
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
@@ -113,7 +116,7 @@ cd "$GIT_ROOT"
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 
 	    # Add traits
-            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+            s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;
 
 	    # In the service, return CallResult instead of Result.
 	    /impl Service/,${s/-> Result/-> CallResult/g};
