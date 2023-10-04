@@ -39,6 +39,7 @@
   import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
   import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
+  import NnsNeuronTestnetFunctionsCard from "$lib/components/neuron-detail/NnsNeuronTestnetFunctionsCard.svelte";
 
   export let neuronIdText: string | undefined | null;
 
@@ -160,6 +161,8 @@
           <Separator spacing="none" />
           {#if IS_TESTNET}
             <NnsNeuronProposalsCard {neuron} />
+            <Separator spacing="none" />
+            <NnsNeuronTestnetFunctionsCard {neuron} />
             <Separator spacing="none" />
           {/if}
           <NeuronVotingHistoryCard {neuron} />
