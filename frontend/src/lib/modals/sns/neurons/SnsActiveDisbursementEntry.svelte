@@ -5,7 +5,7 @@
   import type { Account } from "@dfinity/sns/dist/candid/sns_governance";
   import ActiveDisbursementItem from "$lib/components/neuron-detail/ActiveDisbursementEntry.svelte";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger";
+  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 
   export let disbursement: DisburseMaturityInProgress;
 

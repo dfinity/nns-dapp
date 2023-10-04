@@ -1,4 +1,4 @@
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Account } from "./account";
 
 export type NewTransaction = {

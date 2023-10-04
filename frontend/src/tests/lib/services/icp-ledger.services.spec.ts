@@ -36,7 +36,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import type { Agent } from "@dfinity/agent";
-import { principalToAccountIdentifier } from "@dfinity/nns";
+import { principalToAccountIdentifier } from "@dfinity/ledger-icp";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { mock } from "jest-mock-extended";
 

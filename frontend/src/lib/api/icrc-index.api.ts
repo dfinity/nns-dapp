@@ -3,7 +3,7 @@ import type {
   GetAccountTransactionsParams,
   IcrcAccount,
   IcrcGetTransactions,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 

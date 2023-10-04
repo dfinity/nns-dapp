@@ -146,7 +146,7 @@ fn toy_account_should_have_the_requested_size() {
 impl AccountsStore {
     /// Creates the given number of toy accounts, with linked sub-accounts, hardware wallets, pending transactions, and canisters.
     ///
-    /// Note: The acccount is created with `AccountsStore` API calls, so the `AccountsStore` should
+    /// Note: The account is created with `AccountsStore` API calls, so the `AccountsStore` should
     /// be internally consistent, however the data is not expected to be consistent with other
     /// canisters.  For example, account IDs can be complete nonsense compared with ledger data.
     ///

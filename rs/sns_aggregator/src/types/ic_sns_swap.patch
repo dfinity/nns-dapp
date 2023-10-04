@@ -1,14 +1,9 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 5c59c978f..8b154508d 100644
+index c92bc9041..e66ac425f 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -8,39 +8,38 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--#![allow(dead_code, unused_imports)]
--// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+@@ -12,13 +12,13 @@ use ic_cdk::api::call::CallResult;
+ // use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
  // use ic_cdk::api::call::CallResult as Result;
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -16,6 +11,23 @@ index 5c59c978f..8b154508d 100644
  pub struct NeuronBasketConstructionParameters {
      pub dissolve_delay_interval_seconds: u64,
      pub count: u64,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct LinearScalingCoefficient {
+     pub slope_numerator: Option<u64>,
+     pub intercept_icp_e8s: Option<u64>,
+@@ -27,36 +27,36 @@ pub struct LinearScalingCoefficient {
+     pub to_direct_participation_icp_e8s: Option<u64>,
+ }
+ 
+-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
++#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+ pub struct NeuronsFundParticipationConstraints {
+     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
+     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
+     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
  }
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -49,7 +61,7 @@ index 5c59c978f..8b154508d 100644
  pub struct Init {
      pub nns_proposal_id: Option<u64>,
      pub sns_root_canister_id: String,
-@@ -148,7 +147,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -165,7 +165,7 @@ pub struct SettleCommunityFundParticipationResult {
  
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
  pub enum Possibility2 {
@@ -58,19 +70,16 @@ index 5c59c978f..8b154508d 100644
      Err(CanisterCallError),
  }
  
-@@ -308,9 +307,9 @@ pub struct GetOpenTicketResponse {
- }
- 
+@@ -339,7 +339,7 @@ pub struct GetOpenTicketResponse {
  #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
--pub struct GetSaleParametersArg {}
-+pub struct get_sale_parameters_arg0 {}
+ pub struct GetSaleParametersArg {}
  
 -#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 +#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -394,7 +393,7 @@ pub struct DerivedState {
+@@ -428,7 +428,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  
@@ -79,15 +88,3 @@ index 5c59c978f..8b154508d 100644
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,
-@@ -521,7 +520,10 @@ impl Service {
-     pub async fn get_open_ticket(&self, arg0: GetOpenTicketArg) -> CallResult<(GetOpenTicketResponse,)> {
-         ic_cdk::call(self.0, "get_open_ticket", (arg0,)).await
-     }
--    pub async fn get_sale_parameters(&self, arg0: GetSaleParametersArg) -> CallResult<(GetSaleParametersResponse,)> {
-+    pub async fn get_sale_parameters(
-+        &self,
-+        arg0: get_sale_parameters_arg0,
-+    ) -> CallResult<(GetSaleParametersResponse,)> {
-         ic_cdk::call(self.0, "get_sale_parameters", (arg0,)).await
-     }
-     pub async fn get_state(&self, arg0: GetStateArg) -> CallResult<(GetStateResponse,)> {
