@@ -1,4 +1,5 @@
 {
   "plugins": ["prettier-plugin-svelte", "prettier-plugin-organize-imports"],
+  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
   "trailingComma": "es5"
 }
