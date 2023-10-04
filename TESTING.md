@@ -112,7 +112,7 @@ import type { Mock } from "vitest";
 });
 ```
 
-- [Module mocks](https://vitest.dev/guide/migration.html#module-mocks) require `default` exports with vitest. exports with vitest. When not migrated, a common error thrown by the test is the following:
+- [Module mocks](https://vitest.dev/guide/migration.html#module-mocks) require `default` exports with vitest. When not migrated, a common error thrown by the test is the following:
 
 > Error: [vitest] vi.mock("$lib/workers/balances.worker?worker", factory?: () => unknown) is not returning an object. Did you mean to return an object with a "default" key?
 
