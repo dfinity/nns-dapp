@@ -2,6 +2,17 @@
 
 Some background to understand and write tests for the nns-dapp.
 
+- [Frontend Testing](#frontend-testing)
+  - [Running Tests](#running-tests)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+  - [Mocks](#mocks)
+  - [Test Utils](#test-utils)
+  - [Migration to vitest](#migration-to-vitest)
+- [Canister Test](#canister-test)
+  - [Running Tests](#running-tests-1)
+  - [Unit Tests](#unit-tests-1)
+
 ## Frontend Testing
 
 Tests are in `./frontend/src/tests`.
@@ -42,6 +53,23 @@ All the mocks used in different tests are in `frontend/src/tests/mocks`.
 ### Test Utils
 
 Found in `frontend/src/tests/utils`.
+
+### Migration to vitest
+
+To migrate a test from jest to vitest, aside from moving it between folders, the following changes can be made:
+
+- Replace the prefix `jest.` with `vi.`
+- Remove the `jsdom` annotation, as all vitest runs in a simulated browser environment
+
+```
+/**
+ * @jest-environment jsdom
+ */
+```
+
+- Replace `jest-mock-extended` with `vitest-mock-extended`
+
+For additional information, if needed, refer to the official guide on [Migrating from Jest](https://vitest.dev/guide/migration.html#migrating-from-jest).
 
 ## Canister Test
 

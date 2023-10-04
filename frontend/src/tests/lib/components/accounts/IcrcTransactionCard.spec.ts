@@ -21,7 +21,7 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type { Token } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";

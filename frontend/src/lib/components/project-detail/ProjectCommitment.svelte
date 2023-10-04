@@ -74,22 +74,8 @@
     <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
   </KeyValuePair>
   {#if "nfCommitmentE8s" in projectCommitments && projectCommitments.nfCommitmentE8s > 0n}
-    <KeyValuePair testId="sns-project-current-nf-commitment">
-      <span slot="key" class="detail-data">
-        {$i18n.sns_project_detail.current_nf_commitment}
-      </span>
-
-      <AmountDisplay
-        slot="value"
-        amount={TokenAmount.fromE8s({
-          amount: projectCommitments.nfCommitmentE8s,
-          token: ICPToken,
-        })}
-        singleLine
-      />
-    </KeyValuePair>
     <KeyValuePair testId="sns-project-current-direct-commitment">
-      <span slot="key" class="detail-data">
+      <span slot="key">
         {$i18n.sns_project_detail.current_direct_commitment}
       </span>
 
@@ -104,27 +90,32 @@
     </KeyValuePair>
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar
-        directParticipation={projectCommitments.directCommitmentE8s}
-        nfParticipation={projectCommitments.nfCommitmentE8s}
+        participationE8s={projectCommitments.directCommitmentE8s}
         max={max_icp_e8s}
         minimumIndicator={min_icp_e8s}
       />
     </div>
+    <KeyValuePair testId="sns-project-current-nf-commitment">
+      <span slot="key">
+        {$i18n.sns_project_detail.current_nf_commitment}
+      </span>
+
+      <AmountDisplay
+        slot="value"
+        amount={TokenAmount.fromE8s({
+          amount: projectCommitments.nfCommitmentE8s,
+          token: ICPToken,
+        })}
+        singleLine
+      />
+    </KeyValuePair>
   {:else}
-    <!-- We show the progress bar with only directParticipation if NF participation is not present -->
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar
-        directParticipation={projectCommitments.totalCommitmentE8s}
-        nfParticipation={0n}
+        participationE8s={projectCommitments.totalCommitmentE8s}
         max={max_icp_e8s}
         minimumIndicator={min_icp_e8s}
       />
     </div>
   {/if}
 </TestIdWrapper>
-
-<style lang="scss">
-  .detail-data {
-    padding-left: var(--padding-2x);
-  }
-</style>

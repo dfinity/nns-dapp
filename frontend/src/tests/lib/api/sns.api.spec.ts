@@ -34,7 +34,8 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import type { Agent } from "@dfinity/agent";
-import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
   type SnsGetLifecycleResponse,

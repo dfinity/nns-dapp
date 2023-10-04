@@ -1,7 +1,7 @@
 import type {
   IcrcMetadataResponseEntries,
   IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetMetadataResponse,

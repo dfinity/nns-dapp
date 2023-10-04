@@ -14,7 +14,7 @@ import type {
   QuerySnsSwapState,
 } from "$lib/types/sns.query";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,

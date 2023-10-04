@@ -1,6 +1,6 @@
 import { Actor } from "@dfinity/agent";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type { ProposalId } from "@dfinity/nns";
-import { AccountIdentifier } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
