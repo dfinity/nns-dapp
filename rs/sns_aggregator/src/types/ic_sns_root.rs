@@ -6,27 +6,28 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
+use candid::Principal;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, candid::Principal};
+// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsRootCanister {
-    pub dapp_canister_ids: Vec<candid::Principal>,
+    pub dapp_canister_ids: Vec<Principal>,
     pub testflight: bool,
     pub latest_ledger_archive_poll_timestamp_seconds: Option<u64>,
-    pub archive_canister_ids: Vec<candid::Principal>,
-    pub governance_canister_id: Option<candid::Principal>,
-    pub index_canister_id: Option<candid::Principal>,
-    pub swap_canister_id: Option<candid::Principal>,
-    pub ledger_canister_id: Option<candid::Principal>,
+    pub archive_canister_ids: Vec<Principal>,
+    pub governance_canister_id: Option<Principal>,
+    pub index_canister_id: Option<Principal>,
+    pub swap_canister_id: Option<Principal>,
+    pub ledger_canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterIdRecord {
-    pub canister_id: candid::Principal,
+    pub canister_id: Principal,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -41,7 +42,7 @@ pub enum CanisterStatusType {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettings {
-    pub controllers: Vec<candid::Principal>,
+    pub controllers: Vec<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -71,9 +72,9 @@ pub enum AuthzChangeOp {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct MethodAuthzChange {
-    pub principal: Option<candid::Principal>,
+    pub principal: Option<Principal>,
     pub method_name: String,
-    pub canister: candid::Principal,
+    pub canister: Principal,
     pub operation: AuthzChangeOp,
 }
 
@@ -83,7 +84,7 @@ pub struct ChangeCanisterProposal {
     pub wasm_module: serde_bytes::ByteBuf,
     pub stop_before_installing: bool,
     pub mode: CanisterInstallMode,
-    pub canister_id: candid::Principal,
+    pub canister_id: Principal,
     pub query_allocation: Option<candid::Nat>,
     pub authz_changes: Vec<MethodAuthzChange>,
     pub memory_allocation: Option<candid::Nat>,
@@ -98,7 +99,7 @@ pub struct GetSnsCanistersSummaryRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
-    pub controllers: Vec<candid::Principal>,
+    pub controllers: Vec<Principal>,
     pub memory_allocation: candid::Nat,
     pub compute_allocation: candid::Nat,
 }
@@ -116,7 +117,7 @@ pub struct CanisterStatusResultV2 {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterSummary {
     pub status: Option<CanisterStatusResultV2>,
-    pub canister_id: Option<candid::Principal>,
+    pub canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -135,18 +136,18 @@ pub struct ListSnsCanistersArg {}
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
 pub struct ListSnsCanistersResponse {
-    pub root: Option<candid::Principal>,
-    pub swap: Option<candid::Principal>,
-    pub ledger: Option<candid::Principal>,
-    pub index: Option<candid::Principal>,
-    pub governance: Option<candid::Principal>,
-    pub dapps: Vec<candid::Principal>,
-    pub archives: Vec<candid::Principal>,
+    pub root: Option<Principal>,
+    pub swap: Option<Principal>,
+    pub ledger: Option<Principal>,
+    pub index: Option<Principal>,
+    pub governance: Option<Principal>,
+    pub dapps: Vec<Principal>,
+    pub archives: Vec<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisterRequest {
-    pub canister_id: Option<candid::Principal>,
+    pub canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -154,7 +155,7 @@ pub struct RegisterDappCanisterRet {}
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanistersRequest {
-    pub canister_ids: Vec<candid::Principal>,
+    pub canister_ids: Vec<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -163,7 +164,7 @@ pub struct RegisterDappCanistersRet {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetDappControllersRequest {
     pub canister_ids: Option<RegisterDappCanistersRequest>,
-    pub controller_principal_ids: Vec<candid::Principal>,
+    pub controller_principal_ids: Vec<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -175,7 +176,7 @@ pub struct CanisterCallError {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FailedUpdate {
     pub err: Option<CanisterCallError>,
-    pub dapp_canister_id: Option<candid::Principal>,
+    pub dapp_canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -183,7 +184,7 @@ pub struct SetDappControllersResponse {
     pub failed_updates: Vec<FailedUpdate>,
 }
 
-pub struct Service(pub candid::Principal);
+pub struct Service(pub Principal);
 impl Service {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await

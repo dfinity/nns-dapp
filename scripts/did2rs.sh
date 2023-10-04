@@ -121,9 +121,6 @@ cd "$GIT_ROOT"
 
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
-
-	    # Use candid::Principal instead of raw Principal
-	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"

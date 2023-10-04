@@ -6,10 +6,11 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
+use candid::Principal;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, candid::Principal};
+// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
@@ -85,7 +86,7 @@ pub struct Init {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ErrorRefundIcpRequest {
-    pub source_principal_id: Option<candid::Principal>,
+    pub source_principal_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -122,7 +123,7 @@ pub struct CanisterCallError {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FailedUpdate {
     pub err: Option<CanisterCallError>,
-    pub dapp_canister_id: Option<candid::Principal>,
+    pub dapp_canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -206,7 +207,7 @@ pub struct GetAutoFinalizationStatusResponse {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBuyerStateRequest {
-    pub principal_id: Option<candid::Principal>,
+    pub principal_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -252,7 +253,7 @@ pub enum CanisterStatusType {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DefiniteCanisterSettingsArgs {
     pub freezing_threshold: candid::Nat,
-    pub controllers: Vec<candid::Principal>,
+    pub controllers: Vec<Principal>,
     pub memory_allocation: candid::Nat,
     pub compute_allocation: candid::Nat,
 }
@@ -303,7 +304,7 @@ pub struct GetOpenTicketArg {}
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc1Account {
-    pub owner: Option<candid::Principal>,
+    pub owner: Option<Principal>,
     pub subaccount: Option<serde_bytes::ByteBuf>,
 }
 
@@ -449,7 +450,7 @@ pub struct ListDirectParticipantsRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Participant {
     pub participation: Option<BuyerState>,
-    pub participant_id: Option<candid::Principal>,
+    pub participant_id: Option<Principal>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -526,7 +527,7 @@ pub struct RefreshBuyerTokensResponse {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RestoreDappControllersArg {}
 
-pub struct Service(pub candid::Principal);
+pub struct Service(pub Principal);
 impl Service {
     pub async fn error_refund_icp(&self, arg0: ErrorRefundIcpRequest) -> CallResult<(ErrorRefundIcpResponse,)> {
         ic_cdk::call(self.0, "error_refund_icp", (arg0,)).await

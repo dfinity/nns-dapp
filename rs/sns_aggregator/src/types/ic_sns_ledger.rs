@@ -6,10 +6,11 @@
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
+use candid::Principal;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, candid::Principal};
+// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -23,7 +24,7 @@ pub enum MetadataValue {
 pub type Subaccount = serde_bytes::ByteBuf;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Account {
-    pub owner: candid::Principal,
+    pub owner: Principal,
     pub subaccount: Option<Subaccount>,
 }
 
@@ -59,7 +60,7 @@ pub struct InitArgsArchiveOptions {
     pub max_message_size_bytes: Option<u64>,
     pub cycles_for_archive_creation: Option<u64>,
     pub node_max_memory_size_bytes: Option<u64>,
-    pub controller_id: candid::Principal,
+    pub controller_id: Principal,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -320,7 +321,7 @@ pub enum TransferFromResult {
     Err(TransferFromError),
 }
 
-pub struct Service(pub candid::Principal);
+pub struct Service(pub Principal);
 impl Service {
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
