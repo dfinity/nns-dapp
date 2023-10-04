@@ -41,9 +41,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   );
   expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("0");
 
-  const subAccountAddress = await nnsAccountsPo.getAccountAddress(
-    subAccountName
-  );
+  const subAccountAddress =
+    await nnsAccountsPo.getAccountAddress(subAccountName);
   await nnsAccountsPo.getMainAccountCardPo().click();
   await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
     accountName: subAccountName,
@@ -61,9 +60,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   step(
     "AU005: The user MUST be able to see the transactions of a specific account"
   );
-  const mainAccountAddress = await nnsAccountsPo.getAccountAddress(
-    mainAccountName
-  );
+  const mainAccountAddress =
+    await nnsAccountsPo.getAccountAddress(mainAccountName);
   await nnsAccountsPo.openAccount(subAccountName);
   const transactionList = appPo
     .getWalletPo()

@@ -56,7 +56,7 @@ describe("ProposalVotingSection", () => {
 
   const proposalInfo = {
     ...mockProposalInfo,
-    ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
+    ballots: neuronIds.map((neuronId) => ({ neuronId }) as Ballot),
     proposalTimestampSeconds: BigInt(2000),
     status: ProposalStatus.Open,
   };

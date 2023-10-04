@@ -370,7 +370,7 @@ export const snsSummariesStore = derived<
     SnsAggregatorStore,
     SnsDerivedStateStore,
     SnsLifecycleStore,
-    Readable<boolean>
+    Readable<boolean>,
   ],
   SnsSummary[]
 >(
