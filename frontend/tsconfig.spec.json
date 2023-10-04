@@ -20,7 +20,13 @@
       "$tests": ["src/tests"],
       "$tests/*": ["src/tests/*"]
     },
-    "types": ["vitest/globals", "node", "jest", "@testing-library/jest-dom"]
+    "types": [
+      "vitest/globals",
+      "node",
+      "jest",
+      "@testing-library/jest-dom",
+      "@types/wicg-file-system-access"
+    ]
   },
   "include": [
     ".svelte-kit/ambient.d.ts",
