@@ -216,20 +216,18 @@ describe("sns.store", () => {
   });
 
   describe("isLoadingSnsProjectsStore", () => {
-    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
-      it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-
-        snsQueryStore.setData(data);
-        snsAggregatorStore.reset();
-        expect(get(isLoadingSnsProjectsStore)).toBe(true);
-
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(isLoadingSnsProjectsStore)).toBe(false);
+    it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
       });
+
+      snsQueryStore.setData(data);
+      snsAggregatorStore.reset();
+      expect(get(isLoadingSnsProjectsStore)).toBe(true);
+
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      expect(get(isLoadingSnsProjectsStore)).toBe(false);
     });
   });
 
@@ -494,76 +492,74 @@ describe("sns.store", () => {
   });
 
   describe("snsSummariesStore", () => {
-    describe("flag ENABLE_SNS_AGGREGATOR_STORE is enabled", () => {
-      const rootCanisterId = rootCanisterIdMock;
+    const rootCanisterId = rootCanisterIdMock;
 
-      it("does not snsQueryStore as source of data", () => {
-        snsAggregatorStore.reset();
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
+    it("does not snsQueryStore as source of data", () => {
+      snsAggregatorStore.reset();
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
+      });
+      snsQueryStore.setData(data);
 
-        expect(get(snsSummariesStore)).toHaveLength(0);
+      expect(get(snsSummariesStore)).toHaveLength(0);
+    });
+
+    it("uses snsAggregator as source of data", () => {
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      snsQueryStore.reset();
+
+      expect(get(snsSummariesStore)).toHaveLength(1);
+    });
+
+    it("derived state is overriden with data in snsDerivedStateStore", () => {
+      const newSnsTokensPerIcp = 4;
+      const aggregatorData = aggregatorSnsMockWith({
+        rootCanisterId: rootCanisterId.toText(),
+      });
+      snsAggregatorStore.setData([aggregatorData]);
+      snsQueryStore.reset();
+
+      expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).not.toBe(
+        newSnsTokensPerIcp
+      );
+
+      const newDerivedState: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        sns_tokens_per_icp: [newSnsTokensPerIcp],
+      };
+      snsDerivedStateStore.setDerivedState({
+        certified: true,
+        rootCanisterId,
+        data: newDerivedState,
       });
 
-      it("uses snsAggregator as source of data", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        snsQueryStore.reset();
+      expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).toBe(
+        newSnsTokensPerIcp
+      );
+    });
 
-        expect(get(snsSummariesStore)).toHaveLength(1);
+    it("lifestate is overriden with data in snsDerivedStateStore", () => {
+      const newLifecycle = SnsSwapLifecycle.Open;
+      const aggregatorData = aggregatorSnsMockWith({
+        rootCanisterId: rootCanisterId.toText(),
+      });
+      snsAggregatorStore.setData([aggregatorData]);
+      snsQueryStore.reset();
+
+      expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
+
+      const newLifecycleResponse: SnsGetLifecycleResponse = {
+        ...mockLifecycleResponse,
+        lifecycle: [newLifecycle],
+      };
+      snsLifecycleStore.setData({
+        certified: true,
+        rootCanisterId,
+        data: newLifecycleResponse,
       });
 
-      it("derived state is overriden with data in snsDerivedStateStore", () => {
-        const newSnsTokensPerIcp = 4;
-        const aggregatorData = aggregatorSnsMockWith({
-          rootCanisterId: rootCanisterId.toText(),
-        });
-        snsAggregatorStore.setData([aggregatorData]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).not.toBe(
-          newSnsTokensPerIcp
-        );
-
-        const newDerivedState: SnsGetDerivedStateResponse = {
-          ...mockDerivedResponse,
-          sns_tokens_per_icp: [newSnsTokensPerIcp],
-        };
-        snsDerivedStateStore.setDerivedState({
-          certified: true,
-          rootCanisterId,
-          data: newDerivedState,
-        });
-
-        expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).toBe(
-          newSnsTokensPerIcp
-        );
-      });
-
-      it("lifestate is overriden with data in snsDerivedStateStore", () => {
-        const newLifecycle = SnsSwapLifecycle.Open;
-        const aggregatorData = aggregatorSnsMockWith({
-          rootCanisterId: rootCanisterId.toText(),
-        });
-        snsAggregatorStore.setData([aggregatorData]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
-
-        const newLifecycleResponse: SnsGetLifecycleResponse = {
-          ...mockLifecycleResponse,
-          lifecycle: [newLifecycle],
-        };
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId,
-          data: newLifecycleResponse,
-        });
-
-        expect(get(snsSummariesStore)[0].swap.lifecycle).toBe(newLifecycle);
-      });
+      expect(get(snsSummariesStore)[0].swap.lifecycle).toBe(newLifecycle);
     });
   });
 });
