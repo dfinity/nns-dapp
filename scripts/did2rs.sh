@@ -43,7 +43,6 @@ CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
 CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-RUST_PATH="${RUST_PATH:-/dev/stdout}"
 PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
@@ -80,7 +79,6 @@ cd "$GIT_ROOT"
       exit 1
     fi
   fi
-  echo
   # didc converts the .did to Rust, with the following limitations:
   #   - It applies the canidid Deserialize trait to all the types but not other traits that we need.
   #   - It makes almost all the types and fields private, which is not very helpful.
