@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 5e6caeb2e..a55187e93 100644
+index 12352a3f5..d6a852cc2 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -13,13 +13,13 @@ use candid::Principal;
+@@ -13,13 +13,13 @@ use ic_cdk::api::call::CallResult;
  // use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
  // use ic_cdk::api::call::CallResult as Result;
  
