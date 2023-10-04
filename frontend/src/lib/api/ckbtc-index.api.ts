@@ -7,7 +7,7 @@ import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api"
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
-import { IcrcIndexCanister } from "@dfinity/ledger";
+import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCTransactions = async ({

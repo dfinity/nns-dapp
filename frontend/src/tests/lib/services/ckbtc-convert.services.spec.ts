@@ -34,7 +34,7 @@ import {
   IcrcLedgerCanister,
   decodeIcrcAccount,
   encodeIcrcAccount,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/services/ckbtc-transactions.services");

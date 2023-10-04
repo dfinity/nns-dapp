@@ -11,7 +11,7 @@ import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,

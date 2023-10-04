@@ -1,5 +1,8 @@
-import type { AccountIdentifier, BlockHeight } from "@dfinity/nns";
-import { LedgerCanister } from "@dfinity/nns";
+import {
+  LedgerCanister,
+  type AccountIdentifier,
+  type BlockHeight,
+} from "@dfinity/ledger-icp";
 
 // eslint-disable-next-line
 // @ts-ignore: test file

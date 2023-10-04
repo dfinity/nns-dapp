@@ -10,7 +10,7 @@ import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
-import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import type { DeployedSns, SnsWasmCanister } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {

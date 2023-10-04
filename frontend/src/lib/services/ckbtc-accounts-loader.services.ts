@@ -10,8 +10,8 @@ import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcAccount } from "@dfinity/ledger";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import {
   assertNonNullish,

@@ -1,6 +1,6 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,

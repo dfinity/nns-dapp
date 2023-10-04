@@ -67,4 +67,4 @@ if test -s "${PATCH_PATH}"; then
 else
   rm -f "${PATCH_PATH}"
 fi
-scripts/did2rs.sh "$CANISTER_NAME"
+scripts/sns/aggregator/did2rs "$CANISTER_NAME"

@@ -6,7 +6,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import mock from "jest-mock-extended/lib/Mock";
 
 describe("balances.worker-services", () => {

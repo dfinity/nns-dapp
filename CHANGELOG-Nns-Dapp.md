@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Make a histogram of transactions per account, used to optimize the new account storage.
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
 * Separate proposals backend into a separate crate.
@@ -26,6 +27,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Deprecated
 #### Removed
+
+* Remove `ENABLE_DISBURSE_MATURITY` feature flag.
 
 #### Fixed
 
@@ -47,6 +50,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Reduce the manual changes needed for `did2rs` by automating more.
 * Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.

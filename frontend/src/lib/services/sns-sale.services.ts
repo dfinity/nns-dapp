@@ -42,7 +42,7 @@ import {
   TxDuplicateError,
   TxTooOldError,
   type BlockHeight,
-} from "@dfinity/nns";
+} from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsInvalidUserAmount,

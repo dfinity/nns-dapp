@@ -12,14 +12,14 @@ import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
   IcrcTokens,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import {
   IcrcLedgerCanister,
   encodeIcrcAccount,
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
 import {

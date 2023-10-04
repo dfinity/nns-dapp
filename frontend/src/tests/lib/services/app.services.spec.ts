@@ -10,7 +10,7 @@ import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import { LedgerCanister } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
 
