@@ -21,6 +21,10 @@ export default defineConfig(
           replacement: resolve(__dirname, "src/tests"),
         },
         {
+          find: "$vitests",
+          replacement: resolve(__dirname, "src/vitests"),
+        },
+        {
           find: "$mocks",
           replacement: resolve(__dirname, "__mocks__"),
         },

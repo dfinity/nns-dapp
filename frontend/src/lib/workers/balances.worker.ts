@@ -74,7 +74,7 @@ const syncBalances = async (
       }))
     );
   } catch (err: unknown) {
-    postMessage({
+    worker.postMsg({
       msg: "nnsSyncErrorBalances",
       data: err,
     });
@@ -87,7 +87,7 @@ const syncBalances = async (
 const emitBalances = (balances: PostMessageDataResponseBalance[]) => {
   const data: PostMessageDataResponseBalances = { balances };
 
-  postMessage({
+  worker.postMsg({
     msg: "nnsSyncBalances",
     data,
   });
