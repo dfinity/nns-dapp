@@ -42,7 +42,6 @@ export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
   ENABLE_ICP_ICRC: T;
   ENABLE_INSTANT_UNLOCK: T;
-  ENABLE_SNS_AGGREGATOR_STORE: T;
   ENABLE_STAKE_NEURON_ICRC1: T;
   ENABLE_SWAP_ICRC1: T;
   ENABLE_FULL_WIDTH_PROPOSAL: T;
@@ -60,7 +59,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_SNS_AGGREGATOR_STORE": true, "ENABLE_STAKE_NEURON_ICRC1": false, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_STAKE_NEURON_ICRC1": false, "ENABLE_INSTANT_UNLOCK": false}'
 );
 
 export const IS_TESTNET: boolean =
