@@ -1,3 +1,4 @@
+import type { PostMessageResponse } from "$lib/types/post-messages";
 import { TimerWorkerUtils } from "$lib/worker-utils/timer.worker-utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
@@ -238,6 +239,75 @@ describe("timer.worker-utils", () => {
           state: "idle",
         },
       });
+    });
+
+    it("should allow call to postMessage when timer is not idle", async () => {
+      const worker = new TimerWorkerUtils();
+
+      const testMsg: { msg: PostMessageResponse; data: { value: string } } = {
+        msg: "nnsSyncTransactions",
+        data: { value: "test" },
+      };
+
+      const job = async () => worker.postMsg(testMsg);
+
+      await worker.start({
+        job,
+        data: {},
+        interval: 5000,
+      });
+
+      expect(spyPostMessage).toHaveBeenCalledTimes(3);
+
+      expect(spyPostMessage).toHaveBeenCalledWith(testMsg);
+    });
+
+    it("should not allow call to postMessage when timer is already idle", async () => {
+      const worker = new TimerWorkerUtils();
+
+      const testMsg: { msg: PostMessageResponse; data: { value: string } } = {
+        msg: "nnsSyncTransactions",
+        data: { value: "test" },
+      };
+
+      const job = async () => {
+        worker.stop();
+        worker.postMsg(testMsg);
+      };
+
+      await worker.start({
+        job,
+        data: {},
+        interval: 5000,
+      });
+
+      expect(spyPostMessage).toHaveBeenCalledTimes(3);
+
+      // Start
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "in_progress",
+        },
+      });
+
+      // Within the job we call stop
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "idle",
+        },
+      });
+
+      // Job is over
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "idle",
+        },
+      });
+
+      expect(spyPostMessage).not.toHaveBeenCalledWith(testMsg);
     });
   });
 });
