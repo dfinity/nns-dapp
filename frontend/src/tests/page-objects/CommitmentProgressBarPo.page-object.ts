@@ -14,10 +14,6 @@ export class CommitmentProgressBarPo extends BasePageObject {
     return this.root.byTestId("commitment-min-indicator").isPresent();
   }
 
-  hasMaxCommitmentIndicator(): Promise<boolean> {
-    return this.root.byTestId("commitment-max-indicator").isPresent();
-  }
-
   async getMinCommitment(): Promise<string> {
     return (await this.getText("commitment-min-indicator-value")).trim();
   }
