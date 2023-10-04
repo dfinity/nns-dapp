@@ -47,6 +47,9 @@ RUST_PATH="${RUST_PATH:-/dev/stdout}"
 PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
+# TODO: Provide this as an argument.
+TRAITS="Serialize, Clone, Debug"
+
 cd "$GIT_ROOT"
 
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."

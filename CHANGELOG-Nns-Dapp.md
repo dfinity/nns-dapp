@@ -24,11 +24,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve the skeletons while loading in the neuron details page.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
+* New labels for min and max participation.
 
 #### Deprecated
 #### Removed
 
 * Remove `ENABLE_DISBURSE_MATURITY` feature flag.
+* Remove `ENABLE_SNS_AGGREGATOR_STORE` feature flag.
 
 #### Fixed
 

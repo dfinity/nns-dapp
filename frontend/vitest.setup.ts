@@ -1,9 +1,14 @@
 import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
+import "fake-indexeddb/auto";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
+import { vi } from "vitest";
+import { browser, building } from "./__mocks__/$app/environment";
+import { afterNavigate, goto } from "./__mocks__/$app/navigation";
+import { page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -25,7 +30,7 @@ global.TextEncoder = TextEncoder;
 ).IntersectionObserver = IntersectionObserverPassive;
 
 // Environment Variables Setup
-jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
+vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   getEnvVars: () => ({
     ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
     ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
@@ -36,6 +41,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_ICP_ICRC: false,
       ENABLE_INSTANT_UNLOCK: true,
+      ENABLE_SNS_AGGREGATOR_STORE: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
       ENABLE_FULL_WIDTH_PROPOSAL: true,
@@ -56,7 +62,7 @@ jest.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   }),
 }));
 
-jest.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
+vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 setDefaultTestConstants({
   DEV: false,
   ENABLE_METRICS: false,
@@ -74,3 +80,17 @@ failTestsThatLogToConsole();
 configure({
   testIdAttribute: "data-tid",
 });
+
+vi.mock("$app/environment", () => ({
+  browser,
+  building,
+}));
+
+vi.mock("$app/navigation", () => ({
+  goto,
+  afterNavigate,
+}));
+
+vi.mock("$app/stores", () => ({
+  page,
+}));
