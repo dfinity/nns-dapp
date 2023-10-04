@@ -259,6 +259,22 @@ describe("timer.worker-utils", () => {
 
       expect(spyPostMessage).toHaveBeenCalledTimes(3);
 
+      // Start
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "in_progress",
+        },
+      });
+
+      // Job is over
+      expect(spyPostMessage).toHaveBeenCalledWith({
+        msg: "nnsSyncStatus",
+        data: {
+          state: "idle",
+        },
+      });
+
       expect(spyPostMessage).toHaveBeenCalledWith(testMsg);
     });
 
