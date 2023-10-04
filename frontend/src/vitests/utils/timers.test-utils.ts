@@ -1,10 +1,5 @@
 import { nonNullish } from "@dfinity/utils";
 
-/**
- * TODO: delete module once migration to vitest over
- * @deprecated module was copied to frontend/src/vitests/utils/timers.test-utils.ts
- */
-
 const originalTimeout = setTimeout;
 
 // When awaiting a resolved promise, the code after it doesn't happen
@@ -22,9 +17,9 @@ export const advanceTime = async (millis?: number): Promise<void> => {
   // Make sure the timers are set before we advance time.
   await runResolvedPromises();
   if (nonNullish(millis)) {
-    jest.advanceTimersByTime(millis);
+    vi.advanceTimersByTime(millis);
   } else {
-    jest.runOnlyPendingTimers();
+    vi.runOnlyPendingTimers();
   }
   await runResolvedPromises();
 };

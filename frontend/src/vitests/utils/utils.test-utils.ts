@@ -1,13 +1,8 @@
 import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
-/**
- * TODO: delete module once migration to vitest over
- * @deprecated module was copied to frontend/src/vitests/utils/utils.test-utils.ts
- */
-
 export const silentConsoleErrors = () =>
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
+  vi.spyOn(console, "error").mockReturnValue();
 
 export const clickByTestId = async (
   queryByTestId: (matcher: string) => HTMLElement | null,

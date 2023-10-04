@@ -59,7 +59,7 @@ const syncCanister = async ({
 
 // Update ui with one canister information
 const emitCanister = (canister: CanisterSync) =>
-  postMessage({
+  worker.postMsg({
     msg: "nnsSyncCanister",
     data: {
       canister,
