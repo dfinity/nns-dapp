@@ -45,8 +45,11 @@ export default defineConfig(
         ...(mode === "test" ? ["./src/tests/e2e/**/*"] : []),
       ],
       include: [
-        ...configDefaults.include,
-        ...(mode === "e2e" ? ["./src/tests/e2e/**/*"] : []),
+        // TODO: uncomment default config and remove **/vitests/** include pattern when migration over
+        // ...configDefaults.include,
+        ...(mode === "e2e"
+          ? ["./src/tests/e2e/**/*"]
+          : ["**/vitests/**/*.{test,spec}.?(c|m)[jt]s?(x)"]),
       ],
       globals: true,
       watch: false,

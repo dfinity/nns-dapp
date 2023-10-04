@@ -1,6 +1,7 @@
 import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
+import "fake-indexeddb/auto";
 // jsdom does not implement TextEncoder
 // Polyfill the encoders with node
 import { TextDecoder, TextEncoder } from "util";
