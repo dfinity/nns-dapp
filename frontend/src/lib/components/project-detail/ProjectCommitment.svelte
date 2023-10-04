@@ -148,8 +148,10 @@
     &::before {
       content: "";
       display: block;
+
       height: var(--padding);
-      background: var(--primary);
+      width: var(--padding);
+
       border-radius: var(--padding);
       background: var(--primary);
     }
