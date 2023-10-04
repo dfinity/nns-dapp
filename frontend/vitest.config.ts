@@ -55,7 +55,11 @@ export default defineConfig(
       watch: false,
       setupFiles: ["./vitest.setup.ts"],
       deps: {
-        inline: ["@dfinity/gix-components"],
+        optimizer: {
+          ssr: {
+            include: ["@dfinity/gix-components"],
+          },
+        },
       },
       // Vitest issue: https://github.com/vitest-dev/vitest/issues/2834#issuecomment-1439576110
       alias: [{ find: /^svelte$/, replacement: "svelte/internal" }],
