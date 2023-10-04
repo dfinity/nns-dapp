@@ -3,7 +3,7 @@ import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
+import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import { mock } from "jest-mock-extended";
 
 describe("ckbtc-index api", () => {

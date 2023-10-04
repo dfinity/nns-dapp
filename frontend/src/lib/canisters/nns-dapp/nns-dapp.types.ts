@@ -1,4 +1,5 @@
-import type { BlockHeight, E8s } from "@dfinity/nns";
+import type { BlockHeight } from "@dfinity/ledger-icp";
+import type { E8s } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 export interface AccountDetails {
   principal: Principal;

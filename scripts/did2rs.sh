@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
 
 ##########################
 # Hjelpe meg!
@@ -9,11 +11,6 @@ print_help() {
 	Compiles a did file to Rust and applies any saved manual changes.
 
 	Usage: $(basename "$0") <CANISTER_NAME>
-	takes inputs:
-	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
-	creates:
-	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
 
 	Hint: To create a patchfile:
 	  - Customise the built rust file to your heart's content.
@@ -26,20 +23,31 @@ print_help() {
 
 	EOF
 }
-[[ "${1:-}" != "--help" ]] || {
-  print_help
-  exit 0
-}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME default=""
+clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH default=""
+clap.define short=o long=out desc="The path to the output rust file." variable=RUST_PATH default="/dev/stdout"
+clap.define short=p long=patch desc="The path to the patch file, if any.  Default: {RUST_PATH} with the suffix .patch instead of .rs" variable=PATCH_PATH default=""
+clap.define short=t long=traits desc='The traits to add to types' variable=TRAITS default=""
+clap.define short=h long=header desc="Path to a header to be prepended to every file." variable=HEADER default=""
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 ##########################
 # Get working dir and args
 ##########################
-CANISTER_NAME="$(basename "${1%.did}")"
+CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
+CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
-RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
-PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
-DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
+DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
+
+# TODO: Provide this as an argument.
+TRAITS="Serialize, Clone, Debug"
 
 cd "$GIT_ROOT"
 
@@ -61,23 +69,24 @@ cd "$GIT_ROOT"
   #   - Types and fields may be unused or not exactly as clippy might wish.  Tough.
   #
   # We import traits that we apply to the Rust types.
-  cat <<-EOF
-	#![allow(clippy::all)]
-	#![allow(unused_imports)]
-	#![allow(clippy::missing_docs_in_private_items)]
-	#![allow(non_camel_case_types)]
-	#![allow(dead_code)]
-
-	use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
-	use ic_cdk::api::call::CallResult;
-	EOF
+  if [[ "${HEADER:-}" == "" ]]; then
+    echo "WARNING: No header specified.  You may need to add rust imports manually." >&2
+  else
+    if test -e "${HEADER}"; then
+      cat "${HEADER:-}"
+    else
+      echo "ERROR: Header file not found at: '${HEADER}'" >&2
+      exit 1
+    fi
+  fi
   # didc converts the .did to Rust, with the following limitations:
   #   - It applies the canidid Deserialize trait to all the types but not other traits that we need.
   #   - It makes almost all the types and fields private, which is not very helpful.
   #
   # sed:
-  #   - adds additional traits after Deserialize
-  #   - Makes structures and their fields "pub"
+  #   - Comments out the header provided by didc; we provide our own and the two conflict.
+  #   - Makes structures and their fields "pub", so that they can be used.
+  #   - Adds additional traits after "Deserialize".
   #   - Makes API call response types "CallResult".  The alternative convention is to have:
   #       use ic_cdk::api::call::CallResult as Result;
   #     at the top of the rust file but that is both confusing for Rust developers and conflicts
@@ -85,6 +94,7 @@ cd "$GIT_ROOT"
   #   - didc creates invalid Rust enum entries of the form: `StopDissolving{},`
   #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
   #     where "EmptyRecord" is defined as the name suggests.
+  #   - Deprecated: Uses `candid::Principal` instead of `Principal`.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -95,12 +105,24 @@ cd "$GIT_ROOT"
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
-    sed -E 's/^(struct|enum|type) /pub &/;
-            s@^use .*@// &@;
-            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+    sed -E '
+            # Comment out the header "use", "//!" and "#!" lines.
+	    s@^(use |//!|#!)@// &@;
+
+	    # Make types and fields public:
+            s/^(struct|enum|type) /pub &/;
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
+
+	    # Add traits
+            s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;
+
+	    # In the service, return CallResult instead of Result.
 	    /impl Service/,${s/-> Result/-> CallResult/g};
+
+	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
+
+	    # Use candid::Principal instead of raw Principal
 	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021

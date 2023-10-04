@@ -13,10 +13,9 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   div {
-    width: 90%;
-
-    @include media.min-width(small) {
-      width: 40%;
-    }
+    // This is a width for the skeleton that looks good on desktop and mobile.
+    // Based on $breakpoint-xsmall: 320px;
+    width: 320px;
+    max-width: calc(100% - var(--padding-2x));
   }
 </style>

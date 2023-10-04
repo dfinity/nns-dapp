@@ -18,12 +18,22 @@
       "$mocks": ["__mocks__"],
       "$mocks/*": ["__mocks__/*"],
       "$tests": ["src/tests"],
-      "$tests/*": ["src/tests/*"]
-    }
+      "$tests/*": ["src/tests/*"],
+      "$vitests": ["src/vitests"],
+      "$vitests/*": ["src/vitests/*"]
+    },
+    "types": [
+      "vitest/globals",
+      "node",
+      "jest",
+      "@testing-library/jest-dom",
+      "@types/wicg-file-system-access"
+    ]
   },
   "include": [
     ".svelte-kit/ambient.d.ts",
     "./vite.config.ts",
+    "./vitest.config.ts",
     "./src/**/*.js",
     "./src/**/*.ts",
     "./src/**/*.svelte"

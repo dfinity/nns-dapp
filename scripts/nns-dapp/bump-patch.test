@@ -9,7 +9,7 @@ expected_file_changes() {
   # frontend/package.json: 1 change: The package version.
   # frontend/package-lock.json: The number of changes seems to be unbounded in principle but 2 in practice.
   cat <<-EOF
-	2	2	Cargo.lock
+	3	3	Cargo.lock
 	1	1	Cargo.toml
 	2	2	frontend/package-lock.json
 	1	1	frontend/package.json

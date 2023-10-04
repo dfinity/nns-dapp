@@ -1,5 +1,5 @@
 //! Tests for the argument parsing code.
-use crate::proposals::decode_arg;
+use crate::decode_arg;
 use anyhow::Context;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{IDLArgs, IDLProg};
@@ -9,27 +9,27 @@ use std::str::FromStr;
 struct TestVector {
     /// Name of the test vector
     name: &'static str,
-    /// Canister init arg type
+    /// Canister `init` argument type
     ///
     /// Note: May be provided internally, but may then be wrong if the schema changes.
     ///
-    /// Note: May be provided by the proposer in future, if we use the .did included in the wasm metadata.
+    /// Note: May be provided by the proposer in future, if we use the .did included in the Wasm metadata.
     did: &'static str,
-    /// Canister init arg.
+    /// Canister `init` argument.
     ///
     /// Provided by the proposer.  May be invalid.
     args: &'static str,
     /// JSON or error message
     ///
-    /// Note: We may want to always return a str, or a str and a list of warnings.
-    ///       E.g. if the arg does not match the schema, we might show the arg with a warning.
+    /// Note: We may want to always return a `str`, or a `str` and a list of warnings.
+    ///       E.g. if the argument does not match the schema, we might show the argument with a warning.
     #[allow(unused)]
     json: &'static str,
     /// The actual current response, not the one we desire.
     status_quo: &'static str,
 }
 
-/// The arg parsing behaviour we would like.
+/// The argument parsing behaviour we would like.
 const TEST_VECTORS: [TestVector; 10] = [
     TestVector {
         name: "No argument",
@@ -114,9 +114,9 @@ const TEST_VECTORS: [TestVector; 10] = [
     // TODO: Decide what we want to show when the type itself is invalid
 ];
 
-/// Extract the args field from a did types file.
+/// Extract the `args` field from a did types file.
 ///
-/// TODO: Move into idl2json
+/// TODO: Move into `idl2json`
 fn arg_types_from_did(did: &str) -> anyhow::Result<IDLTypes> {
     let prog = IDLProg::from_str(did).context("Failed to parse canister did file.")?;
     let service = prog.actor.context("Could not find service in did file.")?;

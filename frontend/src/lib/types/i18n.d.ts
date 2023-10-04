@@ -469,7 +469,6 @@ interface I18nCanister_detail {
   rename_canister: string;
   rename_canister_title: string;
   rename_canister_placeholder: string;
-  balance_unavailable: string;
   status_stopped: string;
   status_stopping: string;
   status_running: string;
@@ -757,6 +756,7 @@ interface I18nSns_project_detail {
   max_user_commitment_reached: string;
   not_eligible_to_participate: string;
   getting_sns_open_ticket: string;
+  current_nf_commitment_description: string;
   sign_in: string;
 }
 

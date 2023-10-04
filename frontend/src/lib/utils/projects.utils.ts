@@ -2,6 +2,8 @@ import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
   getDeniedCountries,
+  getMaxDirectParticipation,
+  getMinDirectParticipation,
   getNeuronsFundParticipation,
 } from "$lib/getters/sns-summary";
 import type { Country } from "$lib/types/location";
@@ -407,6 +409,8 @@ export type FullProjectCommitmentSplit = {
   totalCommitmentE8s: bigint;
   directCommitmentE8s: bigint;
   nfCommitmentE8s: bigint;
+  minDirectCommitmentE8s: bigint;
+  maxDirectCommitmentE8s: bigint;
 };
 export type ProjectCommitmentSplit =
   | { totalCommitmentE8s: bigint }
@@ -416,15 +420,28 @@ export const getProjectCommitmentSplit = (
   summary: SnsSummary
 ): ProjectCommitmentSplit => {
   const nfCommitmentE8s = getNeuronsFundParticipation(summary);
-  if (nonNullish(nfCommitmentE8s)) {
+  const minDirectCommitmentE8s = getMinDirectParticipation(summary);
+  const maxDirectCommitmentE8s = getMaxDirectParticipation(summary);
+  if (
+    nonNullish(nfCommitmentE8s) &&
+    nonNullish(minDirectCommitmentE8s) &&
+    nonNullish(maxDirectCommitmentE8s)
+  ) {
     return {
       totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
       directCommitmentE8s:
         summary.derived.buyer_total_icp_e8s - nfCommitmentE8s,
       nfCommitmentE8s,
+      minDirectCommitmentE8s,
+      maxDirectCommitmentE8s,
     };
   }
   return {
     totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
   };
 };
+
+export const isCommitmentSplitWithNeuronsFund = (
+  commitmentSplit: ProjectCommitmentSplit
+): commitmentSplit is FullProjectCommitmentSplit =>
+  "nfCommitmentE8s" in commitmentSplit;

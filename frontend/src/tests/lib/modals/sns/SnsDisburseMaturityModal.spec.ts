@@ -17,7 +17,7 @@ import {
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { SnsNeuron } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";

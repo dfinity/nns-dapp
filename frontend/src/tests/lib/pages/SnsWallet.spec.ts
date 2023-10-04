@@ -9,7 +9,6 @@ import * as services from "$lib/services/sns-transactions.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -77,7 +76,6 @@ describe("SnsWallet", () => {
   const rootCanisterIdText = rootCanisterId.toText();
 
   beforeEach(() => {
-    snsQueryStore.reset();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
     setSnsProjects([

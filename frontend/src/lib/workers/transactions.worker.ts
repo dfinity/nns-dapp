@@ -75,7 +75,7 @@ const syncTransactions = async (
       }))
     );
   } catch (err: unknown) {
-    postMessage({
+    worker.postMsg({
       msg: "nnsSyncErrorTransactions",
       data: err,
     });
@@ -90,7 +90,7 @@ const emitTransactions = (
 ) => {
   const data: PostMessageDataResponseTransactions = { transactions };
 
-  postMessage({
+  worker.postMsg({
     msg: "nnsSyncTransactions",
     data,
   });

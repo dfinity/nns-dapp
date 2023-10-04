@@ -1,5 +1,10 @@
 import { nonNullish } from "@dfinity/utils";
 
+/**
+ * TODO: delete module once migration to vitest over
+ * @deprecated module was copied to frontend/src/vitests/utils/timers.test-utils.ts
+ */
+
 const originalTimeout = setTimeout;
 
 // When awaiting a resolved promise, the code after it doesn't happen

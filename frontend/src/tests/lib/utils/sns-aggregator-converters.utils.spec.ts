@@ -399,6 +399,83 @@ describe("sns aggregator converters utils", () => {
         convertDtoToSnsSummary(aggregatorMissingSwapParams)
       ).toBeUndefined();
     });
+
+    it("converts fields related to NF participation", () => {
+      const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
+        ...mockData,
+        swap_state: {
+          ...mockData.swap_state,
+          swap: {
+            ...mockData.swap_state.swap,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+            init: {
+              ...mockData.swap_state.swap.init,
+              neurons_fund_participation_constraints: {
+                coefficient_intervals: [
+                  {
+                    slope_numerator: 2,
+                    intercept_icp_e8s: 5000000000,
+                    from_direct_participation_icp_e8s: 1000000000,
+                    slope_denominator: 3,
+                    to_direct_participation_icp_e8s: 2000000000,
+                  },
+                ],
+                max_neurons_fund_participation_icp_e8s: 300000000000,
+                min_direct_participation_threshold_icp_e8s: 10000000000,
+              },
+            },
+          },
+          derived: {
+            ...mockData.swap_state.derived,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+          },
+        },
+        derived_state: {
+          ...mockData.derived_state,
+          direct_participation_icp_e8s: 300000000000000,
+          neurons_fund_participation_icp_e8s: 100000000000000,
+        },
+      };
+
+      const summaryMockData = convertDtoToSnsSummary(mockData);
+      expect(
+        convertDtoToSnsSummary(aggregatorNFAndDirectParticipationFields)
+      ).toEqual({
+        ...summaryMockData,
+        swap: {
+          ...summaryMockData.swap,
+          init: [
+            {
+              ...summaryMockData.swap.init[0],
+              neurons_fund_participation_constraints: [
+                {
+                  coefficient_intervals: [
+                    {
+                      slope_numerator: [2n],
+                      intercept_icp_e8s: [5000000000n],
+                      from_direct_participation_icp_e8s: [1000000000n],
+                      slope_denominator: [3n],
+                      to_direct_participation_icp_e8s: [2000000000n],
+                    },
+                  ],
+                  max_neurons_fund_participation_icp_e8s: [300000000000n],
+                  min_direct_participation_threshold_icp_e8s: [10000000000n],
+                },
+              ],
+            },
+          ],
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+        derived: {
+          ...summaryMockData.derived,
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+      });
+    });
   });
 
   describe("convertNervousFunction", () => {

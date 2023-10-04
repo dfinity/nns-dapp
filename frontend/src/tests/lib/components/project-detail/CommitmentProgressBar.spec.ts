@@ -8,18 +8,19 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("CommitmentProgressBar", () => {
+  const color: "primary" | "warning" = "primary";
   const props = {
-    directParticipation: 1500n,
-    nfParticipation: 0n,
+    participationE8s: 1500n,
     max: BigInt(3000),
     minimumIndicator: BigInt(1500),
+    color,
   };
 
   const renderComponent = (props: {
-    directParticipation: bigint;
-    nfParticipation: bigint;
+    participationE8s: bigint;
     max: bigint;
     minimumIndicator?: bigint;
+    color: "primary" | "warning";
   }) => {
     const { container } = render(CommitmentProgressBar, { props });
     return CommitmentProgressBarPo.under(new JestPageObjectElement(container));
@@ -28,32 +29,30 @@ describe("CommitmentProgressBar", () => {
   it("should render direct participation value in progress bar if no NF participation", async () => {
     const po = renderComponent({
       ...props,
-      directParticipation: 150_000_000n,
-      nfParticipation: 0n,
+      participationE8s: 150_000_000n,
     });
-    expect(await po.getTotalCommitmentE8s()).toBe(150000000n);
+    expect(await po.getCommitmentE8s()).toBe(150000000n);
   });
 
-  it("should render sume of direct and NF participation value in progress bar", async () => {
+  it("should display minimum indicators", async () => {
+    const po = renderComponent(props);
+    expect(await po.hasMinCommitmentIndicator()).toBe(true);
+  });
+
+  it("should use the color prop", async () => {
+    const color1 = "warning";
     const po = renderComponent({
       ...props,
-      directParticipation: 300_000_000n,
-      nfParticipation: 150_000_000n,
+      color: color1,
     });
-    expect(await po.getTotalCommitmentE8s()).toBe(450000000n);
-  });
-
-  it("should display maximum and minimum indicators", async () => {
-    const po = renderComponent(props);
-    expect(await po.hasMaxCommitmentIndicator()).toBe(true);
-    expect(await po.hasMinCommitmentIndicator()).toBe(true);
+    expect(await po.getColor()).toBe(color1);
   });
 
   it("should not display minimum indicators if not provided", async () => {
     const po = renderComponent({
-      directParticipation: props.directParticipation,
-      nfParticipation: props.nfParticipation,
+      participationE8s: props.participationE8s,
       max: props.max,
+      color,
     });
     expect(await po.hasMinCommitmentIndicator()).toBe(false);
   });
@@ -66,42 +65,5 @@ describe("CommitmentProgressBar", () => {
     });
     expect(await po.getMinCommitment()).toBe("1.50 ICP");
     expect(await po.getMaxCommitment()).toBe("30.00 ICP");
-  });
-
-  it("should display NF and direct commitments", async () => {
-    const nfParticipation = 500n;
-    const { container } = render(CommitmentProgressBar, {
-      props: {
-        ...props,
-        nfParticipation,
-      },
-    });
-    expect(container.querySelector("progress").value).toBe(
-      Number(props.directParticipation + nfParticipation)
-    );
-    expect(container.querySelector("progress").style.cssText).toBe(
-      "--progress-bar-background: linear-gradient(to right, var(--positive-emphasis) 0% 25%, var(--warning-emphasis) 25% 100%);"
-    );
-  });
-
-  it("should display only direct commitment if no NF commitment", async () => {
-    const po = renderComponent({
-      ...props,
-      directParticipation: 300_000_000n,
-      nfParticipation: 0n,
-    });
-    expect(await po.getNFCommitmentE8s()).toEqual(0n);
-    expect(await po.getDirectCommitmentE8s()).toEqual(300_000_000n);
-    expect(await po.getTotalCommitmentE8s()).toEqual(300_000_000n);
-  });
-
-  it("should display NF and direct commitments", async () => {
-    const po = renderComponent({
-      ...props,
-      directParticipation: 300_000_000n,
-      nfParticipation: 100_000_000n,
-    });
-    expect(await po.getNFCommitmentE8s()).toEqual(100_000_000n);
-    expect(await po.getDirectCommitmentE8s()).toEqual(300_000_000n);
   });
 });
