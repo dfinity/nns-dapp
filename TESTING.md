@@ -2,16 +2,16 @@
 
 Some background to understand and write tests for the nns-dapp.
 
-* [Frontend Testing](#frontend-testing)
-    + [Running Tests](#running-tests)
-    + [Unit Tests](#unit-tests)
-    + [Integration Tests](#integration-tests)
-    + [Mocks](#mocks)
-    + [Test Utils](#test-utils)
-    + [Migration to vitest](#migration-to-vitest)
-* [Canister Test](#canister-test)
-    + [Running Tests](#running-tests-1)
-    + [Unit Tests](#unit-tests-1)
+- [Frontend Testing](#frontend-testing)
+  - [Running Tests](#running-tests)
+  - [Unit Tests](#unit-tests)
+  - [Integration Tests](#integration-tests)
+  - [Mocks](#mocks)
+  - [Test Utils](#test-utils)
+  - [Migration to vitest](#migration-to-vitest)
+- [Canister Test](#canister-test)
+  - [Running Tests](#running-tests-1)
+  - [Unit Tests](#unit-tests-1)
 
 ## Frontend Testing
 
