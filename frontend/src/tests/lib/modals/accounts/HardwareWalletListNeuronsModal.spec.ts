@@ -5,7 +5,7 @@
 import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
-import HardwareWalletNeuronsTest from "../../components/accounts/HardwareWalletNeuronsTest.svelte";
+import HardwareWalletNeuronsTest from "$vitests/components/accounts/HardwareWalletNeuronsTest.svelte";
 
 describe("HardwareWalletListNeuronsModal", () => {
   const props = { testComponent: HardwareWalletListNeuronsModal };
