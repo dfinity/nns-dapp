@@ -19,7 +19,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
-import CkBTCAccountsTest from "$vitests/lib/components/CkBTCAccountsTest.svelte";
+import CkBTCAccountsTest from "$vitests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 

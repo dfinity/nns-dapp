@@ -1,5 +1,5 @@
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { syncStore } from "$lib/stores/sync.store";
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
@@ -9,18 +9,23 @@ import type {
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
 import { page } from "$mocks/$app/stores";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionMint,
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
-import CkBTCWalletTransactionsObserverTest from "$vitests/lib/components/CkBTCWalletTransactionsObserverTest.svelte";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import {
+  mockProjectSubscribe,
+  mockSnsFullProject,
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import SnsWalletTransactionsObserverTest from "$vitests/lib/components/accounts/SnsWalletTransactionsObserverTest.svelte";
 import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("CkBTCWalletTransactionsObserver", () => {
+describe("SnsWalletTransactionsObserver", () => {
   type TransactionsMessageEvent = MessageEvent<
     PostMessage<
       PostMessageDataResponseTransactions | PostMessageDataResponseSync
@@ -30,19 +35,28 @@ describe("CkBTCWalletTransactionsObserver", () => {
   let postMessageMock: PostMessageMock<TransactionsMessageEvent>;
 
   const transaction = {
-    canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+    canisterId: rootCanisterIdMock,
     transactions: [mockIcrcTransactionWithId],
-    accountIdentifier: mockCkBTCMainAccount.identifier,
+    accountIdentifier: mockSnsMainAccount.identifier,
     oldestTxId: BigInt(10),
     completed: false,
   };
 
   beforeEach(() => {
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([
+        {
+          ...mockSnsFullProject,
+          rootCanisterId: rootCanisterIdMock,
+        },
+      ])
+    );
+
     icrcTransactionsStore.addTransactions(transaction);
 
     page.mock({
       routeId: AppPath.Wallet,
-      data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+      data: { universe: rootCanisterIdMock.toText() },
     });
 
     postMessageMock = new PostMessageMock();
@@ -68,20 +82,20 @@ describe("CkBTCWalletTransactionsObserver", () => {
   });
 
   it("should init data and render slotted content", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(SnsWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
   });
 
   it("should update account store on new sync message", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(SnsWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
     const transactionsStore = get(icrcTransactionsStore);
 
-    expect(transactionsStore[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]).toEqual({
-      [mockCkBTCMainAccount.identifier]: {
+    expect(transactionsStore[rootCanisterIdMock.toText()]).toEqual({
+      [mockSnsMainAccount.identifier]: {
         transactions: transaction.transactions,
         completed: transaction.completed,
         oldestTxId: transaction.oldestTxId,
@@ -98,7 +112,7 @@ describe("CkBTCWalletTransactionsObserver", () => {
         data: {
           transactions: [
             {
-              accountIdentifier: mockCkBTCMainAccount.identifier,
+              accountIdentifier: mockSnsMainAccount.identifier,
               transactions: JSON.stringify(
                 [mockIcrcTransactionMint],
                 jsonReplacer
@@ -112,8 +126,8 @@ describe("CkBTCWalletTransactionsObserver", () => {
 
     await waitFor(() => {
       const updatedStore = get(icrcTransactionsStore);
-      expect(updatedStore[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]).toEqual({
-        [mockCkBTCMainAccount.identifier]: {
+      expect(updatedStore[rootCanisterIdMock.toText()]).toEqual({
+        [mockSnsMainAccount.identifier]: {
           transactions: [...transaction.transactions, mockIcrcTransactionMint],
           completed: true,
           oldestTxId,
@@ -123,7 +137,7 @@ describe("CkBTCWalletTransactionsObserver", () => {
   });
 
   it("should populate error to sync store on error message from worker", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(SnsWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
