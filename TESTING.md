@@ -81,8 +81,8 @@ To migrate a test from jest to vitest, aside from moving it between folders, the
 // jest
 jest.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    ...vi.requireActual("$lib/services/ckbtc-minter.services"),
-    loadBtcAddress: vi.fn().mockImplementation(() => undefined),
+    ...jest.requireActual("$lib/services/ckbtc-minter.services"),
+    loadBtcAddress: jest.fn().mockImplementation(() => undefined),
   };
 });
 
