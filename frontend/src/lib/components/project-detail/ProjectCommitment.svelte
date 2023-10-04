@@ -89,8 +89,8 @@
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar
         participationE8s={projectCommitments.directCommitmentE8s}
-        max={projectCommitments.maximumDirectCommitmentE8s}
-        minimumIndicator={projectCommitments.minimumDirectCommitmentE8s}
+        max={projectCommitments.maxDirectCommitmentE8s}
+        minimumIndicator={projectCommitments.minDirectCommitmentE8s}
         color="primary"
       />
     </div>
@@ -98,9 +98,9 @@
     <!-- The spacing between component is set using flex in the parent. -->
     <div>
       <KeyValuePairInfo testId="sns-project-current-nf-commitment">
-        <span slot="key">
+        <svelte:fragment slot="key">
           {$i18n.sns_project_detail.current_nf_commitment}
-        </span>
+        </svelte:fragment>
 
         <div slot="info" class="description">
           <Html
@@ -143,11 +143,11 @@
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
+
     // This is the dot with the participation color next to the label
     &::before {
       content: "";
       display: block;
-      width: var(--padding);
       height: var(--padding);
       background: var(--primary);
       border-radius: var(--padding);

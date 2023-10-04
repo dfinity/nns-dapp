@@ -17,11 +17,11 @@ export const getNeuronsFundParticipation = (
 ): bigint | undefined => undefined;
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-export const getMiniumDirectParticipation = (
+export const getMinDirectParticipation = (
   _summary: SnsSummary
 ): bigint | undefined => undefined;
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-export const getMaximunDirectParticipation = (
+export const getMaxDirectParticipation = (
   _summary: SnsSummary
 ): bigint | undefined => undefined;

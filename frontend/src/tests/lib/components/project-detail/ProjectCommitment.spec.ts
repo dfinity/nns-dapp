@@ -102,11 +102,11 @@ describe("ProjectCommitment", () => {
         .mockImplementation(() => nfCommitment);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMiniumDirectParticipation")
+        .spyOn(summaryGetters, "getMinDirectParticipation")
         .mockImplementation(() => 10000000000n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMaximunDirectParticipation")
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
         .mockImplementation(() => 100000000000n);
     });
 
@@ -136,11 +136,11 @@ describe("ProjectCommitment", () => {
         .mockImplementation(() => 0n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMiniumDirectParticipation")
+        .spyOn(summaryGetters, "getMinDirectParticipation")
         .mockImplementation(() => 10000000000n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMaximunDirectParticipation")
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
         .mockImplementation(() => 100000000000n);
     });
 
@@ -167,11 +167,11 @@ describe("ProjectCommitment", () => {
         .mockImplementation(() => undefined);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMiniumDirectParticipation")
+        .spyOn(summaryGetters, "getMinDirectParticipation")
         .mockImplementation(() => undefined);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-        .spyOn(summaryGetters, "getMaximunDirectParticipation")
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
         .mockImplementation(() => undefined);
     });
 

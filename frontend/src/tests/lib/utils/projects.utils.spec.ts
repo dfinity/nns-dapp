@@ -1298,30 +1298,30 @@ describe("project-utils", () => {
         const maxDirectParticipation = 100000000000n;
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMiniumDirectParticipation")
+          .spyOn(summaryGetters, "getMinDirectParticipation")
           .mockImplementation(() => minDirectParticipation);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMaximunDirectParticipation")
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
           .mockImplementation(() => maxDirectParticipation);
 
         expect(getProjectCommitmentSplit(summary)).toEqual({
           totalCommitmentE8s: 30000000000n,
           directCommitmentE8s: 20000000000n,
           nfCommitmentE8s: 10000000000n,
-          minimumDirectCommitmentE8s: minDirectParticipation,
-          maximumDirectCommitmentE8s: maxDirectParticipation,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
         });
       });
 
       it("returns the full commitment if min direct participation is not present", () => {
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMiniumDirectParticipation")
+          .spyOn(summaryGetters, "getMinDirectParticipation")
           .mockImplementation(() => undefined);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMaximunDirectParticipation")
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
           .mockImplementation(() => 100000000000n);
         expect(getProjectCommitmentSplit(summary)).toEqual({
           totalCommitmentE8s: 30000000000n,
@@ -1331,11 +1331,11 @@ describe("project-utils", () => {
       it("returns the full commitment if max direct participation is not present", () => {
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMiniumDirectParticipation")
+          .spyOn(summaryGetters, "getMinDirectParticipation")
           .mockImplementation(() => 100000000000n);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMaximunDirectParticipation")
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
           .mockImplementation(() => undefined);
         expect(getProjectCommitmentSplit(summary)).toEqual({
           totalCommitmentE8s: 30000000000n,
@@ -1355,11 +1355,11 @@ describe("project-utils", () => {
           .mockImplementation(() => nfCommitment);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMiniumDirectParticipation")
+          .spyOn(summaryGetters, "getMinDirectParticipation")
           .mockImplementation(() => minDirectParticipation);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMaximunDirectParticipation")
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
           .mockImplementation(() => maxDirectParticipation);
         const summary = {
           ...defaultSummary,
@@ -1372,8 +1372,8 @@ describe("project-utils", () => {
           totalCommitmentE8s: 20000000000n,
           directCommitmentE8s: 20000000000n,
           nfCommitmentE8s: 0n,
-          minimumDirectCommitmentE8s: minDirectParticipation,
-          maximumDirectCommitmentE8s: maxDirectParticipation,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
         });
       });
     });
@@ -1386,11 +1386,11 @@ describe("project-utils", () => {
           .mockImplementation(() => undefined);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMiniumDirectParticipation")
+          .spyOn(summaryGetters, "getMinDirectParticipation")
           .mockImplementation(() => 100000000000n);
         // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
         jest
-          .spyOn(summaryGetters, "getMaximunDirectParticipation")
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
           .mockImplementation(() => 1000000000000n);
         expect(getProjectCommitmentSplit(summary)).toEqual({
           totalCommitmentE8s: 30000000000n,
