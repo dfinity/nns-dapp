@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+print_help() {
+  cat <<-EOF
+
+	Derives rust canister types used in proposal rendering.
+
+	Usage: $(basename "$0") <CANISTER_NAME>
+	takes inputs:
+	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
+	  rs/proposals/src/canisters/<CANISTER_NAME>/api.patch (optional)
+	creates:
+	  rs/proposals/src/canisters/<CANISTER_NAME>/api.rs
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister for which the Rust types are to be derived" variable=CANISTER_NAME
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+CANISTER_NAME="${CANISTER_NAME:-$1}"
+REPO_ROOT="${SOURCE_DIR}/.."
+RUST_PATH="${REPO_ROOT}/rs/proposals/src/canisters/${CANISTER_NAME}/api.rs"
+HEADER_FILE="$0.header"
+
+mkdir -p "$(dirname "$RUST_PATH")"
+"$SOURCE_DIR/did2rs.sh" --canister "$CANISTER_NAME" --out "$RUST_PATH" --header "$HEADER_FILE" --traits "Serialize"
