@@ -21,7 +21,6 @@ import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
@@ -171,7 +170,6 @@ describe("sns-api", () => {
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
     jest.spyOn(console, "error").mockReturnValue();
-    snsQueryStore.reset();
     spyOnQueryBalance.mockResolvedValue(newBalanceE8s);
 
     setUpMockSnsProjectStore({ rootCanisterId: testSnsTicket.rootCanisterId });
