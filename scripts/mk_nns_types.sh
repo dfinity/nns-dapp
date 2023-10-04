@@ -20,15 +20,15 @@ print_help() {
 
 cd "$(dirname "$(realpath "$0")")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
-cd "$GIT_ROOT"
 failed_output=""
 for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
   export CANISTER_NAME
   DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
   test -f "${DID_PATH}" || (
+    cd "$GIT_ROOT"
     cp "$(jq '.canisters[env.CANISTER_NAME].candid' dfx.json)" "$DID_PATH"
   )
-  if output=$(scripts/sns/aggregator/did2rs "${CANISTER_NAME}"); then
+  if output=$("$GIT_ROOT/scripts/sns/aggregator/did2rs" "${CANISTER_NAME}"); then
     echo "$output"
   else
     failed_output="${failed_output}${output}"
