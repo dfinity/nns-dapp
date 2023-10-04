@@ -9,7 +9,6 @@ import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
   createSummary,
   mockSnsFullProject,
-  summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectCommitmentPo } from "$tests/page-objects/ProjectCommitment.page-object";
@@ -20,7 +19,6 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 jest.mock("$lib/getters/sns-summary.ts");
 
 describe("ProjectCommitment", () => {
-  const summary = summaryForLifecycle(SnsSwapLifecycle.Open);
   const saleBuyerCount = 1_000_000;
 
   const renderComponent = (
@@ -91,77 +89,108 @@ describe("ProjectCommitment", () => {
     expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
   });
 
-  it("should render a progress bar with overall participation if NF is not available", async () => {
-    const overallCommitment = 30000000000n;
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-    jest
-      .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => undefined);
+  describe("when Neurons' Fund enhancements fields are available", () => {
+    const nfCommitment = 10000000000n;
+    const directCommitment = 30000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment + nfCommitment,
+    });
 
+    beforeEach(() => {
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => nfCommitment);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => 10000000000n);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => 100000000000n);
+    });
+
+    it("should render a progress bar with direct participation", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getCommitmentProgressBarPo();
+      expect(await progressBarPo.getCommitmentE8s()).toBe(directCommitment);
+    });
+
+    it("should render detailed participation if neurons fund participation is available", async () => {
+      const po = renderComponent(summary);
+      expect(await po.getNeuronsFundParticipation()).toEqual("100.00 ICP");
+      expect(await po.getDirectParticipation()).toEqual("300.00 ICP");
+    });
+
+    it("should render progress bar with primary color", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getCommitmentProgressBarPo();
+      expect(await progressBarPo.getColor()).toEqual("primary");
+    });
+  });
+
+  describe("when Neurons' Fund enhancements fields are available and NF commitment is 0", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => 0n);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => 10000000000n);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => 100000000000n);
+    });
+
+    it("should render detailed participation if neurons fund participation is zero", async () => {
+      const directCommitment = 20000000000n;
+      const summary = createSummary({
+        currentTotalCommitment: directCommitment,
+      });
+      const po = renderComponent(summary);
+      expect(await po.getNeuronsFundParticipation()).toEqual("0 ICP");
+      expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
+    });
+  });
+
+  describe("when Neurons' Fund enhancements fields are not available", () => {
+    const overallCommitment = 30000000000n;
     const summary = createSummary({
       currentTotalCommitment: overallCommitment,
     });
-    const po = renderComponent(summary);
-    const progressBarPo = po.getCommitmentProgressBarPo();
-    expect(await progressBarPo.getCommitmentE8s()).toBe(overallCommitment);
-  });
 
-  it("should render a progress bar with direct participation if NF is available", async () => {
-    const directCommitment = 30000000000n;
-    const nfCommitment = 10000000000n;
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-    jest
-      .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => nfCommitment);
-
-    const summary = createSummary({
-      currentTotalCommitment: directCommitment + nfCommitment,
+    beforeEach(() => {
+      jest
+        .spyOn(summaryGetters, "getNeuronsFundParticipation")
+        .mockImplementation(() => undefined);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => undefined);
+      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+      jest
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => undefined);
     });
-    const po = renderComponent(summary);
-    const progressBarPo = po.getCommitmentProgressBarPo();
-    expect(await progressBarPo.getCommitmentE8s()).toBe(directCommitment);
-  });
 
-  it("should not render detailed participation if neurons fund participation is not available", async () => {
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-    jest
-      .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => undefined);
-
-    const po = renderComponent(summary);
-    expect(await po.hasNeuronsFundParticipation()).toBe(false);
-    expect(await po.hasDirectParticipation()).toBe(false);
-  });
-
-  it("should render detailed participation if neurons fund participation is available", async () => {
-    const directCommitment = 20000000000n;
-    const nfCommitment = 10000000000n;
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-    jest
-      .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => nfCommitment);
-
-    const summary = createSummary({
-      currentTotalCommitment: directCommitment + nfCommitment,
+    it("should render a progress bar with overall participation", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getCommitmentProgressBarPo();
+      expect(await progressBarPo.getCommitmentE8s()).toBe(overallCommitment);
     });
-    const po = renderComponent(summary);
-    expect(await po.getNeuronsFundParticipation()).toEqual("100.00 ICP");
-    expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
-  });
 
-  it("should not render detailed participation if neurons fund participation is zero", async () => {
-    const directCommitment = 20000000000n;
-    const nfCommitment = 0n;
-    // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-    jest
-      .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => nfCommitment);
-
-    const summary = createSummary({
-      currentTotalCommitment: directCommitment + nfCommitment,
+    it("should not render detailed participation", async () => {
+      const po = renderComponent(summary);
+      expect(await po.hasNeuronsFundParticipation()).toBe(false);
+      expect(await po.hasDirectParticipation()).toBe(false);
     });
-    const po = renderComponent(summary);
-    expect(await po.hasNeuronsFundParticipation()).toBe(false);
-    expect(await po.hasDirectParticipation()).toBe(false);
+
+    it("should render progress bar with warning color", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getCommitmentProgressBarPo();
+      expect(await progressBarPo.getColor()).toEqual("warning");
+    });
   });
 });
