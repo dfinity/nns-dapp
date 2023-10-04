@@ -3,12 +3,14 @@
 #![allow(non_camel_case_types)]
 #![allow(dead_code, unused_imports)]
 use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
-use ic_cdk::api::call::CallResult as Result;
+use ic_cdk::api::call::CallResult;
 use serde::Serialize;
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct EmptyRecord {}
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Encode, candid::Principal};
+// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -36,7 +38,7 @@ pub struct KnownNeuron {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Spawn {
     pub percentage_to_spawn: Option<u32>,
-    pub new_controller: Option<candid::Principal>,
+    pub new_controller: Option<Principal>,
     pub nonce: Option<u64>,
 }
 
@@ -53,7 +55,7 @@ pub struct Follow {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ClaimOrRefreshNeuronFromAccount {
-    pub controller: Option<candid::Principal>,
+    pub controller: Option<Principal>,
     pub memo: u64,
 }
 
@@ -71,12 +73,12 @@ pub struct ClaimOrRefresh {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveHotKey {
-    pub hot_key_to_remove: Option<candid::Principal>,
+    pub hot_key_to_remove: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddHotKey {
-    pub new_hot_key: Option<candid::Principal>,
+    pub new_hot_key: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -128,7 +130,7 @@ pub struct DisburseToNeuron {
     pub dissolve_delay_seconds: u64,
     pub kyc_verified: bool,
     pub amount_e8s: u64,
-    pub new_controller: Option<candid::Principal>,
+    pub new_controller: Option<Principal>,
     pub nonce: u64,
 }
 
@@ -238,7 +240,7 @@ pub struct LedgerParameters {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Canister {
-    pub id: Option<candid::Principal>,
+    pub id: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -279,7 +281,7 @@ pub struct SwapDistribution {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronDistribution {
-    pub controller: Option<candid::Principal>,
+    pub controller: Option<Principal>,
     pub dissolve_delay: Option<Duration>,
     pub memo: Option<u64>,
     pub vesting_period: Option<Duration>,
@@ -302,7 +304,7 @@ pub struct InitialTokenDistribution {
 pub struct CreateServiceNervousSystem {
     pub url: Option<String>,
     pub governance_parameters: Option<GovernanceParameters>,
-    pub fallback_controller_principal_ids: Vec<candid::Principal>,
+    pub fallback_controller_principal_ids: Vec<Principal>,
     pub logo: Option<Image>,
     pub name: Option<String>,
     pub ledger_parameters: Option<LedgerParameters>,
@@ -320,7 +322,7 @@ pub struct ExecuteNnsFunction {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeProvider {
-    pub id: Option<candid::Principal>,
+    pub id: Option<Principal>,
     pub reward_account: Option<AccountIdentifier>,
 }
 
@@ -369,7 +371,7 @@ pub struct Params {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct OpenSnsTokenSwap {
     pub community_fund_investment_e8s: Option<u64>,
-    pub target_swap_canister_id: Option<candid::Principal>,
+    pub target_swap_canister_id: Option<Principal>,
     pub params: Option<Params>,
 }
 
@@ -387,7 +389,7 @@ pub struct SetOpenTimeWindowRequest {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SetSnsTokenSwapOpenTimeWindow {
     pub request: Option<SetOpenTimeWindowRequest>,
-    pub swap_canister_id: Option<candid::Principal>,
+    pub swap_canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -415,7 +417,7 @@ pub struct NetworkEconomics {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ApproveGenesisKyc {
-    pub principals: Vec<candid::Principal>,
+    pub principals: Vec<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -462,7 +464,7 @@ pub struct Proposal {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MakingSnsProposal {
     pub proposal: Option<Box<Proposal>>,
-    pub caller: Option<candid::Principal>,
+    pub caller: Option<Principal>,
     pub proposer_id: Option<NeuronId>,
 }
 
@@ -516,7 +518,7 @@ pub struct RewardEvent {
 pub struct NeuronStakeTransfer {
     pub to_subaccount: serde_bytes::ByteBuf,
     pub neuron_stake_e8s: u64,
-    pub from: Option<candid::Principal>,
+    pub from: Option<Principal>,
     pub memo: u64,
     pub from_subaccount: serde_bytes::ByteBuf,
     pub transfer_timestamp: u64,
@@ -569,7 +571,7 @@ pub struct Ballot {
 pub struct CanisterStatusResultV2 {
     pub status: Option<i32>,
     pub freezing_threshold: Option<u64>,
-    pub controllers: Vec<candid::Principal>,
+    pub controllers: Vec<Principal>,
     pub memory_size: Option<u64>,
     pub cycles: Option<u64>,
     pub idle_cycles_burned_per_day: Option<u64>,
@@ -579,13 +581,13 @@ pub struct CanisterStatusResultV2 {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CanisterSummary {
     pub status: Option<CanisterStatusResultV2>,
-    pub canister_id: Option<candid::Principal>,
+    pub canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SwapBackgroundInformation {
     pub ledger_index_canister_summary: Option<CanisterSummary>,
-    pub fallback_controller_principal_ids: Vec<candid::Principal>,
+    pub fallback_controller_principal_ids: Vec<Principal>,
     pub ledger_archive_canister_summaries: Vec<CanisterSummary>,
     pub ledger_canister_summary: Option<CanisterSummary>,
     pub swap_canister_summary: Option<CanisterSummary>,
@@ -668,7 +670,7 @@ pub enum DissolveState {
 pub struct Neuron {
     pub id: Option<NeuronId>,
     pub staked_maturity_e8s_equivalent: Option<u64>,
-    pub controller: Option<candid::Principal>,
+    pub controller: Option<Principal>,
     pub recent_ballots: Vec<BallotInfo>,
     pub kyc_verified: bool,
     pub not_for_profit: bool,
@@ -677,7 +679,7 @@ pub struct Neuron {
     pub created_timestamp_seconds: u64,
     pub auto_stake_maturity: Option<bool>,
     pub aging_since_timestamp_seconds: u64,
-    pub hot_keys: Vec<candid::Principal>,
+    pub hot_keys: Vec<Principal>,
     pub account: serde_bytes::ByteBuf,
     pub joined_community_fund_timestamp_seconds: Option<u64>,
     pub dissolve_state: Option<DissolveState>,
@@ -897,7 +899,7 @@ pub struct ManageNeuronResponse {
 pub struct Committed {
     pub total_direct_contribution_icp_e8s: Option<u64>,
     pub total_neurons_fund_contribution_icp_e8s: Option<u64>,
-    pub sns_governance_canister_id: Option<candid::Principal>,
+    pub sns_governance_canister_id: Option<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -917,9 +919,9 @@ pub struct UpdateNodeProvider {
     pub reward_account: Option<AccountIdentifier>,
 }
 
-pub struct Service(pub candid::Principal);
+pub struct Service(pub Principal);
 impl Service {
-    pub async fn claim_gtc_neurons(&self, arg0: candid::Principal, arg1: Vec<NeuronId>) -> CallResult<(Result_,)> {
+    pub async fn claim_gtc_neurons(&self, arg0: Principal, arg1: Vec<NeuronId>) -> CallResult<(Result_,)> {
         ic_cdk::call(self.0, "claim_gtc_neurons", (arg0, arg1)).await
     }
     pub async fn claim_or_refresh_neuron_from_account(

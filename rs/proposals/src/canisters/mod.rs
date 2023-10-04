@@ -1,1 +1,1 @@
-pub mod governance;
+pub mod nns_governance;
