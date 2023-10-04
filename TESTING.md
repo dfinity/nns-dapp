@@ -75,7 +75,7 @@ To migrate a test from jest to vitest, aside from moving it between folders, the
   - `$tests/utils/timers.test-utils`
   - `$tests/utils/utils.test-utils`
 
-- in vitest `requireActual` is replaced by `importActual` which, in addition, becomes an any function
+- In vitest, `requireActual` is replaced by `importActual`, and it also becomes a promisified function
 
 ```typescript
 // jest
@@ -112,7 +112,7 @@ import type { Mock } from "vitest";
 });
 ```
 
-- [Module mocks](https://vitest.dev/guide/migration.html#module-mocks) require `default` exports with vitest. When not migrated a common error thrown by the test if the following:
+- [Module mocks](https://vitest.dev/guide/migration.html#module-mocks) require `default` exports with vitest. exports with vitest. When not migrated, a common error thrown by the test is the following:
 
 > Error: [vitest] vi.mock("$lib/workers/balances.worker?worker", factory?: () => unknown) is not returning an object. Did you mean to return an object with a "default" key?
 
@@ -132,9 +132,9 @@ vi.mock("$lib/workers/transactions.worker?worker", () => ({
 }));
 ```
 
-- When `ReferenceError` are thrown, it can be linked to mock that are declared within the test and not at its top. This can often be solved by transforming the `jest.mock` into a `vi.doMock` (instead of `vi.mock`)
+- When `ReferenceError` is thrown, it can be linked to mocks that are declared within the test and not at its top. This can often be solved by transforming the `jest.mock` into a `vi.doMock` (instead of `vi.mock`).
 
-- The pattern `await waitFor(expect().toBeNull)` seems to require an explicit arrow function call for vitest `await waitFor(() => expect().toBeNull())`
+- The pattern `await waitFor(expect().toBeNull)` seems to require an explicit arrow function call for vitest, like this: `await waitFor(() => expect().toBeNull())`.
 
 For additional information, if needed, refer to the official guide on [Migrating from Jest](https://vitest.dev/guide/migration.html#migrating-from-jest).
 
