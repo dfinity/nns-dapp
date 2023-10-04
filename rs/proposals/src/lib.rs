@@ -618,11 +618,11 @@ mod def {
 
     // NNS function 39 - BitcoinSetConfig
     // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
-    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+    pub type BitcoinSetConfigProposal = crate::canisters::nns_governance::internal::BitcoinSetConfigProposal;
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct BitcoinSetConfigProposalHumanReadable {
-        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub network: crate::canisters::nns_governance::internal::BitcoinNetwork,
         pub set_config_request: ic_btc_interface::SetConfigRequest,
     }
 

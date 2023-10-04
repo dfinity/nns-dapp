@@ -1856,30 +1856,12 @@ source = "git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2
 dependencies = [
  "ed25519-consensus",
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-crypto-ecdsa-secp256k1 0.1.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
+ "ic-crypto-ecdsa-secp256k1",
  "ic-crypto-internal-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-crypto-secrets-containers 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-crypto-utils-basic-sig 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "rand",
- "rand_chacha",
- "simple_asn1",
-]
-
-[[package]]
-name = "ic-canister-client-sender"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01#f8f59f896499f2fef394d8321116f83351c59aa8"
-dependencies = [
- "ed25519-consensus",
- "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-ecdsa-secp256k1 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-internal-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-secrets-containers 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-sha2",
- "ic-crypto-utils-basic-sig 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "rand",
  "rand_chacha",
  "simple_asn1",
@@ -2089,20 +2071,6 @@ source = "git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2
 dependencies = [
  "k256 0.12.0",
  "lazy_static",
- "pem",
- "rand",
- "simple_asn1",
- "zeroize",
-]
-
-[[package]]
-name = "ic-crypto-ecdsa-secp256k1"
-version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01#f8f59f896499f2fef394d8321116f83351c59aa8"
-dependencies = [
- "k256 0.13.1",
- "lazy_static",
- "num-bigint",
  "pem",
  "rand",
  "simple_asn1",
@@ -3225,37 +3193,12 @@ version = "0.8.0"
 source = "git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0#89129b8212791d7e05cab62ff08eece2888a86e0"
 dependencies = [
  "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-canister-client-sender 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
+ "ic-canister-client-sender",
  "ic-types 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "lazy_static",
  "rand",
  "rand_chacha",
  "url",
-]
-
-[[package]]
-name = "ic-nervous-system-common-test-keys"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01#f8f59f896499f2fef394d8321116f83351c59aa8"
-dependencies = [
- "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-canister-client-sender 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "lazy_static",
- "rand",
- "rand_chacha",
- "url",
-]
-
-[[package]]
-name = "ic-nervous-system-governance"
-version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01#f8f59f896499f2fef394d8321116f83351c59aa8"
-dependencies = [
- "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-stable-structures",
- "maplit",
- "num-traits",
 ]
 
 [[package]]
@@ -3439,7 +3382,7 @@ dependencies = [
  "ic-metrics-encoder",
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nervous-system-common-build-metadata 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-nervous-system-common-test-keys 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
+ "ic-nervous-system-common-test-keys",
  "ic-nervous-system-proto 0.0.1 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nns-common 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
@@ -3456,58 +3399,6 @@ dependencies = [
  "rand",
  "rand_chacha",
  "registry-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "serde",
- "strum 0.23.0",
- "strum_macros 0.23.1",
-]
-
-[[package]]
-name = "ic-nns-governance"
-version = "0.8.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01#f8f59f896499f2fef394d8321116f83351c59aa8"
-dependencies = [
- "async-trait",
- "build-info",
- "build-info-build",
- "candid",
- "comparable",
- "csv",
- "cycles-minting-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "dfn_candid 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "dfn_core 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "dfn_http_metrics 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "dfn_protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-base-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-getrandom-for-wasm 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-crypto-sha2",
- "ic-ledger-core 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-metrics-encoder",
- "ic-nervous-system-clients",
- "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nervous-system-common-build-metadata 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nervous-system-common-test-keys 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nervous-system-governance",
- "ic-nervous-system-proto 0.0.1 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nervous-system-root 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nervous-system-runtime",
- "ic-nns-common 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-sns-init 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-sns-root 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-sns-swap 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-sns-wasm 1.0.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-stable-structures",
- "ic-types 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "itertools",
- "lazy_static",
- "maplit",
- "on_wire 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "prost",
- "rand",
- "rand_chacha",
- "registry-canister 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "serde",
  "strum 0.23.0",
  "strum_macros 0.23.1",
@@ -4823,7 +4714,7 @@ dependencies = [
  "ic-ledger-core 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nns-common 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-nns-governance 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
+ "ic-nns-governance",
  "ic-sns-swap 0.1.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "itertools",
@@ -5440,7 +5331,6 @@ dependencies = [
  "ic-nervous-system-common 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "ic-nervous-system-root 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-nns-governance 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "ic-sns-wasm 1.0.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "idl2json",
