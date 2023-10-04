@@ -59,7 +59,7 @@ Found in `frontend/src/tests/utils`.
 To migrate a test from jest to vitest, aside from moving it between folders, the following changes can be made:
 
 - Replace the prefix `jest.` with `vi.`
-- Remove the `jsdom` annotation, as all vitest runs are simulated in a browser environment
+- Remove the `jsdom` annotation, as all vitest runs in a simulated browser environment
 
 ```
 /**
