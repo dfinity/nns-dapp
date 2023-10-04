@@ -1,10 +1,10 @@
 import type { PostMessageResponse } from "$lib/types/post-messages";
 import { TimerWorkerUtils } from "$lib/worker-utils/timer.worker-utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { advanceTime } from "$tests/utils/timers.test-utils";
-import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import { advanceTime } from "$vitests/utils/timers.test-utils";
+import { silentConsoleErrors } from "$vitests/utils/utils.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("timer.worker-utils", () => {
   const now = Date.now();
@@ -14,10 +14,10 @@ describe("timer.worker-utils", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest.clearAllTimers();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(now);
 
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
     global.postMessage = spyPostMessage;
   });
 
@@ -26,7 +26,7 @@ describe("timer.worker-utils", () => {
     mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
     beforeEach(() =>
-      jest
+      vi
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
     );
@@ -34,7 +34,7 @@ describe("timer.worker-utils", () => {
     it("should not call if no identity", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
@@ -52,7 +52,7 @@ describe("timer.worker-utils", () => {
     mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
     beforeEach(() =>
-      jest
+      vi
         .spyOn(AuthClient, "create")
         .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
     );
@@ -60,7 +60,7 @@ describe("timer.worker-utils", () => {
     it("should call job on start", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
@@ -74,7 +74,7 @@ describe("timer.worker-utils", () => {
     it("should not call job if already started", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
@@ -84,7 +84,7 @@ describe("timer.worker-utils", () => {
 
       expect(job).toHaveBeenCalledTimes(1);
 
-      const anotherJob = jest.fn();
+      const anotherJob = vi.fn();
 
       await worker.start({
         job: anotherJob,
@@ -98,7 +98,7 @@ describe("timer.worker-utils", () => {
     it("should call job after interval", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
@@ -122,7 +122,7 @@ describe("timer.worker-utils", () => {
     it("should call job with identity and data", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
       const data = { test: 123 };
 
       await worker.start({
@@ -137,7 +137,7 @@ describe("timer.worker-utils", () => {
     it("should call job after interval with same parameter", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       const data = { test: 123 };
 
@@ -167,7 +167,7 @@ describe("timer.worker-utils", () => {
     it("should stop timer", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
@@ -189,7 +189,7 @@ describe("timer.worker-utils", () => {
       const worker = new TimerWorkerUtils();
 
       let call = 0;
-      const job = jest.fn(async () => {
+      const job = vi.fn(async () => {
         // Job is executed and scheduled, we want to test the error if it throw an error in the scheduler
         if (call > 0) {
           throw new Error("Test");
@@ -218,7 +218,7 @@ describe("timer.worker-utils", () => {
     it("should call postMessage when status changes", async () => {
       const worker = new TimerWorkerUtils();
 
-      const job = jest.fn();
+      const job = vi.fn();
 
       await worker.start({
         job,
