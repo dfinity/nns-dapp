@@ -41,6 +41,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New UI to better explain the commitment of Neurons' Fund and direct participation.
+
 ### Operations
 
 #### Added
