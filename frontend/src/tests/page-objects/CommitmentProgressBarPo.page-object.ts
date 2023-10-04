@@ -29,4 +29,10 @@ export class CommitmentProgressBarPo extends BasePageObject {
       .getAttribute("value");
     return BigInt(valueString);
   }
+
+  // The color prop is added as a class to the progress element.
+  async getColor(): Promise<string> {
+    const progressElement = this.root.querySelector("progress");
+    return (await progressElement.getClasses())[0];
+  }
 }

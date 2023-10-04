@@ -3,7 +3,11 @@
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
+  import {
+    Html,
+    KeyValuePair,
+    KeyValuePairInfo,
+  } from "@dfinity/gix-components";
   import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import { getContext } from "svelte";
   import {
@@ -16,6 +20,7 @@
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
   import {
     getProjectCommitmentSplit,
+    isCommitmentSplitWithNeuronsFund,
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
@@ -66,16 +71,9 @@
       >
     </KeyValuePair>
   {/if}
-  <KeyValuePair testId="sns-project-current-commitment">
-    <span slot="key">
-      {$i18n.sns_project_detail.current_overall_commitment}
-    </span>
-
-    <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
-  </KeyValuePair>
-  {#if "nfCommitmentE8s" in projectCommitments && projectCommitments.nfCommitmentE8s > 0n}
+  {#if isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <KeyValuePair testId="sns-project-current-direct-commitment">
-      <span slot="key">
+      <span slot="key" class="direct-participation">
         {$i18n.sns_project_detail.current_direct_commitment}
       </span>
 
@@ -91,31 +89,69 @@
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar
         participationE8s={projectCommitments.directCommitmentE8s}
-        max={max_icp_e8s}
-        minimumIndicator={min_icp_e8s}
+        max={projectCommitments.maximumDirectCommitmentE8s}
+        minimumIndicator={projectCommitments.minimumDirectCommitmentE8s}
+        color="primary"
       />
     </div>
-    <KeyValuePair testId="sns-project-current-nf-commitment">
-      <span slot="key">
-        {$i18n.sns_project_detail.current_nf_commitment}
-      </span>
+    <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
+    <!-- The spacing between component is set using flex in the parent. -->
+    <div>
+      <KeyValuePairInfo testId="sns-project-current-nf-commitment">
+        <span slot="key">
+          {$i18n.sns_project_detail.current_nf_commitment}
+        </span>
 
-      <AmountDisplay
-        slot="value"
-        amount={TokenAmount.fromE8s({
-          amount: projectCommitments.nfCommitmentE8s,
-          token: ICPToken,
-        })}
-        singleLine
-      />
-    </KeyValuePair>
-  {:else}
+        <div slot="info" class="description">
+          <Html
+            text={$i18n.sns_project_detail.current_nf_commitment_description}
+          />
+        </div>
+
+        <AmountDisplay
+          slot="value"
+          amount={TokenAmount.fromE8s({
+            amount: projectCommitments.nfCommitmentE8s,
+            token: ICPToken,
+          })}
+          singleLine
+        />
+      </KeyValuePairInfo>
+    </div>
+  {/if}
+  <KeyValuePair testId="sns-project-current-commitment">
+    <span slot="key">
+      {$i18n.sns_project_detail.current_overall_commitment}
+    </span>
+
+    <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
+  </KeyValuePair>
+  {#if !isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar
         participationE8s={projectCommitments.totalCommitmentE8s}
         max={max_icp_e8s}
         minimumIndicator={min_icp_e8s}
+        color="warning"
       />
     </div>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  .direct-participation {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+    // This is the dot with the participation color next to the label
+    &::before {
+      content: "";
+      display: block;
+      width: var(--padding);
+      height: var(--padding);
+      background: var(--primary);
+      border-radius: var(--padding);
+      background: var(--primary);
+    }
+  }
+</style>

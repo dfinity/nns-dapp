@@ -7,6 +7,7 @@
   export let max: bigint;
   export let participationE8s: bigint;
   export let minimumIndicator: bigint | undefined = undefined;
+  export let color: "warning" | "primary";
 
   let width: number | undefined;
   let minIndicatorPosition: number | undefined;
@@ -19,7 +20,7 @@
 <ProgressBar
   max={Number(max)}
   value={Number(participationE8s)}
-  color="warning"
+  {color}
   testId="commitment-progress-bar-component"
 >
   <div class="info" bind:clientWidth={width} slot="bottom">
