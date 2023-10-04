@@ -12,6 +12,7 @@
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
   import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
+  import NnsProposalNew from "$lib/components/proposal-detail/NnsProposalNew.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { authStore } from "$lib/stores/auth.store";
@@ -19,6 +20,7 @@
   import { browser } from "$app/environment";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { referrerPathStore } from "$lib/stores/routes.store";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 

@@ -16,6 +16,8 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
+  import { SplitBlock } from "../../../../../../gix-components";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -35,24 +37,59 @@
       />
     {/if}
 
-    <div class="content-grid" data-tid="proposal-details-grid">
-      <div class="content-a content-cell-island">
-        <ProposalSystemInfoSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-b expand-content-b">
-        <ProposalVotingSection proposalInfo={$store.proposal} />
-      </div>
-      <div class="content-c proposal-data-section">
-        <NnsProposalSummarySection proposalInfo={$store.proposal} />
+    <TestIdWrapper testId="proposal-details-grid">
+      {#if $ENABLE_FULL_WIDTH_PROPOSAL}
+        <div class="proposal-data-section" data-tid="proposal-details-grid">
+          <div class="content-cell-island">
+            <SplitBlock>
+              <div slot="start">
+                <ProposalSystemInfoSection proposalInfo={$store.proposal} />
+              </div>
+              <div slot="end">
+                <ProposalVotingSection proposalInfo={$store.proposal} />
+              </div>
+            </SplitBlock>
+          </div>
+          <div class="content-cell-island">
+            <NnsProposalSummarySection proposalInfo={$store.proposal} />
+          </div>
+          <div class="content-cell-island" data-tid="proposal-details-grid">
+            <NnsProposalProposerActionsEntry
+              proposal={$store.proposal.proposal}
+            />
+          </div>
+          <div class="content-cell-island">
+            <NnsProposalProposerPayloadEntry
+              proposal={$store.proposal.proposal}
+              proposalId={$store.proposalId}
+            />
+          </div>
+        </div>
+      {:else}
+        <div class="content-grid" data-tid="proposal-details-grid">
+          <div class="content-a content-cell-island">
+            <ProposalSystemInfoSection proposalInfo={$store.proposal} />
+          </div>
+          <div class="content-b expand-content-b">
+            <div class="content-cell-island">
+              <ProposalVotingSection proposalInfo={$store.proposal} />
+            </div>
+          </div>
+          <div class="content-c proposal-data-section">
+            <NnsProposalSummarySection proposalInfo={$store.proposal} />
 
-        <NnsProposalProposerActionsEntry proposal={$store.proposal.proposal} />
+            <NnsProposalProposerActionsEntry
+              proposal={$store.proposal.proposal}
+            />
 
-        <NnsProposalProposerPayloadEntry
-          proposal={$store.proposal.proposal}
-          proposalId={$store.proposalId}
-        />
-      </div>
-    </div>
+            <NnsProposalProposerPayloadEntry
+              proposal={$store.proposal.proposal}
+              proposalId={$store.proposalId}
+            />
+          </div>
+        </div>
+      {/if}
+    </TestIdWrapper>
   {:else}
     <div class="content-grid" data-tid="proposal-details-grid">
       <div class="content-a">
